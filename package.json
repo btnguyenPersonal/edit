@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "description": "code editor experiment",
   "scripts": {
-    "dev": "node index.js"
+    "dev": "node index.js",
+    "lint": "eslint ."
   },
   "repository": {
     "type": "git",
@@ -14,5 +15,13 @@
   "bugs": {
     "url": "https://github.com/btnguyenPersonal/rotide/issues"
   },
-  "homepage": "https://github.com/btnguyenPersonal/rotide#readme"
+  "homepage": "https://github.com/btnguyenPersonal/rotide#readme",
+  "dependencies": {
+    "terminal-kit": "3.0.0"
+  },
+  "devDependencies": {
+    "eslint": "8.34.0",
+    "eslint-config-airbnb-base": "15.0.0",
+    "eslint-plugin-import": "2.27.5"
+  }
 }

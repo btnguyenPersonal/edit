@@ -9,12 +9,12 @@ this is my experiment for making a new code editor
     start with just single window with move around, insert characters, delete, save
 
 ## todo
-    - catch terminal and keystrokes
-    - render file
     - make cursor and scrolling
     - insert and delete
     - save
 ## blocked
 ## in progress
-    - initial commit hello world
+    - render file
 ## done
+    - initial commit hello world
+    - catch terminal and keystrokes
