@@ -1,0 +1,18 @@
+{
+  "name": "rotide",
+  "version": "0.0.0",
+  "description": "code editor experiment",
+  "scripts": {
+    "dev": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/btnguyenPersonal/rotide.git"
+  },
+  "author": "Ben Nguyen",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/btnguyenPersonal/rotide/issues"
+  },
+  "homepage": "https://github.com/btnguyenPersonal/rotide#readme"
+}
