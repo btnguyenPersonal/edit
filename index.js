@@ -14,6 +14,14 @@ function renderScreen(c, r, data, terminal) {
     moveCursor(c, r, data, terminal);
 }
 
+function saveFile(f, d) {
+    (async () => await fs.writeFile(f, d.join('\n'), (err) => {
+        if (err) {
+            console.log(err);
+        }
+    }))();
+}
+
 const file = process.argv.length >= 3 ? process.argv[2] : undefined;
 const rawdata = file ? fs.readFileSync(file, 'utf-8') : '';
 const data = rawdata.split('\n');
@@ -28,7 +36,9 @@ moveCursor(col, row, data, term);
 renderScreen(col, row, data, term);
 
 term.on('key', (key) => {
-    if (key === 'CTRL_C') {
+    if (key === 'CTRL_S') {
+        saveFile(file, data);
+    } else if (key === 'CTRL_C') {
         term.fullscreen(false);
         process.exit();
     } else if (key === 'UP') {
