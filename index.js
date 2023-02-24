@@ -5,26 +5,50 @@ if (process.argv.length >= 3) {
     file = process.argv[2];
 }
 let rawdata = file ? fs.readFileSync(file, 'utf-8') : 'default data';
-data = rawdata.split('\n');
+let data = rawdata.split('\n');
 
 term.grabInput({ mouse: 'button' });
 term.fullscreen(true);
 term.windowTitle('rotide');
 term(data.join('\n'));
-term.moveTo(0, 0);
+let row = 1;
+let col = 1;
+moveCursor(col, row, data, term);
 
-term.on('key', (key, data) => {
+function moveCursor(col, row, data, term) {
+    term.moveTo(
+        col < data[row - 1].length ? col : data[row - 1].length,
+        row
+    );
+}
+
+term.on('key', (key) => {
     if (key === 'CTRL_C') {
         term.fullscreen(false);
         process.exit();
     } else if (key === 'UP') {
-        term.up(1);
+        if (row > 1) {
+            row--;
+        }
+        moveCursor(col, row, data, term);
     } else if (key === 'DOWN') {
-        term.down(1);
+        if (row < data.length) {
+            row++;
+        }
+        moveCursor(col, row, data, term);
     } else if (key === 'LEFT') {
-        term.left(1);
+        if (col >= data[row - 1].length) {
+            col = data[row - 1].length;
+        }
+        if (col > 1) {
+            col--;
+        }
+        moveCursor(col, row, data, term);
     } else if (key === 'RIGHT') {
-        term.right(1);
+        if (col < data[row - 1].length) {
+            col++;
+        }
+        moveCursor(col, row, data, term);
     } else if (key === 'BACKSPACE') {
         term.backDelete();
     } else {
@@ -32,8 +56,10 @@ term.on('key', (key, data) => {
     }
 });
 
-term.on('mouse', (name, data) => {
+term.on('mouse', (name, coor) => {
     if (name === 'MOUSE_LEFT_BUTTON_PRESSED') {
-        term.moveTo(data.x, data.y);
+        col = coor.x;
+        row = coor.y < data.length ? coor.y : data.length;
+        moveCursor(col, row, data, term);
     }
 });
