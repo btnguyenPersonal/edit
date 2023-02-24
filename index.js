@@ -1,26 +1,31 @@
 const term = require('terminal-kit').terminal;
 const fs = require('fs');
-let file;
-if (process.argv.length >= 3) {
-    file = process.argv[2];
+
+function moveCursor(c, r, data, terminal) {
+    terminal.moveTo(
+        c < data[r - 1].length ? c : data[r - 1].length,
+        r < data.length ? r : data.length,
+    );
 }
-let rawdata = file ? fs.readFileSync(file, 'utf-8') : 'default data';
-let data = rawdata.split('\n');
+
+function renderScreen(c, r, data, terminal) {
+    terminal.clear();
+    terminal(data.join('\n'));
+    moveCursor(c, r, data, terminal);
+}
+
+const file = process.argv.length >= 3 ? process.argv[2] : undefined;
+const rawdata = file ? fs.readFileSync(file, 'utf-8') : '';
+const data = rawdata.split('\n');
+let row = 1;
+let col = 1;
 
 term.grabInput({ mouse: 'button' });
 term.fullscreen(true);
 term.windowTitle('rotide');
-term(data.join('\n'));
-let row = 1;
-let col = 1;
-moveCursor(col, row, data, term);
 
-function moveCursor(col, row, data, term) {
-    term.moveTo(
-        col < data[row - 1].length ? col : data[row - 1].length,
-        row
-    );
-}
+moveCursor(col, row, data, term);
+renderScreen(col, row, data, term);
 
 term.on('key', (key) => {
     if (key === 'CTRL_C') {
@@ -28,12 +33,12 @@ term.on('key', (key) => {
         process.exit();
     } else if (key === 'UP') {
         if (row > 1) {
-            row--;
+            row -= 1;
         }
         moveCursor(col, row, data, term);
     } else if (key === 'DOWN') {
         if (row < data.length) {
-            row++;
+            row += 1;
         }
         moveCursor(col, row, data, term);
     } else if (key === 'LEFT') {
@@ -41,18 +46,29 @@ term.on('key', (key) => {
             col = data[row - 1].length;
         }
         if (col > 1) {
-            col--;
+            col -= 1;
         }
         moveCursor(col, row, data, term);
     } else if (key === 'RIGHT') {
+        if (col >= data[row - 1].length) {
+            col = data[row - 1].length;
+        }
         if (col < data[row - 1].length) {
-            col++;
+            col += 1;
         }
         moveCursor(col, row, data, term);
     } else if (key === 'BACKSPACE') {
-        term.backDelete();
+        if (col > 0) {
+            data[row - 1] = data[row - 1].substring(0, col - 2) + data[row - 1].substring(col - 1);
+            col -= 1;
+        }
+        renderScreen(col, row, data, term);
     } else {
-        term.noFormat(key);
+        data[row - 1] = data[row - 1].substring(0, col - 1)
+            + key
+            + data[row - 1].substring(col - 1);
+        col += 1;
+        renderScreen(col, row, data, term);
     }
 });
 
