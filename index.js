@@ -104,6 +104,24 @@ term.on('key', (key) => {
             state.windowLine += 1;
         }
         renderScreen(state, term);
+    } else if (key === 'TAB') {
+        state.data[state.row - 1] = `    ${state.data[state.row - 1]}`;
+        state.col += 4;
+        renderScreen(state, term);
+    } else if (key === 'SHIFT_TAB') {
+        let tempLine = state.data[state.row - 1];
+        for (let i = 3; i >= 0; i -= 1) {
+            if (tempLine.substring(i, i + 1) === ' ') {
+                tempLine = tempLine.substring(0, i) + tempLine.substring(i + 1);
+                if (state.col > 1) {
+                    state.col -= 1;
+                }
+            } else {
+                break;
+            }
+        }
+        state.data[state.row - 1] = tempLine;
+        renderScreen(state, term);
     } else {
         state.data[state.row - 1] = state.data[state.row - 1].substring(0, state.col - 1)
             + key
