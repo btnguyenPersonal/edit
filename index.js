@@ -3,7 +3,9 @@ const fs = require('fs');
 
 function moveCursor(state, terminal) {
     terminal.moveTo(
-        state.col <= state.data[state.row - 1].length ? state.col : state.data[state.row - 1].length + 1,
+        state.col <= state.data[state.row - 1].length
+            ? state.col
+            : state.data[state.row - 1].length + 1,
         (state.row < state.data.length ? state.row : state.data.length) - state.windowLine,
     );
 }
@@ -11,7 +13,7 @@ function moveCursor(state, terminal) {
 function renderScreen(state, terminal) {
     terminal.clear();
     const displayData = [];
-    for (let i = state.windowLine; i < (state.windowLine + process.stdout.rows); i++) {
+    for (let i = state.windowLine; i < (state.windowLine + process.stdout.rows); i += 1) {
         displayData.push(state.data[i]);
     }
     terminal(displayData.join('\n'));
@@ -19,7 +21,7 @@ function renderScreen(state, terminal) {
 }
 
 function saveFile(f, d) {
-    (async () => await fs.writeFile(f, d.join('\n'), (err) => {
+    (async () => fs.writeFile(f, d.join('\n'), (err) => {
         if (err) {
             console.log(err);
         }
@@ -27,27 +29,26 @@ function saveFile(f, d) {
 }
 
 const state = {
+    file: process.argv[2],
     data: (
         process.argv.length >= 3
             ? fs.readFileSync(process.argv[2], 'utf-8')
             : ''
-    )
-    .split('\n'),
+    ).split('\n'),
     row: 1,
     col: 1,
-    windowLine: 0
-}
+    windowLine: 0,
+};
 
 term.grabInput({ mouse: 'button' });
 term.fullscreen(true);
 term.windowTitle('rotide');
 
-moveCursor(state, term);
 renderScreen(state, term);
 
 term.on('key', (key) => {
     if (key === 'CTRL_S') {
-        saveFile(file, data);
+        saveFile(state.file, state.data);
     } else if (key === 'CTRL_C') {
         term.fullscreen(false);
         process.exit();
@@ -85,7 +86,8 @@ term.on('key', (key) => {
         moveCursor(state, term);
     } else if (key === 'BACKSPACE') {
         if (state.col > 0) {
-            state.data[state.row - 1] = state.data[row - 1].substring(0, state.col - 2) + state.data[state.row - 1].substring(state.col - 1);
+            state.data[state.row - 1] = state.data[state.row - 1].substring(0, state.col - 2)
+                + state.data[state.row - 1].substring(state.col - 1);
             state.col -= 1;
         }
         renderScreen(state, term);
