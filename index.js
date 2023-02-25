@@ -91,6 +91,19 @@ term.on('key', (key) => {
             state.col -= 1;
         }
         renderScreen(state, term);
+    } else if (key === 'ENTER') {
+        if (state.data[state.row - 1].substring(state.col - 1)) {
+            state.data.splice(state.row, 0, state.data[state.row - 1].substring(state.col - 1));
+            state.data[state.row - 1] = state.data[state.row - 1].substring(0, state.col - 1);
+        } else {
+            state.data.splice(state.row, 0, '');
+        }
+        state.row += 1;
+        state.col = 1;
+        if (state.row - 1 >= state.windowLine + process.stdout.rows) {
+            state.windowLine += 1;
+        }
+        renderScreen(state, term);
     } else {
         state.data[state.row - 1] = state.data[state.row - 1].substring(0, state.col - 1)
             + key
