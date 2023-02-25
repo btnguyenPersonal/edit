@@ -1,19 +1,18 @@
-hello
-testing 0
-testing 1
-testing 2
-testing 3
-testing 4
-testing 5
-testing 6
-testing 7
-testing 8
-testing 9
-testing 10
-testing 11
-testing 12
-testing 13
-testing 14
-testing 15
-testing 16
-testing 17
+function testing() {
+    if (key === 'CTRL_S') {
+        saveFile(file, data);
+    } else if (key === 'CTRL_C') {
+        term.fullscreen(false);
+        process.exit();
+    } else if (key === 'UP') {
+        if (row > 1) {
+            row -= 1;
+        }
+        moveCursor(col, row, data, term);
+    } else if (key === 'DOWN') {
+        if (row < data.length) {
+            row += 1;
+        }
+        moveCursor(col, row, data, term);
+    }
+}

@@ -3,7 +3,7 @@ const fs = require('fs');
 
 function moveCursor(c, r, data, terminal) {
     terminal.moveTo(
-        c < data[r - 1].length ? c : data[r - 1].length,
+        c <= data[r - 1].length ? c : data[r - 1].length + 1,
         r < data.length ? r : data.length,
     );
 }
@@ -52,18 +52,18 @@ term.on('key', (key) => {
         }
         moveCursor(col, row, data, term);
     } else if (key === 'LEFT') {
-        if (col >= data[row - 1].length) {
-            col = data[row - 1].length;
+        if (col > data[row - 1].length) {
+            col = data[row - 1].length + 1;
         }
         if (col > 1) {
             col -= 1;
         }
         moveCursor(col, row, data, term);
     } else if (key === 'RIGHT') {
-        if (col >= data[row - 1].length) {
-            col = data[row - 1].length;
+        if (col > data[row - 1].length) {
+            col = data[row - 1].length + 1;
         }
-        if (col < data[row - 1].length) {
+        if (col <= data[row - 1].length) {
             col += 1;
         }
         moveCursor(col, row, data, term);
