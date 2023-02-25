@@ -2,7 +2,6 @@ const term = require('terminal-kit').terminal;
 const fs = require('fs');
 
 function moveCursor(state, terminal) {
-    // console.log(state.row, state.col, state.windowLine);
     terminal.moveTo(
         state.col < state.data[state.row].length
             ? state.col + 1
@@ -18,7 +17,7 @@ function renderScreen(state, terminal) {
         displayData.push(state.data[i]);
     }
     terminal(displayData.join('\n'));
-    moveCursor(state, terminal);
+    moveCursor(state, term);
 }
 
 function saveFile(f, d) {
@@ -58,16 +57,18 @@ term.on('key', (key) => {
             state.row -= 1;
             if (state.row < state.windowLine) {
                 state.windowLine -= 1;
+                renderScreen(state, term);
             }
-            renderScreen(state, term);
+            moveCursor(state, term);
         }
     } else if (key === 'DOWN') {
         if (state.row < state.data.length - 1) {
             state.row += 1;
             if (state.row >= state.windowLine + process.stdout.rows) {
                 state.windowLine += 1;
+                renderScreen(state, term);
             }
-            renderScreen(state, term);
+            moveCursor(state, term);
         }
     } else if (key === 'LEFT') {
         if (state.col > state.data[state.row].length) {
@@ -146,7 +147,9 @@ term.on('key', (key) => {
             + key
             + state.data[state.row].substring(state.col);
         state.col += 1;
-        renderScreen(state, term);
+        term.insert(1);
+        term.noFormat(key);
+        moveCursor(state, term);
     }
 });
 
