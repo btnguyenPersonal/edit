@@ -85,6 +85,12 @@ term.on('key', (key) => {
             state.col += 1;
         }
         moveCursor(state, term);
+    } else if (key === 'DELETE') {
+        if (state.col < state.data[state.row].length) {
+            state.data[state.row] = state.data[state.row].substring(0, state.col)
+                + state.data[state.row].substring(state.col + 1);
+        }
+        renderScreen(state, term);
     } else if (key === 'BACKSPACE') {
         if (state.col > 0) {
             state.data[state.row] = state.data[state.row].substring(0, state.col - 1)
