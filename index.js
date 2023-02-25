@@ -2,11 +2,12 @@ const term = require('terminal-kit').terminal;
 const fs = require('fs');
 
 function moveCursor(state, terminal) {
+    // console.log(state.row, state.col, state.windowLine);
     terminal.moveTo(
-        state.col <= state.data[state.row - 1].length
-            ? state.col
-            : state.data[state.row - 1].length + 1,
-        (state.row < state.data.length ? state.row : state.data.length) - state.windowLine,
+        state.col < state.data[state.row].length
+            ? state.col + 1
+            : state.data[state.row].length + 1,
+        (state.row < state.data.length ? state.row + 1 : state.data.length) - state.windowLine,
     );
 }
 
@@ -35,8 +36,8 @@ const state = {
             ? fs.readFileSync(process.argv[2], 'utf-8')
             : ''
     ).split('\n'),
-    row: 1,
-    col: 1,
+    row: 0,
+    col: 0,
     windowLine: 0,
 };
 
@@ -53,64 +54,76 @@ term.on('key', (key) => {
         term.fullscreen(false);
         process.exit();
     } else if (key === 'UP') {
-        if (state.row > 1) {
+        if (state.row > 0) {
             state.row -= 1;
-            if (state.row - 1 < state.windowLine) {
+            if (state.row < state.windowLine) {
                 state.windowLine -= 1;
             }
             renderScreen(state, term);
         }
     } else if (key === 'DOWN') {
-        if (state.row < state.data.length) {
+        if (state.row < state.data.length - 1) {
             state.row += 1;
-            if (state.row - 1 >= state.windowLine + process.stdout.rows) {
+            if (state.row >= state.windowLine + process.stdout.rows) {
                 state.windowLine += 1;
             }
             renderScreen(state, term);
         }
     } else if (key === 'LEFT') {
-        if (state.col > state.data[state.row - 1].length) {
-            state.col = state.data[state.row - 1].length + 1;
+        if (state.col > state.data[state.row].length) {
+            state.col = state.data[state.row].length;
         }
-        if (state.col > 1) {
+        if (state.col > 0) {
             state.col -= 1;
         }
         moveCursor(state, term);
     } else if (key === 'RIGHT') {
-        if (state.col > state.data[state.row - 1].length) {
-            state.col = state.data[state.row - 1].length + 1;
+        if (state.col > state.data[state.row].length) {
+            state.col = state.data[state.row].length;
         }
-        if (state.col <= state.data[state.row - 1].length) {
+        if (state.col < state.data[state.row].length) {
             state.col += 1;
         }
         moveCursor(state, term);
     } else if (key === 'BACKSPACE') {
         if (state.col > 0) {
-            state.data[state.row - 1] = state.data[state.row - 1].substring(0, state.col - 2)
-                + state.data[state.row - 1].substring(state.col - 1);
+            state.data[state.row] = state.data[state.row].substring(0, state.col - 1)
+                + state.data[state.row].substring(state.col);
             state.col -= 1;
         }
         renderScreen(state, term);
     } else if (key === 'ENTER') {
-        if (state.data[state.row - 1].substring(state.col - 1)) {
-            state.data.splice(state.row, 0, state.data[state.row - 1].substring(state.col - 1));
-            state.data[state.row - 1] = state.data[state.row - 1].substring(0, state.col - 1);
+        if (state.data[state.row].substring(state.col)) {
+            state.data.splice(state.row + 1, 0, state.data[state.row].substring(state.col));
+            state.data[state.row] = state.data[state.row].substring(0, state.col);
         } else {
-            state.data.splice(state.row, 0, '');
+            state.data.splice(state.row + 1, 0, '');
         }
         state.row += 1;
-        state.col = 1;
-        if (state.row - 1 >= state.windowLine + process.stdout.rows) {
+        state.col = 0;
+        if (state.row >= state.windowLine + process.stdout.rows) {
             state.windowLine += 1;
         }
         renderScreen(state, term);
     } else if (key === 'TAB') {
-        state.data[state.row - 1] = `    ${state.data[state.row - 1]}`;
+        state.data[state.row] = `    ${state.data[state.row]}`;
         state.col += 4;
         renderScreen(state, term);
-    } else if (key === 'SHIFT_TAB') {
-        let tempLine = state.data[state.row - 1];
+    } else if (key === 'SHIFT_TAB') { // shit implementation but can't be bothered
+        let tempLine = state.data[state.row];
+        let dont = false;
         for (let i = 3; i >= 0; i -= 1) {
+            if (dont) {
+                break;
+            }
+            for (let j = i; j >= 0; j -= 1) {
+                if (tempLine.substring(j, j + 1) !== ' ') {
+                    dont = true;
+                }
+            }
+            if (dont) {
+                break;
+            }
             if (tempLine.substring(i, i + 1) === ' ') {
                 tempLine = tempLine.substring(0, i) + tempLine.substring(i + 1);
                 if (state.col > 1) {
@@ -120,12 +133,12 @@ term.on('key', (key) => {
                 break;
             }
         }
-        state.data[state.row - 1] = tempLine;
+        state.data[state.row] = tempLine;
         renderScreen(state, term);
     } else {
-        state.data[state.row - 1] = state.data[state.row - 1].substring(0, state.col - 1)
+        state.data[state.row] = state.data[state.row].substring(0, state.col)
             + key
-            + state.data[state.row - 1].substring(state.col - 1);
+            + state.data[state.row].substring(state.col);
         state.col += 1;
         renderScreen(state, term);
     }
