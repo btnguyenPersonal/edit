@@ -1,0 +1,44 @@
+function testing() {
+    printf("fooled you");
+}
+
+function moveCursor(c, r, data, terminal) {
+    terminal.moveTo(
+        c <= data[r - 1].length ? c : data[r - 1].length + 1,
+        r < data.length ? r : data.length,
+    );
+}
+
+function renderScreen(c, r, data, terminal) {
+    terminal.clear();
+    terminal(data.join('\n'));
+    moveCursor(c, r, data, terminal);
+}
+
+function saveFile(f, d) {
+    (async () => await fs.writeFile(f, d.join('\n'), (err) => {
+        if (err) {
+            console.log(err);
+        }
+    }))();
+}
+{
+    "env": {
+        "browser": true,
+        "es2021": true
+    },
+    "extends": "airbnb-base",
+    "overrides": [
+    ],
+    "parserOptions": {
+        "ecmaVersion": "latest",
+        "sourceType": "module"
+    },
+    "rules": {
+        "indent": ["error", 4, { "SwitchCase": 1 }],
+        "linebreak-style": ["error", "unix"],
+        "quotes": ["error", "single"],
+        "semi": ["error", "always"],
+        "no-console": "off"
+    }
+}
