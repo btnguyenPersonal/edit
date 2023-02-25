@@ -1,21 +1,21 @@
 const term = require('terminal-kit').terminal;
 const fs = require('fs');
 
-function moveCursor(c, r, data, terminal, windowLine) {
+function moveCursor(state, terminal) {
     terminal.moveTo(
-        c <= data[r - 1].length ? c : data[r - 1].length + 1,
-        (r < data.length ? r : data.length) - windowLine,
+        state.col <= state.data[state.row - 1].length ? state.col : state.data[state.row - 1].length + 1,
+        (state.row < state.data.length ? state.row : state.data.length) - state.windowLine,
     );
 }
 
-function renderScreen(c, r, data, terminal, windowLine) {
+function renderScreen(state, terminal) {
     terminal.clear();
     const displayData = [];
-    for (let i = windowLine; i < (windowLine + process.stdout.rows); i++) {
-        displayData.push(data[i]);
+    for (let i = state.windowLine; i < (state.windowLine + process.stdout.rows); i++) {
+        displayData.push(state.data[i]);
     }
     terminal(displayData.join('\n'));
-    moveCursor(c, r, data, terminal, windowLine);
+    moveCursor(state, terminal);
 }
 
 function saveFile(f, d) {
@@ -26,19 +26,24 @@ function saveFile(f, d) {
     }))();
 }
 
-const file = process.argv.length >= 3 ? process.argv[2] : undefined;
-const rawdata = file ? fs.readFileSync(file, 'utf-8') : '';
-const data = rawdata.split('\n');
-let row = 1;
-let col = 1;
-let windowLine = 0;
+const state = {
+    data: (
+        process.argv.length >= 3
+            ? fs.readFileSync(process.argv[2], 'utf-8')
+            : ''
+    )
+    .split('\n'),
+    row: 1,
+    col: 1,
+    windowLine: 0
+}
 
 term.grabInput({ mouse: 'button' });
 term.fullscreen(true);
 term.windowTitle('rotide');
 
-moveCursor(col, row, data, term, windowLine);
-renderScreen(col, row, data, term, windowLine);
+moveCursor(state, term);
+renderScreen(state, term);
 
 term.on('key', (key) => {
     if (key === 'CTRL_S') {
@@ -47,56 +52,56 @@ term.on('key', (key) => {
         term.fullscreen(false);
         process.exit();
     } else if (key === 'UP') {
-        if (row > 1) {
-            row -= 1;
-            if (row - 1 < windowLine) {
-                windowLine -= 1;
+        if (state.row > 1) {
+            state.row -= 1;
+            if (state.row - 1 < state.windowLine) {
+                state.windowLine -= 1;
             }
-            renderScreen(col, row, data, term, windowLine);
+            renderScreen(state, term);
         }
     } else if (key === 'DOWN') {
-        if (row < data.length) {
-            row += 1;
-            if (row - 1 > windowLine + process.stdout.rows) {
-                windowLine += 1;
+        if (state.row < state.data.length) {
+            state.row += 1;
+            if (state.row - 1 >= state.windowLine + process.stdout.rows) {
+                state.windowLine += 1;
             }
-            renderScreen(col, row, data, term, windowLine);
+            renderScreen(state, term);
         }
     } else if (key === 'LEFT') {
-        if (col > data[row - 1].length) {
-            col = data[row - 1].length + 1;
+        if (state.col > state.data[state.row - 1].length) {
+            state.col = state.data[state.row - 1].length + 1;
         }
-        if (col > 1) {
-            col -= 1;
+        if (state.col > 1) {
+            state.col -= 1;
         }
-        moveCursor(col, row, data, term, windowLine);
+        moveCursor(state, term);
     } else if (key === 'RIGHT') {
-        if (col > data[row - 1].length) {
-            col = data[row - 1].length + 1;
+        if (state.col > state.data[state.row - 1].length) {
+            state.col = state.data[state.row - 1].length + 1;
         }
-        if (col <= data[row - 1].length) {
-            col += 1;
+        if (state.col <= state.data[state.row - 1].length) {
+            state.col += 1;
         }
-        moveCursor(col, row, data, term, windowLine);
+        moveCursor(state, term);
     } else if (key === 'BACKSPACE') {
-        if (col > 0) {
-            data[row - 1] = data[row - 1].substring(0, col - 2) + data[row - 1].substring(col - 1);
-            col -= 1;
+        if (state.col > 0) {
+            state.data[state.row - 1] = state.data[row - 1].substring(0, state.col - 2) + state.data[state.row - 1].substring(state.col - 1);
+            state.col -= 1;
         }
-        renderScreen(col, row, data, term, windowLine);
+        renderScreen(state, term);
     } else {
-        data[row - 1] = data[row - 1].substring(0, col - 1)
+        state.data[state.row - 1] = state.data[state.row - 1].substring(0, state.col - 1)
             + key
-            + data[row - 1].substring(col - 1);
-        col += 1;
-        renderScreen(col, row, data, term, windowLine);
+            + state.data[state.row - 1].substring(state.col - 1);
+        state.col += 1;
+        renderScreen(state, term);
     }
 });
 
 term.on('mouse', (name, coor) => {
     if (name === 'MOUSE_LEFT_BUTTON_PRESSED') {
-        col = coor.x;
-        row = coor.y < data.length ? coor.y : data.length;
-        moveCursor(col, row, data, term, windowLine);
+        state.col = coor.x;
+        state.row = coor.y < state.data.length ? coor.y : state.data.length;
+        moveCursor(state, term);
     }
 });
