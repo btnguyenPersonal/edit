@@ -10,12 +10,10 @@ this is my experiment for making a new code editor
     good progress first day, `terminal-kit` library is awesome, much easier than that library for rust apps
 
 ## todo
-    - make sure only writable characters can be written (and tab)
-    - fix flickering screen (maybe hold current screen string and updated screen string, go one by one and replace)
     - put in vim keybindings
-    - put in line numbers
-    - 
 ## blocked
+    - fix flickering screen (maybe hold current screen string and updated screen string, go one by one and replace)
+        - made some progress but only with some commands
 ## in progress
 ## done
     - initial commit hello world
@@ -24,3 +22,5 @@ this is my experiment for making a new code editor
     - save
     - insert and delete
     - make cursor and scrolling
+    - put in line numbers
+    - make sure only writable characters can be written (and tab)
