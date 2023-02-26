@@ -2,10 +2,7 @@
 
 this is my experiment for making a new code editor
 
-will probably have vim keybinds because I am used to them (could be optional?)
-
 ## todo
-    - put in vim keybindings
     - add tests
     - after mouse scrolling so cursor isn't on screen, make sure next action resets the window
     - on resize, reset window
@@ -17,6 +14,7 @@ will probably have vim keybinds because I am used to them (could be optional?)
         - tried putting empty strings after everything, but seemed very jank
         - next time try the hold previous state approach
 ## in progress
+    - put in vim keybindings
 ## done
     - initial commit hello world
     - catch terminal and keystrokes
