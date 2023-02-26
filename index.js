@@ -2,6 +2,10 @@
 const term = require('terminal-kit').terminal;
 const fs = require('fs');
 
+function isAlphaNumeric(s) {
+    return '1234567890QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm'.indexOf(s) > -1;
+}
+
 function isWritable(s) {
     return ' qwertyuiop[]\\asdfghjkl;\'zxcvbnm,./`1234567890-=~!@#$%^&*()_+QWERTYUIOP{}|ASDFGHJKL:"ZXCVBNM<>?'.indexOf(s) > -1;
 }
@@ -134,6 +138,76 @@ term.on('key', (key) => {
                 state.data[state.row] = state.data[state.row].substring(0, state.col)
                     + state.data[state.row].substring(state.col + 1);
             }
+            renderScreen(state, term);
+        } else if (key === '$') {
+            state.col = state.data[state.row].length; // some weird issue with long lines rendering %^$
+            moveCursor(state, term);
+        } else if (key === '0') {
+            state.col = 0;
+            moveCursor(state, term);
+        } else if (key === '^') {
+            let firstNonSpace = 0;
+            for (let i = 0; i < state.data[state.row].length; i += 1) {
+                if (state.data[state.row].charAt(i) !== ' ') {
+                    firstNonSpace = i;
+                    break;
+                }
+            }
+            state.col = firstNonSpace;
+            moveCursor(state, term);
+        } else if (key === 'I') {
+            let firstNonSpace = 0;
+            for (let i = 0; i < state.data[state.row].length; i += 1) {
+                if (state.data[state.row].charAt(i) !== ' ') {
+                    firstNonSpace = i;
+                    break;
+                }
+            }
+            state.col = firstNonSpace;
+            state.mode = 'i';
+            moveCursor(state, term);
+        } else if (key === 'w') {
+            let hasHitNonAlphaNum = false;
+            for (let i = state.col; i < state.data[state.row].length - 1; i += 1) {
+                if (hasHitNonAlphaNum && isAlphaNumeric(state.data[state.row].charAt(i))) {
+                    state.col = i;
+                    break;
+                } else if (!hasHitNonAlphaNum) {
+                    hasHitNonAlphaNum = !isAlphaNumeric(state.data[state.row].charAt(i));
+                }
+            }
+            moveCursor(state, term);
+        } else if (key === 'b') {
+            let hasHitNonAlphaNum = false;
+            for (let i = state.col; i >= 0; i -= 1) {
+                if (hasHitNonAlphaNum && isAlphaNumeric(state.data[state.row].charAt(i))) {
+                    state.col = i;
+                    break;
+                } else if (!hasHitNonAlphaNum) {
+                    hasHitNonAlphaNum = !isAlphaNumeric(state.data[state.row].charAt(i));
+                }
+            }
+            for (let i = state.col; i >= 0; i -= 1) {
+                if (!isAlphaNumeric(state.data[state.row].charAt(i))) {
+                    break;
+                }
+                state.col = i;
+            }
+            moveCursor(state, term);
+        } else if (key === 'A') {
+            state.col = state.data[state.row].length;
+            state.mode = 'i';
+            moveCursor(state, term);
+        } else if (key === 'S') {
+            state.data[state.row] = '';
+            state.mode = 'i';
+            renderScreen(state, term);
+        } else if (key === 'C') {
+            state.data[state.row] = state.data[state.row].substring(0, state.col);
+            state.mode = 'i';
+            renderScreen(state, term);
+        } else if (key === 'D') {
+            state.data[state.row] = state.data[state.row].substring(0, state.col);
             renderScreen(state, term);
         } else if (key === 's') {
             if (state.col < state.data[state.row].length) {
