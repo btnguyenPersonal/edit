@@ -187,6 +187,9 @@ term.on('key', (key) => {
             if (state.col < state.data[state.row].length) {
                 state.data[state.row] = state.data[state.row].substring(0, state.col)
                     + state.data[state.row].substring(state.col + 1);
+            } else if (state.row < state.data.length - 1) {
+                state.data[state.row] += state.data[state.row + 1];
+                state.data.splice(state.row + 1, 1);
             }
             renderScreen(state, term);
         } else if (key === 'BACKSPACE') {
@@ -194,6 +197,11 @@ term.on('key', (key) => {
                 state.data[state.row] = state.data[state.row].substring(0, state.col - 1)
                     + state.data[state.row].substring(state.col);
                 state.col -= 1;
+            } else if (state.row > 0) {
+                state.col = state.data[state.row - 1].length;
+                state.data[state.row - 1] += state.data[state.row];
+                state.data.splice(state.row, 1);
+                state.row -= 1;
             }
             renderScreen(state, term);
         } else if (key === 'ENTER') {
