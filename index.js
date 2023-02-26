@@ -69,7 +69,7 @@ term.on('key', (key) => {
             term.fullscreen(false);
             process.exit();
         } else if (key === 'CTRL_U') {
-            for (let i = 0; i < process.stdout.rows / 2; i++) {
+            for (let i = 0; i < process.stdout.rows / 2; i += 1) {
                 if (state.row > 0) {
                     state.row -= 1;
                     state.windowLine -= 1;
@@ -77,14 +77,14 @@ term.on('key', (key) => {
             }
             renderScreen(state, term);
         } else if (key === 'CTRL_D') {
-            for (let i = 0; i < process.stdout.rows / 2; i++) {
+            for (let i = 0; i < process.stdout.rows / 2; i += 1) {
                 if (state.row < state.data.length - 1) {
                     state.row += 1;
                     state.windowLine += 1;
                 }
             }
             renderScreen(state, term);
-        }  else if (key === 'UP' || key === 'k') {
+        } else if (key === 'UP' || key === 'k') {
             if (state.row > 0) {
                 state.row -= 1;
                 if (state.row < state.windowLine) {
@@ -135,7 +135,14 @@ term.on('key', (key) => {
                     + state.data[state.row].substring(state.col + 1);
             }
             renderScreen(state, term);
-        } 
+        } else if (key === 's') {
+            if (state.col < state.data[state.row].length) {
+                state.data[state.row] = state.data[state.row].substring(0, state.col)
+                    + state.data[state.row].substring(state.col + 1);
+            }
+            state.mode = 'i';
+            renderScreen(state, term);
+        }
     } else {
         if (key === 'CTRL_S') {
             saveFile(state.file, state.data);
@@ -203,7 +210,7 @@ term.on('key', (key) => {
             }
             renderScreen(state, term);
         } else if (key === 'TAB') {
-            state.data[state.row] = `    ${state.data[state.row]}`;
+            state.data[state.row] = '    ' + state.data[state.row];
             state.col += 4;
             renderScreen(state, term);
         } else if (key === 'SHIFT_TAB') { // shit implementation but can't be bothered
@@ -249,7 +256,9 @@ term.on('key', (key) => {
 term.on('mouse', (name, coor) => {
     if (name === 'MOUSE_LEFT_BUTTON_PRESSED') {
         state.col = (coor.x - 1) - 4 >= 0 ? (coor.x - 1) - 4 : 0;
-        state.row = (coor.y - 1) + state.windowLine < state.data.length ? (coor.y - 1) + state.windowLine : state.data.length - 1;
+        state.row = (coor.y - 1) + state.windowLine < state.data.length
+            ? (coor.y - 1) + state.windowLine
+            : state.data.length - 1;
         moveCursor(state, term);
     } else if (name === 'MOUSE_WHEEL_DOWN') {
         if (state.windowLine > 0) {

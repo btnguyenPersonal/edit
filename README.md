@@ -15,6 +15,19 @@ this is my experiment for making a new code editor
         - next time try the hold previous state approach
 ## in progress
     - put in vim keybindings
+        - $ 0 ^
+        - w b e
+        - o O
+        - t T
+        - f F
+        - d D
+        - c C
+        - p P
+        - .
+        - ~
+        - / ? n N
+        - zz
+        - v
 ## done
     - initial commit hello world
     - catch terminal and keystrokes
