@@ -18,7 +18,9 @@ function renderScreen(state, terminal) {
     terminal.clear();
     const displayData = [];
     for (let i = state.windowLine; i < (state.windowLine + process.stdout.rows); i += 1) {
-        displayData.push(`${i.toString().padStart(3)} ${state.data[i]}`);
+        if (state.data[i]) {
+            displayData.push(i.toString().padStart(3) + ' ' + state.data[i]);
+        }
     }
     terminal(displayData.join('\n'));
     moveCursor(state, term);
@@ -160,8 +162,18 @@ term.on('key', (key) => {
 
 term.on('mouse', (name, coor) => {
     if (name === 'MOUSE_LEFT_BUTTON_PRESSED') {
-        state.col = coor.x;
-        state.row = coor.y < state.data.length ? coor.y : state.data.length;
+        state.col = (coor.x - 1) - 4 >= 0 ? (coor.x - 1) - 4 : 0;
+        state.row = (coor.y - 1) + state.windowLine < state.data.length ? (coor.y - 1) + state.windowLine : state.data.length - 1;
         moveCursor(state, term);
+    } else if (name === 'MOUSE_WHEEL_DOWN') {
+        if (state.windowLine > 0) {
+            state.windowLine -= 1;
+            renderScreen(state, term);
+        }
+    } else if (name === 'MOUSE_WHEEL_UP') {
+        if (state.windowLine + process.stdout.rows < state.data.length) {
+            state.windowLine += 1;
+            renderScreen(state, term);
+        }
     }
 });
