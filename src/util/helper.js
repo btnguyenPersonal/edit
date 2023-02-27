@@ -9,10 +9,13 @@ function isWritable(s) {
 }
 
 function moveCursor(state, terminal) {
+    const r = state.row < state.data.length
+        ? state.row
+        : state.data.length - 1;
     terminal.moveTo(
-        (state.col < state.data[state.row].length
+        (state.col < state.data[r].length
             ? state.col + 1
-            : state.data[state.row].length + 1) + 4,
+            : state.data[r].length + 1) + 4,
         (state.row < state.data.length ? state.row + 1 : state.data.length) - state.windowLine,
     );
 }

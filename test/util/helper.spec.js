@@ -1,7 +1,54 @@
-import { expect } from 'chai';
+import sinon from 'sinon';
+import sinonChai from 'sinon-chai';
+import chai, { expect } from 'chai';
 import * as helper from '../../src/util/helper.js';
 
+chai.use(sinonChai);
+
 describe('helper functions', () => {
+
+    let term, state;
+
+    describe('moveCursor', () => {
+        beforeEach(() => {
+            term = {
+                moveTo: sinon.stub(),
+                clear: sinon.stub(),
+            }
+            state = {
+                data: [
+                    'aaaaaaaa',
+                    'aaaaaaaa',
+                    'aaaaaaaa',
+                    'aaaaaaaa',
+                    'aaaaaaaa',
+                    'aaaaaaaa',
+                    'aaaaaaaa',
+                    'aaaaaaaa',
+                ],
+                row: 0,
+                col: 0,
+                windowLine: 0
+            };
+        });
+        afterEach(() => {
+            sinon.restore();
+        });
+        it('should call moveTo with 5, 8 when max row is surpassed', () => {
+            state.row = 100;
+            helper.moveCursor(state, term);
+            expect(term.moveTo).to.have.been.calledWith(5, 8);
+        });
+        it('should call moveTo with 13, 1 when max col is surpassed', () => {
+            state.col = 100;
+            helper.moveCursor(state, term);
+            expect(term.moveTo).to.have.been.calledWith(13, 1);
+        });
+        it('should call moveTo with 5, 1', () => {
+            helper.moveCursor(state, term);
+            expect(term.moveTo).to.have.been.calledWith(5, 1);
+        });
+    });
 
     describe('isAlphaNumeric', () => {
         it('should return true given an uppercase letter', () => {
