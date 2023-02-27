@@ -119,7 +119,9 @@ term.on('key', (key) => {
             for (let i = 0; i < process.stdout.rows / 2; i += 1) {
                 if (state.row > 0) {
                     state.row -= 1;
-                    state.windowLine -= 1;
+                    if (state.windowLine > 0) {
+                        state.windowLine -= 1;
+                    }
                 }
             }
             renderScreen(state, term);
