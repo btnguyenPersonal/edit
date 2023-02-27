@@ -1,7 +1,7 @@
 import * as helper from '../util/helper.js';
 
 function handleVimKeys(key, state, term) {
-    if (state.vim && state.previousKeys === 'd') {
+    if (state.previousKeys === 'd') {
         if (key === 'CTRL_S') {
             helper.saveFile(state.file, state.data);
         } else if (key === 'CTRL_C') {
@@ -12,7 +12,7 @@ function handleVimKeys(key, state, term) {
             helper.renderScreen(state, term);
         }
         state.previousKeys = '';
-    } else if (state.vim && state.previousKeys === 'g') {
+    } else if (state.previousKeys === 'g') {
         if (key === 'CTRL_S') {
             helper.saveFile(state.file, state.data);
         } else if (key === 'CTRL_C') {
@@ -30,7 +30,7 @@ function handleVimKeys(key, state, term) {
             helper.renderScreen(state, term);
         }
         state.previousKeys = '';
-    } else if (state.vim && state.previousKeys === 'c') {
+    } else if (state.previousKeys === 'c') {
         if (key === 'CTRL_S') {
             saveFile(state.file, state.data);
         } else if (key === 'CTRL_C') {
@@ -42,7 +42,7 @@ function handleVimKeys(key, state, term) {
             helper.renderScreen(state, term);
         }
         state.previousKeys = '';
-    } else if (state.vim && state.mode === 'n') {
+    } else if (state.mode === 'n') {
         if (key === 'CTRL_S') {
             helper.saveFile(state.file, state.data);
         } else if (key === 'CTRL_C') {
