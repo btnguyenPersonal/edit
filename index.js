@@ -74,11 +74,29 @@ term.on('key', (key) => {
             process.exit();
         } else if (key === 'd') {
             state.data.splice(state.row, 1);
-            state.previousKeys = '';
             renderScreen(state, term);
-        } else {
-            state.previousKeys = '';
-        } 
+        }
+        state.previousKeys = '';
+    } else if (state.vim && state.previousKeys === 'g') {
+        if (key === 'CTRL_S') {
+            saveFile(state.file, state.data);
+        } else if (key === 'CTRL_C') {
+            term.fullscreen(false);
+            process.exit();
+        } else if (key === 'g') {
+            while (state.row !== 0) {
+                if (state.row > 0) {
+                    state.row -= 1;
+                    if (state.row < state.windowLine) {
+                        state.windowLine -= 1;
+                        renderScreen(state, term);
+                    }
+                    moveCursor(state, term);
+                }
+            }
+            renderScreen(state, term);
+        }
+        state.previousKeys = '';
     } else if (state.vim && state.previousKeys === 'c') {
         if (key === 'CTRL_S') {
             saveFile(state.file, state.data);
@@ -88,11 +106,9 @@ term.on('key', (key) => {
         } else if (key === 'c') {
             state.data[state.row] = '';
             state.mode = 'i';
-            state.previousKeys = '';
             renderScreen(state, term);
-        } else {
-            state.previousKeys = '';
         }
+        state.previousKeys = '';
     } else if (state.vim && state.mode === 'n') {
         if (key === 'CTRL_S') {
             saveFile(state.file, state.data);
@@ -167,7 +183,7 @@ term.on('key', (key) => {
             }
             renderScreen(state, term);
         } else if (key === '$') {
-            state.col = state.data[state.row].length; // some weird issue with long lines rendering %^$
+            state.col = state.data[state.row].length; // issue with long lines rendering %^$
             moveCursor(state, term);
         } else if (key === '0') {
             state.col = 0;
@@ -250,6 +266,18 @@ term.on('key', (key) => {
         } else if (key === 'O') {
             state.data.splice(state.row, 0, '');
             state.mode = 'i';
+            renderScreen(state, term);
+        } else if (key === 'g') {
+            state.previousKeys = 'g';
+        } else if (key === 'G') {
+            while (state.row !== state.data.length - 1) {
+                if (state.row < state.data.length - 1) {
+                    state.row += 1;
+                    if (state.row >= state.windowLine + process.stdout.rows) {
+                        state.windowLine += 1;
+                    }
+                }
+            }
             renderScreen(state, term);
         } else if (key === 'c') {
             state.previousKeys = 'c';
