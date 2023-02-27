@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "node src/rotide.js",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "test": "npx mocha ./test/**/*.spec.js"
   },
   "repository": {
     "type": "git",
@@ -18,6 +19,9 @@
   },
   "homepage": "https://github.com/btnguyenPersonal/rotide#readme",
   "dependencies": {
+    "chai": "^4.3.7",
+    "mocha": "^10.2.0",
+    "sinon": "^15.0.1",
     "terminal-kit": "3.0.0"
   },
   "devDependencies": {
