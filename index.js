@@ -66,7 +66,34 @@ term.windowTitle('rotide');
 renderScreen(state, term);
 
 term.on('key', (key) => {
-    if (state.vim && state.mode === 'n') {
+    if (state.vim && state.previousKeys === 'd') {
+        if (key === 'CTRL_S') {
+            saveFile(state.file, state.data);
+        } else if (key === 'CTRL_C') {
+            term.fullscreen(false);
+            process.exit();
+        } else if (key === 'd') {
+            state.data.splice(state.row, 1);
+            state.previousKeys = '';
+            renderScreen(state, term);
+        } else {
+            state.previousKeys = '';
+        } 
+    } else if (state.vim && state.previousKeys === 'c') {
+        if (key === 'CTRL_S') {
+            saveFile(state.file, state.data);
+        } else if (key === 'CTRL_C') {
+            term.fullscreen(false);
+            process.exit();
+        } else if (key === 'c') {
+            state.data[state.row] = '';
+            state.mode = 'i';
+            state.previousKeys = '';
+            renderScreen(state, term);
+        } else {
+            state.previousKeys = '';
+        }
+    } else if (state.vim && state.mode === 'n') {
         if (key === 'CTRL_S') {
             saveFile(state.file, state.data);
         } else if (key === 'CTRL_C') {
@@ -216,6 +243,24 @@ term.on('key', (key) => {
             }
             state.mode = 'i';
             renderScreen(state, term);
+        } else if (key === 'o') {
+            state.data.splice(state.row + 1, 0, '');
+            state.mode = 'i';
+            renderScreen(state, term);
+        } else if (key === 'O') {
+            state.data.splice(state.row, 0, '');
+            state.mode = 'i';
+            renderScreen(state, term);
+        } else if (key === 'c') {
+            state.previousKeys = 'c';
+        } else if (key === 'd') {
+            state.previousKeys = 'd';
+        } else if (key === 'y') {
+            state.previousKeys = 'y';
+        } else if (key === '/') {
+            state.previousKeys = '/';
+        } else if (key === 'v') {
+            state.previousKeys = 'v';
         }
     } else {
         if (key === 'CTRL_S') {
