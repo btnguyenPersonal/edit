@@ -1,4 +1,4 @@
-import 'fs';
+import fs from 'fs';
 
 function isAlphaNumeric(s) {
     return '1234567890QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm'.indexOf(s) > -1;

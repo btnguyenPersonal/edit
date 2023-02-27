@@ -3,9 +3,8 @@
 this is my experiment for making a new code editor
 
 ## todo
-    - add tests
-    - after mouse scrolling so cursor isn't on screen, make sure next action resets the window
-    - ability to change file
+    - after mouse scrolling so cursor isn't on screen, make sure next action resets the window // add to renderScreen
+    - ability to change file // want to put some work to make this part really nice, might come after opening as workspace
 ## blocked
     - fix flickering screen (maybe hold current screen string and updated screen string, go one by one and replace)
         - made some progress but only with some commands (renderScreen still causes big upsets, but can't be bothered right now)
@@ -23,7 +22,7 @@ this is my experiment for making a new code editor
         - zz
         - v
 ## in progress
-    - split apart code into multiple files
+    - add tests
 ## done
     - initial commit hello world
     - catch terminal and keystrokes
@@ -43,7 +42,8 @@ this is my experiment for making a new code editor
     - syntax highlighting
     - multithread stuff
     - on resize, reset window
-
+    - split apart code into multiple files
+    - highlight and copy/paste
 
 ## journal
     def terminal only
