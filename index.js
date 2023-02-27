@@ -427,3 +427,7 @@ term.on('mouse', (name, coor) => {
         }
     }
 });
+
+term.on('resize', () => {
+    renderScreen(state, term);
+});

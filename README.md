@@ -5,29 +5,25 @@ this is my experiment for making a new code editor
 ## todo
     - add tests
     - after mouse scrolling so cursor isn't on screen, make sure next action resets the window
-    - on resize, reset window
-    - split apart code into multiple files
     - ability to change file
 ## blocked
     - fix flickering screen (maybe hold current screen string and updated screen string, go one by one and replace)
         - made some progress but only with some commands (renderScreen still causes big upsets, but can't be bothered right now)
         - tried putting empty strings after everything, but seemed very jank
         - next time try the hold previous state approach
-## in progress
-    - put in vim keybindings
-        - $ 0 ^
-        - w b e
-        - o O
+    - put in vim keybindings // taking break from this
         - t T
         - f F
-        - d D
-        - c C
-        - p P
-        - .
+        - d D // some
+        - c C // some
+        - p P // need some idea for registers?
+        - . // store previous commands
         - ~
-        - / ? n N
+        - / ? n N // way to store & search for stuff (maybe make menu and have search/replace too?)
         - zz
         - v
+## in progress
+    - split apart code into multiple files
 ## done
     - initial commit hello world
     - catch terminal and keystrokes
@@ -46,6 +42,7 @@ this is my experiment for making a new code editor
     - undo/redo
     - syntax highlighting
     - multithread stuff
+    - on resize, reset window
 
 
 ## journal
