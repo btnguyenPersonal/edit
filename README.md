@@ -23,6 +23,10 @@ this is my experiment for making a new code editor
         - v
 ## in progress
     - add tests
+        - mouse inputs done (might need to add drag select later)
+        - helper functions for terminal done
+        - normal keys needed
+        - vim keys (bruh)
 ## done
     - initial commit hello world
     - catch terminal and keystrokes
