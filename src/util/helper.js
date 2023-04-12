@@ -22,13 +22,45 @@ function moveCursor(state, terminal) {
 
 function renderScreen(state, terminal) {
     terminal.clear();
-    const displayData = [];
     for (let i = state.windowLine; i < (state.windowLine + process.stdout.rows); i += 1) {
         if (state.data[i] !== undefined) {
-            displayData.push(i.toString().padStart(3) + ' ' + state.data[i]);
+            terminal.bgDefaultColor();
+            terminal(i.toString().padStart(3) + ' ');
+            for (let j = 0; j < state.data[i].length; j++) {
+                if (state.mode === 'v'){
+                    if (i < state.row && i > state.visual.begin.row) {
+                        terminal.bgBlue();
+                    } else {
+                        if (i === state.row && i === state.visual.begin.row) {
+                            if (j >= state.visual.begin.col && j <= state.col) {
+                                terminal.bgBlue();
+                            } else {
+                                terminal.bgDefaultColor();
+                            }
+                        } else if (i === state.visual.begin.row) {
+                            if (j >= state.visual.begin.col) {
+                                terminal.bgBlue();
+                            } else {
+                                terminal.bgDefaultColor();
+                            }
+                        } else if (i === state.row) {
+                            if (j <= state.col) {
+                                terminal.bgBlue();
+                            } else {
+                                terminal.bgDefaultColor();
+                            }
+                        }
+                    }
+                } else {
+                    terminal.bgDefaultColor();
+                }
+                terminal(state.data[i].substring(j, j + 1));
+            }
+        }
+        if (i < (state.windowLine + process.stdout.rows) - 1) {
+            terminal('\n');
         }
     }
-    terminal(displayData.join('\n'));
     moveCursor(state, terminal);
 }
 

@@ -11,10 +11,22 @@ function getFile() {
     return process.argv[2] === '-v' ? process.argv[3] : process.argv[2];
 }
 
+process.title = 'edit';
 const term = terminal();
 const state = {
     vim: process.argv[2] === '-v',
     mode: 'n',
+    clipboard: [],
+    visual: {
+        begin: {
+            row: null,
+            col: null
+        },
+        end: {
+            row: null,
+            col: null
+        },
+    },
     previousKeys: '',
     file: getFile(),
     data: (
@@ -29,7 +41,7 @@ const state = {
 
 term.grabInput({ mouse: 'button' });
 term.fullscreen(true);
-term.windowTitle('rotide');
+term.windowTitle('edit');
 
 helper.renderScreen(state, term);
 
