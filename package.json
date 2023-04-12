@@ -1,10 +1,10 @@
 {
-  "name": "rotide",
+  "name": "edit",
   "version": "0.0.0",
   "description": "code editor experiment",
   "type": "module",
   "scripts": {
-    "dev": "node src/rotide.js",
+    "dev": "node src/edit.js",
     "lint": "eslint .",
     "test": "npx mocha ./test/**/*.spec.js"
   },
