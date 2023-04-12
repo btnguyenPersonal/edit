@@ -1,6 +1,6 @@
 import * as helper from '../util/helper.js';
 
-function handleKeys(key, state, term) {
+function handleKeys(key, state, screen, term) {
     if (key === 'CTRL_S') {
         helper.saveFile(state.file, state.data);
     } else if (key === 'CTRL_C') {
@@ -11,19 +11,17 @@ function handleKeys(key, state, term) {
             state.row -= 1;
             if (state.row < state.windowLine) {
                 state.windowLine -= 1;
-                helper.renderScreen(state, term);
             }
-            helper.moveCursor(state, term);
         }
+        helper.renderScreen(state, screen);
     } else if (key === 'DOWN') {
         if (state.row < state.data.length - 1) {
             state.row += 1;
             if (state.row >= state.windowLine + process.stdout.rows) {
                 state.windowLine += 1;
-                helper.renderScreen(state, term);
             }
-            helper.moveCursor(state, term);
         }
+        helper.renderScreen(state, screen);
     } else if (key === 'LEFT') {
         if (state.col > state.data[state.row].length) {
             state.col = state.data[state.row].length;
@@ -31,7 +29,7 @@ function handleKeys(key, state, term) {
         if (state.col > 0) {
             state.col -= 1;
         }
-        helper.moveCursor(state, term);
+        helper.renderScreen(state, screen);
     } else if (key === 'RIGHT') {
         if (state.col > state.data[state.row].length) {
             state.col = state.data[state.row].length;
@@ -39,7 +37,7 @@ function handleKeys(key, state, term) {
         if (state.col < state.data[state.row].length) {
             state.col += 1;
         }
-        helper.moveCursor(state, term);
+        helper.renderScreen(state, screen);
     } else if (key === 'DELETE') {
         if (state.col < state.data[state.row].length) {
             state.data[state.row] = state.data[state.row].substring(0, state.col)
@@ -48,7 +46,7 @@ function handleKeys(key, state, term) {
             state.data[state.row] += state.data[state.row + 1];
             state.data.splice(state.row + 1, 1);
         }
-        helper.renderScreen(state, term);
+        helper.renderScreen(state, screen);
     } else if (key === 'BACKSPACE') {
         if (state.col > 0) {
             state.data[state.row] = state.data[state.row].substring(0, state.col - 1)
@@ -60,7 +58,7 @@ function handleKeys(key, state, term) {
             state.data.splice(state.row, 1);
             state.row -= 1;
         }
-        helper.renderScreen(state, term);
+        helper.renderScreen(state, screen);
     } else if (key === 'ENTER') {
         if (state.data[state.row].substring(state.col)) {
             state.data.splice(state.row + 1, 0, state.data[state.row].substring(state.col));
@@ -73,11 +71,11 @@ function handleKeys(key, state, term) {
         if (state.row >= state.windowLine + process.stdout.rows) {
             state.windowLine += 1;
         }
-        helper.renderScreen(state, term);
+        helper.renderScreen(state, screen);
     } else if (key === 'TAB') {
         state.data[state.row] = '    ' + state.data[state.row];
         state.col += 4;
-        helper.renderScreen(state, term);
+        helper.renderScreen(state, screen);
     } else if (key === 'SHIFT_TAB') { // shit implementation but can't be bothered
         let tempLine = state.data[state.row];
         let dont = false;
@@ -103,15 +101,13 @@ function handleKeys(key, state, term) {
             }
         }
         state.data[state.row] = tempLine;
-        helper.renderScreen(state, term);
+        helper.renderScreen(state, screen);
     } else if (helper.isWritable(key)) {
         state.data[state.row] = state.data[state.row].substring(0, state.col)
             + key
             + state.data[state.row].substring(state.col);
         state.col += 1;
-        term.insert(1);
-        term.noFormat(key);
-        helper.moveCursor(state, term);
+        helper.renderScreen(state, screen);
     } else if (key === 'ESCAPE') {
         state.mode = 'n';
     }
