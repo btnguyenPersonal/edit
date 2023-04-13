@@ -23,6 +23,9 @@ function moveCursor(state, screen) {
 
 function isHighlighted(state, i, j) {
     if (state.mode === 'v'){
+        if (state.row === i && state.col === j) {
+            return false;
+        }
         if ((i < state.row && i > state.visual.row) || (i > state.row && i < state.visual.row)) {
             return true;
         } else {

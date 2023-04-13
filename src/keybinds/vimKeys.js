@@ -24,11 +24,15 @@ function handleVimKeys(key, state, screen, term) {
         } else if (key === 'j') {
             state.clipboard = [];
             state.clipboard.push(state.data[state.row]);
-            state.clipboard.push(state.data[state.row + 1]); // bounding needed
+            if (state.data[state.row + 1]) {
+                state.clipboard.push(state.data[state.row + 1]);
+            }
             state.clipboardNewLine = true;
         } else if (key === 'k') {
             state.clipboard = [];
-            state.clipboard.push(state.data[state.row - 1]); // bounding needed
+            if (state.data[state.row - 1]) {
+                state.clipboard.push(state.data[state.row - 1]);
+            }
             state.clipboard.push(state.data[state.row]);
             state.clipboardNewLine = true;
         } else if (key === 'y') {
@@ -179,6 +183,22 @@ function handleVimKeys(key, state, screen, term) {
                     state.clipboard.push(state.data[state.row].substring(state.col, state.visual.col + 1));
                     state.clipboardNewLine = false;
                 }
+            } else if (state.row > state.visual.row) {
+                state.clipboard = [];
+                state.clipboard.push(state.data[state.visual.row].substring(state.visual.col));
+                for (let i = state.visual.row + 1; i < state.row; i++) {
+                    state.clipboard.push(state.data[i]);
+                }
+                state.clipboard.push(state.data[state.row].substring(0, state.col + 1));
+                state.clipboardNewLine = false;
+            } else if (state.row < state.visual.row) {
+                state.clipboard = [];
+                state.clipboard.push(state.data[state.row].substring(state.col));
+                for (let i = state.row + 1; i < state.visual.row; i++) {
+                    state.clipboard.push(state.data[i]);
+                }
+                state.clipboard.push(state.data[state.visual.row].substring(0, state.visual.col + 1));
+                state.clipboardNewLine = false;
             }
             state.mode = 'n';
             helper.renderScreen(state, screen);
@@ -190,6 +210,14 @@ function handleVimKeys(key, state, screen, term) {
                 } else if (state.visual.col > state.col) {
                     state.data[state.row] = state.data[state.row].substring(0, state.col) + state.data[state.row].substring(state.visual.col + 1);
                 }
+            } else if (state.row > state.visual.row) {
+                state.data[state.visual.row] = state.data[state.visual.row].substring(0, state.visual.col) + state.data[state.row].substring(state.col + 1);
+                state.data.splice(state.visual.row + 1, state.row - state.visual.row);
+                state.row = state.visual.row;
+                state.col = state.visual.col;
+            } else if (state.row < state.visual.row) {
+                state.data[state.row] = state.data[state.row].substring(0, state.col) + state.data[state.visual.row].substring(state.visual.col + 1);
+                state.data.splice(state.row + 1, state.visual.row - state.row);
             }
             state.mode = 'n';
             helper.renderScreen(state, screen);
@@ -207,6 +235,22 @@ function handleVimKeys(key, state, screen, term) {
                     state.clipboardNewLine = false;
                     state.data[state.row] = state.data[state.row].substring(0, state.col) + state.data[state.row].substring(state.visual.col + 1);
                 }
+            } else if (state.row > state.visual.row) {
+                state.clipboard = [];
+                state.clipboard.push(state.data[state.visual.row].substring(state.visual.col));
+                for (let i = state.visual.row + 1; i < state.row; i++) {
+                    state.clipboard.push(state.data[i]);
+                }
+                state.clipboard.push(state.data[state.row].substring(0, state.col + 1));
+                state.clipboardNewLine = false;
+            } else if (state.row < state.visual.row) {
+                state.clipboard = [];
+                state.clipboard.push(state.data[state.row].substring(state.col));
+                for (let i = state.row + 1; i < state.visual.row; i++) {
+                    state.clipboard.push(state.data[i]);
+                }
+                state.clipboard.push(state.data[state.visual.row].substring(0, state.visual.col + 1));
+                state.clipboardNewLine = false;
             }
             state.mode = 'n';
             helper.renderScreen(state, screen);
@@ -224,6 +268,22 @@ function handleVimKeys(key, state, screen, term) {
                     state.clipboardNewLine = false;
                     state.data[state.row] = state.data[state.row].substring(0, state.col) + state.data[state.row].substring(state.visual.col + 1);
                 }
+            } else if (state.row > state.visual.row) {
+                state.clipboard = [];
+                state.clipboard.push(state.data[state.visual.row].substring(state.visual.col));
+                for (let i = state.visual.row + 1; i < state.row; i++) {
+                    state.clipboard.push(state.data[i]);
+                }
+                state.clipboard.push(state.data[state.row].substring(0, state.col + 1));
+                state.clipboardNewLine = false;
+            } else if (state.row < state.visual.row) {
+                state.clipboard = [];
+                state.clipboard.push(state.data[state.row].substring(state.col));
+                for (let i = state.row + 1; i < state.visual.row; i++) {
+                    state.clipboard.push(state.data[i]);
+                }
+                state.clipboard.push(state.data[state.visual.row].substring(0, state.visual.col + 1));
+                state.clipboardNewLine = false;
             }
             state.mode = 'i';
             helper.renderScreen(state, screen);
@@ -387,10 +447,35 @@ function handleVimKeys(key, state, screen, term) {
             state.col = 0;
             state.mode = 'i';
             helper.renderScreen(state, screen);
-        } else if (key === 'O') {
-            state.data.splice(state.row, 0, '');
-            state.col = 0;
-            state.mode = 'i';
+        } else if (key === '>') {
+            state.data[state.row] = '    ' + state.data[state.row];
+            state.col += 4;
+            helper.renderScreen(state, screen);
+        } else if (key === '<') {
+            let tempLine = state.data[state.row];
+            let dont = false;
+            for (let i = 3; i >= 0; i -= 1) {
+                if (dont) {
+                    break;
+                }
+                for (let j = i; j >= 0; j -= 1) {
+                    if (tempLine.substring(j, j + 1) !== ' ') {
+                        dont = true;
+                    }
+                }
+                if (dont) {
+                    break;
+                }
+                if (tempLine.substring(i, i + 1) === ' ') {
+                    tempLine = tempLine.substring(0, i) + tempLine.substring(i + 1);
+                    if (state.col > 1) {
+                        state.col -= 1;
+                    }
+                } else {
+                    break;
+                }
+            }
+            state.data[state.row] = tempLine;
             helper.renderScreen(state, screen);
         } else if (key === 'g') {
             state.previousKeys = 'g';
@@ -405,38 +490,41 @@ function handleVimKeys(key, state, screen, term) {
             }
             helper.renderScreen(state, screen);
         } else if (key === 'p') {
-            // TODO fix for empty clipboard
-            if (state.clipboardNewLine) {
-                for (let i = state.clipboard.length - 1; i >= 0; i--) {
-                    state.data.splice(state.row + 1, 0, state.clipboard[i]);
+            if (state.clipboard.length > 0) {
+                if (state.clipboardNewLine) {
+                    for (let i = state.clipboard.length - 1; i >= 0; i--) {
+                        state.data.splice(state.row + 1, 0, state.clipboard[i]);
+                    }
+                } else {
+                    const cutoff = state.data[state.row].substring(state.col + 1);
+                    state.data[state.row] = state.data[state.row].substring(0, state.col + 1) + state.clipboard[0];
+                    let counterRow = state.row;
+                    for (let i = state.clipboard.length - 1; i >= 1; i--) {
+                        state.data.splice(state.row + 1, 0, state.clipboard[i]);
+                        counterRow++;
+                    }
+                    state.data[counterRow] += cutoff;
                 }
-            } else {
-                const cutoff = state.data[state.row].substring(state.col + 1);
-                state.data[state.row] = state.data[state.row].substring(0, state.col + 1) + state.clipboard[0];
-                let counterRow = state.row;
-                for (let i = state.clipboard.length - 1; i >= 1; i--) {
-                    state.data.splice(state.row + 1, 0, state.clipboard[i]);
-                    counterRow++;
-                }
-                state.data[counterRow] += cutoff;
+                helper.renderScreen(state, screen);
             }
-            helper.renderScreen(state, screen);
         } else if (key === 'P') {
-            if (state.clipboardNewLine) {
-                for (let i = state.clipboard.length - 1; i >= 0; i--) {
-                    state.data.splice(state.row, 0, state.clipboard[i]);
+            if (state.clipboard.length > 0) {
+                if (state.clipboardNewLine) {
+                    for (let i = state.clipboard.length - 1; i >= 0; i--) {
+                        state.data.splice(state.row, 0, state.clipboard[i]);
+                    }
+                } else {
+                    const cutoff = state.data[state.row].substring(state.col);
+                    state.data[state.row] = state.data[state.row].substring(0, state.col) + state.clipboard[0];
+                    let counterRow = state.row;
+                    for (let i = state.clipboard.length - 1; i >= 1; i--) {
+                        state.data.splice(state.row + 1, 0, state.clipboard[i]);
+                        counterRow++;
+                    }
+                    state.data[counterRow] += cutoff;
                 }
-            } else {
-                const cutoff = state.data[state.row].substring(state.col);
-                state.data[state.row] = state.data[state.row].substring(0, state.col) + state.clipboard[0];
-                let counterRow = state.row;
-                for (let i = state.clipboard.length - 1; i >= 1; i--) {
-                    state.data.splice(state.row + 1, 0, state.clipboard[i]);
-                    counterRow++;
-                }
-                state.data[counterRow] += cutoff;
+                helper.renderScreen(state, screen);
             }
-            helper.renderScreen(state, screen);
         } else if (key === 'c') {
             state.previousKeys = 'c';
         } else if (key === 'd') {
