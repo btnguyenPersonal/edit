@@ -18,14 +18,8 @@ const state = {
     mode: 'n',
     clipboard: [],
     visual: {
-        begin: {
-            row: null,
-            col: null
-        },
-        end: {
-            row: null,
-            col: null
-        },
+        row: null,
+        col: null
     },
     previousKeys: '',
     file: getFile(),
@@ -44,12 +38,6 @@ term.fullscreen(true);
 term.windowTitle('edit');
 
 var screen = new ScreenBuffer( { dst: term , noFill: true } ) ;
-
-// screen.put({
-//     x: 1,
-//     y: y
-// }, 'hello');
-// screen.draw({ delta: true });
 
 helper.renderScreen(state, screen);
 

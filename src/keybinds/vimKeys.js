@@ -102,6 +102,7 @@ function handleVimKeys(key, state, screen, term) {
             helper.renderScreen(state, screen);
         } else if (key === 'ESCAPE') {
             state.mode = 'n';
+            helper.renderScreen(state, screen);
         }
     } else if (state.mode === 'n') {
         if (key === 'CTRL_S') {
@@ -256,6 +257,7 @@ function handleVimKeys(key, state, screen, term) {
             helper.renderScreen(state, screen);
         } else if (key === 'o') {
             state.data.splice(state.row + 1, 0, '');
+            state.row += 1;
             state.mode = 'i';
             helper.renderScreen(state, screen);
         } else if (key === 'O') {
@@ -285,14 +287,8 @@ function handleVimKeys(key, state, screen, term) {
         } else if (key === 'v') {
             state.mode = 'v';
             state.visual = {
-                begin: {
-                    row: state.row,
-                    col: state.col
-                },
-                end: {
-                    row: state.row,
-                    col: state.col
-                }
+                row: state.row,
+                col: state.col
             }
         }
     }
