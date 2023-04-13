@@ -36,6 +36,7 @@ const state = {
     vim: process.argv[2] === '-v',
     mode: 'n',
     clipboard: [],
+    clipboardNewLine: false,
     visual: {
         row: null,
         col: null

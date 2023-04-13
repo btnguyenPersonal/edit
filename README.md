@@ -5,6 +5,7 @@ this is my experiment for making a new code editor
 ## todo
     - after mouse scrolling so cursor isn't on screen, make sure next action resets the window // add to renderScreen
     - ability to change file // want to put some work to make this part really nice, might come after opening as workspace
+    - clipboard sync with system clipboard
 ## blocked
     - fix flickering screen (maybe hold current screen string and updated screen string, go one by one and replace)
         - made some progress but only with some commands (renderScreen still causes big upsets, but can't be bothered right now)
@@ -21,12 +22,13 @@ this is my experiment for making a new code editor
         - / ? n N // way to store & search for stuff (maybe make menu and have search/replace too?)
         - zz
         - v
-## in progress
     - add tests
         - mouse inputs done (might need to add drag select later)
         - helper functions for terminal done
-        - normal keys needed
+        - normal keys
         - vim keys (bruh)
+## in progress
+    - clipboard
 ## done
     - initial commit hello world
     - catch terminal and keystrokes
@@ -36,6 +38,9 @@ this is my experiment for making a new code editor
     - make cursor and scrolling
     - put in line numbers
     - make sure only writable characters can be written (and tab)
+    - fixed screen rendering being choppy
+    - visual highlighting (not V or <c-v>)
+    - cleaned cli inputs
 ## backlog
     - terminal instance inside editor
     - file explorer
