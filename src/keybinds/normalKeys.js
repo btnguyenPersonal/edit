@@ -105,7 +105,7 @@ function handleKeys(key, state, screen, term) {
     } else if (helper.isWritable(key)) {
         state.data[state.row] = state.data[state.row].substring(0, state.col)
             + key
-            + state.data[state.row].substring(state.col + 1);
+            + state.data[state.row].substring(state.col);
         state.col += 1;
         helper.renderScreen(state, screen);
     } else if (key === 'ESCAPE') {
