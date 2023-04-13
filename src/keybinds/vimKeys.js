@@ -15,6 +15,45 @@ function handleVimKeys(key, state, screen, term) {
             helper.renderScreen(state, screen);
         }
         state.previousKeys = '';
+   } else if (state.previousKeys === 'y') {
+        if (key === 'CTRL_S') {
+            helper.saveFile(term, state.file, state.data);
+        } else if (key === 'CTRL_C') {
+            term.fullscreen(false);
+            process.exit();
+        } else if (key === 'j') {
+            state.clipboard = [];
+            state.clipboard.push(state.data[state.row]);
+            if (state.data[state.row + 1]) {
+                state.clipboard.push(state.data[state.row + 1]);
+            }
+            state.clipboardNewLine = true;
+        } else if (key === 'k') {
+            state.clipboard = [];
+            if (state.data[state.row - 1]) {
+                state.clipboard.push(state.data[state.row - 1]);
+            }
+            state.clipboard.push(state.data[state.row]);
+            state.clipboardNewLine = true;
+        } else if (key === 'y') {
+            state.clipboard = [];
+            state.clipboard.push(state.data[state.row]);
+            state.clipboardNewLine = true;
+        }
+        state.previousKeys = '';
+    } else if (state.previousKeys === 'r') {
+        if (key === 'CTRL_S') {
+            helper.saveFile(term, state.file, state.data);
+        } else if (key === 'CTRL_C') {
+            term.fullscreen(false);
+            process.exit();
+        } else if (helper.isWritable(key)) {
+            state.data[state.row] = state.data[state.row].substring(0, state.col)
+                + key
+                + state.data[state.row].substring(state.col + 1);
+            helper.renderScreen(state, screen);
+        }
+        state.previousKeys = '';
     } else if (state.previousKeys === 'y') {
         if (key === 'CTRL_S') {
             helper.saveFile(term, state.file, state.data);
@@ -41,7 +80,7 @@ function handleVimKeys(key, state, screen, term) {
             state.clipboardNewLine = true;
         }
         state.previousKeys = '';
-    } else if (state.previousKeys === 'g') {
+     } else if (state.previousKeys === 'g') {
         if (key === 'CTRL_S') {
             helper.saveFile(term, state.file, state.data);
         } else if (key === 'CTRL_C') {
@@ -441,6 +480,11 @@ function handleVimKeys(key, state, screen, term) {
             }
             state.mode = 'i';
             helper.renderScreen(state, screen);
+        } else if (key === 'O') {
+            state.col = 0;
+            state.data.splice(state.row, 0, '');
+            state.mode = 'i';
+            helper.renderScreen(state, screen);
         } else if (key === 'o') {
             state.data.splice(state.row + 1, 0, '');
             state.row += 1;
@@ -525,6 +569,8 @@ function handleVimKeys(key, state, screen, term) {
                 }
                 helper.renderScreen(state, screen);
             }
+        } else if (key === 'r') {
+            state.previousKeys = 'r';
         } else if (key === 'c') {
             state.previousKeys = 'c';
         } else if (key === 'd') {
