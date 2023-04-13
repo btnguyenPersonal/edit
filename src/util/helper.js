@@ -23,7 +23,7 @@ function moveCursor(state, screen) {
 
 function isHighlighted(state, i, j) {
     if (state.mode === 'v'){
-        if (i < state.row && i > state.visual.row) {
+        if ((i < state.row && i > state.visual.row) || (i > state.row && i < state.visual.row)) {
             return true;
         } else {
             if (i === state.row && i === state.visual.row) {
@@ -31,12 +31,16 @@ function isHighlighted(state, i, j) {
                     return true;
                 }
             } else if (i === state.visual.row) {
-                if (j >= state.visual.col) {
+                if (j >= state.visual.col && state.row > state.visual.row) {
                     return true;
+                } else if (j <= state.visual.col && state.row < state.visual.row) {
+                    return true
                 }
             } else if (i === state.row) {
-                if (j <= state.col) {
+                if (j <= state.col && state.row > state.visual.row) {
                     return true;
+                } else if (j >= state.col && state.row < state.visual.row) {
+                    return true
                 }
             }
         }
@@ -60,9 +64,10 @@ function renderScreen(state, screen) {
     moveCursor(state, screen);
 }
 
-function saveFile(f, d) {
+function saveFile(term, f, d) {
     (async () => fs.writeFile(f, d.join('\n'), (err) => {
         if (err) {
+            term.fullScreen(false);
             console.log(err);
             process.exit();
         }

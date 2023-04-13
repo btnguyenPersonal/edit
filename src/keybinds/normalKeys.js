@@ -2,7 +2,7 @@ import * as helper from '../util/helper.js';
 
 function handleKeys(key, state, screen, term) {
     if (key === 'CTRL_S') {
-        helper.saveFile(state.file, state.data);
+        helper.saveFile(term, state.file, state.data);
     } else if (key === 'CTRL_C') {
         term.fullscreen(false);
         process.exit();
