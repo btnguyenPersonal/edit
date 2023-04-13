@@ -29,6 +29,10 @@ this is my experiment for making a new code editor
         - vim keys (bruh)
 ## in progress
     - clipboard
+    - visual
+    - ciw
+    - tab with > <
+    - tab when o and O & enter
 ## done
     - initial commit hello world
     - catch terminal and keystrokes
