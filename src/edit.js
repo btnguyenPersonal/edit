@@ -29,9 +29,9 @@ function getData(filepath) {
     }
 }
 
-process.title = 'edit';
 const term = terminal();
 const filepath = getFile();
+process.title = filepath;
 const state = {
     vim: process.argv[2] === '-v',
     mode: 'n',

@@ -48,6 +48,18 @@ function isHighlighted(state, i, j) {
     return false;
 }
 
+function getColor(s) {
+    if (s === '(' || s === ')') {
+        return 'yellow';
+    } else if (s === '"' || s === '\'') {
+        return 'red';
+    } else if (s === '{' || s === '}') {
+        return 'cyan';
+    } else {
+        return 'white';
+    }
+}
+
 function renderScreen(state, screen) {
     screen.fill({ char: ' ' });
     screen.moveTo(0, 0);
@@ -55,7 +67,13 @@ function renderScreen(state, screen) {
         if (state.data[i] !== undefined) {
             screen.put({ x: 0 }, i.toString().padStart(4) + ' ');
             for (let j = 0; j < state.data[i].length; j++) {
-                screen.put({ attr: { inverse: isHighlighted(state, i, j) }, wrap: true }, state.data[i].substring(j, j + 1));
+                screen.put({
+                    attr: {
+                        color: getColor(state.data[i].substring(j, j + 1)),
+                        inverse: isHighlighted(state, i, j)
+                    },
+                    wrap: true
+                }, state.data[i].substring(j, j + 1));
             }
             screen.put({ newLine: true }, '\n');
         }
