@@ -21,13 +21,38 @@ function moveCursor(state, screen) {
     screen.drawCursor();
 }
 
+function isHighlighted(state, i, j) {
+    if (state.mode === 'v'){
+        if (i < state.row && i > state.visual.row) {
+            return true;
+        } else {
+            if (i === state.row && i === state.visual.row) {
+                if (j >= state.visual.col && j <= state.col) {
+                    return true;
+                }
+            } else if (i === state.visual.row) {
+                if (j >= state.visual.col) {
+                    return true;
+                }
+            } else if (i === state.row) {
+                if (j <= state.col) {
+                    return true;
+                }
+            }
+        }
+    }
+    return false;
+}
+
 function renderScreen(state, screen) {
     screen.fill({ char: ' ' });
     screen.moveTo(0, 0);
     for (let i = state.windowLine; i < (state.windowLine + process.stdout.rows); i += 1) {
         if (state.data[i] !== undefined) {
             screen.put({ x: 0 }, i.toString().padStart(4) + ' ');
-            screen.put({ wrap: true }, state.data[i]);
+            for (let j = 0; j < state.data[i].length; j++) {
+                screen.put({ attr: { inverse: isHighlighted(state, i, j) }, wrap: true }, state.data[i].substring(j, j + 1));
+            }
             screen.put({ newLine: true }, '\n');
         }
     }
@@ -51,32 +76,3 @@ export {
     renderScreen,
     saveFile
 };
-
-                // color highlighting stuff
-                // if (state.mode === 'v'){
-                //     if (i < state.row && i > state.visual.begin.row) {
-                //         screen.bgBlue();
-                //     } else {
-                //         if (i === state.row && i === state.visual.begin.row) {
-                //             if (j >= state.visual.begin.col && j <= state.col) {
-                //                 screen.bgBlue();
-                //             } else {
-                //                 screen.bgDefaultColor();
-                //             }
-                //         } else if (i === state.visual.begin.row) {
-                //             if (j >= state.visual.begin.col) {
-                //                 screen.bgBlue();
-                //             } else {
-                //                 screen.bgDefaultColor();
-                //             }
-                //         } else if (i === state.row) {
-                //             if (j <= state.col) {
-                //                 screen.bgBlue();
-                //             } else {
-                //                 screen.bgDefaultColor();
-                //             }
-                //         }
-                //     }
-                // } else {
-                //     screen.bgDefaultColor();
-                // }
