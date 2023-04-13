@@ -27,8 +27,14 @@ function isHighlighted(state, i, j) {
             return true;
         } else {
             if (i === state.row && i === state.visual.row) {
-                if (j >= state.visual.col && j <= state.col) {
-                    return true;
+                if (state.visual.col <= state.col) {
+                    if (j >= state.visual.col && j <= state.col) {
+                        return true;
+                    }
+                } else if (state.visual.col > state.col) {
+                    if (j >= state.col && j <= state.visual.col) {
+                        return true;
+                    }
                 }
             } else if (i === state.visual.row) {
                 if (j >= state.visual.col && state.row > state.visual.row) {
@@ -53,6 +59,8 @@ function getColor(s) {
         return 'yellow';
     } else if (s === '"' || s === '\'') {
         return 'red';
+    } else if (s === '[' || s === ']') {
+        return 'green';
     } else if (s === '{' || s === '}') {
         return 'cyan';
     } else {

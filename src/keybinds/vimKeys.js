@@ -123,6 +123,110 @@ function handleVimKeys(key, state, screen, term) {
                 state.col += 1;
             }
             helper.renderScreen(state, screen);
+        } else if (key === 'w') {
+            let hasHitNonAlphaNum = false;
+            for (let i = state.col; i < state.data[state.row].length - 1; i += 1) {
+                if (hasHitNonAlphaNum && helper.isAlphaNumeric(state.data[state.row].charAt(i))) {
+                    state.col = i;
+                    break;
+                } else if (!hasHitNonAlphaNum) {
+                    hasHitNonAlphaNum = !helper.isAlphaNumeric(state.data[state.row].charAt(i));
+                }
+            }
+            helper.renderScreen(state, screen);
+        } else if (key === 'b') {
+            let hasHitNonAlphaNum = false;
+            for (let i = state.col; i >= 0; i -= 1) {
+                if (hasHitNonAlphaNum && helper.isAlphaNumeric(state.data[state.row].charAt(i))) {
+                    state.col = i;
+                    break;
+                } else if (!hasHitNonAlphaNum) {
+                    hasHitNonAlphaNum = !helper.isAlphaNumeric(state.data[state.row].charAt(i));
+                }
+            }
+            for (let i = state.col; i >= 0; i -= 1) {
+                if (!helper.isAlphaNumeric(state.data[state.row].charAt(i))) {
+                    break;
+                }
+                state.col = i;
+            }
+            helper.renderScreen(state, screen);
+        } else if (key === '$') {
+            state.col = state.data[state.row].length; // issue with long lines rendering %^$
+            helper.renderScreen(state, screen);
+        } else if (key === '0') {
+            state.col = 0;
+            helper.renderScreen(state, screen);
+        } else if (key === '^') {
+            let firstNonSpace = 0;
+            for (let i = 0; i < state.data[state.row].length; i += 1) {
+                if (state.data[state.row].charAt(i) !== ' ') {
+                    firstNonSpace = i;
+                    break;
+                }
+            }
+            state.col = firstNonSpace;
+            helper.renderScreen(state, screen);
+        } else if (key === 'y') {
+            if (state.row === state.visual.row) {
+                if (state.visual.col <= state.col) {
+                    state.clipboard = [];
+                    state.clipboard.push(state.data[state.row].substring(state.visual.col, state.col + 1));
+                    state.clipboardNewLine = false;
+                    state.col = state.visual.col;
+                } else if (state.visual.col > state.col) {
+                    state.clipboard = [];
+                    state.clipboard.push(state.data[state.row].substring(state.col, state.visual.col + 1));
+                    state.clipboardNewLine = false;
+                }
+            }
+            state.mode = 'n';
+            helper.renderScreen(state, screen);
+        } else if (key === 'x') {
+            if (state.row === state.visual.row) {
+                if (state.visual.col <= state.col) {
+                    state.data[state.row] = state.data[state.row].substring(0, state.visual.col) + state.data[state.row].substring(state.col + 1);
+                    state.col = state.visual.col;
+                } else if (state.visual.col > state.col) {
+                    state.data[state.row] = state.data[state.row].substring(0, state.col) + state.data[state.row].substring(state.visual.col + 1);
+                }
+            }
+            state.mode = 'n';
+            helper.renderScreen(state, screen);
+        } else if (key === 'd') {
+            if (state.row === state.visual.row) {
+                if (state.visual.col <= state.col) {
+                    state.clipboard = [];
+                    state.clipboard.push(state.data[state.row].substring(state.visual.col, state.col + 1));
+                    state.clipboardNewLine = false;
+                    state.data[state.row] = state.data[state.row].substring(0, state.visual.col) + state.data[state.row].substring(state.col + 1);
+                    state.col = state.visual.col;
+                } else if (state.visual.col > state.col) {
+                    state.clipboard = [];
+                    state.clipboard.push(state.data[state.row].substring(state.col, state.visual.col + 1));
+                    state.clipboardNewLine = false;
+                    state.data[state.row] = state.data[state.row].substring(0, state.col) + state.data[state.row].substring(state.visual.col + 1);
+                }
+            }
+            state.mode = 'n';
+            helper.renderScreen(state, screen);
+        } else if (key === 'c') {
+            if (state.row === state.visual.row) {
+                if (state.visual.col <= state.col) {
+                    state.clipboard = [];
+                    state.clipboard.push(state.data[state.row].substring(state.visual.col, state.col + 1));
+                    state.clipboardNewLine = false;
+                    state.data[state.row] = state.data[state.row].substring(0, state.visual.col) + state.data[state.row].substring(state.col + 1);
+                    state.col = state.visual.col;
+                } else if (state.visual.col > state.col) {
+                    state.clipboard = [];
+                    state.clipboard.push(state.data[state.row].substring(state.col, state.visual.col + 1));
+                    state.clipboardNewLine = false;
+                    state.data[state.row] = state.data[state.row].substring(0, state.col) + state.data[state.row].substring(state.visual.col + 1);
+                }
+            }
+            state.mode = 'i';
+            helper.renderScreen(state, screen);
         } else if (key === 'ESCAPE') {
             state.mode = 'n';
             helper.renderScreen(state, screen);
@@ -280,10 +384,12 @@ function handleVimKeys(key, state, screen, term) {
         } else if (key === 'o') {
             state.data.splice(state.row + 1, 0, '');
             state.row += 1;
+            state.col = 0;
             state.mode = 'i';
             helper.renderScreen(state, screen);
         } else if (key === 'O') {
             state.data.splice(state.row, 0, '');
+            state.col = 0;
             state.mode = 'i';
             helper.renderScreen(state, screen);
         } else if (key === 'g') {
@@ -299,10 +405,20 @@ function handleVimKeys(key, state, screen, term) {
             }
             helper.renderScreen(state, screen);
         } else if (key === 'p') {
+            // TODO fix for empty clipboard
             if (state.clipboardNewLine) {
                 for (let i = state.clipboard.length - 1; i >= 0; i--) {
                     state.data.splice(state.row + 1, 0, state.clipboard[i]);
                 }
+            } else {
+                const cutoff = state.data[state.row].substring(state.col + 1);
+                state.data[state.row] = state.data[state.row].substring(0, state.col + 1) + state.clipboard[0];
+                let counterRow = state.row;
+                for (let i = state.clipboard.length - 1; i >= 1; i--) {
+                    state.data.splice(state.row + 1, 0, state.clipboard[i]);
+                    counterRow++;
+                }
+                state.data[counterRow] += cutoff;
             }
             helper.renderScreen(state, screen);
         } else if (key === 'P') {
@@ -310,6 +426,15 @@ function handleVimKeys(key, state, screen, term) {
                 for (let i = state.clipboard.length - 1; i >= 0; i--) {
                     state.data.splice(state.row, 0, state.clipboard[i]);
                 }
+            } else {
+                const cutoff = state.data[state.row].substring(state.col);
+                state.data[state.row] = state.data[state.row].substring(0, state.col) + state.clipboard[0];
+                let counterRow = state.row;
+                for (let i = state.clipboard.length - 1; i >= 1; i--) {
+                    state.data.splice(state.row + 1, 0, state.clipboard[i]);
+                    counterRow++;
+                }
+                state.data[counterRow] += cutoff;
             }
             helper.renderScreen(state, screen);
         } else if (key === 'c') {
