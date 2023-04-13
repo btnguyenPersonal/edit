@@ -3,7 +3,7 @@ import * as helper from '../util/helper.js';
 function handleVimKeys(key, state, screen, term) {
     if (state.previousKeys === 'd') {
         if (key === 'CTRL_S') {
-            helper.saveFile(state.file, state.data);
+            helper.saveFile(term, state.file, state.data);
         } else if (key === 'CTRL_C') {
             term.fullscreen(false);
             process.exit();
@@ -14,7 +14,7 @@ function handleVimKeys(key, state, screen, term) {
         state.previousKeys = '';
     } else if (state.previousKeys === 'g') {
         if (key === 'CTRL_S') {
-            helper.saveFile(state.file, state.data);
+            helper.saveFile(term, state.file, state.data);
         } else if (key === 'CTRL_C') {
             term.fullscreen(false);
             process.exit();
@@ -32,7 +32,7 @@ function handleVimKeys(key, state, screen, term) {
         state.previousKeys = '';
     } else if (state.previousKeys === 'c') {
         if (key === 'CTRL_S') {
-            saveFile(state.file, state.data);
+            helper.saveFile(term, state.file, state.data);
         } else if (key === 'CTRL_C') {
             term.fullscreen(false);
             process.exit();
@@ -44,7 +44,7 @@ function handleVimKeys(key, state, screen, term) {
         state.previousKeys = '';
     } else if (state.mode === 'v') {
         if (key === 'CTRL_S') {
-            helper.saveFile(state.file, state.data);
+            helper.saveFile(term, state.file, state.data);
         } else if (key === 'CTRL_C') {
             term.fullscreen(false);
             process.exit();
@@ -106,7 +106,7 @@ function handleVimKeys(key, state, screen, term) {
         }
     } else if (state.mode === 'n') {
         if (key === 'CTRL_S') {
-            helper.saveFile(state.file, state.data);
+            helper.saveFile(term, state.file, state.data);
         } else if (key === 'CTRL_C') {
             term.fullscreen(false);
             process.exit();
