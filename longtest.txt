@@ -5,7 +5,6 @@ function moveCursor(c, r, data, terminal) {
     terminal.moveTo(
         c <= data[r - 1].length ? c : data[r - 1].length + 1,
         r < data.length ? r : data.length,
-
 }
 function renderScreen(c, r, data, terminal) {
     terminal.clear();
