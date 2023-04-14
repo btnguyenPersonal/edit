@@ -3,6 +3,8 @@
 this is my experiment for making a new code editor
 
 ## todo
+    - save indicator
+    - visual block
     - after mouse scrolling so cursor isn't on screen, make sure next action resets the window // add to renderScreen
     - ability to change file // want to put some work to make this part really nice, might come after opening as workspace
     - clipboard sync with system clipboard
@@ -28,12 +30,12 @@ this is my experiment for making a new code editor
         - normal keys
         - vim keys (bruh)
 ## in progress
-    - clipboard
-    - visual
     - ciw
-    - tab with > <
     - tab when o and O & enter
 ## done
+    - visual
+    - clipboard
+    - tab with > <
     - initial commit hello world
     - catch terminal and keystrokes
     - render file

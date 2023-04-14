@@ -60,14 +60,23 @@ function handleKeys(key, state, screen, term) {
         }
         helper.renderScreen(state, screen);
     } else if (key === 'ENTER') {
+        let indentLevel = state.data[state.row].search(/\S|$/);
+        if (state.data[state.row].endsWith('{')) {
+            state.data.splice(state.row + 1, 0, ' '.repeat(indentLevel) + '}');
+            indentLevel += 4;
+        }
+        if (state.data[state.row].endsWith('(')) {
+            state.data.splice(state.row + 1, 0, ' '.repeat(indentLevel) + ')');
+            indentLevel += 4;
+        }
         if (state.data[state.row].substring(state.col)) {
-            state.data.splice(state.row + 1, 0, state.data[state.row].substring(state.col));
+            state.data.splice(state.row + 1, 0, ' '.repeat(indentLevel) + state.data[state.row].substring(state.col));
             state.data[state.row] = state.data[state.row].substring(0, state.col);
         } else {
-            state.data.splice(state.row + 1, 0, '');
+            state.data.splice(state.row + 1, 0, ' '.repeat(indentLevel));
         }
         state.row += 1;
-        state.col = 0;
+        state.col = indentLevel;
         if (state.row >= state.windowLine + process.stdout.rows) {
             state.windowLine += 1;
         }
