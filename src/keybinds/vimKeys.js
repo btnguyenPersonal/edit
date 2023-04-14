@@ -7,11 +7,45 @@ function handleVimKeys(key, state, screen, term) {
         } else if (key === 'CTRL_C') {
             term.fullscreen(false);
             process.exit();
+        } else if (key === 'j') {
+            state.clipboard = [];
+            state.clipboard.push(state.data[state.row]);
+            if (state.data[state.row + 1]) {
+                state.clipboard.push(state.data[state.row + 1]);
+            }
+            state.data.splice(state.row, 1);
+            state.data.splice(state.row, 1);
+            state.clipboardNewLine = true;
+            if (state.row > state.data.length - 1) {
+                state.row = state.data.length - 1;
+            }
+            state.col = 0;
+            helper.renderScreen(state, screen);
+        } else if (key === 'k') {
+            state.clipboard = [];
+            if (state.data[state.row - 1]) {
+                state.clipboard.push(state.data[state.row - 1]);
+            }
+            state.clipboard.push(state.data[state.row]);
+            state.data.splice(state.row, 1);
+            if (state.data[state.row - 1]) {
+                state.data.splice(state.row - 1, 1);
+            }
+            state.clipboardNewLine = true;
+            if (state.row > 0) {
+                state.row -= 1;
+                if (state.row < state.windowLine) {
+                    state.windowLine -= 1;
+                }
+            }
+            state.col = 0;
+            helper.renderScreen(state, screen);
         } else if (key === 'd') {
             state.clipboard = [];
             state.clipboard.push(state.data[state.row]);
             state.clipboardNewLine = true;
             state.data.splice(state.row, 1);
+            state.col = 0;
             helper.renderScreen(state, screen);
         }
         state.previousKeys = '';
@@ -52,32 +86,6 @@ function handleVimKeys(key, state, screen, term) {
                 + key
                 + state.data[state.row].substring(state.col + 1);
             helper.renderScreen(state, screen);
-        }
-        state.previousKeys = '';
-    } else if (state.previousKeys === 'y') {
-        if (key === 'CTRL_S') {
-            helper.saveFile(term, state.file, state.data);
-        } else if (key === 'CTRL_C') {
-            term.fullscreen(false);
-            process.exit();
-        } else if (key === 'j') {
-            state.clipboard = [];
-            state.clipboard.push(state.data[state.row]);
-            if (state.data[state.row + 1]) {
-                state.clipboard.push(state.data[state.row + 1]);
-            }
-            state.clipboardNewLine = true;
-        } else if (key === 'k') {
-            state.clipboard = [];
-            if (state.data[state.row - 1]) {
-                state.clipboard.push(state.data[state.row - 1]);
-            }
-            state.clipboard.push(state.data[state.row]);
-            state.clipboardNewLine = true;
-        } else if (key === 'y') {
-            state.clipboard = [];
-            state.clipboard.push(state.data[state.row]);
-            state.clipboardNewLine = true;
         }
         state.previousKeys = '';
      } else if (state.previousKeys === 'g') {
@@ -183,6 +191,77 @@ function handleVimKeys(key, state, screen, term) {
                 }
                 state.clipboardNewLine = true;
                 state.data.splice(state.row, state.visualLine.row - state.row + 1);
+            }
+            state.mode = 'n';
+            helper.renderScreen(state, screen);
+        } else if (key === '<') {
+            if (state.row >= state.visualLine.row) {
+                for (let row = state.visualLine.row; row <= state.row; row++) {
+                    let tempLine = state.data[row];
+                    let dont = false;
+                    for (let i = 3; i >= 0; i -= 1) {
+                        if (dont) {
+                            break;
+                        }
+                        for (let j = i; j >= 0; j -= 1) {
+                            if (tempLine.substring(j, j + 1) !== ' ') {
+                                dont = true;
+                            }
+                        }
+                        if (dont) {
+                            break;
+                        }
+                        if (tempLine.substring(i, i + 1) === ' ') {
+                            tempLine = tempLine.substring(0, i) + tempLine.substring(i + 1);
+                            if (state.col > 1) {
+                                state.col -= 1;
+                            }
+                        } else {
+                            break;
+                        }
+                    }
+                    state.data[row] = tempLine;
+                }
+            } else if (state.row < state.visualLine.row) {
+                for (let row = state.row; row <= state.visualLine.row; row++) {
+                    let tempLine = state.data[row];
+                    let dont = false;
+                    for (let i = 3; i >= 0; i -= 1) {
+                        if (dont) {
+                            break;
+                        }
+                        for (let j = i; j >= 0; j -= 1) {
+                            if (tempLine.substring(j, j + 1) !== ' ') {
+                                dont = true;
+                            }
+                        }
+                        if (dont) {
+                            break;
+                        }
+                        if (tempLine.substring(i, i + 1) === ' ') {
+                            tempLine = tempLine.substring(0, i) + tempLine.substring(i + 1);
+                            if (state.col > 1) {
+                                state.col -= 1;
+                            }
+                        } else {
+                            break;
+                        }
+                    }
+                    state.data[row] = tempLine;
+                }
+            }
+            state.mode = 'n';
+            helper.renderScreen(state, screen);
+        } else if (key === '>') {
+            if (state.row >= state.visualLine.row) {
+                for (let i = state.visualLine.row; i <= state.row; i++) {
+                    state.data[i] = '    ' + state.data[i];
+                }
+                state.row = state.visualLine.row;
+            } else if (state.row < state.visualLine.row) {
+                for (let i = state.row; i <= state.visualLine.row; i++) {
+                    state.data[i] = '    ' + state.data[i];
+                }
             }
             state.mode = 'n';
             helper.renderScreen(state, screen);
@@ -570,14 +649,22 @@ function handleVimKeys(key, state, screen, term) {
             state.mode = 'i';
             helper.renderScreen(state, screen);
         } else if (key === 'O') {
-            state.col = 0;
-            state.data.splice(state.row, 0, '');
+            let indentLevel = state.data[state.row].search(/\S|$/);
+            if (state.data[state.row].endsWith('{') || state.data[state.row].endsWith('(')) {
+                indentLevel += 4;
+            }
+            state.data.splice(state.row, 0, ' '.repeat(indentLevel));
+            state.col = indentLevel;
             state.mode = 'i';
             helper.renderScreen(state, screen);
         } else if (key === 'o') {
-            state.data.splice(state.row + 1, 0, '');
+            let indentLevel = state.data[state.row].search(/\S|$/);
+            if (state.data[state.row].endsWith('{') || state.data[state.row].endsWith('(')) {
+                indentLevel += 4;
+            }
+            state.data.splice(state.row + 1, 0, ' '.repeat(indentLevel));
             state.row += 1;
-            state.col = 0;
+            state.col = indentLevel;
             state.mode = 'i';
             helper.renderScreen(state, screen);
         } else if (key === '>') {
