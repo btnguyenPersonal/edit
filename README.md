@@ -5,9 +5,7 @@ this is my experiment for making a new code editor
 ## todo
     - save indicator
     - visual block
-    - after mouse scrolling so cursor isn't on screen, make sure next action resets the window // add to renderScreen
     - ability to change file // want to put some work to make this part really nice, might come after opening as workspace
-    - clipboard sync with system clipboard
 ## blocked
     - fix flickering screen (maybe hold current screen string and updated screen string, go one by one and replace)
         - made some progress but only with some commands (renderScreen still causes big upsets, but can't be bothered right now)
@@ -30,9 +28,14 @@ this is my experiment for making a new code editor
         - normal keys
         - vim keys (bruh)
 ## in progress
-    - ciw
-    - tab when o and O & enter
+    - dot command
+    - clipboard sync with system clipboard
+    - undo/redo
 ## done
+    - v paste
+    - ciw
+    - cc indentation
+    - tab when o and O & enter
     - visual
     - clipboard
     - tab with > <
@@ -47,18 +50,18 @@ this is my experiment for making a new code editor
     - fixed screen rendering being choppy
     - visual highlighting (not V or <c-v>)
     - cleaned cli inputs
+    - highlight and copy/paste
+    - on resize, reset window
 ## backlog
     - terminal instance inside editor
     - file explorer
     - change to using built in GUI stuff? might not bother with this one and do it myself
     - search and replace (file)
     - search in project
-    - undo/redo
     - syntax highlighting
     - multithread stuff
-    - on resize, reset window
     - split apart code into multiple files
-    - highlight and copy/paste
+    - after mouse scrolling so cursor isn't on screen, make sure next action resets the window // add to renderScreen
 
 ## journal
     def terminal only
