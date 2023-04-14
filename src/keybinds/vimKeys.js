@@ -110,6 +110,95 @@ function handleVimKeys(key, state, screen, term) {
             helper.renderScreen(state, screen);
         }
         state.previousKeys = '';
+    } else if (state.mode === 'V') {
+        if (key === 'CTRL_S') {
+            helper.saveFile(term, state.file, state.data);
+        } else if (key === 'CTRL_C') {
+            term.fullscreen(false);
+            process.exit();
+        } else if (key === 'CTRL_U') {
+            for (let i = 0; i < process.stdout.rows / 2; i += 1) {
+                if (state.row > 0) {
+                    state.row -= 1;
+                    if (state.windowLine > 0) {
+                        state.windowLine -= 1;
+                    }
+                }
+            }
+            helper.renderScreen(state, screen);
+        } else if (key === 'CTRL_D') {
+            for (let i = 0; i < process.stdout.rows / 2; i += 1) {
+                if (state.row < state.data.length - 1) {
+                    state.row += 1;
+                    state.windowLine += 1;
+                }
+            }
+            helper.renderScreen(state, screen);
+        } else if (key === 'UP' || key === 'k') {
+            if (state.row > 0) {
+                state.row -= 1;
+                if (state.row < state.windowLine) {
+                    state.windowLine -= 1;
+                }
+                helper.renderScreen(state, screen);
+            }
+        } else if (key === 'DOWN' || key === 'j') {
+            if (state.row < state.data.length - 1) {
+                state.row += 1;
+                if (state.row >= state.windowLine + process.stdout.rows) {
+                    state.windowLine += 1;
+                }
+                helper.renderScreen(state, screen);
+            }
+        } else if (key === 'y') {
+            if (state.row >= state.visualLine.row) {
+                state.clipboard = [];
+                for (let i = state.visualLine.row; i <= state.row; i++) {
+                    state.clipboard.push(state.data[i]);
+                }
+                state.clipboardNewLine = true;
+                state.row = state.visualLine.row;
+            } else if (state.row < state.visualLine.row) {
+                state.clipboard = [];
+                for (let i = state.row; i <= state.visualLine.row; i++) {
+                    state.clipboard.push(state.data[i]);
+                }
+                state.clipboardNewLine = true;
+            }
+            state.mode = 'n';
+            helper.renderScreen(state, screen);
+        } else if (key === 'd') {
+            if (state.row >= state.visualLine.row) {
+                state.clipboard = [];
+                for (let i = state.visualLine.row; i <= state.row; i++) {
+                    state.clipboard.push(state.data[i]);
+                }
+                state.clipboardNewLine = true;
+                state.data.splice(state.visualLine.row, state.row - state.visualLine.row + 1);
+                state.row = state.visualLine.row;
+            } else if (state.row < state.visualLine.row) {
+                state.clipboard = [];
+                for (let i = state.row; i <= state.visualLine.row; i++) {
+                    state.clipboard.push(state.data[i]);
+                }
+                state.clipboardNewLine = true;
+                state.data.splice(state.row, state.visualLine.row - state.row + 1);
+            }
+            state.mode = 'n';
+            helper.renderScreen(state, screen);
+        } else if (key === 'x') {
+            if (state.row >= state.visualLine.row) {
+                state.data.splice(state.visualLine.row, state.row - state.visualLine.row + 1);
+                state.row = state.visualLine.row;
+            } else if (state.row < state.visualLine.row) {
+                state.data.splice(state.row, state.visualLine.row - state.row + 1);
+            }
+            state.mode = 'n';
+            helper.renderScreen(state, screen);
+        } else if (key === 'ESCAPE') {
+            state.mode = 'n';
+            helper.renderScreen(state, screen);
+        }
     } else if (state.mode === 'v') {
         if (key === 'CTRL_S') {
             helper.saveFile(term, state.file, state.data);
@@ -579,12 +668,19 @@ function handleVimKeys(key, state, screen, term) {
             state.previousKeys = 'y';
         } else if (key === '/') {
             state.previousKeys = '/';
+        } else if (key === 'V') {
+            state.mode = 'V';
+            state.visualLine = {
+                row: state.row
+            }
+            helper.renderScreen(state, screen);
         } else if (key === 'v') {
             state.mode = 'v';
             state.visual = {
                 row: state.row,
                 col: state.col
             }
+            helper.renderScreen(state, screen);
         }
     }
 }
