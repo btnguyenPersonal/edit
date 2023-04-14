@@ -406,6 +406,11 @@ function handleVimKeys(key, state, screen, term) {
             state.mode = 'n';
             helper.renderScreen(state, screen);
         } else if (key === 'p' || key === 'P') {
+            const systemPaste = ncp.paste().split('\n');
+            if (state.clipboard !== systemPaste) {
+                state.clipboard = systemPaste;
+                state.clipboardNewLine = true;
+            }
             if (state.clipboard.length > 0) {
                 if (state.row >= state.visualLine.row) {
                     state.data.splice(state.visualLine.row, state.row - state.visualLine.row + 1);
@@ -570,6 +575,11 @@ function handleVimKeys(key, state, screen, term) {
             state.mode = 'n';
             helper.renderScreen(state, screen);
         } else if (key === 'p' || key === 'P') {
+            const systemPaste = ncp.paste().split('\n');
+            if (state.clipboard !== systemPaste) {
+                state.clipboard = systemPaste;
+                state.clipboardNewLine = false;
+            }
             if (state.clipboard.length > 0) {
                 if (state.row === state.visual.row) {
                     if (state.visual.col <= state.col) {
