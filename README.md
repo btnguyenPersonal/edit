@@ -4,24 +4,18 @@ this is my experiment for making a new code editor
 
 ## todo
     - save indicator
+    - auto save?
     - visual block
-    - ability to change file // want to put some work to make this part really nice, might come after opening as workspace
+    - t T
+    - f F
+    - .
+    - / ? n N // way to store & search for stuff (maybe make menu and have search/replace too?)
+    - zz
 ## blocked
     - fix flickering screen (maybe hold current screen string and updated screen string, go one by one and replace)
         - made some progress but only with some commands (renderScreen still causes big upsets, but can't be bothered right now)
         - tried putting empty strings after everything, but seemed very jank
         - next time try the hold previous state approach
-    - put in vim keybindings // taking break from this
-        - t T
-        - f F
-        - d D // some
-        - c C // some
-        - p P // need some idea for registers?
-        - . // store previous commands
-        - ~
-        - / ? n N // way to store & search for stuff (maybe make menu and have search/replace too?)
-        - zz
-        - v
     - add tests
         - mouse inputs done (might need to add drag select later)
         - helper functions for terminal done
@@ -32,6 +26,9 @@ this is my experiment for making a new code editor
     - clipboard sync with system clipboard
     - undo/redo
 ## done
+    - d D
+    - c C
+    - p P
     - v paste
     - ciw
     - cc indentation
@@ -54,6 +51,7 @@ this is my experiment for making a new code editor
     - on resize, reset window
 ## backlog
     - terminal instance inside editor
+    - ability to change file in editor // want to put some work to make this part really nice, might come after opening as workspace
     - file explorer
     - change to using built in GUI stuff? might not bother with this one and do it myself
     - search and replace (file)
@@ -62,6 +60,7 @@ this is my experiment for making a new code editor
     - multithread stuff
     - split apart code into multiple files
     - after mouse scrolling so cursor isn't on screen, make sure next action resets the window // add to renderScreen
+    - store cursor positioning between sessions
 
 ## journal
     def terminal only
