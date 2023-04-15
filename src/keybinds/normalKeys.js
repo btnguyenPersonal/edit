@@ -1,12 +1,8 @@
+/* eslint-disable import/no-cycle */
 import * as helper from '../util/helper.js';
 
-function handleKeys(key, state, screen, term) {
-    if (key === 'CTRL_S') {
-        helper.saveFile(term, state.file, state.data);
-    } else if (key === 'CTRL_C') {
-        term.fullscreen(false);
-        process.exit();
-    } else if (key === 'UP') {
+function handleKeys(key, state, screen) {
+    if (key === 'UP') {
         if (state.row > 0) {
             state.row -= 1;
             if (state.row < state.windowLine) {
@@ -46,6 +42,10 @@ function handleKeys(key, state, screen, term) {
             state.data[state.row] += state.data[state.row + 1];
             state.data.splice(state.row + 1, 1);
         }
+        state.isSaved = false;
+        if (!state.vim) {
+            helper.createSnapshot(state);
+        }
         helper.renderScreen(state, screen);
     } else if (key === 'BACKSPACE') {
         if (state.col > 0) {
@@ -57,6 +57,10 @@ function handleKeys(key, state, screen, term) {
             state.data[state.row - 1] += state.data[state.row];
             state.data.splice(state.row, 1);
             state.row -= 1;
+        }
+        state.isSaved = false;
+        if (!state.vim) {
+            helper.createSnapshot(state);
         }
         helper.renderScreen(state, screen);
     } else if (key === 'ENTER') {
@@ -80,10 +84,18 @@ function handleKeys(key, state, screen, term) {
         if (state.row >= state.windowLine + process.stdout.rows) {
             state.windowLine += 1;
         }
+        state.isSaved = false;
+        if (!state.vim) {
+            helper.createSnapshot(state);
+        }
         helper.renderScreen(state, screen);
     } else if (key === 'TAB') {
         state.data[state.row] = '    ' + state.data[state.row];
         state.col += 4;
+        state.isSaved = false;
+        if (!state.vim) {
+            helper.createSnapshot(state);
+        }
         helper.renderScreen(state, screen);
     } else if (key === 'SHIFT_TAB') { // shit implementation but can't be bothered
         let tempLine = state.data[state.row];
@@ -110,18 +122,41 @@ function handleKeys(key, state, screen, term) {
             }
         }
         state.data[state.row] = tempLine;
+        state.isSaved = false;
+        if (!state.vim) {
+            helper.createSnapshot(state);
+        }
         helper.renderScreen(state, screen);
     } else if (helper.isWritable(key)) {
         state.data[state.row] = state.data[state.row].substring(0, state.col)
             + key
             + state.data[state.row].substring(state.col);
         state.col += 1;
+        state.isSaved = false;
+        if (!state.vim) {
+            helper.createSnapshot(state);
+        }
         helper.renderScreen(state, screen);
     } else if (key === 'ESCAPE') {
         state.mode = 'n';
-        helper.createSnapshot(state);
+        if (state.vim) {
+            helper.createSnapshot(state);
+        }
+        helper.renderScreen(state, screen);
+    } else if (!state.vim && key === 'CTRL_Y') {
+        if (state.currentSnapshot + 1 < state.snapshots.length) {
+            helper.applySnapshot(state, state.currentSnapshot + 1);
+        }
+        helper.renderScreen(state, screen);
+    } else if (!state.vim && key === 'CTRL_Z') {
+        if (state.currentSnapshot - 1 >= 0) {
+            helper.applySnapshot(state, state.currentSnapshot - 1);
+        }
+        helper.renderScreen(state, screen);
     }
-    state.vim && helper.logCommand(false, state, key);
+    if (state.vim) {
+        helper.logCommand(false, state, key);
+    }
 }
 
 export {

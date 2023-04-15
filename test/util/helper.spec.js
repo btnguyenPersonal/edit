@@ -6,15 +6,15 @@ import * as helper from '../../src/util/helper.js';
 chai.use(sinonChai);
 
 describe('helper functions', () => {
-
-    let term, state;
+    let term; let
+        state;
 
     describe('moveCursor', () => {
         beforeEach(() => {
             term = {
                 moveTo: sinon.stub(),
                 clear: sinon.stub(),
-            }
+            };
             state = {
                 data: [
                     'aaaaaaaa',
@@ -121,5 +121,4 @@ describe('helper functions', () => {
             expect(helper.isWritable('CTRL_Z')).to.equal(false);
         });
     });
-
 });

@@ -1,3 +1,4 @@
+/* eslint-disable import/no-cycle */
 import fs from 'fs';
 import { handleKeys } from '../keybinds/normalKeys.js';
 import { handleVimKeys } from '../keybinds/vimKeys.js';
@@ -24,14 +25,14 @@ function moveCursor(state, screen) {
 }
 
 function isHighlighted(state, i, j) {
-    if (state.mode === 'V'){
+    if (state.mode === 'V') {
         if (state.row === i && state.col === j) {
             return false;
         }
         if ((i <= state.row && i >= state.visualLine.row) || (i >= state.row && i <= state.visualLine.row)) {
             return true;
         }
-    } else if (state.mode === 'v'){
+    } else if (state.mode === 'v') {
         if (state.row === i && state.col === j) {
             return false;
         }
@@ -52,13 +53,13 @@ function isHighlighted(state, i, j) {
                 if (j >= state.visual.col && state.row > state.visual.row) {
                     return true;
                 } else if (j <= state.visual.col && state.row < state.visual.row) {
-                    return true
+                    return true;
                 }
             } else if (i === state.row) {
                 if (j <= state.col && state.row > state.visual.row) {
                     return true;
                 } else if (j >= state.col && state.row < state.visual.row) {
-                    return true
+                    return true;
                 }
             }
         }
@@ -84,7 +85,7 @@ function getColor(s) {
 function createSnapshot(state) {
     state.snapshots.splice(state.currentSnapshot + 1, state.snapshots.length - (state.currentSnapshot + 1));
     const oldData = [];
-    for (let i = 0; i < state.data.length; i++) {
+    for (let i = 0; i < state.data.length; i += 1) {
         oldData.push(state.data[i]);
     }
     state.snapshots.push({
@@ -94,13 +95,14 @@ function createSnapshot(state) {
         windowLine: state.windowLine
     });
     state.currentSnapshot = state.snapshots.length - 1;
+    state.isSaved = false;
 }
 
 function applySnapshot(state, index) {
     const snap = state.snapshots[index];
     if (snap !== undefined) {
         state.data = [];
-        for (let i = 0; i < snap.data.length; i++) {
+        for (let i = 0; i < snap.data.length; i += 1) {
             state.data.push(snap.data[i]);
         }
         state.row = snap.row;
@@ -114,15 +116,17 @@ function logCommand(newCommand, state, key) {
     if (state.allowCommandLogging && newCommand) {
         state.previousCommand = [];
     }
-    state.allowCommandLogging && state.previousCommand.push(key);
+    if (state.allowCommandLogging) {
+        state.previousCommand.push(key);
+    }
 }
 
 function sendKeys(keys, state, screen, term) {
-    for (let i = 0; i < keys.length; i++) {
+    for (let i = 0; i < keys.length; i += 1) {
         if (state.vim && state.mode !== 'i') {
             handleVimKeys(keys[i], state, screen, term);
         } else {
-            handleKeys(keys[i], state, screen, term);
+            handleKeys(keys[i], state, screen);
         }
     }
 }
@@ -133,8 +137,13 @@ function renderScreen(state, screen) {
         screen.moveTo(0, 0);
         for (let i = state.windowLine; i < (state.windowLine + process.stdout.rows); i += 1) {
             if (state.data[i] !== undefined) {
-                screen.put({ x: 0 }, (i + 1).toString().padStart(4) + ' ');
-                for (let j = 0; j < state.data[i].length; j++) {
+                screen.put({
+                    attr: {
+                        color: state.isSaved || (state.currentSnapshot === 0 && state.mode !== 'i') ? 'grey' : 'white'
+                    },
+                    x: 0
+                }, (i + 1).toString().padStart(4) + ' ');
+                for (let j = 0; j < state.data[i].length; j += 1) {
                     screen.put({
                         attr: {
                             color: getColor(state.data[i].substring(j, j + 1)),
@@ -151,14 +160,25 @@ function renderScreen(state, screen) {
     }
 }
 
-function saveFile(term, f, d) {
-    (async () => fs.writeFile(f, d.join('\n'), (err) => {
+function saveFile(state, term) {
+    (async () => fs.writeFile(state.file, state.data.join('\n'), (err) => {
         if (err) {
             term.fullScreen(false);
             console.log(err);
             process.exit();
         }
     }))();
+    state.isSaved = true;
+}
+
+function arraysEqual(a, b) {
+    if (a === b) return true;
+    if (a == null || b == null) return false;
+    if (a.length !== b.length) return false;
+    for (let i = 0; i < a.length; i += 1) {
+        if (a[i] !== b[i]) return false;
+    }
+    return true;
 }
 
 export {
@@ -170,5 +190,6 @@ export {
     createSnapshot,
     applySnapshot,
     logCommand,
+    arraysEqual,
     saveFile
 };
