@@ -1,4 +1,5 @@
 function testing() {
+    how are you doing
     printf("fooled you");
 }
 function moveCursor(c, r, data, terminal) {

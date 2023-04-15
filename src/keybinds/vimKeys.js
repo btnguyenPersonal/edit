@@ -24,6 +24,7 @@ function handleVimKeys(key, state, screen, term) {
             state.data[state.row] = state.data[state.row].substring(0, state.col) + state.data[state.row].substring(endOfWord);
             state.previousKeys = '';
             helper.logCommand(false, state, key);
+            helper.createSnapshot(state);
             helper.renderScreen(state, screen);
         } else if (key === 'j') {
             state.clipboard = [];
@@ -40,6 +41,7 @@ function handleVimKeys(key, state, screen, term) {
             }
             state.col = 0;
             state.previousKeys = '';
+            helper.createSnapshot(state);
             helper.logCommand(false, state, key);
             helper.renderScreen(state, screen);
         } else if (key === 'k') {
@@ -62,6 +64,7 @@ function handleVimKeys(key, state, screen, term) {
             }
             state.col = 0;
             state.previousKeys = '';
+            helper.createSnapshot(state);
             helper.logCommand(false, state, key);
             helper.renderScreen(state, screen);
         } else if (key === 'i') {
@@ -75,6 +78,7 @@ function handleVimKeys(key, state, screen, term) {
             state.data.splice(state.row, 1);
             state.col = 0;
             state.previousKeys = '';
+            helper.createSnapshot(state);
             helper.logCommand(false, state, key);
             helper.renderScreen(state, screen);
         }
@@ -110,6 +114,7 @@ function handleVimKeys(key, state, screen, term) {
             ncp.copy(state.clipboard.join('\n'));
             state.data[state.row] = state.data[state.row].substring(0, beginningOfWord + 1) + state.data[state.row].substring(endOfWord);
             state.col = beginningOfWord + 1;
+            helper.createSnapshot(state);
             helper.logCommand(false, state, key);
             helper.renderScreen(state, screen);
         }
@@ -158,6 +163,7 @@ function handleVimKeys(key, state, screen, term) {
                 + state.data[state.row].substring(state.col + 1);
             helper.renderScreen(state, screen);
         }
+        helper.createSnapshot(state);
         helper.logCommand(false, state, key);
         state.previousKeys = '';
      } else if (state.previousKeys.endsWith('g')) {
@@ -343,6 +349,7 @@ function handleVimKeys(key, state, screen, term) {
                 state.data.splice(state.row, state.visualLine.row - state.row + 1);
             }
             state.mode = 'n';
+            helper.createSnapshot(state);
             helper.logCommand(false, state, key);
             helper.renderScreen(state, screen);
         } else if (key === 'g') {
@@ -416,6 +423,7 @@ function handleVimKeys(key, state, screen, term) {
                 }
             }
             state.mode = 'n';
+            helper.createSnapshot(state);
             helper.logCommand(false, state, key);
             helper.renderScreen(state, screen);
         } else if (key === '>') {
@@ -430,6 +438,7 @@ function handleVimKeys(key, state, screen, term) {
                 }
             }
             state.mode = 'n';
+            helper.createSnapshot(state);
             helper.logCommand(false, state, key);
             helper.renderScreen(state, screen);
         } else if (key === 'x') {
@@ -440,6 +449,7 @@ function handleVimKeys(key, state, screen, term) {
                 state.data.splice(state.row, state.visualLine.row - state.row + 1);
             }
             state.mode = 'n';
+            helper.createSnapshot(state);
             helper.logCommand(false, state, key);
             helper.renderScreen(state, screen);
         } else if (key === 'p' || key === 'P') {
@@ -471,6 +481,7 @@ function handleVimKeys(key, state, screen, term) {
                 }
             }
             state.mode = 'n';
+            helper.createSnapshot(state);
             helper.logCommand(false, state, key);
             helper.renderScreen(state, screen);
         } else if (key === 'ESCAPE') {
@@ -664,6 +675,7 @@ function handleVimKeys(key, state, screen, term) {
                 }
             }
             state.mode = 'n';
+            helper.createSnapshot(state);
             helper.logCommand(false, state, key);
             helper.renderScreen(state, screen);
         } else if (key === 'x') {
@@ -684,6 +696,7 @@ function handleVimKeys(key, state, screen, term) {
                 state.data.splice(state.row + 1, state.visual.row - state.row);
             }
             state.mode = 'n';
+            helper.createSnapshot(state);
             helper.logCommand(false, state, key);
             helper.renderScreen(state, screen);
         } else if (key === 'd') {
@@ -728,6 +741,7 @@ function handleVimKeys(key, state, screen, term) {
                 state.data.splice(state.row + 1, state.visual.row - state.row);
             }
             state.mode = 'n';
+            helper.createSnapshot(state);
             helper.logCommand(false, state, key);
             helper.renderScreen(state, screen);
         } else if (key === 'c') {
@@ -925,6 +939,7 @@ function handleVimKeys(key, state, screen, term) {
             helper.renderScreen(state, screen);
         } else if (key === 'D') {
             state.data[state.row] = state.data[state.row].substring(0, state.col);
+            helper.createSnapshot(state);
             helper.logCommand(true, state, key);
             helper.renderScreen(state, screen);
         } else if (key === 's') {
@@ -959,6 +974,7 @@ function handleVimKeys(key, state, screen, term) {
         } else if (key === '>') {
             state.data[state.row] = '    ' + state.data[state.row];
             state.col += 4;
+            helper.createSnapshot(state);
             helper.logCommand(true, state, key);
             helper.renderScreen(state, screen);
         } else if (key === '<') {
@@ -986,6 +1002,7 @@ function handleVimKeys(key, state, screen, term) {
                 }
             }
             state.data[state.row] = tempLine;
+            helper.createSnapshot(state);
             helper.logCommand(true, state, key);
             helper.renderScreen(state, screen);
         } else if (key === 'g') {
@@ -1019,6 +1036,7 @@ function handleVimKeys(key, state, screen, term) {
                     }
                     state.data[counterRow] += cutoff;
                 }
+                helper.createSnapshot(state);
                 helper.logCommand(true, state, key);
                 helper.renderScreen(state, screen);
             }
@@ -1043,6 +1061,7 @@ function handleVimKeys(key, state, screen, term) {
                     }
                     state.data[counterRow] += cutoff;
                 }
+                helper.createSnapshot(state);
                 helper.logCommand(true, state, key);
                 helper.renderScreen(state, screen);
             }
@@ -1075,6 +1094,16 @@ function handleVimKeys(key, state, screen, term) {
                 col: state.col
             }
             helper.logCommand(true, state, key);
+            helper.renderScreen(state, screen);
+        } else if (key === 'CTRL_R') {
+            if (state.currentSnapshot + 1 < state.snapshots.length) {
+                helper.applySnapshot(state, state.currentSnapshot + 1);
+            }
+            helper.renderScreen(state, screen);
+        } else if (key === 'u') {
+            if (state.currentSnapshot - 1 >= 0) {
+                helper.applySnapshot(state, state.currentSnapshot - 1);
+            }
             helper.renderScreen(state, screen);
         } else if (key === '.') {
             state.allowCommandLogging = false;

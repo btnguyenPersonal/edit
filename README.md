@@ -6,8 +6,6 @@ this is my experiment for making a new code editor
     - save indicator
     - auto save?
     - visual block
-    - t T
-    - f F
     - .
     - / ? n N // way to store & search for stuff (maybe make menu and have search/replace too?)
     - zz
@@ -22,10 +20,14 @@ this is my experiment for making a new code editor
         - normal keys
         - vim keys (bruh)
 ## in progress
-    - dot command
-    - clipboard sync with system clipboard
+    - make sure screen doesn't break when error happens
+    - t T
+    - f F
+    - clipboard stuff put into helper file
     - undo/redo
 ## done
+    - dot command
+    - clipboard sync with system clipboard
     - d D
     - c C
     - p P

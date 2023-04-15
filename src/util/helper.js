@@ -80,6 +80,36 @@ function getColor(s) {
     }
 }
 
+// sometime will have to limit number of snapshots, and make them diff based
+function createSnapshot(state) {
+    state.snapshots.splice(state.currentSnapshot + 1, state.snapshots.length - (state.currentSnapshot + 1));
+    const oldData = [];
+    for (let i = 0; i < state.data.length; i++) {
+        oldData.push(state.data[i]);
+    }
+    state.snapshots.push({
+        data: oldData,
+        row: state.row,
+        col: state.col,
+        windowLine: state.windowLine
+    });
+    state.currentSnapshot = state.snapshots.length - 1;
+}
+
+function applySnapshot(state, index) {
+    const snap = state.snapshots[index];
+    if (snap !== undefined) {
+        state.data = [];
+        for (let i = 0; i < snap.data.length; i++) {
+            state.data.push(snap.data[i]);
+        }
+        state.row = snap.row;
+        state.col = snap.col;
+        state.windowLine = snap.windowLine;
+        state.currentSnapshot = index;
+    }
+}
+
 function logCommand(newCommand, state, key) {
     if (state.allowCommandLogging && newCommand) {
         state.previousCommand = [];
@@ -98,25 +128,27 @@ function sendKeys(keys, state, screen, term) {
 }
 
 function renderScreen(state, screen) {
-    screen.fill({ char: ' ' });
-    screen.moveTo(0, 0);
-    for (let i = state.windowLine; i < (state.windowLine + process.stdout.rows); i += 1) {
-        if (state.data[i] !== undefined) {
-            screen.put({ x: 0 }, (i + 1).toString().padStart(4) + ' ');
-            for (let j = 0; j < state.data[i].length; j++) {
-                screen.put({
-                    attr: {
-                        color: getColor(state.data[i].substring(j, j + 1)),
-                        inverse: isHighlighted(state, i, j)
-                    },
-                    wrap: true
-                }, state.data[i].substring(j, j + 1));
+    if (state.allowCommandLogging) {
+        screen.fill({ char: ' ' });
+        screen.moveTo(0, 0);
+        for (let i = state.windowLine; i < (state.windowLine + process.stdout.rows); i += 1) {
+            if (state.data[i] !== undefined) {
+                screen.put({ x: 0 }, (i + 1).toString().padStart(4) + ' ');
+                for (let j = 0; j < state.data[i].length; j++) {
+                    screen.put({
+                        attr: {
+                            color: getColor(state.data[i].substring(j, j + 1)),
+                            inverse: isHighlighted(state, i, j)
+                        },
+                        wrap: true
+                    }, state.data[i].substring(j, j + 1));
+                }
+                screen.put({ newLine: true }, '\n');
             }
-            screen.put({ newLine: true }, '\n');
         }
+        screen.draw({ delta: false });
+        moveCursor(state, screen);
     }
-    screen.draw({ delta: false });
-    moveCursor(state, screen);
 }
 
 function saveFile(term, f, d) {
@@ -135,6 +167,8 @@ export {
     moveCursor,
     sendKeys,
     renderScreen,
+    createSnapshot,
+    applySnapshot,
     logCommand,
     saveFile
 };
