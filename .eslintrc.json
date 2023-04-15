@@ -1,5 +1,6 @@
 {
     "env": {
+        "jest": true,
         "browser": true,
         "es2021": true
     },
@@ -17,6 +18,13 @@
         "semi": ["error", "always"],
         "no-console": "off",
         "prefer-template": "off",
+        "no-param-reassign": "off",
+        "import/extensions": "off",
+        "comma-dangle": "off",
+        "consistent-return": "off",
+        "import/prefer-default-export": "off",
+        "max-len": ["error", 160],
+        "no-else-return": "off",
         "no-lonely-if": "off"
     }
 }

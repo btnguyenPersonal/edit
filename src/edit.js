@@ -1,9 +1,10 @@
 #!/usr/bin/env node
 import fs from 'fs';
 import pkg from 'terminal-kit';
-const { terminal, ScreenBuffer } = pkg;
 import * as helper from './util/helper.js';
 import { handleMouseInputs } from './keybinds/mouse.js';
+
+const { terminal, ScreenBuffer } = pkg;
 
 function getFile() {
     try {
@@ -48,26 +49,52 @@ const state = {
     col: 0,
     windowLine: 0,
     snapshots: [],
-    currentSnapshot: 0
+    currentSnapshot: 0,
+    isSaved: true
 };
+const screen = new ScreenBuffer({ dst: term, noFill: true });
 
 term.grabInput({ mouse: 'button' });
 term.fullscreen(true);
 term.windowTitle('edit');
-
-var screen = new ScreenBuffer( { dst: term , noFill: true } ) ;
-
 helper.renderScreen(state, screen);
 helper.createSnapshot(state);
+state.isSaved = true;
 
 term.on('key', (key) => {
-    helper.sendKeys([key], state, screen, term);
+    try {
+        if (key === 'CTRL_S') {
+            helper.saveFile(state, term);
+            helper.renderScreen(state, screen);
+        } else if (key === 'CTRL_C') {
+            term.fullscreen(false);
+            process.exit();
+        } else {
+            helper.sendKeys([key], state, screen, term);
+        }
+    } catch (e) {
+        term.fullscreen(false);
+        console.log(e);
+        process.exit();
+    }
 });
 
 term.on('mouse', (name, coor) => {
-    handleMouseInputs(name, coor, state, screen);
+    try {
+        handleMouseInputs(name, coor, state, screen);
+    } catch (e) {
+        term.fullscreen(false);
+        console.log(e);
+        process.exit();
+    }
 });
 
 term.on('resize', () => {
-    helper.renderScreen(state, screen);
+    try {
+        helper.renderScreen(state, screen);
+    } catch (e) {
+        term.fullscreen(false);
+        console.log(e);
+        process.exit();
+    }
 });

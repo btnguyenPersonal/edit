@@ -1,31 +1,47 @@
-# rotide
+# edit
 
 this is my experiment for making a new code editor
 
-## todo
-    - save indicator
-    - auto save?
-    - visual block
-    - .
-    - / ? n N // way to store & search for stuff (maybe make menu and have search/replace too?)
+## backlog
+    - undo/redo limit and diff based (don't know how hard that will be)
+    - terminal instance inside editor
+    - ability to change file in editor // want to put some work to make this part really nice, might come after opening as workspace
+    - file explorer
+    - change to using built in GUI stuff? might not bother with this one and do it myself
+    - search and replace (file)
+    - search in project
+    - syntax highlighting
+    - multithread stuff
+    - split apart code into multiple files
+    - after mouse scrolling so cursor isn't on screen, make sure next action resets the window // add to renderScreen
+    - store cursor positioning between sessions
+    - gcc commenting
+    - tabs
     - zz
-## blocked
-    - fix flickering screen (maybe hold current screen string and updated screen string, go one by one and replace)
-        - made some progress but only with some commands (renderScreen still causes big upsets, but can't be bothered right now)
-        - tried putting empty strings after everything, but seemed very jank
-        - next time try the hold previous state approach
+    - visual block
+    - each mode in own file
+    - clipboard stuff put into helper file
+    - auto save?
+## todo
+    - J
+    - disable blink or on click make cursor on
+    - ci" ci' cib ciB
+    - / ? n N // way to store & search for stuff (maybe make menu and have search/replace too?)
+    - { }
     - add tests
         - mouse inputs done (might need to add drag select later)
         - helper functions for terminal done
         - normal keys
         - vim keys (bruh)
+    - ( ) -> get out of brace / paren and start at ^
+## blocked
 ## in progress
-    - make sure screen doesn't break when error happens
     - t T
     - f F
-    - clipboard stuff put into helper file
-    - undo/redo
 ## done
+    - .
+    - save indicator
+    - make sure screen doesn't break when error happens
     - dot command
     - clipboard sync with system clipboard
     - d D
@@ -51,18 +67,6 @@ this is my experiment for making a new code editor
     - cleaned cli inputs
     - highlight and copy/paste
     - on resize, reset window
-## backlog
-    - terminal instance inside editor
-    - ability to change file in editor // want to put some work to make this part really nice, might come after opening as workspace
-    - file explorer
-    - change to using built in GUI stuff? might not bother with this one and do it myself
-    - search and replace (file)
-    - search in project
-    - syntax highlighting
-    - multithread stuff
-    - split apart code into multiple files
-    - after mouse scrolling so cursor isn't on screen, make sure next action resets the window // add to renderScreen
-    - store cursor positioning between sessions
 
 ## journal
     def terminal only
