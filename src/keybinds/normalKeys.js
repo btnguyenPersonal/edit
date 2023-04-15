@@ -119,8 +119,9 @@ function handleKeys(key, state, screen, term) {
         helper.renderScreen(state, screen);
     } else if (key === 'ESCAPE') {
         state.mode = 'n';
+        helper.createSnapshot(state);
     }
-    state.vim === true && helper.logCommand(false, state, key);
+    state.vim && helper.logCommand(false, state, key);
 }
 
 export {

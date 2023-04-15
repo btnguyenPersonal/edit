@@ -47,6 +47,8 @@ const state = {
     row: 0,
     col: 0,
     windowLine: 0,
+    snapshots: [],
+    currentSnapshot: 0
 };
 
 term.grabInput({ mouse: 'button' });
@@ -56,6 +58,7 @@ term.windowTitle('edit');
 var screen = new ScreenBuffer( { dst: term , noFill: true } ) ;
 
 helper.renderScreen(state, screen);
+helper.createSnapshot(state);
 
 term.on('key', (key) => {
     helper.sendKeys([key], state, screen, term);
