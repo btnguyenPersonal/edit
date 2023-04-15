@@ -1,4 +1,6 @@
 import fs from 'fs';
+import { handleKeys } from '../keybinds/normalKeys.js';
+import { handleVimKeys } from '../keybinds/vimKeys.js';
 
 function isAlphaNumeric(s) {
     return '1234567890QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm'.indexOf(s) > -1;
@@ -78,12 +80,29 @@ function getColor(s) {
     }
 }
 
+function logCommand(newCommand, state, key) {
+    if (state.allowCommandLogging && newCommand) {
+        state.previousCommand = [];
+    }
+    state.allowCommandLogging && state.previousCommand.push(key);
+}
+
+function sendKeys(keys, state, screen, term) {
+    for (let i = 0; i < keys.length; i++) {
+        if (state.vim && state.mode !== 'i') {
+            handleVimKeys(keys[i], state, screen, term);
+        } else {
+            handleKeys(keys[i], state, screen, term);
+        }
+    }
+}
+
 function renderScreen(state, screen) {
     screen.fill({ char: ' ' });
     screen.moveTo(0, 0);
     for (let i = state.windowLine; i < (state.windowLine + process.stdout.rows); i += 1) {
         if (state.data[i] !== undefined) {
-            screen.put({ x: 0 }, i.toString().padStart(4) + ' ');
+            screen.put({ x: 0 }, (i + 1).toString().padStart(4) + ' ');
             for (let j = 0; j < state.data[i].length; j++) {
                 screen.put({
                     attr: {
@@ -114,6 +133,8 @@ export {
     isAlphaNumeric,
     isWritable,
     moveCursor,
+    sendKeys,
     renderScreen,
+    logCommand,
     saveFile
 };

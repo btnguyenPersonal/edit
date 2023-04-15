@@ -3,8 +3,6 @@ import fs from 'fs';
 import pkg from 'terminal-kit';
 const { terminal, ScreenBuffer } = pkg;
 import * as helper from './util/helper.js';
-import { handleKeys } from './keybinds/normalKeys.js';
-import { handleVimKeys } from './keybinds/vimKeys.js';
 import { handleMouseInputs } from './keybinds/mouse.js';
 
 function getFile() {
@@ -33,6 +31,7 @@ const term = terminal();
 const filepath = getFile();
 process.title = filepath;
 const state = {
+    allowCommandLogging: true,
     vim: process.argv[2] === '-v',
     mode: 'n',
     clipboard: [],
@@ -42,6 +41,7 @@ const state = {
         col: null
     },
     previousKeys: '',
+    previousCommand: [],
     file: filepath,
     data: getData(filepath),
     row: 0,
@@ -58,11 +58,7 @@ var screen = new ScreenBuffer( { dst: term , noFill: true } ) ;
 helper.renderScreen(state, screen);
 
 term.on('key', (key) => {
-    if (state.vim && state.mode !== 'i') {
-        handleVimKeys(key, state, screen, term);
-    } else {
-        handleKeys(key, state, screen, term);
-    }
+    helper.sendKeys([key], state, screen, term);
 });
 
 term.on('mouse', (name, coor) => {
