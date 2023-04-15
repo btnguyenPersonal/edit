@@ -120,6 +120,7 @@ function handleKeys(key, state, screen, term) {
     } else if (key === 'ESCAPE') {
         state.mode = 'n';
     }
+    state.vim === true && helper.logCommand(false, state, key);
 }
 
 export {
