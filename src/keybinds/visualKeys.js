@@ -2,7 +2,7 @@
 import ncp from 'copy-paste';
 import * as helper from '../util/helper.js';
 
-function handleVisualKeys(key, state, screen, term) {
+function handleVisualKeys(key, state, screen) {
     if (state.previousKeys === 'vi') {
         if (key === 'w') {
             let beginningOfWord = state.col;
@@ -87,7 +87,7 @@ function handleVisualKeys(key, state, screen, term) {
                     if (i !== state.col) {
                         stack += 1;
                     }
-                } else if (state.data[state.row].substring(i, i + 1) === '}') {
+                } else if (state.data[state.row].substring(i, i + 1) === '{') {
                     if (stack === 0) {
                         beginningOfArea = i;
                         break;

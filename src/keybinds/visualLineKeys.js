@@ -2,7 +2,7 @@
 import ncp from 'copy-paste';
 import * as helper from '../util/helper.js';
 
-function handleVisualLineKeys(key, state, screen, term) {
+function handleVisualLineKeys(key, state, screen) {
     if (key === 'CTRL_U') {
         for (let i = 0; i < process.stdout.rows / 2; i += 1) {
             if (state.row > 0) {

@@ -1,4 +1,5 @@
 /* eslint-disable import/no-cycle */
+import ncp from 'copy-paste';
 import fs from 'fs';
 import { handleKeys } from '../keybinds/normalKeys.js';
 import { handleVimKeys } from '../keybinds/vimKeys.js';
@@ -123,14 +124,14 @@ function logCommand(newCommand, state, key) {
     }
 }
 
-function sendKeys(keys, state, screen, term) {
+function sendKeys(keys, state, screen) {
     for (let i = 0; i < keys.length; i += 1) {
         if (state.vim && state.mode === 'v') {
-            handleVisualKeys(keys[i], state, screen, term);
+            handleVisualKeys(keys[i], state, screen);
         } else if (state.vim && state.mode === 'V') {
-            handleVisualLineKeys(keys[i], state, screen, term);
-        } else if (state.vim && state.mode === 'n' || state.mode === 'r') {
-            handleVimKeys(keys[i], state, screen, term);
+            handleVisualLineKeys(keys[i], state, screen);
+        } else if (state.vim && (state.mode === 'n' || state.mode === 'r')) {
+            handleVimKeys(keys[i], state, screen);
         } else {
             handleKeys(keys[i], state, screen);
         }
@@ -166,6 +167,12 @@ function renderScreen(state, screen) {
     }
 }
 
+function copyToClipboard(state, textArray, newLine) {
+    state.clipboard = textArray;
+    state.clipboardNewLine = newLine;
+    ncp.copy(state.clipboard.join('\n'));
+}
+
 function saveFile(state, term) {
     (async () => fs.writeFile(state.file, state.data.join('\n'), (err) => {
         if (err) {
@@ -188,6 +195,7 @@ function arraysEqual(a, b) {
 }
 
 export {
+    copyToClipboard,
     isAlphaNumeric,
     isWritable,
     moveCursor,
