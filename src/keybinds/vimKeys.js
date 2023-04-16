@@ -703,7 +703,7 @@ function handleVimKeys(key, state, screen, term) {
                     endOfWord = i;
                     break;
                 } else if (i === state.data[state.row].length - 1) {
-                    endOfWord = state.data[state.row].length - 1;
+                    endOfWord = state.data[state.row].length;
                 }
             }
             state.clipboard = [];
@@ -1707,6 +1707,14 @@ function handleVimKeys(key, state, screen, term) {
                 row: state.row,
                 col: state.col
             };
+            helper.logCommand(true, state, key);
+            helper.renderScreen(state, screen);
+        } else if (key === 'J') {
+            if (state.data[state.row + 1] !== undefined) {
+                state.col = state.data[state.row].length;
+                state.data[state.row] += state.data[state.row + 1].trim();
+                state.data.splice(state.row + 1, 1);
+            }
             helper.logCommand(true, state, key);
             helper.renderScreen(state, screen);
         } else if (key === 'CTRL_R') {

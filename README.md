@@ -23,11 +23,11 @@ this is my experiment for making a new code editor
     - clipboard stuff put into helper file
     - auto save?
 ## todo
-    - J
     - disable blink or on click make cursor on
     - t T
     - f F
     - / ? n N // way to store & search for stuff (maybe make menu and have search/replace too?)
+    - ci[
     - { }
     - add tests
         - mouse inputs done (might need to add drag select later)
@@ -37,8 +37,10 @@ this is my experiment for making a new code editor
     - ( ) -> get out of brace / paren and start at ^
 ## blocked
 ## in progress
-    - ci" ci' cib ciB
+    - add emacs commands for insert mode
 ## done
+    - J
+    - ci" ci' cib ciB
     - .
     - save indicator
     - make sure screen doesn't break when error happens
