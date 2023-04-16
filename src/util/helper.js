@@ -2,6 +2,8 @@
 import fs from 'fs';
 import { handleKeys } from '../keybinds/normalKeys.js';
 import { handleVimKeys } from '../keybinds/vimKeys.js';
+import { handleVisualKeys } from '../keybinds/visualKeys.js';
+import { handleVisualLineKeys } from '../keybinds/visualLineKeys.js';
 
 function isAlphaNumeric(s) {
     return '1234567890QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm'.indexOf(s) > -1;
@@ -123,7 +125,11 @@ function logCommand(newCommand, state, key) {
 
 function sendKeys(keys, state, screen, term) {
     for (let i = 0; i < keys.length; i += 1) {
-        if (state.vim && state.mode !== 'i') {
+        if (state.vim && state.mode === 'v') {
+            handleVisualKeys(keys[i], state, screen, term);
+        } else if (state.vim && state.mode === 'V') {
+            handleVisualLineKeys(keys[i], state, screen, term);
+        } else if (state.vim && state.mode === 'n' || state.mode === 'r') {
             handleVimKeys(keys[i], state, screen, term);
         } else {
             handleKeys(keys[i], state, screen);

@@ -22,8 +22,8 @@ this is my experiment for making a new code editor
     - each mode in own file
     - clipboard stuff put into helper file
     - auto save?
+    - w goes to ) as well for params?
 ## todo
-    - disable blink or on click make cursor on
     - t T
     - f F
     - / ? n N // way to store & search for stuff (maybe make menu and have search/replace too?)
@@ -34,11 +34,12 @@ this is my experiment for making a new code editor
         - helper functions for terminal done
         - normal keys
         - vim keys (bruh)
-    - ( ) -> get out of brace / paren and start at ^
+    - ( ) -> get out of current indent level brace / paren and start at ^
 ## blocked
 ## in progress
     - add emacs commands for insert mode
 ## done
+    - disable blink or on click make cursor on
     - J
     - ci" ci' cib ciB
     - .
