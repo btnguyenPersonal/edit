@@ -24,9 +24,11 @@ this is my experiment for making a new code editor
     - auto save?
     - w goes to ) as well for params?
     - visual deletes don't move windowLine
-    - visual dot commands moving cursor in weird places
+    - visual dot commands moving cursor in weird places // maybe search replace k with j and start at top row
     - don't store col and row with clipboard
     - gg not working right
+    - <c-o> <c-i>
+    - priming function for the snapshots? take row col from before edit
 ## todo
     - t T
     - f F

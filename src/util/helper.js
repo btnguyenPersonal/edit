@@ -158,9 +158,10 @@ function applySnapshot(state, index) {
         for (let i = 0; i < snap.data.length; i += 1) {
             state.data.push(snap.data[i]);
         }
-        state.row = snap.row;
-        state.col = snap.col;
-        state.windowLine = snap.windowLine;
+        // somehow get correct positioning, seems to not be where the change is that the snapshot takes place
+        //state.row = snap.row;
+        //state.col = snap.col;
+        //state.windowLine = snap.windowLine;
         state.currentSnapshot = index;
     }
 }

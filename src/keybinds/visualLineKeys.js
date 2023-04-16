@@ -175,6 +175,8 @@ function handleVisualLineKeys(key, state, screen) {
                 state.data[row] = tempLine;
             }
         }
+        state.col = 0;
+        state.row = state.visual.row;
         state.mode = 'n';
         helper.createSnapshot(state);
         helper.logCommand(false, state, key);

@@ -13,12 +13,25 @@ import {
     logCommand
 } from '../util/helper.js';
 import {
+    up,
+    down,
+    left,
+    right,
+    firstNonSpace,
+    getCoorBeginningLastWord,
+    getCoorBeginningNextWord,
+    getIndentLevel,
+    increaseIndentLevel,
     lowerIndentLevel,
     getCoorForwardWord,
     topOfFile,
     bottomOfFile,
     upHalfScreen,
-    downHalfScreen
+    downHalfScreen,
+    getCoorsInsideCharSame,
+    getCoorsInsideCharDiff,
+    getCoorsInsideWord,
+    removeInsideAreaSameLine,
 } from '../util/movement.js';
 
 function handleVimKeys(key, state, screen) {
@@ -518,183 +531,33 @@ function handleVimKeys(key, state, screen) {
         }
     } else if (state.previousKeys === 'ci') {
         if (key === 'w') {
-            let beginningOfWord = state.col;
-            for (let i = state.col; i >= 0; i -= 1) {
-                if (!isAlphaNumeric(state.data[state.row].substring(i, i + 1))) {
-                    beginningOfWord = i;
-                    break;
-                } else if (i === 0) {
-                    beginningOfWord = -1;
-                }
-            }
-            let endOfWord = beginningOfWord;
-            for (let i = state.col; i < state.data[state.row].length; i += 1) {
-                if (!isAlphaNumeric(state.data[state.row].substring(i, i + 1))) {
-                    endOfWord = i;
-                    break;
-                } else if (i === state.data[state.row].length - 1) {
-                    endOfWord = state.data[state.row].length;
-                }
-            }
-            state.clipboard = [];
-            state.clipboardNewLine = false;
-            state.clipboard.push(state.data[state.row].substring(beginningOfWord + 1, endOfWord));
-            ncp.copy(state.clipboard.join('\n'));
-            if (beginningOfWord !== endOfWord) {
-                state.data[state.row] = state.data[state.row].substring(0, beginningOfWord + 1) + state.data[state.row].substring(endOfWord);
-                state.col = beginningOfWord + 1;
-            }
-            state.mode = 'i';
+            const { beginning, end } = getCoorsInsideWord(state);
+            copyToClipboard(state, [state.data[state.row].substring(beginning + 1, end)], false);
+            removeInsideAreaSameLine(state, beginning, end, 'i');
+            logCommand(false, state, key);
+            renderScreen(state, screen);
+        } else if (key === '[' || key === ']') {
+            const { beginning, end } = getCoorsInsideCharDiff(state, '[', ']');
+            copyToClipboard(state, [state.data[state.row].substring(beginning + 1, end)], false);
+            removeInsideAreaSameLine(state, beginning, end, 'i');
             logCommand(false, state, key);
             renderScreen(state, screen);
         } else if (key === '(' || key === ')' || key === 'b') {
-            let stack = 0;
-            let beginningOfArea = state.col;
-            for (let i = state.col; i >= 0; i -= 1) {
-                if (state.data[state.row].substring(i, i + 1) === ')') {
-                    if (i !== state.col) {
-                        stack += 1;
-                    }
-                } else if (state.data[state.row].substring(i, i + 1) === '(') {
-                    if (stack === 0) {
-                        beginningOfArea = i;
-                        break;
-                    } else {
-                        stack -= 1;
-                    }
-                } else if (i === 0) {
-                    beginningOfArea = -1;
-                }
-            }
-            if (beginningOfArea === -1) {
-                for (let i = state.col; i < state.data[state.row].length; i += 1) {
-                    if (state.data[state.row].substring(i, i + 1) === '(') {
-                        beginningOfArea = i;
-                        break;
-                    } else if (i === state.data[state.row].length - 1) {
-                        beginningOfArea = -1;
-                    }
-                }
-            }
-            let endOfArea = beginningOfArea;
-            for (let i = beginningOfArea + 1; i < state.data[state.row].length; i += 1) {
-                if (state.data[state.row].substring(i, i + 1) === '(') {
-                    stack += 1;
-                } else if (state.data[state.row].substring(i, i + 1) === ')') {
-                    if (stack === 0) {
-                        endOfArea = i;
-                        break;
-                    } else {
-                        stack -= 1;
-                    }
-                } else if (i === state.data[state.row].length - 1) {
-                    endOfArea = -1;
-                }
-            }
-            state.clipboard = [];
-            state.clipboardNewLine = false;
-            state.clipboard.push(state.data[state.row].substring(beginningOfArea + 1, endOfArea));
-            ncp.copy(state.clipboard.join('\n'));
-            if (beginningOfArea !== endOfArea && beginningOfArea !== -1 && endOfArea !== -1) {
-                state.data[state.row] = state.data[state.row].substring(0, beginningOfArea + 1) + state.data[state.row].substring(endOfArea);
-                state.col = beginningOfArea + 1;
-                state.mode = 'i';
-            }
+            const { beginning, end } = getCoorsInsideCharDiff(state, '(', ')');
+            copyToClipboard(state, [state.data[state.row].substring(beginning + 1, end)], false);
+            removeInsideAreaSameLine(state, beginning, end, 'i');
             logCommand(false, state, key);
             renderScreen(state, screen);
         } else if (key === '{' || key === '}' || key === 'B') {
-            let stack = 0;
-            let beginningOfArea = state.col;
-            for (let i = state.col; i >= 0; i -= 1) {
-                if (state.data[state.row].substring(i, i + 1) === '}') {
-                    if (i !== state.col) {
-                        stack += 1;
-                    }
-                } else if (state.data[state.row].substring(i, i + 1) === '{') {
-                    if (stack === 0) {
-                        beginningOfArea = i;
-                        break;
-                    } else {
-                        stack -= 1;
-                    }
-                } else if (i === 0) {
-                    beginningOfArea = -1;
-                }
-            }
-            if (beginningOfArea === -1) {
-                for (let i = state.col; i < state.data[state.row].length; i += 1) {
-                    if (state.data[state.row].substring(i, i + 1) === '{') {
-                        beginningOfArea = i;
-                        break;
-                    } else if (i === state.data[state.row].length - 1) {
-                        beginningOfArea = -1;
-                    }
-                }
-            }
-            let endOfArea = beginningOfArea;
-            for (let i = beginningOfArea + 1; i < state.data[state.row].length; i += 1) {
-                if (state.data[state.row].substring(i, i + 1) === '{') {
-                    stack += 1;
-                } else if (state.data[state.row].substring(i, i + 1) === '}') {
-                    if (stack === 0) {
-                        endOfArea = i;
-                        break;
-                    } else {
-                        stack -= 1;
-                    }
-                } else if (i === state.data[state.row].length - 1) {
-                    endOfArea = -1;
-                }
-            }
-            state.clipboard = [];
-            state.clipboardNewLine = false;
-            state.clipboard.push(state.data[state.row].substring(beginningOfArea + 1, endOfArea));
-            ncp.copy(state.clipboard.join('\n'));
-            if (beginningOfArea !== endOfArea && beginningOfArea !== -1 && endOfArea !== -1) {
-                state.data[state.row] = state.data[state.row].substring(0, beginningOfArea + 1) + state.data[state.row].substring(endOfArea);
-                state.col = beginningOfArea + 1;
-                state.mode = 'i';
-            }
+            const { beginning, end } = getCoorsInsideCharDiff(state, '{', '}');
+            copyToClipboard(state, [state.data[state.row].substring(beginning + 1, end)], false);
+            removeInsideAreaSameLine(state, beginning, end, 'i');
             logCommand(false, state, key);
             renderScreen(state, screen);
         } else if (key === '\'' || key === '"') {
-            let beginningOfArea = state.col;
-            for (let i = state.col; i >= 0; i -= 1) {
-                if (state.data[state.row].substring(i, i + 1) === key) {
-                    beginningOfArea = i;
-                    break;
-                } else if (i === 0) {
-                    beginningOfArea = -1;
-                }
-            }
-            if (beginningOfArea === -1) {
-                for (let i = state.col; i < state.data[state.row].length; i += 1) {
-                    if (state.data[state.row].substring(i, i + 1) === key) {
-                        beginningOfArea = i;
-                        break;
-                    } else if (i === state.data[state.row].length - 1) {
-                        beginningOfArea = -1;
-                    }
-                }
-            }
-            let endOfArea = beginningOfArea;
-            for (let i = beginningOfArea + 1; i < state.data[state.row].length; i += 1) {
-                if (state.data[state.row].substring(i, i + 1) === key) {
-                    endOfArea = i;
-                    break;
-                } else if (i === state.data[state.row].length - 1) {
-                    endOfArea = -1;
-                }
-            }
-            state.clipboard = [];
-            state.clipboardNewLine = false;
-            state.clipboard.push(state.data[state.row].substring(beginningOfArea + 1, endOfArea));
-            ncp.copy(state.clipboard.join('\n'));
-            if (beginningOfArea !== endOfArea && beginningOfArea !== -1 && endOfArea !== -1) {
-                state.data[state.row] = state.data[state.row].substring(0, beginningOfArea + 1) + state.data[state.row].substring(endOfArea);
-                state.col = beginningOfArea + 1;
-                state.mode = 'i';
-            }
+            const { beginning, end } = getCoorsInsideCharSame(state, key);
+            copyToClipboard(state, [state.data[state.row].substring(beginning + 1, end)], false);
+            removeInsideAreaSameLine(state, beginning, end, 'i');
             logCommand(false, state, key);
             renderScreen(state, screen);
         }
@@ -707,55 +570,27 @@ function handleVimKeys(key, state, screen) {
             downHalfScreen(state);
             renderScreen(state, screen);
         } else if (key === 'UP' || key === 'k') {
-            if (state.row > 0) {
-                state.row -= 1;
-                if (state.row < state.windowLine) {
-                    state.windowLine -= 1;
-                }
-                renderScreen(state, screen);
-            }
+            up(state);
+            renderScreen(state, screen);
         } else if (key === 'DOWN' || key === 'j') {
-            if (state.row < state.data.length - 1) {
-                state.row += 1;
-                if (state.row >= state.windowLine + process.stdout.rows) {
-                    state.windowLine += 1;
-                }
-                renderScreen(state, screen);
-            }
+            down(state);
+            renderScreen(state, screen);
         } else if (key === 'LEFT' || key === 'h') {
-            if (state.col > state.data[state.row].length) {
-                state.col = state.data[state.row].length;
-            }
-            if (state.col > 0) {
-                state.col -= 1;
-            }
+            left(state);
             renderScreen(state, screen);
         } else if (key === 'RIGHT' || key === 'l') {
-            if (state.col > state.data[state.row].length) {
-                state.col = state.data[state.row].length;
-            }
-            if (state.col < state.data[state.row].length) {
-                state.col += 1;
-            }
+            right(state);
             renderScreen(state, screen);
         } else if (key === 'i') {
             state.mode = 'i';
             logCommand(true, state, key);
         } else if (key === 'a') {
-            if (state.col > state.data[state.row].length) {
-                state.col = state.data[state.row].length;
-            }
-            if (state.col < state.data[state.row].length) {
-                state.col += 1;
-            }
+            right(state);
             state.mode = 'i';
             logCommand(true, state, key);
             renderScreen(state, screen);
         } else if (key === 'x') {
-            state.clipboard = [];
-            state.clipboard.push(state.data[state.row].substring(state.col, state.col + 1));
-            ncp.copy(state.clipboard.join('\n'));
-            state.clipboardNewLine = false;
+            copyToClipboard(state, [state.data[state.row].substring(state.col, state.col + 1)], false);
             if (state.col < state.data[state.row].length) {
                 state.data[state.row] = state.data[state.row].substring(0, state.col)
                     + state.data[state.row].substring(state.col + 1);
@@ -763,60 +598,24 @@ function handleVimKeys(key, state, screen) {
             logCommand(true, state, key);
             renderScreen(state, screen);
         } else if (key === '$') {
-            state.col = state.data[state.row].length; // issue with long lines rendering %^$
+            state.col = state.data[state.row].length;
             renderScreen(state, screen);
         } else if (key === '0') {
             state.col = 0;
             renderScreen(state, screen);
         } else if (key === '^') {
-            let firstNonSpace = 0;
-            for (let i = 0; i < state.data[state.row].length; i += 1) {
-                if (state.data[state.row].charAt(i) !== ' ') {
-                    firstNonSpace = i;
-                    break;
-                }
-            }
-            state.col = firstNonSpace;
+            state.col = firstNonSpace(state, state.row);
             renderScreen(state, screen);
         } else if (key === 'I') {
-            let firstNonSpace = 0;
-            for (let i = 0; i < state.data[state.row].length; i += 1) {
-                if (state.data[state.row].charAt(i) !== ' ') {
-                    firstNonSpace = i;
-                    break;
-                }
-            }
-            state.col = firstNonSpace;
+            state.col = firstNonSpace(state, state.row);
             state.mode = 'i';
             logCommand(true, state, key);
             renderScreen(state, screen);
         } else if (key === 'w') {
-            let hasHitNonAlphaNum = false;
-            for (let i = state.col; i < state.data[state.row].length - 1; i += 1) {
-                if (hasHitNonAlphaNum && isAlphaNumeric(state.data[state.row].charAt(i))) {
-                    state.col = i;
-                    break;
-                } else if (!hasHitNonAlphaNum) {
-                    hasHitNonAlphaNum = !isAlphaNumeric(state.data[state.row].charAt(i));
-                }
-            }
+            state.col = getCoorBeginningNextWord(state);
             renderScreen(state, screen);
         } else if (key === 'b') {
-            let hasHitNonAlphaNum = false;
-            for (let i = state.col; i >= 0; i -= 1) {
-                if (hasHitNonAlphaNum && isAlphaNumeric(state.data[state.row].charAt(i))) {
-                    state.col = i;
-                    break;
-                } else if (!hasHitNonAlphaNum) {
-                    hasHitNonAlphaNum = !isAlphaNumeric(state.data[state.row].charAt(i));
-                }
-            }
-            for (let i = state.col; i >= 0; i -= 1) {
-                if (!isAlphaNumeric(state.data[state.row].charAt(i))) {
-                    break;
-                }
-                state.col = i;
-            }
+            state.col = getCoorBeginningLastWord(state);
             renderScreen(state, screen);
         } else if (key === 'A') {
             state.col = state.data[state.row].length;
@@ -834,8 +633,7 @@ function handleVimKeys(key, state, screen) {
             logCommand(true, state, key);
             renderScreen(state, screen);
         } else if (key === 'D') {
-            state.clipboard = [];
-            state.clipboard.push(state.data[state.row].substring(0, state.col));
+            copyToClipboard(state, [state.data[state.row].substring(state.col)], false);
             state.data[state.row] = state.data[state.row].substring(0, state.col);
             createSnapshot(state);
             logCommand(true, state, key);
@@ -849,7 +647,7 @@ function handleVimKeys(key, state, screen) {
             logCommand(true, state, key);
             renderScreen(state, screen);
         } else if (key === 'O') {
-            let indentLevel = state.data[state.row].search(/\S|$/);
+            let indentLevel = getIndentLevel(state, state.row);
             if (state.data[state.row].endsWith('}') || state.data[state.row].endsWith(')')) {
                 indentLevel += 4;
             }
@@ -859,7 +657,7 @@ function handleVimKeys(key, state, screen) {
             logCommand(true, state, key);
             renderScreen(state, screen);
         } else if (key === 'o') {
-            let indentLevel = state.data[state.row].search(/\S|$/);
+            let indentLevel = getIndentLevel(state, state.row);
             if (state.data[state.row].endsWith('{') || state.data[state.row].endsWith('(')) {
                 indentLevel += 4;
             }
@@ -870,13 +668,13 @@ function handleVimKeys(key, state, screen) {
             logCommand(true, state, key);
             renderScreen(state, screen);
         } else if (key === '>') {
-            state.data[state.row] = '    ' + state.data[state.row];
+            increaseIndentLevel(state, state.row);
             state.col += 4;
             createSnapshot(state);
             logCommand(true, state, key);
             renderScreen(state, screen);
         } else if (key === '<') {
-            lowerIndentLevel(state);
+            lowerIndentLevel(state, state.row);
             createSnapshot(state);
             logCommand(true, state, key);
             renderScreen(state, screen);
