@@ -25,7 +25,8 @@ this is my experiment for making a new code editor
 ## todo
     - J
     - disable blink or on click make cursor on
-    - ci" ci' cib ciB
+    - t T
+    - f F
     - / ? n N // way to store & search for stuff (maybe make menu and have search/replace too?)
     - { }
     - add tests
@@ -36,8 +37,7 @@ this is my experiment for making a new code editor
     - ( ) -> get out of brace / paren and start at ^
 ## blocked
 ## in progress
-    - t T
-    - f F
+    - ci" ci' cib ciB
 ## done
     - .
     - save indicator

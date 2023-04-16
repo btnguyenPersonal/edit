@@ -232,22 +232,150 @@ function handleVimKeys(key, state, screen, term) {
                     beginningOfWord = -1;
                 }
             }
-            let endOfWord = state.col;
+            let endOfWord = beginningOfWord;
             for (let i = state.col; i < state.data[state.row].length; i += 1) {
                 if (!helper.isAlphaNumeric(state.data[state.row].substring(i, i + 1))) {
                     endOfWord = i;
                     break;
                 } else if (i === state.data[state.row].length - 1) {
-                    endOfWord = state.data[state.row].length;
+                    endOfWord = state.data[state.row].length - 1;
                 }
             }
             state.clipboard = [];
             state.clipboardNewLine = false;
             state.clipboard.push(state.data[state.row].substring(beginningOfWord + 1, endOfWord));
             ncp.copy(state.clipboard.join('\n'));
-            state.data[state.row] = state.data[state.row].substring(0, beginningOfWord + 1) + state.data[state.row].substring(endOfWord);
-            state.col = beginningOfWord + 1;
+            if (beginningOfWord !== endOfWord) {
+                state.data[state.row] = state.data[state.row].substring(0, beginningOfWord + 1) + state.data[state.row].substring(endOfWord);
+                state.col = beginningOfWord + 1;
+            }
             state.mode = 'i';
+            helper.logCommand(false, state, key);
+            helper.renderScreen(state, screen);
+        } else if (key === '(' || key === ')' || key === 'b') {
+            let stack = 0;
+            let beginningOfArea = state.col;
+            for (let i = state.col; i >= 0; i -= 1) {
+                if (state.data[state.row].substring(i, i + 1) === ')') {
+                    if (i !== state.col) {
+                        stack += 1;
+                    }
+                } else if (state.data[state.row].substring(i, i + 1) === '(') {
+                    if (stack === 0) {
+                        beginningOfArea = i;
+                        break;
+                    } else {
+                        stack -= 1;
+                    }
+                } else if (i === 0) {
+                    beginningOfArea = -1;
+                }
+            }
+            if (beginningOfArea === -1) {
+                for (let i = state.col; i < state.data[state.row].length; i += 1) {
+                    if (state.data[state.row].substring(i, i + 1) === '(') {
+                        beginningOfArea = i;
+                        break;
+                    } else if (i === state.data[state.row].length - 1) {
+                        beginningOfArea = -1;
+                    }
+                }
+            }
+            let endOfArea = beginningOfArea;
+            for (let i = beginningOfArea + 1; i < state.data[state.row].length; i += 1) {
+                if (state.data[state.row].substring(i, i + 1) === '(') {
+                    stack += 1;
+                } else if (state.data[state.row].substring(i, i + 1) === ')') {
+                    if (stack === 0) {
+                        endOfArea = i;
+                        break;
+                    } else {
+                        stack -= 1;
+                    }
+                } else if (i === state.data[state.row].length - 1) {
+                    endOfArea = -1;
+                }
+            }
+            state.clipboard = [];
+            state.clipboardNewLine = false;
+            state.clipboard.push(state.data[state.row].substring(beginningOfArea + 1, endOfArea));
+            ncp.copy(state.clipboard.join('\n'));
+            if (beginningOfArea !== endOfArea && beginningOfArea !== -1 && endOfArea !== -1) {
+                state.data[state.row] = state.data[state.row].substring(0, beginningOfArea + 1) + state.data[state.row].substring(endOfArea);
+                state.col = beginningOfArea + 1;
+                state.mode = 'i';
+            }
+            helper.logCommand(false, state, key);
+            helper.renderScreen(state, screen);
+        } else if (key === '{' || key === '}' || key === 'B') {
+            let stack = 0;
+            let endOfArea = state.col;
+            for (let i = state.col; i < state.data[state.row].length; i += 1) {
+                if (state.data[state.row].substring(i, i + 1) === '}') {
+                    endOfArea = i;
+                    break;
+                } else if (i === state.data[state.row].length - 1) {
+                    endOfArea = state.data[state.row].length - 1;
+                }
+            }
+            let beginningOfArea = endOfArea;
+            for (let i = endOfArea; i >= 0; i -= 1) {
+                if (state.data[state.row].substring(i, i + 1) === '{') {
+                    beginningOfArea = i;
+                    break;
+                } else if (i === 0) {
+                    beginningOfArea = -1;
+                }
+            }
+            state.clipboard = [];
+            state.clipboardNewLine = false;
+            state.clipboard.push(state.data[state.row].substring(beginningOfArea + 1, endOfArea));
+            ncp.copy(state.clipboard.join('\n'));
+            if (beginningOfArea !== endOfArea && beginningOfArea !== -1 && endOfArea !== -1) {
+                state.data[state.row] = state.data[state.row].substring(0, beginningOfArea + 1) + state.data[state.row].substring(endOfArea);
+                state.col = beginningOfArea + 1;
+                state.mode = 'i';
+            }
+            helper.logCommand(false, state, key);
+            helper.renderScreen(state, screen);
+        } else if (key === '\'' || key === '"') {
+            let beginningOfArea = state.col;
+            for (let i = state.col; i >= 0; i -= 1) {
+                if (state.data[state.row].substring(i, i + 1) === key) {
+                    beginningOfArea = i;
+                    break;
+                } else if (i === 0) {
+                    beginningOfArea = -1;
+                }
+            }
+            if (beginningOfArea === -1) {
+                for (let i = state.col; i < state.data[state.row].length; i += 1) {
+                    if (state.data[state.row].substring(i, i + 1) === key) {
+                        beginningOfArea = i;
+                        break;
+                    } else if (i === state.data[state.row].length - 1) {
+                        beginningOfArea = -1;
+                    }
+                }
+            }
+            let endOfArea = beginningOfArea;
+            for (let i = beginningOfArea + 1; i < state.data[state.row].length; i += 1) {
+                if (state.data[state.row].substring(i, i + 1) === key) {
+                    endOfArea = i;
+                    break;
+                } else if (i === state.data[state.row].length - 1) {
+                    endOfArea = -1;
+                }
+            }
+            state.clipboard = [];
+            state.clipboardNewLine = false;
+            state.clipboard.push(state.data[state.row].substring(beginningOfArea + 1, endOfArea));
+            ncp.copy(state.clipboard.join('\n'));
+            if (beginningOfArea !== endOfArea && beginningOfArea !== -1 && endOfArea !== -1) {
+                state.data[state.row] = state.data[state.row].substring(0, beginningOfArea + 1) + state.data[state.row].substring(endOfArea);
+                state.col = beginningOfArea + 1;
+                state.mode = 'i';
+            }
             helper.logCommand(false, state, key);
             helper.renderScreen(state, screen);
         }
@@ -308,6 +436,28 @@ function handleVimKeys(key, state, screen, term) {
                 state.clipboardNewLine = true;
             }
             state.mode = 'n';
+            helper.logCommand(false, state, key);
+            helper.renderScreen(state, screen);
+        } else if (key === 'c') {
+            if (state.row >= state.visualLine.row) {
+                state.clipboard = [];
+                for (let i = state.visualLine.row; i <= state.row; i += 1) {
+                    state.clipboard.push(state.data[i]);
+                }
+                ncp.copy(state.clipboard.join('\n'));
+                state.clipboardNewLine = true;
+                state.data.splice(state.visualLine.row, state.row - state.visualLine.row + 1);
+                state.row = state.visualLine.row;
+            } else if (state.row < state.visualLine.row) {
+                state.clipboard = [];
+                for (let i = state.row; i <= state.visualLine.row; i += 1) {
+                    state.clipboard.push(state.data[i]);
+                }
+                ncp.copy(state.clipboard.join('\n'));
+                state.clipboardNewLine = true;
+                state.data.splice(state.row, state.visualLine.row - state.row + 1);
+            }
+            state.mode = 'i';
             helper.logCommand(false, state, key);
             helper.renderScreen(state, screen);
         } else if (key === 'd') {
