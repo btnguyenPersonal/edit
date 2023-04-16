@@ -1,6 +1,8 @@
 /* eslint-disable import/no-cycle */
 import ncp from 'copy-paste';
 import {
+    pasteFromClipboardBefore,
+    pasteFromClipboardAfter,
     copyToClipboard,
     isAlphaNumeric,
     isWritable,
@@ -11,6 +13,7 @@ import {
     logCommand
 } from '../util/helper.js';
 import {
+    lowerIndentLevel,
     getCoorForwardWord,
     topOfFile,
     bottomOfFile,
@@ -19,7 +22,10 @@ import {
 } from '../util/movement.js';
 
 function handleVimKeys(key, state, screen) {
-    if (state.previousKeys === 'd') {
+    if (key === 'ESCAPE') {
+        state.mode = 'n';
+        state.previousKeys = '';
+    } else if (state.previousKeys === 'd') {
         if (key === 'w') {
             const endOfWord = getCoorForwardWord(state);
             copyToClipboard(state, [state.data[state.row].substring(state.col, endOfWord)], false);
@@ -870,30 +876,7 @@ function handleVimKeys(key, state, screen) {
             logCommand(true, state, key);
             renderScreen(state, screen);
         } else if (key === '<') {
-            let tempLine = state.data[state.row];
-            let dont = false;
-            for (let i = 3; i >= 0; i -= 1) {
-                if (dont) {
-                    break;
-                }
-                for (let j = i; j >= 0; j -= 1) {
-                    if (tempLine.substring(j, j + 1) !== ' ') {
-                        dont = true;
-                    }
-                }
-                if (dont) {
-                    break;
-                }
-                if (tempLine.substring(i, i + 1) === ' ') {
-                    tempLine = tempLine.substring(0, i) + tempLine.substring(i + 1);
-                    if (state.col > 1) {
-                        state.col -= 1;
-                    }
-                } else {
-                    break;
-                }
-            }
-            state.data[state.row] = tempLine;
+            lowerIndentLevel(state);
             createSnapshot(state);
             logCommand(true, state, key);
             renderScreen(state, screen);
@@ -905,46 +888,13 @@ function handleVimKeys(key, state, screen) {
             logCommand(true, state, key);
             renderScreen(state, screen);
         } else if (key === 'p') {
-            state.clipboard = ncp.paste().split('\n');
-            if (state.clipboard.length > 0) {
-                if (state.clipboardNewLine) {
-                    for (let i = state.clipboard.length - 1; i >= 0; i -= 1) {
-                        state.data.splice(state.row + 1, 0, state.clipboard[i]);
-                    }
-                } else {
-                    const cutoff = state.data[state.row].substring(state.col + 1);
-                    state.data[state.row] = state.data[state.row].substring(0, state.col + 1) + state.clipboard[0];
-                    let counterRow = state.row;
-                    for (let i = state.clipboard.length - 1; i >= 1; i -= 1) {
-                        state.data.splice(state.row + 1, 0, state.clipboard[i]);
-                        counterRow += 1;
-                    }
-                    state.data[counterRow] += cutoff;
-                }
+            if (pasteFromClipboardAfter(state)) {
                 createSnapshot(state);
                 logCommand(true, state, key);
                 renderScreen(state, screen);
             }
         } else if (key === 'P') {
-            const systemPaste = ncp.paste().split('\n');
-            if (state.clipboard !== systemPaste) {
-                state.clipboard = systemPaste;
-            }
-            if (state.clipboard.length > 0) {
-                if (state.clipboardNewLine) {
-                    for (let i = state.clipboard.length - 1; i >= 0; i -= 1) {
-                        state.data.splice(state.row, 0, state.clipboard[i]);
-                    }
-                } else {
-                    const cutoff = state.data[state.row].substring(state.col);
-                    state.data[state.row] = state.data[state.row].substring(0, state.col) + state.clipboard[0];
-                    let counterRow = state.row;
-                    for (let i = state.clipboard.length - 1; i >= 1; i -= 1) {
-                        state.data.splice(state.row + 1, 0, state.clipboard[i]);
-                        counterRow += 1;
-                    }
-                    state.data[counterRow] += cutoff;
-                }
+            if (pasteFromClipboardBefore(state)) {
                 createSnapshot(state);
                 logCommand(true, state, key);
                 renderScreen(state, screen);

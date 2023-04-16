@@ -56,7 +56,35 @@ function getCoorForwardWord(state) {
     return endOfWord;
 }
 
+function lowerIndentLevel(state) {
+    let tempLine = state.data[state.row];
+    let dont = false;
+    for (let i = 3; i >= 0; i -= 1) {
+        if (dont) {
+            break;
+        }
+        for (let j = i; j >= 0; j -= 1) {
+            if (tempLine.substring(j, j + 1) !== ' ') {
+                dont = true;
+            }
+        }
+        if (dont) {
+            break;
+        }
+        if (tempLine.substring(i, i + 1) === ' ') {
+            tempLine = tempLine.substring(0, i) + tempLine.substring(i + 1);
+            if (state.col > 1) {
+                state.col -= 1;
+            }
+        } else {
+            break;
+        }
+    }
+    state.data[state.row] = tempLine;
+}
+
 export {
+    lowerIndentLevel,
     getCoorForwardWord,
     topOfFile,
     bottomOfFile,

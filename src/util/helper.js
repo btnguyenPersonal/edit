@@ -6,6 +6,56 @@ import { handleVimKeys } from '../keybinds/vimKeys.js';
 import { handleVisualKeys } from '../keybinds/visualKeys.js';
 import { handleVisualLineKeys } from '../keybinds/visualLineKeys.js';
 
+function pasteFromClipboardBefore(state) {
+    const systemPaste = ncp.paste().split('\n');
+    if (state.clipboard !== systemPaste) {
+        state.clipboard = systemPaste;
+    }
+    if (state.clipboard.length > 0) {
+        if (state.clipboardNewLine) {
+            for (let i = state.clipboard.length - 1; i >= 0; i -= 1) {
+                state.data.splice(state.row, 0, state.clipboard[i]);
+            }
+        } else {
+            const cutoff = state.data[state.row].substring(state.col);
+            state.data[state.row] = state.data[state.row].substring(0, state.col) + state.clipboard[0];
+            let counterRow = state.row;
+            for (let i = state.clipboard.length - 1; i >= 1; i -= 1) {
+                state.data.splice(state.row + 1, 0, state.clipboard[i]);
+                counterRow += 1;
+            }
+            state.data[counterRow] += cutoff;
+        }
+        return true;
+    }
+    return false;
+}
+
+function pasteFromClipboardAfter(state) {
+    const systemPaste = ncp.paste().split('\n');
+    if (state.clipboard !== systemPaste) {
+        state.clipboard = systemPaste;
+    }
+    if (state.clipboard.length > 0) {
+        if (state.clipboardNewLine) {
+            for (let i = state.clipboard.length - 1; i >= 0; i -= 1) {
+                state.data.splice(state.row + 1, 0, state.clipboard[i]);
+            }
+        } else {
+            const cutoff = state.data[state.row].substring(state.col + 1);
+            state.data[state.row] = state.data[state.row].substring(0, state.col + 1) + state.clipboard[0];
+            let counterRow = state.row;
+            for (let i = state.clipboard.length - 1; i >= 1; i -= 1) {
+                state.data.splice(state.row + 1, 0, state.clipboard[i]);
+                counterRow += 1;
+            }
+            state.data[counterRow] += cutoff;
+        }
+        return true;
+    }
+    return false;
+}
+
 function isAlphaNumeric(s) {
     return '1234567890QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm'.indexOf(s) > -1;
 }
@@ -195,6 +245,8 @@ function arraysEqual(a, b) {
 }
 
 export {
+    pasteFromClipboardBefore,
+    pasteFromClipboardAfter,
     copyToClipboard,
     isAlphaNumeric,
     isWritable,
