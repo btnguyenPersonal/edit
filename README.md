@@ -26,6 +26,7 @@ this is my experiment for making a new code editor
     - visual deletes don't move windowLine
     - visual dot commands moving cursor in weird places
     - don't store col and row with clipboard
+    - gg not working right
 ## todo
     - t T
     - f F
