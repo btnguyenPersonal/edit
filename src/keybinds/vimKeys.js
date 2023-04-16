@@ -109,15 +109,492 @@ function handleVimKeys(key, state, screen, term) {
             helper.createSnapshot(state);
             helper.logCommand(false, state, key);
             helper.renderScreen(state, screen);
+        } else if (key === '(' || key === ')' || key === 'b') {
+            let stack = 0;
+            let beginningOfArea = state.col;
+            for (let i = state.col; i >= 0; i -= 1) {
+                if (state.data[state.row].substring(i, i + 1) === ')') {
+                    if (i !== state.col) {
+                        stack += 1;
+                    }
+                } else if (state.data[state.row].substring(i, i + 1) === '(') {
+                    if (stack === 0) {
+                        beginningOfArea = i;
+                        break;
+                    } else {
+                        stack -= 1;
+                    }
+                } else if (i === 0) {
+                    beginningOfArea = -1;
+                }
+            }
+            if (beginningOfArea === -1) {
+                for (let i = state.col; i < state.data[state.row].length; i += 1) {
+                    if (state.data[state.row].substring(i, i + 1) === '(') {
+                        beginningOfArea = i;
+                        break;
+                    } else if (i === state.data[state.row].length - 1) {
+                        beginningOfArea = -1;
+                    }
+                }
+            }
+            let endOfArea = beginningOfArea;
+            for (let i = beginningOfArea + 1; i < state.data[state.row].length; i += 1) {
+                if (state.data[state.row].substring(i, i + 1) === '(') {
+                    stack += 1;
+                } else if (state.data[state.row].substring(i, i + 1) === ')') {
+                    if (stack === 0) {
+                        endOfArea = i;
+                        break;
+                    } else {
+                        stack -= 1;
+                    }
+                } else if (i === state.data[state.row].length - 1) {
+                    endOfArea = -1;
+                }
+            }
+            state.clipboard = [];
+            state.clipboardNewLine = false;
+            state.clipboard.push(state.data[state.row].substring(beginningOfArea + 1, endOfArea));
+            ncp.copy(state.clipboard.join('\n'));
+            if (beginningOfArea !== endOfArea && beginningOfArea !== -1 && endOfArea !== -1) {
+                state.data[state.row] = state.data[state.row].substring(0, beginningOfArea + 1) + state.data[state.row].substring(endOfArea);
+                state.col = beginningOfArea + 1;
+                helper.createSnapshot(state);
+            }
+            helper.logCommand(false, state, key);
+            helper.renderScreen(state, screen);
+        } else if (key === '{' || key === '}' || key === 'B') {
+            let stack = 0;
+            let beginningOfArea = state.col;
+            for (let i = state.col; i >= 0; i -= 1) {
+                if (state.data[state.row].substring(i, i + 1) === '}') {
+                    if (i !== state.col) {
+                        stack += 1;
+                    }
+                } else if (state.data[state.row].substring(i, i + 1) === '{') {
+                    if (stack === 0) {
+                        beginningOfArea = i;
+                        break;
+                    } else {
+                        stack -= 1;
+                    }
+                } else if (i === 0) {
+                    beginningOfArea = -1;
+                }
+            }
+            if (beginningOfArea === -1) {
+                for (let i = state.col; i < state.data[state.row].length; i += 1) {
+                    if (state.data[state.row].substring(i, i + 1) === '{') {
+                        beginningOfArea = i;
+                        break;
+                    } else if (i === state.data[state.row].length - 1) {
+                        beginningOfArea = -1;
+                    }
+                }
+            }
+            let endOfArea = beginningOfArea;
+            for (let i = beginningOfArea + 1; i < state.data[state.row].length; i += 1) {
+                if (state.data[state.row].substring(i, i + 1) === '{') {
+                    stack += 1;
+                } else if (state.data[state.row].substring(i, i + 1) === '}') {
+                    if (stack === 0) {
+                        endOfArea = i;
+                        break;
+                    } else {
+                        stack -= 1;
+                    }
+                } else if (i === state.data[state.row].length - 1) {
+                    endOfArea = -1;
+                }
+            }
+            state.clipboard = [];
+            state.clipboardNewLine = false;
+            state.clipboard.push(state.data[state.row].substring(beginningOfArea + 1, endOfArea));
+            ncp.copy(state.clipboard.join('\n'));
+            if (beginningOfArea !== endOfArea && beginningOfArea !== -1 && endOfArea !== -1) {
+                state.data[state.row] = state.data[state.row].substring(0, beginningOfArea + 1) + state.data[state.row].substring(endOfArea);
+                state.col = beginningOfArea + 1;
+                helper.createSnapshot(state);
+            }
+            helper.logCommand(false, state, key);
+            helper.renderScreen(state, screen);
+        } else if (key === '\'' || key === '"') {
+            let beginningOfArea = state.col;
+            for (let i = state.col; i >= 0; i -= 1) {
+                if (state.data[state.row].substring(i, i + 1) === key) {
+                    beginningOfArea = i;
+                    break;
+                } else if (i === 0) {
+                    beginningOfArea = -1;
+                }
+            }
+            if (beginningOfArea === -1) {
+                for (let i = state.col; i < state.data[state.row].length; i += 1) {
+                    if (state.data[state.row].substring(i, i + 1) === key) {
+                        beginningOfArea = i;
+                        break;
+                    } else if (i === state.data[state.row].length - 1) {
+                        beginningOfArea = -1;
+                    }
+                }
+            }
+            let endOfArea = beginningOfArea;
+            for (let i = beginningOfArea + 1; i < state.data[state.row].length; i += 1) {
+                if (state.data[state.row].substring(i, i + 1) === key) {
+                    endOfArea = i;
+                    break;
+                } else if (i === state.data[state.row].length - 1) {
+                    endOfArea = -1;
+                }
+            }
+            state.clipboard = [];
+            state.clipboardNewLine = false;
+            state.clipboard.push(state.data[state.row].substring(beginningOfArea + 1, endOfArea));
+            ncp.copy(state.clipboard.join('\n'));
+            if (beginningOfArea !== endOfArea && beginningOfArea !== -1 && endOfArea !== -1) {
+                state.data[state.row] = state.data[state.row].substring(0, beginningOfArea + 1) + state.data[state.row].substring(endOfArea);
+                state.col = beginningOfArea + 1;
+                helper.createSnapshot(state);
+            }
+            helper.logCommand(false, state, key);
+            helper.renderScreen(state, screen);
+        }
+        state.previousKeys = '';
+    } else if (state.previousKeys === 'vi') {
+        if (key === 'w') {
+            let beginningOfWord = state.col;
+            for (let i = state.col; i >= 0; i -= 1) {
+                if (!helper.isAlphaNumeric(state.data[state.row].substring(i, i + 1))) {
+                    beginningOfWord = i;
+                    break;
+                } else if (i === 0) {
+                    beginningOfWord = -1;
+                }
+            }
+            let endOfWord = state.col;
+            for (let i = state.col; i < state.data[state.row].length; i += 1) {
+                if (!helper.isAlphaNumeric(state.data[state.row].substring(i, i + 1))) {
+                    endOfWord = i;
+                    break;
+                } else if (i === state.data[state.row].length - 1) {
+                    endOfWord = state.data[state.row].length;
+                }
+            }
+            if (beginningOfWord !== endOfWord) {
+                state.visual.col = beginningOfWord + 1;
+                state.col = endOfWord - 1;
+            }
+            helper.logCommand(false, state, key);
+            helper.renderScreen(state, screen);
+        } else if (key === '(' || key === ')' || key === 'b') {
+            let stack = 0;
+            let beginningOfArea = state.col;
+            for (let i = state.col; i >= 0; i -= 1) {
+                if (state.data[state.row].substring(i, i + 1) === ')') {
+                    if (i !== state.col) {
+                        stack += 1;
+                    }
+                } else if (state.data[state.row].substring(i, i + 1) === '(') {
+                    if (stack === 0) {
+                        beginningOfArea = i;
+                        break;
+                    } else {
+                        stack -= 1;
+                    }
+                } else if (i === 0) {
+                    beginningOfArea = -1;
+                }
+            }
+            if (beginningOfArea === -1) {
+                for (let i = state.col; i < state.data[state.row].length; i += 1) {
+                    if (state.data[state.row].substring(i, i + 1) === '(') {
+                        beginningOfArea = i;
+                        break;
+                    } else if (i === state.data[state.row].length - 1) {
+                        beginningOfArea = -1;
+                    }
+                }
+            }
+            let endOfArea = beginningOfArea;
+            for (let i = beginningOfArea + 1; i < state.data[state.row].length; i += 1) {
+                if (state.data[state.row].substring(i, i + 1) === '(') {
+                    stack += 1;
+                } else if (state.data[state.row].substring(i, i + 1) === ')') {
+                    if (stack === 0) {
+                        endOfArea = i;
+                        break;
+                    } else {
+                        stack -= 1;
+                    }
+                } else if (i === state.data[state.row].length - 1) {
+                    endOfArea = -1;
+                }
+            }
+            if (beginningOfArea !== endOfArea) {
+                state.visual.col = beginningOfArea + 1;
+                state.col = endOfArea - 1;
+            }
+            helper.logCommand(false, state, key);
+            helper.renderScreen(state, screen);
+        } else if (key === '{' || key === '}' || key === 'B') {
+            let stack = 0;
+            let beginningOfArea = state.col;
+            for (let i = state.col; i >= 0; i -= 1) {
+                if (state.data[state.row].substring(i, i + 1) === '}') {
+                    if (i !== state.col) {
+                        stack += 1;
+                    }
+                } else if (state.data[state.row].substring(i, i + 1) === '}') {
+                    if (stack === 0) {
+                        beginningOfArea = i;
+                        break;
+                    } else {
+                        stack -= 1;
+                    }
+                } else if (i === 0) {
+                    beginningOfArea = -1;
+                }
+            }
+            if (beginningOfArea === -1) {
+                for (let i = state.col; i < state.data[state.row].length; i += 1) {
+                    if (state.data[state.row].substring(i, i + 1) === '{') {
+                        beginningOfArea = i;
+                        break;
+                    } else if (i === state.data[state.row].length - 1) {
+                        beginningOfArea = -1;
+                    }
+                }
+            }
+            let endOfArea = beginningOfArea;
+            for (let i = beginningOfArea + 1; i < state.data[state.row].length; i += 1) {
+                if (state.data[state.row].substring(i, i + 1) === '{') {
+                    stack += 1;
+                } else if (state.data[state.row].substring(i, i + 1) === '}') {
+                    if (stack === 0) {
+                        endOfArea = i;
+                        break;
+                    } else {
+                        stack -= 1;
+                    }
+                } else if (i === state.data[state.row].length - 1) {
+                    endOfArea = -1;
+                }
+            }
+            if (beginningOfArea !== endOfArea) {
+                state.visual.col = beginningOfArea + 1;
+                state.col = endOfArea - 1;
+            }
+            helper.logCommand(false, state, key);
+            helper.renderScreen(state, screen);
+        } else if (key === '\'' || key === '"') {
+            let beginningOfArea = state.col;
+            for (let i = state.col; i >= 0; i -= 1) {
+                if (state.data[state.row].substring(i, i + 1) === key) {
+                    beginningOfArea = i;
+                    break;
+                } else if (i === 0) {
+                    beginningOfArea = -1;
+                }
+            }
+            if (beginningOfArea === -1) {
+                for (let i = state.col; i < state.data[state.row].length; i += 1) {
+                    if (state.data[state.row].substring(i, i + 1) === key) {
+                        beginningOfArea = i;
+                        break;
+                    } else if (i === state.data[state.row].length - 1) {
+                        beginningOfArea = -1;
+                    }
+                }
+            }
+            let endOfArea = beginningOfArea;
+            for (let i = beginningOfArea + 1; i < state.data[state.row].length; i += 1) {
+                if (state.data[state.row].substring(i, i + 1) === key) {
+                    endOfArea = i;
+                    break;
+                } else if (i === state.data[state.row].length - 1) {
+                    endOfArea = -1;
+                }
+            }
+            if (beginningOfArea !== endOfArea) {
+                state.visual.col = beginningOfArea + 1;
+                state.col = endOfArea - 1;
+            }
+            helper.logCommand(false, state, key);
+            helper.renderScreen(state, screen);
+        }
+        state.previousKeys = '';
+    } else if (state.previousKeys === 'yi') {
+        if (key === 'w') {
+            let beginningOfWord = state.col;
+            for (let i = state.col; i >= 0; i -= 1) {
+                if (!helper.isAlphaNumeric(state.data[state.row].substring(i, i + 1))) {
+                    beginningOfWord = i;
+                    break;
+                } else if (i === 0) {
+                    beginningOfWord = -1;
+                }
+            }
+            let endOfWord = state.col;
+            for (let i = state.col; i < state.data[state.row].length; i += 1) {
+                if (!helper.isAlphaNumeric(state.data[state.row].substring(i, i + 1))) {
+                    endOfWord = i;
+                    break;
+                } else if (i === state.data[state.row].length - 1) {
+                    endOfWord = state.data[state.row].length;
+                }
+            }
+            state.clipboard = [];
+            state.clipboardNewLine = false;
+            state.clipboard.push(state.data[state.row].substring(beginningOfWord + 1, endOfWord));
+            ncp.copy(state.clipboard.join('\n'));
+            state.col = beginningOfWord + 1;
+            helper.renderScreen(state, screen);
+        } else if (key === '(' || key === ')' || key === 'b') {
+            let stack = 0;
+            let beginningOfArea = state.col;
+            for (let i = state.col; i >= 0; i -= 1) {
+                if (state.data[state.row].substring(i, i + 1) === ')') {
+                    if (i !== state.col) {
+                        stack += 1;
+                    }
+                } else if (state.data[state.row].substring(i, i + 1) === '(') {
+                    if (stack === 0) {
+                        beginningOfArea = i;
+                        break;
+                    } else {
+                        stack -= 1;
+                    }
+                } else if (i === 0) {
+                    beginningOfArea = -1;
+                }
+            }
+            if (beginningOfArea === -1) {
+                for (let i = state.col; i < state.data[state.row].length; i += 1) {
+                    if (state.data[state.row].substring(i, i + 1) === '(') {
+                        beginningOfArea = i;
+                        break;
+                    } else if (i === state.data[state.row].length - 1) {
+                        beginningOfArea = -1;
+                    }
+                }
+            }
+            let endOfArea = beginningOfArea;
+            for (let i = beginningOfArea + 1; i < state.data[state.row].length; i += 1) {
+                if (state.data[state.row].substring(i, i + 1) === '(') {
+                    stack += 1;
+                } else if (state.data[state.row].substring(i, i + 1) === ')') {
+                    if (stack === 0) {
+                        endOfArea = i;
+                        break;
+                    } else {
+                        stack -= 1;
+                    }
+                } else if (i === state.data[state.row].length - 1) {
+                    endOfArea = -1;
+                }
+            }
+            state.clipboard = [];
+            state.clipboardNewLine = false;
+            state.clipboard.push(state.data[state.row].substring(beginningOfArea + 1, endOfArea));
+            ncp.copy(state.clipboard.join('\n'));
+            if (beginningOfArea !== endOfArea && beginningOfArea !== -1 && endOfArea !== -1) {
+                state.col = beginningOfArea + 1;
+            }
+            helper.renderScreen(state, screen);
+        } else if (key === '{' || key === '}' || key === 'B') {
+            let stack = 0;
+            let beginningOfArea = state.col;
+            for (let i = state.col; i >= 0; i -= 1) {
+                if (state.data[state.row].substring(i, i + 1) === '}') {
+                    if (i !== state.col) {
+                        stack += 1;
+                    }
+                } else if (state.data[state.row].substring(i, i + 1) === '{') {
+                    if (stack === 0) {
+                        beginningOfArea = i;
+                        break;
+                    } else {
+                        stack -= 1;
+                    }
+                } else if (i === 0) {
+                    beginningOfArea = -1;
+                }
+            }
+            if (beginningOfArea === -1) {
+                for (let i = state.col; i < state.data[state.row].length; i += 1) {
+                    if (state.data[state.row].substring(i, i + 1) === '{') {
+                        beginningOfArea = i;
+                        break;
+                    } else if (i === state.data[state.row].length - 1) {
+                        beginningOfArea = -1;
+                    }
+                }
+            }
+            let endOfArea = beginningOfArea;
+            for (let i = beginningOfArea + 1; i < state.data[state.row].length; i += 1) {
+                if (state.data[state.row].substring(i, i + 1) === '{') {
+                    stack += 1;
+                } else if (state.data[state.row].substring(i, i + 1) === '}') {
+                    if (stack === 0) {
+                        endOfArea = i;
+                        break;
+                    } else {
+                        stack -= 1;
+                    }
+                } else if (i === state.data[state.row].length - 1) {
+                    endOfArea = -1;
+                }
+            }
+            state.clipboard = [];
+            state.clipboardNewLine = false;
+            state.clipboard.push(state.data[state.row].substring(beginningOfArea + 1, endOfArea));
+            ncp.copy(state.clipboard.join('\n'));
+            if (beginningOfArea !== endOfArea && beginningOfArea !== -1 && endOfArea !== -1) {
+                state.col = beginningOfArea + 1;
+            }
+            helper.renderScreen(state, screen);
+        } else if (key === '\'' || key === '"') {
+            let beginningOfArea = state.col;
+            for (let i = state.col; i >= 0; i -= 1) {
+                if (state.data[state.row].substring(i, i + 1) === key) {
+                    beginningOfArea = i;
+                    break;
+                } else if (i === 0) {
+                    beginningOfArea = -1;
+                }
+            }
+            if (beginningOfArea === -1) {
+                for (let i = state.col; i < state.data[state.row].length; i += 1) {
+                    if (state.data[state.row].substring(i, i + 1) === key) {
+                        beginningOfArea = i;
+                        break;
+                    } else if (i === state.data[state.row].length - 1) {
+                        beginningOfArea = -1;
+                    }
+                }
+            }
+            let endOfArea = beginningOfArea;
+            for (let i = beginningOfArea + 1; i < state.data[state.row].length; i += 1) {
+                if (state.data[state.row].substring(i, i + 1) === key) {
+                    endOfArea = i;
+                    break;
+                } else if (i === state.data[state.row].length - 1) {
+                    endOfArea = -1;
+                }
+            }
+            state.clipboard = [];
+            state.clipboardNewLine = false;
+            state.clipboard.push(state.data[state.row].substring(beginningOfArea + 1, endOfArea));
+            ncp.copy(state.clipboard.join('\n'));
+            if (beginningOfArea !== endOfArea && beginningOfArea !== -1 && endOfArea !== -1) {
+                state.col = beginningOfArea + 1;
+            }
+            helper.renderScreen(state, screen);
         }
         state.previousKeys = '';
     } else if (state.previousKeys === 'y') {
-        if (key === 'CTRL_S') {
-            helper.saveFile(term, state.file, state.data);
-        } else if (key === 'CTRL_C') {
-            term.fullscreen(false);
-            process.exit();
-        } else if (key === 'j') {
+        if (key === 'j') {
             state.clipboard = [];
             state.clipboard.push(state.data[state.row]);
             if (state.data[state.row + 1]) {
@@ -126,6 +603,7 @@ function handleVimKeys(key, state, screen, term) {
             state.clipboardNewLine = true;
             ncp.copy(state.clipboard.join('\n'));
             helper.logCommand(false, state, key);
+            state.previousKeys = '';
         } else if (key === 'k') {
             state.clipboard = [];
             if (state.data[state.row - 1]) {
@@ -135,21 +613,19 @@ function handleVimKeys(key, state, screen, term) {
             state.clipboardNewLine = true;
             ncp.copy(state.clipboard.join('\n'));
             helper.logCommand(false, state, key);
+            state.previousKeys = '';
         } else if (key === 'y') {
             state.clipboard = [];
             state.clipboard.push(state.data[state.row]);
             state.clipboardNewLine = true;
             ncp.copy(state.clipboard.join('\n'));
             helper.logCommand(false, state, key);
+            state.previousKeys = '';
+        } else if (key === 'i') {
+            state.previousKeys += 'i';
         }
-        state.previousKeys = '';
     } else if (state.previousKeys === 'r') {
-        if (key === 'CTRL_S') {
-            helper.saveFile(term, state.file, state.data);
-        } else if (key === 'CTRL_C') {
-            term.fullscreen(false);
-            process.exit();
-        } else if (helper.isWritable(key)) {
+        if (helper.isWritable(key)) {
             state.data[state.row] = state.data[state.row].substring(0, state.col)
                 + key
                 + state.data[state.row].substring(state.col + 1);
@@ -159,12 +635,7 @@ function handleVimKeys(key, state, screen, term) {
         helper.logCommand(false, state, key);
         state.previousKeys = '';
     } else if (state.previousKeys.endsWith('g')) {
-        if (key === 'CTRL_S') {
-            helper.saveFile(term, state.file, state.data);
-        } else if (key === 'CTRL_C') {
-            term.fullscreen(false);
-            process.exit();
-        } else if (key === 'g') {
+        if (key === 'g') {
             while (state.row !== 0) {
                 if (state.row > 0) {
                     state.row -= 1;
@@ -178,13 +649,7 @@ function handleVimKeys(key, state, screen, term) {
         helper.logCommand(false, state, key);
         state.previousKeys = '';
     } else if (state.previousKeys === 'c') {
-        if (key === 'CTRL_S') {
-            helper.saveFile(term, state.file, state.data);
-            state.previousKeys = '';
-        } else if (key === 'CTRL_C') {
-            term.fullscreen(false);
-            process.exit();
-        } else if (key === 'i') {
+        if (key === 'i') {
             state.previousKeys += 'i';
             helper.logCommand(false, state, key);
         } else if (key === 'w') {
@@ -309,22 +774,46 @@ function handleVimKeys(key, state, screen, term) {
             helper.renderScreen(state, screen);
         } else if (key === '{' || key === '}' || key === 'B') {
             let stack = 0;
-            let endOfArea = state.col;
-            for (let i = state.col; i < state.data[state.row].length; i += 1) {
+            let beginningOfArea = state.col;
+            for (let i = state.col; i >= 0; i -= 1) {
                 if (state.data[state.row].substring(i, i + 1) === '}') {
-                    endOfArea = i;
-                    break;
-                } else if (i === state.data[state.row].length - 1) {
-                    endOfArea = state.data[state.row].length - 1;
-                }
-            }
-            let beginningOfArea = endOfArea;
-            for (let i = endOfArea; i >= 0; i -= 1) {
-                if (state.data[state.row].substring(i, i + 1) === '{') {
-                    beginningOfArea = i;
-                    break;
+                    if (i !== state.col) {
+                        stack += 1;
+                    }
+                } else if (state.data[state.row].substring(i, i + 1) === '{') {
+                    if (stack === 0) {
+                        beginningOfArea = i;
+                        break;
+                    } else {
+                        stack -= 1;
+                    }
                 } else if (i === 0) {
                     beginningOfArea = -1;
+                }
+            }
+            if (beginningOfArea === -1) {
+                for (let i = state.col; i < state.data[state.row].length; i += 1) {
+                    if (state.data[state.row].substring(i, i + 1) === '{') {
+                        beginningOfArea = i;
+                        break;
+                    } else if (i === state.data[state.row].length - 1) {
+                        beginningOfArea = -1;
+                    }
+                }
+            }
+            let endOfArea = beginningOfArea;
+            for (let i = beginningOfArea + 1; i < state.data[state.row].length; i += 1) {
+                if (state.data[state.row].substring(i, i + 1) === '{') {
+                    stack += 1;
+                } else if (state.data[state.row].substring(i, i + 1) === '}') {
+                    if (stack === 0) {
+                        endOfArea = i;
+                        break;
+                    } else {
+                        stack -= 1;
+                    }
+                } else if (i === state.data[state.row].length - 1) {
+                    endOfArea = -1;
                 }
             }
             state.clipboard = [];
@@ -908,6 +1397,9 @@ function handleVimKeys(key, state, screen, term) {
             state.mode = 'i';
             helper.logCommand(false, state, key);
             helper.renderScreen(state, screen);
+        } else if (key === 'i') {
+            state.previousKeys = 'vi';
+            helper.logCommand(false, state, key);
         } else if (key === 'ESCAPE') {
             state.mode = 'n';
             helper.renderScreen(state, screen);
