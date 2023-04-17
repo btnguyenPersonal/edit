@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import fs from 'fs';
 import pkg from 'terminal-kit';
-import * as helper from './util/helper.js';
+import { sendKeys, saveFile, renderScreen, createSnapshot } from './util/helper.js';
 import { handleMouseInputs } from './keybinds/mouse.js';
 
 const { terminal, ScreenBuffer } = pkg;
@@ -57,20 +57,20 @@ const screen = new ScreenBuffer({ dst: term, noFill: true });
 term.grabInput({ mouse: 'button' });
 term.fullscreen(true);
 term.windowTitle('edit');
-helper.renderScreen(state, screen);
-helper.createSnapshot(state);
+renderScreen(state, screen);
+createSnapshot(state);
 state.isSaved = true;
 
 term.on('key', (key) => {
     try {
         if (key === 'CTRL_S') {
-            helper.saveFile(state, term);
-            helper.renderScreen(state, screen);
+            saveFile(state, term);
+            renderScreen(state, screen);
         } else if (key === 'CTRL_C') {
             term.fullscreen(false);
             process.exit();
         } else {
-            helper.sendKeys([key], state, screen, term);
+            sendKeys([key], state, screen, term);
         }
     } catch (e) {
         term.fullscreen(false);
@@ -91,7 +91,7 @@ term.on('mouse', (name, coor) => {
 
 term.on('resize', () => {
     try {
-        helper.renderScreen(state, screen);
+        renderScreen(state, screen);
     } catch (e) {
         term.fullscreen(false);
         console.log(e);
