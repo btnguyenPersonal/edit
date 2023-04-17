@@ -29,6 +29,8 @@ this is my experiment for making a new code editor
     - gg not working right
     - <c-o> <c-i>
     - priming function for the snapshots? take row col from before edit
+    - Vc not working
+    - cj ck
 ## todo
     - t T
     - f F

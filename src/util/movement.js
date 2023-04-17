@@ -1,5 +1,5 @@
 /* eslint-disable import/no-cycle */
-import { isAlphaNumeric } from './helper.js';
+import { copyToClipboard, isAlphaNumeric } from './helper.js';
 
 function upHalfScreen(state) {
     for (let i = 0; i < process.stdout.rows / 2; i += 1) {
@@ -274,6 +274,21 @@ function removeInsideAreaSameLine(state, beginning, end, mode) {
     }
 }
 
+function copyInsideAreaSameLine(state, beginning, end) {
+    if (beginning !== end && beginning !== -1 && end !== -1) {
+        copyToClipboard(state, [state.data[state.row].substring(beginning + 1, end)], false);
+        state.col = beginning + 1;
+    }
+}
+
+function getIndentLevelFrom(state, row) {
+    let indentLevel = getIndentLevel(state, row);
+    if (state.data[row].endsWith('}') || state.data[row].endsWith(')')) {
+        indentLevel += 4;
+    }
+    return indentLevel;
+}
+
 export {
     up,
     down,
@@ -294,5 +309,7 @@ export {
     getCoorsInsideCharDiff,
     getCoorsInsideWord,
     removeInsideAreaSameLine,
+    copyInsideAreaSameLine,
+    getIndentLevelFrom,
 };
 

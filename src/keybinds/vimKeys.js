@@ -1,5 +1,4 @@
 /* eslint-disable import/no-cycle */
-import ncp from 'copy-paste';
 import {
     pasteFromClipboardBefore,
     pasteFromClipboardAfter,
@@ -32,6 +31,8 @@ import {
     getCoorsInsideCharDiff,
     getCoorsInsideWord,
     removeInsideAreaSameLine,
+    copyInsideAreaSameLine,
+    getIndentLevelFrom,
 } from '../util/movement.js';
 
 function handleVimKeys(key, state, screen) {
@@ -75,12 +76,7 @@ function handleVimKeys(key, state, screen) {
             if (state.data[state.row - 1]) {
                 state.data.splice(state.row - 1, 1);
             }
-            if (state.row > 0) {
-                state.row -= 1;
-                if (state.row < state.windowLine) {
-                    state.windowLine -= 1;
-                }
-            }
+            up(state);
             state.col = 0;
             state.previousKeys = '';
             createSnapshot(state);
@@ -103,380 +99,77 @@ function handleVimKeys(key, state, screen) {
         }
     } else if (state.previousKeys === 'di') {
         if (key === 'w') {
-            let beginningOfWord = state.col;
-            for (let i = state.col; i >= 0; i -= 1) {
-                if (!isAlphaNumeric(state.data[state.row].substring(i, i + 1))) {
-                    beginningOfWord = i;
-                    break;
-                } else if (i === 0) {
-                    beginningOfWord = -1;
-                }
-            }
-            let endOfWord = state.col;
-            for (let i = state.col; i < state.data[state.row].length; i += 1) {
-                if (!isAlphaNumeric(state.data[state.row].substring(i, i + 1))) {
-                    endOfWord = i;
-                    break;
-                } else if (i === state.data[state.row].length - 1) {
-                    endOfWord = state.data[state.row].length;
-                }
-            }
-            state.clipboard = [];
-            state.clipboardNewLine = false;
-            state.clipboard.push(state.data[state.row].substring(beginningOfWord + 1, endOfWord));
-            ncp.copy(state.clipboard.join('\n'));
-            state.data[state.row] = state.data[state.row].substring(0, beginningOfWord + 1) + state.data[state.row].substring(endOfWord);
-            state.col = beginningOfWord + 1;
-            createSnapshot(state);
+            const { beginning, end } = getCoorsInsideWord(state);
+            copyToClipboard(state, [state.data[state.row].substring(beginning + 1, end)], false);
+            removeInsideAreaSameLine(state, beginning, end, 'n');
+            logCommand(false, state, key);
+            renderScreen(state, screen);
+        } else if (key === '[' || key === ']') {
+            const { beginning, end } = getCoorsInsideCharDiff(state, '[', ']');
+            copyToClipboard(state, [state.data[state.row].substring(beginning + 1, end)], false);
+            removeInsideAreaSameLine(state, beginning, end, 'n');
             logCommand(false, state, key);
             renderScreen(state, screen);
         } else if (key === '(' || key === ')' || key === 'b') {
-            let stack = 0;
-            let beginningOfArea = state.col;
-            for (let i = state.col; i >= 0; i -= 1) {
-                if (state.data[state.row].substring(i, i + 1) === ')') {
-                    if (i !== state.col) {
-                        stack += 1;
-                    }
-                } else if (state.data[state.row].substring(i, i + 1) === '(') {
-                    if (stack === 0) {
-                        beginningOfArea = i;
-                        break;
-                    } else {
-                        stack -= 1;
-                    }
-                } else if (i === 0) {
-                    beginningOfArea = -1;
-                }
-            }
-            if (beginningOfArea === -1) {
-                for (let i = state.col; i < state.data[state.row].length; i += 1) {
-                    if (state.data[state.row].substring(i, i + 1) === '(') {
-                        beginningOfArea = i;
-                        break;
-                    } else if (i === state.data[state.row].length - 1) {
-                        beginningOfArea = -1;
-                    }
-                }
-            }
-            let endOfArea = beginningOfArea;
-            for (let i = beginningOfArea + 1; i < state.data[state.row].length; i += 1) {
-                if (state.data[state.row].substring(i, i + 1) === '(') {
-                    stack += 1;
-                } else if (state.data[state.row].substring(i, i + 1) === ')') {
-                    if (stack === 0) {
-                        endOfArea = i;
-                        break;
-                    } else {
-                        stack -= 1;
-                    }
-                } else if (i === state.data[state.row].length - 1) {
-                    endOfArea = -1;
-                }
-            }
-            state.clipboard = [];
-            state.clipboardNewLine = false;
-            state.clipboard.push(state.data[state.row].substring(beginningOfArea + 1, endOfArea));
-            ncp.copy(state.clipboard.join('\n'));
-            if (beginningOfArea !== endOfArea && beginningOfArea !== -1 && endOfArea !== -1) {
-                state.data[state.row] = state.data[state.row].substring(0, beginningOfArea + 1) + state.data[state.row].substring(endOfArea);
-                state.col = beginningOfArea + 1;
-                createSnapshot(state);
-            }
+            const { beginning, end } = getCoorsInsideCharDiff(state, '(', ')');
+            copyToClipboard(state, [state.data[state.row].substring(beginning + 1, end)], false);
+            removeInsideAreaSameLine(state, beginning, end, 'n');
             logCommand(false, state, key);
             renderScreen(state, screen);
         } else if (key === '{' || key === '}' || key === 'B') {
-            let stack = 0;
-            let beginningOfArea = state.col;
-            for (let i = state.col; i >= 0; i -= 1) {
-                if (state.data[state.row].substring(i, i + 1) === '}') {
-                    if (i !== state.col) {
-                        stack += 1;
-                    }
-                } else if (state.data[state.row].substring(i, i + 1) === '{') {
-                    if (stack === 0) {
-                        beginningOfArea = i;
-                        break;
-                    } else {
-                        stack -= 1;
-                    }
-                } else if (i === 0) {
-                    beginningOfArea = -1;
-                }
-            }
-            if (beginningOfArea === -1) {
-                for (let i = state.col; i < state.data[state.row].length; i += 1) {
-                    if (state.data[state.row].substring(i, i + 1) === '{') {
-                        beginningOfArea = i;
-                        break;
-                    } else if (i === state.data[state.row].length - 1) {
-                        beginningOfArea = -1;
-                    }
-                }
-            }
-            let endOfArea = beginningOfArea;
-            for (let i = beginningOfArea + 1; i < state.data[state.row].length; i += 1) {
-                if (state.data[state.row].substring(i, i + 1) === '{') {
-                    stack += 1;
-                } else if (state.data[state.row].substring(i, i + 1) === '}') {
-                    if (stack === 0) {
-                        endOfArea = i;
-                        break;
-                    } else {
-                        stack -= 1;
-                    }
-                } else if (i === state.data[state.row].length - 1) {
-                    endOfArea = -1;
-                }
-            }
-            state.clipboard = [];
-            state.clipboardNewLine = false;
-            state.clipboard.push(state.data[state.row].substring(beginningOfArea + 1, endOfArea));
-            ncp.copy(state.clipboard.join('\n'));
-            if (beginningOfArea !== endOfArea && beginningOfArea !== -1 && endOfArea !== -1) {
-                state.data[state.row] = state.data[state.row].substring(0, beginningOfArea + 1) + state.data[state.row].substring(endOfArea);
-                state.col = beginningOfArea + 1;
-                createSnapshot(state);
-            }
+            const { beginning, end } = getCoorsInsideCharDiff(state, '{', '}');
+            copyToClipboard(state, [state.data[state.row].substring(beginning + 1, end)], false);
+            removeInsideAreaSameLine(state, beginning, end, 'n');
             logCommand(false, state, key);
             renderScreen(state, screen);
         } else if (key === '\'' || key === '"') {
-            let beginningOfArea = state.col;
-            for (let i = state.col; i >= 0; i -= 1) {
-                if (state.data[state.row].substring(i, i + 1) === key) {
-                    beginningOfArea = i;
-                    break;
-                } else if (i === 0) {
-                    beginningOfArea = -1;
-                }
-            }
-            if (beginningOfArea === -1) {
-                for (let i = state.col; i < state.data[state.row].length; i += 1) {
-                    if (state.data[state.row].substring(i, i + 1) === key) {
-                        beginningOfArea = i;
-                        break;
-                    } else if (i === state.data[state.row].length - 1) {
-                        beginningOfArea = -1;
-                    }
-                }
-            }
-            let endOfArea = beginningOfArea;
-            for (let i = beginningOfArea + 1; i < state.data[state.row].length; i += 1) {
-                if (state.data[state.row].substring(i, i + 1) === key) {
-                    endOfArea = i;
-                    break;
-                } else if (i === state.data[state.row].length - 1) {
-                    endOfArea = -1;
-                }
-            }
-            state.clipboard = [];
-            state.clipboardNewLine = false;
-            state.clipboard.push(state.data[state.row].substring(beginningOfArea + 1, endOfArea));
-            ncp.copy(state.clipboard.join('\n'));
-            if (beginningOfArea !== endOfArea && beginningOfArea !== -1 && endOfArea !== -1) {
-                state.data[state.row] = state.data[state.row].substring(0, beginningOfArea + 1) + state.data[state.row].substring(endOfArea);
-                state.col = beginningOfArea + 1;
-                createSnapshot(state);
-            }
+            const { beginning, end } = getCoorsInsideCharSame(state, key);
+            copyToClipboard(state, [state.data[state.row].substring(beginning + 1, end)], false);
+            removeInsideAreaSameLine(state, beginning, end, 'n');
             logCommand(false, state, key);
             renderScreen(state, screen);
         }
         state.previousKeys = '';
     } else if (state.previousKeys === 'yi') {
         if (key === 'w') {
-            let beginningOfWord = state.col;
-            for (let i = state.col; i >= 0; i -= 1) {
-                if (!isAlphaNumeric(state.data[state.row].substring(i, i + 1))) {
-                    beginningOfWord = i;
-                    break;
-                } else if (i === 0) {
-                    beginningOfWord = -1;
-                }
-            }
-            let endOfWord = state.col;
-            for (let i = state.col; i < state.data[state.row].length; i += 1) {
-                if (!isAlphaNumeric(state.data[state.row].substring(i, i + 1))) {
-                    endOfWord = i;
-                    break;
-                } else if (i === state.data[state.row].length - 1) {
-                    endOfWord = state.data[state.row].length;
-                }
-            }
-            state.clipboard = [];
-            state.clipboardNewLine = false;
-            state.clipboard.push(state.data[state.row].substring(beginningOfWord + 1, endOfWord));
-            ncp.copy(state.clipboard.join('\n'));
-            state.col = beginningOfWord + 1;
+            const { beginning, end } = getCoorsInsideWord(state);
+            copyInsideAreaSameLine(state, beginning, end);
             renderScreen(state, screen);
         } else if (key === '(' || key === ')' || key === 'b') {
-            let stack = 0;
-            let beginningOfArea = state.col;
-            for (let i = state.col; i >= 0; i -= 1) {
-                if (state.data[state.row].substring(i, i + 1) === ')') {
-                    if (i !== state.col) {
-                        stack += 1;
-                    }
-                } else if (state.data[state.row].substring(i, i + 1) === '(') {
-                    if (stack === 0) {
-                        beginningOfArea = i;
-                        break;
-                    } else {
-                        stack -= 1;
-                    }
-                } else if (i === 0) {
-                    beginningOfArea = -1;
-                }
-            }
-            if (beginningOfArea === -1) {
-                for (let i = state.col; i < state.data[state.row].length; i += 1) {
-                    if (state.data[state.row].substring(i, i + 1) === '(') {
-                        beginningOfArea = i;
-                        break;
-                    } else if (i === state.data[state.row].length - 1) {
-                        beginningOfArea = -1;
-                    }
-                }
-            }
-            let endOfArea = beginningOfArea;
-            for (let i = beginningOfArea + 1; i < state.data[state.row].length; i += 1) {
-                if (state.data[state.row].substring(i, i + 1) === '(') {
-                    stack += 1;
-                } else if (state.data[state.row].substring(i, i + 1) === ')') {
-                    if (stack === 0) {
-                        endOfArea = i;
-                        break;
-                    } else {
-                        stack -= 1;
-                    }
-                } else if (i === state.data[state.row].length - 1) {
-                    endOfArea = -1;
-                }
-            }
-            state.clipboard = [];
-            state.clipboardNewLine = false;
-            state.clipboard.push(state.data[state.row].substring(beginningOfArea + 1, endOfArea));
-            ncp.copy(state.clipboard.join('\n'));
-            if (beginningOfArea !== endOfArea && beginningOfArea !== -1 && endOfArea !== -1) {
-                state.col = beginningOfArea + 1;
-            }
+            const { beginning, end } = getCoorsInsideCharDiff(state, '(', ')');
+            copyInsideAreaSameLine(state, beginning, end);
             renderScreen(state, screen);
         } else if (key === '{' || key === '}' || key === 'B') {
-            let stack = 0;
-            let beginningOfArea = state.col;
-            for (let i = state.col; i >= 0; i -= 1) {
-                if (state.data[state.row].substring(i, i + 1) === '}') {
-                    if (i !== state.col) {
-                        stack += 1;
-                    }
-                } else if (state.data[state.row].substring(i, i + 1) === '{') {
-                    if (stack === 0) {
-                        beginningOfArea = i;
-                        break;
-                    } else {
-                        stack -= 1;
-                    }
-                } else if (i === 0) {
-                    beginningOfArea = -1;
-                }
-            }
-            if (beginningOfArea === -1) {
-                for (let i = state.col; i < state.data[state.row].length; i += 1) {
-                    if (state.data[state.row].substring(i, i + 1) === '{') {
-                        beginningOfArea = i;
-                        break;
-                    } else if (i === state.data[state.row].length - 1) {
-                        beginningOfArea = -1;
-                    }
-                }
-            }
-            let endOfArea = beginningOfArea;
-            for (let i = beginningOfArea + 1; i < state.data[state.row].length; i += 1) {
-                if (state.data[state.row].substring(i, i + 1) === '{') {
-                    stack += 1;
-                } else if (state.data[state.row].substring(i, i + 1) === '}') {
-                    if (stack === 0) {
-                        endOfArea = i;
-                        break;
-                    } else {
-                        stack -= 1;
-                    }
-                } else if (i === state.data[state.row].length - 1) {
-                    endOfArea = -1;
-                }
-            }
-            state.clipboard = [];
-            state.clipboardNewLine = false;
-            state.clipboard.push(state.data[state.row].substring(beginningOfArea + 1, endOfArea));
-            ncp.copy(state.clipboard.join('\n'));
-            if (beginningOfArea !== endOfArea && beginningOfArea !== -1 && endOfArea !== -1) {
-                state.col = beginningOfArea + 1;
-            }
+            const { beginning, end } = getCoorsInsideCharDiff(state, '{', '}');
+            copyInsideAreaSameLine(state, beginning, end);
             renderScreen(state, screen);
         } else if (key === '\'' || key === '"') {
-            let beginningOfArea = state.col;
-            for (let i = state.col; i >= 0; i -= 1) {
-                if (state.data[state.row].substring(i, i + 1) === key) {
-                    beginningOfArea = i;
-                    break;
-                } else if (i === 0) {
-                    beginningOfArea = -1;
-                }
-            }
-            if (beginningOfArea === -1) {
-                for (let i = state.col; i < state.data[state.row].length; i += 1) {
-                    if (state.data[state.row].substring(i, i + 1) === key) {
-                        beginningOfArea = i;
-                        break;
-                    } else if (i === state.data[state.row].length - 1) {
-                        beginningOfArea = -1;
-                    }
-                }
-            }
-            let endOfArea = beginningOfArea;
-            for (let i = beginningOfArea + 1; i < state.data[state.row].length; i += 1) {
-                if (state.data[state.row].substring(i, i + 1) === key) {
-                    endOfArea = i;
-                    break;
-                } else if (i === state.data[state.row].length - 1) {
-                    endOfArea = -1;
-                }
-            }
-            state.clipboard = [];
-            state.clipboardNewLine = false;
-            state.clipboard.push(state.data[state.row].substring(beginningOfArea + 1, endOfArea));
-            ncp.copy(state.clipboard.join('\n'));
-            if (beginningOfArea !== endOfArea && beginningOfArea !== -1 && endOfArea !== -1) {
-                state.col = beginningOfArea + 1;
-            }
+            const { beginning, end } = getCoorsInsideCharSame(state, key);
+            copyInsideAreaSameLine(state, beginning, end);
             renderScreen(state, screen);
         }
         state.previousKeys = '';
     } else if (state.previousKeys === 'y') {
         if (key === 'j') {
-            state.clipboard = [];
-            state.clipboard.push(state.data[state.row]);
+            const newClipboard = [];
+            newClipboard.push(state.data[state.row]);
             if (state.data[state.row + 1]) {
-                state.clipboard.push(state.data[state.row + 1]);
+                newClipboard.push(state.data[state.row + 1]);
             }
-            state.clipboardNewLine = true;
-            ncp.copy(state.clipboard.join('\n'));
+            copyToClipboard(state, newClipboard, true);
             logCommand(false, state, key);
             state.previousKeys = '';
         } else if (key === 'k') {
-            state.clipboard = [];
+            const newClipboard = [];
             if (state.data[state.row - 1]) {
-                state.clipboard.push(state.data[state.row - 1]);
+                newClipboard.push(state.data[state.row - 1]);
             }
-            state.clipboard.push(state.data[state.row]);
-            state.clipboardNewLine = true;
-            ncp.copy(state.clipboard.join('\n'));
+            newClipboard.push(state.data[state.row]);
+            copyToClipboard(state, newClipboard, true);
             logCommand(false, state, key);
             state.previousKeys = '';
         } else if (key === 'y') {
-            state.clipboard = [];
-            state.clipboard.push(state.data[state.row]);
-            state.clipboardNewLine = true;
-            ncp.copy(state.clipboard.join('\n'));
+            copyToClipboard(state, state.data[state.row], true);
             logCommand(false, state, key);
             state.previousKeys = '';
         } else if (key === 'i') {
@@ -503,12 +196,49 @@ function handleVimKeys(key, state, screen) {
         if (key === 'i') {
             state.previousKeys += 'i';
             logCommand(false, state, key);
+        } else if (key === 'j') {
+            const newClipboard = [];
+            newClipboard.push(state.data[state.row]);
+            if (state.data[state.row + 1]) {
+                newClipboard.push(state.data[state.row + 1]);
+            }
+            copyToClipboard(state, newClipboard, true);
+            state.data.splice(state.row, 1);
+            state.data.splice(state.row, 1);
+            if (state.row > state.data.length - 1) {
+                state.row = state.data.length - 1;
+            }
+            const indentLevel = getIndentLevelFrom(state, state.row);
+            state.data.splice(state.row, 0, ' '.repeat(indentLevel));
+            state.col = indentLevel;
+            state.previousKeys = '';
+            state.mode = 'i';
+            createSnapshot(state);
+            logCommand(false, state, key);
+            renderScreen(state, screen);
+        } else if (key === 'k') {
+            const newClipboard = [];
+            if (state.data[state.row - 1]) {
+                newClipboard.push(state.data[state.row - 1]);
+            }
+            newClipboard.push(state.data[state.row]);
+            copyToClipboard(state, newClipboard, true);
+            state.data.splice(state.row, 1);
+            if (state.data[state.row - 1]) {
+                state.data.splice(state.row - 1, 1);
+            }
+            up(state);
+            const indentLevel = getIndentLevelFrom(state, state.row);
+            state.data.splice(state.row, 0, ' '.repeat(indentLevel));
+            state.col = indentLevel;
+            state.previousKeys = '';
+            state.mode = 'i';
+            createSnapshot(state);
+            logCommand(false, state, key);
+            renderScreen(state, screen);
         } else if (key === 'w') {
             const endOfWord = getCoorForwardWord(state);
-            state.clipboard = [];
-            state.clipboardNewLine = false;
-            state.clipboard.push(state.data[state.row].substring(state.col, endOfWord));
-            ncp.copy(state.clipboard.join('\n'));
+            copyToClipboard(state, [state.data[state.row].substring(state.col, endOfWord)], false);
             state.data[state.row] = state.data[state.row].substring(0, state.col) + state.data[state.row].substring(endOfWord);
             state.mode = 'i';
             state.previousKeys = '';
@@ -517,10 +247,7 @@ function handleVimKeys(key, state, screen) {
         } else if (key === 'c') {
             let indentLevel = 0;
             if (state.row - 1 > 0) {
-                indentLevel = state.data[state.row - 1].search(/\S|$/);
-                if (state.data[state.row - 1].endsWith('{') || state.data[state.row - 1].endsWith('(')) {
-                    indentLevel += 4;
-                }
+                indentLevel = getIndentLevelFrom(state, state.row - 1);
             }
             state.col = indentLevel;
             state.data[state.row] = ' '.repeat(indentLevel);
@@ -647,20 +374,14 @@ function handleVimKeys(key, state, screen) {
             logCommand(true, state, key);
             renderScreen(state, screen);
         } else if (key === 'O') {
-            let indentLevel = getIndentLevel(state, state.row);
-            if (state.data[state.row].endsWith('}') || state.data[state.row].endsWith(')')) {
-                indentLevel += 4;
-            }
+            const indentLevel = getIndentLevelFrom(state, state.row);
             state.data.splice(state.row, 0, ' '.repeat(indentLevel));
             state.col = indentLevel;
             state.mode = 'i';
             logCommand(true, state, key);
             renderScreen(state, screen);
         } else if (key === 'o') {
-            let indentLevel = getIndentLevel(state, state.row);
-            if (state.data[state.row].endsWith('{') || state.data[state.row].endsWith('(')) {
-                indentLevel += 4;
-            }
+            const indentLevel = getIndentLevelFrom(state, state.row);
             state.data.splice(state.row + 1, 0, ' '.repeat(indentLevel));
             state.row += 1;
             state.col = indentLevel;
@@ -669,12 +390,13 @@ function handleVimKeys(key, state, screen) {
             renderScreen(state, screen);
         } else if (key === '>') {
             increaseIndentLevel(state, state.row);
-            state.col += 4;
+            state.col = firstNonSpace(state, state.row);
             createSnapshot(state);
             logCommand(true, state, key);
             renderScreen(state, screen);
         } else if (key === '<') {
             lowerIndentLevel(state, state.row);
+            state.col = firstNonSpace(state, state.row);
             createSnapshot(state);
             logCommand(true, state, key);
             renderScreen(state, screen);
