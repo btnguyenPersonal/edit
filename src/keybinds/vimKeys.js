@@ -169,7 +169,7 @@ function handleVimKeys(key, state, screen) {
             logCommand(false, state, key);
             state.previousKeys = '';
         } else if (key === 'y') {
-            copyToClipboard(state, state.data[state.row], true);
+            copyToClipboard(state, [state.data[state.row]], true);
             logCommand(false, state, key);
             state.previousKeys = '';
         } else if (key === 'i') {
