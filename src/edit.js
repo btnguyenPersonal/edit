@@ -1,7 +1,12 @@
 #!/usr/bin/env node
 import fs from 'fs';
 import pkg from 'terminal-kit';
-import { sendKeys, saveFile, renderScreen, createSnapshot } from './util/helper.js';
+import {
+    sendKeys,
+    saveFile,
+    renderScreen,
+    createSnapshot
+} from './util/helper.js';
 import { handleMouseInputs } from './keybinds/mouse.js';
 
 const { terminal, ScreenBuffer } = pkg;
@@ -36,7 +41,7 @@ const state = {
     vim: process.argv[2] === '-v',
     mode: 'n',
     clipboard: [],
-    clipboardNewLine: false,
+    clipboardNewLine: true,
     visual: {
         row: null,
         col: null
