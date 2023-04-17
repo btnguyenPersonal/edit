@@ -30,12 +30,10 @@ this is my experiment for making a new code editor
     - <c-o> <c-i>
     - priming function for the snapshots? take row col from before edit
     - Vc not working
-    - cj ck
 ## todo
     - t T
     - f F
     - / ? n N // way to store & search for stuff (maybe make menu and have search/replace too?)
-    - ci[
     - { }
     - add tests
         - mouse inputs done (might need to add drag select later)
@@ -47,6 +45,8 @@ this is my experiment for making a new code editor
 ## in progress
     - add emacs commands for insert mode
 ## done
+    - ci[
+    - cj ck
     - disable blink or on click make cursor on
     - J
     - ci" ci' cib ciB

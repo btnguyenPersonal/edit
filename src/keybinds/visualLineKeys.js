@@ -1,17 +1,44 @@
 /* eslint-disable import/no-cycle */
 import ncp from 'copy-paste';
-import * as helper from '../util/helper.js';
+import {
+    pasteFromClipboardBefore,
+    pasteFromClipboardAfter,
+    copyToClipboard,
+    isAlphaNumeric,
+    isWritable,
+    sendKeys,
+    renderScreen,
+    createSnapshot,
+    applySnapshot,
+    logCommand
+} from '../util/helper.js';
+import {
+    up,
+    down,
+    left,
+    right,
+    firstNonSpace,
+    getCoorBeginningLastWord,
+    getCoorBeginningNextWord,
+    getIndentLevel,
+    increaseIndentLevel,
+    lowerIndentLevel,
+    getCoorForwardWord,
+    topOfFile,
+    bottomOfFile,
+    upHalfScreen,
+    downHalfScreen,
+    getCoorsInsideCharSame,
+    getCoorsInsideCharDiff,
+    getCoorsInsideWord,
+    removeInsideAreaSameLine,
+    copyInsideAreaSameLine,
+    getIndentLevelFrom,
+} from '../util/movement.js';
 
 function handleVisualLineKeys(key, state, screen) {
     if (key === 'CTRL_U') {
-        for (let i = 0; i < process.stdout.rows / 2; i += 1) {
-            if (state.row > 0) {
-                state.row -= 1;
-                if (state.windowLine > 0) {
-                    state.windowLine -= 1;
-                }
-            }
-        }
+        upHalfScreen(state);
         helper.logCommand(false, state, key);
         helper.renderScreen(state, screen);
     } else if (key === 'CTRL_D') {
