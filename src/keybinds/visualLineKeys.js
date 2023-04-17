@@ -35,6 +35,7 @@ import {
     copyInsideAreaSameLine,
     getIndentLevelFrom,
 } from '../util/movement.js';
+import * as helper form '../util/helper.js';
 
 function handleVisualLineKeys(key, state, screen) {
     if (key === 'CTRL_U') {
