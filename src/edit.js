@@ -2,11 +2,11 @@
 import fs from 'fs';
 import pkg from 'terminal-kit';
 import {
-    sendKeys,
     saveFile,
     renderScreen,
     createSnapshot
 } from './util/helper.js';
+import { sendKeys } from './util/sendKeys.js';
 import { handleMouseInputs } from './keybinds/mouse.js';
 
 const { terminal, ScreenBuffer } = pkg;
@@ -28,7 +28,7 @@ function getData(filepath) {
     try {
         return (fs.readFileSync(filepath, 'utf-8')).split('\n');
     } catch (e) {
-        console.log('input file not found\nusage: edit [file]');
+        console.log(filepath + ' not found\nusage: edit [file]');
         process.exit();
     }
 }

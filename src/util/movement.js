@@ -318,7 +318,6 @@ function copyInVisual(state) {
     if (state.row === state.visual.row) {
         if (state.visual.col <= state.col) {
             copyToClipboard(state, [state.data[state.row].substring(state.visual.col, state.col + 1)], false);
-            state.col = state.visual.col;
         } else if (state.visual.col > state.col) {
             copyToClipboard(state, [state.data[state.row].substring(state.col, state.visual.col + 1)], false);
         }
