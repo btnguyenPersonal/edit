@@ -4,12 +4,12 @@ import {
     pasteFromClipboardAfter,
     copyToClipboard,
     isWritable,
-    sendKeys,
     renderScreen,
     createSnapshot,
     applySnapshot,
     logCommand
 } from '../util/helper.js';
+import { sendKeys } from '../util/sendKeys.js';
 import {
     up,
     down,
