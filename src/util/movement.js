@@ -46,7 +46,7 @@ function topOfFile(state) {
 function getCoorForwardWord(state) {
     let endOfWord = state.col;
     for (let i = state.col; i < state.data[state.row].length; i += 1) {
-        if (!helper.isAlphaNumeric(state.data[state.row].substring(i, i + 1))) {
+        if (!isAlphaNumeric(state.data[state.row].substring(i, i + 1))) {
             endOfWord = i;
             break;
         } else if (i === state.data[state.row].length - 1) {
@@ -61,7 +61,6 @@ function getCoorBeginningNextWord(state) {
     for (let i = state.col; i < state.data[state.row].length - 1; i += 1) {
         if (hasHitNonAlphaNum && isAlphaNumeric(state.data[state.row].charAt(i))) {
             return i;
-            break;
         } else if (!hasHitNonAlphaNum) {
             hasHitNonAlphaNum = !isAlphaNumeric(state.data[state.row].charAt(i));
         }
@@ -71,8 +70,8 @@ function getCoorBeginningNextWord(state) {
 
 function getCoorBeginningLastWord(state) {
     let hasHitNonAlphaNum = false;
-    let col = state.col;
-    for (let i = state.col; i >= 0; i -= 1) {
+    let { col } = state;
+    for (let i = col; i >= 0; i -= 1) {
         if (hasHitNonAlphaNum && isAlphaNumeric(state.data[state.row].charAt(i))) {
             col = i;
             break;
@@ -88,7 +87,7 @@ function getCoorBeginningLastWord(state) {
     }
     return col;
 }
-            
+
 function firstNonSpace(state, row) {
     for (let i = 0; i < state.data[row].length; i += 1) {
         if (state.data[row].charAt(i) !== ' ') {
@@ -101,7 +100,7 @@ function increaseIndentLevel(state, row) {
     state.data[row] = '    ' + state.data[row];
 }
 
-function lowerIndentLevel(state, row) {
+function decreaseIndentLevel(state, row) {
     let tempLine = state.data[row];
     let dont = false;
     for (let i = 3; i >= 0; i -= 1) {
@@ -243,7 +242,7 @@ function getCoorsInsideCharDiff(state, openKey, closeKey) {
     }
     return { beginning, end };
 }
-            
+
 function getCoorsInsideWord(state) {
     let beginning = state.col;
     for (let i = state.col; i >= 0; i -= 1) {
@@ -289,6 +288,59 @@ function getIndentLevelFrom(state, row) {
     return indentLevel;
 }
 
+function setVisualHighlight(state, beginning, end) {
+    if (beginning !== end) {
+        state.visual.col = beginning + 1;
+        state.col = end - 1;
+    }
+}
+
+function deleteInVisual(state) {
+    if (state.row === state.visual.row) {
+        if (state.visual.col <= state.col) {
+            state.data[state.row] = state.data[state.row].substring(0, state.visual.col) + state.data[state.row].substring(state.col + 1);
+            state.col = state.visual.col;
+        } else if (state.visual.col > state.col) {
+            state.data[state.row] = state.data[state.row].substring(0, state.col) + state.data[state.row].substring(state.visual.col + 1);
+        }
+    } else if (state.row > state.visual.row) {
+        state.data[state.visual.row] = state.data[state.visual.row].substring(0, state.visual.col) + state.data[state.row].substring(state.col + 1);
+        state.data.splice(state.visual.row + 1, state.row - state.visual.row);
+        state.row = state.visual.row;
+        state.col = state.visual.col;
+    } else if (state.row < state.visual.row) {
+        state.data[state.row] = state.data[state.row].substring(0, state.col) + state.data[state.visual.row].substring(state.visual.col + 1);
+        state.data.splice(state.row + 1, state.visual.row - state.row);
+    }
+}
+
+function copyInVisual(state) {
+    if (state.row === state.visual.row) {
+        if (state.visual.col <= state.col) {
+            copyToClipboard(state, [state.data[state.row].substring(state.visual.col, state.col + 1)], false);
+            state.col = state.visual.col;
+        } else if (state.visual.col > state.col) {
+            copyToClipboard(state, [state.data[state.row].substring(state.col, state.visual.col + 1)], false);
+        }
+    } else if (state.row > state.visual.row) {
+        const newClipboard = [];
+        newClipboard.push(state.data[state.visual.row].substring(state.visual.col));
+        for (let i = state.visual.row + 1; i < state.row; i += 1) {
+            newClipboard.push(state.data[i]);
+        }
+        newClipboard.push(state.data[state.row].substring(0, state.col + 1));
+        copyToClipboard(state, newClipboard, false);
+    } else if (state.row < state.visual.row) {
+        const newClipboard = [];
+        newClipboard.push(state.data[state.row].substring(state.col));
+        for (let i = state.row + 1; i < state.visual.row; i += 1) {
+            newClipboard.push(state.data[i]);
+        }
+        newClipboard.push(state.data[state.visual.row].substring(0, state.visual.col + 1));
+        copyToClipboard(state, newClipboard, false);
+    }
+}
+
 export {
     up,
     down,
@@ -299,7 +351,7 @@ export {
     getCoorBeginningNextWord,
     getIndentLevel,
     increaseIndentLevel,
-    lowerIndentLevel,
+    decreaseIndentLevel,
     getCoorForwardWord,
     topOfFile,
     bottomOfFile,
@@ -311,5 +363,7 @@ export {
     removeInsideAreaSameLine,
     copyInsideAreaSameLine,
     getIndentLevelFrom,
+    setVisualHighlight,
+    copyInVisual,
+    deleteInVisual,
 };
-

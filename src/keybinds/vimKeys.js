@@ -3,7 +3,6 @@ import {
     pasteFromClipboardBefore,
     pasteFromClipboardAfter,
     copyToClipboard,
-    isAlphaNumeric,
     isWritable,
     sendKeys,
     renderScreen,
@@ -19,9 +18,8 @@ import {
     firstNonSpace,
     getCoorBeginningLastWord,
     getCoorBeginningNextWord,
-    getIndentLevel,
     increaseIndentLevel,
-    lowerIndentLevel,
+    decreaseIndentLevel,
     getCoorForwardWord,
     topOfFile,
     bottomOfFile,
@@ -374,6 +372,7 @@ function handleVimKeys(key, state, screen) {
             logCommand(true, state, key);
             renderScreen(state, screen);
         } else if (key === 'O') {
+            state.isSaved = false;
             const indentLevel = getIndentLevelFrom(state, state.row);
             state.data.splice(state.row, 0, ' '.repeat(indentLevel));
             state.col = indentLevel;
@@ -381,6 +380,7 @@ function handleVimKeys(key, state, screen) {
             logCommand(true, state, key);
             renderScreen(state, screen);
         } else if (key === 'o') {
+            state.isSaved = false;
             const indentLevel = getIndentLevelFrom(state, state.row);
             state.data.splice(state.row + 1, 0, ' '.repeat(indentLevel));
             state.row += 1;
@@ -395,7 +395,7 @@ function handleVimKeys(key, state, screen) {
             logCommand(true, state, key);
             renderScreen(state, screen);
         } else if (key === '<') {
-            lowerIndentLevel(state, state.row);
+            decreaseIndentLevel(state, state.row);
             state.col = firstNonSpace(state, state.row);
             createSnapshot(state);
             logCommand(true, state, key);

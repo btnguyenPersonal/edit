@@ -30,6 +30,9 @@ this is my experiment for making a new code editor
     - <c-o> <c-i>
     - priming function for the snapshots? take row col from before edit
     - Vc not working
+    - gg command? dot
+    - trim trialing space on save and update state
+    - actual copy paste newLine or not detection
 ## todo
     - t T
     - f F
