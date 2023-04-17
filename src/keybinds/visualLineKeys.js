@@ -11,7 +11,7 @@ import {
     createSnapshot,
     applySnapshot,
     logCommand
-} from '../util/js';
+} from '../util/helper.js';
 import {
     up,
     down,
