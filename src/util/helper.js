@@ -154,16 +154,22 @@ function createSnapshot(state) {
 }
 
 function isInString(state, row, col) {
-    let countSingle = 0;
-    let countDouble = 0;
+    let currentString = '';
+    let disregard = false;
     for (let i = 0; i < col; i += 1) {
-        if (state.data[row].substring(i, i + 1) === '\'') {
-            countSingle += 1;
-        } else if (state.data[row].substring(i, i + 1) === '"') {
-            countDouble += 1;
+        if (currentString === '' && (state.data[row].substring(i, i + 1) === '\'' || state.data[row].substring(i, i + 1) === '"' || state.data[row].substring(i, i + 1) === '`')) {
+            currentString = state.data[row].substring(i, i + 1);
+        } else if (currentString !== '' && (state.data[row].substring(i, i + 1) === currentString)) {
+            if (!disregard) {
+                currentString = '';
+            }
+        } else if (currentString !== '' && (state.data[row].substring(i, i + 1) === '\\')) {
+            disregard = true;
+        } else {
+            disregard = false;
         }
     }
-    return countSingle % 2 === 1 || countDouble % 2 === 1;
+    return currentString !== '';
 }
 
 function commentStartsAt(state, row) {
