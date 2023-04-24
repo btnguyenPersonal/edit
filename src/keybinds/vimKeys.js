@@ -33,6 +33,10 @@ import {
     getIndentLevelFrom,
     isEmptyRow,
     endOfLine,
+    findForward,
+    findBackward,
+    toForward,
+    toBackward,
 } from '../util/movement.js';
 
 function handleVimKeys(key, state, screen) {
@@ -175,6 +179,30 @@ function handleVimKeys(key, state, screen) {
         } else if (key === 'i') {
             state.previousKeys += 'i';
         }
+    } else if (state.previousKeys === 'T') {
+        if (isWritable(key)) {
+            state.col = toBackward(state, key);
+            renderScreen(state, screen);
+        }
+        state.previousKeys = '';
+    } else if (state.previousKeys === 't') {
+        if (isWritable(key)) {
+            state.col = toForward(state, key);
+            renderScreen(state, screen);
+        }
+        state.previousKeys = '';
+    } else if (state.previousKeys === 'F') {
+        if (isWritable(key)) {
+            state.col = findBackward(state, key);
+            renderScreen(state, screen);
+        }
+        state.previousKeys = '';
+    } else if (state.previousKeys === 'f') {
+        if (isWritable(key)) {
+            state.col = findForward(state, key);
+            renderScreen(state, screen);
+        }
+        state.previousKeys = '';
     } else if (state.previousKeys === 'r') {
         if (isWritable(key)) {
             state.data[state.row] = state.data[state.row].substring(0, state.col)
@@ -190,7 +218,6 @@ function handleVimKeys(key, state, screen) {
             topOfFile(state);
             renderScreen(state, screen);
         }
-        logCommand(false, state, key);
         state.previousKeys = '';
     } else if (state.previousKeys === 'c') {
         if (key === 'i') {
@@ -403,9 +430,6 @@ function handleVimKeys(key, state, screen) {
             createSnapshot(state);
             logCommand(true, state, key);
             renderScreen(state, screen);
-        } else if (key === 'g') {
-            state.previousKeys = 'g';
-            logCommand(true, state, key);
         } else if (key === 'G') {
             bottomOfFile(state);
             logCommand(true, state, key);
@@ -422,6 +446,8 @@ function handleVimKeys(key, state, screen) {
                 logCommand(true, state, key);
                 renderScreen(state, screen);
             }
+        } else if (key === 'f' || key === 't' || key === 'F' || key === 'T' || key === 'g') {
+            state.previousKeys = key;
         } else if (key === 'c' || key === 'r' || key === 'd' || key === 'y' || key === '/') {
             state.previousKeys = key;
             logCommand(true, state, key);

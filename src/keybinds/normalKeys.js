@@ -56,11 +56,11 @@ function handleKeys(key, state, screen) {
         }
     } else if (key === 'ENTER') {
         let indentLevel = state.data[state.row].search(/\S|$/);
-        if (state.data[state.row].endsWith('{')) {
+        if (state.data[state.row].endsWith('{') && state.col === state.data[state.row].length) {
             state.data.splice(state.row + 1, 0, ' '.repeat(indentLevel) + '}');
             indentLevel += 4;
         }
-        if (state.data[state.row].endsWith('(')) {
+        if (state.data[state.row].endsWith('(') && state.col === state.data[state.row].length) {
             state.data.splice(state.row + 1, 0, ' '.repeat(indentLevel) + ')');
             indentLevel += 4;
         }

@@ -30,5 +30,8 @@
     "eslint": "8.34.0",
     "eslint-config-airbnb-base": "15.0.0",
     "eslint-plugin-import": "2.27.5"
+  },
+  "bin": {
+    "edit": "./src/edit.js"
   }
 }

@@ -13,7 +13,7 @@ const { terminal, ScreenBuffer } = pkg;
 
 function getFile() {
     try {
-        const file = process.argv[2] === '-v' ? process.argv[3] : process.argv[2];
+        const file = process.argv[2] === '-n' ? process.argv[3] : process.argv[2];
         if (file === undefined) {
             throw new Error('input file not found\nusage: edit [file]');
         }
@@ -38,7 +38,7 @@ const filepath = getFile();
 process.title = filepath;
 const state = {
     allowCommandLogging: true,
-    vim: process.argv[2] === '-v',
+    vim: process.argv[2] !== '-n',
     mode: 'n',
     clipboard: [],
     clipboardNewLine: true,

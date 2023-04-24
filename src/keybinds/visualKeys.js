@@ -3,6 +3,7 @@ import ncp from 'copy-paste';
 import {
     renderScreen,
     createSnapshot,
+    isWritable,
     logCommand
 } from '../util/helper.js';
 import {
@@ -22,10 +23,14 @@ import {
     copyInVisual,
     deleteInVisual,
     endOfLine,
+    findForward,
+    findBackward,
+    toForward,
+    toBackward,
 } from '../util/movement.js';
 
 function handleVisualKeys(key, state, screen) {
-    if (state.previousKeys === 'vi') {
+    if (state.previousKeys === 'i') {
         if (key === 'w') {
             const { beginning, end } = getCoorsInsideWord(state);
             setVisualHighlight(state, beginning, end);
@@ -118,8 +123,32 @@ function handleVisualKeys(key, state, screen) {
         copyInVisual(state);
         deleteInVisual(state);
         state.mode = 'i';
-    } else if (key === 'i') {
-        state.previousKeys = 'vi';
+    } else if (state.previousKeys === 'T') {
+        if (isWritable(key)) {
+            state.col = toBackward(state, key);
+            renderScreen(state, screen);
+        }
+        state.previousKeys = '';
+    } else if (state.previousKeys === 't') {
+        if (isWritable(key)) {
+            state.col = toForward(state, key);
+            renderScreen(state, screen);
+        }
+        state.previousKeys = '';
+    } else if (state.previousKeys === 'F') {
+        if (isWritable(key)) {
+            state.col = findBackward(state, key);
+            renderScreen(state, screen);
+        }
+        state.previousKeys = '';
+    } else if (state.previousKeys === 'f') {
+        if (isWritable(key)) {
+            state.col = findForward(state, key);
+            renderScreen(state, screen);
+        }
+        state.previousKeys = '';
+    } else if (key === 'f' || key === 'F' || key === 't' || key === 'T' || key === 'i') {
+        state.previousKeys += key;
     } else if (key === 'ESCAPE') {
         state.mode = 'n';
     }

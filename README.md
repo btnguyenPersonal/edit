@@ -2,6 +2,12 @@
 
 this is my experiment for making a new code editor
 
+usually put this in my ~/.bashrc:
+```
+alias e='edit -v `fzf --reverse --height=8`'
+export FZF_DEFAULT_COMMAND='rg --files --hidden --glob "!.git"'
+```
+
 ## backlog
     - undo/redo limit and diff based (don't know how hard that will be)
     - terminal instance inside editor
@@ -34,20 +40,28 @@ this is my experiment for making a new code editor
     - trim trialing space on save and update state
     - actual copy paste newLine or not detection
 ## todo
-    - t T
-    - f F
     - / ? n N // way to store & search for stuff (maybe make menu and have search/replace too?)
-    - { }
+        - / sets to slash mode
+        - type whatever searches (ignorecase)
+        - enter stores search to state (state.search)
+            - also sets visual to next occurence (will need some error message if can't find, and some status bar showing number of occurences (6/15) and searched phrase)
+            - r to replace current, R to replace all, n next, N backwards
+            - somehow make a search that is project wide, is that what ? could be??
+        - will need to have some kind of highlighting all occurences while in the special visual-search state?
     - add tests
         - mouse inputs done (might need to add drag select later)
         - helper functions for terminal done
         - normal keys
         - vim keys (bruh)
     - ( ) -> get out of current indent level brace / paren and start at ^
+    - 
 ## blocked
+    - t T //need c and d to work with this -> seems like should be able to convert this somehow to simplify logic?
+    - f F
 ## in progress
     - add emacs commands for insert mode
 ## done
+    - { }
     - ci[
     - cj ck
     - disable blink or on click make cursor on
