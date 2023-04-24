@@ -1,6 +1,42 @@
 /* eslint-disable import/no-cycle */
 import { copyToClipboard, isAlphaNumeric } from './helper.js';
 
+function toBackward(state, key) {
+    for (let i = state.col - 1; i >= 0; i -= 1) {
+        if (state.data[state.row].substring(i, i + 1) === key) {
+            return i + 1;
+        }
+    }
+    return state.col;
+}
+
+function toForward(state, key) {
+    for (let i = state.col + 1; i < state.data[state.row].length; i += 1) {
+        if (state.data[state.row].substring(i, i + 1) === key) {
+            return i - 1;
+        }
+    }
+    return state.col;
+}
+
+function findBackward(state, key) {
+    for (let i = state.col - 1; i >= 0; i -= 1) {
+        if (state.data[state.row].substring(i, i + 1) === key) {
+            return i;
+        }
+    }
+    return state.col;
+}
+
+function findForward(state, key) {
+    for (let i = state.col + 1; i < state.data[state.row].length; i += 1) {
+        if (state.data[state.row].substring(i, i + 1) === key) {
+            return i;
+        }
+    }
+    return state.col;
+}
+
 function isEmptyRow(state, row) {
     for (let i = 0; i < state.data[row].length; i += 1) {
         if (state.data[row].substring(i, i + 1) !== ' ') {
@@ -311,6 +347,7 @@ function setVisualHighlight(state, beginning, end) {
     if (beginning !== end) {
         state.visual.col = beginning + 1;
         state.col = end - 1;
+        state.visual.row = state.row;
     }
 }
 
@@ -386,4 +423,8 @@ export {
     deleteInVisual,
     isEmptyRow,
     endOfLine,
+    findForward,
+    findBackward,
+    toForward,
+    toBackward,
 };
