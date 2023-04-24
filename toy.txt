@@ -1,1 +1,18 @@
-hello
+#!/bin/hello
+
+function testing() {
+    let forever;
+    for (let i = 0; i < state.data.length; i += 1) {
+        if (state.row === 5) {
+            break;
+        }
+    }
+}
+
+function whatever() {
+    testing();
+}
+
+function torvalds({ state }) {
+    return 0;
+}

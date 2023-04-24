@@ -21,6 +21,7 @@ import {
     setVisualHighlight,
     copyInVisual,
     deleteInVisual,
+    endOfLine,
 } from '../util/movement.js';
 
 function handleVisualKeys(key, state, screen) {
@@ -56,7 +57,7 @@ function handleVisualKeys(key, state, screen) {
     } else if (key === 'b') {
         state.col = getCoorBeginningLastWord(state);
     } else if (key === '$') {
-        state.col = state.data[state.row].length; // issue with long lines rendering %^$
+        state.col = endOfLine(state, state.row);
     } else if (key === '0') {
         state.col = 0;
     } else if (key === '^') {
@@ -117,7 +118,6 @@ function handleVisualKeys(key, state, screen) {
         copyInVisual(state);
         deleteInVisual(state);
         state.mode = 'i';
-        createSnapshot(state);
     } else if (key === 'i') {
         state.previousKeys = 'vi';
     } else if (key === 'ESCAPE') {
