@@ -62,7 +62,7 @@ function handleVisualLineKeys(key, state, screen) {
                     }
                 } else {
                     for (let i = state.visualLine.row; i <= state.row; i += 1) {
-                        comment(state, i);
+                        comment(state, i, firstNonSpace(state, state.visualLine.row));
                     }
                 }
                 state.row = state.visualLine.row;
@@ -79,7 +79,7 @@ function handleVisualLineKeys(key, state, screen) {
                     }
                 } else {
                     for (let i = state.row; i <= state.visualLine.row; i += 1) {
-                        comment(state, i);
+                        comment(state, i, firstNonSpace(state, state.row));
                     }
                 }
             }

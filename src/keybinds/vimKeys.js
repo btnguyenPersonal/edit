@@ -312,6 +312,8 @@ function handleVimKeys(key, state, screen) {
             } else {
                 comment(state, state.row);
             }
+            createSnapshot(state);
+            logCommand(false, state, key);
             renderScreen(state, screen);
         }
         state.previousKeys = '';
