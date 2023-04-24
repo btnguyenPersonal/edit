@@ -16,6 +16,9 @@ import {
     upHalfScreen,
     downHalfScreen,
     getIndentLevelFrom,
+    isCommented,
+    uncomment,
+    comment,
 } from '../util/movement.js';
 
 function handleVisualLineKeys(key, state, screen) {
@@ -44,26 +47,67 @@ function handleVisualLineKeys(key, state, screen) {
         }
         state.mode = 'n';
     } else if (key === 'c') {
-        if (state.row >= state.visualLine.row) {
-            const newClipboard = [];
-            for (let i = state.visualLine.row; i <= state.row; i += 1) {
-                newClipboard.push(state.data[i]);
+        if (state.previousKeys === 'g') {
+            let areAllCommented = true;
+            if (state.row >= state.visualLine.row) {
+                for (let i = state.visualLine.row; i <= state.row; i += 1) {
+                    if (!isCommented(state, i)) {
+                        areAllCommented = false;
+                        break;
+                    }
+                }
+                if (areAllCommented) {
+                    for (let i = state.visualLine.row; i <= state.row; i += 1) {
+                        uncomment(state, i);
+                    }
+                } else {
+                    for (let i = state.visualLine.row; i <= state.row; i += 1) {
+                        comment(state, i);
+                    }
+                }
+                state.row = state.visualLine.row;
+            } else if (state.row < state.visualLine.row) {
+                for (let i = state.row; i <= state.visualLine.row; i += 1) {
+                    if (!isCommented(state, i)) {
+                        areAllCommented = false;
+                        break;
+                    }
+                }
+                if (areAllCommented) {
+                    for (let i = state.row; i <= state.visualLine.row; i += 1) {
+                        uncomment(state, i);
+                    }
+                } else {
+                    for (let i = state.row; i <= state.visualLine.row; i += 1) {
+                        comment(state, i);
+                    }
+                }
             }
-            copyToClipboard(state, newClipboard, true);
-            state.data.splice(state.visualLine.row, state.row - state.visualLine.row + 1);
-            state.row = state.visualLine.row;
-        } else if (state.row < state.visualLine.row) {
-            const newClipboard = [];
-            for (let i = state.row; i <= state.visualLine.row; i += 1) {
-                newClipboard.push(state.data[i]);
+            state.mode = 'n';
+            createSnapshot(state);
+            state.previousKeys = '';
+        } else {
+            if (state.row >= state.visualLine.row) {
+                const newClipboard = [];
+                for (let i = state.visualLine.row; i <= state.row; i += 1) {
+                    newClipboard.push(state.data[i]);
+                }
+                copyToClipboard(state, newClipboard, true);
+                state.data.splice(state.visualLine.row, state.row - state.visualLine.row + 1);
+                state.row = state.visualLine.row;
+            } else if (state.row < state.visualLine.row) {
+                const newClipboard = [];
+                for (let i = state.row; i <= state.visualLine.row; i += 1) {
+                    newClipboard.push(state.data[i]);
+                }
+                copyToClipboard(state, newClipboard, true);
+                state.data.splice(state.row, state.visualLine.row - state.row + 1);
             }
-            copyToClipboard(state, newClipboard, true);
-            state.data.splice(state.row, state.visualLine.row - state.row + 1);
+            const indentLevel = getIndentLevelFrom(state, state.row);
+            state.data.splice(state.row, 0, ' '.repeat(indentLevel));
+            state.col = indentLevel;
+            state.mode = 'i';
         }
-        const indentLevel = getIndentLevelFrom(state, state.row);
-        state.data.splice(state.row, 0, ' '.repeat(indentLevel));
-        state.col = indentLevel;
-        state.mode = 'i';
     } else if (key === 'd') {
         if (state.row >= state.visualLine.row) {
             const newClipboard = [];

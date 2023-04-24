@@ -1,6 +1,21 @@
 /* eslint-disable import/no-cycle */
 import { copyToClipboard, isAlphaNumeric } from './helper.js';
 
+function uncomment(state, row) {
+    const col = firstNonSpace(state, row);
+    state.data[row] = state.data[row].substring(0, col) + state.data[row].substring(col + 3);
+}
+
+function comment(state, row) {
+    const col = firstNonSpace(state, row);
+    state.data[row] = state.data[row].substring(0, col) + '// ' + state.data[row].substring(col);
+}
+
+function isCommented(state, row) {
+    const trimmed = state.data[row].trim();
+    return trimmed.startsWith('// ');
+}
+
 function toBackward(state, key) {
     for (let i = state.col - 1; i >= 0; i -= 1) {
         if (state.data[state.row].substring(i, i + 1) === key) {
@@ -427,4 +442,7 @@ export {
     findBackward,
     toForward,
     toBackward,
+    isCommented,
+    comment,
+    uncomment,
 };
