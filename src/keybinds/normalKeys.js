@@ -13,6 +13,9 @@ import {
     right,
     increaseIndentLevel,
     decreaseIndentLevel,
+    isEmptyRow,
+    endOfLine,
+    firstNonSpace,
 } from '../util/movement.js';
 
 function handleKeys(key, state, screen) {
@@ -89,6 +92,10 @@ function handleKeys(key, state, screen) {
         if (!state.vim) {
             createSnapshot(state);
         }
+    } else if (key === 'CTRL_A') {
+        state.col = firstNonSpace(state, state.row);
+    } else if (key === 'CTRL_E') {
+        state.col = endOfLine(state, state.row);
     } else if (isWritable(key)) {
         state.data[state.row] = state.data[state.row].substring(0, state.col)
             + key
@@ -99,6 +106,9 @@ function handleKeys(key, state, screen) {
             createSnapshot(state);
         }
     } else if (key === 'ESCAPE') {
+        if (state.vim && isEmptyRow(state, state.row)) {
+            state.data[state.row] = '';
+        }
         state.mode = 'n';
         if (state.vim) {
             createSnapshot(state);

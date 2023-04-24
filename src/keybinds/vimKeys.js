@@ -31,6 +31,8 @@ import {
     removeInsideAreaSameLine,
     copyInsideAreaSameLine,
     getIndentLevelFrom,
+    isEmptyRow,
+    endOfLine,
 } from '../util/movement.js';
 
 function handleVimKeys(key, state, screen) {
@@ -315,15 +317,16 @@ function handleVimKeys(key, state, screen) {
             logCommand(true, state, key);
             renderScreen(state, screen);
         } else if (key === 'x') {
-            copyToClipboard(state, [state.data[state.row].substring(state.col, state.col + 1)], false);
             if (state.col < state.data[state.row].length) {
+                copyToClipboard(state, [state.data[state.row].substring(state.col, state.col + 1)], false);
                 state.data[state.row] = state.data[state.row].substring(0, state.col)
                     + state.data[state.row].substring(state.col + 1);
             }
+            createSnapshot(state);
             logCommand(true, state, key);
             renderScreen(state, screen);
         } else if (key === '$') {
-            state.col = state.data[state.row].length;
+            state.col = endOfLine(state, state.row);
             renderScreen(state, screen);
         } else if (key === '0') {
             state.col = 0;
@@ -373,7 +376,7 @@ function handleVimKeys(key, state, screen) {
             renderScreen(state, screen);
         } else if (key === 'O') {
             state.isSaved = false;
-            const indentLevel = getIndentLevelFrom(state, state.row);
+            const indentLevel = getIndentLevelFrom(state, state.row, true);
             state.data.splice(state.row, 0, ' '.repeat(indentLevel));
             state.col = indentLevel;
             state.mode = 'i';
@@ -435,6 +438,24 @@ function handleVimKeys(key, state, screen) {
                 row: state.row,
                 col: state.col
             };
+            logCommand(true, state, key);
+            renderScreen(state, screen);
+        } else if (key === '}') {
+            for (let i = state.row + 1; i < state.data.length; i += 1) {
+                if (isEmptyRow(state, i)) {
+                    state.row = i;
+                    break;
+                }
+            }
+            logCommand(true, state, key);
+            renderScreen(state, screen);
+        } else if (key === '{') {
+            for (let i = state.row - 1; i >= 0; i -= 1) {
+                if (isEmptyRow(state, i)) {
+                    state.row = i;
+                    break;
+                }
+            }
             logCommand(true, state, key);
             renderScreen(state, screen);
         } else if (key === 'J') {

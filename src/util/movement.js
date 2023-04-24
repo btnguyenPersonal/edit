@@ -1,6 +1,15 @@
 /* eslint-disable import/no-cycle */
 import { copyToClipboard, isAlphaNumeric } from './helper.js';
 
+function isEmptyRow(state, row) {
+    for (let i = 0; i < state.data[row].length; i += 1) {
+        if (state.data[row].substring(i, i + 1) !== ' ') {
+            return false;
+        }
+    }
+    return true;
+}
+
 function upHalfScreen(state) {
     for (let i = 0; i < process.stdout.rows / 2; i += 1) {
         if (state.row > 0) {
@@ -273,6 +282,10 @@ function removeInsideAreaSameLine(state, beginning, end, mode) {
     }
 }
 
+function endOfLine(state, row) {
+    return state.data[row].length - 1 >= 0 ? state.data[row].length - 1 : 0;
+}
+
 function copyInsideAreaSameLine(state, beginning, end) {
     if (beginning !== end && beginning !== -1 && end !== -1) {
         copyToClipboard(state, [state.data[state.row].substring(beginning + 1, end)], false);
@@ -280,12 +293,18 @@ function copyInsideAreaSameLine(state, beginning, end) {
     }
 }
 
-function getIndentLevelFrom(state, row) {
+function getIndentLevelFrom(state, row, inverse) {
     let indentLevel = getIndentLevel(state, row);
-    if (state.data[row].endsWith('}') || state.data[row].endsWith(')')) {
-        indentLevel += 4;
+    if (inverse) {
+        if (state.data[row].endsWith('}') || state.data[row].endsWith(')')) {
+            indentLevel += 4;
+        }
+    } else {
+        if (state.data[row].endsWith('{') || state.data[row].endsWith('(')) {
+            indentLevel += 4;
+        }
     }
-    return indentLevel;
+    return indentLevel >= 0 ? indentLevel : 0;
 }
 
 function setVisualHighlight(state, beginning, end) {
@@ -365,4 +384,6 @@ export {
     setVisualHighlight,
     copyInVisual,
     deleteInVisual,
+    isEmptyRow,
+    endOfLine,
 };
