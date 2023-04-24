@@ -121,12 +121,12 @@ function getColor(s, isComment, isInString) {
         return 'green';
     }
     if (isInString) {
-        return 'red';
+        return 'magenta';
     }
     if (s === '(' || s === ')') {
         return 'yellow';
     } else if (s === '"' || s === '\'') {
-        return 'red';
+        return 'magenta';
     } else if (s === '[' || s === ']') {
         return 'green';
     } else if (s === '{' || s === '}') {
