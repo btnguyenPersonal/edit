@@ -96,6 +96,7 @@ function handleKeys(key, state, screen) {
         state.col = firstNonSpace(state, state.row);
     } else if (key === 'CTRL_E') {
         state.col = endOfLine(state, state.row);
+        right(state);
     } else if (isWritable(key)) {
         state.data[state.row] = state.data[state.row].substring(0, state.col)
             + key

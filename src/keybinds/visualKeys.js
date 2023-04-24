@@ -109,6 +109,12 @@ function handleVisualKeys(key, state, screen) {
         createSnapshot(state);
     } else if (key === 'y') {
         copyInVisual(state);
+        if (state.row >= state.visual.row) {
+            state.row = state.visual.row;
+        }
+        if (state.col >= state.visual.col) {
+            state.col = state.visual.col;
+        }
         state.mode = 'n';
     } else if (key === 'x') {
         deleteInVisual(state);

@@ -56,11 +56,11 @@ export FZF_DEFAULT_COMMAND='rg --files --hidden --glob "!.git"'
     - ( ) -> get out of current indent level brace / paren and start at ^
     - 
 ## blocked
-    - t T //need c and d to work with this -> seems like should be able to convert this somehow to simplify logic?
-    - f F
 ## in progress
     - add emacs commands for insert mode
 ## done
+    - t T //need c and d to work with this -> seems like should be able to convert this somehow to simplify logic?
+    - f F
     - { }
     - ci[
     - cj ck
