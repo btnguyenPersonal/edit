@@ -6,14 +6,14 @@ function uncomment(state, row) {
     state.data[row] = state.data[row].substring(0, col) + state.data[row].substring(col + 3);
 }
 
-function comment(state, row) {
-    const col = firstNonSpace(state, row);
+function comment(state, row, c) {
+    const col = c === undefined ? firstNonSpace(state, row) : c;
     state.data[row] = state.data[row].substring(0, col) + '// ' + state.data[row].substring(col);
 }
 
 function isCommented(state, row) {
     const trimmed = state.data[row].trim();
-    return trimmed.startsWith('// ');
+    return trimmed.startsWith('//');
 }
 
 function toBackward(state, key) {
