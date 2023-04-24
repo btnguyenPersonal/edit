@@ -16,6 +16,7 @@ import {
     upHalfScreen,
     downHalfScreen,
     getIndentLevelFrom,
+    isEmptyRow,
     isCommented,
     uncomment,
     comment,
@@ -132,6 +133,20 @@ function handleVisualLineKeys(key, state, screen) {
         state.previousKeys = 'g';
     } else if (key === 'G') {
         bottomOfFile(state);
+    } else if (key === '}') {
+        for (let i = state.row + 1; i < state.data.length; i += 1) {
+            if (isEmptyRow(state, i)) {
+                state.row = i;
+                break;
+            }
+        }
+    } else if (key === '{') {
+        for (let i = state.row - 1; i >= 0; i -= 1) {
+            if (isEmptyRow(state, i)) {
+                state.row = i;
+                break;
+            }
+        }
     } else if (key === '<') {
         if (state.row >= state.visualLine.row) {
             for (let i = state.visualLine.row; i <= state.row; i += 1) {
