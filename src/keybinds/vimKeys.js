@@ -39,6 +39,9 @@ import {
     findBackward,
     toForward,
     toBackward,
+    isCommented,
+    comment,
+    uncomment,
 } from '../util/movement.js';
 
 function handleVimKeys(key, state, screen) {
@@ -302,6 +305,13 @@ function handleVimKeys(key, state, screen) {
     } else if (state.previousKeys.endsWith('g')) {
         if (key === 'g') {
             topOfFile(state);
+            renderScreen(state, screen);
+        } else if (key === 'c') {
+            if (isCommented(state, state.row)) {
+                uncomment(state, state.row);
+            } else {
+                comment(state, state.row);
+            }
             renderScreen(state, screen);
         }
         state.previousKeys = '';

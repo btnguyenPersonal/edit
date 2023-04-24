@@ -54,11 +54,13 @@ export FZF_DEFAULT_COMMAND='rg --files --hidden --glob "!.git"'
         - normal keys
         - vim keys (bruh)
     - ( ) -> get out of current indent level brace / paren and start at ^
-    - 
+    - q macros
 ## blocked
 ## in progress
-    - add emacs commands for insert mode
+    - ctrl w and ctrl backspace
 ## done
+    - commenting
+    - add emacs commands for insert mode
     - t T //need c and d to work with this -> seems like should be able to convert this somehow to simplify logic?
     - f F
     - { }
