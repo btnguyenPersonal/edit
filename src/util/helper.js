@@ -116,7 +116,13 @@ function isHighlighted(state, i, j) {
     return false;
 }
 
-function getColor(s) {
+function getColor(s, isComment, isInString) {
+    if (isComment) {
+        return 'green';
+    }
+    if (isInString) {
+        return 'red';
+    }
     if (s === '(' || s === ')') {
         return 'yellow';
     } else if (s === '"' || s === '\'') {
@@ -145,6 +151,28 @@ function createSnapshot(state) {
     });
     state.currentSnapshot = state.snapshots.length - 1;
     state.isSaved = false;
+}
+
+function isInString(state, row, col) {
+    let countSingle = 0;
+    let countDouble = 0;
+    for (let i = 0; i < col; i += 1) {
+        if (state.data[row].substring(i, i + 1) === '\'') {
+            countSingle += 1;
+        } else if (state.data[row].substring(i, i + 1) === '"') {
+            countDouble += 1;
+        }
+    }
+    return countSingle % 2 === 1 || countDouble % 2 === 1;
+}
+
+function commentStartsAt(state, row) {
+    for(let i = 0; i < state.data[row].length; i += 1) {
+        if (state.data[row].substring(i, i + 2) === '//' && !isInString(state, row, i)) {
+            return i;
+        }
+    }
+    return -1;
 }
 
 function applySnapshot(state, index) {
@@ -182,7 +210,7 @@ function renderScreen(state, screen) {
                 for (let j = 0; j < state.data[i].length; j += 1) {
                     screen.put({
                         attr: {
-                            color: getColor(state.data[i].substring(j, j + 1)),
+                            color: getColor(state.data[i].substring(j, j + 1), commentStartsAt(state, i) !== -1 && j >= commentStartsAt(state, i), isInString(state, i, j)),
                             inverse: isHighlighted(state, i, j)
                         },
                         wrap: true
