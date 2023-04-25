@@ -42,6 +42,16 @@ const state = {
     mode: 'n',
     clipboard: [],
     clipboardNewLine: true,
+    searchQuery: '',
+    searching: false,
+    search: {
+        row: null,
+        col: null
+    },
+    visualLine: {
+        row: null,
+        col: null
+    },
     visual: {
         row: null,
         col: null

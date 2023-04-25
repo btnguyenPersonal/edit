@@ -66,8 +66,8 @@ function moveCursor(state, screen) {
         : state.data.length - 1;
     screen.moveTo(
         (state.col < state.data[r].length
-            ? state.col + 1
-            : state.data[r].length + 1) + 4,
+            ? state.col
+            : state.data[r].length) + 5,
         (state.row < state.data.length ? state.row : state.data.length) - state.windowLine,
     );
     screen.drawCursor();
@@ -257,6 +257,29 @@ function arraysEqual(a, b) {
     return true;
 }
 
+function searchForString(state, string) {
+    // TODO search backwards from top after finishing, and have another mirror function that searches backwards
+    if (state.data[state.row].substring(state.col).includes(string)) {
+        state.col = state.col + state.data[state.row].substring(state.col).indexOf(string);
+        state.search.row = state.row;
+        state.search.col = state.col + string.length;
+        return true;
+    }
+    for (let row = state.row + 1; row < state.data.length; row += 1) {
+        if (state.data[row].includes(string)) {
+            state.row = row;
+            state.col = state.data[row].indexOf(string);
+            state.search.row = state.row;
+            state.search.col = state.col + string.length;
+            return true;
+        }
+    }
+}
+
+function centerScreen(state) {
+    state.windowLine = state.row - Math.floor(process.stdout.rows / 2) >= 0 ? state.row - Math.floor(process.stdout.rows / 2) : 0
+}
+
 export {
     pasteFromClipboardBefore,
     pasteFromClipboardAfter,
@@ -269,5 +292,7 @@ export {
     applySnapshot,
     logCommand,
     arraysEqual,
-    saveFile
+    saveFile,
+    searchForString,
+    centerScreen
 };

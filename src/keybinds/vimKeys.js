@@ -7,6 +7,7 @@ import {
     renderScreen,
     createSnapshot,
     applySnapshot,
+    centerScreen,
     logCommand
 } from '../util/helper.js';
 import { sendKeys } from '../util/sendKeys.js';
@@ -594,7 +595,7 @@ function handleVimKeys(key, state, screen) {
             }
         } else if (key === 'f' || key === 't' || key === 'F' || key === 'T' || key === 'g') {
             state.previousKeys = key;
-        } else if (key === 'c' || key === 'r' || key === 'd' || key === 'y' || key === '/') {
+        } else if (key === 'c' || key === 'r' || key === 'd' || key === 'y') {
             state.previousKeys = key;
             logCommand(true, state, key);
         } else if (key === 'V') {
@@ -604,6 +605,18 @@ function handleVimKeys(key, state, screen) {
             };
             logCommand(true, state, key);
             renderScreen(state, screen);
+        } else if (key === 'n') {
+            // skip first
+            searchForString(state, state.searchQuery);
+            centerScreen(state);
+        } else if (key === 'N') {
+            // search backwards
+            searchForString(state, state.searchQuery);
+            centerScreen(state);
+        } else if (key === '/') {
+            state.mode = '/';
+            state.searchQuery = '';
+            logCommand(true, state, key);
         } else if (key === 'v') {
             state.mode = 'v';
             state.visual = {
@@ -629,6 +642,9 @@ function handleVimKeys(key, state, screen) {
                 }
             }
             logCommand(true, state, key);
+            renderScreen(state, screen);
+        } else if (key === 'z') {
+            centerScreen(state);
             renderScreen(state, screen);
         } else if (key === 'J') {
             if (state.data[state.row + 1] !== undefined) {
