@@ -40,14 +40,6 @@ export FZF_DEFAULT_COMMAND='rg --files --hidden --glob "!.git"'
     - trim trialing space on save and update state
     - actual copy paste newLine or not detection
 ## todo
-    - / ? n N // way to store & search for stuff (maybe make menu and have search/replace too?)
-        - / sets to slash mode
-        - type whatever searches (ignorecase)
-        - enter stores search to state (state.search)
-            - also sets visual to next occurence (will need some error message if can't find, and some status bar showing number of occurences (6/15) and searched phrase)
-            - r to replace current, R to replace all, n next, N backwards
-            - somehow make a search that is project wide, is that what ? could be??
-        - will need to have some kind of highlighting all occurences while in the special visual-search state?
     - add tests
         - mouse inputs done (might need to add drag select later)
         - helper functions for terminal done
@@ -57,7 +49,16 @@ export FZF_DEFAULT_COMMAND='rg --files --hidden --glob "!.git"'
     - q macros
 ## blocked
 ## in progress
+    - / ? n N // way to store & search for stuff (maybe make menu and have search/replace too?)
+        - / sets to slash mode
+        - type whatever searches (ignorecase)
+        - enter stores search to state (state.search)
+            - also sets visual to next occurence (will need some error message if can't find, and some status bar showing number of occurences (6/15) and searched phrase)
+            - r to replace current, R to replace all, n next, N backwards
+            - somehow make a search that is project wide, is that what ? could be??
+        - will need to have some kind of highlighting all occurences while in the special visual-search state?
     - ctrl w and ctrl backspace
+    - deal with wrapping lines
 ## done
     - commenting
     - add emacs commands for insert mode
