@@ -8,6 +8,7 @@ import {
     createSnapshot,
     applySnapshot,
     centerScreen,
+    searchForString,
     logCommand
 } from '../util/helper.js';
 import { sendKeys } from '../util/sendKeys.js';
@@ -606,9 +607,12 @@ function handleVimKeys(key, state, screen) {
             logCommand(true, state, key);
             renderScreen(state, screen);
         } else if (key === 'n') {
-            // skip first
-            searchForString(state, state.searchQuery);
-            centerScreen(state);
+            if (state.searchQuery !== '') {
+                state.col += state.searchQuery.length + 1;
+                searchForString(state, state.searchQuery);
+                centerScreen(state);
+                renderScreen(state, screen);
+            }
         } else if (key === 'N') {
             // search backwards
             searchForString(state, state.searchQuery);
@@ -616,6 +620,8 @@ function handleVimKeys(key, state, screen) {
         } else if (key === '/') {
             state.mode = '/';
             state.searchQuery = '';
+            state.search.row = state.row;
+            state.search.col = state.col;
             logCommand(true, state, key);
         } else if (key === 'v') {
             state.mode = 'v';

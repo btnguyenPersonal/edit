@@ -258,22 +258,29 @@ function arraysEqual(a, b) {
 }
 
 function searchForString(state, string) {
-    // TODO search backwards from top after finishing, and have another mirror function that searches backwards
     if (state.data[state.row].substring(state.col).includes(string)) {
         state.col = state.col + state.data[state.row].substring(state.col).indexOf(string);
-        state.search.row = state.row;
-        state.search.col = state.col + string.length;
         return true;
     }
     for (let row = state.row + 1; row < state.data.length; row += 1) {
         if (state.data[row].includes(string)) {
             state.row = row;
             state.col = state.data[row].indexOf(string);
-            state.search.row = state.row;
-            state.search.col = state.col + string.length;
             return true;
         }
     }
+    for (let row = 0; row < state.row; row += 1) {
+        if (state.data[row].includes(string)) {
+            state.row = row;
+            state.col = state.data[row].indexOf(string);
+            return true;
+        }
+    }
+    if (state.data[state.row].includes(string)) {
+        state.col = state.data[state.row].indexOf(string);
+        return true;
+    }
+    return false;
 }
 
 function centerScreen(state) {

@@ -30,7 +30,11 @@ function handleSearchKeys(key, state, screen) {
         state.searchQuery += key;
         searchForString(state, state.searchQuery);
         centerScreen(state);
-    } else if (key === 'ESCAPE' || key === 'ENTER') {
+    } else if (key === 'ESCAPE') {
+        state.mode = 'n';
+        state.row = state.search.row;
+        state.col = state.search.col;
+    } else if (key === 'ENTER') {
         state.mode = 'n';
     }
     logCommand(false, state, key);
