@@ -18,12 +18,12 @@ function handleMouseInputs(name, coor, state, screen) {
     } else if (name === 'MOUSE_WHEEL_UP') {
         if (state.windowLine > 0) {
             state.windowLine -= 1;
-            helper.renderScreen(state, screen);
+            helper.renderScreen(state, screen, true);
         }
     } else if (name === 'MOUSE_WHEEL_DOWN') {
         if (state.windowLine + process.stdout.rows < state.data.length) {
             state.windowLine += 1;
-            helper.renderScreen(state, screen);
+            helper.renderScreen(state, screen, true);
         }
     }
 }

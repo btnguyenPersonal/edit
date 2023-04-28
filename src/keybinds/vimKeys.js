@@ -9,6 +9,7 @@ import {
     applySnapshot,
     centerScreen,
     searchForString,
+    isOnScreen,
     logCommand
 } from '../util/helper.js';
 import { sendKeys } from '../util/sendKeys.js';
@@ -635,7 +636,6 @@ function handleVimKeys(key, state, screen) {
                     break;
                 }
             }
-            logCommand(true, state, key);
             renderScreen(state, screen);
         } else if (key === '{') {
             for (let i = state.row - 1; i >= 0; i -= 1) {
@@ -644,7 +644,6 @@ function handleVimKeys(key, state, screen) {
                     break;
                 }
             }
-            logCommand(true, state, key);
             renderScreen(state, screen);
         } else if (key === 'z') {
             centerScreen(state);

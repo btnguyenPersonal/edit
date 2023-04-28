@@ -14,33 +14,23 @@ export FZF_DEFAULT_COMMAND='rg --files --hidden --glob "!.git"'
     - ability to change file in editor // want to put some work to make this part really nice, might come after opening as workspace
     - file explorer
     - change to using built in GUI stuff? might not bother with this one and do it myself
-    - search and replace (file)
     - search in project
-    - syntax highlighting
     - multithread stuff
     - split apart code into multiple files
-    - after mouse scrolling so cursor isn't on screen, make sure next action resets the window // add to renderScreen
     - store cursor positioning between sessions
-    - gcc commenting
-    - tabs
-    - zz
     - visual block
-    - each mode in own file
-    - clipboard stuff put into helper file
-    - auto save?
     - w goes to ) as well for params?
     - visual deletes don't move windowLine
-    - visual dot commands moving cursor in weird places // maybe search replace k with j and start at top row
-    - don't store col and row with clipboard
-    - gg not working right
     - <c-o> <c-i>
-    - priming function for the snapshots? take row col from before edit
-    - Vc not working
     - ctrl w and ctrl backspace
     - gg command? dot
     - trim trialing space on save and update state
     - actual copy paste newLine or not detection
+    - habit: use cib for params
 ## todo
+    - after mouse scrolling so cursor isn't on screen, make sure next action resets the window // add to renderScreen
+    - show which mode are in
+    - drag select
     - add tests
         - mouse inputs done (might need to add drag select later)
         - helper functions for terminal done
@@ -48,12 +38,24 @@ export FZF_DEFAULT_COMMAND='rg --files --hidden --glob "!.git"'
         - vim keys (bruh)
     - ( ) -> get out of current indent level brace / paren and start at ^
     - q macros
-    - delete for /
-    - habit: use cib for params
 ## blocked
     - deal with wrapping lines // lol just don't worry about it
 ## in progress
 ## done
+    - search and replace (file)
+    - syntax highlighting
+    - gcc commenting
+    - tabs
+    - zz
+    - each mode in own file
+    - clipboard stuff put into helper file
+    - auto save?
+    - visual dot commands moving cursor in weird places // maybe search replace k with j and start at top row
+    - don't store col and row with clipboard
+    - gg not working right
+    - priming function for the snapshots? take row col from before edit
+    - Vc not working
+    - delete for /
     - save point changing snapshot for isSaved
     - / ? n N // way to store & search for stuff (maybe make menu and have search/replace too?)
         - / sets to slash mode
