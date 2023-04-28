@@ -70,7 +70,6 @@ function moveCursor(state, screen) {
             : state.data[r].length) + 5,
         (state.row < state.data.length ? state.row : state.data.length) - state.windowLine,
     );
-    screen.drawCursor();
 }
 
 function isHighlighted(state, i, j) {
@@ -116,26 +115,6 @@ function isHighlighted(state, i, j) {
     return false;
 }
 
-function getColor(s, isComment, isInString) {
-    if (isComment) {
-        return 'green';
-    }
-    if (isInString) {
-        return 'magenta';
-    }
-    if (s === '(' || s === ')') {
-        return 'yellow';
-    } else if (s === '"' || s === '\'' || s === '`') {
-        return 'magenta';
-    } else if (s === '[' || s === ']') {
-        return 'green';
-    } else if (s === '{' || s === '}') {
-        return 'cyan';
-    } else {
-        return 'white';
-    }
-}
-
 // sometime will have to limit number of snapshots, and make them diff based
 function createSnapshot(state) {
     state.snapshots.splice(state.currentSnapshot + 1, state.snapshots.length - (state.currentSnapshot + 1));
@@ -153,17 +132,37 @@ function createSnapshot(state) {
     state.isSaved = false;
 }
 
+function isInStringRow(row, col) {
+    let currentString = '';
+    let disregard = false;
+    for (let i = 0; i < col; i += 1) {
+        if (currentString === '' && (row.substring(i, i + 1) === '\'' || row.substring(i, i + 1) === '"' || row.substring(i, i + 1) === '`')) {
+            currentString = row.substring(i, i + 1);
+        } else if (currentString !== '' && (row.substring(i, i + 1) === currentString)) {
+            if (!disregard) {
+                currentString = '';
+            }
+        } else if (currentString !== '' && (row.substring(i, i + 1) === '\\')) {
+            disregard = true;
+        } else {
+            disregard = false;
+        }
+    }
+    return currentString !== '';
+}
+
 function isInString(state, row, col) {
     let currentString = '';
     let disregard = false;
     for (let i = 0; i < col; i += 1) {
-        if (currentString === '' && (state.data[row].substring(i, i + 1) === '\'' || state.data[row].substring(i, i + 1) === '"' || state.data[row].substring(i, i + 1) === '`')) {
-            currentString = state.data[row].substring(i, i + 1);
-        } else if (currentString !== '' && (state.data[row].substring(i, i + 1) === currentString)) {
+        const currentChar = state.data[row].substring(i, i + 1);
+        if (currentString === '' && (currentChar === '\'' || currentChar === '"' || currentChar === '`')) {
+            currentString = currentChar;
+        } else if (currentString !== '' && (currentChar === currentString)) {
             if (!disregard) {
                 currentString = '';
             }
-        } else if (currentString !== '' && (state.data[row].substring(i, i + 1) === '\\')) {
+        } else if (currentString !== '' && (currentChar === '\\')) {
             disregard = true;
         } else {
             disregard = false;
@@ -201,7 +200,50 @@ function logCommand(newCommand, state, key) {
     }
 }
 
-function renderScreen(state, screen) {
+function getColorRow(row, commentIndex) {
+    const output = [];
+    for (let i = 0; i < row.length; i++) {
+        const s = row.substring(i, i + 1);
+        if (i >= commentIndex && commentIndex !== -1) {
+            output.push('green');
+        } else if (isInStringRow(row, i)) {
+            output.push('magenta');
+        } else if (s === '(' || s === ')') {
+            output.push('yellow');
+        } else if (s === '"' || s === '\'' || s === '`') {
+            output.push('magenta');
+        } else if (s === '[' || s === ']') {
+            output.push('green');
+        } else if (s === '{' || s === '}') {
+            output.push('cyan');
+        } else {
+            output.push('white');
+        }
+    }
+    return output;
+}
+
+function getColor(s, isComment, isInString) {
+    if (isComment) {
+        return 'green';
+    }
+    if (isInString) {
+        return 'magenta';
+    }
+    if (s === '(' || s === ')') {
+        return 'yellow';
+    } else if (s === '"' || s === '\'' || s === '`') {
+        return 'magenta';
+    } else if (s === '[' || s === ']') {
+        return 'green';
+    } else if (s === '{' || s === '}') {
+        return 'cyan';
+    } else {
+        return 'white';
+    }
+}
+
+async function renderScreen(state, screen) {
     if (state.allowCommandLogging) {
         screen.fill({ char: ' ' });
         screen.moveTo(0, 0);
@@ -213,20 +255,23 @@ function renderScreen(state, screen) {
                     },
                     x: 0
                 }, (i + 1).toString().padStart(4) + ' ');
+                const commentIndex = commentStartsAt(state, i);
+                const colorRow = getColorRow(state.data[i], commentIndex);
                 for (let j = 0; j < state.data[i].length; j += 1) {
                     screen.put({
                         attr: {
-                            color: getColor(state.data[i].substring(j, j + 1), commentStartsAt(state, i) !== -1 && j >= commentStartsAt(state, i), isInString(state, i, j)),
+                            color: colorRow[j],
                             inverse: isHighlighted(state, i, j)
                         },
-                        wrap: true
+                        wrap: false
                     }, state.data[i].substring(j, j + 1));
                 }
                 screen.put({ newLine: true }, '\n');
             }
         }
-        screen.draw({ delta: false });
         moveCursor(state, screen);
+        await screen.draw({ delta: false });
+        await screen.drawCursor();
     }
 }
 
