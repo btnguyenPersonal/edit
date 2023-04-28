@@ -242,8 +242,11 @@ function getColor(s, isComment, isInString) {
     }
 }
 
-async function renderScreen(state, screen) {
+async function renderScreen(state, screen, noCenterScreen) {
     if (state.allowCommandLogging) {
+        if (!noCenterScreen && !isOnScreen(state)) {
+            centerScreen(state);
+        }
         screen.fill({ char: ' ' });
         screen.moveTo(0, 0);
         for (let i = state.windowLine; i < (state.windowLine + process.stdout.rows); i += 1) {
@@ -329,6 +332,10 @@ function searchForString(state, string) {
     return false;
 }
 
+function isOnScreen(state) {
+    return state.row > state.windowLine && state.row < state.windowLine + process.stdout.rows;
+}
+
 function centerScreen(state) {
     state.windowLine = state.row - Math.floor(process.stdout.rows / 2) >= 0 ? state.row - Math.floor(process.stdout.rows / 2) : 0
 }
@@ -347,5 +354,6 @@ export {
     arraysEqual,
     saveFile,
     searchForString,
+    isOnScreen,
     centerScreen
 };
