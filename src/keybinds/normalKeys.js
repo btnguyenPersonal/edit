@@ -35,7 +35,6 @@ function handleKeys(key, state, screen) {
             state.data[state.row] += state.data[state.row + 1];
             state.data.splice(state.row + 1, 1);
         }
-        state.isSaved = false;
         if (!state.vim) {
             createSnapshot(state);
         }
@@ -50,7 +49,6 @@ function handleKeys(key, state, screen) {
             state.data.splice(state.row, 1);
             state.row -= 1;
         }
-        state.isSaved = false;
         if (!state.vim) {
             createSnapshot(state);
         }
@@ -75,20 +73,17 @@ function handleKeys(key, state, screen) {
         if (state.row >= state.windowLine + process.stdout.rows) {
             state.windowLine += 1;
         }
-        state.isSaved = false;
         if (!state.vim) {
             createSnapshot(state);
         }
     } else if (key === 'TAB') {
         increaseIndentLevel(state, state.row);
         state.col += 4;
-        state.isSaved = false;
         if (!state.vim) {
             createSnapshot(state);
         }
     } else if (key === 'SHIFT_TAB') {
         decreaseIndentLevel(state, state.row);
-        state.isSaved = false;
         if (!state.vim) {
             createSnapshot(state);
         }
@@ -102,7 +97,6 @@ function handleKeys(key, state, screen) {
             + key
             + state.data[state.row].substring(state.col);
         state.col += 1;
-        state.isSaved = false;
         if (!state.vim) {
             createSnapshot(state);
         }

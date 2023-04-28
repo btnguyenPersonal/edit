@@ -3,7 +3,10 @@ import { copyToClipboard, isAlphaNumeric } from './helper.js';
 
 function uncomment(state, row) {
     const col = firstNonSpace(state, row);
-    state.data[row] = state.data[row].substring(0, col) + state.data[row].substring(col + 3);
+    state.data[row] = state.data[row].substring(0, col) + state.data[row].substring(col + 2);
+    if (state.data[row].substring(col, col + 1) === ' ') {
+        state.data[row] = state.data[row].substring(0, col) + state.data[row].substring(col + 1);
+    }
 }
 
 function comment(state, row, c) {

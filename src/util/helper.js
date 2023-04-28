@@ -129,7 +129,6 @@ function createSnapshot(state) {
         windowLine: state.windowLine
     });
     state.currentSnapshot = state.snapshots.length - 1;
-    state.isSaved = false;
 }
 
 function isInStringRow(row, col) {
@@ -251,7 +250,7 @@ async function renderScreen(state, screen) {
             if (state.data[i] !== undefined) {
                 screen.put({
                     attr: {
-                        color: state.isSaved || (state.currentSnapshot === 0 && state.mode !== 'i') ? 'grey' : 'white'
+                        color: 'grey'
                     },
                     x: 0
                 }, (i + 1).toString().padStart(4) + ' ');
@@ -282,14 +281,16 @@ function copyToClipboard(state, textArray, newLine) {
 }
 
 function saveFile(state, term) {
-    (async () => fs.writeFile(state.file, state.data.join('\n'), (err) => {
-        if (err) {
-            term.fullScreen(false);
-            console.log(err);
-            process.exit();
-        }
-    }))();
-    state.isSaved = true;
+    if (state.currentSnapshot !== state.savePoint) {
+        (async () => fs.writeFile(state.file, state.data.join('\n'), (err) => {
+            if (err) {
+                term.fullScreen(false);
+                console.log(err);
+                process.exit();
+            }
+        }))();
+        state.savePoint = state.currentSnapshot;
+    }
 }
 
 function arraysEqual(a, b) {
