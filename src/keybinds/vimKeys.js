@@ -550,7 +550,6 @@ function handleVimKeys(key, state, screen) {
             logCommand(true, state, key);
             renderScreen(state, screen);
         } else if (key === 'O') {
-            state.isSaved = false;
             const indentLevel = getIndentLevelFrom(state, state.row, true);
             state.data.splice(state.row, 0, ' '.repeat(indentLevel));
             state.col = indentLevel;
@@ -558,7 +557,6 @@ function handleVimKeys(key, state, screen) {
             logCommand(true, state, key);
             renderScreen(state, screen);
         } else if (key === 'o') {
-            state.isSaved = false;
             const indentLevel = getIndentLevelFrom(state, state.row);
             state.data.splice(state.row + 1, 0, ' '.repeat(indentLevel));
             state.row += 1;
@@ -580,7 +578,6 @@ function handleVimKeys(key, state, screen) {
             renderScreen(state, screen);
         } else if (key === 'G') {
             bottomOfFile(state);
-            logCommand(true, state, key);
             renderScreen(state, screen);
         } else if (key === 'p') {
             if (pasteFromClipboardAfter(state)) {

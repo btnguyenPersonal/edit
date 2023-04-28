@@ -65,7 +65,7 @@ const state = {
     windowLine: 0,
     snapshots: [],
     currentSnapshot: 0,
-    isSaved: true
+    savePoint: 0
 };
 const screen = new ScreenBuffer({ dst: term, noFill: true });
 
@@ -74,7 +74,6 @@ term.fullscreen(true);
 term.windowTitle('edit');
 renderScreen(state, screen);
 createSnapshot(state);
-state.isSaved = true;
 
 term.on('key', (key) => {
     try {
@@ -113,3 +112,7 @@ term.on('resize', () => {
         process.exit();
     }
 });
+
+setInterval(function(){
+    saveFile(state, term);
+}, 200);

@@ -12,6 +12,7 @@ import {
     firstNonSpace,
     increaseIndentLevel,
     decreaseIndentLevel,
+    topOfFile,
     bottomOfFile,
     upHalfScreen,
     downHalfScreen,
@@ -130,7 +131,12 @@ function handleVisualLineKeys(key, state, screen) {
         state.mode = 'n';
         createSnapshot(state);
     } else if (key === 'g') {
-        state.previousKeys = 'g';
+        if (state.previousKeys === 'g') {
+            topOfFile(state);
+            state.previousKeys = '';
+        } else {
+            state.previousKeys = 'g';
+        }
     } else if (key === 'G') {
         bottomOfFile(state);
     } else if (key === '}') {

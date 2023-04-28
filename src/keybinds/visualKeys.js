@@ -4,6 +4,8 @@ import {
     renderScreen,
     createSnapshot,
     isWritable,
+    searchForString,
+    centerScreen,
     logCommand
 } from '../util/helper.js';
 import {
@@ -107,6 +109,15 @@ function handleVisualKeys(key, state, screen) {
         }
         state.mode = 'n';
         createSnapshot(state);
+    } else if (key === '*') {
+        copyInVisual(state);
+        state.searchQuery = state.clipboard[0];
+        state.mode = 'n';
+        if (state.searchQuery !== '') {
+            state.col += state.searchQuery.length + 1;
+            searchForString(state, state.searchQuery);
+            centerScreen(state);
+        }
     } else if (key === 'y') {
         copyInVisual(state);
         if (state.row >= state.visual.row) {

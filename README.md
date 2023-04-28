@@ -36,6 +36,7 @@ export FZF_DEFAULT_COMMAND='rg --files --hidden --glob "!.git"'
     - <c-o> <c-i>
     - priming function for the snapshots? take row col from before edit
     - Vc not working
+    - ctrl w and ctrl backspace
     - gg command? dot
     - trim trialing space on save and update state
     - actual copy paste newLine or not detection
@@ -47,16 +48,13 @@ export FZF_DEFAULT_COMMAND='rg --files --hidden --glob "!.git"'
         - vim keys (bruh)
     - ( ) -> get out of current indent level brace / paren and start at ^
     - q macros
-    - cursor freakout
-    - gg on V
-    - G and gg on dot
     - delete for /
     - habit: use cib for params
-    - save point changing snapshot for isSaved
-    - improve render a lot to not rerender, and save lines for the color instead of by char
-    - gc deleting when //comment is close
 ## blocked
+    - deal with wrapping lines // lol just don't worry about it
 ## in progress
+## done
+    - save point changing snapshot for isSaved
     - / ? n N // way to store & search for stuff (maybe make menu and have search/replace too?)
         - / sets to slash mode
         - type whatever searches (ignorecase)
@@ -65,9 +63,11 @@ export FZF_DEFAULT_COMMAND='rg --files --hidden --glob "!.git"'
             - r to replace current, R to replace all, n next, N backwards
             - somehow make a search that is project wide, is that what ? could be??
         - will need to have some kind of highlighting all occurences while in the special visual-search state?
-    - ctrl w and ctrl backspace
-    - deal with wrapping lines
-## done
+    - cursor freakout
+    - gg on V
+    - G and gg on dot
+    - improve render a lot to not rerender, and save lines for the color instead of by char
+    - gc deleting when //comment is close
     - commenting
     - add emacs commands for insert mode
     - t T //need c and d to work with this -> seems like should be able to convert this somehow to simplify logic?
