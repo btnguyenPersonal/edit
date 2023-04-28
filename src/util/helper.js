@@ -270,7 +270,7 @@ async function renderScreen(state, screen) {
             }
         }
         moveCursor(state, screen);
-        await screen.draw({ delta: false });
+        await screen.draw({ delta: true });
         await screen.drawCursor();
     }
 }
