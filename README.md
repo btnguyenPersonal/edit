@@ -47,6 +47,14 @@ export FZF_DEFAULT_COMMAND='rg --files --hidden --glob "!.git"'
         - vim keys (bruh)
     - ( ) -> get out of current indent level brace / paren and start at ^
     - q macros
+    - cursor freakout
+    - gg on V
+    - G and gg on dot
+    - delete for /
+    - habit: use cib for params
+    - save point changing snapshot for isSaved
+    - improve render a lot to not rerender, and save lines for the color instead of by char
+    - gc deleting when //comment is close
 ## blocked
 ## in progress
     - / ? n N // way to store & search for stuff (maybe make menu and have search/replace too?)
