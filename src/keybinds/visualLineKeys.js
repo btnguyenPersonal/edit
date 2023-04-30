@@ -127,6 +127,9 @@ function handleVisualLineKeys(key, state, screen) {
             copyToClipboard(state, newClipboard, true);
             state.data.splice(state.row, state.visualLine.row - state.row + 1);
         }
+        if (state.row > state.data.length - 1) {
+            state.row = state.data.length - 1;
+        }
         firstNonSpace(state, state.row);
         state.mode = 'n';
         createSnapshot(state);
@@ -187,6 +190,10 @@ function handleVisualLineKeys(key, state, screen) {
         } else if (state.row < state.visualLine.row) {
             state.data.splice(state.row, state.visualLine.row - state.row + 1);
         }
+        if (state.row > state.data.length - 1) {
+            state.row = state.data.length - 1;
+        }
+        firstNonSpace(state, state.row);
         state.mode = 'n';
         createSnapshot(state);
     } else if (key === 'p' || key === 'P') {
