@@ -86,17 +86,17 @@ term.on('key', (key) => {
             renderScreen(state, screen);
         } else if (key === 'CTRL_P') {
             term.fullscreen(false);
-            process.exit(0);
+            process.exit(1);
         } else if (key === 'CTRL_C') {
             term.fullscreen(false);
-            process.exit(1);
+            process.exit(0);
         } else {
             sendKeys([key], state, screen, term);
         }
     } catch (e) {
         term.fullscreen(false);
         console.log(e);
-        process.exit(1);
+        process.exit(0);
     }
 });
 
@@ -106,7 +106,7 @@ term.on('mouse', (name, coor) => {
     } catch (e) {
         term.fullscreen(false);
         console.log(e);
-        process.exit(1);
+        process.exit(0);
     }
 });
 
@@ -116,7 +116,7 @@ term.on('resize', () => {
     } catch (e) {
         term.fullscreen(false);
         console.log(e);
-        process.exit();
+        process.exit(0);
     }
 });
 
