@@ -3,8 +3,11 @@
 this is my experiment for making a new code editor
 
 usually put this in my ~/.bashrc:
+> use e to make <ctrl-p> to change files
 ```
-alias e='edit -v `fzf --reverse --height=8`'
+function e() {
+    until edit `fzf --reverse --height=8`; do clear; done
+}
 export FZF_DEFAULT_COMMAND='rg --files --hidden --glob "!.git"'
 ```
 
@@ -38,6 +41,7 @@ export FZF_DEFAULT_COMMAND='rg --files --hidden --glob "!.git"'
         - vim keys (bruh)
     - ( ) -> get out of current indent level brace / paren and start at ^
     - q macros
+    - fix big w/ eof using Vd
 ## blocked
     - deal with wrapping lines // lol just don't worry about it
 ## in progress
