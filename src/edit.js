@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import fs from 'fs';
 import pkg from 'terminal-kit';
+import { spawn } from 'child_process';
 import {
     saveFile,
     renderScreen,
@@ -64,7 +65,8 @@ const state = {
     windowLine: 0,
     snapshots: [],
     currentSnapshot: 0,
-    savePoint: 0
+    savePoint: 0,
+    fileFinding: false
 };
 const screen = new ScreenBuffer({ dst: term, noFill: true });
 
@@ -76,19 +78,25 @@ createSnapshot(state);
 
 term.on('key', (key) => {
     try {
+        if (state.fileFinding) {
+            fileFinder.stdin.write(key);
+        }
         if (key === 'CTRL_S') {
             saveFile(state, term);
             renderScreen(state, screen);
+        } else if (key === 'CTRL_P') {
+            term.fullscreen(false);
+            process.exit(0);
         } else if (key === 'CTRL_C') {
             term.fullscreen(false);
-            process.exit();
+            process.exit(1);
         } else {
             sendKeys([key], state, screen, term);
         }
     } catch (e) {
         term.fullscreen(false);
         console.log(e);
-        process.exit();
+        process.exit(1);
     }
 });
 
@@ -98,7 +106,7 @@ term.on('mouse', (name, coor) => {
     } catch (e) {
         term.fullscreen(false);
         console.log(e);
-        process.exit();
+        process.exit(1);
     }
 });
 
