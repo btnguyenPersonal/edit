@@ -39,14 +39,14 @@ describe('helper functions', () => {
             helper.moveCursor(state, term);
             expect(term.moveTo).to.have.been.calledWith(5, 8);
         });
-        it('should call moveTo with 13, 1 when max col is surpassed', () => {
+        it('should call moveTo with 13, 0 when max col is surpassed', () => {
             state.col = 100;
             helper.moveCursor(state, term);
-            expect(term.moveTo).to.have.been.calledWith(13, 1);
+            expect(term.moveTo).to.have.been.calledWith(13, 0);
         });
-        it('should call moveTo with 5, 1', () => {
+        it('should call moveTo with 5, 0', () => {
             helper.moveCursor(state, term);
-            expect(term.moveTo).to.have.been.calledWith(5, 1);
+            expect(term.moveTo).to.have.been.calledWith(5, 0);
         });
     });
 
@@ -119,6 +119,107 @@ describe('helper functions', () => {
             expect(helper.isWritable('CTRL_X')).to.equal(false);
             expect(helper.isWritable('CTRL_Y')).to.equal(false);
             expect(helper.isWritable('CTRL_Z')).to.equal(false);
+        });
+    });
+
+    describe('isHighlighted', () => {
+        it('should return false if cursor', () => {
+            state.visual = { row: 7, col: 7 };
+            state.mode = 'v';
+            expect(helper.isHighlighted(state, 0, 0)).to.equal(false);
+        });
+        it('should return false if cursor', () => {
+            state.visualLine = { row: 7 };
+            state.mode = 'V';
+            expect(helper.isHighlighted(state, 0, 0)).to.equal(false);
+        });
+        it('should return true given entire screen is highlighted with visual mode', () => {
+            state.visual = { row: 7, col: 7 };
+            state.mode = 'v';
+            expect(helper.isHighlighted(state, 1, 1)).to.equal(true);
+        });
+        it('should return true given entire screen is highlighted with visualLine mode', () => {
+            state.visualLine = { row: 7 };
+            state.mode = 'V';
+            expect(helper.isHighlighted(state, 1, 1)).to.equal(true);
+        });
+        it('should return true given visualLine is highlighted', () => {
+            state.visualLine = { row: 0 };
+            state.mode = 'V';
+            expect(helper.isHighlighted(state, 0, 1)).to.equal(true);
+        });
+        it('should return true given until end of line is highlighted', () => {
+            state.visual = { row: 0, col: 7 };
+            state.mode = 'v';
+            expect(helper.isHighlighted(state, 0, 1)).to.equal(true);
+        });
+        it('should return false given only cursor is highlighted', () => {
+            state.visual = { row: 0, col: 0 };
+            state.mode = 'v';
+            expect(helper.isHighlighted(state, 0, 0)).to.equal(false);
+        });
+        it('should return false given not in highlight at all', () => {
+            state.row = 2;
+            state.col = 5;
+            state.visual = { row: 3, col: 6 };
+            state.mode = 'v';
+            expect(helper.isHighlighted(state, 0, 0)).to.equal(false);
+        });
+        it('should return false given highlight is down and col is before top highlight', () => {
+            state.row = 2;
+            state.col = 5;
+            state.visual = { row: 3, col: 6 };
+            state.mode = 'v';
+            expect(helper.isHighlighted(state, 2, 1)).to.equal(false);
+        });
+        it('should return false given highlight is down and col is before top highlight', () => {
+            state.row = 3;
+            state.col = 6;
+            state.visual = { row: 2, col: 5 };
+            state.mode = 'v';
+            expect(helper.isHighlighted(state, 2, 1)).to.equal(false);
+        });
+        it('should return true given highlight is down and col is after top highlight', () => {
+            state.row = 3;
+            state.col = 6;
+            state.visual = { row: 2, col: 5 };
+            state.mode = 'v';
+            expect(helper.isHighlighted(state, 2, 6)).to.equal(true);
+        });
+        it('should return true given highlight is down and col is after top highlight', () => {
+            state.row = 2;
+            state.col = 5;
+            state.visual = { row: 3, col: 6 };
+            state.mode = 'v';
+            expect(helper.isHighlighted(state, 2, 6)).to.equal(true);
+        });
+        it('should return true given highlight is down and col is before bottom highlight', () => {
+            state.row = 2;
+            state.col = 5;
+            state.visual = { row: 3, col: 6 };
+            state.mode = 'v';
+            expect(helper.isHighlighted(state, 3, 1)).to.equal(true);
+        });
+        it('should return true given highlight is down and col is before bottom highlight', () => {
+            state.row = 3;
+            state.col = 6;
+            state.visual = { row: 2, col: 5 };
+            state.mode = 'v';
+            expect(helper.isHighlighted(state, 3, 1)).to.equal(true);
+        });
+        it('should return false given highlight is down and col is after bottom highlight', () => {
+            state.row = 3;
+            state.col = 6;
+            state.visual = { row: 2, col: 5 };
+            state.mode = 'v';
+            expect(helper.isHighlighted(state, 3, 6)).to.equal(false);
+        });
+        it('should return false given highlight is down and col is after bottom highlight', () => {
+            state.row = 2;
+            state.col = 5;
+            state.visual = { row: 3, col: 6 };
+            state.mode = 'v';
+            expect(helper.isHighlighted(state, 3, 6)).to.equal(true);
         });
     });
 });

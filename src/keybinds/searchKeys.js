@@ -1,29 +1,11 @@
 /* eslint-disable import/no-cycle */
-import ncp from 'copy-paste';
 import {
-    copyToClipboard,
     renderScreen,
-    createSnapshot,
     logCommand,
     isWritable,
     searchForString,
     centerScreen
 } from '../util/helper.js';
-import {
-    up,
-    down,
-    firstNonSpace,
-    increaseIndentLevel,
-    decreaseIndentLevel,
-    bottomOfFile,
-    upHalfScreen,
-    downHalfScreen,
-    getIndentLevelFrom,
-    isEmptyRow,
-    isCommented,
-    uncomment,
-    comment,
-} from '../util/movement.js';
 
 function handleSearchKeys(key, state, screen) {
     if (isWritable(key)) {

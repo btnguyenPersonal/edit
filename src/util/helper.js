@@ -171,7 +171,7 @@ function isInString(state, row, col) {
 }
 
 function commentStartsAt(state, row) {
-    for(let i = 0; i < state.data[row].length; i += 1) {
+    for (let i = 0; i < state.data[row].length; i += 1) {
         if (state.data[row].substring(i, i + 2) === '//' && !isInString(state, row, i)) {
             return i;
         }
@@ -201,7 +201,7 @@ function logCommand(newCommand, state, key) {
 
 function getColorRow(row, commentIndex) {
     const output = [];
-    for (let i = 0; i < row.length; i++) {
+    for (let i = 0; i < row.length; i += 1) {
         const s = row.substring(i, i + 1);
         if (i >= commentIndex && commentIndex !== -1) {
             output.push('green');
@@ -222,24 +222,57 @@ function getColorRow(row, commentIndex) {
     return output;
 }
 
-function getColor(s, isComment, isInString) {
-    if (isComment) {
-        return 'green';
+function copyToClipboard(state, textArray, newLine) {
+    state.clipboard = textArray;
+    state.clipboardNewLine = newLine;
+    ncp.copy(state.clipboard.join('\n'));
+}
+
+function saveFile(state, term) {
+    if (state.currentSnapshot !== state.savePoint) {
+        (async () => fs.writeFile(state.file, state.data.join('\n'), (err) => {
+            if (err) {
+                term.fullScreen(false);
+                console.log(err);
+                process.exit();
+            }
+        }))();
+        state.savePoint = state.currentSnapshot;
     }
-    if (isInString) {
-        return 'magenta';
+}
+
+function searchForString(state, string) {
+    if (state.data[state.row].substring(state.col).includes(string)) {
+        state.col += state.data[state.row].substring(state.col).indexOf(string);
+        return true;
     }
-    if (s === '(' || s === ')') {
-        return 'yellow';
-    } else if (s === '"' || s === '\'' || s === '`') {
-        return 'magenta';
-    } else if (s === '[' || s === ']') {
-        return 'green';
-    } else if (s === '{' || s === '}') {
-        return 'cyan';
-    } else {
-        return 'white';
+    for (let row = state.row + 1; row < state.data.length; row += 1) {
+        if (state.data[row].includes(string)) {
+            state.row = row;
+            state.col = state.data[row].indexOf(string);
+            return true;
+        }
     }
+    for (let row = 0; row < state.row; row += 1) {
+        if (state.data[row].includes(string)) {
+            state.row = row;
+            state.col = state.data[row].indexOf(string);
+            return true;
+        }
+    }
+    if (state.data[state.row].includes(string)) {
+        state.col = state.data[state.row].indexOf(string);
+        return true;
+    }
+    return false;
+}
+
+function isOnScreen(state) {
+    return state.row > state.windowLine && state.row < state.windowLine + process.stdout.rows;
+}
+
+function centerScreen(state) {
+    state.windowLine = state.row - Math.floor(process.stdout.rows / 2) >= 0 ? state.row - Math.floor(process.stdout.rows / 2) : 0;
 }
 
 async function renderScreen(state, screen, noCenterScreen) {
@@ -277,69 +310,6 @@ async function renderScreen(state, screen, noCenterScreen) {
     }
 }
 
-function copyToClipboard(state, textArray, newLine) {
-    state.clipboard = textArray;
-    state.clipboardNewLine = newLine;
-    ncp.copy(state.clipboard.join('\n'));
-}
-
-function saveFile(state, term) {
-    if (state.currentSnapshot !== state.savePoint) {
-        (async () => fs.writeFile(state.file, state.data.join('\n'), (err) => {
-            if (err) {
-                term.fullScreen(false);
-                console.log(err);
-                process.exit();
-            }
-        }))();
-        state.savePoint = state.currentSnapshot;
-    }
-}
-
-function arraysEqual(a, b) {
-    if (a === b) return true;
-    if (a == null || b == null) return false;
-    if (a.length !== b.length) return false;
-    for (let i = 0; i < a.length; i += 1) {
-        if (a[i] !== b[i]) return false;
-    }
-    return true;
-}
-
-function searchForString(state, string) {
-    if (state.data[state.row].substring(state.col).includes(string)) {
-        state.col = state.col + state.data[state.row].substring(state.col).indexOf(string);
-        return true;
-    }
-    for (let row = state.row + 1; row < state.data.length; row += 1) {
-        if (state.data[row].includes(string)) {
-            state.row = row;
-            state.col = state.data[row].indexOf(string);
-            return true;
-        }
-    }
-    for (let row = 0; row < state.row; row += 1) {
-        if (state.data[row].includes(string)) {
-            state.row = row;
-            state.col = state.data[row].indexOf(string);
-            return true;
-        }
-    }
-    if (state.data[state.row].includes(string)) {
-        state.col = state.data[state.row].indexOf(string);
-        return true;
-    }
-    return false;
-}
-
-function isOnScreen(state) {
-    return state.row > state.windowLine && state.row < state.windowLine + process.stdout.rows;
-}
-
-function centerScreen(state) {
-    state.windowLine = state.row - Math.floor(process.stdout.rows / 2) >= 0 ? state.row - Math.floor(process.stdout.rows / 2) : 0
-}
-
 export {
     pasteFromClipboardBefore,
     pasteFromClipboardAfter,
@@ -351,9 +321,9 @@ export {
     createSnapshot,
     applySnapshot,
     logCommand,
-    arraysEqual,
     saveFile,
     searchForString,
     isOnScreen,
+    isHighlighted,
     centerScreen
 };

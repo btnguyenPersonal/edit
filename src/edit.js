@@ -49,8 +49,7 @@ const state = {
         col: null
     },
     visualLine: {
-        row: null,
-        col: null
+        row: null
     },
     visual: {
         row: null,
@@ -113,6 +112,6 @@ term.on('resize', () => {
     }
 });
 
-setInterval(function(){
+setInterval(() => {
     saveFile(state, term);
 }, 200);

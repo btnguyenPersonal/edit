@@ -52,14 +52,14 @@ describe('mouse input', () => {
             expect(state.col).to.equal(0);
             expect(state.row).to.equal(0);
         });
-        it('should move row and col to 6, 2 when clicked on 11, 3', () => {
+        it('should move row and col to 5, 2 when clicked on 11, 3', () => {
             handleMouseInputs('MOUSE_LEFT_BUTTON_PRESSED', { x: 11, y: 3 }, state, term);
-            expect(state.col).to.equal(6);
+            expect(state.col).to.equal(5);
             expect(state.row).to.equal(2);
         });
-        it('should move row and col to 7, 8 when clicked on 100, 100', () => {
+        it('should move row and col to 7, 0 when clicked on 100, 100', () => {
             handleMouseInputs('MOUSE_LEFT_BUTTON_PRESSED', { x: 100, y: 100 }, state, term);
-            expect(state.col).to.equal(8);
+            expect(state.col).to.equal(0);
             expect(state.row).to.equal(7);
         });
         it('should move row and col to 7, 0 when clicked on 1, 100', () => {
@@ -72,9 +72,9 @@ describe('mouse input', () => {
             expect(state.col).to.equal(8);
             expect(state.row).to.equal(0);
         });
-        it('should move row and col to 1, 1 when clicked on 6, 2', () => {
+        it('should move row and col to 1, 0 when clicked on 6, 2', () => {
             handleMouseInputs('MOUSE_LEFT_BUTTON_PRESSED', { x: 6, y: 2 }, state, term);
-            expect(state.col).to.equal(1);
+            expect(state.col).to.equal(0);
             expect(state.row).to.equal(1);
         });
         it('should move row and col to 0, 0 when clicked on 5, 1', () => {
@@ -96,14 +96,14 @@ describe('mouse input', () => {
                 expect(state.windowLine).to.equal(0);
             }
         });
-        it('should not move windowLine up when mouse wheel is moved up and windowLine is max length', () => {
+        it('should not move windowLine up when mouse wheel is moved down and windowLine is max length', () => {
             state.windowLine = 7;
-            handleMouseInputs('MOUSE_WHEEL_UP', undefined, state, term);
+            handleMouseInputs('MOUSE_WHEEL_DOWN', undefined, state, term);
             expect(state.windowLine).to.equal(7);
         });
-        it('should move windowLine down when mouse wheel is moved down', () => {
+        it('should move windowLine down when mouse wheel is moved up', () => {
             state.windowLine = 5;
-            handleMouseInputs('MOUSE_WHEEL_DOWN', undefined, state, term);
+            handleMouseInputs('MOUSE_WHEEL_UP', undefined, state, term);
             expect(state.windowLine).to.equal(4);
         });
         it('should not move windowLine down when mouse wheel is moved down and windowLine is zero', () => {

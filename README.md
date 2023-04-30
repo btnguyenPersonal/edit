@@ -20,17 +20,17 @@ export FZF_DEFAULT_COMMAND='rg --files --hidden --glob "!.git"'
     - store cursor positioning between sessions
     - visual block
     - w goes to ) as well for params?
-    - visual deletes don't move windowLine
     - <c-o> <c-i>
     - ctrl w and ctrl backspace
-    - gg command? dot
     - trim trialing space on save and update state
     - actual copy paste newLine or not detection
     - habit: use cib for params
+    - syntax highlighting for different types of files
+    - get rid of process.stdout.row and use screen.height screen.width (will make easier to make status bar)
+    - status bar (maybe search replace overlay)
 ## todo
-    - after mouse scrolling so cursor isn't on screen, make sure next action resets the window // add to renderScreen
     - show which mode are in
-    - drag select
+    - mouse drag select
     - add tests
         - mouse inputs done (might need to add drag select later)
         - helper functions for terminal done
@@ -42,6 +42,9 @@ export FZF_DEFAULT_COMMAND='rg --files --hidden --glob "!.git"'
     - deal with wrapping lines // lol just don't worry about it
 ## in progress
 ## done
+    - visual deletes don't move windowLine
+    - gg command? dot
+    - after mouse scrolling so cursor isn't on screen, make sure next action resets the window // add to renderScreen
     - search and replace (file)
     - syntax highlighting
     - gcc commenting

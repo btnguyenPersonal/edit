@@ -23,6 +23,7 @@
         "comma-dangle": "off",
         "consistent-return": "off",
         "import/prefer-default-export": "off",
+        "prefer-destructuring": "off",
         "max-len": ["error", 160],
         "no-else-return": "off",
         "no-lonely-if": "off"

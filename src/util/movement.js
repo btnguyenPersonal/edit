@@ -1,6 +1,14 @@
 /* eslint-disable import/no-cycle */
 import { copyToClipboard, isAlphaNumeric } from './helper.js';
 
+function firstNonSpace(state, row) {
+    for (let i = 0; i < state.data[row].length; i += 1) {
+        if (state.data[row].charAt(i) !== ' ') {
+            return i;
+        }
+    }
+}
+
 function uncomment(state, row) {
     const col = firstNonSpace(state, row);
     state.data[row] = state.data[row].substring(0, col) + state.data[row].substring(col + 2);
@@ -149,14 +157,6 @@ function getCoorBeginningLastWord(state) {
         col = i;
     }
     return col;
-}
-
-function firstNonSpace(state, row) {
-    for (let i = 0; i < state.data[row].length; i += 1) {
-        if (state.data[row].charAt(i) !== ' ') {
-            return i;
-        }
-    }
 }
 
 function increaseIndentLevel(state, row) {
