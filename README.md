@@ -32,6 +32,10 @@ export FZF_DEFAULT_COMMAND='rg --files --hidden --glob "!.git"'
     - get rid of process.stdout.row and use screen.height screen.width (will make easier to make status bar)
     - status bar (maybe search replace overlay)
 ## todo
+    - show file path
+    - show search string
+    - show search result 5/60
+    - show if search is wrong
     - show which mode are in
     - mouse drag select
     - add tests
@@ -41,7 +45,7 @@ export FZF_DEFAULT_COMMAND='rg --files --hidden --glob "!.git"'
         - vim keys (bruh)
     - ( ) -> get out of current indent level brace / paren and start at ^
     - q macros
-    - fix big w/ eof using Vd
+    - fix bug w/ eof using Vd
 ## blocked
     - deal with wrapping lines // lol just don't worry about it
 ## in progress

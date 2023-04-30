@@ -604,12 +604,16 @@ function handleVimKeys(key, state, screen) {
         } else if (key === 'n') {
             if (state.searchQuery !== '') {
                 state.col += state.searchQuery.length + 1;
-                searchForString(state, state.searchQuery);
-                centerScreen(state);
-                renderScreen(state, screen);
+                const result = searchForString(state, state.searchQuery);
+                if (!result) {
+                    state.col -= state.searchQuery.length + 1;
+                } else {
+                    centerScreen(state);
+                    renderScreen(state, screen);
+                }
             }
         } else if (key === 'N') {
-            // search backwards
+            // search backwards TODO
             searchForString(state, state.searchQuery);
             centerScreen(state);
         } else if (key === '/') {
