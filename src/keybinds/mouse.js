@@ -2,11 +2,11 @@ import * as helper from '../util/helper.js';
 
 function handleMouseInputs(name, coor, state, screen) {
     if (name === 'MOUSE_LEFT_BUTTON_PRESSED') {
-        if ((coor.x - 1) - 5 >= 0) {
+        if (state.data[coor.y - 1 + state.windowLine] && (coor.x - 1) - 5 >= 0) {
             if ((coor.x - 1) - 5 < state.data[coor.y - 1 + state.windowLine].length) {
                 state.col = (coor.x - 1) - 5;
             } else {
-                state.col = state.data[coor.y - 1].length;
+                state.col = state.data[coor.y - 1 + state.windowLine].length;
             }
         } else {
             state.col = 0;

@@ -9,7 +9,6 @@ import {
     applySnapshot,
     centerScreen,
     searchForString,
-    isOnScreen,
     logCommand
 } from '../util/helper.js';
 import { sendKeys } from '../util/sendKeys.js';
@@ -189,7 +188,6 @@ function handleVimKeys(key, state, screen) {
     } else if (state.previousKeys === 'yf') {
         if (isWritable(key)) {
             state.visual.row = state.row;
-            state.col = state.col;
             state.visual.col = findForward(state, key);
             copyInVisual(state);
             renderScreen(state, screen);
@@ -209,7 +207,6 @@ function handleVimKeys(key, state, screen) {
     } else if (state.previousKeys === 'yt') {
         if (isWritable(key)) {
             state.visual.row = state.row;
-            state.col = state.col;
             state.visual.col = toForward(state, key);
             copyInVisual(state);
             renderScreen(state, screen);
