@@ -45,11 +45,12 @@ export FZF_DEFAULT_COMMAND='rg --files --hidden --glob "!.git"'
         - vim keys (bruh)
     - ( ) -> get out of current indent level brace / paren and start at ^
     - q macros
-    - fix bug w/ eof using Vd
+    - grepping project (need to keep the previous text searched)
 ## blocked
     - deal with wrapping lines // lol just don't worry about it
 ## in progress
 ## done
+    - fix bug w/ eof using Vd
     - visual deletes don't move windowLine
     - gg command? dot
     - after mouse scrolling so cursor isn't on screen, make sure next action resets the window // add to renderScreen
