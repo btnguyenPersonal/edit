@@ -2,7 +2,7 @@
 import { copyToClipboard, isAlphaNumeric } from './helper.js';
 
 function firstNonSpace(state, row) {
-    for (let i = 0; i < state.data[row].length; i += 1) {
+    for (let i = 0; i < state.data[row]?.length; i += 1) {
         if (state.data[row].charAt(i) !== ' ') {
             return i;
         }
