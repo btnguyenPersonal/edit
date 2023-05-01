@@ -32,24 +32,26 @@ export FZF_DEFAULT_COMMAND='rg --files --hidden --glob "!.git"'
     - get rid of process.stdout.row and use screen.height screen.width (will make easier to make status bar)
     - status bar (maybe search replace overlay)
 ## todo
-    - show file path
-    - show search string
-    - show search result 5/60
-    - show if search is wrong
-    - show which mode are in
+    - add status bar
     - mouse drag select
     - add tests
         - mouse inputs done (might need to add drag select later)
         - helper functions for terminal done
         - normal keys
         - vim keys (bruh)
-    - ( ) -> get out of current indent level brace / paren and start at ^
-    - q macros
     - grepping project (need to keep the previous text searched)
 ## blocked
     - deal with wrapping lines // lol just don't worry about it
+    - until status bar >> do i really need?
+        - show file path
+        - show which mode are in
+        - show search string
+        - show search result 5/60
+        - show if search is wrong
 ## in progress
 ## done
+    - ( ) -> get out of current indent level brace / paren and start at ^
+    - q macros
     - fix bug w/ eof using Vd
     - visual deletes don't move windowLine
     - gg command? dot

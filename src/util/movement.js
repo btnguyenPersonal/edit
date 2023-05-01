@@ -1,6 +1,50 @@
 /* eslint-disable import/no-cycle */
 import { copyToClipboard, isAlphaNumeric } from './helper.js';
 
+function previousSameIndentLevel(state, row) {
+    const currentIndent = getIndentLevel(state, row);
+    for (let i = row - 1; i >= 0; i -= 1) {
+        if (getIndentLevel(state, i) === currentIndent) {
+            state.row = i;
+            state.col = firstNonSpace(state, i);
+            break;
+        }
+    }
+}
+
+function nextSameIndentLevel(state, row) {
+    const currentIndent = getIndentLevel(state, row);
+    for (let i = row + 1; i < state.data.length; i += 1) {
+        if (getIndentLevel(state, i) === currentIndent) {
+            state.row = i;
+            state.col = firstNonSpace(state, i);
+            break;
+        }
+    }
+}
+
+function previousLowerIndentLevel(state, row) {
+    const currentIndent = getIndentLevel(state, row);
+    for (let i = row - 1; i >= 0; i -= 1) {
+        if (getIndentLevel(state, i) === currentIndent - 4) {
+            state.row = i;
+            state.col = firstNonSpace(state, i);
+            break;
+        }
+    }
+}
+
+function nextLowerIndentLevel(state, row) {
+    const currentIndent = getIndentLevel(state, row);
+    for (let i = row + 1; i < state.data.length; i += 1) {
+        if (getIndentLevel(state, i) === currentIndent - 4) {
+            state.row = i;
+            state.col = firstNonSpace(state, i);
+            break;
+        }
+    }
+}
+
 function firstNonSpace(state, row) {
     for (let i = 0; i < state.data[row]?.length; i += 1) {
         if (state.data[row].charAt(i) !== ' ') {
@@ -448,4 +492,8 @@ export {
     isCommented,
     comment,
     uncomment,
+    previousSameIndentLevel,
+    nextSameIndentLevel,
+    previousLowerIndentLevel,
+    nextLowerIndentLevel,
 };
