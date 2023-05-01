@@ -44,6 +44,10 @@ import {
     isCommented,
     comment,
     uncomment,
+    previousSameIndentLevel,
+    nextSameIndentLevel,
+    previousLowerIndentLevel,
+    nextLowerIndentLevel,
 } from '../util/movement.js';
 
 function handleVimKeys(key, state, screen) {
@@ -313,6 +317,7 @@ function handleVimKeys(key, state, screen) {
                 comment(state, state.row);
             }
             createSnapshot(state);
+            logCommand(true, state, 'g');
             logCommand(false, state, key);
             renderScreen(state, screen);
         }
@@ -666,6 +671,18 @@ function handleVimKeys(key, state, screen) {
             if (state.currentSnapshot - 1 >= 0) {
                 applySnapshot(state, state.currentSnapshot - 1);
             }
+            renderScreen(state, screen);
+        } else if (key === '[') {
+            previousSameIndentLevel(state, state.row);
+            renderScreen(state, screen);
+        } else if (key === ']') {
+            nextSameIndentLevel(state, state.row);
+            renderScreen(state, screen);
+        } else if (key === '(') {
+            previousLowerIndentLevel(state, state.row);
+            renderScreen(state, screen);
+        } else if (key === ')') {
+            nextLowerIndentLevel(state, state.row);
             renderScreen(state, screen);
         } else if (key === 'q') {
             if (state.recording) {
