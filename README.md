@@ -4,6 +4,7 @@ this is my experiment for making a new code editor
 
 usually put this in my ~/.bashrc:
 > use e to make <ctrl-p> to change files and <ctrl-g> to search in project
+// still TODO to fix query staying between searches so don't have to type it in a million times
 ```
 function e() {
     command="`fzf --reverse --height=8`"
@@ -12,14 +13,14 @@ function e() {
             clear;
             command="`fzf --reverse --height=8`";
         else
-            command=$(FZF_DEFAULT_COMMAND="$RG_PREFIX $(printf %q "$INITIAL_QUERY")" \
+            command=$(rg --color=always --column --line-number --no-heading --smart-case "${*:-}" |
                 fzf --ansi \
-                    --disabled --query "${*:-}" \
-                    --bind "change:reload:sleep 0.1; rg --column --line-number --no-heading --color=always --smart-case  {q} || true" \
+                    --bind "change:reload:sleep 0.1; rg --column --line-number --no-heading --color=always --smart-case {q} || true" \
+                    --query "$query" \
                     --delimiter : \
                     --preview 'batcat --color=always {1} --highlight-line {2}' \
                     --preview-window 'up,60%,border-bottom,+{2}+3/3,~3' \
-                    --bind "enter:execute(echo {1} {2})+abort");
+                    --bind "enter:execute(query=$(echo {q});echo {1} {2})+abort");
         fi
     done;
 }
