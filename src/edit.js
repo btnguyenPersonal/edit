@@ -4,6 +4,7 @@ import pkg from 'terminal-kit';
 import { spawn } from 'child_process';
 import {
     saveFile,
+    centerScreen,
     renderScreen,
     createSnapshot
 } from './util/helper.js';
@@ -60,7 +61,7 @@ const state = {
     previousCommand: [],
     file: filepath,
     data: getData(filepath),
-    row: 0,
+    row: Number.isInteger(parseInt(process.argv[3])) ? parseInt(process.argv[3]) - 1 : 0,
     col: 0,
     windowLine: 0,
     snapshots: [],
@@ -69,11 +70,12 @@ const state = {
     recording: false,
     macro: []
 };
-const screen = new ScreenBuffer({ dst: term, noFill: true });
 
 term.grabInput({ mouse: 'button' });
 term.fullscreen(true);
 term.windowTitle('edit');
+const screen = new ScreenBuffer({ dst: term, noFill: true });
+centerScreen(state);
 renderScreen(state, screen);
 createSnapshot(state);
 
@@ -82,6 +84,9 @@ term.on('key', (key) => {
         if (key === 'CTRL_S') {
             saveFile(state, term);
             renderScreen(state, screen);
+        } else if (key === 'CTRL_G') {
+            term.fullscreen(false);
+            process.exit(2);
         } else if (key === 'CTRL_P') {
             term.fullscreen(false);
             process.exit(1);

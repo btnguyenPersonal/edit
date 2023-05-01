@@ -13,24 +13,17 @@ export FZF_DEFAULT_COMMAND='rg --files --hidden --glob "!.git"'
 
 ## backlog
     - undo/redo limit and diff based (don't know how hard that will be)
-    - terminal instance inside editor
-    - ability to change file in editor // want to put some work to make this part really nice, might come after opening as workspace
     - file explorer
-    - change to using built in GUI stuff? might not bother with this one and do it myself
-    - search in project
     - multithread stuff
     - split apart code into multiple files
     - store cursor positioning between sessions
     - visual block
-    - w goes to ) as well for params?
     - <c-o> <c-i>
     - ctrl w and ctrl backspace
     - trim trialing space on save and update state
-    - actual copy paste newLine or not detection
     - habit: use cib for params
     - syntax highlighting for different types of files
     - get rid of process.stdout.row and use screen.height screen.width (will make easier to make status bar)
-    - status bar (maybe search replace overlay)
 ## todo
     - add status bar
     - mouse drag select
@@ -39,7 +32,6 @@ export FZF_DEFAULT_COMMAND='rg --files --hidden --glob "!.git"'
         - helper functions for terminal done
         - normal keys
         - vim keys (bruh)
-    - grepping project (need to keep the previous text searched)
 ## blocked
     - deal with wrapping lines // lol just don't worry about it
     - until status bar >> do i really need?
@@ -49,7 +41,12 @@ export FZF_DEFAULT_COMMAND='rg --files --hidden --glob "!.git"'
         - show search result 5/60
         - show if search is wrong
 ## in progress
+    - grepping project (need to keep the previous text searched)
 ## done
+    - terminal instance inside editor
+    - ability to change file in editor // want to put some work to make this part really nice, might come after opening as workspace
+    - change to using built in GUI stuff? might not bother with this one and do it myself
+    - actual copy paste newLine or not detection
     - ( ) -> get out of current indent level brace / paren and start at ^
     - q macros
     - fix bug w/ eof using Vd
