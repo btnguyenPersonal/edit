@@ -66,7 +66,8 @@ const state = {
     snapshots: [],
     currentSnapshot: 0,
     savePoint: 0,
-    fileFinding: false
+    recording: false,
+    macro: []
 };
 const screen = new ScreenBuffer({ dst: term, noFill: true });
 
@@ -78,9 +79,6 @@ createSnapshot(state);
 
 term.on('key', (key) => {
     try {
-        if (state.fileFinding) {
-            fileFinder.stdin.write(key);
-        }
         if (key === 'CTRL_S') {
             saveFile(state, term);
             renderScreen(state, screen);

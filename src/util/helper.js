@@ -286,7 +286,7 @@ async function renderScreen(state, screen, noCenterScreen) {
             if (state.data[i] !== undefined) {
                 screen.put({
                     attr: {
-                        color: 'grey'
+                        color: state.recording ? 'red' : 'grey'
                     },
                     x: 0
                 }, (i + 1).toString().padStart(4) + ' ');

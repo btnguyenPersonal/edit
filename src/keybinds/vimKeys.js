@@ -667,6 +667,19 @@ function handleVimKeys(key, state, screen) {
                 applySnapshot(state, state.currentSnapshot - 1);
             }
             renderScreen(state, screen);
+        } else if (key === 'q') {
+            if (state.recording) {
+                state.recording = false;
+            } else {
+                state.macro = [];
+                state.recording = true;
+            }
+            renderScreen(state, screen);
+        } else if (key === ',') {
+            state.allowCommandLogging = false;
+            sendKeys(state.macro, state, screen);
+            state.allowCommandLogging = true;
+            renderScreen(state, screen);
         } else if (key === '.') {
             state.allowCommandLogging = false;
             sendKeys(state.previousCommand, state, screen);
