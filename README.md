@@ -7,8 +7,8 @@ usually put this in my ~/.bashrc:
 // still TODO to fix query staying between searches so don't have to type it in a million times
 ```
 function e() {
-    command="`fzf --reverse --height=8`"
-    until edit $command; do
+    command="`fzf --reverse --height=8` $query"
+    until query="${command##* }" && edit $command; do
         if [[ $? -eq 1 ]]; then
             clear;
             command="`fzf --reverse --height=8`";
@@ -18,9 +18,10 @@ function e() {
                     --bind "change:reload:sleep 0.1; rg --column --line-number --no-heading --color=always --smart-case {q} || true" \
                     --query "$query" \
                     --delimiter : \
+                    --reverse \
                     --preview 'batcat --color=always {1} --highlight-line {2}' \
                     --preview-window 'up,60%,border-bottom,+{2}+3/3,~3' \
-                    --bind "enter:execute(query=$(echo {q});echo {1} {2})+abort");
+                    --bind "enter:execute(echo '{1} {2} {q}')+abort");
         fi
     done;
 }
