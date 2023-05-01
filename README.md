@@ -3,10 +3,25 @@
 this is my experiment for making a new code editor
 
 usually put this in my ~/.bashrc:
-> use e to make <ctrl-p> to change files
+> use e to make <ctrl-p> to change files and <ctrl-g> to search in project
 ```
 function e() {
-    until edit `fzf --reverse --height=8`; do clear; done
+    command="`fzf --reverse --height=8`"
+    until edit $command; do
+        if [[ $? -eq 1 ]]; then
+            clear;
+            command="`fzf --reverse --height=8`";
+        else
+            command=$(FZF_DEFAULT_COMMAND="$RG_PREFIX $(printf %q "$INITIAL_QUERY")" \
+                fzf --ansi \
+                    --disabled --query "${*:-}" \
+                    --bind "change:reload:sleep 0.1; rg --column --line-number --no-heading --color=always --smart-case  {q} || true" \
+                    --delimiter : \
+                    --preview 'batcat --color=always {1} --highlight-line {2}' \
+                    --preview-window 'up,60%,border-bottom,+{2}+3/3,~3' \
+                    --bind "enter:execute(echo {1} {2})+abort");
+        fi
+    done;
 }
 export FZF_DEFAULT_COMMAND='rg --files --hidden --glob "!.git"'
 ```
