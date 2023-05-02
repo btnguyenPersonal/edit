@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 import fs from 'fs';
 import pkg from 'terminal-kit';
-import { spawn } from 'child_process';
 import {
     saveFile,
     centerScreen,
@@ -68,7 +67,8 @@ const state = {
     currentSnapshot: 0,
     savePoint: 0,
     recording: false,
-    macro: []
+    macro: [],
+    mark: -1
 };
 
 term.grabInput({ mouse: 'button' });

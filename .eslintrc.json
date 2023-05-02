@@ -26,6 +26,7 @@
         "prefer-destructuring": "off",
         "max-len": ["error", 160],
         "no-else-return": "off",
-        "no-lonely-if": "off"
+        "no-lonely-if": "off",
+        "radix": "off"
     }
 }
