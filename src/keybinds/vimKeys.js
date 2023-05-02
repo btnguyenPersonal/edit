@@ -119,6 +119,7 @@ function handleVimKeys(key, state, screen) {
             state.col = findForward(state, key);
             copyInVisual(state);
             deleteInVisual(state);
+            createSnapshot(state);
             renderScreen(state, screen);
         }
         logCommand(false, state, key);
@@ -130,6 +131,7 @@ function handleVimKeys(key, state, screen) {
             state.col = findBackward(state, key);
             copyInVisual(state);
             deleteInVisual(state);
+            createSnapshot(state);
             renderScreen(state, screen);
         }
         logCommand(false, state, key);
@@ -141,6 +143,7 @@ function handleVimKeys(key, state, screen) {
             state.col = toForward(state, key);
             copyInVisual(state);
             deleteInVisual(state);
+            createSnapshot(state);
             renderScreen(state, screen);
         }
         logCommand(false, state, key);
@@ -152,6 +155,7 @@ function handleVimKeys(key, state, screen) {
             state.col = toBackward(state, key);
             copyInVisual(state);
             deleteInVisual(state);
+            createSnapshot(state);
             renderScreen(state, screen);
         }
         logCommand(false, state, key);
