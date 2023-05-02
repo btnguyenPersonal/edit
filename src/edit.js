@@ -56,6 +56,7 @@ const state = {
         row: null,
         col: null
     },
+    lineNumber: '',
     previousKeys: '',
     previousCommand: [],
     file: filepath,

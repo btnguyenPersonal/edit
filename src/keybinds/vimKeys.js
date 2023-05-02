@@ -9,6 +9,7 @@ import {
     applySnapshot,
     centerScreen,
     searchForString,
+    isNumeric,
     logCommand
 } from '../util/helper.js';
 import { sendKeys } from '../util/sendKeys.js';
@@ -55,6 +56,14 @@ function handleVimKeys(key, state, screen) {
     if (key === 'ESCAPE') {
         state.mode = 'n';
         state.previousKeys = '';
+    } else if (state.previousKeys === '-') {
+        if (isNumeric(key)) {
+            state.lineNumber += key;
+            goToCoor(state, parseInt(state.lineNumber));
+        } else if (key === 'ENTER') {
+            state.previousKeys = '';
+        }
+        renderScreen(state, screen);
     } else if (state.previousKeys === 'd') {
         if (key === 'w') {
             const endOfWord = getCoorForwardWord(state);
@@ -599,7 +608,7 @@ function handleVimKeys(key, state, screen) {
                 logCommand(true, state, key);
                 renderScreen(state, screen);
             }
-        } else if (key === 'f' || key === 't' || key === 'F' || key === 'T' || key === 'g') {
+        } else if (key === 'f' || key === 't' || key === 'F' || key === 'T' || key === 'g' || key === '-') {
             state.previousKeys = key;
         } else if (key === 'c' || key === 'r' || key === 'd' || key === 'y') {
             state.previousKeys = key;
