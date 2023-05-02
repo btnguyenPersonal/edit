@@ -271,6 +271,21 @@ function searchBackForString(state, string) {
     return false;
 }
 
+function searchForStringNoWrap(state, string) {
+    if (state.data[state.row].substring(state.col).includes(string)) {
+        state.col += state.data[state.row].substring(state.col).indexOf(string);
+        return true;
+    }
+    for (let row = state.row + 1; row < state.data.length; row += 1) {
+        if (state.data[row].includes(string)) {
+            state.row = row;
+            state.col = state.data[row].indexOf(string);
+            return true;
+        }
+    }
+    return false;
+}
+
 function searchForString(state, string) {
     if (state.data[state.row].substring(state.col).includes(string)) {
         state.col += state.data[state.row].substring(state.col).indexOf(string);
@@ -352,6 +367,7 @@ export {
     applySnapshot,
     logCommand,
     saveFile,
+    searchForStringNoWrap,
     searchForString,
     searchBackForString,
     isOnScreen,

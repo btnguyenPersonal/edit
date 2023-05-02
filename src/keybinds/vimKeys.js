@@ -8,6 +8,7 @@ import {
     createSnapshot,
     applySnapshot,
     centerScreen,
+    searchForStringNoWrap,
     searchForString,
     searchBackForString,
     isNumeric,
@@ -177,30 +178,35 @@ function handleVimKeys(key, state, screen) {
             copyToClipboard(state, [state.data[state.row].substring(beginning + 1, end)], false);
             removeInsideAreaSameLine(state, beginning, end, 'n');
             logCommand(false, state, key);
+            createSnapshot(state);
             renderScreen(state, screen);
         } else if (key === '[' || key === ']') {
             const { beginning, end } = getCoorsInsideCharDiff(state, '[', ']');
             copyToClipboard(state, [state.data[state.row].substring(beginning + 1, end)], false);
             removeInsideAreaSameLine(state, beginning, end, 'n');
             logCommand(false, state, key);
+            createSnapshot(state);
             renderScreen(state, screen);
         } else if (key === '(' || key === ')' || key === 'b') {
             const { beginning, end } = getCoorsInsideCharDiff(state, '(', ')');
             copyToClipboard(state, [state.data[state.row].substring(beginning + 1, end)], false);
             removeInsideAreaSameLine(state, beginning, end, 'n');
             logCommand(false, state, key);
+            createSnapshot(state);
             renderScreen(state, screen);
         } else if (key === '{' || key === '}' || key === 'B') {
             const { beginning, end } = getCoorsInsideCharDiff(state, '{', '}');
             copyToClipboard(state, [state.data[state.row].substring(beginning + 1, end)], false);
             removeInsideAreaSameLine(state, beginning, end, 'n');
             logCommand(false, state, key);
+            createSnapshot(state);
             renderScreen(state, screen);
         } else if (key === '\'' || key === '"') {
             const { beginning, end } = getCoorsInsideCharSame(state, key);
             copyToClipboard(state, [state.data[state.row].substring(beginning + 1, end)], false);
             removeInsideAreaSameLine(state, beginning, end, 'n');
             logCommand(false, state, key);
+            createSnapshot(state);
             renderScreen(state, screen);
         }
         state.previousKeys = '';
@@ -719,12 +725,17 @@ function handleVimKeys(key, state, screen) {
             state.mark = state.row;
             renderScreen(state, screen);
         } else if (key === '@') {
-            while(searchForString(state, state.searchQuery)) {
+            if (state.searchQuery !== '') {
+                state.col = 0;
+                state.row = 0;
                 state.allowCommandLogging = false;
-                sendKeys(state.macro, state, screen);
+                const search = state.searchQuery
+                while(searchForStringNoWrap(state, search)) {
+                    sendKeys(state.macro, state, screen);
+                }
                 state.allowCommandLogging = true;
+                renderScreen(state, screen);
             }
-            renderScreen(state, screen);
         } else if (key === ',') {
             state.allowCommandLogging = false;
             sendKeys(state.macro, state, screen);
