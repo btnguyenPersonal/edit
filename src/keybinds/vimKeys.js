@@ -48,6 +48,7 @@ import {
     nextSameIndentLevel,
     previousLowerIndentLevel,
     nextLowerIndentLevel,
+    goToCoor,
 } from '../util/movement.js';
 
 function handleVimKeys(key, state, screen) {
@@ -695,6 +696,12 @@ function handleVimKeys(key, state, screen) {
                 state.macro = [];
                 state.recording = true;
             }
+            renderScreen(state, screen);
+        } else if (key === '\'') {
+            goToCoor(state, state.mark);
+            renderScreen(state, screen);
+        } else if (key === 'm') {
+            state.mark = state.row;
             renderScreen(state, screen);
         } else if (key === ',') {
             state.allowCommandLogging = false;

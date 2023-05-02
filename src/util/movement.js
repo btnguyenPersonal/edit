@@ -1,6 +1,18 @@
 /* eslint-disable import/no-cycle */
 import { copyToClipboard, isAlphaNumeric } from './helper.js';
 
+function firstNonSpace(state, row) {
+    for (let i = 0; i < state.data[row]?.length; i += 1) {
+        if (state.data[row].charAt(i) !== ' ') {
+            return i;
+        }
+    }
+}
+
+function getIndentLevel(state, row) {
+    return state.data[row].search(/\S|$/);
+}
+
 function previousSameIndentLevel(state, row) {
     const currentIndent = getIndentLevel(state, row);
     for (let i = row - 1; i >= 0; i -= 1) {
@@ -41,14 +53,6 @@ function nextLowerIndentLevel(state, row) {
             state.row = i;
             state.col = firstNonSpace(state, i);
             break;
-        }
-    }
-}
-
-function firstNonSpace(state, row) {
-    for (let i = 0; i < state.data[row]?.length; i += 1) {
-        if (state.data[row].charAt(i) !== ' ') {
-            return i;
         }
     }
 }
@@ -184,7 +188,8 @@ function getCoorBeginningNextWord(state) {
 }
 
 function getCoorBeginningLastWord(state) {
-    let hasHitNonAlphaNum = false;
+    let hasHitNonAlphaNum = isAlphaNumeric(state.data[state.row].substring(state.col - 1, state.col))
+        && isAlphaNumeric(state.data[state.row].substring(state.col, state.col + 1));
     let { col } = state;
     for (let i = col; i >= 0; i -= 1) {
         if (hasHitNonAlphaNum && isAlphaNumeric(state.data[state.row].charAt(i))) {
@@ -201,6 +206,12 @@ function getCoorBeginningLastWord(state) {
         col = i;
     }
     return col;
+}
+
+function goToCoor(state, row) {
+    if (row >= 0 && row < state.data.length) {
+        state.row = row;
+    }
 }
 
 function increaseIndentLevel(state, row) {
@@ -229,10 +240,6 @@ function decreaseIndentLevel(state, row) {
         }
     }
     state.data[row] = tempLine;
-}
-
-function getIndentLevel(state, row) {
-    return state.data[row].search(/\S|$/);
 }
 
 function up(state) {
@@ -496,4 +503,5 @@ export {
     nextSameIndentLevel,
     previousLowerIndentLevel,
     nextLowerIndentLevel,
+    goToCoor,
 };
