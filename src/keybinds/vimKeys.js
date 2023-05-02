@@ -9,6 +9,7 @@ import {
     applySnapshot,
     centerScreen,
     searchForString,
+    searchBackForString,
     isNumeric,
     logCommand
 } from '../util/helper.js';
@@ -609,6 +610,9 @@ function handleVimKeys(key, state, screen) {
                 renderScreen(state, screen);
             }
         } else if (key === 'f' || key === 't' || key === 'F' || key === 'T' || key === 'g' || key === '-') {
+            if (key === '-') {
+                state.lineNumber = '';
+            }
             state.previousKeys = key;
         } else if (key === 'c' || key === 'r' || key === 'd' || key === 'y') {
             state.previousKeys = key;
@@ -632,9 +636,11 @@ function handleVimKeys(key, state, screen) {
                 }
             }
         } else if (key === 'N') {
-            // search backwards TODO
-            searchForString(state, state.searchQuery);
-            centerScreen(state);
+            if (state.searchQuery !== '') {
+                searchBackForString(state, state.searchQuery);
+                centerScreen(state);
+                renderScreen(state, screen);
+            }
         } else if (key === '/') {
             state.mode = '/';
             state.searchQuery = '';

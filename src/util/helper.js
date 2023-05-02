@@ -245,6 +245,32 @@ function saveFile(state, term) {
     }
 }
 
+function searchBackForString(state, string) {
+    if (state.data[state.row].substring(0, state.col).includes(string)) {
+        state.col = state.data[state.row].substring(0, state.col).lastIndexOf(string);
+        return true;
+    }
+    for (let row = state.row - 1; row >= 0; row -= 1) {
+        if (state.data[row].includes(string)) {
+            state.row = row;
+            state.col = state.data[row].lastIndexOf(string);
+            return true;
+        }
+    }
+    for (let row = state.data.length - 1; row > state.row; row -= 1) {
+        if (state.data[row].includes(string)) {
+            state.row = row;
+            state.col = state.data[row].lastIndexOf(string);
+            return true;
+        }
+    }
+    if (state.data[state.row].includes(string)) {
+        state.col = state.data[state.row].lastIndexOf(string);
+        return true;
+    }
+    return false;
+}
+
 function searchForString(state, string) {
     if (state.data[state.row].substring(state.col).includes(string)) {
         state.col += state.data[state.row].substring(state.col).indexOf(string);
@@ -327,6 +353,7 @@ export {
     logCommand,
     saveFile,
     searchForString,
+    searchBackForString,
     isOnScreen,
     isNumeric,
     isHighlighted,
