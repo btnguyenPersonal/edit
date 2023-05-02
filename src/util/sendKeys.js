@@ -7,7 +7,7 @@ import { handleSearchKeys } from '../keybinds/searchKeys.js';
 
 function sendKeys(keys, state, screen) {
     for (let i = 0; i < keys.length; i += 1) {
-        if (state.allowCommandLogging && state.recording && keys[i] !== 'q') {
+        if (state.allowCommandLogging && state.recording && !(state.vim && state.mode === 'n' && keys[i] === 'q')) {
             state.macro.push(keys[i]);
         }
         if (state.vim && state.mode === '/') {
