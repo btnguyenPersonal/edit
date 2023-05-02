@@ -718,6 +718,13 @@ function handleVimKeys(key, state, screen) {
         } else if (key === 'm') {
             state.mark = state.row;
             renderScreen(state, screen);
+        } else if (key === '@') {
+            while(searchForString(state, state.searchQuery)) {
+                state.allowCommandLogging = false;
+                sendKeys(state.macro, state, screen);
+                state.allowCommandLogging = true;
+            }
+            renderScreen(state, screen);
         } else if (key === ',') {
             state.allowCommandLogging = false;
             sendKeys(state.macro, state, screen);
