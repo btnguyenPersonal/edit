@@ -52,6 +52,10 @@ function pasteFromClipboardAfter(state) {
     return false;
 }
 
+function isNumeric(s) {
+    return '1234567890'.indexOf(s) > -1;
+}
+
 function isAlphaNumeric(s) {
     return '1234567890QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm'.indexOf(s) > -1;
 }
@@ -324,6 +328,7 @@ export {
     saveFile,
     searchForString,
     isOnScreen,
+    isNumeric,
     isHighlighted,
     centerScreen
 };
