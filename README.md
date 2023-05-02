@@ -4,14 +4,13 @@ this is my experiment for making a new code editor
 
 usually put this in my ~/.bashrc:
 > use e to make <ctrl-p> to change files and <ctrl-g> to search in project
-// still TODO to fix query staying between searches so don't have to type it in a million times
 ```
 function e() {
     command="`fzf --reverse --height=8` $query"
     until query="${command##* }" && edit $command; do
         if [[ $? -eq 1 ]]; then
             clear;
-            command="`fzf --reverse --height=8`";
+            command="`fzf --reverse --height=8` $query";
         else
             command=$(rg --color=always --column --line-number --no-heading --smart-case "${*:-}" |
                 fzf --ansi \
