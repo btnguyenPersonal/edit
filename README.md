@@ -5,6 +5,33 @@ this is my experiment for making a new code editor
 usually put this in my ~/.bashrc:
 > use e to make <ctrl-p> to change files and <ctrl-g> to search in project
 ```
+function g() {
+    command=$(rg --color=always --column --line-number --no-heading --smart-case "${*:-}" |
+        fzf --ansi \
+            --bind "change:reload:sleep 0.1; rg --column --line-number --no-heading --color=always --smart-case {q} || true" \
+            --query "$query" \
+            --delimiter : \
+            --reverse \
+            --preview 'batcat --color=always {1} --highlight-line {2}' \
+            --preview-window 'up,60%,border-bottom,+{2}+3/3,~3' \
+            --bind "enter:execute(echo '{1} {2} {q}')+abort");
+    until query="${command##* }" && edit $command; do
+        if [[ $? -eq 1 ]]; then
+            clear;
+            command="`fzf --reverse` $query";
+        else
+            command=$(rg --color=always --column --line-number --no-heading --smart-case "${*:-}" |
+                fzf --ansi \
+                    --bind "change:reload:sleep 0.1; rg --column --line-number --no-heading --color=always --smart-case {q} || true" \
+                    --query "$query" \
+                    --delimiter : \
+                    --reverse \
+                    --preview 'batcat --color=always {1} --highlight-line {2}' \
+                    --preview-window 'up,60%,border-bottom,+{2}+3/3,~3' \
+                    --bind "enter:execute(echo '{1} {2} {q}')+abort");
+        fi
+    done;
+}
 function e() {
     command="`fzf --reverse --height=8` $query"
     until query="${command##* }" && edit $command; do
