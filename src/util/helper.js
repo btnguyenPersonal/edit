@@ -313,7 +313,7 @@ function searchForString(state, string) {
 }
 
 function isOnScreen(state) {
-    return state.row > state.windowLine && state.row < state.windowLine + process.stdout.rows;
+    return state.row >= state.windowLine && state.row < state.windowLine + process.stdout.rows;
 }
 
 function centerScreen(state) {
