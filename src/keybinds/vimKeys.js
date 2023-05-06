@@ -729,8 +729,8 @@ function handleVimKeys(key, state, screen) {
                 state.col = 0;
                 state.row = 0;
                 state.allowCommandLogging = false;
-                const search = state.searchQuery
-                while(searchForStringNoWrap(state, search)) {
+                const search = state.searchQuery;
+                while (searchForStringNoWrap(state, search)) {
                     sendKeys(state.macro, state, screen);
                 }
                 state.allowCommandLogging = true;
