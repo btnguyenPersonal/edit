@@ -15,10 +15,13 @@ function g() {
             --preview 'batcat --color=always {1} --highlight-line {2}' \
             --preview-window 'up,60%,border-bottom,+{2}+3/3,~3' \
             --bind "enter:execute(echo '{1} {2} {q}')+abort");
-    until query="${command##* }" && edit $command; do
+    until file="${command%% *}" && query="${command##* }" && edit $command; do
         if [[ $? -eq 1 ]]; then
             clear;
             command="`fzf --reverse` $query";
+            if [ -z "${command// }" ]; then
+                command="$file $query"
+            fi
         else
             command=$(rg --color=always --column --line-number --no-heading --smart-case "${*:-}" |
                 fzf --ansi \
@@ -29,15 +32,21 @@ function g() {
                     --preview 'batcat --color=always {1} --highlight-line {2}' \
                     --preview-window 'up,60%,border-bottom,+{2}+3/3,~3' \
                     --bind "enter:execute(echo '{1} {2} {q}')+abort");
+            if [ -z "${command// }" ]; then
+                command="$file $query"
+            fi
         fi
     done;
 }
 function e() {
     command="`fzf --reverse --height=8` $query"
-    until query="${command##* }" && edit $command; do
+    until file="${command%% *}" && query="${command##* }" && edit $command; do
         if [[ $? -eq 1 ]]; then
             clear;
             command="`fzf --reverse --height=8` $query";
+            if [ -z "${command// }" ]; then
+                command="$file $query"
+            fi
         else
             command=$(rg --color=always --column --line-number --no-heading --smart-case "${*:-}" |
                 fzf --ansi \
@@ -48,6 +57,9 @@ function e() {
                     --preview 'batcat --color=always {1} --highlight-line {2}' \
                     --preview-window 'up,60%,border-bottom,+{2}+3/3,~3' \
                     --bind "enter:execute(echo '{1} {2} {q}')+abort");
+            if [ -z "${command// }" ]; then
+                command="$file $query"
+            fi
         fi
     done;
 }
