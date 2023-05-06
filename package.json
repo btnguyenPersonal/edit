@@ -7,7 +7,7 @@
     "dev": "node src/edit.js longtest.txt",
     "lint": "eslint .",
     "test": "npx mocha ./test/**/*.spec.js",
-    "build": "npx rollup src/edit.js --file bundle.js --format esm"
+    "build": "npx rollup src/edit.js --file build/bundle.js --format esm"
   },
   "repository": {
     "type": "git",
