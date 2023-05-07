@@ -79,13 +79,13 @@ function handleVimKeys(key, state, screen) {
         } else if (key === 'j') {
             const newClipboard = [];
             newClipboard.push(state.data[state.row]);
-            if (state.data[state.row + 1]) {
+            if (state.data[state.row + 1] !== undefined) {
                 newClipboard.push(state.data[state.row + 1]);
             }
             copyToClipboard(state, newClipboard, true);
             state.data.splice(state.row, 1);
             state.data.splice(state.row, 1);
-            if (state.row > state.data.length - 1) {
+            if (state.row > state.data.length - 1 !== undefined) {
                 state.row = state.data.length - 1;
             }
             state.col = 0;
@@ -95,13 +95,13 @@ function handleVimKeys(key, state, screen) {
             renderScreen(state, screen);
         } else if (key === 'k') {
             const newClipboard = [];
-            if (state.data[state.row - 1]) {
+            if (state.data[state.row - 1] !== undefined) {
                 newClipboard.push(state.data[state.row - 1]);
             }
             newClipboard.push(state.data[state.row]);
             copyToClipboard(state, newClipboard, true);
             state.data.splice(state.row, 1);
-            if (state.data[state.row - 1]) {
+            if (state.data[state.row - 1] !== undefined) {
                 state.data.splice(state.row - 1, 1);
             }
             up(state);
