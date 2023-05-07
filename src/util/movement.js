@@ -60,19 +60,21 @@ function nextLowerIndentLevel(state, row) {
 function uncomment(state, row) {
     const col = firstNonSpace(state, row);
     state.data[row] = state.data[row].substring(0, col) + state.data[row].substring(col + 2);
-    if (state.data[row].substring(col, col + 1) === ' ') {
+    if (!isEmptyRow(state, row) && state.data[row].substring(col, col + 1) === ' ') {
         state.data[row] = state.data[row].substring(0, col) + state.data[row].substring(col + 1);
     }
 }
 
 function comment(state, row, c) {
     const col = c === undefined ? firstNonSpace(state, row) : c;
-    state.data[row] = state.data[row].substring(0, col) + '// ' + state.data[row].substring(col);
+    if (!isEmptyRow(state, row)) {
+        state.data[row] = state.data[row].substring(0, col) + '// ' + state.data[row].substring(col);
+    }
 }
 
 function isCommented(state, row) {
     const trimmed = state.data[row].trim();
-    return trimmed.startsWith('//');
+    return trimmed.startsWith('//') || isEmptyRow(state, row);
 }
 
 function toBackward(state, key) {

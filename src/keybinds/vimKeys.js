@@ -38,6 +38,7 @@ import {
     getIndentLevelFrom,
     copyInVisual,
     deleteInVisual,
+    setVisualHighlight,
     isEmptyRow,
     endOfLine,
     findForward,
@@ -709,6 +710,17 @@ function handleVimKeys(key, state, screen) {
             renderScreen(state, screen);
         } else if (key === ')') {
             nextLowerIndentLevel(state, state.row);
+            renderScreen(state, screen);
+        } else if (key === '*') {
+            const { beginning, end } = getCoorsInsideWord(state);
+            setVisualHighlight(state, beginning, end);
+            copyInVisual(state);
+            state.searchQuery = state.clipboard[0];
+            if (state.searchQuery !== '') {
+                state.col += state.searchQuery.length + 1;
+                searchForString(state, state.searchQuery);
+                centerScreen(state);
+            }
             renderScreen(state, screen);
         } else if (key === 'q') {
             if (state.recording) {
