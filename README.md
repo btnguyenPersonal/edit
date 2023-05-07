@@ -39,11 +39,11 @@ function g() {
     done;
 }
 function e() {
-    command="`fzf --reverse --height=8` $query"
+    command="`fzf --reverse` $query"
     until file="${command%% *}" && query="${command##* }" && edit $command; do
         if [[ $? -eq 1 ]]; then
             clear;
-            command="`fzf --reverse --height=8` $query";
+            command="`fzf --reverse` $query";
             if [ -z "${command// }" ]; then
                 command="$file $query"
             fi
