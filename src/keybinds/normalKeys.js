@@ -84,6 +84,7 @@ function handleKeys(key, state, screen) {
         }
     } else if (key === 'SHIFT_TAB') {
         decreaseIndentLevel(state, state.row);
+        state.col = state.col - 4 >= 0 ? state.col - 4 : 0;
         if (!state.vim) {
             createSnapshot(state);
         }
