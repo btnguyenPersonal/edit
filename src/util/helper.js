@@ -64,14 +64,14 @@ function isWritable(s) {
     return ' qwertyuiop[]\\asdfghjkl;\'zxcvbnm,./`1234567890-=~!@#$%^&*()_+QWERTYUIOP{}|ASDFGHJKL:"ZXCVBNM<>?'.indexOf(s) > -1;
 }
 
-function moveCursor(state, screen) {
+function moveCursor(state, screen, windowLineHorizontal) {
     const r = state.row < state.data.length
         ? state.row
         : state.data.length - 1;
     screen.moveTo(
         (state.col < state.data[r].length
             ? state.col
-            : state.data[r].length) + 5,
+            : state.data[r].length) + 5 - windowLineHorizontal,
         (state.row < state.data.length ? state.row : state.data.length) - state.windowLine,
     );
 }
@@ -320,11 +320,20 @@ function centerScreen(state) {
     state.windowLine = state.row - Math.floor(process.stdout.rows / 2) >= 0 ? state.row - Math.floor(process.stdout.rows / 2) : 0;
 }
 
+function getWindowLineHorizontal(state) {
+    if (state.col - state.windowLineHorizontal > process.stdout.columns) {
+        state.windowLineHorizontal = state.col - process.stdout.columns + 6;
+    } else if (state.col - state.windowLineHorizontal < 0) {
+        state.windowLineHorizontal = state.col;
+    }
+}
+
 async function renderScreen(state, screen, noCenterScreen) {
     if (state.allowCommandLogging) {
         if (!noCenterScreen && !isOnScreen(state)) {
             centerScreen(state);
         }
+        getWindowLineHorizontal(state);
         screen.fill({ char: ' ' });
         screen.moveTo(0, 0);
         for (let i = state.windowLine; i < (state.windowLine + process.stdout.rows); i += 1) {
@@ -337,7 +346,7 @@ async function renderScreen(state, screen, noCenterScreen) {
                 }, (i + 1).toString().padStart(4) + ' ');
                 const commentIndex = commentStartsAt(state, i);
                 const colorRow = getColorRow(state.data[i], commentIndex);
-                for (let j = 0; j < state.data[i].length; j += 1) {
+                for (let j = state.windowLineHorizontal; j < state.data[i].length; j += 1) {
                     screen.put({
                         attr: {
                             color: colorRow[j],
@@ -349,7 +358,7 @@ async function renderScreen(state, screen, noCenterScreen) {
                 screen.put({ newLine: true }, '\n');
             }
         }
-        moveCursor(state, screen);
+        moveCursor(state, screen, state.windowLineHorizontal);
         await screen.draw({ delta: true });
         await screen.drawCursor();
     }
