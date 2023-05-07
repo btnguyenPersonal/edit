@@ -64,6 +64,7 @@ const state = {
     row: Number.isInteger(parseInt(process.argv[3])) ? parseInt(process.argv[3]) - 1 : 0,
     col: 0,
     windowLine: 0,
+    windowLineHorizontal: 0,
     snapshots: [],
     currentSnapshot: 0,
     savePoint: 0,

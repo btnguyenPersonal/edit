@@ -2,6 +2,15 @@
 
 this is my experiment for making a new code editor
 
+# installing
+```
+npm i
+npm run build
+npm i -g .
+```
+that's it, you should just be able to run `edit file.js` in your command line and it should work!
+
+# quality of life scripts
 usually put this in my ~/.bashrc:
 > use e to make <ctrl-p> to change files and <ctrl-g> to search in project
 ```
@@ -70,34 +79,36 @@ export FZF_DEFAULT_COMMAND='rg --files --hidden --glob "!.git"'
     - undo/redo limit and diff based (don't know how hard that will be)
     - file explorer
     - multithread stuff
-    - split apart code into multiple files
     - store cursor positioning between sessions
     - visual block
     - <c-o> <c-i>
     - ctrl w and ctrl backspace
-    - trim trialing space on save and update state
-    - habit: use cib for params
     - syntax highlighting for different types of files
     - get rid of process.stdout.row and use screen.height screen.width (will make easier to make status bar)
 ## todo
     - add status bar
     - mouse drag select
+    - debug mode
+    - figure out what to do if external program changed the code
     - add tests
         - mouse inputs done (might need to add drag select later)
         - helper functions for terminal done
         - normal keys
         - vim keys (bruh)
 ## blocked
-    - deal with wrapping lines // lol just don't worry about it
     - until status bar >> do i really need?
-        - show file path
-        - show which mode are in
-        - show search string
-        - show search result 5/60
-        - show if search is wrong
+        - show file path (in linux don't need bc tmux does for me)
+        - show which mode are in (not really needed imo for me, might be nice if want others to use)
+        - show search string (useful)
+        - show search result 5/60 (useful)
+        - show if search is wrong (useful) could make cursor flash red if can't find match
 ## in progress
-    - grepping project (need to keep the previous text searched)
 ## done
+    - deal with wrapping lines // well that was easier than i thought
+    - trim trialing space on save and update state
+    - habit: use cib for params
+    - split apart code into multiple files
+    - grepping project (need to keep the previous text searched)
     - terminal instance inside editor
     - ability to change file in editor // want to put some work to make this part really nice, might come after opening as workspace
     - change to using built in GUI stuff? might not bother with this one and do it myself
