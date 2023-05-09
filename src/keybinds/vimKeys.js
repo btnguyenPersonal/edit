@@ -85,7 +85,7 @@ function handleVimKeys(key, state, screen) {
             copyToClipboard(state, newClipboard, true);
             state.data.splice(state.row, 1);
             state.data.splice(state.row, 1);
-            if (state.row > state.data.length - 1 !== undefined) {
+            if (state.row > state.data.length - 1) {
                 state.row = state.data.length - 1;
             }
             state.col = 0;
@@ -688,6 +688,7 @@ function handleVimKeys(key, state, screen) {
                 state.data.splice(state.row + 1, 1);
             }
             logCommand(true, state, key);
+            createSnapshot(state);
             renderScreen(state, screen);
         } else if (key === 'CTRL_R') {
             if (state.currentSnapshot + 1 < state.snapshots.length) {
