@@ -1,6 +1,7 @@
 /* eslint-disable import/no-cycle */
 import ncp from 'copy-paste';
 import fs from 'fs';
+import md5 from 'md5';
 
 function pasteFromClipboardBefore(state) {
     const systemPaste = ncp.paste().split('\n');
@@ -241,6 +242,7 @@ function saveFile(state, term) {
                 process.exit();
             }
         }))();
+        state.md5 = md5(fs.readFileSync(state.file, 'utf-8'));
         state.savePoint = state.currentSnapshot;
     }
 }

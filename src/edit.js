@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import fs from 'fs';
 import pkg from 'terminal-kit';
+import md5 from 'md5';
 import {
     saveFile,
     centerScreen,
@@ -21,6 +22,15 @@ function getFile() {
         return file;
     } catch (e) {
         console.log('input file not found\nusage: edit [file]');
+        process.exit();
+    }
+}
+
+function getMd5(filepath) {
+    try {
+        return md5(fs.readFileSync(filepath, 'utf-8'));
+    } catch (e) {
+        console.log('md5 error');
         process.exit();
     }
 }
@@ -60,6 +70,7 @@ const state = {
     previousKeys: '',
     previousCommand: [],
     file: filepath,
+    md5: getMd5(filepath),
     data: getData(filepath),
     row: Number.isInteger(parseInt(process.argv[3])) ? parseInt(process.argv[3]) - 1 : 0,
     col: 0,
@@ -128,3 +139,16 @@ term.on('resize', () => {
 setInterval(() => {
     saveFile(state, term);
 }, 200);
+
+fs.watch(state.file, (event, filename) => {
+  if (filename) {
+    const md5Current = md5(fs.readFileSync(state.file, 'utf-8'));
+    if (md5Current === state.md5) {
+      return;
+    } else {
+        state.md5 = md5Current;
+        state.data = (fs.readFileSync(state.file, 'utf-8')).split('\n');
+        renderScreen(state, screen);
+    }
+  }
+});
