@@ -1,7 +1,6 @@
 /* eslint-disable import/no-cycle */
 import ncp from 'copy-paste';
 import fs from 'fs';
-import md5 from 'md5';
 
 function pasteFromClipboardBefore(state) {
     const systemPaste = ncp.paste().split('\n');
