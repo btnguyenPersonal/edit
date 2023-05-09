@@ -233,7 +233,7 @@ function copyToClipboard(state, textArray, newLine) {
     ncp.copy(state.clipboard.join('\n'));
 }
 
-function saveFile(state, term) {
+async function saveFile(state, term) {
     if (state.currentSnapshot !== state.savePoint) {
         (async () => fs.writeFile(state.file, state.data.join('\n'), (err) => {
             if (err) {
@@ -242,7 +242,6 @@ function saveFile(state, term) {
                 process.exit();
             }
         }))();
-        state.md5 = md5(fs.readFileSync(state.file, 'utf-8'));
         state.savePoint = state.currentSnapshot;
     }
 }
