@@ -1,6 +1,15 @@
 /* eslint-disable import/no-cycle */
 import { copyToClipboard, isAlphaNumeric } from './helper.js';
 
+function isEmptyRow(state, row) {
+    for (let i = 0; i < state.data[row].length; i += 1) {
+        if (state.data[row].substring(i, i + 1) !== ' ') {
+            return false;
+        }
+    }
+    return true;
+}
+
 function firstNonSpace(state, row) {
     for (let i = 0; i < state.data[row]?.length; i += 1) {
         if (state.data[row].charAt(i) !== ' ') {
@@ -111,15 +120,6 @@ function findForward(state, key) {
         }
     }
     return state.col;
-}
-
-function isEmptyRow(state, row) {
-    for (let i = 0; i < state.data[row].length; i += 1) {
-        if (state.data[row].substring(i, i + 1) !== ' ') {
-            return false;
-        }
-    }
-    return true;
 }
 
 function upHalfScreen(state) {
