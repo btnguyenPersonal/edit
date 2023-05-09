@@ -136,19 +136,15 @@ term.on('resize', () => {
     }
 });
 
-setInterval(() => {
+setInterval(async () => {
     saveFile(state, term);
 }, 200);
 
-fs.watch(state.file, (event, filename) => {
-  if (filename) {
-    const md5Current = md5(fs.readFileSync(state.file, 'utf-8'));
-    if (md5Current === state.md5) {
-      return;
-    } else {
+setInterval(async () => {
+    const md5Current = md5(fs.readFileSync(state.file));
+    if (md5Current !== state.md5) {
         state.md5 = md5Current;
         state.data = (fs.readFileSync(state.file, 'utf-8')).split('\n');
         renderScreen(state, screen);
     }
-  }
-});
+}, 50);
