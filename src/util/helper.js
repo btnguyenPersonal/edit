@@ -234,13 +234,14 @@ function copyToClipboard(state, textArray, newLine) {
 
 async function saveFile(state, term) {
     if (state.currentSnapshot !== state.savePoint) {
-        (async () => fs.writeFile(state.file, state.data.join('\n'), (err) => {
+        await (async () => fs.writeFile(state.file, state.data.join('\n'), (err) => {
             if (err) {
                 term.fullScreen(false);
                 console.log(err);
                 process.exit();
             }
         }))();
+        await new Promise(resolve => setTimeout(resolve, 25));
         state.savePoint = state.currentSnapshot;
     }
 }

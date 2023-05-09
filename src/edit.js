@@ -48,7 +48,7 @@ const term = terminal();
 const filepath = getFile();
 process.title = filepath;
 const state = {
-    allowCommandLogging: true,
+    allowCommandLogging: false,
     vim: process.argv[2] !== '-n',
     mode: 'n',
     clipboard: [],
@@ -89,8 +89,9 @@ term.fullscreen(true);
 term.windowTitle('edit');
 const screen = new ScreenBuffer({ dst: term, noFill: true });
 centerScreen(state);
-renderScreen(state, screen);
 createSnapshot(state);
+state.allowCommandLogging = true;
+renderScreen(state, screen);
 
 term.on('key', (key) => {
     try {
@@ -136,15 +137,28 @@ term.on('resize', () => {
     }
 });
 
-setInterval(async () => {
+setInterval(() => {
     saveFile(state, term);
 }, 200);
 
 setInterval(async () => {
-    const md5Current = md5(fs.readFileSync(state.file));
-    if (md5Current !== state.md5) {
-        state.md5 = md5Current;
-        state.data = (fs.readFileSync(state.file, 'utf-8')).split('\n');
-        renderScreen(state, screen);
+    if (state.allowCommandLogging) {
+        await new Promise(resolve => setTimeout(resolve, 50));
+        const newData = getData(state.file);
+        let load = false;
+        for (let i = 0; i < state.snapshots[state.savePoint].data.length; i += 1) {
+            if (newData[i] !== state.snapshots[state.savePoint].data[i]) {
+                load = true;
+                break;
+            }
+        }
+        if (load) {
+            state.data = [];
+            for (let i = 0; i < newData.length; i += 1) {
+                state.data[i] = newData[i];
+            }
+            createSnapshot(state);
+            renderScreen(state, screen);
+        }
     }
-}, 50);
+}, 200);
