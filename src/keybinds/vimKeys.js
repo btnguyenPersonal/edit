@@ -12,6 +12,7 @@ import {
     searchForString,
     searchBackForString,
     isNumeric,
+    saveFile,
     logCommand
 } from '../util/helper.js';
 import { sendKeys } from '../util/sendKeys.js';
@@ -694,11 +695,13 @@ function handleVimKeys(key, state, screen) {
             if (state.currentSnapshot + 1 < state.snapshots.length) {
                 applySnapshot(state, state.currentSnapshot + 1);
             }
+            saveFile(state);
             renderScreen(state, screen);
         } else if (key === 'u') {
             if (state.currentSnapshot - 1 >= 0) {
                 applySnapshot(state, state.currentSnapshot - 1);
             }
+            saveFile(state);
             renderScreen(state, screen);
         } else if (key === '[') {
             previousSameIndentLevel(state, state.row);
