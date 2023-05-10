@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 import fs from 'fs';
 import pkg from 'terminal-kit';
-import md5 from 'md5';
 import {
     saveFile,
     centerScreen,
@@ -70,7 +69,6 @@ const state = {
     previousKeys: '',
     previousCommand: [],
     file: filepath,
-    md5: getMd5(filepath),
     data: getData(filepath),
     row: Number.isInteger(parseInt(process.argv[3])) ? parseInt(process.argv[3]) - 1 : 0,
     col: 0,
@@ -141,24 +139,24 @@ setInterval(() => {
     saveFile(state, term);
 }, 200);
 
-setInterval(async () => {
-    if (state.allowCommandLogging) {
-        await new Promise(resolve => setTimeout(resolve, 50));
-        const newData = getData(state.file);
-        let load = false;
-        for (let i = 0; i < state.snapshots[state.savePoint].data.length; i += 1) {
-            if (newData[i] !== state.snapshots[state.savePoint].data[i]) {
-                load = true;
-                break;
-            }
-        }
-        if (load) {
-            state.data = [];
-            for (let i = 0; i < newData.length; i += 1) {
-                state.data[i] = newData[i];
-            }
-            createSnapshot(state);
-            renderScreen(state, screen);
-        }
-    }
-}, 200);
+// setInterval(async () => {
+//     if (state.allowCommandLogging) {
+//         await new Promise(resolve => setTimeout(resolve, 50));
+//         const newData = getData(state.file);
+//         let load = false;
+//         for (let i = 0; i < state.snapshots[state.savePoint].data.length; i += 1) {
+//             if (newData[i] !== state.snapshots[state.savePoint].data[i]) {
+//                 load = true;
+//                 break;
+//             }
+//         }
+//         if (load) {
+//             state.data = [];
+//             for (let i = 0; i < newData.length; i += 1) {
+//                 state.data[i] = newData[i];
+//             }
+//             createSnapshot(state);
+//             renderScreen(state, screen);
+//         }
+//     }
+// }, 200);
