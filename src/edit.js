@@ -45,6 +45,7 @@ const state = {
     clipboardNewLine: true,
     searchQuery: '',
     searching: false,
+    loadFileOkay: true,
     search: {
         row: null,
         col: null
@@ -126,24 +127,17 @@ term.on('resize', () => {
     }
 });
 
-// setInterval(async () => {
-//     if (state.allowCommandLogging) {
-//         await new Promise(resolve => setTimeout(resolve, 50));
-//         const newData = getData(state.file);
-//         let load = false;
-//         for (let i = 0; i < state.snapshots[state.savePoint].data.length; i += 1) {
-//             if (newData[i] !== state.snapshots[state.savePoint].data[i]) {
-//                 load = true;
-//                 break;
-//             }
-//         }
-//         if (load) {
-//             state.data = [];
-//             for (let i = 0; i < newData.length; i += 1) {
-//                 state.data[i] = newData[i];
-//             }
-//             createSnapshot(state);
-//             renderScreen(state, screen);
-//         }
-//     }
-// }, 200);
+var loadTime = new Date().getTime();
+fs.watch(state.file, function(event, filename) {
+    fs.stat(state.file, function(err, stats) {
+        if (stats.mtime.getTime() > loadTime && state.loadFileOkay) {
+            const newData = getData(state.file);
+            state.data = [];
+            for (let i = 0; i < newData.length; i += 1) {
+                state.data[i] = newData[i];
+            }
+            createSnapshot(state);
+            renderScreen(state, screen);
+        }
+    });
+});
