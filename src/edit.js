@@ -25,15 +25,6 @@ function getFile() {
     }
 }
 
-function getMd5(filepath) {
-    try {
-        return md5(fs.readFileSync(filepath, 'utf-8'));
-    } catch (e) {
-        console.log('md5 error');
-        process.exit();
-    }
-}
-
 function getData(filepath) {
     try {
         return (fs.readFileSync(filepath, 'utf-8')).split('\n');
@@ -94,7 +85,7 @@ renderScreen(state, screen);
 term.on('key', (key) => {
     try {
         if (key === 'CTRL_S') {
-            saveFile(state, term);
+            saveFile(state);
             renderScreen(state, screen);
         } else if (key === 'CTRL_G') {
             term.fullscreen(false);
@@ -134,10 +125,6 @@ term.on('resize', () => {
         process.exit(0);
     }
 });
-
-setInterval(() => {
-    saveFile(state, term);
-}, 200);
 
 // setInterval(async () => {
 //     if (state.allowCommandLogging) {

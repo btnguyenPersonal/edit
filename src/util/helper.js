@@ -119,22 +119,6 @@ function isHighlighted(state, i, j) {
     return false;
 }
 
-// sometime will have to limit number of snapshots, and make them diff based
-function createSnapshot(state) {
-    state.snapshots.splice(state.currentSnapshot + 1, state.snapshots.length - (state.currentSnapshot + 1));
-    const oldData = [];
-    for (let i = 0; i < state.data.length; i += 1) {
-        oldData.push(state.data[i]);
-    }
-    state.snapshots.push({
-        data: oldData,
-        row: state.row,
-        col: state.col,
-        windowLine: state.windowLine
-    });
-    state.currentSnapshot = state.snapshots.length - 1;
-}
-
 function isInStringRow(row, col) {
     let currentString = '';
     let disregard = false;
@@ -232,17 +216,34 @@ function copyToClipboard(state, textArray, newLine) {
     ncp.copy(state.clipboard.join('\n'));
 }
 
-async function saveFile(state, term) {
+async function saveFile(state) {
     if (state.currentSnapshot !== state.savePoint) {
         await (async () => fs.writeFile(state.file, state.data.join('\n'), (err) => {
             if (err) {
-                term.fullScreen(false);
+                // term.fullScreen(false);
                 console.log(err);
                 process.exit();
             }
         }))();
         state.savePoint = state.currentSnapshot;
     }
+}
+
+// sometime will have to limit number of snapshots, and make them diff based
+function createSnapshot(state) {
+    state.snapshots.splice(state.currentSnapshot + 1, state.snapshots.length - (state.currentSnapshot + 1));
+    const oldData = [];
+    for (let i = 0; i < state.data.length; i += 1) {
+        oldData.push(state.data[i]);
+    }
+    state.snapshots.push({
+        data: oldData,
+        row: state.row,
+        col: state.col,
+        windowLine: state.windowLine
+    });
+    state.currentSnapshot = state.snapshots.length - 1;
+    saveFile(state);
 }
 
 function searchBackForString(state, string) {
