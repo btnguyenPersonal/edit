@@ -64,6 +64,8 @@ const state = {
     data: getData(filepath),
     row: Number.isInteger(parseInt(process.argv[3])) ? parseInt(process.argv[3]) - 1 : 0,
     col: 0,
+    prevRow: Number.isInteger(parseInt(process.argv[3])) ? parseInt(process.argv[3]) - 1 : 0,
+    prevCol: 0,
     windowLine: 0,
     windowLineHorizontal: 0,
     snapshots: [],
