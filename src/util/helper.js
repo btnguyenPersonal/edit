@@ -241,7 +241,6 @@ async function saveFile(state, term) {
                 process.exit();
             }
         }))();
-        await new Promise(resolve => setTimeout(resolve, 25));
         state.savePoint = state.currentSnapshot;
     }
 }
