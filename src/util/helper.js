@@ -244,10 +244,6 @@ function createSnapshot(state) {
     for (let i = 0; i < state.data.length; i += 1) {
         oldData.push(state.data[i]);
     }
-    // if (state.snapshots.length > 0) {
-    //     state.snapshots[state.snapshots.length - 1].row = state.prevRow;
-    //     state.snapshots[state.snapshots.length - 1].col = state.prevCol;
-    // }
     state.snapshots.push({
         data: oldData,
         row: state.prevRow,
