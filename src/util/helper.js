@@ -167,22 +167,13 @@ function commentStartsAt(state, row) {
     return -1;
 }
 
-function applySnapshot(state, index) {
-    const snap = state.snapshots[index];
-    if (snap !== undefined) {
-        state.data = [];
-        for (let i = 0; i < snap.data.length; i += 1) {
-            state.data.push(snap.data[i]);
-        }
-        state.currentSnapshot = index;
-    }
-}
-
 function logCommand(newCommand, state, key) {
-    if (state.allowCommandLogging && newCommand) {
-        state.previousCommand = [];
-    }
     if (state.allowCommandLogging) {
+        if (newCommand) {
+            state.previousCommand = [];
+            state.prevRow = state.row;
+            state.prevCol = state.col;
+        }
         state.previousCommand.push(key);
     }
 }
@@ -231,17 +222,36 @@ async function saveFile(state) {
     }
 }
 
-// sometime will have to limit number of snapshots, and make them diff based
+function applySnapshot(state, index, backwards) {
+    const snap = state.snapshots[index];
+    if (snap !== undefined) {
+        state.data = [];
+        for (let i = 0; i < snap.data.length; i += 1) {
+            state.data.push(snap.data[i]);
+        }
+        state.currentSnapshot = index;
+        const pos = backwards ? index + 1 : index;
+        if (state.snapshots[pos]) {
+            state.row = state.snapshots[pos].row;
+            state.col = state.snapshots[pos].col;
+        }
+    }
+}
+
 function createSnapshot(state) {
     state.snapshots.splice(state.currentSnapshot + 1, state.snapshots.length - (state.currentSnapshot + 1));
     const oldData = [];
     for (let i = 0; i < state.data.length; i += 1) {
         oldData.push(state.data[i]);
     }
+    // if (state.snapshots.length > 0) {
+    //     state.snapshots[state.snapshots.length - 1].row = state.prevRow;
+    //     state.snapshots[state.snapshots.length - 1].col = state.prevCol;
+    // }
     state.snapshots.push({
         data: oldData,
-        row: state.row,
-        col: state.col,
+        row: state.prevRow,
+        col: state.prevCol,
         windowLine: state.windowLine
     });
     state.currentSnapshot = state.snapshots.length - 1;
@@ -367,6 +377,12 @@ async function renderScreen(state, screen, noCenterScreen) {
     }
 }
 
+function trimTrailingWhitespace(state) {
+    for (let i = 0; i < state.data.length; i += 1) {
+        state.data[i] = state.data[i].trimEnd();
+    }
+}
+
 export {
     pasteFromClipboardBefore,
     pasteFromClipboardAfter,
@@ -385,5 +401,6 @@ export {
     isOnScreen,
     isNumeric,
     isHighlighted,
+    trimTrailingWhitespace,
     centerScreen
 };
