@@ -129,17 +129,29 @@ term.on('resize', () => {
     }
 });
 
-const loadTime = new Date().getTime();
 fs.watch(state.file, () => {
     fs.stat(state.file, (err, stats) => {
         if (err) {
             return;
         }
-        if (stats.mtime.getTime() > loadTime && state.loadFileOkay) {
+        if (state.loadFileOkay) {
             const newData = getData(state.file);
-            state.data = [];
-            for (let i = 0; i < newData.length; i += 1) {
-                state.data[i] = newData[i];
+            let isSameFile = true;
+            if (state.snapshots[state.savePoint].data.length === newData.length) {
+                for (let i = 0; i < newData.length; i += 1) {
+                    if (state.snapshots[state.savePoint].data[i] !== newData[i]) {
+                        isSameFile = false;
+                        break;
+                    }
+                }
+            } else {
+                isSameFile = false;
+            }
+            if (!isSameFile) {
+                state.data = [];
+                for (let i = 0; i < newData.length; i += 1) {
+                    state.data[i] = newData[i];
+                }
             }
             renderScreen(state, screen);
         }
