@@ -358,6 +358,9 @@ function getWindowLineHorizontal(state) {
 }
 
 async function renderScreen(state, screen, noCenterScreen) {
+    if (await state.data.length === 0) {
+        state.data = [''];
+    }
     if (state.allowCommandLogging) {
         if (!noCenterScreen && !isOnScreen(state)) {
             centerScreen(state);
