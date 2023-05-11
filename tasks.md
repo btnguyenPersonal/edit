@@ -7,7 +7,6 @@
     - get rid of process.stdout.row and use screen.height screen.width (will make easier to make status bar)
 ## todo
     - add status bar
-    - mouse drag select
     - debug mode
     - add tests
         - mouse inputs done (might need to add drag select later)
@@ -23,6 +22,7 @@
 ## blocked
 ## in progress
 ## done
+    - mouse drag select
     - figure out what to do if external program changed the code
     - deal with wrapping lines // well that was easier than i thought
     - trim trialing space on save and update state

@@ -16,6 +16,7 @@ import {
     isEmptyRow,
     endOfLine,
     firstNonSpace,
+    getCoorBeginningLastWord,
 } from '../util/movement.js';
 
 function handleKeys(key, state, screen) {
@@ -35,6 +36,13 @@ function handleKeys(key, state, screen) {
             state.data[state.row] += state.data[state.row + 1];
             state.data.splice(state.row + 1, 1);
         }
+        if (!state.vim) {
+            createSnapshot(state);
+        }
+    } else if (key === 'CTRL_W') {
+        const coor = getCoorBeginningLastWord(state)
+        state.data[state.row] = state.data[state.row].substring(0, coor) + state.data[state.row].substring(state.col);
+        state.col = coor;
         if (!state.vim) {
             createSnapshot(state);
         }
