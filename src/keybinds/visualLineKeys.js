@@ -111,7 +111,6 @@ function handleVisualLineKeys(key, state, screen) {
             state.mode = 'i';
         }
     } else if (key === 'd') {
-        console.log(state.data);
         if (state.row >= state.visualLine.row) {
             const newClipboard = [];
             for (let i = state.visualLine.row; i <= state.row; i += 1) {
