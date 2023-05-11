@@ -129,16 +129,18 @@ term.on('resize', () => {
     }
 });
 
-var loadTime = new Date().getTime();
-fs.watch(state.file, function(event, filename) {
-    fs.stat(state.file, function(err, stats) {
+const loadTime = new Date().getTime();
+fs.watch(state.file, () => {
+    fs.stat(state.file, (err, stats) => {
+        if (err) {
+            return;
+        }
         if (stats.mtime.getTime() > loadTime && state.loadFileOkay) {
             const newData = getData(state.file);
             state.data = [];
             for (let i = 0; i < newData.length; i += 1) {
                 state.data[i] = newData[i];
             }
-            createSnapshot(state);
             renderScreen(state, screen);
         }
     });

@@ -160,8 +160,25 @@ function isInString(state, row, col) {
 
 function commentStartsAt(state, row) {
     for (let i = 0; i < state.data[row].length; i += 1) {
-        if (state.data[row].substring(i, i + 2) === '//' && !isInString(state, row, i)) {
-            return i;
+        if (state.file.endsWith('.js')
+            || state.file.endsWith('.jsx')
+            || state.file.endsWith('.tsx')
+            || state.file.endsWith('.ts')
+            || state.file.endsWith('.java')
+            || state.file.endsWith('.c')
+            || state.file.endsWith('.cpp')
+            || state.file.endsWith('.rs')) {
+            if (state.data[row].substring(i, i + 2) === '//' && !isInString(state, row, i)) {
+                return i;
+            }
+        } else if (state.file.endsWith('.sh')
+            || state.file.endsWith('.py')
+            || state.file.endsWith('.bashrc')
+            || state.file.endsWith('.zshrc')
+            || state.file.endsWith('.env')) {
+            if (state.data[row].substring(i, i + 1) === '#' && !isInString(state, row, i)) {
+                return i;
+            }
         }
     }
     return -1;
@@ -216,7 +233,8 @@ async function saveFile(state) {
                 process.exit();
             }
         }))();
-        await new Promise(resolve => (setTimeout(resolve, 100)));
+        // eslint-disable-next-line no-promise-executor-return
+        await new Promise((resolve) => (setTimeout(resolve, 100)));
         state.loadFileOkay = true;
         state.savePoint = state.currentSnapshot;
     }
