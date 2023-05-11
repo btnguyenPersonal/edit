@@ -69,9 +69,11 @@ function moveCursor(state, screen, windowLineHorizontal) {
         ? state.row
         : state.data.length - 1;
     screen.moveTo(
-        (state.col < state.data[r].length
-            ? state.col
-            : state.data[r].length) + 5 - windowLineHorizontal,
+        state.data[r]
+            ? (state.col < state.data[r].length
+                ? state.col
+                : state.data[r].length) + 5 - windowLineHorizontal
+            : 0 + 5 - windowLineHorizontal,
         (state.row < state.data.length ? state.row : state.data.length) - state.windowLine,
     );
 }

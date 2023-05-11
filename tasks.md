@@ -4,6 +4,7 @@
     - syntax highlighting for different types of files
     - get rid of process.stdout.row and use screen.height screen.width (will make easier to make status bar)
 ## todo
+    - figure out deleting the whole file
     - add status bar
     - debug mode
     - add tests
