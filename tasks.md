@@ -1,8 +1,6 @@
 ## backlog
     - file explorer
     - visual block
-    - <c-o> <c-i>
-    - ctrl w and ctrl backspace
     - syntax highlighting for different types of files
     - get rid of process.stdout.row and use screen.height screen.width (will make easier to make status bar)
 ## todo
@@ -22,6 +20,8 @@
 ## blocked
 ## in progress
 ## done
+    - <c-o> <c-i>
+    - ctrl w and ctrl backspace
     - mouse drag select
     - figure out what to do if external program changed the code
     - deal with wrapping lines // well that was easier than i thought

@@ -68,16 +68,46 @@ function nextLowerIndentLevel(state, row) {
 
 function uncomment(state, row) {
     const col = firstNonSpace(state, row);
-    state.data[row] = state.data[row].substring(0, col) + state.data[row].substring(col + 2);
-    if (!isEmptyRow(state, row) && state.data[row].substring(col, col + 1) === ' ') {
+    if (state.file.endsWith('.js')
+        || state.file.endsWith('.jsx')
+        || state.file.endsWith('.tsx')
+        || state.file.endsWith('.ts')
+        || state.file.endsWith('.java')
+        || state.file.endsWith('.c')
+        || state.file.endsWith('.cpp')
+        || state.file.endsWith('.rs')) {
+        state.data[row] = state.data[row].substring(0, col) + state.data[row].substring(col + 2);
+    } else if (state.file.endsWith('.sh')
+        || state.file.endsWith('.py')
+        || state.file.endsWith('.bashrc')
+        || state.file.endsWith('.zshrc')
+        || state.file.endsWith('.env')) {
         state.data[row] = state.data[row].substring(0, col) + state.data[row].substring(col + 1);
+        if (!isEmptyRow(state, row) && state.data[row].substring(col, col + 1) === ' ') {
+            state.data[row] = state.data[row].substring(0, col) + state.data[row].substring(col + 1);
+        }
     }
 }
 
 function comment(state, row, c) {
     const col = c === undefined ? firstNonSpace(state, row) : c;
     if (!isEmptyRow(state, row)) {
-        state.data[row] = state.data[row].substring(0, col) + '// ' + state.data[row].substring(col);
+        if (state.file.endsWith('.js')
+            || state.file.endsWith('.jsx')
+            || state.file.endsWith('.tsx')
+            || state.file.endsWith('.ts')
+            || state.file.endsWith('.java')
+            || state.file.endsWith('.c')
+            || state.file.endsWith('.cpp')
+            || state.file.endsWith('.rs')) {
+            state.data[row] = state.data[row].substring(0, col) + '// ' + state.data[row].substring(col);
+        } else if (state.file.endsWith('.sh')
+            || state.file.endsWith('.py')
+            || state.file.endsWith('.bashrc')
+            || state.file.endsWith('.zshrc')
+            || state.file.endsWith('.env')) {
+            state.data[row] = state.data[row].substring(0, col) + '# ' + state.data[row].substring(col);
+        }
     }
 }
 
