@@ -83,9 +83,9 @@ function uncomment(state, row) {
         || state.file.endsWith('.zshrc')
         || state.file.endsWith('.env')) {
         state.data[row] = state.data[row].substring(0, col) + state.data[row].substring(col + 1);
-        if (!isEmptyRow(state, row) && state.data[row].substring(col, col + 1) === ' ') {
-            state.data[row] = state.data[row].substring(0, col) + state.data[row].substring(col + 1);
-        }
+    }
+    if (!isEmptyRow(state, row) && state.data[row].substring(col, col + 1) === ' ') {
+        state.data[row] = state.data[row].substring(0, col) + state.data[row].substring(col + 1);
     }
 }
 
