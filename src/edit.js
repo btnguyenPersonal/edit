@@ -129,28 +129,28 @@ term.on('resize', () => {
     }
 });
 
-setInterval(() => {
-    if (state.loadFileOkay) {
-        const newData = getData(state.file);
-        let isSameFile = true;
-        if (state.snapshots[state.savePoint].data.length === newData.length) {
-            for (let i = 0; i < newData.length; i += 1) {
-                if (state.snapshots[state.savePoint].data[i] !== newData[i]) {
-                    isSameFile = false;
-                    break;
-                }
-            }
-        } else {
-            isSameFile = false;
-        }
-        if (!isSameFile) {
-            state.data = [];
-            for (let i = 0; i < newData.length; i += 1) {
-                state.data[i] = newData[i];
-            }
-        }
-        createSnapshot(state);
-        state.savePoint = state.currentSnapshot;
-        renderScreen(state, screen);
-    }
-}, 100);
+// setInterval(() => {
+//     if (state.loadFileOkay) {
+//         const newData = getData(state.file);
+//         let isSameFile = true;
+//         if (state.snapshots[state.savePoint].data.length === newData.length) {
+//             for (let i = 0; i < newData.length; i += 1) {
+//                 if (state.snapshots[state.savePoint].data[i] !== newData[i]) {
+//                     isSameFile = false;
+//                     break;
+//                 }
+//             }
+//         } else {
+//             isSameFile = false;
+//         }
+//         if (!isSameFile) {
+//             state.data = [];
+//             for (let i = 0; i < newData.length; i += 1) {
+//                 state.data[i] = newData[i];
+//             }
+//         }
+//         createSnapshot(state);
+//         state.savePoint = state.currentSnapshot;
+//         renderScreen(state, screen);
+//     }
+// }, 100);
