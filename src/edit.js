@@ -1,5 +1,4 @@
 #!/usr/bin/env node
-import fs from 'fs';
 import pkg from 'terminal-kit';
 import {
     saveFile,

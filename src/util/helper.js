@@ -11,15 +11,6 @@ function getData(filepath) {
     }
 }
 
-function refreshFile(state) {
-    const newData = getData(state.file);
-    state.data = [];
-    for (let i = 0; i < newData.length; i += 1) {
-        state.data.push(newData[i]);
-    }
-    createSnapshot(state);
-}
-
 function pasteFromClipboardBefore(state) {
     const systemPaste = ncp.paste().split('\n');
     if (state.clipboard !== systemPaste) {
@@ -258,7 +249,6 @@ async function saveFile(state) {
                 process.exit();
             }
         }))();
-        // eslint-disable-next-line no-promise-executor-return
         state.savePoint = state.currentSnapshot;
     }
 }
@@ -424,6 +414,15 @@ function trimTrailingWhitespace(state) {
     for (let i = 0; i < state.data.length; i += 1) {
         state.data[i] = state.data[i].trimEnd();
     }
+}
+
+function refreshFile(state) {
+    const newData = getData(state.file);
+    state.data = [];
+    for (let i = 0; i < newData.length; i += 1) {
+        state.data.push(newData[i]);
+    }
+    createSnapshot(state);
 }
 
 export {
