@@ -6,6 +6,7 @@ import {
     createSnapshot,
     logCommand
 } from '../util/helper.js';
+import { sendKeys } from '../util/sendKeys.js';
 import {
     up,
     down,
@@ -124,7 +125,7 @@ function handleVisualLineKeys(key, state, screen) {
                     copyToClipboard(state, newClipboard, true);
                     state.data.splice(state.row, state.visualLine.row - state.row + 1);
                 }
-                const indentLevel = getIndentLevelFrom(state, state.row);
+                const indentLevel = state.data[state.row] !== undefined ? getIndentLevelFrom(state, state.row) : 0;
                 state.data.splice(state.row, 0, ' '.repeat(indentLevel));
                 state.col = indentLevel;
                 state.mode = 'i';
@@ -161,6 +162,23 @@ function handleVisualLineKeys(key, state, screen) {
             }
         } else if (key === 'G') {
             bottomOfFile(state);
+        } else if (key === ',') {
+            state.mode = 'n';
+            state.allowCommandLogging = false;
+            const startingPoint = state.row;
+            if (state.visualLine.row < startingPoint) {
+                for (let i = state.visualLine.row; i <= startingPoint; i += 1) {
+                    sendKeys(state.macro, state, screen);
+                    up(state);
+                }
+            } else {
+                for (let i = startingPoint; i <= state.visualLine.row; i += 1) {
+                    sendKeys(state.macro, state, screen);
+                    down(state);
+                }
+            }
+            state.allowCommandLogging = true;
+            renderScreen(state, screen);
         } else if (key === '}') {
             for (let i = state.row + 1; i < state.data.length; i += 1) {
                 if (isEmptyRow(state, i)) {

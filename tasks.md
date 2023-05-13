@@ -1,7 +1,6 @@
 ## backlog
     - file explorer
-    - visual block
-    - syntax highlighting for different types of files
+    - = for n and v
     - get rid of process.stdout.row and use screen.height screen.width (will make easier to make status bar)
 ## todo
     - add status bar
@@ -19,7 +18,9 @@
         - show if search is wrong (useful) could make cursor flash red if can't find match
 ## blocked
 ## in progress
+    - I and A
 ## done
+    - syntax highlighting for different types of files
     - figure out deleting the whole file
     - <c-o> <c-i>
     - ctrl w and ctrl backspace
