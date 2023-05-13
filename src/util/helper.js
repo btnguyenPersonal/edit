@@ -221,7 +221,7 @@ function getColorRow(row, commentIndex, searching, searchQuery) {
         const s = row.substring(i, i + 1);
         if (searching && searchQuery === row.substring(i, i + searchQuery.length)) {
             for (let j = 0; j < searchQuery.length; j += 1) {
-                output.push('red');
+                output.push('search');
             }
             i += searchQuery.length - 1;
         } else if (i >= commentIndex && commentIndex !== -1) {
@@ -404,7 +404,8 @@ async function renderScreen(state, screen, noCenterScreen) {
                 for (let j = state.windowLineHorizontal; j < state.data[i].length; j += 1) {
                     screen.put({
                         attr: {
-                            color: colorRow[j],
+                            color: colorRow[j] === 'search' ? 'black' : colorRow[j],
+                            bgColor: colorRow[j] === 'search' ? 'green' : undefined,
                             inverse: isHighlighted(state, i, j)
                         },
                         wrap: false
