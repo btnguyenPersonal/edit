@@ -59,6 +59,7 @@ import {
 } from '../util/movement.js';
 
 function handleVimKeys(key, state, screen) {
+    state.searching = false;
     if (key === 'ESCAPE') {
         state.mode = 'n';
         state.previousKeys = '';
@@ -642,19 +643,23 @@ function handleVimKeys(key, state, screen) {
             renderScreen(state, screen);
         } else if (key === 'n') {
             if (state.searchQuery !== '') {
+                state.searching = true;
                 state.col += state.searchQuery.length + 1;
                 const result = searchForString(state, state.searchQuery);
                 if (!result) {
                     state.col -= state.searchQuery.length + 1;
                 } else {
                     centerScreen(state);
+                    state.windowLineHorizontal = 0;
                     renderScreen(state, screen);
                 }
             }
         } else if (key === 'N') {
             if (state.searchQuery !== '') {
+                state.searching = true;
                 searchBackForString(state, state.searchQuery);
                 centerScreen(state);
+                state.windowLineHorizontal = 0;
                 renderScreen(state, screen);
             }
         } else if (key === '/') {
@@ -689,6 +694,7 @@ function handleVimKeys(key, state, screen) {
             renderScreen(state, screen);
         } else if (key === 'z') {
             centerScreen(state);
+            state.windowLineHorizontal = 0;
             renderScreen(state, screen);
         } else if (key === 'J') {
             if (state.data[state.row + 1] !== undefined) {

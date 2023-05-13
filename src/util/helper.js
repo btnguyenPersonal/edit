@@ -215,11 +215,16 @@ function logCommand(newCommand, state, key) {
     }
 }
 
-function getColorRow(row, commentIndex) {
+function getColorRow(row, commentIndex, searching, searchQuery) {
     const output = [];
     for (let i = 0; i < row.length; i += 1) {
         const s = row.substring(i, i + 1);
-        if (i >= commentIndex && commentIndex !== -1) {
+        if (searching && searchQuery === row.substring(i, i + searchQuery.length)) {
+            for (let j = 0; j < searchQuery.length; j += 1) {
+                output.push('red');
+            }
+            i += searchQuery.length - 1;
+        } else if (i >= commentIndex && commentIndex !== -1) {
             output.push('green');
         } else if (isInStringRow(row, i)) {
             output.push('magenta');
@@ -254,8 +259,6 @@ async function saveFile(state) {
             }
         }))();
         // eslint-disable-next-line no-promise-executor-return
-        await new Promise((resolve) => (setTimeout(resolve, 100)));
-        state.loadFileOkay = true;
         state.savePoint = state.currentSnapshot;
     }
 }
@@ -397,7 +400,7 @@ async function renderScreen(state, screen, noCenterScreen) {
                     x: 0
                 }, (i + 1).toString().padStart(4) + ' ');
                 const commentIndex = commentStartsAt(state, i);
-                const colorRow = getColorRow(state.data[i], commentIndex);
+                const colorRow = getColorRow(state.data[i], commentIndex, state.searching, state.searchQuery);
                 for (let j = state.windowLineHorizontal; j < state.data[i].length; j += 1) {
                     screen.put({
                         attr: {
