@@ -14,7 +14,8 @@ import {
     isNumeric,
     saveFile,
     trimTrailingWhitespace,
-    logCommand
+    logCommand,
+    refreshFile,
 } from '../util/helper.js';
 import { sendKeys } from '../util/sendKeys.js';
 import {
@@ -768,6 +769,9 @@ function handleVimKeys(key, state, screen) {
             state.allowCommandLogging = false;
             sendKeys(state.previousCommand, state, screen);
             state.allowCommandLogging = true;
+            renderScreen(state, screen);
+        } else if (key === '\\') {
+            refreshFile(state);
             renderScreen(state, screen);
         }
     }

@@ -2,6 +2,24 @@
 import ncp from 'copy-paste';
 import fs from 'fs';
 
+function getData(filepath) {
+    try {
+        return (fs.readFileSync(filepath, 'utf-8')).split('\n');
+    } catch (e) {
+        console.log(filepath + ' not found\nusage: edit [file]');
+        process.exit();
+    }
+}
+
+function refreshFile(state) {
+    const newData = getData(state.file);
+    state.data = [];
+    for (let i = 0; i < newData.length; i += 1) {
+        state.data.push(newData[i]);
+    }
+    createSnapshot(state);
+}
+
 function pasteFromClipboardBefore(state) {
     const systemPaste = ncp.paste().split('\n');
     if (state.clipboard !== systemPaste) {
@@ -423,5 +441,7 @@ export {
     isNumeric,
     isHighlighted,
     trimTrailingWhitespace,
-    centerScreen
+    centerScreen,
+    refreshFile,
+    getData
 };
