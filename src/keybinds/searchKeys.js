@@ -10,6 +10,7 @@ import {
 function handleSearchKeys(key, state, screen) {
     if (isWritable(key)) {
         state.searchQuery += key;
+        state.searching = true;
         searchForString(state, state.searchQuery);
         centerScreen(state);
     } else if (key === 'ESCAPE') {
@@ -18,6 +19,8 @@ function handleSearchKeys(key, state, screen) {
         state.col = state.search.col;
     } else if (key === 'ENTER') {
         state.mode = 'n';
+    } else if (key === 'BACKSPACE') {
+        state.searchQuery = state.searchQuery.substring(0, state.searchQuery.length - 1);
     }
     logCommand(false, state, key);
     renderScreen(state, screen);
