@@ -1,5 +1,3 @@
-#lskdjf;ladskjf;!ksdj;flkasdj;fl/bin/hello
-osdifj;laskdfjl;askf
 let hello = "testi';asldkf;asdfa'sdf'asdn{//g"'';  //
 let url = "http://www.\"google.com"; // how are you doing?
 function testing() {

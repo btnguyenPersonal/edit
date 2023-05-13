@@ -5,7 +5,8 @@ import {
     saveFile,
     centerScreen,
     renderScreen,
-    createSnapshot
+    createSnapshot,
+    getData
 } from './util/helper.js';
 import { sendKeys } from './util/sendKeys.js';
 import { handleMouseInputs } from './keybinds/mouse.js';
@@ -21,15 +22,6 @@ function getFile() {
         return file;
     } catch (e) {
         console.log('input file not found\nusage: edit [file]');
-        process.exit();
-    }
-}
-
-function getData(filepath) {
-    try {
-        return (fs.readFileSync(filepath, 'utf-8')).split('\n');
-    } catch (e) {
-        console.log(filepath + ' not found\nusage: edit [file]');
         process.exit();
     }
 }
@@ -128,29 +120,3 @@ term.on('resize', () => {
         process.exit(0);
     }
 });
-
-// setInterval(() => {
-//     if (state.loadFileOkay) {
-//         const newData = getData(state.file);
-//         let isSameFile = true;
-//         if (state.snapshots[state.savePoint].data.length === newData.length) {
-//             for (let i = 0; i < newData.length; i += 1) {
-//                 if (state.snapshots[state.savePoint].data[i] !== newData[i]) {
-//                     isSameFile = false;
-//                     break;
-//                 }
-//             }
-//         } else {
-//             isSameFile = false;
-//         }
-//         if (!isSameFile) {
-//             state.data = [];
-//             for (let i = 0; i < newData.length; i += 1) {
-//                 state.data[i] = newData[i];
-//             }
-//         }
-//         createSnapshot(state);
-//         state.savePoint = state.currentSnapshot;
-//         renderScreen(state, screen);
-//     }
-// }, 100);
