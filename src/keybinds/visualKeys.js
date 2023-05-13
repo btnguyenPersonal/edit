@@ -29,6 +29,10 @@ import {
     findBackward,
     toForward,
     toBackward,
+    isEmptyRow,
+    isCommented,
+    comment,
+    uncomment,
 } from '../util/movement.js';
 
 function handleVisualKeys(key, state, screen) {
@@ -45,6 +49,23 @@ function handleVisualKeys(key, state, screen) {
         } else if (key === '\'' || key === '"') {
             const { beginning, end } = getCoorsInsideCharSame(state, key);
             setVisualHighlight(state, beginning, end);
+        } else if (key === 'p') {
+            for (let i = state.row - 1; i >= 0; i -= 1) {
+                if (isEmptyRow(state, i)) {
+                    break;
+                } else {
+                    state.visual = { row: i, col: 0 };
+                }
+            }
+            for (let i = state.row + 1; i < state.data.length; i += 1) {
+                if (isEmptyRow(state, i)) {
+                    break;
+                } else {
+                    state.row = i;
+                    state.col = 0;
+                }
+    
+            }
         }
         state.previousKeys = '';
     } else if (key === 'CTRL_U') {
@@ -137,9 +158,50 @@ function handleVisualKeys(key, state, screen) {
         state.mode = 'n';
         createSnapshot(state);
     } else if (key === 'c') {
-        copyInVisual(state);
-        deleteInVisual(state);
-        state.mode = 'i';
+        if (state.previousKeys === 'g') {
+            let areAllCommented = true;
+            if (state.row >= state.visual.row) {
+                for (let i = state.visual.row; i <= state.row; i += 1) {
+                    if (!isCommented(state, i)) {
+                        areAllCommented = false;
+                        break;
+                    }
+                }
+                if (areAllCommented) {
+                    for (let i = state.visual.row; i <= state.row; i += 1) {
+                        uncomment(state, i);
+                    }
+                } else {
+                    for (let i = state.visual.row; i <= state.row; i += 1) {
+                        comment(state, i, firstNonSpace(state, state.visual.row));
+                    }
+                }
+                state.row = state.visual.row;
+            } else if (state.row < state.visual.row) {
+                for (let i = state.row; i <= state.visual.row; i += 1) {
+                    if (!isCommented(state, i)) {
+                        areAllCommented = false;
+                        break;
+                    }
+                }
+                if (areAllCommented) {
+                    for (let i = state.row; i <= state.visual.row; i += 1) {
+                        uncomment(state, i);
+                    }
+                } else {
+                    for (let i = state.row; i <= state.visual.row; i += 1) {
+                        comment(state, i, firstNonSpace(state, state.row));
+                    }
+                }
+            }
+            state.mode = 'n';
+            createSnapshot(state);
+            state.previousKeys = '';
+        } else {
+            copyInVisual(state);
+            deleteInVisual(state);
+            state.mode = 'i';
+        }
     } else if (state.previousKeys === 'T') {
         if (isWritable(key)) {
             state.col = toBackward(state, key);
@@ -164,7 +226,7 @@ function handleVisualKeys(key, state, screen) {
             renderScreen(state, screen);
         }
         state.previousKeys = '';
-    } else if (key === 'f' || key === 'F' || key === 't' || key === 'T' || key === 'i') {
+    } else if (key === 'f' || key === 'F' || key === 't' || key === 'T' || key === 'i' || key === 'g') {
         state.previousKeys += key;
     } else if (key === 'ESCAPE') {
         state.mode = 'n';
