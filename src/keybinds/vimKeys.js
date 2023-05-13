@@ -92,6 +92,9 @@ function handleVimKeys(key, state, screen) {
             if (state.row > state.data.length - 1) {
                 state.row = state.data.length - 1;
             }
+            if (state.row < 0) {
+                state.row = 0;
+            }
             state.col = firstNonSpace(state, state.row);
             state.previousKeys = '';
             logCommand(false, state, key);
@@ -108,6 +111,9 @@ function handleVimKeys(key, state, screen) {
             if (state.data[state.row - 1] !== undefined) {
                 state.data.splice(state.row - 1, 1);
             }
+            if (state.row < 0) {
+                state.row = 0;
+            }
             up(state);
             state.col = firstNonSpace(state, state.row);
             state.previousKeys = '';
@@ -123,6 +129,9 @@ function handleVimKeys(key, state, screen) {
             state.col = firstNonSpace(state, state.row);
             if (state.row > state.data.length - 1) {
                 state.row = state.data.length - 1;
+            }
+            if (state.row < 0) {
+                state.row = 0;
             }
             state.previousKeys = '';
             logCommand(false, state, key);
