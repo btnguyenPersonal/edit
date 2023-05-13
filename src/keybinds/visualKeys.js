@@ -64,7 +64,6 @@ function handleVisualKeys(key, state, screen) {
                     state.row = i;
                     state.col = 0;
                 }
-    
             }
         }
         state.previousKeys = '';
