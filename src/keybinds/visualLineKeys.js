@@ -150,6 +150,9 @@ function handleVisualLineKeys(key, state, screen) {
             if (state.row > state.data.length - 1) {
                 state.row = state.data.length - 1;
             }
+            if (state.row < 0) {
+                state.row = 0;
+            }
             firstNonSpace(state, state.row);
             state.mode = 'n';
             createSnapshot(state);
@@ -230,6 +233,9 @@ function handleVisualLineKeys(key, state, screen) {
             }
             if (state.row > state.data.length - 1) {
                 state.row = state.data.length - 1;
+            }
+            if (state.row < 0) {
+                state.row = 0;
             }
             firstNonSpace(state, state.row);
             state.mode = 'n';
