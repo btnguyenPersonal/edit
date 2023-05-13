@@ -368,7 +368,7 @@ function centerScreen(state) {
 }
 
 function getWindowLineHorizontal(state) {
-    if (state.col - state.windowLineHorizontal > process.stdout.columns) {
+    if (state.col - state.windowLineHorizontal > process.stdout.columns - 6) {
         state.windowLineHorizontal = state.col - process.stdout.columns + 6;
     } else if (state.col - state.windowLineHorizontal < 0) {
         state.windowLineHorizontal = state.col;
