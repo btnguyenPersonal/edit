@@ -16,6 +16,7 @@ function firstNonSpace(state, row) {
             return i;
         }
     }
+    return 0;
 }
 
 function getIndentLevel(state, row) {
