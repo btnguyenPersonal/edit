@@ -185,7 +185,7 @@ function handleVisualLineKeys(key, state, screen) {
                     decreaseIndentLevel(state, i);
                 }
             }
-            state.col = 0;
+            state.col = firstNonSpace(state, state.row);
             state.row = state.visualLine.row;
             state.mode = 'n';
             createSnapshot(state);
@@ -200,6 +200,7 @@ function handleVisualLineKeys(key, state, screen) {
                     increaseIndentLevel(state, i);
                 }
             }
+            state.col = firstNonSpace(state, state.row);
             state.mode = 'n';
             createSnapshot(state);
         } else if (key === 'x') {

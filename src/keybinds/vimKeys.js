@@ -92,7 +92,7 @@ function handleVimKeys(key, state, screen) {
             if (state.row > state.data.length - 1) {
                 state.row = state.data.length - 1;
             }
-            state.col = 0;
+            state.col = firstNonSpace(state, state.row);
             state.previousKeys = '';
             logCommand(false, state, key);
             createSnapshot(state);
@@ -109,7 +109,7 @@ function handleVimKeys(key, state, screen) {
                 state.data.splice(state.row - 1, 1);
             }
             up(state);
-            state.col = 0;
+            state.col = firstNonSpace(state, state.row);
             state.previousKeys = '';
             logCommand(false, state, key);
             createSnapshot(state);
@@ -120,7 +120,7 @@ function handleVimKeys(key, state, screen) {
         } else if (key === 'd') {
             copyToClipboard(state, [state.data[state.row]], true);
             state.data.splice(state.row, 1);
-            state.col = 0;
+            state.col = firstNonSpace(state, state.row);
             if (state.row > state.data.length - 1) {
                 state.row = state.data.length - 1;
             }
@@ -752,7 +752,7 @@ function handleVimKeys(key, state, screen) {
             goToCoor(state, state.mark);
             renderScreen(state, screen);
         } else if (key === 'm') {
-            state.mark = state.row;
+            state.mark = state.row + 1;
             renderScreen(state, screen);
         } else if (key === '@') {
             if (state.searchQuery !== '') {
