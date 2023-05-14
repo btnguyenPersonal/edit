@@ -76,7 +76,6 @@ renderScreen(state, screen);
 
 term.on('key', (key) => {
     try {
-        console.log(process.argv);
         if (key === 'CTRL_S') {
             saveFile(state);
             renderScreen(state, screen);
@@ -89,6 +88,8 @@ term.on('key', (key) => {
         } else if (key === 'CTRL_C') {
             term.fullscreen(false);
             process.exit(0);
+        } else if (key === 'HOME') {
+            console.log(process.argv);
         } else {
             sendKeys([key], state, screen, term);
         }
