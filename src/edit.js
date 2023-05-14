@@ -36,15 +36,15 @@ const state = {
     searchQuery: '',
     searching: false,
     search: {
-        row: null,
-        col: null
+        row: undefined,
+        col: undefined
     },
     visualLine: {
-        row: null
+        row: undefined
     },
     visual: {
-        row: null,
-        col: null
+        row: undefined,
+        col: undefined
     },
     lineNumber: '',
     previousKeys: '',
@@ -88,6 +88,17 @@ term.on('key', (key) => {
         } else if (key === 'CTRL_C') {
             term.fullscreen(false);
             process.exit(0);
+        } else if (key === 'END') {
+            console.log('row: ' + state.row);
+            console.log('col: ' + state.col);
+            console.log('previousCommand: ' + state.previousCommand);
+            console.log('previousKeys: ' + state.previousKeys);
+            console.log('file: ' + state.file);
+            console.log('windowLine: ' + state.windowLine);
+            console.log('windowLineHorizontal: ' + state.windowLineHorizontal);
+            console.log('currentSnapshot: ' + state.currentSnapthot);
+            console.log('savePoint: ' + state.savePoint);
+            console.log('mark: ' + state.mark);
         } else if (key === 'HOME') {
             console.log(process.argv);
         } else {
