@@ -757,6 +757,14 @@ function handleVimKeys(key, state, screen) {
                 state.recording = true;
             }
             renderScreen(state, screen);
+        } else if (key === '=') {
+            let indentLevel = state.row - 1 < 0 ? 0 : getIndentLevelFrom(state, state.row - 1);
+            if (state.data[state.row].trim().startsWith(')') || state.data[state.row].trim().startsWith('}')) {
+                indentLevel = indentLevel - 4 >= 0 ? indentLevel - 4 : 0;
+            }
+            state.data[state.row] = ' '.repeat(indentLevel) + state.data[state.row].trim();
+            createSnapshot(state);
+            renderScreen(state, screen);
         } else if (key === '\'') {
             goToCoor(state, state.mark);
             renderScreen(state, screen);
