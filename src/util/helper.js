@@ -242,7 +242,6 @@ function copyToClipboard(state, textArray, newLine) {
 
 async function saveFile(state) {
     if (state.currentSnapshot !== state.savePoint) {
-        state.loadFileOkay = false;
         await (async () => fs.writeFile(state.file, state.data.join('\n'), (err) => {
             if (err) {
                 console.log(err);
