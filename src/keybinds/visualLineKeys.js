@@ -40,7 +40,7 @@ function handleVisualLineKeys(key, state, screen) {
                 state.row = i;
             }
         }
-    } else {
+    } else if (state.previousKeys === 'i' && key === 'ESCAPE') {
         state.previousKeys = '';
     }
     if (state.previousKeys !== 'i') {
