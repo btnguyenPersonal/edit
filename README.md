@@ -23,8 +23,8 @@ function g() {
             --reverse \
             --preview 'batcat --color=always {1} --highlight-line {2}' \
             --preview-window 'up,60%,border-bottom,+{2}+3/3,~3' \
-            --bind "enter:execute(echo '{1} {2} {q}')+abort");
-    until file="${command%% *}" && query="${command##* }" && edit $command; do
+            --bind "enter:execute(echo {1} {2} {q})+abort");
+    until file=$(echo "$command" | cut -d' ' -f1-2) query=$(echo "$command" | cut -d' ' -f3-) && edit $command; do
         if [[ $? -eq 1 ]]; then
             clear;
             command="`fzf --reverse` $query";
@@ -40,7 +40,7 @@ function g() {
                     --reverse \
                     --preview 'batcat --color=always {1} --highlight-line {2}' \
                     --preview-window 'up,60%,border-bottom,+{2}+3/3,~3' \
-                    --bind "enter:execute(echo '{1} {2} {q}')+abort");
+                    --bind "enter:execute(echo {1} {2} {q})+abort");
             if [ -z "${command// }" ]; then
                 command="$file $query"
             fi
@@ -49,7 +49,7 @@ function g() {
 }
 function e() {
     command="`fzf --reverse` $query"
-    until file="${command%% *}" && query="${command##* }" && edit $command; do
+    until file=$(echo "$command" | cut -d' ' -f1-2) query=$(echo "$command" | cut -d' ' -f3-) && edit $command; do
         if [[ $? -eq 1 ]]; then
             clear;
             command="`fzf --reverse` $query";
