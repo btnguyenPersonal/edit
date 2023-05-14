@@ -27,7 +27,7 @@ function g() {
     until file=$(echo "$command" | cut -d' ' -f1-2) query=$(echo "$command" | cut -d' ' -f3-) && edit $command; do
         if [[ $? -eq 1 ]]; then
             clear;
-            command="`fzf --reverse` $query";
+            command="`fzf --reverse` 0 $query";
             if [ -z "${command// }" ]; then
                 command="$file $query"
             fi
@@ -48,11 +48,11 @@ function g() {
     done;
 }
 function e() {
-    command="`fzf --reverse` $query"
+    command="`fzf --reverse` 0 $query"
     until file=$(echo "$command" | cut -d' ' -f1-2) query=$(echo "$command" | cut -d' ' -f3-) && edit $command; do
         if [[ $? -eq 1 ]]; then
             clear;
-            command="`fzf --reverse` $query";
+            command="`fzf --reverse` 0 $query";
             if [ -z "${command// }" ]; then
                 command="$file $query"
             fi

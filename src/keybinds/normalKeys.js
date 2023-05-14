@@ -113,6 +113,7 @@ function handleKeys(key, state, screen) {
         if (state.vim && isEmptyRow(state, state.row)) {
             state.data[state.row] = '';
         }
+        left(state);
         state.mode = 'n';
         if (state.vim) {
             createSnapshot(state);
