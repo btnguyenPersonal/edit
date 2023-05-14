@@ -76,6 +76,7 @@ renderScreen(state, screen);
 
 term.on('key', (key) => {
     try {
+        console.log(process.argv);
         if (key === 'CTRL_S') {
             saveFile(state);
             renderScreen(state, screen);
