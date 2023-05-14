@@ -27,6 +27,9 @@ import {
     endOfLine,
     findForward,
     findBackward,
+    increaseIndentLevel,
+    decreaseIndentLevel,
+    getIndentLevelFrom,
     toForward,
     toBackward,
     isEmptyRow,
@@ -201,6 +204,53 @@ function handleVisualKeys(key, state, screen) {
             deleteInVisual(state);
             state.mode = 'i';
         }
+    } else if (key === '=') {
+        if (state.row >= state.visual.row) {
+            for (let i = state.visual.row; i <= state.row; i += 1) {
+                let indentLevel = i - 1 < 0 ? 0 : getIndentLevelFrom(state, i - 1);
+                if (state.data[i].trim().startsWith(')') || state.data[i].trim().startsWith('}')) {
+                    indentLevel = indentLevel - 4 >= 0 ? indentLevel - 4 : 0;
+                }
+                state.data[i] = ' '.repeat(indentLevel) + state.data[i].trim();
+            }
+        } else if (state.row < state.visual.row) {
+            for (let i = state.row; i <= state.visual.row; i += 1) {
+                let indentLevel = i - 1 < 0 ? 0 : getIndentLevelFrom(state, i - 1);
+                if (state.data[i].trim().startsWith(')') || state.data[i].trim().startsWith('}')) {
+                    indentLevel = indentLevel - 4 >= 0 ? indentLevel - 4 : 0;
+                }
+                state.data[i] = ' '.repeat(indentLevel) + state.data[i].trim();
+            }
+        }
+        state.mode = 'n';
+    } else if (key === '<') {
+        if (state.row >= state.visual.row) {
+            for (let i = state.visual.row; i <= state.row; i += 1) {
+                decreaseIndentLevel(state, i);
+            }
+        } else if (state.row < state.visual.row) {
+            for (let i = state.row; i <= state.visual.row; i += 1) {
+                decreaseIndentLevel(state, i);
+            }
+        }
+        state.col = firstNonSpace(state, state.row);
+        state.row = state.visual.row;
+        state.mode = 'n';
+        createSnapshot(state);
+    } else if (key === '>') {
+        if (state.row >= state.visual.row) {
+            for (let i = state.visual.row; i <= state.row; i += 1) {
+                increaseIndentLevel(state, i);
+            }
+            state.row = state.visual.row;
+        } else if (state.row < state.visual.row) {
+            for (let i = state.row; i <= state.visual.row; i += 1) {
+                increaseIndentLevel(state, i);
+            }
+        }
+        state.col = firstNonSpace(state, state.row);
+        state.mode = 'n';
+        createSnapshot(state);
     } else if (state.previousKeys === 'T') {
         if (isWritable(key)) {
             state.col = toBackward(state, key);
