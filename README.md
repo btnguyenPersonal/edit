@@ -12,7 +12,7 @@ that's it, you should just be able to run `edit file.js` in your command line an
 
 # quality of life scripts
 usually put this in my ~/.bashrc:
-> this will let you use <ctrl-p> to change files and <ctrl-g> to search in project
+> this will let you use ctrl-p to change files and ctrl-g to search in project
 ```
 function g() {
     command=$(rg --color=always --column --line-number --no-heading --smart-case "${*:-}" |

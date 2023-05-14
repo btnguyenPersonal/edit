@@ -20,7 +20,6 @@ function getFile() {
         }
         return file;
     } catch (e) {
-        console.log('input file not found\nusage: edit [file]');
         process.exit();
     }
 }
@@ -36,7 +35,6 @@ const state = {
     clipboardNewLine: true,
     searchQuery: '',
     searching: false,
-    loadFileOkay: true,
     search: {
         row: null,
         col: null
