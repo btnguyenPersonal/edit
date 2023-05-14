@@ -139,6 +139,7 @@ function handleVisualKeys(key, state, screen) {
         if (state.searchQuery !== '') {
             state.col += state.searchQuery.length + 1;
             searchForString(state, state.searchQuery);
+            state.searching = true;
             centerScreen(state);
         }
     } else if (key === 'y') {
