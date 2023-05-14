@@ -1,10 +1,4 @@
 ## backlog
-    - file explorer
-    - = for n and v
-    - get rid of process.stdout.row and use screen.height screen.width (will make easier to make status bar)
-## todo
-    - add status bar
-    - debug mode
     - add tests
         - mouse inputs done (might need to add drag select later)
         - helper functions for terminal done
@@ -16,9 +10,17 @@
         - show search string (useful)
         - show search result 5/60 (useful)
         - show if search is wrong (useful) could make cursor flash red if can't find match
+    - file explorer
+    - get rid of process.stdout.row and use screen.height screen.width (will make easier to make status bar)
+## todo
+    - add status bar
+    - debug mode
+    - I and A for V (kind of have solution with macro runner on all lines)
+    - gf
+    - fix searching with spaces in it
 ## blocked
 ## in progress
-    - I and A
+    - = for n and v
 ## done
     - syntax highlighting for different types of files
     - figure out deleting the whole file

@@ -196,6 +196,25 @@ function handleVisualLineKeys(key, state, screen) {
                     break;
                 }
             }
+        } else if (key === '=') {
+            if (state.row >= state.visualLine.row) {
+                for (let i = state.visualLine.row; i <= state.row; i += 1) {
+                    let indentLevel = i - 1 < 0 ? 0 : getIndentLevelFrom(state, i - 1);
+                    if (state.data[i].trim().startsWith(')') || state.data[i].trim().startsWith('}')) {
+                        indentLevel = indentLevel - 4 >= 0 ? indentLevel - 4 : 0;
+                    }
+                    state.data[i] = ' '.repeat(indentLevel) + state.data[i].trim();
+                }
+            } else if (state.row < state.visualLine.row) {
+                for (let i = state.row; i <= state.visualLine.row; i += 1) {
+                    let indentLevel = i - 1 < 0 ? 0 : getIndentLevelFrom(state, i - 1);
+                    if (state.data[i].trim().startsWith(')') || state.data[i].trim().startsWith('}')) {
+                        indentLevel = indentLevel - 4 >= 0 ? indentLevel - 4 : 0;
+                    }
+                    state.data[i] = ' '.repeat(indentLevel) + state.data[i].trim();
+                }
+            }
+            state.mode = 'n';
         } else if (key === '<') {
             if (state.row >= state.visualLine.row) {
                 for (let i = state.visualLine.row; i <= state.row; i += 1) {
