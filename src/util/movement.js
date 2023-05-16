@@ -20,7 +20,7 @@ function firstNonSpace(state, row) {
 }
 
 function getIndentLevel(state, row) {
-    return state.data[row].search(/\S|$/);
+    return state.data[row] !== undefined ? state.data[row].search(/\S|$/) : 0;
 }
 
 function previousSameIndentLevel(state, row) {
