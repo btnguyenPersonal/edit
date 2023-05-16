@@ -243,7 +243,7 @@ function getCoorBeginningLastWord(state) {
 
 function goToCoor(state, row) {
     if (row >= 0 && row < state.data.length) {
-        state.row = row - 1;
+        state.row = row - 1 >= 0 ? row : 0;
     }
 }
 
