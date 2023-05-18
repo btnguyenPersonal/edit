@@ -11,6 +11,7 @@ npm i -g .
 that's it, you should just be able to run `edit file.js` in your command line and it should work!
 
 # keybinds
+|key|function|
 |:---:|:---:|
 |h or left|move left one|
 |j or down|move down one|
