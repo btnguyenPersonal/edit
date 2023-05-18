@@ -45,7 +45,7 @@ that's it, you should just be able to run `edit file.js` in your command line an
 |S|turn current line into empty space and go to normal mode|
 |J|join next line and current line|
 |z|center screen|
-|\\|reload file (if external program has changed it)|
+|&#92;|reload file (if external program has changed it)|
 |.|repeat last command|
 |=|format indent for current line|
 |m|mark line in file|
