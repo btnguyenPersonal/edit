@@ -11,7 +11,7 @@ npm i -g .
 that's it, you should just be able to run `edit file.js` in your command line and it should work!
 
 # keybinds
-### vim mode
+### vim mode (starts in this mode and has all the shortcuts)
 |key|function|
 |:---:|:---:|
 |h or left|move left one|
@@ -83,7 +83,29 @@ that's it, you should just be able to run `edit file.js` in your command line an
 |dd| basically can do exact same things with c, but doesn't go to normal mode|
 |yy| basically can do exact same things with c and d, but copies the text instead|
 |-1234| jumps to line 1234, have to press enter to exit|
-|ESCAPE| quits out of current keys for example typing in "d ESCAPE" would clear command|
+|ESCAPE| quits out of current keys for example typing in "d ESCAPE j" would stop d and just go down one|
+|gc|comment / uncomment line|
+
+### normal mode (like a normal keyboard)
+|up down left right|movement|
+|backspace delete|deleting|
+|ctrl w|deleting until previous word|
+|ctrl a|go to start of words in line|
+|ctrl e|go to end of line|
+|ctrl s|save (should auto save for you tho)|
+|tab and shift tab|increase/decrease indent|
+|ESCAPE|go to vim mode|
+
+### visual / visualLine mode (highlighting)
+|up down left right hjkl w b ctrl u ctrl b| basically all the movement keys work the same|
+|c| delete and go to normal mode|
+|x| delete|
+|d| copy and delete|
+|y| copy|
+|p| delete and paste|
+|gc| comment / uncomment|
+|<>| change indent|
+|ESCAPE|go to vim mode|
 
 # quality of life scripts
 usually put this in my ~/.bashrc:
