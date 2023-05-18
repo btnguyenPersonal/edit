@@ -66,7 +66,7 @@ function handleVimKeys(key, state, screen) {
     } else if (state.previousKeys === '-') {
         if (isNumeric(key)) {
             state.lineNumber += key;
-            goToCoor(state, parseInt(state.lineNumber));
+            goToCoor(state, parseInt(state.lineNumber) - 1);
         } else if (key === 'ENTER') {
             state.previousKeys = '';
         }
@@ -770,7 +770,7 @@ function handleVimKeys(key, state, screen) {
             goToCoor(state, state.mark);
             renderScreen(state, screen);
         } else if (key === 'm') {
-            state.mark = state.row + 1;
+            state.mark = state.row;
             renderScreen(state, screen);
         } else if (key === '@') {
             if (state.searchQuery !== '') {
