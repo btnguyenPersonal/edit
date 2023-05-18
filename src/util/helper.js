@@ -367,7 +367,7 @@ function getWindowLineHorizontal(state) {
     }
 }
 
-async function renderScreen(state, screen, noCenterScreen) {
+async function renderScreen(state, screen, noCenterScreen, delta) {
     await (() => {
         if (state.data.length === 0) {
             state.data = [''];
@@ -404,7 +404,7 @@ async function renderScreen(state, screen, noCenterScreen) {
             }
         }
         moveCursor(state, screen, state.windowLineHorizontal);
-        await screen.draw({ delta: true });
+        await screen.draw({ delta: delta === undefined ? true : false });
         await screen.drawCursor();
     }
 }

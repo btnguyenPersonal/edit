@@ -704,7 +704,7 @@ function handleVimKeys(key, state, screen) {
         } else if (key === 'z') {
             centerScreen(state);
             state.windowLineHorizontal = 0;
-            renderScreen(state, screen);
+            renderScreen(state, screen, false, true);
         } else if (key === 'J') {
             if (state.data[state.row + 1] !== undefined) {
                 state.col = state.data[state.row].length;
