@@ -45,7 +45,7 @@ that's it, you should just be able to run `edit file.js` in your command line an
 |S|turn current line into empty space and go to normal mode|
 |J|join next line and current line|
 |z|center screen|
-|\|reload file (if external program has changed it)|
+|\\|reload file (if external program has changed it)|
 |.|repeat last command|
 |=|format indent for current line|
 |m|mark line in file|
@@ -54,17 +54,36 @@ that's it, you should just be able to run `edit file.js` in your command line an
 |{}|find next/prev empty lines|
 |[]|find next/prev lines with current indent level|
 |()|find next/prev lines with lesser indent level|
-|/|search in file|
+|/|search in file, have to press enter to exit|
 |*|search for word under cursor|
 |n|repeat last search|
 |N|repeat last search backwards|
 |q|start/stop recording macro|
-|f<insert character here>|jumps to next specified character|
-|F<insert character here>|jumps to next specified character backwards|
-|t<insert character here>|jumps right before next specified character|
-|T<insert character here>|jumps right before next specified character backwards|
 |,|repeat macro|
 |@|repeat macro on every search result|
+|r|replace current character with next specified character|
+|f|jumps to next specified character|
+|F|jumps to next specified character backwards|
+|t|jumps right before next specified character|
+|T|jumps right before next specified character backwards|
+|cc|delete current line and go to normal mode|
+|cG|delete until end of file and go to normal mode|
+|cgg|delete until beginning of file and go to normal mode|
+|cj|delete current line and down one and go to normal mode|
+|ck|delete current line and up one and go to normal mode|
+|ciw|delete current word and go to normal mode|
+|cib or ci( or ci)|delete inside of rount brackets and go to normal mode|
+|ciB or ci{ or ci}|delete inside of curly brackets and go to normal mode|
+|ci[ or ci]|delete inside of square brackets and go to normal mode|
+|ci' or ci"|delete inside of quotes and go to normal mode|
+|cf|delete until next specified character and go to normal mode|
+|cF|delete backward until next specified character and go to normal mode|
+|ct|delete until right before next specified character and go to normal mode|
+|cT|delete backward until right before next specified character and go to normal mode|
+|dd| basically can do exact same things with c, but doesn't go to normal mode|
+|yy| basically can do exact same things with c and d, but copies the text instead|
+|-1234| jumps to line 1234, have to press enter to exit|
+|ESCAPE| quits out of current keys for example typing in "d ESCAPE" would clear command|
 
 # quality of life scripts
 usually put this in my ~/.bashrc:
