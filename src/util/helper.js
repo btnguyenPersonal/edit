@@ -87,6 +87,20 @@ function moveCursor(state, screen, windowLineHorizontal) {
     );
 }
 
+function isRowHighlighted(state, i) {
+    if (state.mode === 'V') {
+        if ((i <= state.row && i >= state.visualLine.row) || (i >= state.row && i <= state.visualLine.row)) {
+            return true;
+        }
+    } else if (state.mode === 'v') {
+        if ((i <= state.row && i >= state.visual.row) || (i >= state.row && i <= state.visual.row)) {
+            return true;
+        }
+    } else {
+        return false;
+    }
+}
+
 function isHighlighted(state, i, j) {
     if (state.mode === 'V') {
         if (state.row === i && state.col === j) {
@@ -367,7 +381,7 @@ function getWindowLineHorizontal(state) {
     }
 }
 
-async function renderScreen(state, screen, noCenterScreen, delta) {
+async function renderScreen(state, screen, noCenterScreen, fullRefresh) {
     await (() => {
         if (state.data.length === 0) {
             state.data = [''];
@@ -400,11 +414,19 @@ async function renderScreen(state, screen, noCenterScreen, delta) {
                         wrap: false
                     }, state.data[i].substring(j, j + 1));
                 }
+                if (state.data[i] === '' && isRowHighlighted(state, i)) {
+                    screen.put({
+                        attr: {
+                            inverse: true
+                        },
+                        wrap: false
+                    }, ' ');
+                }
                 screen.put({ newLine: true }, '\n');
             }
         }
         moveCursor(state, screen, state.windowLineHorizontal);
-        await screen.draw({ delta: delta === undefined ? true : false });
+        await screen.draw({ delta: !fullRefresh });
         await screen.drawCursor();
     }
 }
