@@ -87,6 +87,8 @@ that's it, you should just be able to run `edit file.js` in your command line an
 |gc|comment / uncomment line|
 
 ### normal mode (like a normal keyboard)
+|key|function|
+|:---:|:---:|
 |up down left right|movement|
 |backspace delete|deleting|
 |ctrl w|deleting until previous word|
@@ -97,6 +99,8 @@ that's it, you should just be able to run `edit file.js` in your command line an
 |ESCAPE|go to vim mode|
 
 ### visual / visualLine mode (highlighting)
+|key|function|
+|:---:|:---:|
 |up down left right hjkl w b ctrl u ctrl b| basically all the movement keys work the same|
 |c| delete and go to normal mode|
 |x| delete|
