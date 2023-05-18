@@ -96,7 +96,7 @@ term.on('key', (key) => {
             console.log('file: ' + state.file);
             console.log('windowLine: ' + state.windowLine);
             console.log('windowLineHorizontal: ' + state.windowLineHorizontal);
-            console.log('currentSnapshot: ' + state.currentSnapthot);
+            console.log('currentSnapshot: ' + state.currentSnapshot);
             console.log('savePoint: ' + state.savePoint);
             console.log('mark: ' + state.mark);
         } else if (key === 'HOME') {
