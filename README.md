@@ -10,6 +10,13 @@ npm i -g .
 ```
 that's it, you should just be able to run `edit file.js` in your command line and it should work!
 
+# keybinds
+:---:|:---:
+h or left|move left one
+j or down|move down one
+k or up|move up one
+l or right|move right one
+
 # quality of life scripts
 usually put this in my ~/.bashrc:
 > this will let you use ctrl-p to change files and ctrl-g to search in project
