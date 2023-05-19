@@ -130,7 +130,7 @@ function g() {
         if [[ $? -eq 1 ]]; then
             clear;
             command="`fzf --reverse` 0 $query";
-            if [ -z "${command// }" ]; then
+            if [[ "$(echo "${command}" | awk '{print $1}')" == "0" ]]; then
                 command="$file $query"
             fi
         else
@@ -155,7 +155,7 @@ function e() {
         if [[ $? -eq 1 ]]; then
             clear;
             command="`fzf --reverse` 0 $query";
-            if [ -z "${command// }" ]; then
+            if [[ "$(echo "${command}" | awk '{print $1}')" == "0" ]]; then
                 command="$file $query"
             fi
         else
