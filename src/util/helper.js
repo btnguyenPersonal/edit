@@ -387,19 +387,25 @@ function centerScreen(state) {
 }
 
 function getWindowLineHorizontal(state) {
-    if (state.col - state.windowLineHorizontal > process.stdout.columns - 6) {
-        state.windowLineHorizontal = state.col - process.stdout.columns + 6;
-    } else if (state.col - state.windowLineHorizontal < 0) {
-        state.windowLineHorizontal = state.col;
+    let col;
+    if (state.data[state.row] !== undefined) {
+        col = state.col < state.data[state.row].length
+            ? state.col
+            : state.data[state.row].length;
+    } else {
+        col = 0;
+    }
+    if (col - state.windowLineHorizontal > process.stdout.columns - 6) {
+        state.windowLineHorizontal = (col - process.stdout.columns + 6) + 10;
+    } else if (col - state.windowLineHorizontal < 0) {
+        state.windowLineHorizontal = col - 10 > 0 ? col - 10 : 0;
     }
 }
 
-async function renderScreen(state, screen, noCenterScreen, fullRefresh) {
-    await (() => {
-        if (state.data.length === 0) {
-            state.data = [''];
-        }
-    })();
+function renderScreen(state, screen, noCenterScreen, fullRefresh) {
+    if (state.data.length === 0) {
+        state.data = [''];
+    }
     if (state.allowCommandLogging) {
         if (!noCenterScreen && !isOnScreen(state)) {
             centerScreen(state);
@@ -439,8 +445,8 @@ async function renderScreen(state, screen, noCenterScreen, fullRefresh) {
             }
         }
         moveCursor(state, screen, state.windowLineHorizontal);
-        await screen.draw({ delta: !fullRefresh });
-        await screen.drawCursor();
+        screen.draw({ delta: !fullRefresh });
+        screen.drawCursor();
     }
 }
 
