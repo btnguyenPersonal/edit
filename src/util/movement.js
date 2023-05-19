@@ -611,11 +611,39 @@ function getIndentLevelFrom(state, row, inverse) {
     return indentLevel >= 0 ? indentLevel : 0;
 }
 
-function setVisualHighlight(state, beginning, end) {
+function setVisualBlockHighlight(state, beginning, end) {
     if (beginning !== end) {
-        state.visual.col = beginning + 1;
+        state.visualBlock.col = beginning + 1;
         state.col = end - 1;
-        state.visual.row = state.row;
+        state.visualBlock.row = state.row;
+    }
+}
+
+function copyInVisualBlock(state) {
+    const newClipboard = [];
+    for (let i = Math.min(state.row, state.visualBlock.row); i < Math.max(state.row, state.visualBlock.row) + 1; i += 1) {
+        if (state.visualBlock.col <= state.col) {
+            newClipboard.push(state.data[i].substring(state.visualBlock.col, state.col + 1));
+        } else if (state.visualBlock.col > state.col) {
+            newClipboard.push(state.data[i] = state.data[i].substring(state.col, state.visualBlock.col + 1));
+        }
+    }
+    copyToClipboard(state, newClipboard, false, true);
+}
+
+function deleteInVisualBlock(state) {
+    for (let i = Math.min(state.row, state.visualBlock.row); i < Math.max(state.row, state.visualBlock.row) + 1; i += 1) {
+        if (state.visualBlock.col <= state.col) {
+            state.data[i] = state.data[i].substring(0, state.visualBlock.col) + state.data[i].substring(state.col + 1);
+        } else if (state.visualBlock.col > state.col) {
+            state.data[i] = state.data[i].substring(0, state.col) + state.data[i].substring(state.visualBlock.col + 1);
+        }
+    }
+    if (state.visualBlock.row <= state.row) {
+        state.row = state.visualBlock.row;
+    }
+    if (state.visualBlock.col <= state.col) {
+        state.col = state.visualBlock.col;
     }
 }
 
@@ -664,6 +692,14 @@ function copyInVisual(state) {
     }
 }
 
+function setVisualHighlight(state, beginning, end) {
+    if (beginning !== end) {
+        state.visual.col = beginning + 1;
+        state.col = end - 1;
+        state.visual.row = state.row;
+    }
+}
+
 export {
     up,
     down,
@@ -686,6 +722,9 @@ export {
     removeInsideAreaSameLine,
     copyInsideAreaSameLine,
     getIndentLevelFrom,
+    setVisualBlockHighlight,
+    copyInVisualBlock,
+    deleteInVisualBlock,
     setVisualHighlight,
     copyInVisual,
     deleteInVisual,

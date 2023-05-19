@@ -122,6 +122,22 @@ function isHighlighted(state, i, j) {
         if ((i <= state.row && i >= state.visualLine.row) || (i >= state.row && i <= state.visualLine.row)) {
             return true;
         }
+    } else if (state.mode === 'CTRL_V') {
+        if (state.row === i && state.col === j) {
+            return false;
+        }
+        if ((i <= state.row && i >= state.visualBlock.row) || (i >= state.row && i <= state.visualBlock.row)) {
+            if (state.visualBlock.col <= state.col) {
+                if (j >= state.visualBlock.col && j <= state.col) {
+                    return true;
+                }
+            } else if (state.visualBlock.col > state.col) {
+                if (j >= state.col && j <= state.visualBlock.col) {
+                    return true;
+                }
+            }
+        }
+        return false;
     } else if (state.mode === 'v') {
         if (state.row === i && state.col === j) {
             return false;
@@ -261,8 +277,9 @@ function getColorRow(row, commentIndex, searching, searchQuery) {
     return output;
 }
 
-function copyToClipboard(state, textArray, newLine) {
+function copyToClipboard(state, textArray, newLine, clipboardVisualBlock) {
     state.clipboard = textArray;
+    state.clipboardVisualBlock = clipboardVisualBlock;
     state.clipboardNewLine = newLine;
     ncp.copy(state.clipboard.join('\n'));
 }
