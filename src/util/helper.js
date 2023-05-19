@@ -402,6 +402,18 @@ function getWindowLineHorizontal(state) {
     }
 }
 
+function isMergeConflictStart(s) {
+    return s.startsWith('<<<<<<<');
+}
+
+function isMergeConflictMiddle(s) {
+    return s.startsWith('=======');
+}
+
+function isMergeConflictEnd(s) {
+    return s.startsWith('>>>>>>>');
+}
+
 function renderScreen(state, screen, noCenterScreen, fullRefresh) {
     if (state.data.length === 0) {
         state.data = [''];
@@ -413,6 +425,7 @@ function renderScreen(state, screen, noCenterScreen, fullRefresh) {
         getWindowLineHorizontal(state);
         screen.fill({ char: ' ' });
         screen.moveTo(0, 0);
+        let mergeSection = 0;
         for (let i = state.windowLine; i < (state.windowLine + process.stdout.rows); i += 1) {
             if (state.data[i] !== undefined) {
                 screen.put({
@@ -421,13 +434,37 @@ function renderScreen(state, screen, noCenterScreen, fullRefresh) {
                     },
                     x: 0
                 }, (i + 1).toString().padStart(4) + ' ');
+                if (isMergeConflictStart(state.data[i])) {
+                    mergeSection = 1;
+                } else if (isMergeConflictMiddle(state.data[i])) {
+                    mergeSection = 2;
+                } else if (isMergeConflictEnd(state.data[i])) {
+                    mergeSection = 0;
+                }
                 const commentIndex = commentStartsAt(state, i);
                 const colorRow = getColorRow(state.data[i], commentIndex, state.searching, state.searchQuery);
                 for (let j = state.windowLineHorizontal; j < state.data[i].length; j += 1) {
+                    let color = colorRow[j];
+                    let bgColor;
+                    if (mergeSection === 1 && !isMergeConflictStart(state.data[i])) {
+                        color = 'black';
+                        bgColor = 'red';
+                    } else if (mergeSection === 2 && !isMergeConflictMiddle(state.data[i])) {
+                        color = 'black';
+                        bgColor = 'green';
+                    } else if (isMergeConflictEnd(state.data[i]) || isMergeConflictMiddle(state.data[i]) || isMergeConflictStart(state.data[i])) {
+                        bgColor = 'blue';
+                    } else {
+                        bgColor = undefined;
+                    }
+                    if (colorRow[j] === 'search') {
+                        color = 'black';
+                        bgColor = 'green';
+                    }
                     screen.put({
                         attr: {
-                            color: colorRow[j] === 'search' ? 'black' : colorRow[j],
-                            bgColor: colorRow[j] === 'search' ? 'green' : undefined,
+                            color,
+                            bgColor,
                             inverse: isHighlighted(state, i, j)
                         },
                         wrap: false
