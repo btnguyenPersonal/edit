@@ -20,8 +20,7 @@ import {
     getIndentLevelFrom,
     isEmptyRow,
     isCommented,
-    uncomment,
-    comment,
+    toggleComment,
 } from '../util/movement.js';
 
 function handleVisualLineKeys(key, state, screen) {
@@ -80,11 +79,11 @@ function handleVisualLineKeys(key, state, screen) {
                     }
                     if (areAllCommented) {
                         for (let i = state.visualLine.row; i <= state.row; i += 1) {
-                            uncomment(state, i);
+                            toggleComment(state, i, undefined, false);
                         }
                     } else {
                         for (let i = state.visualLine.row; i <= state.row; i += 1) {
-                            comment(state, i, firstNonSpace(state, state.visualLine.row));
+                            toggleComment(state, i, firstNonSpace(state, state.visualLine.row), true);
                         }
                     }
                     state.row = state.visualLine.row;
@@ -97,11 +96,11 @@ function handleVisualLineKeys(key, state, screen) {
                     }
                     if (areAllCommented) {
                         for (let i = state.row; i <= state.visualLine.row; i += 1) {
-                            uncomment(state, i);
+                            toggleComment(state, i, undefined, false);
                         }
                     } else {
                         for (let i = state.row; i <= state.visualLine.row; i += 1) {
-                            comment(state, i, firstNonSpace(state, state.row));
+                            toggleComment(state, i, firstNonSpace(state, state.row), true);
                         }
                     }
                 }

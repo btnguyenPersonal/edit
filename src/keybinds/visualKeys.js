@@ -34,8 +34,7 @@ import {
     toBackward,
     isEmptyRow,
     isCommented,
-    comment,
-    uncomment,
+    toggleComment,
 } from '../util/movement.js';
 
 function handleVisualKeys(key, state, screen) {
@@ -172,11 +171,11 @@ function handleVisualKeys(key, state, screen) {
                 }
                 if (areAllCommented) {
                     for (let i = state.visual.row; i <= state.row; i += 1) {
-                        uncomment(state, i);
+                        toggleComment(state, i, undefined, false);
                     }
                 } else {
                     for (let i = state.visual.row; i <= state.row; i += 1) {
-                        comment(state, i, firstNonSpace(state, state.visual.row));
+                        toggleComment(state, i, firstNonSpace(state, state.visual.row), true);
                     }
                 }
                 state.row = state.visual.row;
@@ -189,11 +188,11 @@ function handleVisualKeys(key, state, screen) {
                 }
                 if (areAllCommented) {
                     for (let i = state.row; i <= state.visual.row; i += 1) {
-                        uncomment(state, i);
+                        toggleComment(state, i, undefined, false);
                     }
                 } else {
                     for (let i = state.row; i <= state.visual.row; i += 1) {
-                        comment(state, i, firstNonSpace(state, state.row));
+                        toggleComment(state, i, firstNonSpace(state, state.row), true);
                     }
                 }
             }

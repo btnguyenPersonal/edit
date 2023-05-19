@@ -48,9 +48,7 @@ import {
     findBackward,
     toForward,
     toBackward,
-    isCommented,
-    comment,
-    uncomment,
+    toggleComment,
     previousSameIndentLevel,
     nextSameIndentLevel,
     previousLowerIndentLevel,
@@ -352,11 +350,7 @@ function handleVimKeys(key, state, screen) {
             createSnapshot(state);
             renderScreen(state, screen);
         } else if (key === 'c') {
-            if (isCommented(state, state.row)) {
-                uncomment(state, state.row);
-            } else {
-                comment(state, state.row);
-            }
+            toggleComment(state, state.row);
             createSnapshot(state);
             logCommand(true, state, 'g');
             logCommand(false, state, key);
