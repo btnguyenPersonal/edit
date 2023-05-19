@@ -384,6 +384,9 @@ function getCoorBeginningNextWord(state) {
 }
 
 function getCoorBeginningLastWord(state) {
+    if (state.col > state.data[state.row].length - 1 && state.data[state.row].length > 0) {
+        state.col = state.data[state.row].length - 1;
+    }
     let hasHitNonAlphaNum = isAlphaNumeric(state.data[state.row].substring(state.col - 1, state.col))
         && isAlphaNumeric(state.data[state.row].substring(state.col, state.col + 1));
     let { col } = state;
