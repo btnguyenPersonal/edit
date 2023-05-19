@@ -81,7 +81,8 @@ function getRowIfOverflow(state) {
 
 function moveCursor(state, screen, windowLineHorizontal) {
     const r = getRowIfOverflow(state);
-    let row, col;
+    let row;
+    let col;
     if (state.data[r] !== undefined) {
         col = state.col < state.data[r].length
             ? state.col
@@ -90,7 +91,7 @@ function moveCursor(state, screen, windowLineHorizontal) {
         col = 0;
     }
     col += 5;
-    row = state.row < state.data.length ? state.row : state.data.length
+    row = state.row < state.data.length ? state.row : state.data.length;
     col -= windowLineHorizontal;
     row -= state.windowLine;
     screen.moveTo(

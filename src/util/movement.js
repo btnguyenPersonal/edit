@@ -67,54 +67,217 @@ function nextLowerIndentLevel(state, row) {
     }
 }
 
-function uncomment(state, row) {
-    const col = firstNonSpace(state, row);
-    if (state.file.endsWith('.js')
-        || state.file.endsWith('.jsx')
-        || state.file.endsWith('.tsx')
-        || state.file.endsWith('.ts')
-        || state.file.endsWith('.java')
-        || state.file.endsWith('.c')
-        || state.file.endsWith('.cpp')
-        || state.file.endsWith('.rs')) {
-        state.data[row] = state.data[row].substring(0, col) + state.data[row].substring(col + 2);
-    } else if (state.file.endsWith('.sh')
-        || state.file.endsWith('.py')
-        || state.file.endsWith('.bashrc')
-        || state.file.endsWith('.zshrc')
-        || state.file.endsWith('.env')) {
-        state.data[row] = state.data[row].substring(0, col) + state.data[row].substring(col + 1);
-    }
-    if (!isEmptyRow(state, row) && state.data[row].substring(col, col + 1) === ' ') {
-        state.data[row] = state.data[row].substring(0, col) + state.data[row].substring(col + 1);
-    }
-}
-
-function comment(state, row, c) {
-    const col = c === undefined ? firstNonSpace(state, row) : c;
+function isCommented(state, row) {
     if (!isEmptyRow(state, row)) {
-        if (state.file.endsWith('.js')
-            || state.file.endsWith('.jsx')
-            || state.file.endsWith('.tsx')
-            || state.file.endsWith('.ts')
-            || state.file.endsWith('.java')
-            || state.file.endsWith('.c')
-            || state.file.endsWith('.cpp')
-            || state.file.endsWith('.rs')) {
-            state.data[row] = state.data[row].substring(0, col) + '// ' + state.data[row].substring(col);
-        } else if (state.file.endsWith('.sh')
-            || state.file.endsWith('.py')
-            || state.file.endsWith('.bashrc')
-            || state.file.endsWith('.zshrc')
-            || state.file.endsWith('.env')) {
-            state.data[row] = state.data[row].substring(0, col) + '# ' + state.data[row].substring(col);
+        const extension = state.file.split('.').pop().toLowerCase();
+        const trimmedLine = state.data[row].trim();
+        switch (extension) {
+            case 'java':
+            case 'c':
+            case 'cpp':
+            case 'h':
+            case 'cs':
+            case 'Makefile':
+            case 'php':
+            case 'js':
+            case 'swift':
+            case 'kt':
+            case 'go':
+            case 'scala':
+            case 'ts':
+            case 'jsx':
+            case 'tsx':
+            case 'rust':
+            case 'vb':
+            case 'ejs':
+            case 'lua':
+            case 'coffee':
+            case 'groovy':
+            case 'matlab':
+            case 'diff':
+            case 'scss':
+            case 'cfg':
+            case 'htm':
+            case 'conf':
+            case 'styl':
+            case 'adoc':
+            case 'cshtml':
+            case 'aspx':
+            case 'pug':
+            case 'json':
+            case 'json5':
+            case 'dockerfile':
+            case 'graphql':
+            case 'iml':
+            case 'twig':
+            case 'bat':
+            case 'phtml':
+            case 'fish':
+            case 'cake':
+            case 'gd':
+            case 'nim':
+                return trimmedLine.startsWith('//');
+            case 'sh':
+            case 'bashrc':
+            case 'zshrc':
+            case 'yaml':
+            case 'yml':
+            case 'ini':
+            case 'py':
+            case 'rb':
+            case 'gitignore':
+            case 'pl':
+            case 'r':
+            case 'cobol':
+            case 'properties':
+            case 'cson':
+                return trimmedLine.startsWith('#');
+            case 'css':
+                return trimmedLine.startsWith('/*') && trimmedLine.endsWith('*/');
+            case 'html':
+            case 'xml':
+            case 'markdown':
+            case 'md':
+                return trimmedLine.startsWith('<!--') && trimmedLine.endsWith('-->');
+            default:
+                return false;
         }
     }
 }
 
-function isCommented(state, row) {
-    const trimmed = state.data[row].trim();
-    return trimmed.startsWith('//') || isEmptyRow(state, row);
+function toggleComment(state, row, column, forceComment) {
+    if (!isEmptyRow(state, row)) {
+        const extension = state.file.split('.').pop().toLowerCase();
+        const trimmedLine = state.data[row].trim();
+        const leadingWhitespace = state.data[row].match(/^\s*/)[0];
+        switch (extension) {
+            case 'java':
+            case 'c':
+            case 'cpp':
+            case 'h':
+            case 'cs':
+            case 'Makefile':
+            case 'php':
+            case 'js':
+            case 'swift':
+            case 'kt':
+            case 'go':
+            case 'scala':
+            case 'ts':
+            case 'jsx':
+            case 'tsx':
+            case 'rust':
+            case 'vb':
+            case 'ejs':
+            case 'lua':
+            case 'coffee':
+            case 'groovy':
+            case 'matlab':
+            case 'diff':
+            case 'scss':
+            case 'cfg':
+            case 'htm':
+            case 'conf':
+            case 'styl':
+            case 'adoc':
+            case 'cshtml':
+            case 'aspx':
+            case 'pug':
+            case 'json':
+            case 'json5':
+            case 'dockerfile':
+            case 'graphql':
+            case 'iml':
+            case 'twig':
+            case 'bat':
+            case 'phtml':
+            case 'fish':
+            case 'cake':
+            case 'gd':
+            case 'nim':
+                if (forceComment !== true && trimmedLine.startsWith('// ')) {
+                    state.data[row] = leadingWhitespace + trimmedLine.slice(3);
+                    break;
+                } else if (forceComment !== true && trimmedLine.startsWith('//')) {
+                    state.data[row] = leadingWhitespace + trimmedLine.slice(2);
+                    break;
+                } else if (forceComment !== false && column !== undefined && column >= 0 && column <= state.data[row].length) {
+                    state.data[row] = state.data[row].slice(0, column) + '// ' + state.data[row].slice(column);
+                    break;
+                } else if (forceComment !== false) {
+                    state.data[row] = leadingWhitespace + '// ' + trimmedLine;
+                    break;
+                } else {
+                    break;
+                }
+            case 'sh':
+            case 'bashrc':
+            case 'zshrc':
+            case 'yaml':
+            case 'yml':
+            case 'ini':
+            case 'py':
+            case 'rb':
+            case 'gitignore':
+            case 'pl':
+            case 'r':
+            case 'cobol':
+            case 'properties':
+            case 'cson':
+                if (forceComment !== true && trimmedLine.startsWith('# ')) {
+                    state.data[row] = leadingWhitespace + trimmedLine.slice(2);
+                    break;
+                } else if (forceComment !== true && trimmedLine.startsWith('#')) {
+                    state.data[row] = leadingWhitespace + trimmedLine.slice(1);
+                    break;
+                } else if (forceComment !== false && column !== undefined && column >= 0 && column <= state.data[row].length) {
+                    state.data[row] = state.data[row].slice(0, column) + '# ' + state.data[row].slice(column);
+                    break;
+                } else if (forceComment !== false) {
+                    state.data[row] = leadingWhitespace + '# ' + trimmedLine;
+                    break;
+                } else {
+                    break;
+                }
+            case 'css':
+                if (forceComment !== true && trimmedLine.startsWith('/* ') && trimmedLine.endsWith(' */')) {
+                    state.data[row] = leadingWhitespace + trimmedLine.slice(3, -3);
+                    break;
+                } else if (forceComment !== true && trimmedLine.startsWith('/*') && trimmedLine.endsWith('*/')) {
+                    state.data[row] = leadingWhitespace + trimmedLine.slice(2, -2);
+                    break;
+                } else if (forceComment !== false && column !== undefined && column >= 0 && column <= state.data[row].length) {
+                    state.data[row] = state.data[row].slice(0, column) + '/* ' + state.data[row].slice(column) + ' */';
+                    break;
+                } else if (forceComment !== false) {
+                    state.data[row] = leadingWhitespace + '/* ' + trimmedLine + ' */';
+                    break;
+                } else {
+                    break;
+                }
+            case 'html':
+            case 'xml':
+            case 'markdown':
+            case 'md':
+                if (forceComment !== true && trimmedLine.startsWith('<!-- ') && trimmedLine.endsWith(' -->')) {
+                    state.data[row] = leadingWhitespace + trimmedLine.slice(5, -4);
+                    break;
+                } else if (forceComment !== true && trimmedLine.startsWith('<!--') && trimmedLine.endsWith('-->')) {
+                    state.data[row] = leadingWhitespace + trimmedLine.slice(4, -3);
+                    break;
+                } else if (forceComment !== false && column !== undefined && column >= 0 && column <= state.data[row].length) {
+                    state.data[row] = state.data[row].slice(0, column) + '<!-- ' + state.data[row].slice(column) + ' -->';
+                    break;
+                } else if (forceComment !== false) {
+                    state.data[row] = leadingWhitespace + '<!-- ' + trimmedLine + ' -->';
+                    break;
+                } else {
+                    break;
+                }
+            default:
+                break;
+        }
+    }
 }
 
 function toBackward(state, key) {
@@ -530,11 +693,10 @@ export {
     toForward,
     toBackward,
     isCommented,
-    comment,
-    uncomment,
     previousSameIndentLevel,
     nextSameIndentLevel,
     previousLowerIndentLevel,
     nextLowerIndentLevel,
     goToCoor,
+    toggleComment,
 };
