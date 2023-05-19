@@ -1,40 +1,6 @@
-losdjkf;alsdfet url = "http://www.\"google.com"; // how are you doing?
-
-function testing() {
-    let forever;
-    for (let i = 0; i < state.data.length; i += 1) {for (let i = 0; i < state.data.length; i += 1) {for (let i = 0; i < state.data.length; i += 1) {for (let i = 0; i < state.data.length; i += 1) {for (let i = 0; i < state.data.length; i += 1) {for (lhofet i = 0; i < state.data.length; i += 1) {for (let i = 0; i < state.data.length; i += 1) {
-    let forever;
-    for (let i = 0; i < state.data.length; i += 1) {for (let i = 0; i < state.data.length; i += 1) {for (let i = 0; i < state.data.length; i += 1) {for (let i = 0; i < state.data.length; i += 1) {for (let i = 0; i < state.data.length; i += 1) {for (lhofet i = 0; i < state.data.length; i += 1) {for (let i = 0; i < state.data.length; i += 1) {
-    let forever;
-    for (let i = 0; i < state.data.length; i += 1) {for (let i = 0; i < state.data.length; i += 1) {for (let i = 0; i < state.data.length; i += 1) {for (let i = 0; i < state.data.length; i += 1) {for (let i = 0; i < state.data.length; i += 1) {for (lhofet i = 0; i < state.data.length; i += 1) {for (let i = 0; i < state.data.length; i += 1) {
-    let forever;
-    for (let i = 0; i < state.data.length; i += 1) {for (let i = 0; i < state.data.length; i += 1) {for (let i = 0; i < state.data.length; i += 1) {for (let i = 0; i < state.data.length; i += 1) {for (let i = 0; i < state.data.length; i += 1) {for (lhofet i = 0; i < state.data.length; i += 1) {for (let i = 0; i < state.data.length; i += 1) {
-    let forever;
-    for (let i = 0; i < state.data.length; i += 1) {for (let i = 0; i < state.data.length; i += 1) {for (let i = 0; i < state.data.length; i += 1) {for (let i = 0; i < state.data.length; i += 1) {for (let i = 0; i < state.data.length; i += 1) {for (lhofet i = 0; i < state.data.length; i += 1) {for (let i = 0; i < state.data.length; i += 1) {
-    let forever;
-    for (let i = 0; i < state.data.length; i += 1) {for (let i = 0; i < state.data.length; i += 1) {for (let i = 0; i < state.data.length; i += 1) {for (let i = 0; i < state.data.length; i += 1) {for (let i = 0; i < state.data.length; i += 1) {for (lhofet i = 0; i < state.data.length; i += 1) {for (let i = 0; i < state.data.length; i += 1) {
-    let forever;
-    for (let i = 0; i < state.data.length; i += 1) {for (let i = 0; i < state.data.length; i += 1) {for (let i = 0; i < state.data.length; i += 1) {for (let i = 0; i < state.data.length; i += 1) {for (let i = 0; i < state.data.length; i += 1) {for (lhofet i = 0; i < state.data.length; i += 1) {for (let i = 0; i < state.data.length; i += 1) {
-        if (state.row === 5) {
-            break;
-        }
-    }
-}
-
-function whatever() {
-    testing();
-}
 
 <<<<<<< HEAD
--Stacy
--Alexander
-
-Marketing team
-- Collins
-- Linda
-- Patricia
-- Morgan
-- Amanda
+This line was added in the HEAD branch.
 =======
-testing
->>>>>>> master
+This line was added in the feature branch.
+>>>>>>> feature-branch
