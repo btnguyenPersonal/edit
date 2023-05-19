@@ -3,6 +3,7 @@ import { handleKeys } from '../keybinds/normalKeys.js';
 import { handleVimKeys } from '../keybinds/vimKeys.js';
 import { handleVisualKeys } from '../keybinds/visualKeys.js';
 import { handleVisualLineKeys } from '../keybinds/visualLineKeys.js';
+import { handleVisualBlockKeys } from '../keybinds/visualBlockKeys.js';
 import { handleSearchKeys } from '../keybinds/searchKeys.js';
 
 function sendKeys(keys, state, screen) {
@@ -15,6 +16,8 @@ function sendKeys(keys, state, screen) {
         }
         if (state.vim && state.mode === '/') {
             handleSearchKeys(keys[i], state, screen);
+        } else if (state.vim && state.mode === 'CTRL_V') {
+            handleVisualBlockKeys(keys[i], state, screen);
         } else if (state.vim && state.mode === 'v') {
             handleVisualKeys(keys[i], state, screen);
         } else if (state.vim && state.mode === 'V') {

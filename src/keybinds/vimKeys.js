@@ -637,6 +637,14 @@ function handleVimKeys(key, state, screen) {
         } else if (key === 'c' || key === 'r' || key === 'd' || key === 'y') {
             state.previousKeys = key;
             logCommand(true, state, key);
+        } else if (key === 'CTRL_V') {
+            state.mode = 'CTRL_V';
+            state.visualBlock = {
+                row: state.row,
+                col: state.col
+            };
+            logCommand(true, state, key);
+            renderScreen(state, screen);
         } else if (key === 'V') {
             state.mode = 'V';
             state.visualLine = {

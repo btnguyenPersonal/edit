@@ -32,10 +32,15 @@ const state = {
     vim: process.argv[2] !== '-n',
     mode: 'n',
     clipboard: [],
+    clipboardVisualBlock: false,
     clipboardNewLine: true,
     searchQuery: '',
     searching: false,
     search: {
+        row: undefined,
+        col: undefined
+    },
+    visualBlock: {
         row: undefined,
         col: undefined
     },
