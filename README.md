@@ -85,6 +85,7 @@ that's it, you should just be able to run `edit file.js` in your command line an
 |-1234| jumps to line 1234, have to press enter to exit|
 |ESCAPE| quits out of current keys for example typing in "d ESCAPE j" would stop d and just go down one|
 |gc|comment / uncomment line|
+|gt|trim trailing whitespace|
 
 ### normal mode (like a normal keyboard)
 |key|function|
