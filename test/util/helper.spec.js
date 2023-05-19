@@ -36,17 +36,21 @@ describe('helper functions', () => {
         });
         it('should call moveTo with 5, 8 when max row is surpassed', () => {
             state.row = 100;
-            helper.moveCursor(state, term);
+            helper.moveCursor(state, term, 0);
             expect(term.moveTo).to.have.been.calledWith(5, 8);
         });
         it('should call moveTo with 13, 0 when max col is surpassed', () => {
             state.col = 100;
-            helper.moveCursor(state, term);
+            helper.moveCursor(state, term, 0);
             expect(term.moveTo).to.have.been.calledWith(13, 0);
         });
         it('should call moveTo with 5, 0', () => {
-            helper.moveCursor(state, term);
+            helper.moveCursor(state, term, 0);
             expect(term.moveTo).to.have.been.calledWith(5, 0);
+        });
+        it('should call moveTo with 3, 0 when windowLineHorizontal is 2', () => {
+            helper.moveCursor(state, term, 2);
+            expect(term.moveTo).to.have.been.calledWith(3, 0);
         });
     });
 

@@ -73,17 +73,29 @@ function isWritable(s) {
     return ' qwertyuiop[]\\asdfghjkl;\'zxcvbnm,./`1234567890-=~!@#$%^&*()_+QWERTYUIOP{}|ASDFGHJKL:"ZXCVBNM<>?'.indexOf(s) > -1;
 }
 
-function moveCursor(state, screen, windowLineHorizontal) {
-    const r = state.row < state.data.length
+function getRowIfOverflow(state) {
+    return state.row < state.data.length
         ? state.row
         : state.data.length - 1;
+}
+
+function moveCursor(state, screen, windowLineHorizontal) {
+    const r = getRowIfOverflow(state);
+    let row, col;
+    if (state.data[r] !== undefined) {
+        col = state.col < state.data[r].length
+            ? state.col
+            : state.data[r].length;
+    } else {
+        col = 0;
+    }
+    col += 5;
+    row = state.row < state.data.length ? state.row : state.data.length
+    col -= windowLineHorizontal;
+    row -= state.windowLine;
     screen.moveTo(
-        state.data[r]
-            ? (state.col < state.data[r].length
-                ? state.col
-                : state.data[r].length) + 5 - windowLineHorizontal
-            : 0 + 5 - windowLineHorizontal,
-        (state.row < state.data.length ? state.row : state.data.length) - state.windowLine,
+        col,
+        row
     );
 }
 
@@ -467,5 +479,6 @@ export {
     trimTrailingWhitespace,
     centerScreen,
     refreshFile,
+    getRowIfOverflow,
     getData
 };
