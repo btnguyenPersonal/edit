@@ -256,26 +256,30 @@ function logCommand(newCommand, state, key) {
 function getColorRow(row, commentIndex, searching, searchQuery) {
     const output = [];
     for (let i = 0; i < row.length; i += 1) {
-        const s = row.substring(i, i + 1);
-        if (searching && searchQuery === row.substring(i, i + searchQuery.length)) {
-            for (let j = 0; j < searchQuery.length; j += 1) {
-                output.push('search');
-            }
-            i += searchQuery.length - 1;
-        } else if (i >= commentIndex && commentIndex !== -1) {
-            output.push('green');
-        } else if (isInStringRow(row, i)) {
-            output.push('magenta');
-        } else if (s === '(' || s === ')') {
-            output.push('yellow');
-        } else if (s === '"' || s === '\'' || s === '`') {
-            output.push('magenta');
-        } else if (s === '[' || s === ']') {
-            output.push('green');
-        } else if (s === '{' || s === '}') {
-            output.push('cyan');
+        if (row.length > 180) {
+            output.push('red');
         } else {
-            output.push('white');
+            const s = row.substring(i, i + 1);
+            if (searching && searchQuery === row.substring(i, i + searchQuery.length)) {
+                for (let j = 0; j < searchQuery.length; j += 1) {
+                    output.push('search');
+                }
+                i += searchQuery.length - 1;
+            } else if (i >= commentIndex && commentIndex !== -1) {
+                output.push('green');
+            } else if (isInStringRow(row, i)) {
+                output.push('magenta');
+            } else if (s === '(' || s === ')') {
+                output.push('yellow');
+            } else if (s === '"' || s === '\'' || s === '`') {
+                output.push('magenta');
+            } else if (s === '[' || s === ']') {
+                output.push('green');
+            } else if (s === '{' || s === '}') {
+                output.push('cyan');
+            } else {
+                output.push('white');
+            }
         }
     }
     return output;
