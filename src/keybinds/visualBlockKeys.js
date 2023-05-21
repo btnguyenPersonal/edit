@@ -278,6 +278,13 @@ function handleVisualBlockKeys(key, state, screen) {
         state.previousKeys = '';
     } else if (key === 'f' || key === 'F' || key === 't' || key === 'T' || key === 'i' || key === 'g') {
         state.previousKeys += key;
+    } else if (key === 'A') {
+        state.col = Math.max(state.col, state.visualBlock.col);
+        state.mode = 'MULTI_CURSOR';
+        right(state);
+    } else if (key === 'I') {
+        state.col = Math.min(state.col, state.visualBlock.col);
+        state.mode = 'MULTI_CURSOR';
     } else if (key === 'ESCAPE') {
         state.mode = 'n';
     }

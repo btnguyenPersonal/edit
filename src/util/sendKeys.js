@@ -1,5 +1,6 @@
 /* eslint-disable import/no-cycle */
 import { handleKeys } from '../keybinds/normalKeys.js';
+import { handleMultiCursorKeys } from '../keybinds/multiCursorKeys.js';
 import { handleVimKeys } from '../keybinds/vimKeys.js';
 import { handleVisualKeys } from '../keybinds/visualKeys.js';
 import { handleVisualLineKeys } from '../keybinds/visualLineKeys.js';
@@ -16,6 +17,8 @@ function sendKeys(keys, state, screen) {
         }
         if (state.vim && state.mode === '/') {
             handleSearchKeys(keys[i], state, screen);
+        } else if (state.vim && state.mode === 'MULTI_CURSOR') {
+            handleMultiCursorKeys(keys[i], state, screen);
         } else if (state.vim && state.mode === 'CTRL_V') {
             handleVisualBlockKeys(keys[i], state, screen);
         } else if (state.vim && state.mode === 'v') {
