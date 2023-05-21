@@ -5,23 +5,24 @@
         - normal keys
         - vim keys (bruh)
     - until status bar >> do i really need?
-        - show file path (in linux don't need bc tmux does for me)
+        - show file path (in linux don't need bc tmux does for me) (now bun doesn't)
         - show which mode are in (not really needed imo for me, might be nice if want others to use)
         - show search string (useful)
         - show search result 5/60 (useful)
         - show if search is wrong (useful) could make cursor flash red if can't find match
     - file explorer
-    - get rid of process.stdout.row and use screen.height screen.width (will make easier to make status bar)
 ## todo
+    - every rerender don't have to recalculate the color each time
+    - get rid of process.stdout.row and use screen.height screen.width (will make easier to make status bar)
     - add status bar
-    - debug mode
-    - I and A for V (kind of have solution with macro runner on all lines)
-    - gf
-    - fix searching with spaces in it
+    - visual highlight * like gf
 ## blocked
 ## in progress
-    - = for n and v
 ## done
+    - fix searching with spaces in it
+    - = for n and v
+    - debug mode
+    - I and A for V (kind of have solution with macro runner on all lines)
     - syntax highlighting for different types of files
     - figure out deleting the whole file
     - <c-o> <c-i>
