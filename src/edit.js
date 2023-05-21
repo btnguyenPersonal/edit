@@ -26,7 +26,6 @@ function getFile() {
 
 const term = terminal();
 const filepath = getFile();
-process.title = filepath;
 const state = {
     allowCommandLogging: false,
     vim: process.argv[2] !== '-n',
@@ -72,7 +71,7 @@ const state = {
 
 term.grabInput({ mouse: 'button' });
 term.fullscreen(true);
-term.windowTitle('edit');
+term.windowTitle(filepath);
 const screen = new ScreenBuffer({ dst: term, noFill: true });
 centerScreen(state);
 createSnapshot(state);
