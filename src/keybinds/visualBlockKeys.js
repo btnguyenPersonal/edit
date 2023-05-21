@@ -91,47 +91,6 @@ function handleVisualBlockKeys(key, state, screen) {
         state.col = 0;
     } else if (key === '^') {
         state.col = firstNonSpace(state, state.row);
-    } else if (key === 'p' || key === 'P') {
-        // TODO paste
-        const systemPaste = ncp.paste().split('\n');
-        if (state.clipboard !== systemPaste) {
-            state.clipboard = systemPaste;
-            state.clipboardNewLine = false;
-        }
-        if (state.clipboard.length > 0) {
-            if (state.row === state.visualBlock.row) {
-                if (state.visualBlock.col <= state.col) {
-                    state.data[state.row] = state.data[state.row].substring(0, state.visualBlock.col) + state.data[state.row].substring(state.col + 1);
-                    state.col = state.visualBlock.col;
-                } else if (state.visualBlock.col > state.col) {
-                    state.data[state.row] = state.data[state.row].substring(0, state.col) + state.data[state.row].substring(state.visualBlock.col + 1);
-                }
-            } else if (state.row > state.visualBlock.row) {
-                state.data[state.visualBlock.row] = state.data[state.visualBlock.row].substring(0, state.visualBlock.col) + state.data[state.row].substring(state.col + 1);
-                state.data.splice(state.visualBlock.row + 1, state.row - state.visualBlock.row);
-                state.row = state.visualBlock.row;
-                state.col = state.visualBlock.col;
-            } else if (state.row < state.visualBlock.row) {
-                state.data[state.row] = state.data[state.row].substring(0, state.col) + state.data[state.visualBlock.row].substring(state.visualBlock.col + 1);
-                state.data.splice(state.row + 1, state.visualBlock.row - state.row);
-            }
-            if (state.clipboardNewLine) {
-                for (let i = state.clipboard.length - 1; i >= 0; i -= 1) {
-                    state.data.splice(state.row, 0, state.clipboard[i]);
-                }
-            } else {
-                const cutoff = state.data[state.row].substring(state.col);
-                state.data[state.row] = state.data[state.row].substring(0, state.col) + state.clipboard[0];
-                let counterRow = state.row;
-                for (let i = state.clipboard.length - 1; i >= 1; i -= 1) {
-                    state.data.splice(state.row + 1, 0, state.clipboard[i]);
-                    counterRow += 1;
-                }
-                state.data[counterRow] += cutoff;
-            }
-        }
-        state.mode = 'n';
-        createSnapshot(state);
     } else if (key === '*') {
         copyInVisualBlock(state);
         state.searchQuery = state.clipboard[0];
