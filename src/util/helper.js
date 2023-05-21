@@ -105,6 +105,10 @@ function isRowHighlighted(state, i) {
         if ((i <= state.row && i >= state.visualLine.row) || (i >= state.row && i <= state.visualLine.row)) {
             return true;
         }
+    } else if (state.mode === 'CTRL_V') {
+        if ((i <= state.row && i >= state.visualBlock.row) || (i >= state.row && i <= state.visualBlock.row)) {
+            return true;
+        }
     } else if (state.mode === 'v') {
         if ((i <= state.row && i >= state.visual.row) || (i >= state.row && i <= state.visual.row)) {
             return true;
@@ -464,15 +468,11 @@ function renderScreen(state, screen, noCenterScreen, fullRefresh) {
                     let color = colorRow[j];
                     let bgColor;
                     if (mergeSection === 1 && !isMergeConflictStart(state.data[i])) {
-                        color = 'black';
-                        bgColor = 'red';
+                        color = 'red';
                     } else if (mergeSection === 2 && !isMergeConflictMiddle(state.data[i])) {
-                        color = 'black';
-                        bgColor = 'green';
+                        color = 'green';
                     } else if (isMergeConflictEnd(state.data[i]) || isMergeConflictMiddle(state.data[i]) || isMergeConflictStart(state.data[i])) {
-                        bgColor = 'blue';
-                    } else {
-                        bgColor = undefined;
+                        color = 'blue';
                     }
                     if (colorRow[j] === 'search') {
                         color = 'black';
