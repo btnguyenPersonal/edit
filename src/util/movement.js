@@ -76,6 +76,7 @@ function isCommented(state, row) {
             case 'c':
             case 'cpp':
             case 'h':
+            case 'rs':
             case 'cs':
             case 'Makefile':
             case 'php':
@@ -155,6 +156,7 @@ function toggleComment(state, row, column, forceComment) {
             case 'c':
             case 'cpp':
             case 'h':
+            case 'rs':
             case 'cs':
             case 'Makefile':
             case 'php':
