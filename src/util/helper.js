@@ -66,7 +66,7 @@ function isNumeric(s) {
 }
 
 function isAlphaNumeric(s) {
-    return '1234567890QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm_()'.indexOf(s) > -1;
+    return '1234567890QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm_'.indexOf(s) > -1;
 }
 
 function isWritable(s) {
