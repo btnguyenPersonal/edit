@@ -707,6 +707,15 @@ function handleVimKeys(key, state, screen) {
             centerScreen(state);
             state.windowLineHorizontal = 0;
             renderScreen(state, screen, false, true);
+        } else if (key === 'K') {
+            if (state.data[state.row + 1] !== undefined) {
+                state.col = state.data[state.row].length;
+                state.data[state.row] += ' ' + state.data[state.row + 1].trim();
+                state.data.splice(state.row + 1, 1);
+            }
+            logCommand(true, state, key);
+            createSnapshot(state);
+            renderScreen(state, screen);
         } else if (key === 'J') {
             if (state.data[state.row + 1] !== undefined) {
                 state.col = state.data[state.row].length;
