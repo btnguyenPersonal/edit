@@ -1,12 +1,12 @@
 flishdflkasdfstingfunctiont estinghoee
 please for god's sakesfstinghoee
-hopleaforo functin async() { god's akesfsti
-hopleaunctio async() { od's saesfsti
-hoplseuntionasync( { god' sakefstiplease forho function async() { god's sakesfsti
+....return hopleaforo functin async() { god's akesfsti
+..hopleaunctio async() { od's saesfsti
+return hoplseuntionasync( { god' sakefstiplease forho function async() { god's sakesfsti
 hopleafst_testing
-hopleai
+returing hopleai
 hopleafsti
-hofstistiifsti
+
 hhowever that worksofstisti
 hhowever that worksofstisticmon mannnn
 hhowever that worksofstisticmon mannnn

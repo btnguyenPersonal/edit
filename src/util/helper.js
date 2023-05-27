@@ -243,11 +243,13 @@ function commentStartsAt(state, row) {
 }
 
 function logCommand(newCommand, state, key) {
+    if (newCommand) {
+        state.prevRow = state.row;
+        state.prevCol = state.col;
+    }
     if (state.allowCommandLogging) {
         if (newCommand) {
             state.previousCommand = [];
-            state.prevRow = state.row;
-            state.prevCol = state.col;
         }
         state.previousCommand.push(key);
     }
