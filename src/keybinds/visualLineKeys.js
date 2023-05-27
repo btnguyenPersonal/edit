@@ -18,6 +18,10 @@ import {
     upHalfScreen,
     downHalfScreen,
     getIndentLevelFrom,
+    previousSameIndentLevel,
+    nextSameIndentLevel,
+    previousLowerIndentLevel,
+    nextLowerIndentLevel,
     isEmptyRow,
     isCommented,
     toggleComment,
@@ -290,6 +294,18 @@ function handleVisualLineKeys(key, state, screen) {
             createSnapshot(state);
         } else if (key === 'i') {
             state.previousKeys = 'i';
+        } else if (key === '[') {
+            previousSameIndentLevel(state, state.row);
+            renderScreen(state, screen);
+        } else if (key === ']') {
+            nextSameIndentLevel(state, state.row);
+            renderScreen(state, screen);
+        } else if (key === '(') {
+            previousLowerIndentLevel(state, state.row);
+            renderScreen(state, screen);
+        } else if (key === ')') {
+            nextLowerIndentLevel(state, state.row);
+            renderScreen(state, screen);
         } else if (key === 'ESCAPE') {
             state.mode = 'n';
         }
