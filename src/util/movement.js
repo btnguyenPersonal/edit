@@ -668,6 +668,18 @@ function deleteInVisual(state) {
     }
 }
 
+function getInVisual(state) {
+    if (state.row === state.visual.row) {
+        if (state.visual.col <= state.col) {
+            return state.data[state.row].substring(state.visual.col, state.col + 1);
+        } else if (state.visual.col > state.col) {
+            return state.data[state.row].substring(state.col, state.visual.col + 1);
+        }
+    } else {
+        return "";
+    }
+}
+
 function copyInVisual(state) {
     if (state.row === state.visual.row) {
         if (state.visual.col <= state.col) {
@@ -742,5 +754,6 @@ export {
     previousLowerIndentLevel,
     nextLowerIndentLevel,
     goToCoor,
+    getInVisual,
     toggleComment,
 };

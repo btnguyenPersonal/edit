@@ -1,11 +1,14 @@
 /* eslint-disable import/no-cycle */
 import ncp from 'copy-paste';
+import path from 'path';
 import {
     renderScreen,
     createSnapshot,
     isWritable,
     searchForString,
     centerScreen,
+    getData,
+    changeFile,
     logCommand
 } from '../util/helper.js';
 import {
@@ -23,6 +26,7 @@ import {
     getCoorsInsideWord,
     setVisualHighlight,
     copyInVisual,
+    getInVisual,
     deleteInVisual,
     endOfLine,
     findForward,
@@ -146,9 +150,14 @@ function handleVisualKeys(key, state, screen) {
         }
         state.mode = 'n';
         createSnapshot(state);
+    } else if (state.previousKeys === 'g' && key === 'f') {
+        let newFilePath = getInVisual(state);
+        const currentDirectory = path.dirname(state.file);
+        state.file = path.join(currentDirectory, newFilePath);
+        state.previousKeys = '';
+        changeFile(state);
     } else if (key === '*') {
-        copyInVisual(state);
-        state.searchQuery = state.clipboard[0];
+        state.searchQuery = getInVisual(state);
         state.mode = 'n';
         if (state.searchQuery !== '') {
             state.col += state.searchQuery.length + 1;
