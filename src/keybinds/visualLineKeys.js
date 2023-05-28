@@ -83,7 +83,7 @@ function handleVisualLineKeys(key, state, screen) {
                 }
                 if (state.row >= state.visualLine.row) {
                     for (let i = state.visualLine.row; i <= state.row; i += 1) {
-                        if (!isCommented(state, i)) {
+                        if (state.data[i].length !== 0 && !isCommented(state, i)) {
                             areAllCommented = false;
                             break;
                         }
@@ -100,7 +100,7 @@ function handleVisualLineKeys(key, state, screen) {
                     state.row = state.visualLine.row;
                 } else if (state.row < state.visualLine.row) {
                     for (let i = state.row; i <= state.visualLine.row; i += 1) {
-                        if (!isCommented(state, i)) {
+                        if (state.data[i].length !== 0 && !isCommented(state, i)) {
                             areAllCommented = false;
                             break;
                         }
