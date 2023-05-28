@@ -257,31 +257,47 @@ function logCommand(newCommand, state, key) {
 
 function getColorRow(row, commentIndex, searching, searchQuery) {
     const output = [];
+    let inString = false;
+    let stringChar;
+    let color = 'white';
+    let disregardNext = false;
     for (let i = 0; i < row.length; i += 1) {
         if (row.length > 180) {
             output.push('red');
         } else {
             const s = row.substring(i, i + 1);
-            if (searching && searchQuery === row.substring(i, i + searchQuery.length)) {
+            if (inString) {
+                color = 'magenta';
+            }
+            if (s === stringChar && stringChar !== undefined && !disregardNext) {
+                inString = !inString;
+                stringChar = undefined;
+            } else if (i >= commentIndex && commentIndex !== -1) {
+                color = 'green';
+            } else if (s === '"' || s === '\'' || s === '`') {
+                color = 'magenta';
+                if (stringChar === undefined) {
+                    inString = !inString;
+                    stringChar = s;
+                }
+            } else if (!inString && (s === '(' || s === ')')) {
+                color = 'yellow';
+            } else if (!inString && (s === '[' || s === ']')) {
+                color = 'green';
+            } else if (!inString && (s === '{' || s === '}')) {
+                color = 'cyan';
+            } else if (searching && searchQuery === row.substring(i, i + searchQuery.length)) {
                 for (let j = 0; j < searchQuery.length; j += 1) {
-                    output.push('search');
+                    color = 'search';
                 }
                 i += searchQuery.length - 1;
-            } else if (i >= commentIndex && commentIndex !== -1) {
-                output.push('green');
-            } else if (isInStringRow(row, i)) {
-                output.push('magenta');
-            } else if (s === '(' || s === ')') {
-                output.push('yellow');
-            } else if (s === '"' || s === '\'' || s === '`') {
-                output.push('magenta');
-            } else if (s === '[' || s === ']') {
-                output.push('green');
-            } else if (s === '{' || s === '}') {
-                output.push('cyan');
-            } else {
-                output.push('white');
             }
+            output.push(color);
+            disregardNext = false;
+            if (inString && s === '\\') {
+                disregardNext = true;
+            }
+            color = 'white';
         }
     }
     return output;
