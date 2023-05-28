@@ -1,9 +1,9 @@
 flishdflkasdfstingfunctiont estinghoee
-please for god's sakesfstinghoee
-....return hopleaforo functin async() { god's akesfsti
-..hopleaunctio async() { od's saesfsti
-return hoplseuntionasync( { god' sakefstiplease forho function async() { god's sakesfsti
-hopleafst_testing
+'test 1' how are you
+'test 1\' how are you' take me out
+'tes""""""''t 1' how are you
+'\'' how are you
+'test 1' how are you
 returing hopleai
 hopleafsti
 
