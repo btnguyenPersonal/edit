@@ -56,7 +56,7 @@ function handleVisualKeys(key, state, screen) {
                 if (isEmptyRow(state, i)) {
                     break;
                 } else {
-                    state.visual = { row: i, col: 0 };
+                    state.visualLine = { row: i, col: 0 };
                 }
             }
             for (let i = state.row + 1; i < state.data.length; i += 1) {
@@ -67,6 +67,7 @@ function handleVisualKeys(key, state, screen) {
                     state.col = 0;
                 }
             }
+            state.mode = 'V';
         }
         state.previousKeys = '';
     } else if (key === 'CTRL_U') {
