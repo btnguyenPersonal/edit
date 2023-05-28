@@ -171,7 +171,7 @@ function handleVisualKeys(key, state, screen) {
             let areAllCommented = true;
             if (state.row >= state.visual.row) {
                 for (let i = state.visual.row; i <= state.row; i += 1) {
-                    if (!isCommented(state, i)) {
+                    if (state.data[i].length !== 0 && !isCommented(state, i)) {
                         areAllCommented = false;
                         break;
                     }
@@ -188,7 +188,7 @@ function handleVisualKeys(key, state, screen) {
                 state.row = state.visual.row;
             } else if (state.row < state.visual.row) {
                 for (let i = state.row; i <= state.visual.row; i += 1) {
-                    if (!isCommented(state, i)) {
+                    if (state.data[i].length !== 0 && !isCommented(state, i)) {
                         areAllCommented = false;
                         break;
                     }
