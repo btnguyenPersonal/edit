@@ -273,8 +273,6 @@ function getColorRow(row, commentIndex, searching, searchQuery) {
             if (s === stringChar && stringChar !== undefined && !disregardNext) {
                 inString = !inString;
                 stringChar = undefined;
-            } else if (i >= commentIndex && commentIndex !== -1) {
-                color = 'green';
             } else if (s === '"' || s === '\'' || s === '`') {
                 color = 'magenta';
                 if (stringChar === undefined) {
@@ -293,6 +291,8 @@ function getColorRow(row, commentIndex, searching, searchQuery) {
                 }
                 i += searchQuery.length - 1;
                 stop = true;
+            } else if (i >= commentIndex && commentIndex !== -1) {
+                color = 'green';
             }
             !stop && output.push(color);
             if (inString && s === '\\' && !disregardNext) {
@@ -400,6 +400,9 @@ function searchForStringNoWrap(state, string) {
 }
 
 function searchForString(state, string) {
+    if (string.length === 0) {
+        return false;
+    }
     if (state.data[state.row].substring(state.col).includes(string)) {
         state.col += state.data[state.row].substring(state.col).indexOf(string);
         return true;
