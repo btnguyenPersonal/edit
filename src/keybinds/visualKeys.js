@@ -154,6 +154,8 @@ function handleVisualKeys(key, state, screen) {
         let newFilePath = getInVisual(state);
         const currentDirectory = path.dirname(state.file);
         state.file = path.join(currentDirectory, newFilePath);
+        state.files.push(state.file);
+        state.fileIndex += 1;
         state.previousKeys = '';
         changeFile(state);
     } else if (key === '*') {
