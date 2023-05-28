@@ -1,6 +1,7 @@
 /* eslint-disable import/no-cycle */
 import ncp from 'copy-paste';
 import path from 'path';
+import fs from 'fs';
 import {
     renderScreen,
     createSnapshot,
@@ -153,11 +154,19 @@ function handleVisualKeys(key, state, screen) {
     } else if (state.previousKeys === 'g' && key === 'f') {
         let newFilePath = getInVisual(state);
         const currentDirectory = path.dirname(state.file);
-        state.file = path.join(currentDirectory, newFilePath);
-        state.files.push(state.file);
-        state.fileIndex += 1;
-        state.previousKeys = '';
-        changeFile(state);
+        let convertedPath = path.join(currentDirectory, newFilePath);
+        let fileExists = fs.existsSync(convertedPath);
+        if (!fileExists) {
+          convertedPath += '.js';
+          fileExists = fs.existsSync(convertedPath);
+        }
+        if (fileExists) {
+            state.file = convertedPath;
+            state.files.push(state.file);
+            state.fileIndex += 1;
+            state.previousKeys = '';
+            changeFile(state);
+        }
     } else if (key === '*') {
         state.searchQuery = getInVisual(state);
         state.mode = 'n';
