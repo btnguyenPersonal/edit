@@ -55,6 +55,7 @@ const state = {
     previousCommand: [],
     file: filepath,
     files: [],
+    storePosition: [],
     fileIndex: 0,
     data: getData(filepath),
     row: Number.isInteger(parseInt(process.argv[3])) && parseInt(process.argv[3]) - 1 >= 0 ? parseInt(process.argv[3]) - 1 : 0,
