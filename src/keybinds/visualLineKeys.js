@@ -74,6 +74,13 @@ function handleVisualLineKeys(key, state, screen) {
         } else if (key === 'c') {
             if (state.previousKeys === 'g') {
                 let areAllCommented = true;
+                let lowestIndent = firstNonSpace(state, state.row);
+                for (let i = 0; i < state.visualLine.row; i += 1) {
+                    let currentIndent = firstNonSpace(state, state.row);
+                    if (currentIndent < lowestIndent) {
+                        lowestIndent = currentIndent;
+                    }
+                }
                 if (state.row >= state.visualLine.row) {
                     for (let i = state.visualLine.row; i <= state.row; i += 1) {
                         if (!isCommented(state, i)) {
@@ -87,7 +94,7 @@ function handleVisualLineKeys(key, state, screen) {
                         }
                     } else {
                         for (let i = state.visualLine.row; i <= state.row; i += 1) {
-                            toggleComment(state, i, firstNonSpace(state, state.visualLine.row), true);
+                            toggleComment(state, i, lowestIndent, true);
                         }
                     }
                     state.row = state.visualLine.row;
@@ -104,7 +111,7 @@ function handleVisualLineKeys(key, state, screen) {
                         }
                     } else {
                         for (let i = state.row; i <= state.visualLine.row; i += 1) {
-                            toggleComment(state, i, firstNonSpace(state, state.row), true);
+                            toggleComment(state, i, lowestIndent, true);
                         }
                     }
                 }
