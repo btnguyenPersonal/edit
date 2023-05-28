@@ -261,6 +261,7 @@ function getColorRow(row, commentIndex, searching, searchQuery) {
     let stringChar;
     let color = 'white';
     let disregardNext = false;
+    let stop = false;
     for (let i = 0; i < row.length; i += 1) {
         if (row.length > 180) {
             output.push('red');
@@ -288,16 +289,18 @@ function getColorRow(row, commentIndex, searching, searchQuery) {
                 color = 'cyan';
             } else if (searching && searchQuery === row.substring(i, i + searchQuery.length)) {
                 for (let j = 0; j < searchQuery.length; j += 1) {
-                    color = 'search';
+                    output.push('search');
                 }
                 i += searchQuery.length - 1;
+                stop = true;
             }
-            output.push(color);
+            !stop && output.push(color);
             disregardNext = false;
             if (inString && s === '\\') {
                 disregardNext = true;
             }
             color = 'white';
+            stop = false;
         }
     }
     return output;
