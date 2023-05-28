@@ -54,6 +54,8 @@ const state = {
     previousKeys: '',
     previousCommand: [],
     file: filepath,
+    files: [],
+    fileIndex: 0,
     data: getData(filepath),
     row: Number.isInteger(parseInt(process.argv[3])) && parseInt(process.argv[3]) - 1 >= 0 ? parseInt(process.argv[3]) - 1 : 0,
     col: 0,
@@ -76,6 +78,7 @@ const screen = new ScreenBuffer({ dst: term, noFill: true });
 centerScreen(state);
 createSnapshot(state);
 state.allowCommandLogging = true;
+state.files.push(state.file);
 renderScreen(state, screen);
 
 term.on('key', (key) => {
@@ -98,6 +101,8 @@ term.on('key', (key) => {
             console.log('previousCommand: ' + state.previousCommand);
             console.log('previousKeys: ' + state.previousKeys);
             console.log('file: ' + state.file);
+            console.log('files: ' + state.files);
+            console.log('fileIndex: ' + state.fileIndex);
             console.log('windowLine: ' + state.windowLine);
             console.log('windowLineHorizontal: ' + state.windowLineHorizontal);
             console.log('currentSnapshot: ' + state.currentSnapshot);

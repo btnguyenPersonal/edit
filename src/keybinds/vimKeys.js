@@ -16,6 +16,7 @@ import {
     trimTrailingWhitespace,
     logCommand,
     refreshFile,
+    changeFile,
 } from '../util/helper.js';
 import { sendKeys } from '../util/sendKeys.js';
 import {
@@ -524,7 +525,21 @@ function handleVimKeys(key, state, screen) {
         }
         state.previousKeys = '';
     } else if (state.mode === 'n') {
-        if (key === 'CTRL_U') {
+        if (key === 'CTRL_O') {
+            if (state.fileIndex - 1 >= 0) {
+                state.file = state.files[state.fileIndex - 1];
+                state.fileIndex -= 1;
+                changeFile(state);
+            }
+            renderScreen(state, screen);
+        } else if (key === 'TAB') {
+            if (state.fileIndex + 1 < state.files.length) {
+                state.file = state.files[state.fileIndex + 1];
+                state.fileIndex += 1;
+                changeFile(state);
+            }
+            renderScreen(state, screen);
+        } else if (key === 'CTRL_U') {
             upHalfScreen(state);
             renderScreen(state, screen);
         } else if (key === 'CTRL_D') {
