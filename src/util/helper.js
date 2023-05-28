@@ -177,25 +177,6 @@ function isHighlighted(state, i, j) {
     return false;
 }
 
-function isInStringRow(row, col) {
-    let currentString = '';
-    let disregard = false;
-    for (let i = 0; i < col; i += 1) {
-        if (currentString === '' && (row.substring(i, i + 1) === '\'' || row.substring(i, i + 1) === '"' || row.substring(i, i + 1) === '`')) {
-            currentString = row.substring(i, i + 1);
-        } else if (currentString !== '' && (row.substring(i, i + 1) === currentString)) {
-            if (!disregard) {
-                currentString = '';
-            }
-        } else if (currentString !== '' && (row.substring(i, i + 1) === '\\')) {
-            disregard = true;
-        } else {
-            disregard = false;
-        }
-    }
-    return currentString !== '';
-}
-
 function isInString(state, row, col) {
     let currentString = '';
     let disregard = false;
@@ -217,30 +198,97 @@ function isInString(state, row, col) {
 }
 
 function commentStartsAt(state, row) {
+    const commentString = getCommentString(state);
     for (let i = 0; i < state.data[row].length; i += 1) {
-        if (state.file.endsWith('.js')
-            || state.file.endsWith('.jsx')
-            || state.file.endsWith('.tsx')
-            || state.file.endsWith('.ts')
-            || state.file.endsWith('.java')
-            || state.file.endsWith('.c')
-            || state.file.endsWith('.cpp')
-            || state.file.endsWith('.rs')) {
-            if (state.data[row].substring(i, i + 2) === '//' && !isInString(state, row, i)) {
-                return i;
-            }
-        } else if (state.file.endsWith('.sh')
-            || state.file.endsWith('.py')
-            || state.file.endsWith('.bashrc')
-            || state.file.endsWith('.zshrc')
-            || state.file.endsWith('.env')) {
-            if (state.data[row].substring(i, i + 1) === '#' && !isInString(state, row, i)) {
-                return i;
-            }
+        if (state.data[row].substring(i, i + commentString.length) === commentString && !isInString(state, row, i)) { // todo make isInString out of the loop
+            return i;
         }
     }
     return -1;
 }
+
+function getCommentString(state) {
+    const extension = state.file.split('.').pop().toLowerCase();
+    let commentString = '';
+    switch (extension) {
+        case 'java':
+        case 'c':
+        case 'cpp':
+        case 'h':
+        case 'rs':
+        case 'cs':
+        case 'Makefile':
+        case 'php':
+        case 'js':
+        case 'swift':
+        case 'kt':
+        case 'go':
+        case 'scala':
+        case 'ts':
+        case 'jsx':
+        case 'tsx':
+        case 'rust':
+        case 'vb':
+        case 'ejs':
+        case 'lua':
+        case 'coffee':
+        case 'groovy':
+        case 'matlab':
+        case 'diff':
+        case 'scss':
+        case 'cfg':
+        case 'htm':
+        case 'conf':
+        case 'styl':
+        case 'adoc':
+        case 'cshtml':
+        case 'aspx':
+        case 'pug':
+        case 'json':
+        case 'json5':
+        case 'dockerfile':
+        case 'graphql':
+        case 'iml':
+        case 'twig':
+        case 'bat':
+        case 'phtml':
+        case 'fish':
+        case 'cake':
+        case 'gd':
+        case 'nim':
+            commentString = '//';
+            break;
+        case 'sh':
+        case 'bashrc':
+        case 'zshrc':
+        case 'yaml':
+        case 'yml':
+        case 'ini':
+        case 'py':
+        case 'rb':
+        case 'gitignore':
+        case 'pl':
+        case 'r':
+        case 'cobol':
+        case 'properties':
+        case 'cson':
+            commentString = '#';
+            break;
+        case 'css':
+            commentString = '/*';
+            break;
+        case 'html':
+        case 'xml':
+        case 'markdown':
+        case 'md':
+            commentString = '<!--';
+            break;
+        default:
+            break;
+    }
+    return commentString;
+}
+
 
 function logCommand(newCommand, state, key) {
     if (newCommand) {
@@ -291,10 +339,13 @@ function getColorRow(row, commentIndex, searching, searchQuery) {
                 }
                 i += searchQuery.length - 1;
                 stop = true;
-            } else if (i >= commentIndex && commentIndex !== -1) {
+            }
+            if (i >= commentIndex && commentIndex !== -1) {
                 color = 'green';
             }
-            !stop && output.push(color);
+            if (!stop) {
+                output.push(color);
+            }
             if (inString && s === '\\' && !disregardNext) {
                 disregardNext = true;
             } else {
