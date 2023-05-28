@@ -528,15 +528,35 @@ function handleVimKeys(key, state, screen) {
         if (key === 'CTRL_O') {
             if (state.fileIndex - 1 >= 0) {
                 state.file = state.files[state.fileIndex - 1];
+                state.storePosition[state.fileIndex] = {
+                    row: state.row,
+                    col: state.col,
+                    windowLine: state.windowLine,
+                    windowLineHorizontal: state.windowLineHorizontal,
+                };
                 state.fileIndex -= 1;
                 changeFile(state);
+                state.row = state.storePosition[state.fileIndex].row;
+                state.col = state.storePosition[state.fileIndex].col;
+                state.windowLine = state.storePosition[state.fileIndex].windowLine;
+                state.windowLineHorizontal = state.storePosition[state.fileIndex].windowLineHorizontal;
             }
             renderScreen(state, screen);
         } else if (key === 'TAB') {
             if (state.fileIndex + 1 < state.files.length) {
                 state.file = state.files[state.fileIndex + 1];
+                state.storePosition[state.fileIndex] = {
+                    row: state.row,
+                    col: state.col,
+                    windowLine: state.windowLine,
+                    windowLineHorizontal: state.windowLineHorizontal,
+                };
                 state.fileIndex += 1;
                 changeFile(state);
+                state.row = state.storePosition[state.fileIndex].row;
+                state.col = state.storePosition[state.fileIndex].col;
+                state.windowLine = state.storePosition[state.fileIndex].windowLine;
+                state.windowLineHorizontal = state.storePosition[state.fileIndex].windowLineHorizontal;
             }
             renderScreen(state, screen);
         } else if (key === 'CTRL_U') {

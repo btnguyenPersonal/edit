@@ -163,6 +163,12 @@ function handleVisualKeys(key, state, screen) {
         if (fileExists) {
             state.file = convertedPath;
             state.files.push(state.file);
+            state.storePosition.push({
+                row: state.row,
+                col: state.col,
+                windowLine: state.windowLine,
+                windowLineHorizontal: state.windowLineHorizontal,
+            });
             state.fileIndex += 1;
             state.previousKeys = '';
             changeFile(state);
