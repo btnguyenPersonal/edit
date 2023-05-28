@@ -589,6 +589,9 @@ function handleVimKeys(key, state, screen) {
             state.mode = 'i';
             logCommand(true, state, key);
             renderScreen(state, screen);
+        } else if (key === 'Y') {
+            copyToClipboard(state, [state.data[state.row].substring(state.col)], false);
+            renderScreen(state, screen);
         } else if (key === 'C') {
             state.data[state.row] = state.data[state.row].substring(0, state.col);
             state.mode = 'i';
