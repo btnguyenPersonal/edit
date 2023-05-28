@@ -17,8 +17,8 @@ function pasteFromClipboardBefore(state) {
         state.clipboard = systemPaste;
     }
     if (state.clipboard.length > 0) {
-        if (state.clipboardNewLine) {
-            for (let i = state.clipboard.length - 1; i >= 0; i -= 1) {
+        if (state.clipboard[0] === '\n') {
+            for (let i = state.clipboard.length - 1; i > 0; i -= 1) {
                 state.data.splice(state.row, 0, state.clipboard[i]);
             }
         } else {
@@ -295,9 +295,10 @@ function getColorRow(row, commentIndex, searching, searchQuery) {
                 stop = true;
             }
             !stop && output.push(color);
-            disregardNext = false;
-            if (inString && s === '\\') {
+            if (inString && s === '\\' && !disregardNext) {
                 disregardNext = true;
+            } else {
+                disregardNext = false;
             }
             color = 'white';
             stop = false;
@@ -308,8 +309,10 @@ function getColorRow(row, commentIndex, searching, searchQuery) {
 
 function copyToClipboard(state, textArray, newLine, clipboardVisualBlock) {
     state.clipboard = textArray;
+    if (newLine) {
+        state.clipboard.unshift('\n');
+    }
     state.clipboardVisualBlock = clipboardVisualBlock;
-    state.clipboardNewLine = newLine;
     ncp.copy(state.clipboard.join('\n'));
 }
 
