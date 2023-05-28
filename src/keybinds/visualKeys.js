@@ -58,7 +58,15 @@ function handleVisualKeys(key, state, screen) {
             const { beginning, end } = getCoorsInsideCharSame(state, key);
             setVisualHighlight(state, beginning, end);
         } else if (key === 'p') {
-            for (let i = state.row - 1; i >= 0; i -= 1) {
+            for (let i = state.row; i < state.data.length; i += 1) {
+                if (!isEmptyRow(state, i)) {
+                    state.row = i;
+                    state.col = 0;
+                    break;
+                }
+            }
+            state.visualLine.row = state.row;
+            for (let i = state.row; i >= 0; i -= 1) {
                 if (isEmptyRow(state, i)) {
                     break;
                 } else {
