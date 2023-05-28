@@ -11,6 +11,22 @@ function getData(filepath) {
     }
 }
 
+function changeFile(state) {
+    state.mode = 'n';
+    state.row = 0;
+    state.col = 0;
+    state.windowLine = 0;
+    state.windowLineHorizontal = 0;
+    state.snapshots = [];
+    state.currentSnapshot = 0;
+    state.savePoint = 0;
+    state.recording = false;
+    state.macro = [];
+    state.mark = -1;
+    state.data = getData(state.file);
+    createSnapshot(state);
+}
+
 function pasteFromClipboardBefore(state) {
     const systemPaste = ncp.paste().split('\n');
     if (state.clipboard !== systemPaste) {
@@ -621,5 +637,6 @@ export {
     centerScreen,
     refreshFile,
     getRowIfOverflow,
+    changeFile,
     getData
 };
