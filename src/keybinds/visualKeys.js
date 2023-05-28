@@ -45,10 +45,16 @@ function handleVisualKeys(key, state, screen) {
         } else if (key === '(' || key === ')' || key === 'b') {
             const { beginning, end } = getCoorsInsideCharDiff(state, '(', ')');
             setVisualHighlight(state, beginning, end);
+        } else if (key === '<' || key === '>' || key === 't') {
+            const { beginning, end } = getCoorsInsideCharDiff(state, '<', '>');
+            setVisualHighlight(state, beginning, end);
+        } else if (key === '[' || key === ']') {
+            const { beginning, end } = getCoorsInsideCharDiff(state, '[', ']');
+            setVisualHighlight(state, beginning, end);
         } else if (key === '{' || key === '}' || key === 'B') {
             const { beginning, end } = getCoorsInsideCharDiff(state, '{', '}');
             setVisualHighlight(state, beginning, end);
-        } else if (key === '\'' || key === '"') {
+        } else if (key === '\'' || key === '"' || key === '`') {
             const { beginning, end } = getCoorsInsideCharSame(state, key);
             setVisualHighlight(state, beginning, end);
         } else if (key === 'p') {

@@ -199,6 +199,13 @@ function handleVimKeys(key, state, screen) {
             logCommand(false, state, key);
             createSnapshot(state);
             renderScreen(state, screen);
+        } else if (key === '<' || key === '>' || key === 't') {
+            const { beginning, end } = getCoorsInsideCharDiff(state, '<', '>');
+            copyToClipboard(state, [state.data[state.row].substring(beginning + 1, end)], false);
+            removeInsideAreaSameLine(state, beginning, end, 'n');
+            logCommand(false, state, key);
+            createSnapshot(state);
+            renderScreen(state, screen);
         } else if (key === '(' || key === ')' || key === 'b') {
             const { beginning, end } = getCoorsInsideCharDiff(state, '(', ')');
             copyToClipboard(state, [state.data[state.row].substring(beginning + 1, end)], false);
@@ -213,7 +220,7 @@ function handleVimKeys(key, state, screen) {
             logCommand(false, state, key);
             createSnapshot(state);
             renderScreen(state, screen);
-        } else if (key === '\'' || key === '"') {
+        } else if (key === '\'' || key === '"' || key === '`') {
             const { beginning, end } = getCoorsInsideCharSame(state, key);
             copyToClipboard(state, [state.data[state.row].substring(beginning + 1, end)], false);
             removeInsideAreaSameLine(state, beginning, end, 'n');
@@ -269,11 +276,19 @@ function handleVimKeys(key, state, screen) {
             const { beginning, end } = getCoorsInsideCharDiff(state, '(', ')');
             copyInsideAreaSameLine(state, beginning, end);
             renderScreen(state, screen);
+        } else if (key === '<' || key === '>' || key === 't') {
+            const { beginning, end } = getCoorsInsideCharDiff(state, '<', '>');
+            copyInsideAreaSameLine(state, beginning, end);
+            renderScreen(state, screen);
+        } else if (key === '[' || key === ']') {
+            const { beginning, end } = getCoorsInsideCharDiff(state, '[', ']');
+            copyInsideAreaSameLine(state, beginning, end);
+            renderScreen(state, screen);
         } else if (key === '{' || key === '}' || key === 'B') {
             const { beginning, end } = getCoorsInsideCharDiff(state, '{', '}');
             copyInsideAreaSameLine(state, beginning, end);
             renderScreen(state, screen);
-        } else if (key === '\'' || key === '"') {
+        } else if (key === '\'' || key === '"' || key === '`') {
             const { beginning, end } = getCoorsInsideCharSame(state, key);
             copyInsideAreaSameLine(state, beginning, end);
             renderScreen(state, screen);
@@ -482,6 +497,12 @@ function handleVimKeys(key, state, screen) {
             removeInsideAreaSameLine(state, beginning, end, 'i');
             logCommand(false, state, key);
             renderScreen(state, screen);
+        } else if (key === '<' || key === '>' || key === 't') {
+            const { beginning, end } = getCoorsInsideCharDiff(state, '<', '>');
+            copyToClipboard(state, [state.data[state.row].substring(beginning + 1, end)], false);
+            removeInsideAreaSameLine(state, beginning, end, 'i');
+            logCommand(false, state, key);
+            renderScreen(state, screen);
         } else if (key === '(' || key === ')' || key === 'b') {
             const { beginning, end } = getCoorsInsideCharDiff(state, '(', ')');
             copyToClipboard(state, [state.data[state.row].substring(beginning + 1, end)], false);
@@ -494,7 +515,7 @@ function handleVimKeys(key, state, screen) {
             removeInsideAreaSameLine(state, beginning, end, 'i');
             logCommand(false, state, key);
             renderScreen(state, screen);
-        } else if (key === '\'' || key === '"') {
+        } else if (key === '\'' || key === '"' || key === '`') {
             const { beginning, end } = getCoorsInsideCharSame(state, key);
             copyToClipboard(state, [state.data[state.row].substring(beginning + 1, end)], false);
             removeInsideAreaSameLine(state, beginning, end, 'i');
