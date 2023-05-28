@@ -20,7 +20,7 @@ function handleSearchKeys(key, state, screen) {
     } else if (key === 'ENTER') {
         state.mode = 'n';
     } else if (key === 'BACKSPACE') {
-        if (state.searchQuery.length > 1) {
+        if (state.searchQuery.length > 0) {
             state.searchQuery = state.searchQuery.substring(0, state.searchQuery.length - 1);
         }
     }

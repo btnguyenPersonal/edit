@@ -285,7 +285,7 @@ function getColorRow(row, commentIndex, searching, searchQuery) {
                 color = 'green';
             } else if (!inString && (s === '{' || s === '}')) {
                 color = 'cyan';
-            } else if (searching && searchQuery === row.substring(i, i + searchQuery.length)) {
+            } else if (searching && searchQuery.length !== 0 && searchQuery === row.substring(i, i + searchQuery.length)) {
                 for (let j = 0; j < searchQuery.length; j += 1) {
                     output.push('search');
                 }
