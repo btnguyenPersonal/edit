@@ -110,6 +110,8 @@ that's it, you should just be able to run `edit file.js` in your command line an
 |p| delete and paste|
 |gc| comment / uncomment|
 |<>| change indent|
+|iw| highlight word|
+|i<([{}])>| highlight inside of any bracket type|
 |ESCAPE|go to vim mode|
 
 # quality of life scripts
