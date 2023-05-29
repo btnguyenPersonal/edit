@@ -296,7 +296,6 @@ function handleVimKeys(key, state, screen) {
         if (key === 'w') {
             const { beginning, end } = getCoorsInsideWord(state);
             copyInsideAreaSameLine(state, beginning, end);
-
         } else if (key === 'f') {
             const { beginning, end } = getInsideOfIndentLevel(state);
             state.visualLine.row = beginning;

@@ -35,7 +35,6 @@ import {
     increaseIndentLevel,
     decreaseIndentLevel,
     getIndentLevelFrom,
-    getIndentLevel,
     toForward,
     toBackward,
     isEmptyRow,
@@ -120,10 +119,8 @@ function handleVisualKeys(key, state, screen) {
         state.col = firstNonSpace(state, state.row);
     } else if (key === 'p' || key === 'P') {
         let systemPaste = ncp.paste();
-        let newLine = false;
         if (systemPaste.startsWith('\n')) {
             systemPaste = systemPaste.substring(1);
-            newLine = true;
         }
         if (state.clipboard !== systemPaste.split('\n')) {
             state.clipboard = systemPaste.split('\n');

@@ -35,7 +35,7 @@ function previousSameIndentLevel(state, row) {
 }
 
 function getInsideOfIndentLevel(state) {
-    let currentIndent = getIndentLevel(state, state.row);
+    const currentIndent = getIndentLevel(state, state.row);
     let beginning = state.row;
     let end = state.row;
     for (let i = state.row - 1; i >= 0; i -= 1) {
