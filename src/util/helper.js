@@ -306,7 +306,7 @@ function logCommand(newCommand, state, key) {
     }
 }
 
-function getColorRow(replacing, replaceQuery, row, commentIndex, searching, searchQuery) {
+function getColorRow(replacing, replaceQuery, row, commentIndex, searching, searchQuery, isCurrentRow, col) {
     const output = [];
     let inString = false;
     let stringChar;
@@ -343,7 +343,11 @@ function getColorRow(replacing, replaceQuery, row, commentIndex, searching, sear
                     }
                 } else if (searching) {
                     for (let j = 0; j < searchQuery.length; j += 1) {
-                        output.push('search');
+                        if (isCurrentRow && i <= col && i + searchQuery.length >= col) {
+                            output.push('searchCurrent');
+                        } else {
+                            output.push('search');
+                        }
                     }
                 }
                 i += searchQuery.length - 1;
@@ -550,7 +554,7 @@ function renderScreen(state, screen, noCenterScreen, fullRefresh) {
                     mergeSection = 0;
                 }
                 const commentIndex = commentStartsAt(state, i);
-                const colorRow = getColorRow(state.replacing, state.replaceQuery, state.data[i], commentIndex, state.searching, state.searchQuery);
+                const colorRow = getColorRow(state.replacing, state.replaceQuery, state.data[i], commentIndex, state.searching, state.searchQuery, state.row === i, state.col);
                 let displayRow = state.data[i];
                 if (state.replacing) {
                     displayRow = displayRow.replace(state.searchQuery, state.replaceQuery);
@@ -573,6 +577,9 @@ function renderScreen(state, screen, noCenterScreen, fullRefresh) {
                             color = 'black';
                             bgColor = 'green';
                         }
+                    } else if (colorRow[j] === 'searchCurrent') {
+                        color = 'black';
+                        bgColor = 'magenta';
                     }
                     screen.put({
                         attr: {
