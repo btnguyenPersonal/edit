@@ -21,6 +21,7 @@ import {
     getCoorBeginningNextWord,
     upHalfScreen,
     downHalfScreen,
+    getInsideOfIndentLevel,
     getCoorsInsideCharSame,
     getCoorsInsideCharDiff,
     getCoorsInsideWord,
@@ -34,6 +35,7 @@ import {
     increaseIndentLevel,
     decreaseIndentLevel,
     getIndentLevelFrom,
+    getIndentLevel,
     toForward,
     toBackward,
     isEmptyRow,
@@ -61,6 +63,12 @@ function handleVisualKeys(key, state, screen) {
         } else if (key === '\'' || key === '"' || key === '`') {
             const { beginning, end } = getCoorsInsideCharSame(state, key);
             setVisualHighlight(state, beginning, end);
+        } else if (key === 'f') {
+            const { beginning, end } = getInsideOfIndentLevel(state);
+            state.visualLine.row = beginning;
+            state.row = end;
+            state.col = 0;
+            state.mode = 'V';
         } else if (key === 'p') {
             for (let i = state.row; i < state.data.length; i += 1) {
                 if (!isEmptyRow(state, i)) {
