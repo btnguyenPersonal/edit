@@ -162,11 +162,21 @@ function handleVisualKeys(key, state, screen) {
         if (fileExists) {
             state.file = convertedPath;
             state.files.push(state.file);
+            const snapshotsCopy = [];
+            for (let i = 0; i < state.snapshots.length; i += 1) {
+                snapshotsCopy.push(JSON.parse(JSON.stringify(state.snapshots[i])));
+            }
             state.storePosition.push({
                 row: state.row,
                 col: state.col,
                 windowLine: state.windowLine,
                 windowLineHorizontal: state.windowLineHorizontal,
+                currentSnapshot: state.currentSnapshot,
+                snapshots: snapshotsCopy,
+                savePoint: state.savePoint,
+                mark: state.mark,
+                prevRow: state.prevRow,
+                prevCol: state.prevCol,
             });
             state.fileIndex += 1;
             state.previousKeys = '';
