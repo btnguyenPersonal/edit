@@ -142,20 +142,14 @@ function handleVisualKeys(key, state, screen) {
                 state.data[state.row] = state.data[state.row].substring(0, state.col) + state.data[state.visual.row].substring(state.visual.col + 1);
                 state.data.splice(state.row + 1, state.visual.row - state.row);
             }
-            if (newLine) {
-                for (let i = state.clipboard.length - 1; i >= 0; i -= 1) {
-                    state.data.splice(state.row, 0, state.clipboard[i]);
-                }
-            } else {
-                const cutoff = state.data[state.row].substring(state.col);
-                state.data[state.row] = state.data[state.row].substring(0, state.col) + state.clipboard[0];
-                let counterRow = state.row;
-                for (let i = state.clipboard.length - 1; i >= 1; i -= 1) {
-                    state.data.splice(state.row + 1, 0, state.clipboard[i]);
-                    counterRow += 1;
-                }
-                state.data[counterRow] += cutoff;
+            const cutoff = state.data[state.row].substring(state.col);
+            state.data[state.row] = state.data[state.row].substring(0, state.col) + state.clipboard[0];
+            let counterRow = state.row;
+            for (let i = state.clipboard.length - 1; i >= 1; i -= 1) {
+                state.data.splice(state.row + 1, 0, state.clipboard[i]);
+                counterRow += 1;
             }
+            state.data[counterRow] += cutoff;
         }
         state.mode = 'n';
         createSnapshot(state);
