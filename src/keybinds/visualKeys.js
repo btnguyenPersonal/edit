@@ -53,7 +53,7 @@ function handleVisualKeys(key, state, screen) {
         } else if (key === '<' || key === '>' || key === 't') {
             const { beginning, end } = getCoorsInsideCharDiff(state, '<', '>');
             setVisualHighlight(state, beginning, end);
-        } else if (key === '[' || key === ']') {
+        } else if (key === '[' || key === ']' || key === 'd') {
             const { beginning, end } = getCoorsInsideCharDiff(state, '[', ']');
             setVisualHighlight(state, beginning, end);
         } else if (key === '{' || key === '}' || key === 'B') {

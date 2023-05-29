@@ -15,10 +15,11 @@
     - every rerender don't have to recalculate the color each time
     - get rid of process.stdout.row and use screen.height screen.width (will make easier to make status bar)
     - add status bar
-    - visual highlight * like gf
 ## blocked
 ## in progress
+    - add cii -> change all of current indent level that is not higher
 ## done
+    - visual highlight * like gf
     - fix searching with spaces in it
     - = for n and v
     - debug mode
