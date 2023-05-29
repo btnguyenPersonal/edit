@@ -17,6 +17,8 @@
     - add status bar
 ## blocked
 ## in progress
+    - compartmentalize stuff into more functions
+    - make clipboard work without clipboardNewLine
     - add ca stuff
     - add cif -> change all of current indent level that is not higher
     - add = work with js tags
