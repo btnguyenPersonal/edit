@@ -29,6 +29,7 @@ function handleSearchKeys(key, state, screen) {
                 state.replaceQuery = state.searchQuery.substring(0, state.searchQuery.length - 1);
             }
         }
+        logCommand(false, state, key);
     } else {
         if (isWritable(key)) {
             state.searchQuery += key;
@@ -49,7 +50,6 @@ function handleSearchKeys(key, state, screen) {
             }
         }
     }
-    logCommand(false, state, key);
     renderScreen(state, screen);
 }
 

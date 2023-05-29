@@ -65,18 +65,18 @@ function handleVisualLineKeys(key, state, screen) {
             down(state);
         } else if (key === 'y') {
             if (state.row >= state.visualLine.row) {
-                const newClipboard = [];
+                const newClipboard = ['\n'];
                 for (let i = state.visualLine.row; i <= state.row; i += 1) {
                     newClipboard.push(state.data[i]);
                 }
-                copyToClipboard(state, newClipboard, true);
+                copyToClipboard(state, newClipboard);
                 state.row = state.visualLine.row;
             } else if (state.row < state.visualLine.row) {
-                const newClipboard = [];
+                const newClipboard = ['\n'];
                 for (let i = state.row; i <= state.visualLine.row; i += 1) {
                     newClipboard.push(state.data[i]);
                 }
-                copyToClipboard(state, newClipboard, true);
+                copyToClipboard(state, newClipboard);
             }
             state.mode = 'n';
         } else if (key === 'c') {
@@ -128,19 +128,19 @@ function handleVisualLineKeys(key, state, screen) {
                 state.previousKeys = '';
             } else {
                 if (state.row >= state.visualLine.row) {
-                    const newClipboard = [];
+                    const newClipboard = ['\n'];
                     for (let i = state.visualLine.row; i <= state.row; i += 1) {
                         newClipboard.push(state.data[i]);
                     }
-                    copyToClipboard(state, newClipboard, true);
+                    copyToClipboard(state, newClipboard);
                     state.data.splice(state.visualLine.row, state.row - state.visualLine.row + 1);
                     state.row = state.visualLine.row;
                 } else if (state.row < state.visualLine.row) {
-                    const newClipboard = [];
+                    const newClipboard = ['\n'];
                     for (let i = state.row; i <= state.visualLine.row; i += 1) {
                         newClipboard.push(state.data[i]);
                     }
-                    copyToClipboard(state, newClipboard, true);
+                    copyToClipboard(state, newClipboard);
                     state.data.splice(state.row, state.visualLine.row - state.row + 1);
                 }
                 const indentLevel = state.data[state.row] !== undefined ? getIndentLevelFrom(state, state.row) : 0;
@@ -150,19 +150,19 @@ function handleVisualLineKeys(key, state, screen) {
             }
         } else if (key === 'd') {
             if (state.row >= state.visualLine.row) {
-                const newClipboard = [];
+                const newClipboard = ['\n'];
                 for (let i = state.visualLine.row; i <= state.row; i += 1) {
                     newClipboard.push(state.data[i]);
                 }
-                copyToClipboard(state, newClipboard, true);
+                copyToClipboard(state, newClipboard);
                 state.data.splice(state.visualLine.row, state.row - state.visualLine.row + 1);
                 state.row = state.visualLine.row;
             } else if (state.row < state.visualLine.row) {
-                const newClipboard = [];
+                const newClipboard = ['\n'];
                 for (let i = state.row; i <= state.visualLine.row; i += 1) {
                     newClipboard.push(state.data[i]);
                 }
-                copyToClipboard(state, newClipboard, true);
+                copyToClipboard(state, newClipboard);
                 state.data.splice(state.row, state.visualLine.row - state.row + 1);
             }
             if (state.row > state.data.length - 1) {
@@ -278,31 +278,20 @@ function handleVisualLineKeys(key, state, screen) {
             state.mode = 'n';
             createSnapshot(state);
         } else if (key === 'p' || key === 'P') {
-            const systemPaste = ncp.paste().split('\n');
-            if (state.clipboard !== systemPaste) {
-                state.clipboard = systemPaste;
-                state.clipboardNewLine = true;
+            let systemPaste = ncp.paste();
+            if (systemPaste.startsWith('\n')) {
+                systemPaste = systemPaste.substring(1);
             }
-            if (state.clipboard.length > 0) {
+            systemPaste = systemPaste.split('\n');
+            if (systemPaste.length > 0) {
                 if (state.row >= state.visualLine.row) {
                     state.data.splice(state.visualLine.row, state.row - state.visualLine.row + 1);
                     state.row = state.visualLine.row;
                 } else if (state.row < state.visualLine.row) {
                     state.data.splice(state.row, state.visualLine.row - state.row + 1);
                 }
-                if (state.clipboardNewLine) {
-                    for (let i = state.clipboard.length - 1; i >= 0; i -= 1) {
-                        state.data.splice(state.row, 0, state.clipboard[i]);
-                    }
-                } else {
-                    const cutoff = state.data[state.row].substring(state.col);
-                    state.data[state.row] = state.data[state.row].substring(0, state.col) + state.clipboard[0];
-                    let counterRow = state.row;
-                    for (let i = state.clipboard.length - 1; i >= 1; i -= 1) {
-                        state.data.splice(state.row + 1, 0, state.clipboard[i]);
-                        counterRow += 1;
-                    }
-                    state.data[counterRow] += cutoff;
+                for (let i = systemPaste.length - 1; i >= 0; i -= 1) {
+                    state.data.splice(state.row, 0, systemPaste[i]);
                 }
             }
             state.mode = 'n';
