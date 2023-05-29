@@ -278,9 +278,14 @@ function handleVisualLineKeys(key, state, screen) {
             state.mode = 'n';
             createSnapshot(state);
         } else if (key === 'p' || key === 'P') {
-            const systemPaste = ncp.paste().split('\n');
-            if (state.clipboard !== systemPaste) {
-                state.clipboard = systemPaste;
+            let systemPaste = ncp.paste();
+            let newLine = false;
+            if (systemPaste.startsWith('\n')) {
+                systemPaste = systemPaste.substring(1);
+                newLine = true;
+            }
+            if (state.clipboard !== systemPaste.split('\n')) {
+                state.clipboard = systemPaste.split('\n');
             }
             if (state.clipboard.length > 0) {
                 if (state.row >= state.visualLine.row) {
@@ -289,7 +294,7 @@ function handleVisualLineKeys(key, state, screen) {
                 } else if (state.row < state.visualLine.row) {
                     state.data.splice(state.row, state.visualLine.row - state.row + 1);
                 }
-                if (state.clipboardNewLine) {
+                if (newLine) {
                     for (let i = state.clipboard.length - 1; i >= 0; i -= 1) {
                         state.data.splice(state.row, 0, state.clipboard[i]);
                     }
