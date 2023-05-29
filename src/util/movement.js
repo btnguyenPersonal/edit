@@ -34,6 +34,27 @@ function previousSameIndentLevel(state, row) {
     }
 }
 
+function getInsideOfIndentLevel(state) {
+    let currentIndent = getIndentLevel(state, state.row);
+    let beginning = state.row;
+    let end = state.row;
+    for (let i = state.row - 1; i >= 0; i -= 1) {
+        if (isEmptyRow(state, i) || getIndentLevel(state, i) < currentIndent) {
+            break;
+        } else {
+            beginning = i;
+        }
+    }
+    for (let i = state.row + 1; i < state.data.length; i += 1) {
+        if (isEmptyRow(state, i) || getIndentLevel(state, i) < currentIndent) {
+            break;
+        } else {
+            end = i;
+        }
+    }
+    return { beginning, end };
+}
+
 function nextSameIndentLevel(state, row) {
     const currentIndent = getIndentLevel(state, row);
     for (let i = row + 1; i < state.data.length; i += 1) {
@@ -756,4 +777,5 @@ export {
     goToCoor,
     getInVisual,
     toggleComment,
+    getInsideOfIndentLevel,
 };

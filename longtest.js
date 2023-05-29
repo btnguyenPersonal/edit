@@ -8,11 +8,11 @@ flishdflkasdfstingfunctiont estinghoee
 // 'take the last season 1\' how are you' take me out
 
 
-// 'take the last season 1\' how are you' take me out
-// 'take the last season 1\' how are you' take me out
-// 'take the last season 1\' how are you' take me out
-// 'take the last season 1\' how are you' take me out
-// 'take the last season 1\' how are you' take me out
+if () {
+
+} else if () {
+
+}
 
 
 // 'take the last season 1\' how are you' take me out
