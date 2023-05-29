@@ -11,22 +11,6 @@ function getData(filepath) {
     }
 }
 
-function changeFile(state) {
-    state.mode = 'n';
-    state.row = 0;
-    state.col = 0;
-    state.windowLine = 0;
-    state.windowLineHorizontal = 0;
-    state.snapshots = [];
-    state.currentSnapshot = 0;
-    state.savePoint = 0;
-    state.recording = false;
-    state.macro = [];
-    state.mark = -1;
-    state.data = getData(state.file);
-    createSnapshot(state);
-}
-
 function pasteFromClipboardBefore(state) {
     const systemPaste = ncp.paste().split('\n');
     if (state.clipboard !== systemPaste) {
@@ -213,16 +197,6 @@ function isInString(state, row, col) {
     return currentString !== '';
 }
 
-function commentStartsAt(state, row) {
-    const commentString = getCommentString(state);
-    for (let i = 0; i < state.data[row].length; i += 1) {
-        if (state.data[row].substring(i, i + commentString.length) === commentString && !isInString(state, row, i)) { // todo make isInString out of the loop
-            return i;
-        }
-    }
-    return -1;
-}
-
 function getCommentString(state) {
     const extension = state.file.split('.').pop().toLowerCase();
     let commentString = '';
@@ -305,6 +279,15 @@ function getCommentString(state) {
     return commentString;
 }
 
+function commentStartsAt(state, row) {
+    const commentString = getCommentString(state);
+    for (let i = 0; i < state.data[row].length; i += 1) {
+        if (state.data[row].substring(i, i + commentString.length) === commentString && !isInString(state, row, i)) { // todo make isInString out of the loop
+            return i;
+        }
+    }
+    return -1;
+}
 
 function logCommand(newCommand, state, key) {
     if (newCommand) {
@@ -627,6 +610,22 @@ function refreshFile(state) {
     for (let i = 0; i < newData.length; i += 1) {
         state.data.push(newData[i]);
     }
+    createSnapshot(state);
+}
+
+function changeFile(state) {
+    state.mode = 'n';
+    state.row = 0;
+    state.col = 0;
+    state.windowLine = 0;
+    state.windowLineHorizontal = 0;
+    state.snapshots = [];
+    state.currentSnapshot = 0;
+    state.savePoint = 0;
+    state.recording = false;
+    state.macro = [];
+    state.mark = -1;
+    state.data = getData(state.file);
     createSnapshot(state);
 }
 

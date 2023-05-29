@@ -676,7 +676,7 @@ function getInVisual(state) {
             return state.data[state.row].substring(state.col, state.visual.col + 1);
         }
     } else {
-        return "";
+        return '';
     }
 }
 

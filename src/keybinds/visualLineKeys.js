@@ -84,7 +84,7 @@ function handleVisualLineKeys(key, state, screen) {
                 let areAllCommented = true;
                 let lowestIndent = firstNonSpace(state, state.row);
                 for (let i = 0; i < state.visualLine.row; i += 1) {
-                    let currentIndent = firstNonSpace(state, state.row);
+                    const currentIndent = firstNonSpace(state, state.row);
                     if (currentIndent < lowestIndent) {
                         lowestIndent = currentIndent;
                     }
