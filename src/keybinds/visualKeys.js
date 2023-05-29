@@ -86,7 +86,7 @@ function handleVisualKeys(key, state, screen) {
                 if (isEmptyRow(state, i)) {
                     break;
                 } else {
-                    state.visualLine = { row: i, col: 0 };
+                    state.visualLine.row = i;
                 }
             }
             for (let i = state.row + 1; i < state.data.length; i += 1) {
@@ -94,7 +94,6 @@ function handleVisualKeys(key, state, screen) {
                     break;
                 } else {
                     state.row = i;
-                    state.col = 0;
                 }
             }
             state.mode = 'V';
