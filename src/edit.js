@@ -35,6 +35,8 @@ const state = {
     clipboardNewLine: true,
     searchQuery: '',
     searching: false,
+    replaceQuery: '',
+    replacing: false,
     search: {
         row: undefined,
         col: undefined

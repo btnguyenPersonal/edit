@@ -559,6 +559,11 @@ function handleVimKeys(key, state, screen) {
                 state.windowLineHorizontal = state.storePosition[state.fileIndex].windowLineHorizontal;
             }
             renderScreen(state, screen);
+        } else if (key === 'R') {
+            state.replacing = true;
+            state.mode = '/';
+            logCommand(true, state, key);
+            renderScreen(state, screen);
         } else if (key === 'CTRL_U') {
             upHalfScreen(state);
             renderScreen(state, screen);
