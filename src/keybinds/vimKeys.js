@@ -196,27 +196,29 @@ function handleVimKeys(key, state, screen) {
             createSnapshot(state);
             renderScreen(state, screen);
         } else if (key === 'f') {
-            const { beginning, end } = getInsideOfIndentLevel(state);
-            state.visualLine.row = beginning;
-            state.row = end;
-            state.col = 0;
-            const newClipboard = ['\n'];
-            for (let i = state.visualLine.row; i <= state.row; i += 1) {
-                newClipboard.push(state.data[i]);
+            if (!isEmptyRow(state, state.row) && getIndentLevel(state, state.row) !== 0) {
+                const { beginning, end } = getInsideOfIndentLevel(state);
+                state.visualLine.row = beginning;
+                state.row = end;
+                state.col = 0;
+                const newClipboard = ['\n'];
+                for (let i = state.visualLine.row; i <= state.row; i += 1) {
+                    newClipboard.push(state.data[i]);
+                }
+                copyToClipboard(state, newClipboard);
+                state.data.splice(state.visualLine.row, state.row - state.visualLine.row + 1);
+                state.row = state.visualLine.row;
+                if (state.row > state.data.length - 1) {
+                    state.row = state.data.length - 1;
+                }
+                if (state.row < 0) {
+                    state.row = 0;
+                }
+                firstNonSpace(state, state.row);
+                logCommand(false, state, key);
+                createSnapshot(state);
+                renderScreen(state, screen);
             }
-            copyToClipboard(state, newClipboard);
-            state.data.splice(state.visualLine.row, state.row - state.visualLine.row + 1);
-            state.row = state.visualLine.row;
-            if (state.row > state.data.length - 1) {
-                state.row = state.data.length - 1;
-            }
-            if (state.row < 0) {
-                state.row = 0;
-            }
-            firstNonSpace(state, state.row);
-            logCommand(false, state, key);
-            createSnapshot(state);
-            renderScreen(state, screen);
         } else if (key === '[' || key === ']' || key === 'd') {
             const { beginning, end } = getCoorsInsideCharDiff(state, '[', ']');
             copyToClipboard(state, [state.data[state.row].substring(beginning + 1, end)]);
@@ -297,18 +299,20 @@ function handleVimKeys(key, state, screen) {
             const { beginning, end } = getCoorsInsideWord(state);
             copyInsideAreaSameLine(state, beginning, end);
         } else if (key === 'f') {
-            const { beginning, end } = getInsideOfIndentLevel(state);
-            state.visualLine.row = beginning;
-            state.row = end;
-            state.col = 0;
-            const newClipboard = ['\n'];
-            for (let i = state.visualLine.row; i <= state.row; i += 1) {
-                newClipboard.push(state.data[i]);
+            if (!isEmptyRow(state, state.row) && getIndentLevel(state, state.row) !== 0) {
+                const { beginning, end } = getInsideOfIndentLevel(state);
+                state.visualLine.row = beginning;
+                state.row = end;
+                state.col = 0;
+                const newClipboard = ['\n'];
+                for (let i = state.visualLine.row; i <= state.row; i += 1) {
+                    newClipboard.push(state.data[i]);
+                }
+                copyToClipboard(state, newClipboard);
+                state.row = state.visualLine.row;
+                firstNonSpace(state, state.row);
+                renderScreen(state, screen);
             }
-            copyToClipboard(state, newClipboard);
-            state.row = state.visualLine.row;
-            firstNonSpace(state, state.row);
-            renderScreen(state, screen);
         } else if (key === '(' || key === ')' || key === 'b') {
             const { beginning, end } = getCoorsInsideCharDiff(state, '(', ')');
             copyInsideAreaSameLine(state, beginning, end);
@@ -529,23 +533,25 @@ function handleVimKeys(key, state, screen) {
             logCommand(false, state, key);
             renderScreen(state, screen);
         } else if (key === 'f') {
-            const { beginning, end } = getInsideOfIndentLevel(state);
-            state.visualLine.row = beginning;
-            state.row = end;
-            state.col = 0;
-            const newClipboard = ['\n'];
-            for (let i = state.visualLine.row; i <= state.row; i += 1) {
-                newClipboard.push(state.data[i]);
+            if (!isEmptyRow(state, state.row) && getIndentLevel(state, state.row) !== 0) {
+                const { beginning, end } = getInsideOfIndentLevel(state);
+                state.visualLine.row = beginning;
+                state.row = end;
+                state.col = 0;
+                const newClipboard = ['\n'];
+                for (let i = state.visualLine.row; i <= state.row; i += 1) {
+                    newClipboard.push(state.data[i]);
+                }
+                copyToClipboard(state, newClipboard);
+                state.data.splice(state.visualLine.row, state.row - state.visualLine.row + 1);
+                state.row = state.visualLine.row;
+                const indentLevel = state.data[state.row] !== undefined ? getIndentLevelFrom(state, state.row - 1) : 0;
+                state.data.splice(state.row, 0, ' '.repeat(indentLevel));
+                state.col = indentLevel;
+                state.mode = 'i';
+                logCommand(false, state, key);
+                renderScreen(state, screen);
             }
-            copyToClipboard(state, newClipboard);
-            state.data.splice(state.visualLine.row, state.row - state.visualLine.row + 1);
-            state.row = state.visualLine.row;
-            const indentLevel = state.data[state.row] !== undefined ? getIndentLevelFrom(state, state.row - 1) : 0;
-            state.data.splice(state.row, 0, ' '.repeat(indentLevel));
-            state.col = indentLevel;
-            state.mode = 'i';
-            logCommand(false, state, key);
-            renderScreen(state, screen);
         } else if (key === '[' || key === ']' || key === 'd') {
             const { beginning, end } = getCoorsInsideCharDiff(state, '[', ']');
             copyToClipboard(state, [state.data[state.row].substring(beginning + 1, end)]);
