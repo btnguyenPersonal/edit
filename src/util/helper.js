@@ -319,7 +319,7 @@ function logCommand(newCommand, state, key) {
     }
 }
 
-function getColorRow(row, commentIndex, searching, searchQuery) {
+function getColorRow(replacing, replaceQuery, row, commentIndex, searching, searchQuery) {
     const output = [];
     let inString = false;
     let stringChar;
@@ -349,9 +349,15 @@ function getColorRow(row, commentIndex, searching, searchQuery) {
                 color = 'green';
             } else if (!inString && (s === '{' || s === '}')) {
                 color = 'cyan';
-            } else if (searching && searchQuery.length !== 0 && searchQuery === row.substring(i, i + searchQuery.length)) {
-                for (let j = 0; j < searchQuery.length; j += 1) {
-                    output.push('search');
+            } else if ((replacing || searching) && searchQuery.length !== 0 && searchQuery === row.substring(i, i + searchQuery.length)) {
+                if (replacing) {
+                    for (let j = 0; j < replaceQuery.length; j += 1) {
+                        output.push('search');
+                    }
+                } else if (searching) {
+                    for (let j = 0; j < searchQuery.length; j += 1) {
+                        output.push('search');
+                    }
                 }
                 i += searchQuery.length - 1;
                 stop = true;
@@ -559,15 +565,19 @@ function renderScreen(state, screen, noCenterScreen, fullRefresh) {
                     mergeSection = 0;
                 }
                 const commentIndex = commentStartsAt(state, i);
-                const colorRow = getColorRow(state.data[i], commentIndex, state.searching, state.searchQuery);
-                for (let j = state.windowLineHorizontal; j < state.data[i].length; j += 1) {
+                const colorRow = getColorRow(state.replacing, state.replaceQuery, state.data[i], commentIndex, state.searching, state.searchQuery);
+                let displayRow = state.data[i];
+                if (state.replacing) {
+                    displayRow = displayRow.replace(state.searchQuery, state.replaceQuery);
+                }
+                for (let j = state.windowLineHorizontal; j < displayRow.length; j += 1) {
                     let color = colorRow[j];
                     let bgColor;
-                    if (mergeSection === 1 && !isMergeConflictStart(state.data[i])) {
+                    if (mergeSection === 1 && !isMergeConflictStart(displayRow)) {
                         color = 'red';
-                    } else if (mergeSection === 2 && !isMergeConflictMiddle(state.data[i])) {
+                    } else if (mergeSection === 2 && !isMergeConflictMiddle(displayRow)) {
                         color = 'green';
-                    } else if (isMergeConflictEnd(state.data[i]) || isMergeConflictMiddle(state.data[i]) || isMergeConflictStart(state.data[i])) {
+                    } else if (isMergeConflictEnd(displayRow) || isMergeConflictMiddle(displayRow) || isMergeConflictStart(displayRow)) {
                         color = 'blue';
                     }
                     if (colorRow[j] === 'search') {
@@ -581,7 +591,7 @@ function renderScreen(state, screen, noCenterScreen, fullRefresh) {
                             inverse: isHighlighted(state, i, j)
                         },
                         wrap: false
-                    }, state.data[i].substring(j, j + 1));
+                    }, displayRow.substring(j, j + 1));
                 }
                 if (state.data[i] === '' && isRowHighlighted(state, i)) {
                     screen.put({
