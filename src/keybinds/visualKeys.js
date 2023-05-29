@@ -125,6 +125,9 @@ function handleVisualKeys(key, state, screen) {
             systemPaste = systemPaste.substring(1);
             newLine = true;
         }
+        if (state.clipboard !== systemPaste.split('\n')) {
+            state.clipboard = systemPaste.split('\n');
+        }
         if (state.clipboard.length > 0) {
             if (state.row === state.visual.row) {
                 if (state.visual.col <= state.col) {

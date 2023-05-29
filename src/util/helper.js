@@ -48,6 +48,9 @@ function pasteFromClipboardAfter(state) {
         systemPaste = systemPaste.substring(1);
         newLine = true;
     }
+    if (state.clipboard !== systemPaste.split('\n')) {
+        state.clipboard = systemPaste.split('\n');
+    }
     if (state.clipboard.length > 0) {
         if (newLine) {
             for (let i = state.clipboard.length - 1; i > 0; i -= 1) {
