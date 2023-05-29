@@ -122,10 +122,8 @@ function handleVisualKeys(key, state, screen) {
         if (systemPaste.startsWith('\n')) {
             systemPaste = systemPaste.substring(1);
         }
-        if (state.clipboard !== systemPaste.split('\n')) {
-            state.clipboard = systemPaste.split('\n');
-        }
-        if (state.clipboard.length > 0) {
+        systemPaste = systemPaste.split('\n');
+        if (systemPaste.length > 0) {
             if (state.row === state.visual.row) {
                 if (state.visual.col <= state.col) {
                     state.data[state.row] = state.data[state.row].substring(0, state.visual.col) + state.data[state.row].substring(state.col + 1);
@@ -143,10 +141,10 @@ function handleVisualKeys(key, state, screen) {
                 state.data.splice(state.row + 1, state.visual.row - state.row);
             }
             const cutoff = state.data[state.row].substring(state.col);
-            state.data[state.row] = state.data[state.row].substring(0, state.col) + state.clipboard[0];
+            state.data[state.row] = state.data[state.row].substring(0, state.col) + systemPaste[0];
             let counterRow = state.row;
-            for (let i = state.clipboard.length - 1; i >= 1; i -= 1) {
-                state.data.splice(state.row + 1, 0, state.clipboard[i]);
+            for (let i = systemPaste.length - 1; i >= 1; i -= 1) {
+                state.data.splice(state.row + 1, 0, systemPaste[i]);
                 counterRow += 1;
             }
             state.data[counterRow] += cutoff;
