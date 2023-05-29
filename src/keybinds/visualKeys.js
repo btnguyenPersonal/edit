@@ -8,7 +8,6 @@ import {
     isWritable,
     searchForString,
     centerScreen,
-    getData,
     changeFile,
     logCommand
 } from '../util/helper.js';
@@ -152,13 +151,13 @@ function handleVisualKeys(key, state, screen) {
         state.mode = 'n';
         createSnapshot(state);
     } else if (state.previousKeys === 'g' && key === 'f') {
-        let newFilePath = getInVisual(state);
+        const newFilePath = getInVisual(state);
         const currentDirectory = path.dirname(state.file);
         let convertedPath = path.join(currentDirectory, newFilePath);
         let fileExists = fs.existsSync(convertedPath);
         if (!fileExists) {
-          convertedPath += '.js';
-          fileExists = fs.existsSync(convertedPath);
+            convertedPath += '.js';
+            fileExists = fs.existsSync(convertedPath);
         }
         if (fileExists) {
             state.file = convertedPath;

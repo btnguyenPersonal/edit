@@ -7,8 +7,6 @@ import {
     logCommand
 } from '../util/helper.js';
 import {
-    up,
-    down,
     left,
     right,
     increaseIndentLevel,
@@ -46,14 +44,15 @@ function handleMultiCursorKeys(key, state, screen) {
             createSnapshot(state);
         }
     } else if (key === 'CTRL_W') {
+        let coor;
         if (state.row < state.visualBlock.row) {
             for (let r = state.row; r < state.visualBlock.row + 1; r += 1) {
-                const coor = getCoorBeginningLastWord(state);
+                coor = getCoorBeginningLastWord(state);
                 state.data[r] = state.data[r].substring(0, coor) + state.data[r].substring(state.col);
             }
         } else {
             for (let r = state.visualBlock.row; r < r + 1; r += 1) {
-                const coor = getCoorBeginningLastWord(state);
+                coor = getCoorBeginningLastWord(state);
                 state.data[r] = state.data[r].substring(0, coor) + state.data[r].substring(state.col);
             }
         }
