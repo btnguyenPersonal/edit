@@ -65,18 +65,18 @@ function handleVisualLineKeys(key, state, screen) {
             down(state);
         } else if (key === 'y') {
             if (state.row >= state.visualLine.row) {
-                const newClipboard = [];
+                const newClipboard = ['\n'];
                 for (let i = state.visualLine.row; i <= state.row; i += 1) {
                     newClipboard.push(state.data[i]);
                 }
-                copyToClipboard(state, newClipboard, true);
+                copyToClipboard(state, newClipboard);
                 state.row = state.visualLine.row;
             } else if (state.row < state.visualLine.row) {
-                const newClipboard = [];
+                const newClipboard = ['\n'];
                 for (let i = state.row; i <= state.visualLine.row; i += 1) {
                     newClipboard.push(state.data[i]);
                 }
-                copyToClipboard(state, newClipboard, true);
+                copyToClipboard(state, newClipboard);
             }
             state.mode = 'n';
         } else if (key === 'c') {
@@ -128,19 +128,19 @@ function handleVisualLineKeys(key, state, screen) {
                 state.previousKeys = '';
             } else {
                 if (state.row >= state.visualLine.row) {
-                    const newClipboard = [];
+                    const newClipboard = ['\n'];
                     for (let i = state.visualLine.row; i <= state.row; i += 1) {
                         newClipboard.push(state.data[i]);
                     }
-                    copyToClipboard(state, newClipboard, true);
+                    copyToClipboard(state, newClipboard);
                     state.data.splice(state.visualLine.row, state.row - state.visualLine.row + 1);
                     state.row = state.visualLine.row;
                 } else if (state.row < state.visualLine.row) {
-                    const newClipboard = [];
+                    const newClipboard = ['\n'];
                     for (let i = state.row; i <= state.visualLine.row; i += 1) {
                         newClipboard.push(state.data[i]);
                     }
-                    copyToClipboard(state, newClipboard, true);
+                    copyToClipboard(state, newClipboard);
                     state.data.splice(state.row, state.visualLine.row - state.row + 1);
                 }
                 const indentLevel = state.data[state.row] !== undefined ? getIndentLevelFrom(state, state.row) : 0;
@@ -150,19 +150,19 @@ function handleVisualLineKeys(key, state, screen) {
             }
         } else if (key === 'd') {
             if (state.row >= state.visualLine.row) {
-                const newClipboard = [];
+                const newClipboard = ['\n'];
                 for (let i = state.visualLine.row; i <= state.row; i += 1) {
                     newClipboard.push(state.data[i]);
                 }
-                copyToClipboard(state, newClipboard, true);
+                copyToClipboard(state, newClipboard);
                 state.data.splice(state.visualLine.row, state.row - state.visualLine.row + 1);
                 state.row = state.visualLine.row;
             } else if (state.row < state.visualLine.row) {
-                const newClipboard = [];
+                const newClipboard = ['\n'];
                 for (let i = state.row; i <= state.visualLine.row; i += 1) {
                     newClipboard.push(state.data[i]);
                 }
-                copyToClipboard(state, newClipboard, true);
+                copyToClipboard(state, newClipboard);
                 state.data.splice(state.row, state.visualLine.row - state.row + 1);
             }
             if (state.row > state.data.length - 1) {
@@ -281,7 +281,6 @@ function handleVisualLineKeys(key, state, screen) {
             const systemPaste = ncp.paste().split('\n');
             if (state.clipboard !== systemPaste) {
                 state.clipboard = systemPaste;
-                state.clipboardNewLine = true;
             }
             if (state.clipboard.length > 0) {
                 if (state.row >= state.visualLine.row) {
