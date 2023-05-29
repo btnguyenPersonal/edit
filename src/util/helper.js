@@ -581,8 +581,13 @@ function renderScreen(state, screen, noCenterScreen, fullRefresh) {
                         color = 'blue';
                     }
                     if (colorRow[j] === 'search') {
-                        color = 'black';
-                        bgColor = 'green';
+                        if (state.replacing) {
+                            color = 'white';
+                            bgColor = 'blue';
+                        } else if (state.searching) {
+                            color = 'black';
+                            bgColor = 'green';
+                        }
                     }
                     screen.put({
                         attr: {

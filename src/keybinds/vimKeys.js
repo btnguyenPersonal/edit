@@ -559,7 +559,7 @@ function handleVimKeys(key, state, screen) {
                 state.windowLineHorizontal = state.storePosition[state.fileIndex].windowLineHorizontal;
             }
             renderScreen(state, screen);
-        } else if (key === 'R') {
+        } else if (key === 'CTRL_F') {
             state.replacing = true;
             state.mode = '/';
             logCommand(true, state, key);
