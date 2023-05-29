@@ -294,19 +294,8 @@ function handleVisualLineKeys(key, state, screen) {
                 } else if (state.row < state.visualLine.row) {
                     state.data.splice(state.row, state.visualLine.row - state.row + 1);
                 }
-                if (newLine) {
-                    for (let i = state.clipboard.length - 1; i >= 0; i -= 1) {
-                        state.data.splice(state.row, 0, state.clipboard[i]);
-                    }
-                } else {
-                    const cutoff = state.data[state.row].substring(state.col);
-                    state.data[state.row] = state.data[state.row].substring(0, state.col) + state.clipboard[0];
-                    let counterRow = state.row;
-                    for (let i = state.clipboard.length - 1; i >= 1; i -= 1) {
-                        state.data.splice(state.row + 1, 0, state.clipboard[i]);
-                        counterRow += 1;
-                    }
-                    state.data[counterRow] += cutoff;
+                for (let i = state.clipboard.length - 1; i >= 0; i -= 1) {
+                    state.data.splice(state.row, 0, state.clipboard[i]);
                 }
             }
             state.mode = 'n';
