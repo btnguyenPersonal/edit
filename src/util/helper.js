@@ -12,21 +12,24 @@ function getData(filepath) {
 }
 
 function pasteFromClipboardBefore(state) {
-    const systemPaste = ncp.paste().split('\n');
-    if (state.clipboard !== systemPaste) {
-        state.clipboard = systemPaste;
+    let systemPaste = ncp.paste();
+    let newLine = false;
+    if (systemPaste.startsWith('\n')) {
+        systemPaste = systemPaste.substring(1);
+        newLine = true;
     }
-    if (state.clipboard.length > 0) {
-        if (state.clipboardNewLine) {
-            for (let i = state.clipboard.length - 1; i >= 0; i -= 1) {
-                state.data.splice(state.row, 0, state.clipboard[i]);
+    systemPaste = systemPaste.split('\n');
+    if (systemPaste.length > 0) {
+        if (newLine) {
+            for (let i = systemPaste.length - 1; i > 0; i -= 1) {
+                state.data.splice(state.row, 0, systemPaste[i]);
             }
         } else {
             const cutoff = state.data[state.row].substring(state.col);
-            state.data[state.row] = state.data[state.row].substring(0, state.col) + state.clipboard[0];
+            state.data[state.row] = state.data[state.row].substring(0, state.col) + systemPaste[0];
             let counterRow = state.row;
-            for (let i = state.clipboard.length - 1; i >= 1; i -= 1) {
-                state.data.splice(state.row + 1, 0, state.clipboard[i]);
+            for (let i = systemPaste.length - 1; i >= 1; i -= 1) {
+                state.data.splice(state.row + 1, 0, systemPaste[i]);
                 counterRow += 1;
             }
             state.data[counterRow] += cutoff;
@@ -37,21 +40,24 @@ function pasteFromClipboardBefore(state) {
 }
 
 function pasteFromClipboardAfter(state) {
-    const systemPaste = ncp.paste().split('\n');
-    if (state.clipboard !== systemPaste) {
-        state.clipboard = systemPaste;
+    let systemPaste = ncp.paste();
+    let newLine = false;
+    if (systemPaste.startsWith('\n')) {
+        systemPaste = systemPaste.substring(1);
+        newLine = true;
     }
-    if (state.clipboard.length > 0) {
-        if (state.clipboardNewLine) {
-            for (let i = state.clipboard.length - 1; i >= 0; i -= 1) {
-                state.data.splice(state.row + 1, 0, state.clipboard[i]);
+    systemPaste = systemPaste.split('\n');
+    if (systemPaste.length > 0) {
+        if (newLine) {
+            for (let i = systemPaste.length - 1; i > 0; i -= 1) {
+                state.data.splice(state.row + 1, 0, systemPaste[i]);
             }
         } else {
             const cutoff = state.data[state.row].substring(state.col + 1);
-            state.data[state.row] = state.data[state.row].substring(0, state.col + 1) + state.clipboard[0];
+            state.data[state.row] = state.data[state.row].substring(0, state.col + 1) + systemPaste[0];
             let counterRow = state.row;
-            for (let i = state.clipboard.length - 1; i >= 1; i -= 1) {
-                state.data.splice(state.row + 1, 0, state.clipboard[i]);
+            for (let i = systemPaste.length - 1; i >= 1; i -= 1) {
+                state.data.splice(state.row + 1, 0, systemPaste[i]);
                 counterRow += 1;
             }
             state.data[counterRow] += cutoff;
@@ -361,11 +367,9 @@ function getColorRow(replacing, replaceQuery, row, commentIndex, searching, sear
     return output;
 }
 
-function copyToClipboard(state, textArray, newLine, clipboardVisualBlock) {
-    state.clipboard = textArray;
-    state.clipboardNewLine = newLine;
+function copyToClipboard(state, textArray, clipboardVisualBlock) {
     state.clipboardVisualBlock = clipboardVisualBlock;
-    ncp.copy(state.clipboard.join('\n'));
+    ncp.copy(textArray.join('\n'));
 }
 
 async function saveFile(state) {

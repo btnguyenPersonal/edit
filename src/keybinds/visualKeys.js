@@ -35,7 +35,6 @@ import {
     increaseIndentLevel,
     decreaseIndentLevel,
     getIndentLevelFrom,
-    getIndentLevel,
     toForward,
     toBackward,
     isEmptyRow,
@@ -119,12 +118,12 @@ function handleVisualKeys(key, state, screen) {
     } else if (key === '^') {
         state.col = firstNonSpace(state, state.row);
     } else if (key === 'p' || key === 'P') {
-        const systemPaste = ncp.paste().split('\n');
-        if (state.clipboard !== systemPaste) {
-            state.clipboard = systemPaste;
-            state.clipboardNewLine = false;
+        let systemPaste = ncp.paste();
+        if (systemPaste.startsWith('\n')) {
+            systemPaste = systemPaste.substring(1);
         }
-        if (state.clipboard.length > 0) {
+        systemPaste = systemPaste.split('\n');
+        if (systemPaste.length > 0) {
             if (state.row === state.visual.row) {
                 if (state.visual.col <= state.col) {
                     state.data[state.row] = state.data[state.row].substring(0, state.visual.col) + state.data[state.row].substring(state.col + 1);
@@ -141,20 +140,14 @@ function handleVisualKeys(key, state, screen) {
                 state.data[state.row] = state.data[state.row].substring(0, state.col) + state.data[state.visual.row].substring(state.visual.col + 1);
                 state.data.splice(state.row + 1, state.visual.row - state.row);
             }
-            if (state.clipboardNewLine) {
-                for (let i = state.clipboard.length - 1; i >= 0; i -= 1) {
-                    state.data.splice(state.row, 0, state.clipboard[i]);
-                }
-            } else {
-                const cutoff = state.data[state.row].substring(state.col);
-                state.data[state.row] = state.data[state.row].substring(0, state.col) + state.clipboard[0];
-                let counterRow = state.row;
-                for (let i = state.clipboard.length - 1; i >= 1; i -= 1) {
-                    state.data.splice(state.row + 1, 0, state.clipboard[i]);
-                    counterRow += 1;
-                }
-                state.data[counterRow] += cutoff;
+            const cutoff = state.data[state.row].substring(state.col);
+            state.data[state.row] = state.data[state.row].substring(0, state.col) + systemPaste[0];
+            let counterRow = state.row;
+            for (let i = systemPaste.length - 1; i >= 1; i -= 1) {
+                state.data.splice(state.row + 1, 0, systemPaste[i]);
+                counterRow += 1;
             }
+            state.data[counterRow] += cutoff;
         }
         state.mode = 'n';
         createSnapshot(state);

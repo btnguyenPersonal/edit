@@ -35,7 +35,7 @@ function previousSameIndentLevel(state, row) {
 }
 
 function getInsideOfIndentLevel(state) {
-    let currentIndent = getIndentLevel(state, state.row);
+    const currentIndent = getIndentLevel(state, state.row);
     let beginning = state.row;
     let end = state.row;
     for (let i = state.row - 1; i >= 0; i -= 1) {
@@ -615,7 +615,7 @@ function endOfLine(state, row) {
 
 function copyInsideAreaSameLine(state, beginning, end) {
     if (beginning !== end && beginning !== -1 && end !== -1) {
-        copyToClipboard(state, [state.data[state.row].substring(beginning + 1, end)], false);
+        copyToClipboard(state, [state.data[state.row].substring(beginning + 1, end)]);
         state.col = beginning + 1;
     }
 }
@@ -643,7 +643,7 @@ function setVisualBlockHighlight(state, beginning, end) {
 }
 
 function copyInVisualBlock(state) {
-    const newClipboard = [];
+    const newClipboard = ['\n'];
     for (let i = Math.min(state.row, state.visualBlock.row); i < Math.max(state.row, state.visualBlock.row) + 1; i += 1) {
         if (state.visualBlock.col <= state.col) {
             newClipboard.push(state.data[i].substring(state.visualBlock.col, state.col + 1));
@@ -651,7 +651,7 @@ function copyInVisualBlock(state) {
             newClipboard.push(state.data[i] = state.data[i].substring(state.col, state.visualBlock.col + 1));
         }
     }
-    copyToClipboard(state, newClipboard, false, true);
+    copyToClipboard(state, newClipboard, true);
 }
 
 function deleteInVisualBlock(state) {
@@ -704,9 +704,9 @@ function getInVisual(state) {
 function copyInVisual(state) {
     if (state.row === state.visual.row) {
         if (state.visual.col <= state.col) {
-            copyToClipboard(state, [state.data[state.row].substring(state.visual.col, state.col + 1)], false);
+            copyToClipboard(state, [state.data[state.row].substring(state.visual.col, state.col + 1)]);
         } else if (state.visual.col > state.col) {
-            copyToClipboard(state, [state.data[state.row].substring(state.col, state.visual.col + 1)], false);
+            copyToClipboard(state, [state.data[state.row].substring(state.col, state.visual.col + 1)]);
         }
     } else if (state.row > state.visual.row) {
         const newClipboard = [];
@@ -715,7 +715,7 @@ function copyInVisual(state) {
             newClipboard.push(state.data[i]);
         }
         newClipboard.push(state.data[state.row].substring(0, state.col + 1));
-        copyToClipboard(state, newClipboard, false);
+        copyToClipboard(state, newClipboard);
     } else if (state.row < state.visual.row) {
         const newClipboard = [];
         newClipboard.push(state.data[state.row].substring(state.col));
@@ -723,7 +723,7 @@ function copyInVisual(state) {
             newClipboard.push(state.data[i]);
         }
         newClipboard.push(state.data[state.visual.row].substring(0, state.visual.col + 1));
-        copyToClipboard(state, newClipboard, false);
+        copyToClipboard(state, newClipboard);
     }
 }
 
