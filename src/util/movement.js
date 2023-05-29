@@ -623,7 +623,7 @@ function copyInsideAreaSameLine(state, beginning, end) {
 function getIndentLevelFrom(state, row, inverse) {
     let indentLevel = getIndentLevel(state, row);
     if (inverse) {
-        if (state.data[row].endsWith('}') || state.data[row].endsWith(')')) {
+        if (state.data[row].startsWith('}') || state.data[row].startsWith(')')) {
             indentLevel += 4;
         }
     } else {

@@ -13,6 +13,7 @@ import {
     right,
     increaseIndentLevel,
     decreaseIndentLevel,
+    getIndentLevelFrom,
     isEmptyRow,
     endOfLine,
     firstNonSpace,
@@ -106,6 +107,14 @@ function handleKeys(key, state, screen) {
             + key
             + state.data[state.row].substring(state.col);
         state.col += 1;
+        if (key === '}' && firstNonSpace(state, state.row) === state.col - 1) {
+            let indentLevel = state.row - 1 < 0 ? 0 : getIndentLevelFrom(state, state.row - 1);
+            if (state.data[state.row].trim().startsWith(')') || state.data[state.row].trim().startsWith('}')) {
+                indentLevel = indentLevel - 4 >= 0 ? indentLevel - 4 : 0;
+            }
+            state.data[state.row] = ' '.repeat(indentLevel) + state.data[state.row].trim();
+            state.col = firstNonSpace(state, state.row) + 1;
+        }
         if (!state.vim) {
             createSnapshot(state);
         }
