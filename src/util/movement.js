@@ -651,7 +651,7 @@ function copyInVisualBlock(state) {
             newClipboard.push(state.data[i] = state.data[i].substring(state.col, state.visualBlock.col + 1));
         }
     }
-    copyToClipboard(state, newClipboard);
+    copyToClipboard(state, newClipboard, true);
 }
 
 function deleteInVisualBlock(state) {
@@ -709,7 +709,7 @@ function copyInVisual(state) {
             copyToClipboard(state, [state.data[state.row].substring(state.col, state.visual.col + 1)]);
         }
     } else if (state.row > state.visual.row) {
-        const newClipboard = ['\n'];
+        const newClipboard = [];
         newClipboard.push(state.data[state.visual.row].substring(state.visual.col));
         for (let i = state.visual.row + 1; i < state.row; i += 1) {
             newClipboard.push(state.data[i]);
@@ -717,7 +717,7 @@ function copyInVisual(state) {
         newClipboard.push(state.data[state.row].substring(0, state.col + 1));
         copyToClipboard(state, newClipboard);
     } else if (state.row < state.visual.row) {
-        const newClipboard = ['\n'];
+        const newClipboard = [];
         newClipboard.push(state.data[state.row].substring(state.col));
         for (let i = state.row + 1; i < state.visual.row; i += 1) {
             newClipboard.push(state.data[i]);
