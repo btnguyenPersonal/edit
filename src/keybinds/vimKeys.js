@@ -41,6 +41,7 @@ import {
     removeInsideAreaSameLine,
     copyInsideAreaSameLine,
     getIndentLevelFrom,
+    getInVisual,
     copyInVisual,
     deleteInVisual,
     setVisualHighlight,
@@ -904,8 +905,7 @@ function handleVimKeys(key, state, screen) {
         } else if (key === '*') {
             const { beginning, end } = getCoorsInsideWord(state);
             setVisualHighlight(state, beginning, end);
-            copyInVisual(state);
-            state.searchQuery = state.clipboard[0];
+            state.searchQuery = getInVisual(state);
             if (state.searchQuery !== '') {
                 state.col += state.searchQuery.length + 1;
                 searchForString(state, state.searchQuery);
