@@ -829,7 +829,6 @@ function handleVimKeys(key, state, screen) {
             state.searchQuery = '';
             state.search.row = state.row;
             state.search.col = state.col;
-            logCommand(true, state, key);
         } else if (key === 'v') {
             state.mode = 'v';
             state.visual = {
