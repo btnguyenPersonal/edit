@@ -122,7 +122,6 @@ function handleVisualKeys(key, state, screen) {
         const systemPaste = ncp.paste().split('\n');
         if (state.clipboard !== systemPaste) {
             state.clipboard = systemPaste;
-            state.clipboardNewLine = false;
         }
         if (state.clipboard.length > 0) {
             if (state.row === state.visual.row) {
@@ -141,7 +140,7 @@ function handleVisualKeys(key, state, screen) {
                 state.data[state.row] = state.data[state.row].substring(0, state.col) + state.data[state.visual.row].substring(state.visual.col + 1);
                 state.data.splice(state.row + 1, state.visual.row - state.row);
             }
-            if (state.clipboardNewLine) {
+            if (state.clipboardNewLine) { //TODO fix
                 for (let i = state.clipboard.length - 1; i >= 0; i -= 1) {
                     state.data.splice(state.row, 0, state.clipboard[i]);
                 }

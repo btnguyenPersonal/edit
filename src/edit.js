@@ -32,7 +32,6 @@ const state = {
     mode: 'n',
     clipboard: [],
     clipboardVisualBlock: false,
-    clipboardNewLine: true,
     searchQuery: '',
     searching: false,
     replaceQuery: '',
