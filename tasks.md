@@ -18,6 +18,7 @@
 ## blocked
 ## in progress
     - add cii -> change all of current indent level that is not higher
+    - add = work with js tags
 ## done
     - visual highlight * like gf
     - fix searching with spaces in it

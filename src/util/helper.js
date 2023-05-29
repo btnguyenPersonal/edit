@@ -177,26 +177,6 @@ function isHighlighted(state, i, j) {
     return false;
 }
 
-function isInString(state, row, col) {
-    let currentString = '';
-    let disregard = false;
-    for (let i = 0; i < col; i += 1) {
-        const currentChar = state.data[row].substring(i, i + 1);
-        if (currentString === '' && (currentChar === '\'' || currentChar === '"' || currentChar === '`')) {
-            currentString = currentChar;
-        } else if (currentString !== '' && (currentChar === currentString)) {
-            if (!disregard) {
-                currentString = '';
-            }
-        } else if (currentString !== '' && (currentChar === '\\')) {
-            disregard = true;
-        } else {
-            disregard = false;
-        }
-    }
-    return currentString !== '';
-}
-
 function getCommentString(state) {
     const extension = state.file.split('.').pop().toLowerCase();
     let commentString = '';
@@ -281,9 +261,27 @@ function getCommentString(state) {
 
 function commentStartsAt(state, row) {
     const commentString = getCommentString(state);
+    let inString = false;
+    let disregardNext = false;
+    let stringChar;
     for (let i = 0; i < state.data[row].length; i += 1) {
-        if (state.data[row].substring(i, i + commentString.length) === commentString && !isInString(state, row, i)) { // todo make isInString out of the loop
+        const s = state.data[row].substring(i, i + 1);
+        if (s === stringChar && stringChar !== undefined && !disregardNext) {
+            inString = !inString;
+            stringChar = undefined;
+        } else if (s === '"' || s === '\'' || s === '`') {
+            if (stringChar === undefined) {
+                inString = !inString;
+                stringChar = s;
+            }
+        }
+        if (state.data[row].substring(i, i + commentString.length) === commentString && !inString) {
             return i;
+        }
+        if (inString && s === '\\' && !disregardNext) {
+            disregardNext = true;
+        } else {
+            disregardNext = false;
         }
     }
     return -1;
