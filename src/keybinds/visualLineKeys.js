@@ -82,44 +82,55 @@ function handleVisualLineKeys(key, state, screen) {
         } else if (key === 'c') {
             if (state.previousKeys === 'g') {
                 let areAllCommented = true;
-                let lowestIndent = firstNonSpace(state, state.row);
-                for (let i = 0; i < state.visualLine.row; i += 1) {
-                    const currentIndent = firstNonSpace(state, state.row);
-                    if (currentIndent < lowestIndent) {
-                        lowestIndent = currentIndent;
+                let lowestIndent = isEmptyRow(state, state.row) ? 999 : firstNonSpace(state, state.row);
+                if (state.row <= state.visualLine.row) {
+                    for (let i = state.row + 1; i <= state.visualLine.row; i += 1) {
+                        const currentIndent = isEmptyRow(state, i) ? 999 : firstNonSpace(state, i);
+                        if (currentIndent < lowestIndent) {
+                            lowestIndent = currentIndent;
+                        }
+                    }
+                } else {
+                    for (let i = state.row - 1; i >= state.visualLine.row; i -= 1) {
+                        const currentIndent = isEmptyRow(state, i) ? 999 : firstNonSpace(state, i);
+                        if (currentIndent < lowestIndent) {
+                            lowestIndent = currentIndent;
+                        }
                     }
                 }
-                if (state.row >= state.visualLine.row) {
-                    for (let i = state.visualLine.row; i <= state.row; i += 1) {
-                        if (state.data[i].length !== 0 && !isCommented(state, i)) {
-                            areAllCommented = false;
-                            break;
-                        }
-                    }
-                    if (areAllCommented) {
+                if (lowestIndent != 999) {
+                    if (state.row >= state.visualLine.row) {
                         for (let i = state.visualLine.row; i <= state.row; i += 1) {
-                            toggleComment(state, i, undefined, false);
+                            if (state.data[i].length !== 0 && !isCommented(state, i)) {
+                                areAllCommented = false;
+                                break;
+                            }
                         }
-                    } else {
-                        for (let i = state.visualLine.row; i <= state.row; i += 1) {
-                            toggleComment(state, i, lowestIndent, true);
+                        if (areAllCommented) {
+                            for (let i = state.visualLine.row; i <= state.row; i += 1) {
+                                toggleComment(state, i, lowestIndent, false);
+                            }
+                        } else {
+                            for (let i = state.visualLine.row; i <= state.row; i += 1) {
+                                toggleComment(state, i, lowestIndent, true);
+                            }
                         }
-                    }
-                    state.row = state.visualLine.row;
-                } else if (state.row < state.visualLine.row) {
-                    for (let i = state.row; i <= state.visualLine.row; i += 1) {
-                        if (state.data[i].length !== 0 && !isCommented(state, i)) {
-                            areAllCommented = false;
-                            break;
-                        }
-                    }
-                    if (areAllCommented) {
+                        state.row = state.visualLine.row;
+                    } else if (state.row < state.visualLine.row) {
                         for (let i = state.row; i <= state.visualLine.row; i += 1) {
-                            toggleComment(state, i, undefined, false);
+                            if (state.data[i].length !== 0 && !isCommented(state, i)) {
+                                areAllCommented = false;
+                                break;
+                            }
                         }
-                    } else {
-                        for (let i = state.row; i <= state.visualLine.row; i += 1) {
-                            toggleComment(state, i, lowestIndent, true);
+                        if (areAllCommented) {
+                            for (let i = state.row; i <= state.visualLine.row; i += 1) {
+                                toggleComment(state, i, lowestIndent, false);
+                            }
+                        } else {
+                            for (let i = state.row; i <= state.visualLine.row; i += 1) {
+                                toggleComment(state, i, lowestIndent, true);
+                            }
                         }
                     }
                 }

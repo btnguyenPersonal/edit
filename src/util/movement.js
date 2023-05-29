@@ -39,14 +39,14 @@ function getInsideOfIndentLevel(state) {
     let beginning = state.row;
     let end = state.row;
     for (let i = state.row - 1; i >= 0; i -= 1) {
-        if (isEmptyRow(state, i) || getIndentLevel(state, i) < currentIndent) {
+        if (!isEmptyRow(state, i) && getIndentLevel(state, i) < currentIndent) {
             break;
         } else {
             beginning = i;
         }
     }
     for (let i = state.row + 1; i < state.data.length; i += 1) {
-        if (isEmptyRow(state, i) || getIndentLevel(state, i) < currentIndent) {
+        if (!isEmptyRow(state, i) && getIndentLevel(state, i) < currentIndent) {
             break;
         } else {
             end = i;

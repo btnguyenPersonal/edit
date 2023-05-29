@@ -35,6 +35,7 @@ import {
     increaseIndentLevel,
     decreaseIndentLevel,
     getIndentLevelFrom,
+    getIndentLevel,
     toForward,
     toBackward,
     isEmptyRow,
@@ -63,11 +64,15 @@ function handleVisualKeys(key, state, screen) {
             const { beginning, end } = getCoorsInsideCharSame(state, key);
             setVisualHighlight(state, beginning, end);
         } else if (key === 'f') {
-            const { beginning, end } = getInsideOfIndentLevel(state);
-            state.visualLine.row = beginning;
-            state.row = end;
-            state.col = 0;
-            state.mode = 'V';
+            if (!isEmptyRow(state, state.row) && getIndentLevel(state, state.row) !== 0) {
+                const { beginning, end } = getInsideOfIndentLevel(state);
+                state.visualLine.row = beginning;
+                state.row = end;
+                state.col = 0;
+                state.mode = 'V';
+            } else {
+                state.mode = 'n';
+            }
         } else if (key === 'p') {
             for (let i = state.row; i < state.data.length; i += 1) {
                 if (!isEmptyRow(state, i)) {
