@@ -30,7 +30,6 @@ const state = {
     allowCommandLogging: false,
     vim: process.argv[2] !== '-n',
     mode: 'n',
-    clipboard: [],
     clipboardVisualBlock: false,
     searchQuery: '',
     searching: false,

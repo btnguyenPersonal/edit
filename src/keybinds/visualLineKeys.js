@@ -282,18 +282,16 @@ function handleVisualLineKeys(key, state, screen) {
             if (systemPaste.startsWith('\n')) {
                 systemPaste = systemPaste.substring(1);
             }
-            if (state.clipboard !== systemPaste.split('\n')) {
-                state.clipboard = systemPaste.split('\n');
-            }
-            if (state.clipboard.length > 0) {
+            systemPaste = systemPaste.split('\n');
+            if (systemPaste.length > 0) {
                 if (state.row >= state.visualLine.row) {
                     state.data.splice(state.visualLine.row, state.row - state.visualLine.row + 1);
                     state.row = state.visualLine.row;
                 } else if (state.row < state.visualLine.row) {
                     state.data.splice(state.row, state.visualLine.row - state.row + 1);
                 }
-                for (let i = state.clipboard.length - 1; i >= 0; i -= 1) {
-                    state.data.splice(state.row, 0, state.clipboard[i]);
+                for (let i = systemPaste.length - 1; i >= 0; i -= 1) {
+                    state.data.splice(state.row, 0, systemPaste[i]);
                 }
             }
             state.mode = 'n';

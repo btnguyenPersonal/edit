@@ -90,16 +90,6 @@ function handleVisualBlockKeys(key, state, screen) {
         state.col = 0;
     } else if (key === '^') {
         state.col = firstNonSpace(state, state.row);
-    } else if (key === '*') {
-        copyInVisualBlock(state);
-        state.searchQuery = state.clipboard[0];
-        state.mode = 'n';
-        if (state.searchQuery !== '') {
-            state.col += state.searchQuery.length + 1;
-            searchForString(state, state.searchQuery);
-            state.searching = true;
-            centerScreen(state);
-        }
     } else if (key === 'y') {
         copyInVisualBlock(state);
         if (state.row >= state.visualBlock.row) {
