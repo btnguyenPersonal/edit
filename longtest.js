@@ -6,18 +6,22 @@ testinimport import g''
 
 
  + 1 + 1testing (() => {
-testing testing testing (() => {
-testingtestingtestingtestingtestingtestingtestingtestingtesting testing testing (() => {
-testingtestingtestingtestingtestingtestingtestingtestingtestingtestingtestingtesting testing testing (() => {
 
 
-(() => {
+            systemPaste systemPaste = systemPaste.split('\n');
+            systemPaste = systemPaste.split('\n');
+            testing stuff = systemPaste.split('\n');
+            systemPaste = systemPaste.split('\n');
+            systemPaste = systemPaste.split('\n');
+            systemPaste = systemPaste.split('\n');
+            systemPaste = systemPaste.split('\n');
 
-    it (() => {
+            systemPaste = systemPaste.split('\n');
+            systemPaste = systemPaste.split('\n');
         fs
     });
 
-    it (() => {
+            systemPaste = systemPaste.split('\n');
         testing
     });
 

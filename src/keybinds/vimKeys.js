@@ -185,6 +185,12 @@ function handleVimKeys(key, state, screen) {
             removeInsideAreaSameLine(state, beginning, end + 1, 'n');
             logCommand(false, state, key);
             createSnapshot(state);
+        } else if (key === 'W') {
+            const { beginning, end } = getCoorsInsideCharSame(state, ' ');
+            copyToClipboard(state, [state.data[state.row].substring(beginning + 1, end + 1)]);
+            removeInsideAreaSameLine(state, beginning, end + 1, 'n');
+            logCommand(false, state, key);
+            createSnapshot(state);
         } else if (key === 'p') {
             state.visualLine = {
                 row: state.row,
@@ -296,6 +302,12 @@ function handleVimKeys(key, state, screen) {
     } else if (state.previousKeys === 'di') {
         if (key === 'w') {
             const { beginning, end } = getCoorsInsideWord(state);
+            copyToClipboard(state, [state.data[state.row].substring(beginning + 1, end)]);
+            removeInsideAreaSameLine(state, beginning, end, 'n');
+            logCommand(false, state, key);
+            createSnapshot(state);
+        } else if (key === 'W') {
+            const { beginning, end } = getCoorsInsideCharSame(state, ' ');
             copyToClipboard(state, [state.data[state.row].substring(beginning + 1, end)]);
             removeInsideAreaSameLine(state, beginning, end, 'n');
             logCommand(false, state, key);
@@ -445,6 +457,9 @@ function handleVimKeys(key, state, screen) {
         if (key === 'w') {
             const { beginning, end } = getCoorsInsideWord(state);
             copyInsideAreaSameLine(state, beginning, end);
+        } else if (key === 'W') {
+            const { beginning, end } = getCoorsInsideCharSame(state, ' ');
+            copyInsideAreaSameLine(state, beginning, end);
         } else if (key === 'p') {
             state.visualLine = {
                 row: state.row,
@@ -522,6 +537,9 @@ function handleVimKeys(key, state, screen) {
     } else if (state.previousKeys === 'yi') {
         if (key === 'w') {
             const { beginning, end } = getCoorsInsideWord(state);
+            copyInsideAreaSameLine(state, beginning, end);
+        } else if (key === 'W') {
+            const { beginning, end } = getCoorsInsideCharSame(state, ' ');
             copyInsideAreaSameLine(state, beginning, end);
         } else if (key === 'p') {
             state.visualLine = {
@@ -777,6 +795,11 @@ function handleVimKeys(key, state, screen) {
             copyToClipboard(state, [state.data[state.row].substring(beginning + 1, end + 1)]);
             removeInsideAreaSameLine(state, beginning, end + 1, 'i');
             logCommand(false, state, key);
+        } else if (key === 'W') {
+            const { beginning, end } = getCoorsInsideCharSame(state, ' ');
+            copyToClipboard(state, [state.data[state.row].substring(beginning + 1, end + 1)]);
+            removeInsideAreaSameLine(state, beginning, end + 1, 'i');
+            logCommand(false, state, key);
         } else if (key === 'p') {
             state.visualLine = {
                 row: state.row,
@@ -875,6 +898,11 @@ function handleVimKeys(key, state, screen) {
     } else if (state.previousKeys === 'ci') {
         if (key === 'w') {
             const { beginning, end } = getCoorsInsideWord(state);
+            copyToClipboard(state, [state.data[state.row].substring(beginning + 1, end)]);
+            removeInsideAreaSameLine(state, beginning, end, 'i');
+            logCommand(false, state, key);
+        } else if (key === 'W') {
+            const { beginning, end } = getCoorsInsideCharSame(state, ' ');
             copyToClipboard(state, [state.data[state.row].substring(beginning + 1, end)]);
             removeInsideAreaSameLine(state, beginning, end, 'i');
             logCommand(false, state, key);

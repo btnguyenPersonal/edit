@@ -4,6 +4,7 @@ import {
     copyToClipboard,
     renderScreen,
     createSnapshot,
+    pasteFromClipboardBefore,
     logCommand
 } from '../util/helper.js';
 import { sendKeys } from '../util/sendKeys.js';
@@ -301,9 +302,7 @@ function handleVisualLineKeys(key, state, screen) {
                 } else if (state.row < state.visualLine.row) {
                     state.data.splice(state.row, state.visualLine.row - state.row + 1);
                 }
-                for (let i = systemPaste.length - 1; i >= 0; i -= 1) {
-                    state.data.splice(state.row, 0, systemPaste[i]);
-                }
+                pasteFromClipboardBefore(state);
             }
             state.mode = 'n';
             createSnapshot(state);
