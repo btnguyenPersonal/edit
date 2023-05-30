@@ -538,7 +538,9 @@ function renderScreen(state, screen, noCenterScreen, fullRefresh) {
         screen.fill({ char: ' ' });
         screen.moveTo(0, 0);
         let mergeSection = 0;
-        screen.put({ attr: { color: 'grey' }, x: 0 }, state.commandHistory.slice(-1 * process.stdout.columns));
+        screen.put({ attr: { color: 'white' }, x: 0 }, '"./' + state.file + ':' + state.row + ':' + state.col + '" ');
+        screen.put({ attr: { color: 'green' } }, '/' + state.searchQuery + ' ');
+        screen.put({ attr: { color: 'grey' }, x: process.stdout.columns - 20 }, state.commandHistory.slice(-20));
         screen.put({ newLine: true }, '\n');
         for (let i = state.windowLine; i < (state.windowLine + process.stdout.rows) - 1; i += 1) {
             if (state.data[i] !== undefined) {
@@ -556,7 +558,16 @@ function renderScreen(state, screen, noCenterScreen, fullRefresh) {
                     mergeSection = 0;
                 }
                 const commentIndex = commentStartsAt(state, i);
-                const colorRow = getColorRow(state.replacing, state.replaceQuery, state.data[i], commentIndex, state.searching, state.searchQuery, state.row === i, state.col);
+                const colorRow = getColorRow(
+                    state.replacing,
+                    state.replaceQuery,
+                    state.data[i],
+                    commentIndex,
+                    state.searching,
+                    state.searchQuery,
+                    state.row === i,
+                    state.col
+                );
                 let displayRow = state.data[i];
                 if (state.replacing) {
                     displayRow = displayRow.replace(state.searchQuery, state.replaceQuery);

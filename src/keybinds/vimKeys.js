@@ -41,6 +41,7 @@ import {
     removeInsideAreaSameLine,
     copyInsideAreaSameLine,
     getIndentLevelFrom,
+    getIndentLevel,
     getInVisual,
     copyInVisual,
     deleteInVisual,
@@ -1096,6 +1097,19 @@ function handleVimKeys(key, state, screen) {
             createSnapshot(state);
         } else if (key === '$') {
             state.col = endOfLine(state, state.row);
+        } else if (key === '1'
+            || key === '2'
+            || key === '3'
+            || key === '4'
+            || key === '5'
+            || key === '6'
+            || key === '7'
+            || key === '8'
+            || key === '9'
+        ) {
+            state.previousKeys = '-';
+            state.lineNumber = '';
+            state.lineNumber += key;
         } else if (key === '0') {
             state.col = 0;
         } else if (key === '^') {

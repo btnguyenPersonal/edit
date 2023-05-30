@@ -2,12 +2,10 @@ import 'src/edit'
 
 fore taht
 testinimport import g''
+for the last
+plfffffffffffffffffffffffffffffffff
  I w  a to m am for the  that afsjld
-
-
  + 1 + 1testing (() => {
-
-
             systemPaste systemPaste = systemPaste.split('\n');
             systemPaste = systemPaste.split('\n');
             testing stuff = systemPaste.split('\n');

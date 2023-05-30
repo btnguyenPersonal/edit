@@ -4,23 +4,25 @@
         - helper functions for terminal done
         - normal keys
         - vim keys (bruh)
-    - until status bar >> do i really need?
-        - show file path (in linux don't need bc tmux does for me) (now bun doesn't)
-        - show which mode are in (not really needed imo for me, might be nice if want others to use)
-        - show search string (useful)
-        - show search result 5/60 (useful)
-        - show if search is wrong (useful) could make cursor flash red if can't find match
     - file explorer
 ## todo
     - every rerender don't have to recalculate the color each time
     - get rid of process.stdout.row and use screen.height screen.width (will make easier to make status bar)
-    - add status bar (for keylogging at bottom lol)
     - compartmentalize stuff into more functions
     - add = work with html tags
 ## blocked
 ## in progress
-    - add ca stuff
+    - case insensitive search
+    - show search string (useful)
+    - numbers start the -
 ## done
+    - until status bar >> do i really need?
+        - show file path (in linux don't need bc tmux does for me) (now bun doesn't)
+        - show search result 5/60 (useful)
+        - show which mode are in (not really needed imo for me, might be nice if want others to use)
+        - show if search is wrong (useful) could make cursor flash red if can't find match
+    - add status bar (for keylogging at bottom lol)
+    - add ca stuff
     - add cif -> change all of current indent level that is not higher
     - make clipboard work without clipboardNewLine
     - visual highlight * like gf

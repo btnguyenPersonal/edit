@@ -3,8 +3,6 @@ import {
     renderScreen,
     createSnapshot,
     isWritable,
-    searchForString,
-    centerScreen,
     logCommand
 } from '../util/helper.js';
 import {
