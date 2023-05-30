@@ -35,6 +35,7 @@ import {
     increaseIndentLevel,
     decreaseIndentLevel,
     getIndentLevelFrom,
+    setAroundVisualHighlight,
     getIndentLevel,
     toForward,
     toBackward,
@@ -47,6 +48,9 @@ function handleVisualKeys(key, state, screen) {
     if (state.previousKeys === 'i') {
         if (key === 'w') {
             const { beginning, end } = getCoorsInsideWord(state);
+            setVisualHighlight(state, beginning, end);
+        } else if (key === 'W') {
+            const { beginning, end } = getCoorsInsideCharSame(state, ' ');
             setVisualHighlight(state, beginning, end);
         } else if (key === '(' || key === ')' || key === 'b') {
             const { beginning, end } = getCoorsInsideCharDiff(state, '(', ')');
@@ -91,6 +95,65 @@ function handleVisualKeys(key, state, screen) {
             }
             for (let i = state.row + 1; i < state.data.length; i += 1) {
                 if (isEmptyRow(state, i)) {
+                    break;
+                } else {
+                    state.row = i;
+                }
+            }
+            state.mode = 'V';
+        }
+        state.previousKeys = '';
+    } else if (state.previousKeys === 'a') {
+        if (key === 'w') {
+            const { beginning, end } = getCoorsInsideWord(state);
+            setAroundVisualHighlight(state, beginning, end);
+        } else if (key === 'W') {
+            const { beginning, end } = getCoorsInsideCharSame(state, ' ');
+            setAroundVisualHighlight(state, beginning, end);
+        } else if (key === '(' || key === ')' || key === 'b') {
+            const { beginning, end } = getCoorsInsideCharDiff(state, '(', ')');
+            setAroundVisualHighlight(state, beginning, end);
+        } else if (key === '<' || key === '>' || key === 't') {
+            const { beginning, end } = getCoorsInsideCharDiff(state, '<', '>');
+            setAroundVisualHighlight(state, beginning, end);
+        } else if (key === '[' || key === ']' || key === 'd') {
+            const { beginning, end } = getCoorsInsideCharDiff(state, '[', ']');
+            setAroundVisualHighlight(state, beginning, end);
+        } else if (key === '{' || key === '}' || key === 'B') {
+            const { beginning, end } = getCoorsInsideCharDiff(state, '{', '}');
+            setAroundVisualHighlight(state, beginning, end);
+        } else if (key === '\'' || key === '"' || key === '`') {
+            const { beginning, end } = getCoorsInsideCharSame(state, key);
+            setAroundVisualHighlight(state, beginning, end);
+        } else if (key === 'f') {
+            if (!isEmptyRow(state, state.row) && getIndentLevel(state, state.row) !== 0) {
+                const { beginning, end } = getInsideOfIndentLevel(state);
+                state.visualLine.row = beginning;
+                state.row = end;
+                state.col = 0;
+                state.mode = 'V';
+            } else {
+                state.mode = 'n';
+            }
+        } else if (key === 'p') {
+            for (let i = state.row; i < state.data.length; i += 1) {
+                if (!isEmptyRow(state, i)) {
+                    state.row = i;
+                    state.col = 0;
+                    break;
+                }
+            }
+            state.visualLine.row = state.row;
+            for (let i = state.row; i >= 0; i -= 1) {
+                if (isEmptyRow(state, i)) {
+                    break;
+                } else {
+                    state.visualLine.row = i;
+                }
+            }
+            for (let i = state.row + 1; i < state.data.length; i += 1) {
+                if (isEmptyRow(state, i)) {
+                    state.row = i;
                     break;
                 } else {
                     state.row = i;
@@ -330,7 +393,7 @@ function handleVisualKeys(key, state, screen) {
             renderScreen(state, screen);
         }
         state.previousKeys = '';
-    } else if (key === 'f' || key === 'F' || key === 't' || key === 'T' || key === 'i' || key === 'g') {
+    } else if (key === 'f' || key === 'F' || key === 't' || key === 'T' || key === 'i' || key === 'g' || key === 'a') {
         state.previousKeys += key;
     } else if (key === 'ESCAPE') {
         state.mode = 'n';
