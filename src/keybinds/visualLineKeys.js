@@ -99,7 +99,7 @@ function handleVisualLineKeys(key, state, screen) {
                         }
                     }
                 }
-                if (lowestIndent != 999) {
+                if (lowestIndent !== 999) {
                     if (state.row >= state.visualLine.row) {
                         for (let i = state.visualLine.row; i <= state.row; i += 1) {
                             if (state.data[i].length !== 0 && !isCommented(state, i)) {

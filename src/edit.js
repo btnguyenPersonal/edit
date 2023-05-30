@@ -75,7 +75,6 @@ const state = {
 
 term.grabInput({ mouse: 'button' });
 term.fullscreen(true);
-term.windowTitle(filepath);
 const screen = new ScreenBuffer({ dst: term, noFill: true });
 centerScreen(state);
 createSnapshot(state);
