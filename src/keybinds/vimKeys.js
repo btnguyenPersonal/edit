@@ -71,7 +71,6 @@ function handleVimKeys(key, state, screen) {
         } else if (key === 'ENTER') {
             state.previousKeys = '';
         }
-        renderScreen(state, screen);
     } else if (state.previousKeys === 'd') {
         if (key === 'w') {
             const endOfWord = getCoorForwardWord(state);
@@ -80,7 +79,6 @@ function handleVimKeys(key, state, screen) {
             state.previousKeys = '';
             logCommand(false, state, key);
             createSnapshot(state);
-            renderScreen(state, screen);
         } else if (key === 'j') {
             const newClipboard = ['\n'];
             newClipboard.push(state.data[state.row]);
@@ -100,7 +98,6 @@ function handleVimKeys(key, state, screen) {
             state.previousKeys = '';
             logCommand(false, state, key);
             createSnapshot(state);
-            renderScreen(state, screen);
         } else if (key === 'k') {
             const newClipboard = ['\n'];
             if (state.data[state.row - 1] !== undefined) {
@@ -120,7 +117,6 @@ function handleVimKeys(key, state, screen) {
             state.previousKeys = '';
             logCommand(false, state, key);
             createSnapshot(state);
-            renderScreen(state, screen);
         } else if (key === 'i' || key === 'f' || key === 'F' || key === 't' || key === 'T') {
             state.previousKeys += key;
             logCommand(false, state, key);
@@ -137,7 +133,6 @@ function handleVimKeys(key, state, screen) {
             state.previousKeys = '';
             logCommand(false, state, key);
             createSnapshot(state);
-            renderScreen(state, screen);
         }
     } else if (state.previousKeys === 'df') {
         if (isWritable(key)) {
@@ -148,7 +143,6 @@ function handleVimKeys(key, state, screen) {
             deleteInVisual(state);
             logCommand(false, state, key);
             createSnapshot(state);
-            renderScreen(state, screen);
         }
         state.previousKeys = '';
     } else if (state.previousKeys === 'dF') {
@@ -160,7 +154,6 @@ function handleVimKeys(key, state, screen) {
             deleteInVisual(state);
             logCommand(false, state, key);
             createSnapshot(state);
-            renderScreen(state, screen);
         }
         state.previousKeys = '';
     } else if (state.previousKeys === 'dt') {
@@ -172,7 +165,6 @@ function handleVimKeys(key, state, screen) {
             deleteInVisual(state);
             logCommand(false, state, key);
             createSnapshot(state);
-            renderScreen(state, screen);
         }
         state.previousKeys = '';
     } else if (state.previousKeys === 'dT') {
@@ -184,7 +176,6 @@ function handleVimKeys(key, state, screen) {
             deleteInVisual(state);
             logCommand(false, state, key);
             createSnapshot(state);
-            renderScreen(state, screen);
         }
         state.previousKeys = '';
     } else if (state.previousKeys === 'di') {
@@ -194,7 +185,6 @@ function handleVimKeys(key, state, screen) {
             removeInsideAreaSameLine(state, beginning, end, 'n');
             logCommand(false, state, key);
             createSnapshot(state);
-            renderScreen(state, screen);
         } else if (key === 'p') {
             state.visual = {
                 row: state.row,
@@ -247,7 +237,6 @@ function handleVimKeys(key, state, screen) {
             }
             firstNonSpace(state, state.row);
             createSnapshot(state);
-            renderScreen(state, screen);
         } else if (key === 'f') {
             if (!isEmptyRow(state, state.row) && getIndentLevel(state, state.row) !== 0) {
                 const { beginning, end } = getInsideOfIndentLevel(state);
@@ -270,7 +259,6 @@ function handleVimKeys(key, state, screen) {
                 firstNonSpace(state, state.row);
                 logCommand(false, state, key);
                 createSnapshot(state);
-                renderScreen(state, screen);
             }
         } else if (key === '[' || key === ']' || key === 'd') {
             const { beginning, end } = getCoorsInsideCharDiff(state, '[', ']');
@@ -278,35 +266,30 @@ function handleVimKeys(key, state, screen) {
             removeInsideAreaSameLine(state, beginning, end, 'n');
             logCommand(false, state, key);
             createSnapshot(state);
-            renderScreen(state, screen);
         } else if (key === '<' || key === '>' || key === 't') {
             const { beginning, end } = getCoorsInsideCharDiff(state, '<', '>');
             copyToClipboard(state, [state.data[state.row].substring(beginning + 1, end)]);
             removeInsideAreaSameLine(state, beginning, end, 'n');
             logCommand(false, state, key);
             createSnapshot(state);
-            renderScreen(state, screen);
         } else if (key === '(' || key === ')' || key === 'b') {
             const { beginning, end } = getCoorsInsideCharDiff(state, '(', ')');
             copyToClipboard(state, [state.data[state.row].substring(beginning + 1, end)]);
             removeInsideAreaSameLine(state, beginning, end, 'n');
             logCommand(false, state, key);
             createSnapshot(state);
-            renderScreen(state, screen);
         } else if (key === '{' || key === '}' || key === 'B') {
             const { beginning, end } = getCoorsInsideCharDiff(state, '{', '}');
             copyToClipboard(state, [state.data[state.row].substring(beginning + 1, end)]);
             removeInsideAreaSameLine(state, beginning, end, 'n');
             logCommand(false, state, key);
             createSnapshot(state);
-            renderScreen(state, screen);
         } else if (key === '\'' || key === '"' || key === '`') {
             const { beginning, end } = getCoorsInsideCharSame(state, key);
             copyToClipboard(state, [state.data[state.row].substring(beginning + 1, end)]);
             removeInsideAreaSameLine(state, beginning, end, 'n');
             logCommand(false, state, key);
             createSnapshot(state);
-            renderScreen(state, screen);
         }
         state.previousKeys = '';
     } else if (state.previousKeys === 'yf') {
@@ -314,7 +297,6 @@ function handleVimKeys(key, state, screen) {
             state.visual.row = state.row;
             state.visual.col = findForward(state, key);
             copyInVisual(state);
-            renderScreen(state, screen);
         }
         logCommand(false, state, key);
         state.previousKeys = '';
@@ -324,7 +306,6 @@ function handleVimKeys(key, state, screen) {
             state.visual.col = state.col;
             state.col = findBackward(state, key);
             copyInVisual(state);
-            renderScreen(state, screen);
         }
         logCommand(false, state, key);
         state.previousKeys = '';
@@ -333,7 +314,6 @@ function handleVimKeys(key, state, screen) {
             state.visual.row = state.row;
             state.visual.col = toForward(state, key);
             copyInVisual(state);
-            renderScreen(state, screen);
         }
         logCommand(false, state, key);
         state.previousKeys = '';
@@ -343,7 +323,6 @@ function handleVimKeys(key, state, screen) {
             state.visual.col = state.col;
             state.col = toBackward(state, key);
             copyInVisual(state);
-            renderScreen(state, screen);
         }
         logCommand(false, state, key);
         state.previousKeys = '';
@@ -394,7 +373,6 @@ function handleVimKeys(key, state, screen) {
                 copyToClipboard(state, newClipboard);
             }
             createSnapshot(state);
-            renderScreen(state, screen);
         } else if (key === 'f') {
             if (!isEmptyRow(state, state.row) && getIndentLevel(state, state.row) !== 0) {
                 const { beginning, end } = getInsideOfIndentLevel(state);
@@ -408,28 +386,22 @@ function handleVimKeys(key, state, screen) {
                 copyToClipboard(state, newClipboard);
                 state.row = state.visualLine.row;
                 firstNonSpace(state, state.row);
-                renderScreen(state, screen);
             }
         } else if (key === '(' || key === ')' || key === 'b') {
             const { beginning, end } = getCoorsInsideCharDiff(state, '(', ')');
             copyInsideAreaSameLine(state, beginning, end);
-            renderScreen(state, screen);
         } else if (key === '<' || key === '>' || key === 't') {
             const { beginning, end } = getCoorsInsideCharDiff(state, '<', '>');
             copyInsideAreaSameLine(state, beginning, end);
-            renderScreen(state, screen);
         } else if (key === '[' || key === ']' || key === 'd') {
             const { beginning, end } = getCoorsInsideCharDiff(state, '[', ']');
             copyInsideAreaSameLine(state, beginning, end);
-            renderScreen(state, screen);
         } else if (key === '{' || key === '}' || key === 'B') {
             const { beginning, end } = getCoorsInsideCharDiff(state, '{', '}');
             copyInsideAreaSameLine(state, beginning, end);
-            renderScreen(state, screen);
         } else if (key === '\'' || key === '"' || key === '`') {
             const { beginning, end } = getCoorsInsideCharSame(state, key);
             copyInsideAreaSameLine(state, beginning, end);
-            renderScreen(state, screen);
         }
         state.previousKeys = '';
     } else if (state.previousKeys === 'y') {
@@ -461,25 +433,21 @@ function handleVimKeys(key, state, screen) {
     } else if (state.previousKeys === 'T') {
         if (isWritable(key)) {
             state.col = toBackward(state, key);
-            renderScreen(state, screen);
         }
         state.previousKeys = '';
     } else if (state.previousKeys === 't') {
         if (isWritable(key)) {
             state.col = toForward(state, key);
-            renderScreen(state, screen);
         }
         state.previousKeys = '';
     } else if (state.previousKeys === 'F') {
         if (isWritable(key)) {
             state.col = findBackward(state, key);
-            renderScreen(state, screen);
         }
         state.previousKeys = '';
     } else if (state.previousKeys === 'f') {
         if (isWritable(key)) {
             state.col = findForward(state, key);
-            renderScreen(state, screen);
         }
         state.previousKeys = '';
     } else if (state.previousKeys === 'r') {
@@ -487,7 +455,6 @@ function handleVimKeys(key, state, screen) {
             state.data[state.row] = state.data[state.row].substring(0, state.col)
                 + key
                 + state.data[state.row].substring(state.col + 1);
-            renderScreen(state, screen);
         }
         logCommand(false, state, key);
         createSnapshot(state);
@@ -495,19 +462,16 @@ function handleVimKeys(key, state, screen) {
     } else if (state.previousKeys.endsWith('g')) {
         if (key === 'g') {
             topOfFile(state);
-            renderScreen(state, screen);
         } else if (key === 't') {
             trimTrailingWhitespace(state);
             logCommand(true, state, 'g');
             logCommand(false, state, key);
             createSnapshot(state);
-            renderScreen(state, screen);
         } else if (key === 'c') {
             toggleComment(state, state.row);
             createSnapshot(state);
             logCommand(true, state, 'g');
             logCommand(false, state, key);
-            renderScreen(state, screen);
         }
         state.previousKeys = '';
     } else if (state.previousKeys === 'c') {
@@ -533,7 +497,6 @@ function handleVimKeys(key, state, screen) {
             state.mode = 'i';
             createSnapshot(state);
             logCommand(false, state, key);
-            renderScreen(state, screen);
         } else if (key === 'k') {
             const newClipboard = ['\n'];
             if (state.data[state.row - 1]) {
@@ -553,7 +516,6 @@ function handleVimKeys(key, state, screen) {
             state.mode = 'i';
             createSnapshot(state);
             logCommand(false, state, key);
-            renderScreen(state, screen);
         } else if (key === 'w') {
             const endOfWord = getCoorForwardWord(state);
             copyToClipboard(state, [state.data[state.row].substring(state.col, endOfWord)]);
@@ -561,7 +523,6 @@ function handleVimKeys(key, state, screen) {
             state.mode = 'i';
             state.previousKeys = '';
             logCommand(false, state, key);
-            renderScreen(state, screen);
         } else if (key === 'c') {
             let indentLevel = 0;
             if (state.row - 1 > 0) {
@@ -572,7 +533,6 @@ function handleVimKeys(key, state, screen) {
             state.mode = 'i';
             state.previousKeys = '';
             logCommand(false, state, key);
-            renderScreen(state, screen);
         }
     } else if (state.previousKeys === 'cf') {
         if (isWritable(key)) {
@@ -582,7 +542,6 @@ function handleVimKeys(key, state, screen) {
             copyInVisual(state);
             deleteInVisual(state);
             state.mode = 'i';
-            renderScreen(state, screen);
         }
         logCommand(false, state, key);
         state.previousKeys = '';
@@ -594,7 +553,6 @@ function handleVimKeys(key, state, screen) {
             copyInVisual(state);
             deleteInVisual(state);
             state.mode = 'i';
-            renderScreen(state, screen);
         }
         logCommand(false, state, key);
         state.previousKeys = '';
@@ -606,7 +564,6 @@ function handleVimKeys(key, state, screen) {
             copyInVisual(state);
             deleteInVisual(state);
             state.mode = 'i';
-            renderScreen(state, screen);
         }
         logCommand(false, state, key);
         state.previousKeys = '';
@@ -618,7 +575,6 @@ function handleVimKeys(key, state, screen) {
             copyInVisual(state);
             deleteInVisual(state);
             state.mode = 'i';
-            renderScreen(state, screen);
         }
         logCommand(false, state, key);
         state.previousKeys = '';
@@ -628,7 +584,6 @@ function handleVimKeys(key, state, screen) {
             copyToClipboard(state, [state.data[state.row].substring(beginning + 1, end)]);
             removeInsideAreaSameLine(state, beginning, end, 'i');
             logCommand(false, state, key);
-            renderScreen(state, screen);
         } else if (key === 'p') {
             state.visual = {
                 row: state.row,
@@ -677,7 +632,6 @@ function handleVimKeys(key, state, screen) {
             state.data.splice(state.row, 0, ' '.repeat(indentLevel));
             state.col = indentLevel;
             state.mode = 'i';
-            renderScreen(state, screen);
         } else if (key === 'f') {
             if (!isEmptyRow(state, state.row) && getIndentLevel(state, state.row) !== 0) {
                 const { beginning, end } = getInsideOfIndentLevel(state);
@@ -696,38 +650,32 @@ function handleVimKeys(key, state, screen) {
                 state.col = indentLevel;
                 state.mode = 'i';
                 logCommand(false, state, key);
-                renderScreen(state, screen);
             }
         } else if (key === '[' || key === ']' || key === 'd') {
             const { beginning, end } = getCoorsInsideCharDiff(state, '[', ']');
             copyToClipboard(state, [state.data[state.row].substring(beginning + 1, end)]);
             removeInsideAreaSameLine(state, beginning, end, 'i');
             logCommand(false, state, key);
-            renderScreen(state, screen);
         } else if (key === '<' || key === '>' || key === 't') {
             const { beginning, end } = getCoorsInsideCharDiff(state, '<', '>');
             copyToClipboard(state, [state.data[state.row].substring(beginning + 1, end)]);
             removeInsideAreaSameLine(state, beginning, end, 'i');
             logCommand(false, state, key);
-            renderScreen(state, screen);
         } else if (key === '(' || key === ')' || key === 'b') {
             const { beginning, end } = getCoorsInsideCharDiff(state, '(', ')');
             copyToClipboard(state, [state.data[state.row].substring(beginning + 1, end)]);
             removeInsideAreaSameLine(state, beginning, end, 'i');
             logCommand(false, state, key);
-            renderScreen(state, screen);
         } else if (key === '{' || key === '}' || key === 'B') {
             const { beginning, end } = getCoorsInsideCharDiff(state, '{', '}');
             copyToClipboard(state, [state.data[state.row].substring(beginning + 1, end)]);
             removeInsideAreaSameLine(state, beginning, end, 'i');
             logCommand(false, state, key);
-            renderScreen(state, screen);
         } else if (key === '\'' || key === '"' || key === '`') {
             const { beginning, end } = getCoorsInsideCharSame(state, key);
             copyToClipboard(state, [state.data[state.row].substring(beginning + 1, end)]);
             removeInsideAreaSameLine(state, beginning, end, 'i');
             logCommand(false, state, key);
-            renderScreen(state, screen);
         }
         state.previousKeys = '';
     } else if (state.mode === 'n') {
@@ -764,7 +712,6 @@ function handleVimKeys(key, state, screen) {
                 state.prevRow = pos.prevRow;
                 state.prevCol = pos.prevCol;
             }
-            renderScreen(state, screen);
         } else if (key === 'TAB') {
             if (state.fileIndex + 1 < state.files.length) {
                 state.file = state.files[state.fileIndex + 1];
@@ -797,30 +744,22 @@ function handleVimKeys(key, state, screen) {
                 state.prevRow = pos.prevRow;
                 state.prevCol = pos.prevCol;
             }
-            renderScreen(state, screen);
         } else if (key === 'CTRL_F') {
             state.replacing = true;
             state.mode = '/';
             logCommand(true, state, key);
-            renderScreen(state, screen);
         } else if (key === 'CTRL_U') {
             upHalfScreen(state);
-            renderScreen(state, screen);
         } else if (key === 'CTRL_D') {
             downHalfScreen(state);
-            renderScreen(state, screen);
         } else if (key === 'UP' || key === 'k') {
             up(state);
-            renderScreen(state, screen);
         } else if (key === 'DOWN' || key === 'j') {
             down(state);
-            renderScreen(state, screen);
         } else if (key === 'LEFT' || key === 'h') {
             left(state);
-            renderScreen(state, screen);
         } else if (key === 'RIGHT' || key === 'l') {
             right(state);
-            renderScreen(state, screen);
         } else if (key === 'i') {
             state.mode = 'i';
             logCommand(true, state, key);
@@ -828,7 +767,6 @@ function handleVimKeys(key, state, screen) {
             right(state);
             state.mode = 'i';
             logCommand(true, state, key);
-            renderScreen(state, screen);
         } else if (key === 'x') {
             if (state.col < state.data[state.row].length) {
                 copyToClipboard(state, [state.data[state.row].substring(state.col, state.col + 1)]);
@@ -837,51 +775,39 @@ function handleVimKeys(key, state, screen) {
             }
             logCommand(true, state, key);
             createSnapshot(state);
-            renderScreen(state, screen);
         } else if (key === '$') {
             state.col = endOfLine(state, state.row);
-            renderScreen(state, screen);
         } else if (key === '0') {
             state.col = 0;
-            renderScreen(state, screen);
         } else if (key === '^') {
             state.col = firstNonSpace(state, state.row);
-            renderScreen(state, screen);
         } else if (key === 'I') {
             state.col = firstNonSpace(state, state.row);
             state.mode = 'i';
             logCommand(true, state, key);
-            renderScreen(state, screen);
         } else if (key === 'w') {
             state.col = getCoorBeginningNextWord(state);
-            renderScreen(state, screen);
         } else if (key === 'b') {
             state.col = getCoorBeginningLastWord(state);
-            renderScreen(state, screen);
         } else if (key === 'A') {
             state.col = state.data[state.row].length;
             state.mode = 'i';
             logCommand(true, state, key);
-            renderScreen(state, screen);
         } else if (key === 'S') {
             state.data[state.row] = '';
             state.mode = 'i';
             logCommand(true, state, key);
-            renderScreen(state, screen);
         } else if (key === 'Y') {
             copyToClipboard(state, [state.data[state.row].substring(state.col)]);
-            renderScreen(state, screen);
         } else if (key === 'C') {
             state.data[state.row] = state.data[state.row].substring(0, state.col);
             state.mode = 'i';
             logCommand(true, state, key);
-            renderScreen(state, screen);
         } else if (key === 'D') {
             copyToClipboard(state, [state.data[state.row].substring(state.col)]);
             state.data[state.row] = state.data[state.row].substring(0, state.col);
             logCommand(true, state, key);
             createSnapshot(state);
-            renderScreen(state, screen);
         } else if (key === 's') {
             if (state.col < state.data[state.row].length) {
                 state.data[state.row] = state.data[state.row].substring(0, state.col)
@@ -889,14 +815,12 @@ function handleVimKeys(key, state, screen) {
             }
             state.mode = 'i';
             logCommand(true, state, key);
-            renderScreen(state, screen);
         } else if (key === 'O') {
             const indentLevel = getIndentLevelFrom(state, state.row, true);
             state.data.splice(state.row, 0, ' '.repeat(indentLevel));
             state.col = indentLevel;
             state.mode = 'i';
             logCommand(true, state, key);
-            renderScreen(state, screen);
         } else if (key === 'o') {
             const indentLevel = getIndentLevelFrom(state, state.row);
             state.data.splice(state.row + 1, 0, ' '.repeat(indentLevel));
@@ -904,33 +828,27 @@ function handleVimKeys(key, state, screen) {
             state.col = indentLevel;
             state.mode = 'i';
             logCommand(true, state, key);
-            renderScreen(state, screen);
         } else if (key === '>') {
             increaseIndentLevel(state, state.row);
             state.col = firstNonSpace(state, state.row);
             logCommand(true, state, key);
             createSnapshot(state);
-            renderScreen(state, screen);
         } else if (key === '<') {
             decreaseIndentLevel(state, state.row);
             state.col = firstNonSpace(state, state.row);
             logCommand(true, state, key);
             createSnapshot(state);
-            renderScreen(state, screen);
         } else if (key === 'G') {
             bottomOfFile(state);
-            renderScreen(state, screen);
         } else if (key === 'p') {
             if (pasteFromClipboardAfter(state)) {
                 logCommand(true, state, key);
                 createSnapshot(state);
-                renderScreen(state, screen);
             }
         } else if (key === 'P') {
             if (pasteFromClipboardBefore(state)) {
                 logCommand(true, state, key);
                 createSnapshot(state);
-                renderScreen(state, screen);
             }
         } else if (key === 'f' || key === 't' || key === 'F' || key === 'T' || key === 'g' || key === '-') {
             if (key === '-') {
@@ -947,14 +865,12 @@ function handleVimKeys(key, state, screen) {
                 col: state.col
             };
             logCommand(true, state, key);
-            renderScreen(state, screen);
         } else if (key === 'V') {
             state.mode = 'V';
             state.visualLine = {
                 row: state.row
             };
             logCommand(true, state, key);
-            renderScreen(state, screen);
         } else if (key === 'n') {
             if (state.searchQuery !== '') {
                 state.searching = true;
@@ -965,7 +881,6 @@ function handleVimKeys(key, state, screen) {
                 } else {
                     centerScreen(state);
                     state.windowLineHorizontal = 0;
-                    renderScreen(state, screen);
                 }
             }
         } else if (key === 'N') {
@@ -974,7 +889,6 @@ function handleVimKeys(key, state, screen) {
                 searchBackForString(state, state.searchQuery);
                 centerScreen(state);
                 state.windowLineHorizontal = 0;
-                renderScreen(state, screen);
             }
         } else if (key === '/') {
             state.mode = '/';
@@ -988,7 +902,6 @@ function handleVimKeys(key, state, screen) {
                 col: state.col
             };
             logCommand(true, state, key);
-            renderScreen(state, screen);
         } else if (key === '}') {
             for (let i = state.row + 1; i < state.data.length; i += 1) {
                 if (isEmptyRow(state, i)) {
@@ -996,7 +909,6 @@ function handleVimKeys(key, state, screen) {
                     break;
                 }
             }
-            renderScreen(state, screen);
         } else if (key === '{') {
             for (let i = state.row - 1; i >= 0; i -= 1) {
                 if (isEmptyRow(state, i)) {
@@ -1004,11 +916,9 @@ function handleVimKeys(key, state, screen) {
                     break;
                 }
             }
-            renderScreen(state, screen);
         } else if (key === 'z') {
             centerScreen(state);
             state.windowLineHorizontal = 0;
-            renderScreen(state, screen, false, true);
         } else if (key === 'K') {
             if (state.data[state.row + 1] !== undefined) {
                 state.col = state.data[state.row].length;
@@ -1017,7 +927,6 @@ function handleVimKeys(key, state, screen) {
             }
             logCommand(true, state, key);
             createSnapshot(state);
-            renderScreen(state, screen);
         } else if (key === 'J') {
             if (state.data[state.row + 1] !== undefined) {
                 state.col = state.data[state.row].length;
@@ -1026,32 +935,24 @@ function handleVimKeys(key, state, screen) {
             }
             logCommand(true, state, key);
             createSnapshot(state);
-            renderScreen(state, screen);
         } else if (key === 'CTRL_R') {
             if (state.currentSnapshot + 1 < state.snapshots.length) {
                 applySnapshot(state, state.currentSnapshot + 1, false);
             }
             saveFile(state);
-            renderScreen(state, screen);
         } else if (key === 'u') {
             if (state.currentSnapshot - 1 >= 0) {
                 applySnapshot(state, state.currentSnapshot - 1, true);
             }
             saveFile(state);
-            renderScreen(state, screen);
         } else if (key === '[') {
             previousSameIndentLevel(state, state.row);
-            renderScreen(state, screen);
         } else if (key === ']') {
             nextSameIndentLevel(state, state.row);
-            renderScreen(state, screen);
         } else if (key === '(') {
             previousLowerIndentLevel(state, state.row);
-
-            renderScreen(state, screen);
         } else if (key === ')') {
             nextLowerIndentLevel(state, state.row);
-            renderScreen(state, screen);
         } else if (key === '*') {
             const { beginning, end } = getCoorsInsideWord(state);
             setVisualHighlight(state, beginning, end);
@@ -1062,7 +963,6 @@ function handleVimKeys(key, state, screen) {
                 state.searching = true;
                 centerScreen(state);
             }
-            renderScreen(state, screen);
         } else if (key === 'q') {
             if (state.recording) {
                 state.recording = false;
@@ -1070,7 +970,6 @@ function handleVimKeys(key, state, screen) {
                 state.macro = [];
                 state.recording = true;
             }
-            renderScreen(state, screen);
         } else if (key === '=') {
             let indentLevel = state.row - 1 < 0 ? 0 : getIndentLevelFrom(state, state.row - 1);
             if (state.data[state.row].trim().startsWith(')') || state.data[state.row].trim().startsWith('}')) {
@@ -1078,13 +977,9 @@ function handleVimKeys(key, state, screen) {
             }
             state.data[state.row] = ' '.repeat(indentLevel) + state.data[state.row].trim();
             createSnapshot(state);
-            renderScreen(state, screen);
-        } else if (key === '\'') {
             goToCoor(state, state.mark);
-            renderScreen(state, screen);
         } else if (key === 'm') {
             state.mark = state.row;
-            renderScreen(state, screen);
         } else if (key === '@') {
             if (state.searchQuery !== '') {
                 state.col = 0;
@@ -1095,23 +990,20 @@ function handleVimKeys(key, state, screen) {
                     sendKeys(state.macro, state, screen);
                 }
                 state.allowCommandLogging = true;
-                renderScreen(state, screen);
             }
         } else if (key === ',') {
             state.allowCommandLogging = false;
             sendKeys(state.macro, state, screen);
             state.allowCommandLogging = true;
-            renderScreen(state, screen);
         } else if (key === '.') {
             state.allowCommandLogging = false;
             sendKeys(state.previousCommand, state, screen);
             state.allowCommandLogging = true;
-            renderScreen(state, screen);
         } else if (key === '\\') {
             refreshFile(state);
-            renderScreen(state, screen);
         }
     }
+    renderScreen(state, screen);
 }
 
 export {

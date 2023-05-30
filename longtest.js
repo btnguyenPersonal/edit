@@ -1,24 +1,19 @@
 import 'src/edit'
-import 'src/edit'
 
+fore taht
 import 'src/edit'
+for the moment I want  to take a second to make amends for the statement that afsjld
+
 
 testing (() => {
 
 
-
-
-
-});
-
-
 testing (() => {
 
-    if (() => {
-        testing stuff;
-        returning stuff;
-
-    }
+    // if (() => {
+    //     testing stuff;
+    //     returning stuff;
+    // }
 
 }
 ehttps://www.youtube.com/watch?v=xsOh6hS6mek&list=RD3lBBxYQUVrc&index=7 last season 1\' how are you' take me out
