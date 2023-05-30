@@ -538,7 +538,7 @@ function renderScreen(state, screen, noCenterScreen, fullRefresh) {
         screen.fill({ char: ' ' });
         screen.moveTo(0, 0);
         let mergeSection = 0;
-        screen.put({ attr: { color: 'white' }, x: 0 }, '"' + state.file + ':' + state.row + ':' + state.col + '" ');
+        screen.put({ attr: { color: 'white' }, x: 0 }, '"' + state.file + ':' + state.row + 1 + ':' + state.col + 1 + '" ');
         screen.put({ attr: { color: 'green' } }, '/' + state.searchQuery + ' ');
         screen.put({ attr: { color: 'grey' }, x: process.stdout.columns - 20 }, state.commandHistory.slice(-20));
         screen.put({ newLine: true }, '\n');
