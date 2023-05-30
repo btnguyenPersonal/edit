@@ -106,7 +106,7 @@ function handleVisualKeys(key, state, screen) {
     } else if (state.previousKeys === 'a') {
         if (key === 'w') {
             const { beginning, end } = getCoorsInsideWord(state);
-            setAroundVisualHighlight(state, beginning, end);
+            setAroundVisualHighlight(state, beginning + 1, end);
         } else if (key === 'W') {
             const { beginning, end } = getCoorsInsideCharSame(state, ' ');
             setAroundVisualHighlight(state, beginning, end);
