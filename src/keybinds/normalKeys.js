@@ -79,7 +79,7 @@ function handleKeys(key, state, screen) {
         }
         state.row += 1;
         state.col = indentLevel;
-        if (state.row >= state.windowLine + process.stdout.rows) {
+        if (state.row >= state.windowLine + process.stdout.rows - 1) {
             state.windowLine += 1;
         }
         if (!state.vim) {

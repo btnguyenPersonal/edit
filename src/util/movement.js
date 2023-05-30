@@ -363,7 +363,7 @@ function bottomOfFile(state) {
     while (state.row !== state.data.length - 1) {
         if (state.row < state.data.length - 1) {
             state.row += 1;
-            if (state.row >= state.windowLine + process.stdout.rows) {
+            if (state.row >= state.windowLine + process.stdout.rows - 1) {
                 state.windowLine += 1;
             }
         }
@@ -476,7 +476,7 @@ function up(state) {
 function down(state) {
     if (state.row < state.data.length - 1) {
         state.row += 1;
-        if (state.row >= state.windowLine + process.stdout.rows) {
+        if (state.row >= state.windowLine + process.stdout.rows - 1) {
             state.windowLine += 1;
         }
     }
