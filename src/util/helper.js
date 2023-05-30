@@ -102,7 +102,7 @@ function moveCursor(state, screen, windowLineHorizontal) {
     row -= state.windowLine;
     screen.moveTo(
         col,
-        row
+        row + 1
     );
 }
 
@@ -538,7 +538,9 @@ function renderScreen(state, screen, noCenterScreen, fullRefresh) {
         screen.fill({ char: ' ' });
         screen.moveTo(0, 0);
         let mergeSection = 0;
-        for (let i = state.windowLine; i < (state.windowLine + process.stdout.rows); i += 1) {
+        screen.put({ attr: { color: 'grey' }, x: 0 }, state.commandHistory.slice(-1 * process.stdout.columns));
+        screen.put({ newLine: true }, '\n');
+        for (let i = state.windowLine; i < (state.windowLine + process.stdout.rows) - 1; i += 1) {
             if (state.data[i] !== undefined) {
                 screen.put({
                     attr: {

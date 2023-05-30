@@ -52,6 +52,7 @@ const state = {
     },
     lineNumber: '',
     previousKeys: '',
+    commandHistory: '',
     previousCommand: [],
     file: filepath,
     files: [],

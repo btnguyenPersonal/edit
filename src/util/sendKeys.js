@@ -12,6 +12,17 @@ function sendKeys(keys, state, screen) {
         state.data = [''];
     }
     for (let i = 0; i < keys.length; i += 1) {
+        if (keys[i] === 'ESCAPE') {
+            state.commandHistory += '<esc>';
+        } else if (keys[i] === 'ENTER') {
+            state.commandHistory += '<enter>';
+        } else if (keys[i] === 'BACKSPACE') {
+            state.commandHistory += '<bs>';
+        } else if (keys[i].startsWith('CTRL_')) {
+            state.commandHistory += '<c-' + keys[i].slice(-1).toLowerCase() + '>';
+        } else {
+            state.commandHistory += keys[i];
+        }
         if (state.allowCommandLogging && state.recording && !(state.vim && state.mode === 'n' && keys[i] === 'q')) {
             state.macro.push(keys[i]);
         }

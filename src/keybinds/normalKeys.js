@@ -42,7 +42,7 @@ function handleKeys(key, state, screen) {
         }
     } else if (key === 'CTRL_W') {
         const coor = getCoorBeginningLastWord(state);
-        state.data[state.row] = state.data[state.row].substring(0, coor) + state.data[state.row].substring(state.col);
+        state.data[state.row] = state.data[state.row].substring(0, coor) + state.data[state.row].substring(state.col + 1);
         state.col = coor;
         if (!state.vim) {
             createSnapshot(state);

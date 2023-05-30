@@ -14,15 +14,15 @@
 ## todo
     - every rerender don't have to recalculate the color each time
     - get rid of process.stdout.row and use screen.height screen.width (will make easier to make status bar)
-    - add status bar
+    - add status bar (for keylogging at bottom lol)
+    - compartmentalize stuff into more functions
+    - add = work with html tags
 ## blocked
 ## in progress
-    - compartmentalize stuff into more functions
-    - make clipboard work without clipboardNewLine
     - add ca stuff
-    - add cif -> change all of current indent level that is not higher
-    - add = work with js tags
 ## done
+    - add cif -> change all of current indent level that is not higher
+    - make clipboard work without clipboardNewLine
     - visual highlight * like gf
     - fix searching with spaces in it
     - = for n and v
