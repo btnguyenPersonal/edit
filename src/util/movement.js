@@ -614,7 +614,7 @@ function endOfLine(state, row) {
 }
 
 function copyInsideAreaSameLine(state, beginning, end) {
-    if (beginning !== end && beginning !== -1 && end !== -1) {
+    if (beginning !== end) {
         copyToClipboard(state, [state.data[state.row].substring(beginning + 1, end)]);
         state.col = beginning + 1;
     }
@@ -727,8 +727,16 @@ function copyInVisual(state) {
     }
 }
 
+function setAroundVisualHighlight(state, beginning, end) {
+    if (beginning !== end && beginning !== -1 && end !== -1) {
+        state.visual.col = beginning;
+        state.col = end;
+        state.visual.row = state.row;
+    }
+}
+
 function setVisualHighlight(state, beginning, end) {
-    if (beginning !== end) {
+    if (beginning !== end && beginning !== -1 && end !== -1) {
         state.visual.col = beginning + 1;
         state.col = end - 1;
         state.visual.row = state.row;
@@ -778,4 +786,5 @@ export {
     getInVisual,
     toggleComment,
     getInsideOfIndentLevel,
+    setAroundVisualHighlight,
 };
