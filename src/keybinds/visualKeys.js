@@ -128,8 +128,8 @@ function handleVisualKeys(key, state, screen) {
         } else if (key === 'f') {
             if (!isEmptyRow(state, state.row) && getIndentLevel(state, state.row) !== 0) {
                 const { beginning, end } = getInsideOfIndentLevel(state);
-                state.visualLine.row = beginning;
-                state.row = end;
+                state.visualLine.row = beginning - 1;
+                state.row = end + 1;
                 state.col = 0;
                 state.mode = 'V';
             } else {
