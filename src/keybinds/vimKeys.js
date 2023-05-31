@@ -1157,7 +1157,7 @@ function handleVimKeys(key, state, screen) {
         } else if (key === 'o') {
             const indentLevel = getIndentLevelFrom(state, state.row);
             state.data.splice(state.row + 1, 0, ' '.repeat(indentLevel));
-            state.row += 1;
+            down(state);
             state.col = indentLevel;
             state.mode = 'i';
             logCommand(true, state, key);
