@@ -10,7 +10,9 @@ plfffffffffffffffffffffffffffffffff
             systemPaste systemPaste = systemPaste.split('\n');
             systemPaste = systemPaste.split('\n');
             testing stuff = systemPaste.split('\n');
+
             systemPaste = systemPaste.split('\n');
+
             systemPaste = systemPaste.split('\n');
             systemPaste = systemPaste.split('\n');
             systemPaste = systemPaste.split('\n');
@@ -54,6 +56,8 @@ if () {
 
 
 // 'take the last season 1\' how are you' take me out
+howe
+howe
 
 
 'how are you' how are you
@@ -68,15 +72,6 @@ zzzz
 
 <<<<<<< HEAD
     This line was added in the HEAD branch.
-    =======
+=======
     This line was added in the feature branch.
-ihow>>>>>>> feature-branch
-jjjjjjj
-
-
-
-
-
-
-
-
+>>>>>>> feature-branch
