@@ -53,6 +53,7 @@ import {
     toForward,
     toBackward,
     toggleComment,
+    uncommentBlock,
     previousSameIndentLevel,
     nextSameIndentLevel,
     previousLowerIndentLevel,
@@ -674,6 +675,11 @@ function handleVimKeys(key, state, screen) {
             logCommand(true, state, 'g');
             logCommand(false, state, key);
             createSnapshot(state);
+        } else if (key === 'e') {
+            uncommentBlock(state, state.row);
+            createSnapshot(state);
+            logCommand(true, state, 'g');
+            logCommand(false, state, key);
         } else if (key === 'c') {
             toggleComment(state, state.row);
             createSnapshot(state);

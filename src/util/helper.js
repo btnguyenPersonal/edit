@@ -645,7 +645,6 @@ function changeFile(state) {
     state.currentSnapshot = 0;
     state.savePoint = 0;
     state.recording = false;
-    state.macro = [];
     state.mark = -1;
     state.data = getData(state.file);
     createSnapshot(state);
