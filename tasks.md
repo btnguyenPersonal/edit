@@ -13,9 +13,9 @@
 ## blocked
 ## in progress
     - case insensitive search
+## done
     - show search string (useful)
     - numbers start the -
-## done
     - until status bar >> do i really need?
         - show file path (in linux don't need bc tmux does for me) (now bun doesn't)
         - show search result 5/60 (useful)
