@@ -1,4 +1,5 @@
 import 'src/edit'
+return ;alksdf;laksjdf;askdjkf;le
 
 fore taht
 testinimport import g''
@@ -7,25 +8,17 @@ plfffffffffffffffffffffffffffffffff
  I w  a to m am for the  that afsjld
 it(() => {
     fs
-        systemPaste systemPaste = systemPaste.split('\n');
-        systemPaste = systemPaste.split('\n');
-        testing stuff = systemPaste.split('\n');
+        te = systemPaste.split('\n');
+        aste.split('\n');
+        mPaste.split('\n');
 
-        systemPaste = systemPaste.split('\n');
-
-        systemPaste = systemPaste.split('\n');
-        systemPaste = systemPaste.split('\n');
-        systemPaste = systemPaste.split('\n');
-        systemPaste = systemPaste.split('\n');
         systemPaste = systemPaste.split('\n');
     fs
     fs
         systemPaste systemPaste = systemPaste.split('\n');
         systemPaste = systemPaste.split('\n');
         testing stuff = systemPaste.split('\n');
-
         systemPaste = systemPaste.split('\n');
-
         systemPaste = systemPaste.split('\n');
         systemPaste = systemPaste.split('\n');
         systemPaste = systemPaste.split('\n');

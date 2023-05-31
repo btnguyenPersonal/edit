@@ -167,6 +167,23 @@ function isCommented(state, row) {
     }
 }
 
+function uncommentBlock(state, row) {
+    for (let i = row; row >= 0; i -= 1) {
+        if (isCommented(state, i)) {
+            toggleComment(state, i);
+        } else {
+            break;
+        }
+    }
+    for (let i = row + 1; row < state.data.length; i += 1) {
+        if (isCommented(state, i)) {
+            toggleComment(state, i);
+        } else {
+            break;
+        }
+    }
+}
+
 function toggleComment(state, row, column, forceComment) {
     if (!isEmptyRow(state, row)) {
         const extension = state.file.split('.').pop().toLowerCase();
@@ -648,7 +665,7 @@ function copyInVisualBlock(state) {
         if (state.visualBlock.col <= state.col) {
             newClipboard.push(state.data[i].substring(state.visualBlock.col, state.col + 1));
         } else if (state.visualBlock.col > state.col) {
-            newClipboard.push(state.data[i] = state.data[i].substring(state.col, state.visualBlock.col + 1));
+            newClipboard.push(state.data[i].substring(state.col, state.visualBlock.col + 1));
         }
     }
     copyToClipboard(state, newClipboard, true);
@@ -786,5 +803,6 @@ export {
     getInVisual,
     toggleComment,
     getInsideOfIndentLevel,
+    uncommentBlock,
     setAroundVisualHighlight,
 };
