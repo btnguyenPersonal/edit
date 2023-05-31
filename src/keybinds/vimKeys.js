@@ -249,8 +249,8 @@ function handleVimKeys(key, state, screen) {
         } else if (key === 'f') {
             if (!isEmptyRow(state, state.row) && getIndentLevel(state, state.row) !== 0) {
                 const { beginning, end } = getInsideOfIndentLevel(state);
-                state.visualLine.row = beginning;
-                state.row = end;
+                state.visualLine.row = beginning - 1;
+                state.row = end + 1;
                 state.col = 0;
                 const newClipboard = ['\n'];
                 for (let i = state.visualLine.row; i <= state.row; i += 1) {
@@ -505,8 +505,8 @@ function handleVimKeys(key, state, screen) {
         } else if (key === 'f') {
             if (!isEmptyRow(state, state.row) && getIndentLevel(state, state.row) !== 0) {
                 const { beginning, end } = getInsideOfIndentLevel(state);
-                state.visualLine.row = beginning;
-                state.row = end;
+                state.visualLine.row = beginning - 1;
+                state.row = end + 1;
                 state.col = 0;
                 const newClipboard = ['\n'];
                 for (let i = state.visualLine.row; i <= state.row; i += 1) {
@@ -849,8 +849,8 @@ function handleVimKeys(key, state, screen) {
         } else if (key === 'f') {
             if (!isEmptyRow(state, state.row) && getIndentLevel(state, state.row) !== 0) {
                 const { beginning, end } = getInsideOfIndentLevel(state);
-                state.visualLine.row = beginning;
-                state.row = end;
+                state.visualLine.row = beginning - 1;
+                state.row = end + 1;
                 state.col = 0;
                 const newClipboard = ['\n'];
                 for (let i = state.visualLine.row; i <= state.row; i += 1) {

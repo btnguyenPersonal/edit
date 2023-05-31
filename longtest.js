@@ -5,21 +5,34 @@ testinimport import g''
 for the last
 plfffffffffffffffffffffffffffffffff
  I w  a to m am for the  that afsjld
- + 1 + 1testing (() => {
-        fs
-            systemPaste systemPaste = systemPaste.split('\n');
-            systemPaste = systemPaste.split('\n');
-            testing stuff = systemPaste.split('\n');
+it(() => {
+    fs
+        systemPaste systemPaste = systemPaste.split('\n');
+        systemPaste = systemPaste.split('\n');
+        testing stuff = systemPaste.split('\n');
 
-            systemPaste = systemPaste.split('\n');
+        systemPaste = systemPaste.split('\n');
 
-            systemPaste = systemPaste.split('\n');
-            systemPaste = systemPaste.split('\n');
-            systemPaste = systemPaste.split('\n');
-            systemPaste = systemPaste.split('\n');
-            systemPaste = systemPaste.split('\n');
-        fs
-    });
+        systemPaste = systemPaste.split('\n');
+        systemPaste = systemPaste.split('\n');
+        systemPaste = systemPaste.split('\n');
+        systemPaste = systemPaste.split('\n');
+        systemPaste = systemPaste.split('\n');
+    fs
+    fs
+        systemPaste systemPaste = systemPaste.split('\n');
+        systemPaste = systemPaste.split('\n');
+        testing stuff = systemPaste.split('\n');
+
+        systemPaste = systemPaste.split('\n');
+
+        systemPaste = systemPaste.split('\n');
+        systemPaste = systemPaste.split('\n');
+        systemPaste = systemPaste.split('\n');
+        systemPaste = systemPaste.split('\n');
+        systemPaste = systemPaste.split('\n');
+    fs
+});
 
             systemPaste = systemPaste.split('\n');
         testing
