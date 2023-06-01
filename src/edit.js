@@ -58,6 +58,8 @@ const state = {
     commandHistory: '',
     previousCommand: [],
     file: filepath,
+    harpoonIndex: 0,
+    harpoonIndexes: [],
     files: [],
     storePosition: [],
     fileIndex: 0,

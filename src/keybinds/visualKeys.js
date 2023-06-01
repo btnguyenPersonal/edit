@@ -246,7 +246,7 @@ function handleVisualKeys(key, state, screen) {
                 prevRow: state.prevRow,
                 prevCol: state.prevCol,
             });
-            state.fileIndex += 1;
+            state.fileIndex = state.files.length - 1;
             state.previousKeys = '';
             changeFile(state);
         }
