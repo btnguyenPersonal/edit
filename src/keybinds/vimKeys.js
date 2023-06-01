@@ -1258,6 +1258,7 @@ function handleVimKeys(key, state, screen) {
         } else if (key === 'z') {
             centerScreen(state);
             state.windowLineHorizontal = 0;
+            renderScreen(state, screen, undefined, true);
         } else if (key === 'K') {
             if (state.data[state.row + 1] !== undefined) {
                 state.col = state.data[state.row].length;
@@ -1317,6 +1318,10 @@ function handleVimKeys(key, state, screen) {
             state.data[state.row] = ' '.repeat(indentLevel) + state.data[state.row].trim();
             createSnapshot(state);
             goToCoor(state, state.mark);
+        } else if (key === 'CTRL_P') {
+            state.mode = 'f';
+        } else if (key === '\'') {
+            state.row = state.mark;
         } else if (key === 'm') {
             state.mark = state.row;
         } else if (key === '@') {

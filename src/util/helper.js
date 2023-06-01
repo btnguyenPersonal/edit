@@ -1,6 +1,7 @@
 /* eslint-disable import/no-cycle */
 import ncp from 'copy-paste';
 import fs from 'fs';
+import { execSync } from 'child_process';
 
 function getData(filepath) {
     try {
@@ -530,7 +531,46 @@ function renderScreen(state, screen, noCenterScreen, fullRefresh) {
     if (state.data.length === 0) {
         state.data = [''];
     }
-    if (state.allowCommandLogging) {
+    if (state.mode === 'f') {
+        screen.fill({ char: ' ' });
+        screen.moveTo(0, 0);
+        let output = '';
+        if (state.fileFinderQuery.length !== 0) {
+            output = execSync(`git ls-files | grep ${state.fileFinderQuery}* || true`).toString();
+        } else {
+            output = execSync(`git ls-files`).toString();
+        }
+        state.fileFindingOutput = output.split('\n');
+        screen.put({
+            attr: {
+                color: 'red',
+            },
+            x: 0,
+            wrap: false
+        }, '> ');
+        screen.put({
+            attr: {
+                color: 'white',
+            },
+            wrap: false
+        }, state.fileFinderQuery);
+        for (let i = 0; i < state.fileFindingOutput.length; i += 1) {
+            screen.put({ newLine: true }, '\n');
+            screen.put({
+                attr: {
+                    color: state.fileFinderIndex === i ? 'green' : 'white',
+                },
+                x: 0,
+                wrap: false
+            }, state.fileFindingOutput[i]);
+        }
+        screen.moveTo(
+            state.fileFinderQuery.length + 2,
+            0
+        );
+        screen.draw({ delta: false });
+        screen.drawCursor();
+    } else if (state.allowCommandLogging) {
         if (!noCenterScreen && !isOnScreen(state)) {
             centerScreen(state);
         }

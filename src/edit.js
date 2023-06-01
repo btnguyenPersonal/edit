@@ -35,6 +35,9 @@ const state = {
     searching: false,
     replaceQuery: '',
     replacing: false,
+    fileFinderQuery: '',
+    fileFinderIndex: 0,
+    fileFindingOutput: [],
     search: {
         row: undefined,
         col: undefined
@@ -90,9 +93,6 @@ term.on('key', (key) => {
         } else if (key === 'CTRL_G') {
             term.fullscreen(false);
             process.exit(2);
-        } else if (key === 'CTRL_P') {
-            term.fullscreen(false);
-            process.exit(1);
         } else if (key === 'CTRL_C') {
             term.fullscreen(false);
             process.exit(0);

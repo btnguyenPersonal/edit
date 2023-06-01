@@ -6,6 +6,7 @@ import { handleVisualKeys } from '../keybinds/visualKeys.js';
 import { handleVisualLineKeys } from '../keybinds/visualLineKeys.js';
 import { handleVisualBlockKeys } from '../keybinds/visualBlockKeys.js';
 import { handleSearchKeys } from '../keybinds/searchKeys.js';
+import { handleFileFinderKeys } from '../keybinds/fileFinderKeys.js';
 
 function sendKeys(keys, state, screen) {
     if (state.data.length === 0) {
@@ -34,6 +35,8 @@ function sendKeys(keys, state, screen) {
             handleVisualBlockKeys(keys[i], state, screen);
         } else if (state.vim && state.mode === 'v') {
             handleVisualKeys(keys[i], state, screen);
+        } else if (state.vim && state.mode === 'f') {
+            handleFileFinderKeys(keys[i], state, screen);
         } else if (state.vim && state.mode === 'V') {
             handleVisualLineKeys(keys[i], state, screen);
         } else if (state.vim && (state.mode === 'n' || state.mode === 'r')) {
