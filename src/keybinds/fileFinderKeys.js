@@ -1,5 +1,6 @@
 /* eslint-disable import/no-cycle */
 import fs from 'fs';
+import { execSync } from 'child_process';
 import {
     renderScreen,
     isWritable,
@@ -12,6 +13,25 @@ import {
 function handleFileFinderKeys(key, state, screen) {
     if (isWritable(key)) {
         state.fileFinderQuery += key;
+        state.fileFinderIndex = 0;
+        if (state.mode === 'g') {
+            let output = '';
+            if (state.fileFinderQuery.length !== 0) {
+                output = execSync(
+                    `git grep -n ${state.fileFinderQuery} | head -n 100 | cut -c1-100`,
+                    { maxBuffer: 1024 * 1024 * 1000 }
+                ).toString();
+            }
+            state.fileFindingOutput = output.split('\n');
+        } else {
+            let output = '';
+            if (state.fileFinderQuery.length !== 0) {
+                output = execSync(`fd -t f | grep ${state.fileFinderQuery} || true`).toString();
+            } else {
+                output = execSync(`fd -t f`).toString();
+            }
+            state.fileFindingOutput = output.split('\n');
+        }
     } else if (key === 'UP') {
         if (state.fileFinderIndex > 0) {
             state.fileFinderIndex -= 1;
@@ -19,22 +39,28 @@ function handleFileFinderKeys(key, state, screen) {
             state.fileFinderIndex = state.fileFindingOutput.length - 1;
         }
     } else if (key === 'DOWN') {
-        state.fileFinderIndex += 1;
+        if (state.fileFinderIndex < state.fileFindingOutput.length) {
+            state.fileFinderIndex += 1;
+        }
     } else if (key === 'ESCAPE') {
-        state.fileFinderQuery = '';
         state.mode = 'n';
+        state.fileFinderIndex = 0;
     } else if (key === 'ENTER') {
-        state.fileFinderQuery = '';
-        state.mode = 'n';
-        if (state.fileFindingOutput[state.fileFinderIndex] !== undefined) {
-            let convertedPath = state.fileFindingOutput[state.fileFinderIndex];
-            let fileExists = fs.existsSync(convertedPath);
+        let newFile = state.fileFindingOutput[state.fileFinderIndex];
+        let lineNum = 0;
+        if (state.mode === 'g') {
+            const arrayForm = newFile.split(':');
+            newFile = arrayForm[0];
+            lineNum = parseInt(arrayForm[1], 10);
+        }
+        if (newFile !== undefined) {
+            let fileExists = fs.existsSync(newFile);
             if (!fileExists) {
-                convertedPath += '.js';
-                fileExists = fs.existsSync(convertedPath);
+                newFile += '.js';
+                fileExists = fs.existsSync(newFile);
             }
             if (fileExists) {
-                state.file = convertedPath;
+                state.file = newFile;
                 state.files.push(state.file);
                 const snapshotsCopy = [];
                 for (let i = 0; i < state.snapshots.length; i += 1) {
@@ -54,11 +80,33 @@ function handleFileFinderKeys(key, state, screen) {
                 });
                 state.fileIndex = state.files.length - 1;
                 changeFile(state);
+                if (lineNum !== 0) {
+                    state.row = lineNum - 1;
+                    state.col = 0;
+                }
             }
         }
+        state.mode = 'n';
+        state.fileFinderIndex = 0;
     } else if (key === 'BACKSPACE') {
         if (state.fileFinderQuery.length > 0) {
             state.fileFinderQuery = state.fileFinderQuery.substring(0, state.fileFinderQuery.length - 1);
+        }
+        state.fileFinderIndex = 0;
+        if (state.mode === 'g') {
+            let output = '';
+            if (state.fileFinderQuery.length !== 0) {
+                output = execSync(`git grep -n ${state.fileFinderQuery} | head -n 100 | cut -c1-100`, { maxBuffer: 1024 * 1024 * 1000 }).toString();
+            }
+            state.fileFindingOutput = output.split('\n');
+        } else {
+            let output = '';
+            if (state.fileFinderQuery.length !== 0) {
+                output = execSync(`fd -t f | grep ${state.fileFinderQuery} || true`).toString();
+            } else {
+                output = execSync(`fd -t f`).toString();
+            }
+            state.fileFindingOutput = output.split('\n');
         }
     }
     renderScreen(state, screen);

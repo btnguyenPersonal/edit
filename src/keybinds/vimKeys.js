@@ -1074,70 +1074,74 @@ function handleVimKeys(key, state, screen) {
             if (state.harpoonIndex - 1 >= 0) {
                 state.harpoonIndex -= 1;
             }
-            state.file = state.files[state.harpoonIndexes[state.harpoonIndex]];
-            const snapshotsCopy = [];
-            for (let i = 0; i < state.snapshots.length; i += 1) {
-                snapshotsCopy.push(JSON.parse(JSON.stringify(state.snapshots[i])));
+            if (state.files[state.harpoonIndexes[state.harpoonIndex]] !== undefined) {
+                state.file = state.files[state.harpoonIndexes[state.harpoonIndex]];
+                const snapshotsCopy = [];
+                for (let i = 0; i < state.snapshots.length; i += 1) {
+                    snapshotsCopy.push(JSON.parse(JSON.stringify(state.snapshots[i])));
+                }
+                state.storePosition[state.fileIndex] = {
+                    row: state.row,
+                    col: state.col,
+                    windowLine: state.windowLine,
+                    windowLineHorizontal: state.windowLineHorizontal,
+                    currentSnapshot: state.currentSnapshot,
+                    snapshots: snapshotsCopy,
+                    savePoint: state.savePoint,
+                    mark: state.mark,
+                    prevRow: state.prevRow,
+                    prevCol: state.prevCol,
+                };
+                state.fileIndex = state.harpoonIndexes[state.harpoonIndex];
+                changeFile(state);
+                const pos = state.storePosition[state.fileIndex];
+                state.row = pos.row;
+                state.col = pos.col;
+                state.windowLine = pos.windowLine;
+                state.windowLineHorizontal = pos.windowLineHorizontal;
+                state.currentSnapshot = pos.currentSnapshot;
+                state.snapshots = pos.snapshots;
+                state.savePoint = pos.savePoint;
+                state.mark = pos.mark;
+                state.prevRow = pos.prevRow;
+                state.prevCol = pos.prevCol;
             }
-            state.storePosition[state.fileIndex] = {
-                row: state.row,
-                col: state.col,
-                windowLine: state.windowLine,
-                windowLineHorizontal: state.windowLineHorizontal,
-                currentSnapshot: state.currentSnapshot,
-                snapshots: snapshotsCopy,
-                savePoint: state.savePoint,
-                mark: state.mark,
-                prevRow: state.prevRow,
-                prevCol: state.prevCol,
-            };
-            state.fileIndex = state.harpoonIndexes[state.harpoonIndex];
-            changeFile(state);
-            const pos = state.storePosition[state.fileIndex];
-            state.row = pos.row;
-            state.col = pos.col;
-            state.windowLine = pos.windowLine;
-            state.windowLineHorizontal = pos.windowLineHorizontal;
-            state.currentSnapshot = pos.currentSnapshot;
-            state.snapshots = pos.snapshots;
-            state.savePoint = pos.savePoint;
-            state.mark = pos.mark;
-            state.prevRow = pos.prevRow;
-            state.prevCol = pos.prevCol;
         } else if (key === 'CTRL_E') {
             if (state.harpoonIndex + 1 < state.harpoonIndexes.length) {
                 state.harpoonIndex += 1;
             }
-            state.file = state.files[state.harpoonIndexes[state.harpoonIndex]];
-            const snapshotsCopy = [];
-            for (let i = 0; i < state.snapshots.length; i += 1) {
-                snapshotsCopy.push(JSON.parse(JSON.stringify(state.snapshots[i])));
+            if (state.files[state.harpoonIndexes[state.harpoonIndex]] !== undefined) {
+                state.file = state.files[state.harpoonIndexes[state.harpoonIndex]];
+                const snapshotsCopy = [];
+                for (let i = 0; i < state.snapshots.length; i += 1) {
+                    snapshotsCopy.push(JSON.parse(JSON.stringify(state.snapshots[i])));
+                }
+                state.storePosition[state.fileIndex] = {
+                    row: state.row,
+                    col: state.col,
+                    windowLine: state.windowLine,
+                    windowLineHorizontal: state.windowLineHorizontal,
+                    currentSnapshot: state.currentSnapshot,
+                    snapshots: snapshotsCopy,
+                    savePoint: state.savePoint,
+                    mark: state.mark,
+                    prevRow: state.prevRow,
+                    prevCol: state.prevCol,
+                };
+                state.fileIndex = state.harpoonIndexes[state.harpoonIndex];
+                changeFile(state);
+                const pos = state.storePosition[state.fileIndex];
+                state.row = pos.row;
+                state.col = pos.col;
+                state.windowLine = pos.windowLine;
+                state.windowLineHorizontal = pos.windowLineHorizontal;
+                state.currentSnapshot = pos.currentSnapshot;
+                state.snapshots = pos.snapshots;
+                state.savePoint = pos.savePoint;
+                state.mark = pos.mark;
+                state.prevRow = pos.prevRow;
+                state.prevCol = pos.prevCol;
             }
-            state.storePosition[state.fileIndex] = {
-                row: state.row,
-                col: state.col,
-                windowLine: state.windowLine,
-                windowLineHorizontal: state.windowLineHorizontal,
-                currentSnapshot: state.currentSnapshot,
-                snapshots: snapshotsCopy,
-                savePoint: state.savePoint,
-                mark: state.mark,
-                prevRow: state.prevRow,
-                prevCol: state.prevCol,
-            };
-            state.fileIndex = state.harpoonIndexes[state.harpoonIndex];
-            changeFile(state);
-            const pos = state.storePosition[state.fileIndex];
-            state.row = pos.row;
-            state.col = pos.col;
-            state.windowLine = pos.windowLine;
-            state.windowLineHorizontal = pos.windowLineHorizontal;
-            state.currentSnapshot = pos.currentSnapshot;
-            state.snapshots = pos.snapshots;
-            state.savePoint = pos.savePoint;
-            state.mark = pos.mark;
-            state.prevRow = pos.prevRow;
-            state.prevCol = pos.prevCol;
         } else if (key === 'CTRL_F') {
             state.replacing = true;
             state.mode = '/';
@@ -1386,6 +1390,8 @@ function handleVimKeys(key, state, screen) {
             state.data[state.row] = ' '.repeat(indentLevel) + state.data[state.row].trim();
             createSnapshot(state);
             goToCoor(state, state.mark);
+        } else if (key === 'CTRL_G') {
+            state.mode = 'g';
         } else if (key === 'CTRL_P') {
             state.mode = 'f';
         } else if (key === '\'') {

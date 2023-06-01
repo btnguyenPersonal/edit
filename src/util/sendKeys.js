@@ -35,7 +35,7 @@ function sendKeys(keys, state, screen) {
             handleVisualBlockKeys(keys[i], state, screen);
         } else if (state.vim && state.mode === 'v') {
             handleVisualKeys(keys[i], state, screen);
-        } else if (state.vim && state.mode === 'f') {
+        } else if (state.vim && (state.mode === 'f' || state.mode === 'g')) {
             handleFileFinderKeys(keys[i], state, screen);
         } else if (state.vim && state.mode === 'V') {
             handleVisualLineKeys(keys[i], state, screen);

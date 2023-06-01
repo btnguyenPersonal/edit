@@ -92,9 +92,6 @@ term.on('key', (key) => {
         if (key === 'CTRL_S') {
             saveFile(state);
             renderScreen(state, screen);
-        } else if (key === 'CTRL_G') {
-            term.fullscreen(false);
-            process.exit(2);
         } else if (key === 'CTRL_C') {
             term.fullscreen(false);
             process.exit(0);
