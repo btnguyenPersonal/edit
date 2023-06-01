@@ -531,9 +531,18 @@ function renderScreen(state, screen, noCenterScreen, fullRefresh) {
     if (state.data.length === 0) {
         state.data = [''];
     }
+    let tabBar = '';
+    tabBar += state.harpoonIndex;
+    screen.fill({ char: ' ' });
+    screen.moveTo(0, 0);
+    screen.put({ attr: { color: 'white' }, x: 0 }, '"' + state.file + ':' + (state.row + 1) + ':' + (state.col + 1) + '" ');
+    screen.put({ attr: { color: 'green' } }, '/' + state.searchQuery + ' ');
+    for (let i = 0; i < state.harpoonIndexes.length; i += 1) {
+        screen.put({ attr: { color: i === state.harpoonIndex ? 'yellow' : 'grey' } }, state.files[state.harpoonIndexes[i]] + ' ');
+    }
+    screen.put({ attr: { color: 'grey' }, x: process.stdout.columns - 20 }, state.commandHistory.slice(-20));
+    screen.put({ newLine: true }, '\n');
     if (state.mode === 'f') {
-        screen.fill({ char: ' ' });
-        screen.moveTo(0, 0);
         let output = '';
         if (state.fileFinderQuery.length !== 0) {
             output = execSync(`git ls-files | grep ${state.fileFinderQuery}* || true`).toString();
@@ -566,7 +575,7 @@ function renderScreen(state, screen, noCenterScreen, fullRefresh) {
         }
         screen.moveTo(
             state.fileFinderQuery.length + 2,
-            0
+            1
         );
         screen.draw({ delta: false });
         screen.drawCursor();
@@ -575,13 +584,7 @@ function renderScreen(state, screen, noCenterScreen, fullRefresh) {
             centerScreen(state);
         }
         getWindowLineHorizontal(state);
-        screen.fill({ char: ' ' });
-        screen.moveTo(0, 0);
         let mergeSection = 0;
-        screen.put({ attr: { color: 'white' }, x: 0 }, '"' + state.file + ':' + (state.row + 1) + ':' + (state.col + 1) + '" ');
-        screen.put({ attr: { color: 'green' } }, '/' + state.searchQuery + ' ');
-        screen.put({ attr: { color: 'grey' }, x: process.stdout.columns - 20 }, state.commandHistory.slice(-20));
-        screen.put({ newLine: true }, '\n');
         for (let i = state.windowLine; i < (state.windowLine + process.stdout.rows) - 1; i += 1) {
             if (state.data[i] !== undefined) {
                 screen.put({
