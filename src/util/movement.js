@@ -153,6 +153,7 @@ function isCommented(state, row) {
             case 'cobol':
             case 'properties':
             case 'cson':
+            case 'env':
                 return trimmedLine.startsWith('#');
             case 'css':
                 return trimmedLine.startsWith('/*') && trimmedLine.endsWith('*/');
@@ -273,6 +274,7 @@ function toggleComment(state, row, column, forceComment) {
             case 'cobol':
             case 'properties':
             case 'cson':
+            case 'env':
                 if (forceComment !== true && trimmedLine.startsWith('# ')) {
                     state.data[row] = leadingWhitespace + trimmedLine.slice(2);
                     break;

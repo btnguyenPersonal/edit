@@ -1,7 +1,6 @@
 /* eslint-disable import/no-cycle */
 import ncp from 'copy-paste';
 import fs from 'fs';
-import { execSync } from 'child_process';
 
 function getData(filepath) {
     try {
@@ -249,6 +248,7 @@ function getCommentString(state) {
         case 'cobol':
         case 'properties':
         case 'cson':
+        case 'env':
             commentString = '#';
             break;
         case 'css':
@@ -271,6 +271,9 @@ function commentStartsAt(state, row) {
     let inString = false;
     let disregardNext = false;
     let stringChar;
+    if (commentString === '') {
+        return -1;
+    }
     for (let i = 0; i < state.data[row].length; i += 1) {
         const s = state.data[row].substring(i, i + 1);
         if (s === stringChar && stringChar !== undefined && !disregardNext) {
@@ -538,18 +541,41 @@ function renderScreen(state, screen, noCenterScreen, fullRefresh) {
     screen.put({ attr: { color: 'white' }, x: 0 }, '"' + state.file + ':' + (state.row + 1) + ':' + (state.col + 1) + '" ');
     screen.put({ attr: { color: 'green' } }, '/' + state.searchQuery + ' ');
     for (let i = 0; i < state.harpoonIndexes.length; i += 1) {
-        screen.put({ attr: { color: i === state.harpoonIndex ? 'yellow' : 'grey' } }, state.files[state.harpoonIndexes[i]] + ' ');
+        screen.put({ attr: { color: i === state.harpoonIndex ? 'yellow' : 'grey' } }, state.files[state.harpoonIndexes[i]].slice(-20) + ' ');
     }
     screen.put({ attr: { color: 'grey' }, x: process.stdout.columns - 20 }, state.commandHistory.slice(-20));
     screen.put({ newLine: true }, '\n');
-    if (state.mode === 'f') {
-        let output = '';
-        if (state.fileFinderQuery.length !== 0) {
-            output = execSync(`git ls-files | grep ${state.fileFinderQuery}* || true`).toString();
-        } else {
-            output = execSync(`git ls-files`).toString();
+    if (state.mode === 'g') {
+        screen.put({
+            attr: {
+                color: 'green',
+            },
+            x: 0,
+            wrap: false
+        }, '> ');
+        screen.put({
+            attr: {
+                color: 'white',
+            },
+            wrap: false
+        }, state.fileFinderQuery);
+        for (let i = 0; i < state.fileFindingOutput.length; i += 1) {
+            screen.put({ newLine: true }, '\n');
+            screen.put({
+                attr: {
+                    color: state.fileFinderIndex === i ? 'green' : 'white',
+                },
+                x: 0,
+                wrap: false
+            }, state.fileFindingOutput[i]);
         }
-        state.fileFindingOutput = output.split('\n');
+        screen.moveTo(
+            state.fileFinderQuery.length + 2,
+            1
+        );
+        screen.draw({ delta: true });
+        screen.drawCursor();
+    } else if (state.mode === 'f') {
         screen.put({
             attr: {
                 color: 'red',
@@ -577,7 +603,7 @@ function renderScreen(state, screen, noCenterScreen, fullRefresh) {
             state.fileFinderQuery.length + 2,
             1
         );
-        screen.draw({ delta: false });
+        screen.draw({ delta: true });
         screen.drawCursor();
     } else if (state.allowCommandLogging) {
         if (!noCenterScreen && !isOnScreen(state)) {
