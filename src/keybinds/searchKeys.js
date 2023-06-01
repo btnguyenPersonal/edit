@@ -26,7 +26,7 @@ function handleSearchKeys(key, state, screen) {
             state.replaceQuery = '';
         } else if (key === 'BACKSPACE') {
             if (state.replaceQuery.length > 0) {
-                state.replaceQuery = state.searchQuery.substring(0, state.searchQuery.length - 1);
+                state.replaceQuery = state.replaceQuery.substring(0, state.replaceQuery.length - 1);
             }
         }
         logCommand(false, state, key);
