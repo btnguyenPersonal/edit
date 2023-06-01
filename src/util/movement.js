@@ -168,14 +168,23 @@ function isCommented(state, row) {
 }
 
 function uncommentBlock(state, row) {
-    for (let i = row; row >= 0; i -= 1) {
+    for (let i = row; i < state.data.length; i += 1) {
+        if (isCommented(state, i)) {
+            row = i;
+            state.row = i;
+            break;
+        } else {
+            row = i;
+        }
+    }
+    for (let i = row; i >= 0; i -= 1) {
         if (isCommented(state, i)) {
             toggleComment(state, i);
         } else {
             break;
         }
     }
-    for (let i = row + 1; row < state.data.length; i += 1) {
+    for (let i = row + 1; i < state.data.length; i += 1) {
         if (isCommented(state, i)) {
             toggleComment(state, i);
         } else {
