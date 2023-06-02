@@ -4,10 +4,7 @@ import { execSync } from 'child_process';
 import {
     renderScreen,
     isWritable,
-    searchForString,
-    createSnapshot,
     changeFile,
-    centerScreen
 } from '../util/helper.js';
 
 function handleFileFinderKeys(key, state, screen) {
@@ -28,7 +25,7 @@ function handleFileFinderKeys(key, state, screen) {
             if (state.fileFinderQuery.length !== 0) {
                 output = execSync(`fd -t f | grep ${state.fileFinderQuery} || true`).toString();
             } else {
-                output = execSync(`fd -t f`).toString();
+                output = execSync('fd -t f').toString();
             }
             state.fileFindingOutput = output.split('\n');
         }
@@ -43,6 +40,9 @@ function handleFileFinderKeys(key, state, screen) {
             state.fileFinderIndex += 1;
         }
     } else if (key === 'ESCAPE') {
+        if (state.mode === 'f') {
+            state.fileFinderQuery = '';
+        }
         state.mode = 'n';
         state.fileFinderIndex = 0;
     } else if (key === 'ENTER') {
@@ -52,6 +52,8 @@ function handleFileFinderKeys(key, state, screen) {
             const arrayForm = newFile.split(':');
             newFile = arrayForm[0];
             lineNum = parseInt(arrayForm[1], 10);
+        } else {
+            state.fileFinderQuery = '';
         }
         if (newFile !== undefined) {
             let fileExists = fs.existsSync(newFile);
@@ -104,7 +106,7 @@ function handleFileFinderKeys(key, state, screen) {
             if (state.fileFinderQuery.length !== 0) {
                 output = execSync(`fd -t f | grep ${state.fileFinderQuery} || true`).toString();
             } else {
-                output = execSync(`fd -t f`).toString();
+                output = execSync('fd -t f').toString();
             }
             state.fileFindingOutput = output.split('\n');
         }
