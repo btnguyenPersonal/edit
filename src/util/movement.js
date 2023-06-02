@@ -168,32 +168,6 @@ function isCommented(state, row) {
     }
 }
 
-function uncommentBlock(state, row) {
-    for (let i = row; i < state.data.length; i += 1) {
-        if (isCommented(state, i)) {
-            row = i;
-            state.row = i;
-            break;
-        } else {
-            row = i;
-        }
-    }
-    for (let i = row; i >= 0; i -= 1) {
-        if (isCommented(state, i)) {
-            toggleComment(state, i);
-        } else {
-            break;
-        }
-    }
-    for (let i = row + 1; i < state.data.length; i += 1) {
-        if (isCommented(state, i)) {
-            toggleComment(state, i);
-        } else {
-            break;
-        }
-    }
-}
-
 function toggleComment(state, row, column, forceComment) {
     if (!isEmptyRow(state, row)) {
         const extension = state.file.split('.').pop().toLowerCase();
@@ -327,6 +301,32 @@ function toggleComment(state, row, column, forceComment) {
                 }
             default:
                 break;
+        }
+    }
+}
+
+function uncommentBlock(state, row) {
+    for (let i = row; i < state.data.length; i += 1) {
+        if (isCommented(state, i)) {
+            row = i;
+            state.row = i;
+            break;
+        } else {
+            row = i;
+        }
+    }
+    for (let i = row; i >= 0; i -= 1) {
+        if (isCommented(state, i)) {
+            toggleComment(state, i);
+        } else {
+            break;
+        }
+    }
+    for (let i = row + 1; i < state.data.length; i += 1) {
+        if (isCommented(state, i)) {
+            toggleComment(state, i);
+        } else {
+            break;
         }
     }
 }

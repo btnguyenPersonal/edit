@@ -534,8 +534,6 @@ function renderScreen(state, screen, noCenterScreen, fullRefresh) {
     if (state.data.length === 0) {
         state.data = [''];
     }
-    let tabBar = '';
-    tabBar += state.harpoonIndex;
     screen.fill({ char: ' ' });
     screen.moveTo(0, 0);
     screen.put({ attr: { color: 'white' }, x: 0 }, '"' + state.file + ':' + (state.row + 1) + ':' + (state.col + 1) + '" ');

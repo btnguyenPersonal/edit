@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "node src/edit.js longtest.js",
     "lint": "eslint .",
+    "build": "npx esbuild src/edit.js --bundle --platform=node --packages=external --outfile=build/out.cjs",
     "test": "npx mocha ./test/**/*.spec.js"
   },
   "repository": {
@@ -20,16 +21,17 @@
   "homepage": "https://github.com/btnguyenPersonal/edit#readme",
   "dependencies": {
     "copy-paste": "1.1.3",
+    "esbuild": "^0.17.19",
     "terminal-kit": "3.0.0"
   },
   "devDependencies": {
-    "mocha": "10.2.0",
     "chai": "4.3.7",
-    "sinon": "15.0.1",
-    "sinon-chai": "3.7.0",
     "eslint": "8.34.0",
     "eslint-config-airbnb-base": "15.0.0",
-    "eslint-plugin-import": "2.27.5"
+    "eslint-plugin-import": "2.27.5",
+    "mocha": "10.2.0",
+    "sinon": "15.0.1",
+    "sinon-chai": "3.7.0"
   },
   "bin": {
     "edit": "bun run ./src/edit.js"

@@ -1413,7 +1413,7 @@ function handleVimKeys(key, state, screen) {
             if (!state.harpoonIndexes.includes(state.fileIndex)) {
                 state.harpoonIndexes.push(state.fileIndex);
             } else {
-                state.harpoonIndexes = state.harpoonIndexes.filter(e => e !== state.fileIndex)
+                state.harpoonIndexes = state.harpoonIndexes.filter(((e) => (e !== state.fileIndex)));
             }
         } else if (key === ',') {
             state.allowCommandLogging = false;
