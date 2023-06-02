@@ -8,26 +8,26 @@ plfffffffffffffffffffffffffffffffff
  I w  a to m am for the  that afsjld
 it(() => {
     fs
-        te = systemPaste.split('\n');
+        te = nodePaste.split('\n');
         aste.split('\n');
         mPaste.split('\n');
 
-        systemPaste = systemPaste.split('\n');
+        nodePaste = nodePaste.split('\n');
     fs
     fs
-        systemPaste systemPaste = systemPaste.split('\n');
-        systemPaste = systemPaste.split('\n');
-        testing stuff = systemPaste.split('\n');
-        systemPaste = systemPaste.split('\n');
-        systemPaste = systemPaste.split('\n');
-        systemPaste = systemPaste.split('\n');
-        systemPaste = systemPaste.split('\n');
-        systemPaste = systemPaste.split('\n');
-        systemPaste = systemPaste.split('\n');
+        nodePaste nodePaste = nodePaste.split('\n');
+        nodePaste = nodePaste.split('\n');
+        testing stuff = nodePaste.split('\n');
+        nodePaste = nodePaste.split('\n');
+        nodePaste = nodePaste.split('\n');
+        nodePaste = nodePaste.split('\n');
+        nodePaste = nodePaste.split('\n');
+        nodePaste = nodePaste.split('\n');
+        nodePaste = nodePaste.split('\n');
     fs
 });
 
-            systemPaste = systemPaste.split('\n');
+            nodePaste = nodePaste.split('\n');
         testing
     });
 
