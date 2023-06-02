@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "node src/edit.js longtest.js",
     "lint": "eslint .",
-    "build": "npx esbuild src/edit.js --bundle --platform=node --packages=external --outfile=build/out.cjs",
+    "build": "npx esbuild src/edit.js --bundle --minify --platform=node --packages=external --outfile=build/out.cjs",
     "test": "npx mocha ./test/**/*.spec.js"
   },
   "repository": {
