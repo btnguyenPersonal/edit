@@ -637,7 +637,7 @@ function renderScreen(state, screen, noCenterScreen, fullRefresh) {
                 );
                 let displayRow = state.data[i];
                 if (state.replacing) {
-                    displayRow = displayRow.replace(state.searchQuery, state.replaceQuery);
+                    displayRow = displayRow.replaceAll(state.searchQuery, state.replaceQuery);
                 }
                 for (let j = state.windowLineHorizontal; j < displayRow.length; j += 1) {
                     let color = colorRow[j];

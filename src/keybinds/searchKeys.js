@@ -20,7 +20,7 @@ function handleSearchKeys(key, state, screen) {
             state.replacing = false;
             state.mode = 'n';
             for (let i = 0; i < state.data.length; i += 1) {
-                state.data[i] = state.data[i].replace(state.searchQuery, state.replaceQuery);
+                state.data[i] = state.data[i].replaceAll(state.searchQuery, state.replaceQuery);
             }
             createSnapshot(state);
             state.replaceQuery = '';
