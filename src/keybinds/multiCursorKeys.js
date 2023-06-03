@@ -103,7 +103,7 @@ function handleMultiCursorKeys(key, state, screen) {
                 increaseIndentLevel(state, r);
             }
         }
-        state.col += 4;
+        state.col += state.indentAmount;
         if (!state.vim) {
             createSnapshot(state);
         }
@@ -117,7 +117,7 @@ function handleMultiCursorKeys(key, state, screen) {
                 decreaseIndentLevel(state, r);
             }
         }
-        state.col = state.col - 4 >= 0 ? state.col - 4 : 0;
+        state.col = state.col - state.indentAmount >= 0 ? state.col - state.indentAmount : 0;
         if (!state.vim) {
             createSnapshot(state);
         }
