@@ -24,22 +24,22 @@ function sendKeys(keys, state, screen) {
         } else {
             state.commandHistory += keys[i];
         }
-        if (state.allowCommandLogging && state.recording && !(state.vim && state.mode === 'n' && keys[i] === 'q')) {
+        if (state.allowCommandLogging && state.recording && !(state.mode === 'n' && keys[i] === 'q')) {
             state.macro.push(keys[i]);
         }
-        if (state.vim && state.mode === '/') {
+        if (state.mode === '/') {
             handleSearchKeys(keys[i], state, screen);
-        } else if (state.vim && state.mode === 'MULTI_CURSOR') {
+        } else if (state.mode === 'MULTI_CURSOR') {
             handleMultiCursorKeys(keys[i], state, screen);
-        } else if (state.vim && state.mode === 'CTRL_V') {
+        } else if (state.mode === 'CTRL_V') {
             handleVisualBlockKeys(keys[i], state, screen);
-        } else if (state.vim && state.mode === 'v') {
+        } else if (state.mode === 'v') {
             handleVisualKeys(keys[i], state, screen);
-        } else if (state.vim && (state.mode === 'f' || state.mode === 'g')) {
+        } else if ((state.mode === 'f' || state.mode === 'g')) {
             handleFileFinderKeys(keys[i], state, screen);
-        } else if (state.vim && state.mode === 'V') {
+        } else if (state.mode === 'V') {
             handleVisualLineKeys(keys[i], state, screen);
-        } else if (state.vim && (state.mode === 'n' || state.mode === 'r')) {
+        } else if ((state.mode === 'n' || state.mode === 'r')) {
             handleVimKeys(keys[i], state, screen);
         } else {
             handleKeys(keys[i], state, screen);

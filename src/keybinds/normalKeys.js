@@ -37,16 +37,10 @@ function handleKeys(key, state, screen) {
             state.data[state.row] += state.data[state.row + 1];
             state.data.splice(state.row + 1, 1);
         }
-        if (!state.vim) {
-            createSnapshot(state);
-        }
     } else if (key === 'CTRL_W') {
         const coor = getCoorBeginningLastWord(state);
         state.data[state.row] = state.data[state.row].substring(0, coor) + state.data[state.row].substring(state.col + 1);
         state.col = coor;
-        if (!state.vim) {
-            createSnapshot(state);
-        }
     } else if (key === 'BACKSPACE') {
         if (state.col > 0) {
             state.data[state.row] = state.data[state.row].substring(0, state.col - 1)
@@ -57,9 +51,6 @@ function handleKeys(key, state, screen) {
             state.data[state.row - 1] += state.data[state.row];
             state.data.splice(state.row, 1);
             state.row -= 1;
-        }
-        if (!state.vim) {
-            createSnapshot(state);
         }
     } else if (key === 'ENTER') {
         let indentLevel = state.data[state.row].search(/\S|$/);
@@ -82,21 +73,12 @@ function handleKeys(key, state, screen) {
         if (state.row >= state.windowLine + process.stdout.rows - 1) {
             state.windowLine += 1;
         }
-        if (!state.vim) {
-            createSnapshot(state);
-        }
     } else if (key === 'TAB') {
         increaseIndentLevel(state, state.row);
         state.col += 4;
-        if (!state.vim) {
-            createSnapshot(state);
-        }
     } else if (key === 'SHIFT_TAB') {
         decreaseIndentLevel(state, state.row);
         state.col = state.col - 4 >= 0 ? state.col - 4 : 0;
-        if (!state.vim) {
-            createSnapshot(state);
-        }
     } else if (key === 'CTRL_A') {
         state.col = firstNonSpace(state, state.row);
     } else if (key === 'CTRL_E') {
@@ -115,30 +97,15 @@ function handleKeys(key, state, screen) {
             state.data[state.row] = ' '.repeat(indentLevel) + state.data[state.row].trim();
             state.col = firstNonSpace(state, state.row) + 1;
         }
-        if (!state.vim) {
-            createSnapshot(state);
-        }
     } else if (key === 'ESCAPE') {
-        if (state.vim && isEmptyRow(state, state.row)) {
+        if (isEmptyRow(state, state.row)) {
             state.data[state.row] = '';
         }
         left(state);
         state.mode = 'n';
-        if (state.vim) {
-            createSnapshot(state);
-        }
-    } else if (!state.vim && key === 'CTRL_Y') {
-        if (state.currentSnapshot + 1 < state.snapshots.length) {
-            applySnapshot(state, state.currentSnapshot + 1);
-        }
-    } else if (!state.vim && key === 'CTRL_Z') {
-        if (state.currentSnapshot - 1 >= 0) {
-            applySnapshot(state, state.currentSnapshot - 1);
-        }
+        createSnapshot(state);
     }
-    if (state.vim) {
-        logCommand(false, state, key);
-    }
+    logCommand(false, state, key);
     renderScreen(state, screen);
 }
 
