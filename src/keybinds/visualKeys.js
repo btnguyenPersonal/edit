@@ -1,4 +1,5 @@
 /* eslint-disable import/no-cycle */
+import { execSync } from 'child_process';
 import ncp from 'copy-paste';
 import path from 'path';
 import fs from 'fs';
@@ -310,6 +311,17 @@ function handleVisualKeys(key, state, screen) {
                 state.prevCol = pos.prevCol;
             }
         }
+    } else if (key === '#') {
+        state.fileFinderQuery = getInVisual(state);
+        state.mode = 'g';
+        let output = '';
+        if (state.fileFinderQuery.length !== 0) {
+            output = execSync(
+                `git grep -n "${state.fileFinderQuery}" || true`,
+                { maxBuffer: 1024 * 1024 * 1000 }
+            ).toString();
+        }
+        state.fileFindingOutput = output.split('\n');
     } else if (key === '*') {
         state.searchQuery = getInVisual(state);
         state.mode = 'n';
