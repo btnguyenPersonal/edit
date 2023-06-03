@@ -1,4 +1,5 @@
 /* eslint-disable import/no-cycle */
+import { execSync } from 'child_process';
 import {
     pasteFromClipboardBefore,
     pasteFromClipboardAfter,
@@ -1385,7 +1386,7 @@ function handleVimKeys(key, state, screen) {
         } else if (key === '=') {
             let indentLevel = state.row - 1 < 0 ? 0 : getIndentLevelFrom(state, state.row - 1);
             if (state.data[state.row].trim().startsWith(')') || state.data[state.row].trim().startsWith('}')) {
-                indentLevel = indentLevel - 4 >= 0 ? indentLevel - 4 : 0;
+                indentLevel = indentLevel - state.indentAmount >= 0 ? indentLevel - state.indentAmount : 0;
             }
             state.data[state.row] = ' '.repeat(indentLevel) + state.data[state.row].trim();
             createSnapshot(state);
@@ -1394,6 +1395,14 @@ function handleVimKeys(key, state, screen) {
             state.mode = 'g';
         } else if (key === 'CTRL_P') {
             state.mode = 'f';
+            state.fileFinderQuery = '';
+            let output = '';
+            if (state.fileFinderQuery.length !== 0) {
+                output = execSync(`fd -t f | grep ${state.fileFinderQuery} || true`).toString();
+            } else {
+                output = execSync('fd -t f').toString();
+            }
+            state.fileFindingOutput = output.split('\n');
         } else if (key === '\'') {
             state.row = state.mark;
         } else if (key === 'm') {
