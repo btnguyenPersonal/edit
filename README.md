@@ -6,10 +6,10 @@ this is my experiment for making a new code editor
 ```
 npm i
 npm run build
-echo 'alias edit="node ~/git/edit/build/out.cjs"' >> ~/.bashrc
+echo 'alias e="node ~/git/edit/build/out.cjs"' >> ~/.bashrc
 ```
-that's it, you should just be able to run `edit file.js` in your command line and it should work!
-also, just starting as `edit` should start you out with searching for the file you want 
+that's it, you should just be able to run `e path/to/file.js` in your command line and it should work!
+also, just starting as `e` should start you out with searching for the file you want 
 
 # keybinds
 ### vim mode (starts in this mode and has all the shortcuts)
