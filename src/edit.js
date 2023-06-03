@@ -75,7 +75,8 @@ const state = {
     savePoint: 0,
     recording: false,
     macro: [],
-    mark: -1
+    mark: -1,
+    indentAmount: 4
 };
 
 term.grabInput({ mouse: 'button' });

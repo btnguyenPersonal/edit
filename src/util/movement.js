@@ -69,7 +69,7 @@ function nextSameIndentLevel(state, row) {
 function previousLowerIndentLevel(state, row) {
     const currentIndent = getIndentLevel(state, row);
     for (let i = row - 1; i >= 0; i -= 1) {
-        if (getIndentLevel(state, i) === currentIndent - 4) {
+        if (getIndentLevel(state, i) === currentIndent - state.indentAmount) {
             state.row = i;
             state.col = firstNonSpace(state, i);
             break;
@@ -80,7 +80,7 @@ function previousLowerIndentLevel(state, row) {
 function nextLowerIndentLevel(state, row) {
     const currentIndent = getIndentLevel(state, row);
     for (let i = row + 1; i < state.data.length; i += 1) {
-        if (getIndentLevel(state, i) === currentIndent - 4) {
+        if (getIndentLevel(state, i) === currentIndent - state.indentAmount) {
             state.row = i;
             state.col = firstNonSpace(state, i);
             break;
@@ -424,7 +424,7 @@ function getCoorForwardWord(state) {
 
 function getCoorBeginningNextWord(state) {
     let hasHitNonAlphaNum = false;
-    for (let i = state.col; i < state.data[state.row].length - 1; i += 1) {
+    for (let i = state.col; i < state.data[state.row].length; i += 1) {
         if (hasHitNonAlphaNum && isAlphaNumeric(state.data[state.row].charAt(i))) {
             return i;
         } else if (!hasHitNonAlphaNum) {
@@ -465,13 +465,13 @@ function goToCoor(state, row) {
 }
 
 function increaseIndentLevel(state, row) {
-    state.data[row] = '    ' + state.data[row];
+    state.data[row] = ' '.repeat(state.indentAmount) + state.data[row];
 }
 
 function decreaseIndentLevel(state, row) {
     let tempLine = state.data[row];
     let dont = false;
-    for (let i = 3; i >= 0; i -= 1) {
+    for (let i = state.indentAmount - 1; i >= 0; i -= 1) {
         if (dont) {
             break;
         }
@@ -652,11 +652,11 @@ function getIndentLevelFrom(state, row, inverse) {
     let indentLevel = getIndentLevel(state, row);
     if (inverse) {
         if (state.data[row].startsWith('}') || state.data[row].startsWith(')')) {
-            indentLevel += 4;
+            indentLevel += state.indentAmount;
         }
     } else {
         if (state.data[row].endsWith('{') || state.data[row].endsWith('(')) {
-            indentLevel += 4;
+            indentLevel += state.indentAmount;
         }
     }
     return indentLevel >= 0 ? indentLevel : 0;
