@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import { execSync } from 'child_process';
 import pkg from 'terminal-kit';
 import {
     saveFile,
@@ -12,23 +13,10 @@ import { handleMouseInputs } from './keybinds/mouse.js';
 
 const { terminal, ScreenBuffer } = pkg;
 
-function getFile() {
-    try {
-        const file = process.argv[2];
-        if (file === undefined) {
-            throw new Error('input file not found\nusage: edit [file]');
-        }
-        return file;
-    } catch (e) {
-        process.exit();
-    }
-}
-
 const term = terminal();
-const filepath = getFile();
 const state = {
-    allowCommandLogging: false,
-    mode: 'n',
+    allowCommandLogging: true,
+    mode: 'f',
     clipboardVisualBlock: false,
     searchQuery: '',
     searching: false,
@@ -56,16 +44,16 @@ const state = {
     previousKeys: '',
     commandHistory: '',
     previousCommand: [],
-    file: filepath,
+    file: '',
     harpoonIndex: 0,
     harpoonIndexes: [],
     files: [],
     storePosition: [],
     fileIndex: 0,
-    data: getData(filepath),
-    row: Number.isInteger(parseInt(process.argv[3])) && parseInt(process.argv[3]) - 1 >= 0 ? parseInt(process.argv[3]) - 1 : 0,
+    data: [],
+    row: 0,
     col: 0,
-    prevRow: Number.isInteger(parseInt(process.argv[3])) && parseInt(process.argv[3]) - 1 >= 0 ? parseInt(process.argv[3]) - 1 : 0,
+    prevRow: 0,
     prevCol: 0,
     windowLine: 0,
     windowLineHorizontal: 0,
@@ -81,10 +69,7 @@ const state = {
 term.grabInput({ mouse: 'button' });
 term.fullscreen(true);
 const screen = new ScreenBuffer({ dst: term, noFill: true });
-centerScreen(state);
-createSnapshot(state);
-state.allowCommandLogging = true;
-state.files.push(state.file);
+state.fileFindingOutput = execSync('fd -t f').toString().split('\n');
 renderScreen(state, screen);
 
 term.on('key', (key) => {

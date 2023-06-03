@@ -4,7 +4,7 @@
   "description": "code editor experiment",
   "type": "module",
   "scripts": {
-    "dev": "node src/edit.js longtest.js",
+    "dev": "node src/edit.js",
     "lint": "eslint .",
     "build": "npx esbuild src/edit.js --bundle --minify --platform=node --packages=external --outfile=build/out.cjs",
     "test": "npx mocha ./test/**/*.spec.js"
