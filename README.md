@@ -9,12 +9,14 @@ npm run build
 echo 'alias edit="node ~/git/edit/build/out.cjs"' >> ~/.bashrc
 ```
 that's it, you should just be able to run `edit file.js` in your command line and it should work!
-> haven't made it to make a new file if there isn't one yet
+also, just starting as `edit` should start you out with searching for the file you want 
 
 # keybinds
 ### vim mode (starts in this mode and has all the shortcuts)
 |key|function|
 |:---:|:---:|
+|ctrl p|search for file in project|
+|ctrl g|find occurrences of text in project|
 |h or left|move left one|
 |j or down|move down one|
 |k or up|move up one|
@@ -49,6 +51,9 @@ that's it, you should just be able to run `edit file.js` in your command line an
 |&#92;|reload file (if external program has changed it)|
 |.|repeat last command|
 |=|format indent for current line|
+|ctrl i/o|switch between all files you have visited before|
+|ctrl w/e|switch between tabs|
+|M|toggle current file as a tab|
 |m|mark line in file|
 |'|return to mark|
 |<>|change indent level|
@@ -112,6 +117,8 @@ that's it, you should just be able to run `edit file.js` in your command line an
 |gc| comment / uncomment|
 |<>| change indent|
 |iw| highlight word|
+|*| search in file for current highlighted text|
+|#| search in project for current highlighted text|
 |i<([{}])>| highlight inside of any bracket type|
 |ESCAPE|go to vim mode|
 

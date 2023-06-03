@@ -13,10 +13,15 @@ import { handleMouseInputs } from './keybinds/mouse.js';
 
 const { terminal, ScreenBuffer } = pkg;
 
+function getFile() {
+    return process.argv[2];
+}
+
 const term = terminal();
+const filePath = getFile();
 const state = {
-    allowCommandLogging: true,
-    mode: 'f',
+    allowCommandLogging: false,
+    mode: filePath === undefined ? 'f' : 'n',
     clipboardVisualBlock: false,
     searchQuery: '',
     searching: false,
@@ -44,13 +49,13 @@ const state = {
     previousKeys: '',
     commandHistory: '',
     previousCommand: [],
-    file: '',
+    file: filePath === undefined ? '' : filePath,
     harpoonIndex: 0,
     harpoonIndexes: [],
     files: [],
     storePosition: [],
     fileIndex: 0,
-    data: [],
+    data: filePath === undefined ? [] : getData(filePath),
     row: 0,
     col: 0,
     prevRow: 0,
@@ -69,7 +74,15 @@ const state = {
 term.grabInput({ mouse: 'button' });
 term.fullscreen(true);
 const screen = new ScreenBuffer({ dst: term, noFill: true });
-state.fileFindingOutput = execSync('fd -t f').toString().split('\n');
+if (filePath !== undefined) {
+    centerScreen(state);
+    createSnapshot(state);
+    state.allowCommandLogging = true;
+    state.files.push(state.file);
+} else {
+    state.fileFindingOutput = execSync('fd -t f').toString().split('\n');
+}
+state.allowCommandLogging = true;
 renderScreen(state, screen);
 
 term.on('key', (key) => {
