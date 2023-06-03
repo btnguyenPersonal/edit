@@ -1393,6 +1393,14 @@ function handleVimKeys(key, state, screen) {
             goToCoor(state, state.mark);
         } else if (key === 'CTRL_G') {
             state.mode = 'g';
+            let output = '';
+            if (state.fileFinderQuery.length !== 0) {
+                output = execSync(
+                    `git grep -n ${state.fileFinderQuery} || true`,
+                    { maxBuffer: 1024 * 1024 * 1000 }
+                ).toString();
+            }
+            state.fileFindingOutput = output.split('\n');
         } else if (key === 'CTRL_P') {
             state.mode = 'f';
             state.fileFinderQuery = '';
