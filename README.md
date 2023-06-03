@@ -6,9 +6,10 @@ this is my experiment for making a new code editor
 ```
 npm i
 npm run build
-npm i -g .
+echo 'alias edit="node ~/git/edit/build/out.cjs"' >> ~/.bashrc
 ```
 that's it, you should just be able to run `edit file.js` in your command line and it should work!
+> haven't made it to make a new file if there isn't one yet
 
 # keybinds
 ### vim mode (starts in this mode and has all the shortcuts)
@@ -118,7 +119,7 @@ that's it, you should just be able to run `edit file.js` in your command line an
 usually put this in my ~/.bashrc:
 > this will let you use ctrl-p to change files and ctrl-g to search in project
 ```
-alias edit="bun run ~/src/edit/edit.js"
+alias edit="node ~/git/edit/build/out.cjs"
 function g() {
     command=$(rg --color=always --column --line-number --no-heading --smart-case "${*:-}" |
         fzf --ansi \
@@ -129,53 +130,11 @@ function g() {
             --preview 'batcat --color=always {1} --highlight-line {2}' \
             --preview-window 'up,60%,border-bottom,+{2}+3/3,~3' \
             --bind "enter:execute(echo {1} {2} {q})+abort");
-    until file=$(echo "$command" | cut -d' ' -f1-2) query=$(echo "$command" | cut -d' ' -f3-) && edit $command; do
-        if [[ $? -eq 1 ]]; then
-            clear;
-            command="`fzf --reverse` 0 $query";
-            if [[ "$(echo "${command}" | awk '{print $1}')" == "0" ]]; then
-                command="$file $query"
-            fi
-        else
-            command=$(rg --color=always --column --line-number --no-heading --smart-case "${*:-}" |
-                fzf --ansi \
-                    --bind "change:reload:sleep 0.1; rg --column --line-number --no-heading --color=always --smart-case {q} || true" \
-                    --query "$query" \
-                    --delimiter : \
-                    --reverse \
-                    --preview 'batcat --color=always {1} --highlight-line {2}' \
-                    --preview-window 'up,60%,border-bottom,+{2}+3/3,~3' \
-                    --bind "enter:execute(echo {1} {2} {q})+abort");
-            if [ -z "${command// }" ]; then
-                command="$file $query"
-            fi
-        fi
-    done;
+    edit $command
 }
 function e() {
-    command="`fzf --reverse` 0 $query"
-    until file=$(echo "$command" | cut -d' ' -f1-2) query=$(echo "$command" | cut -d' ' -f3-) && edit $command; do
-        if [[ $? -eq 1 ]]; then
-            clear;
-            command="`fzf --reverse` 0 $query";
-            if [[ "$(echo "${command}" | awk '{print $1}')" == "0" ]]; then
-                command="$file $query"
-            fi
-        else
-            command=$(rg --color=always --column --line-number --no-heading --smart-case "${*:-}" |
-                fzf --ansi \
-                    --bind "change:reload:sleep 0.1; rg --column --line-number --no-heading --color=always --smart-case {q} || true" \
-                    --query "$query" \
-                    --delimiter : \
-                    --reverse \
-                    --preview 'batcat --color=always {1} --highlight-line {2}' \
-                    --preview-window 'up,60%,border-bottom,+{2}+3/3,~3' \
-                    --bind "enter:execute(echo '{1} {2} {q}')+abort");
-            if [ -z "${command// }" ]; then
-                command="$file $query"
-            fi
-        fi
-    done;
+    command="`fzf --reverse` $query"
+    edit $command
 }
 export FZF_DEFAULT_COMMAND='rg --files --hidden --glob "!.git"'
 ```
