@@ -228,27 +228,87 @@ function handleVisualKeys(key, state, screen) {
             fileExists = fs.existsSync(convertedPath);
         }
         if (fileExists) {
-            state.file = convertedPath;
-            state.files.push(state.file);
-            const snapshotsCopy = [];
-            for (let i = 0; i < state.snapshots.length; i += 1) {
-                snapshotsCopy.push(JSON.parse(JSON.stringify(state.snapshots[i])));
+            if (!state.files.includes(newFile)) {
+                state.file = newFile;
+                state.files.push(state.file);
+                const snapshotsCopy = [];
+                for (let i = 0; i < state.snapshots.length; i += 1) {
+                    snapshotsCopy.push(JSON.parse(JSON.stringify(state.snapshots[i])));
+                }
+                if (state.files.includes(state.file)) {
+                    state.storePosition[state.fileIndex] = {
+                        row: state.row,
+                        col: state.col,
+                        windowLine: state.windowLine,
+                        windowLineHorizontal: state.windowLineHorizontal,
+                        snapshots: snapshotsCopy,
+                        savePoint: state.savePoint,
+                        mark: state.mark,
+                        prevRow: state.prevRow,
+                        prevCol: state.prevCol,
+                    };
+                } else {
+                    state.storePosition.push({
+                        row: state.row,
+                        col: state.col,
+                        windowLine: state.windowLine,
+                        windowLineHorizontal: state.windowLineHorizontal,
+                        currentSnapshot: state.currentSnapshot,
+                        snapshots: snapshotsCopy,
+                        savePoint: state.savePoint,
+                        mark: state.mark,
+                        prevRow: state.prevRow,
+                        prevCol: state.prevCol,
+                    });
+                }
+                state.fileIndex = state.files.length - 1;
+                changeFile(state);
+            } else {
+                const snapshotsCopy = [];
+                for (let i = 0; i < state.snapshots.length; i += 1) {
+                    snapshotsCopy.push(JSON.parse(JSON.stringify(state.snapshots[i])));
+                }
+                if (state.files.includes(state.file)) {
+                    state.storePosition[state.fileIndex] = {
+                        row: state.row,
+                        col: state.col,
+                        windowLine: state.windowLine,
+                        windowLineHorizontal: state.windowLineHorizontal,
+                        snapshots: snapshotsCopy,
+                        savePoint: state.savePoint,
+                        mark: state.mark,
+                        prevRow: state.prevRow,
+                        prevCol: state.prevCol,
+                    };
+                } else {
+                    state.storePosition.push({
+                        row: state.row,
+                        col: state.col,
+                        windowLine: state.windowLine,
+                        windowLineHorizontal: state.windowLineHorizontal,
+                        currentSnapshot: state.currentSnapshot,
+                        snapshots: snapshotsCopy,
+                        savePoint: state.savePoint,
+                        mark: state.mark,
+                        prevRow: state.prevRow,
+                        prevCol: state.prevCol,
+                    });
+                }
+                state.file = newFile;
+                state.fileIndex = state.files.indexOf(state.file);
+                changeFile(state);
+                const pos = state.storePosition[state.fileIndex];
+                state.row = pos.row;
+                state.col = pos.col;
+                state.windowLine = pos.windowLine;
+                state.windowLineHorizontal = pos.windowLineHorizontal;
+                state.currentSnapshot = pos.currentSnapshot;
+                state.snapshots = pos.snapshots;
+                state.savePoint = pos.savePoint;
+                state.mark = pos.mark;
+                state.prevRow = pos.prevRow;
+                state.prevCol = pos.prevCol;
             }
-            state.storePosition.push({
-                row: state.row,
-                col: state.col,
-                windowLine: state.windowLine,
-                windowLineHorizontal: state.windowLineHorizontal,
-                currentSnapshot: state.currentSnapshot,
-                snapshots: snapshotsCopy,
-                savePoint: state.savePoint,
-                mark: state.mark,
-                prevRow: state.prevRow,
-                prevCol: state.prevCol,
-            });
-            state.fileIndex = state.files.length - 1;
-            state.previousKeys = '';
-            changeFile(state);
         }
     } else if (key === '*') {
         state.searchQuery = getInVisual(state);
