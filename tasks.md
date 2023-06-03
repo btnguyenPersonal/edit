@@ -1,19 +1,20 @@
 ## backlog
-    - add tests
-        - mouse inputs done (might need to add drag select later)
-        - helper functions for terminal done
-        - normal keys
-        - vim keys (bruh)
-    - file explorer
+    - drag select for visualLine
+    - clearall for fileFinding
 ## todo
     - every rerender don't have to recalculate the color each time
-    - get rid of process.stdout.row and use screen.height screen.width (will make easier to make status bar)
     - compartmentalize stuff into more functions
+    - cis
+    - take out i for di ci
+    - case insensitive search
+    - visualLine work with replace
     - add = work with html tags
 ## blocked
 ## in progress
-    - case insensitive search
+    - start program with fileFinding
 ## done
+    - get rid of state.vim
+    - get rid of process.stdout.row and use screen.height screen.width (will make easier to make status bar) (passing around the screen isn't good)
     - show search string (useful)
     - numbers start the -
     - until status bar >> do i really need?

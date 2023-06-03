@@ -40,9 +40,6 @@ function handleMultiCursorKeys(key, state, screen) {
                 }
             }
         }
-        if (!state.vim) {
-            createSnapshot(state);
-        }
     } else if (key === 'CTRL_W') {
         let coor;
         if (state.row < state.visualBlock.row) {
@@ -57,9 +54,6 @@ function handleMultiCursorKeys(key, state, screen) {
             }
         }
         state.col = coor;
-        if (!state.vim) {
-            createSnapshot(state);
-        }
     } else if (key === 'BACKSPACE') {
         let moveBack = false;
         if (state.row < state.visualBlock.row) {
@@ -90,9 +84,6 @@ function handleMultiCursorKeys(key, state, screen) {
         if (moveBack) {
             state.col -= 1;
         }
-        if (!state.vim) {
-            createSnapshot(state);
-        }
     } else if (key === 'TAB') {
         if (state.row < state.visualBlock.row) {
             for (let r = state.row; r < state.visualBlock.row + 1; r += 1) {
@@ -104,9 +95,6 @@ function handleMultiCursorKeys(key, state, screen) {
             }
         }
         state.col += state.indentAmount;
-        if (!state.vim) {
-            createSnapshot(state);
-        }
     } else if (key === 'SHIFT_TAB') {
         if (state.row < state.visualBlock.row) {
             for (let r = state.row; r < state.visualBlock.row + 1; r += 1) {
@@ -118,9 +106,6 @@ function handleMultiCursorKeys(key, state, screen) {
             }
         }
         state.col = state.col - state.indentAmount >= 0 ? state.col - state.indentAmount : 0;
-        if (!state.vim) {
-            createSnapshot(state);
-        }
     } else if (key === 'CTRL_A') {
         state.col = firstNonSpace(state, state.row);
     } else if (key === 'CTRL_E') {
@@ -141,30 +126,15 @@ function handleMultiCursorKeys(key, state, screen) {
             }
         }
         state.col += 1;
-        if (!state.vim) {
-            createSnapshot(state);
-        }
     } else if (key === 'ESCAPE') {
-        if (state.vim && isEmptyRow(state, state.row)) {
+        if (isEmptyRow(state, state.row)) {
             state.data[state.row] = '';
         }
         left(state);
         state.mode = 'n';
-        if (state.vim) {
-            createSnapshot(state);
-        }
-    } else if (!state.vim && key === 'CTRL_Y') {
-        if (state.currentSnapshot + 1 < state.snapshots.length) {
-            applySnapshot(state, state.currentSnapshot + 1);
-        }
-    } else if (!state.vim && key === 'CTRL_Z') {
-        if (state.currentSnapshot - 1 >= 0) {
-            applySnapshot(state, state.currentSnapshot - 1);
-        }
+        createSnapshot(state);
     }
-    if (state.vim) {
-        logCommand(false, state, key);
-    }
+    logCommand(false, state, key);
     renderScreen(state, screen);
 }
 
