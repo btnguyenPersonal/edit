@@ -12,15 +12,15 @@ function getData(filepath) {
 }
 
 function shortenFilePath(filePath) {
-  const parts = filePath.split('/');
-  
-  for (let i = 0; i < parts.length - 1; i++) {
-    if (parts[i].length > 1) {
-      parts[i] = parts[i][0];
+    const parts = filePath.split('/');
+
+    for (let i = 0; i < parts.length - 1; i += 1) {
+        if (parts[i].length > 1) {
+            parts[i] = parts[i][0];
+        }
     }
-  }
-  
-  return parts.join('/');
+
+    return parts.join('/');
 }
 
 function pasteFromClipboardBefore(state) {
@@ -542,160 +542,151 @@ function isMergeConflictEnd(s) {
     return s.startsWith('>>>>>>>');
 }
 
+function renderStatusBar(state, screen) {
+    screen.put({ attr: { color: 'white' }, x: 0 }, '"' + state.file + ':' + (state.row + 1) + ':' + (state.col + 1) + '" ');
+    screen.put({ attr: { color: 'green' } }, '/' + state.searchQuery + ' ');
+    for (let i = 0; i < state.harpoonIndexes.length; i += 1) {
+        screen.put({ attr: { color: i === state.harpoonIndex ? 'yellow' : 'grey' } }, shortenFilePath(state.files[state.harpoonIndexes[i]]) + ' ');
+    }
+}
+
+function renderCommandHistory(state, screen) {
+    screen.put({ attr: { color: 'grey' }, x: process.stdout.columns - 20 }, state.commandHistory.slice(-20));
+}
+
+function renderFileFinder(state, screen, mode) {
+    screen.put({
+        attr: {
+            color: mode === 'g' ? 'green' : 'red',
+        },
+        x: 0,
+        wrap: false
+    }, '> ');
+    screen.put({
+        attr: {
+            color: 'white',
+        },
+        wrap: false
+    }, state.fileFinderQuery);
+    for (let i = 0; i < state.fileFindingOutput.length; i += 1) {
+        screen.put({ newLine: true }, '\n');
+        screen.put({
+            attr: {
+                color: state.fileFinderIndex === i ? 'green' : 'white',
+            },
+            x: 0,
+            wrap: false
+        }, state.fileFindingOutput[i]);
+    }
+    screen.moveTo(
+        state.fileFinderQuery.length + 2,
+        1
+    );
+    screen.draw({ delta: true });
+    screen.drawCursor();
+}
+
+function renderSingleLine(state, screen, i, mergeSection) {
+    screen.put({
+        attr: {
+            color: state.recording ? 'red' : 'grey'
+        },
+        x: 0
+    }, (i + 1).toString().padStart(4) + ' ');
+    if (isMergeConflictStart(state.data[i])) {
+        mergeSection = 1;
+    } else if (isMergeConflictMiddle(state.data[i])) {
+        mergeSection = 2;
+    } else if (isMergeConflictEnd(state.data[i])) {
+        mergeSection = 0;
+    }
+    const commentIndex = commentStartsAt(state, i);
+    const colorRow = getColorRow(
+        state.replacing,
+        state.replaceQuery,
+        state.data[i],
+        commentIndex,
+        state.searching,
+        state.searchQuery,
+        state.row === i,
+        state.col
+    );
+    let displayRow = state.data[i];
+    if (state.replacing) {
+        displayRow = displayRow.replaceAll(state.searchQuery, state.replaceQuery);
+    }
+    for (let j = state.windowLineHorizontal; j < displayRow.length; j += 1) {
+        let color = colorRow[j];
+        let bgColor;
+        if (mergeSection === 1 && !isMergeConflictStart(displayRow)) {
+            color = 'red';
+        } else if (mergeSection === 2 && !isMergeConflictMiddle(displayRow)) {
+            color = 'green';
+        } else if (isMergeConflictEnd(displayRow) || isMergeConflictMiddle(displayRow) || isMergeConflictStart(displayRow)) {
+            color = 'blue';
+        }
+        if (colorRow[j] === 'search') {
+            if (state.replacing) {
+                color = 'white';
+                bgColor = 'blue';
+            } else if (state.searching) {
+                color = 'black';
+                bgColor = 'green';
+            }
+        } else if (colorRow[j] === 'searchCurrent') {
+            color = 'black';
+            bgColor = 'magenta';
+        }
+        screen.put({
+            attr: {
+                color,
+                bgColor,
+                inverse: isHighlighted(state, i, j)
+            },
+            wrap: false
+        }, displayRow.substring(j, j + 1));
+    }
+    if (state.data[i] === '' && isRowHighlighted(state, i)) {
+        screen.put({
+            attr: {
+                inverse: true
+            },
+            wrap: false
+        }, ' ');
+    }
+    screen.put({ newLine: true }, '\n');
+}
+
+function renderWindowLines(state, screen, noCenterScreen, fullRefresh) {
+    if (!noCenterScreen && !isOnScreen(state)) {
+        centerScreen(state);
+    }
+    getWindowLineHorizontal(state);
+    const mergeSection = 0;
+    for (let i = state.windowLine; i < (state.windowLine + process.stdout.rows) - 1; i += 1) {
+        if (state.data[i] !== undefined) {
+            renderSingleLine(state, screen, i, mergeSection);
+        }
+    }
+    moveCursor(state, screen, state.windowLineHorizontal);
+    screen.draw({ delta: !fullRefresh });
+    screen.drawCursor();
+}
+
 function renderScreen(state, screen, noCenterScreen, fullRefresh) {
     if (state.data.length === 0) {
         state.data = [''];
     }
     screen.fill({ char: ' ' });
     screen.moveTo(0, 0);
-    screen.put({ attr: { color: 'white' }, x: 0 }, '"' + state.file + ':' + (state.row + 1) + ':' + (state.col + 1) + '" ');
-    screen.put({ attr: { color: 'green' } }, '/' + state.searchQuery + ' ');
-    for (let i = 0; i < state.harpoonIndexes.length; i += 1) {
-        screen.put({ attr: { color: i === state.harpoonIndex ? 'yellow' : 'grey' } }, shortenFilePath(state.files[state.harpoonIndexes[i]]) + ' ');
-    }
-    screen.put({ attr: { color: 'grey' }, x: process.stdout.columns - 20 }, state.commandHistory.slice(-20));
+    renderStatusBar(state, screen);
+    renderCommandHistory(state, screen);
     screen.put({ newLine: true }, '\n');
-    if (state.mode === 'g') {
-        screen.put({
-            attr: {
-                color: 'green',
-            },
-            x: 0,
-            wrap: false
-        }, '> ');
-        screen.put({
-            attr: {
-                color: 'white',
-            },
-            wrap: false
-        }, state.fileFinderQuery);
-        for (let i = 0; i < state.fileFindingOutput.length; i += 1) {
-            screen.put({ newLine: true }, '\n');
-            screen.put({
-                attr: {
-                    color: state.fileFinderIndex === i ? 'green' : 'white',
-                },
-                x: 0,
-                wrap: false
-            }, state.fileFindingOutput[i]);
-        }
-        screen.moveTo(
-            state.fileFinderQuery.length + 2,
-            1
-        );
-        screen.draw({ delta: true });
-        screen.drawCursor();
-    } else if (state.mode === 'f') {
-        screen.put({
-            attr: {
-                color: 'red',
-            },
-            x: 0,
-            wrap: false
-        }, '> ');
-        screen.put({
-            attr: {
-                color: 'white',
-            },
-            wrap: false
-        }, state.fileFinderQuery);
-        for (let i = 0; i < state.fileFindingOutput.length; i += 1) {
-            screen.put({ newLine: true }, '\n');
-            screen.put({
-                attr: {
-                    color: state.fileFinderIndex === i ? 'green' : 'white',
-                },
-                x: 0,
-                wrap: false
-            }, state.fileFindingOutput[i]);
-        }
-        screen.moveTo(
-            state.fileFinderQuery.length + 2,
-            1
-        );
-        screen.draw({ delta: true });
-        screen.drawCursor();
+
+    if (state.mode === 'g' || state.mode === 'f') {
+        renderFileFinder(state, screen, state.mode);
     } else if (state.allowCommandLogging) {
-        if (!noCenterScreen && !isOnScreen(state)) {
-            centerScreen(state);
-        }
-        getWindowLineHorizontal(state);
-        let mergeSection = 0;
-        for (let i = state.windowLine; i < (state.windowLine + process.stdout.rows) - 1; i += 1) {
-            if (state.data[i] !== undefined) {
-                screen.put({
-                    attr: {
-                        color: state.recording ? 'red' : 'grey'
-                    },
-                    x: 0
-                }, (i + 1).toString().padStart(4) + ' ');
-                if (isMergeConflictStart(state.data[i])) {
-                    mergeSection = 1;
-                } else if (isMergeConflictMiddle(state.data[i])) {
-                    mergeSection = 2;
-                } else if (isMergeConflictEnd(state.data[i])) {
-                    mergeSection = 0;
-                }
-                const commentIndex = commentStartsAt(state, i);
-                const colorRow = getColorRow(
-                    state.replacing,
-                    state.replaceQuery,
-                    state.data[i],
-                    commentIndex,
-                    state.searching,
-                    state.searchQuery,
-                    state.row === i,
-                    state.col
-                );
-                let displayRow = state.data[i];
-                if (state.replacing) {
-                    displayRow = displayRow.replaceAll(state.searchQuery, state.replaceQuery);
-                }
-                for (let j = state.windowLineHorizontal; j < displayRow.length; j += 1) {
-                    let color = colorRow[j];
-                    let bgColor;
-                    if (mergeSection === 1 && !isMergeConflictStart(displayRow)) {
-                        color = 'red';
-                    } else if (mergeSection === 2 && !isMergeConflictMiddle(displayRow)) {
-                        color = 'green';
-                    } else if (isMergeConflictEnd(displayRow) || isMergeConflictMiddle(displayRow) || isMergeConflictStart(displayRow)) {
-                        color = 'blue';
-                    }
-                    if (colorRow[j] === 'search') {
-                        if (state.replacing) {
-                            color = 'white';
-                            bgColor = 'blue';
-                        } else if (state.searching) {
-                            color = 'black';
-                            bgColor = 'green';
-                        }
-                    } else if (colorRow[j] === 'searchCurrent') {
-                        color = 'black';
-                        bgColor = 'magenta';
-                    }
-                    screen.put({
-                        attr: {
-                            color,
-                            bgColor,
-                            inverse: isHighlighted(state, i, j)
-                        },
-                        wrap: false
-                    }, displayRow.substring(j, j + 1));
-                }
-                if (state.data[i] === '' && isRowHighlighted(state, i)) {
-                    screen.put({
-                        attr: {
-                            inverse: true
-                        },
-                        wrap: false
-                    }, ' ');
-                }
-                screen.put({ newLine: true }, '\n');
-            }
-        }
-        moveCursor(state, screen, state.windowLineHorizontal);
-        screen.draw({ delta: !fullRefresh });
-        screen.drawCursor();
+        renderWindowLines(state, screen, noCenterScreen, fullRefresh);
     }
 }
 

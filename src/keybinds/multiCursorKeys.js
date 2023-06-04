@@ -3,7 +3,6 @@ import {
     isWritable,
     renderScreen,
     createSnapshot,
-    applySnapshot,
     logCommand
 } from '../util/helper.js';
 import {
