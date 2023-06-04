@@ -11,8 +11,8 @@
     - add = work with html tags
 ## blocked
 ## in progress
-    - start program with fileFinding
 ## done
+    - start program with fileFinding
     - get rid of state.vim
     - get rid of process.stdout.row and use screen.height screen.width (will make easier to make status bar) (passing around the screen isn't good)
     - show search string (useful)
