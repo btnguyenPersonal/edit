@@ -9,6 +9,8 @@
     - case insensitive search
     - visualLine work with replace
     - add = work with html tags
+        - ends with > means go in one indent
+        - starts with </ means go back one indent
 ## blocked
 ## in progress
 ## done
