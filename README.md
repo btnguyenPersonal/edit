@@ -121,27 +121,3 @@ also, just starting as `e` should start you out with searching for the file you 
 |#| search in project for current highlighted text|
 |i<([{}])>| highlight inside of any bracket type|
 |ESCAPE|go to vim mode|
-
-# quality of life scripts
-usually put this in my ~/.bashrc:
-> this will let you use ctrl-p to change files and ctrl-g to search in project
-```
-alias edit="node ~/git/edit/build/out.cjs"
-function g() {
-    command=$(rg --color=always --column --line-number --no-heading --smart-case "${*:-}" |
-        fzf --ansi \
-            --bind "change:reload:sleep 0.1; rg --column --line-number --no-heading --color=always --smart-case {q} || true" \
-            --query "$query" \
-            --delimiter : \
-            --reverse \
-            --preview 'batcat --color=always {1} --highlight-line {2}' \
-            --preview-window 'up,60%,border-bottom,+{2}+3/3,~3' \
-            --bind "enter:execute(echo {1} {2} {q})+abort");
-    edit $command
-}
-function e() {
-    command="`fzf --reverse` $query"
-    edit $command
-}
-export FZF_DEFAULT_COMMAND='rg --files --hidden --glob "!.git"'
-```
