@@ -11,6 +11,18 @@ function getData(filepath) {
     }
 }
 
+function shortenFilePath(filePath) {
+  const parts = filePath.split('/');
+  
+  for (let i = 0; i < parts.length - 1; i++) {
+    if (parts[i].length > 1) {
+      parts[i] = parts[i][0];
+    }
+  }
+  
+  return parts.join('/');
+}
+
 function pasteFromClipboardBefore(state) {
     let systemPaste = ncp.paste();
     let newLine = false;
@@ -539,7 +551,7 @@ function renderScreen(state, screen, noCenterScreen, fullRefresh) {
     screen.put({ attr: { color: 'white' }, x: 0 }, '"' + state.file + ':' + (state.row + 1) + ':' + (state.col + 1) + '" ');
     screen.put({ attr: { color: 'green' } }, '/' + state.searchQuery + ' ');
     for (let i = 0; i < state.harpoonIndexes.length; i += 1) {
-        screen.put({ attr: { color: i === state.harpoonIndex ? 'yellow' : 'grey' } }, state.files[state.harpoonIndexes[i]].slice(-20) + ' ');
+        screen.put({ attr: { color: i === state.harpoonIndex ? 'yellow' : 'grey' } }, shortenFilePath(state.files[state.harpoonIndexes[i]]) + ' ');
     }
     screen.put({ attr: { color: 'grey' }, x: process.stdout.columns - 20 }, state.commandHistory.slice(-20));
     screen.put({ newLine: true }, '\n');
