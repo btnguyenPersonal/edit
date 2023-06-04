@@ -220,9 +220,9 @@ function handleVisualKeys(key, state, screen) {
         state.mode = 'n';
         createSnapshot(state);
     } else if (state.previousKeys === 'g' && key === 'f') {
-        const newFilePath = getInVisual(state);
+        const newFile = getInVisual(state);
         const currentDirectory = path.dirname(state.file);
-        let convertedPath = path.join(currentDirectory, newFilePath);
+        let convertedPath = path.join(currentDirectory, newFile);
         let fileExists = fs.existsSync(convertedPath);
         if (!fileExists) {
             convertedPath += '.js';
