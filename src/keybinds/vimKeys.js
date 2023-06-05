@@ -1421,6 +1421,9 @@ function handleVimKeys(key, state, screen) {
                 }
                 state.allowCommandLogging = true;
             }
+        } else if (key === 'X') {
+            state.harpoonIndexes = [];
+            state.harpoonIndex = 0;
         } else if (key === ' ') {
             if (!state.harpoonIndexes.includes(state.fileIndex)) {
                 state.harpoonIndexes.push(state.fileIndex);
