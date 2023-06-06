@@ -1074,6 +1074,8 @@ function handleVimKeys(key, state, screen) {
         } else if (key === 'CTRL_W') {
             if (state.harpoonIndex - 1 >= 0) {
                 state.harpoonIndex -= 1;
+            } else if (state.harpoonIndexes.length > 0) {
+                state.harpoonIndex = state.harpoonIndexes.length - 1;
             }
             if (state.files[state.harpoonIndexes[state.harpoonIndex]] !== undefined) {
                 state.file = state.files[state.harpoonIndexes[state.harpoonIndex]];
@@ -1110,6 +1112,8 @@ function handleVimKeys(key, state, screen) {
         } else if (key === 'CTRL_E') {
             if (state.harpoonIndex + 1 < state.harpoonIndexes.length) {
                 state.harpoonIndex += 1;
+            } else {
+                state.harpoonIndex = 0;
             }
             if (state.files[state.harpoonIndexes[state.harpoonIndex]] !== undefined) {
                 state.file = state.files[state.harpoonIndexes[state.harpoonIndex]];
