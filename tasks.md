@@ -8,6 +8,8 @@
     - take out i for di ci
     - case insensitive search
     - visualLine work with replace
+    - vertical split
+    - horizontal split
     - add = work with html tags
         - ends with > means go in one indent
         - starts with </ means go back one indent
