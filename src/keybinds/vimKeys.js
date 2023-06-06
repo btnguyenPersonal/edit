@@ -1,4 +1,5 @@
 /* eslint-disable import/no-cycle */
+import ncp from 'copy-paste';
 import { execSync } from 'child_process';
 import {
     pasteFromClipboardBefore,
@@ -1424,6 +1425,27 @@ function handleVimKeys(key, state, screen) {
                     sendKeys(state.macro, state, screen);
                 }
                 state.allowCommandLogging = true;
+            }
+        } else if (key === '?') {
+            let systemPaste = ncp.paste();
+            let newLine = false;
+            if (systemPaste.startsWith('\n')) {
+                systemPaste = systemPaste.substring(1);
+                newLine = true;
+            }
+            systemPaste = systemPaste;
+            state.searchQuery = systemPaste;
+            state.searching = true;
+            if (state.searchQuery !== '') {
+                state.searching = true;
+                state.col += state.searchQuery.length + 1;
+                const result = searchForString(state, state.searchQuery);
+                if (!result) {
+                    state.col -= state.searchQuery.length + 1;
+                } else {
+                    centerScreen(state);
+                    state.windowLineHorizontal = 0;
+                }
             }
         } else if (key === 'X') {
             state.harpoonIndexes = [];
