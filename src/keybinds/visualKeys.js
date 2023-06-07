@@ -228,6 +228,11 @@ function handleVisualKeys(key, state, screen) {
             convertedPath += '.js';
             fileExists = fs.existsSync(convertedPath);
         }
+        if (!fileExists) {
+            convertedPath = convertedPath.slice(-3);
+            convertedPath += '/index.js';
+            fileExists = fs.existsSync(convertedPath);
+        }
         if (fileExists) {
             if (!state.files.includes(convertedPath)) {
                 state.file = convertedPath;
