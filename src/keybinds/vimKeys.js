@@ -61,6 +61,8 @@ import {
     previousLowerIndentLevel,
     nextLowerIndentLevel,
     goToCoor,
+    swapLeft,
+    swapRight,
 } from '../util/movement.js';
 
 function handleVimKeys(key, state, screen) {
@@ -1152,6 +1154,10 @@ function handleVimKeys(key, state, screen) {
             state.replacing = true;
             state.mode = '/';
             logCommand(true, state, key);
+        } else if (key === 'BACKSPACE') {
+            state.harpoonIndex = swapLeft({ array: state.harpoonIndexes, index: state.harpoonIndex });
+        } else if (key === 'CTRL_L') {
+            state.harpoonIndex = swapRight({ array: state.harpoonIndexes, index: state.harpoonIndex });
         } else if (key === 'CTRL_U') {
             upHalfScreen(state);
         } else if (key === 'CTRL_D') {

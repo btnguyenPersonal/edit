@@ -1,6 +1,29 @@
 /* eslint-disable import/no-cycle */
 import { copyToClipboard, isAlphaNumeric } from './helper.js';
 
+function swapLeft(obj) {
+    let i = obj.index;
+    let arr = obj.array;
+    if (i <= 0) return obj.index;
+    let temp = arr[i];
+    arr[i] = arr[i-1];
+    arr[i-1] = temp;
+    obj.index = i-1;
+    return obj.index;
+}
+
+function swapRight(obj) {
+    let i = obj.index;
+    let arr = obj.array;
+    if (i >= arr.length-1) return obj.index;
+    let temp = arr[i];
+    arr[i] = arr[i+1];
+    arr[i+1] = temp;
+    obj.index = i+1;
+    return obj.index;
+}
+
+
 function isEmptyRow(state, row) {
     for (let i = 0; i < state.data[row].length; i += 1) {
         if (state.data[row].substring(i, i + 1) !== ' ') {
@@ -816,4 +839,6 @@ export {
     getInsideOfIndentLevel,
     uncommentBlock,
     setAroundVisualHighlight,
+    swapLeft,
+    swapRight,
 };
