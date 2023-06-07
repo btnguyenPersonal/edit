@@ -230,7 +230,7 @@ function handleVisualKeys(key, state, screen) {
             fileExists = isFile(convertedPath);
         }
         if (!fileExists) {
-            convertedPath = convertedPath.slice(-3);
+            convertedPath = convertedPath.slice(0, -3);
             convertedPath += '/index.js';
             fileExists = isFile(convertedPath);
         }
