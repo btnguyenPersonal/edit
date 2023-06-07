@@ -229,8 +229,8 @@ function handleVisualKeys(key, state, screen) {
             fileExists = fs.existsSync(convertedPath);
         }
         if (fileExists) {
-            if (!state.files.includes(newFile)) {
-                state.file = newFile;
+            if (!state.files.includes(convertedPath)) {
+                state.file = convertedPath;
                 state.files.push(state.file);
                 const snapshotsCopy = [];
                 for (let i = 0; i < state.snapshots.length; i += 1) {
@@ -295,7 +295,7 @@ function handleVisualKeys(key, state, screen) {
                         prevCol: state.prevCol,
                     });
                 }
-                state.file = newFile;
+                state.file = convertedPath;
                 state.fileIndex = state.files.indexOf(state.file);
                 changeFile(state);
                 const pos = state.storePosition[state.fileIndex];
