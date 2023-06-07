@@ -546,12 +546,10 @@ function renderStatusBar(state, screen) {
     for (let i = 0; i < state.harpoonIndexes.length; i += 1) {
         screen.put({ attr: { color: i === state.harpoonIndex ? 'yellow' : 'grey' } }, shortenFilePath(state.files[state.harpoonIndexes[i]]) + ' ');
     }
-    screen.put({ attr: { color: 'white' } }, '"' + state.file + ':' + (state.row + 1) + ':' + (state.col + 1) + '" ');
-    screen.put({ attr: { color: 'green' } }, '/' + state.searchQuery + ' ');
-}
-
-function renderCommandHistory(state, screen) {
-    screen.put({ attr: { color: 'grey' }, x: process.stdout.columns - 20 }, state.commandHistory.slice(-20));
+    let index = 6 + state.file.length + ((state.row + 1).toString().length) + ((state.row + 1).toString().length) + state.searchQuery.length;
+    screen.put({ attr: { color: 'grey' }, x: process.stdout.columns - index - 21 }, state.commandHistory.slice(-20));
+    screen.put({ attr: { color: 'green' }, x: process.stdout.columns - index }, '/' + state.searchQuery + ' ');
+    screen.put({ attr: { color: 'white' } }, '"' + state.file + ':' + (state.row + 1) + ':' + (state.col + 1) + '"');
 }
 
 function renderFileFinder(state, screen, mode) {
@@ -674,16 +672,21 @@ function renderWindowLines(state, screen, noCenterScreen, fullRefresh) {
     screen.drawCursor();
 }
 
+function setHarpoonIndex(state) {
+    if (state.harpoonIndexes.includes(state.fileIndex)) {
+        state.harpoonIndex = state.harpoonIndexes.indexOf(state.fileIndex);
+    }
+}
+
 function renderScreen(state, screen, noCenterScreen, fullRefresh) {
     if (state.data.length === 0) {
         state.data = [''];
     }
     screen.fill({ char: ' ' });
     screen.moveTo(0, 0);
+    setHarpoonIndex(state);
     renderStatusBar(state, screen);
-    renderCommandHistory(state, screen);
     screen.put({ newLine: true }, '\n');
-
     if (state.mode === 'g' || state.mode === 'f') {
         renderFileFinder(state, screen, state.mode);
     } else if (state.allowCommandLogging) {
