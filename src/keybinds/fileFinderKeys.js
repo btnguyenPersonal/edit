@@ -18,7 +18,7 @@ function handleFileFinderKeys(key, state, screen) {
             let output = '';
             if (state.fileFinderQuery.length !== 0) {
                 output = execSync(
-                    `git grep -n -i "${state.fileFinderQuery}" || true`,
+                    `git grep -n "${state.fileFinderQuery}" || true`,
                     { maxBuffer: 1024 * 1024 * 1000 }
                 ).toString();
             }
@@ -170,7 +170,7 @@ function handleFileFinderKeys(key, state, screen) {
         if (state.mode === 'g') {
             let output = '';
             if (state.fileFinderQuery.length !== 0) {
-                output = execSync(`git grep -n -i "${state.fileFinderQuery}" || true`, { maxBuffer: 1024 * 1024 * 1000 }).toString();
+                output = execSync(`git grep -n "${state.fileFinderQuery}" || true`, { maxBuffer: 1024 * 1024 * 1000 }).toString();
             }
             state.fileFindingOutput = output.split('\n');
         } else {
