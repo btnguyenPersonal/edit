@@ -1435,12 +1435,9 @@ function handleVimKeys(key, state, screen) {
             }
         } else if (key === '?') {
             let systemPaste = ncp.paste();
-            let newLine = false;
             if (systemPaste.startsWith('\n')) {
                 systemPaste = systemPaste.substring(1);
-                newLine = true;
             }
-            systemPaste = systemPaste;
             state.searchQuery = systemPaste;
             state.searching = true;
             if (state.searchQuery !== '') {
