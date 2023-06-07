@@ -39,7 +39,7 @@ function handleFileFinderKeys(key, state, screen) {
             state.fileFinderIndex = state.fileFindingOutput.length - 1;
         }
     } else if (key === 'DOWN') {
-        if (state.fileFinderIndex < state.fileFindingOutput.length) {
+        if (state.fileFinderIndex < state.fileFindingOutput.length - 2) {
             state.fileFinderIndex += 1;
         }
     } else if (key === 'ESCAPE') {

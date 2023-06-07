@@ -568,7 +568,8 @@ function renderFileFinder(state, screen, mode) {
         },
         wrap: false
     }, state.fileFinderQuery);
-    for (let i = 0; i < state.fileFindingOutput.length; i += 1) {
+    let index = state.fileFinderIndex - Math.floor(process.stdout.rows / 2) > 0 ? state.fileFinderIndex - Math.floor(process.stdout.rows / 2) : 0;
+    for (let i = index; i < state.fileFindingOutput.length; i += 1) {
         screen.put({ newLine: true }, '\n');
         screen.put({
             attr: {
