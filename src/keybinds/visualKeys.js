@@ -10,6 +10,7 @@ import {
     searchForString,
     centerScreen,
     changeFile,
+    isFile,
     logCommand
 } from '../util/helper.js';
 import {
@@ -223,15 +224,15 @@ function handleVisualKeys(key, state, screen) {
         const newFile = getInVisual(state);
         const currentDirectory = path.dirname(state.file);
         let convertedPath = path.join(currentDirectory, newFile);
-        let fileExists = fs.existsSync(convertedPath);
+        let fileExists = isFile(convertedPath);
         if (!fileExists) {
             convertedPath += '.js';
-            fileExists = fs.existsSync(convertedPath);
+            fileExists = isFile(convertedPath);
         }
         if (!fileExists) {
             convertedPath = convertedPath.slice(-3);
             convertedPath += '/index.js';
-            fileExists = fs.existsSync(convertedPath);
+            fileExists = isFile(convertedPath);
         }
         if (fileExists) {
             if (!state.files.includes(convertedPath)) {

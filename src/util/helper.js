@@ -2,6 +2,19 @@
 import ncp from 'copy-paste';
 import fs from 'fs';
 
+function isFile(filePath) {
+  try {
+    const stats = fs.statSync(filePath);
+    return stats.isFile();
+  } catch (err) {
+    if (err.code === 'ENOENT') {
+      return false;
+    } else {
+      throw err;
+    }
+  }
+}
+
 function getData(filepath) {
     try {
         return (fs.readFileSync(filepath, 'utf-8')).split('\n');
@@ -747,5 +760,6 @@ export {
     refreshFile,
     getRowIfOverflow,
     changeFile,
-    getData
+    getData,
+    isFile
 };
