@@ -1409,6 +1409,7 @@ function handleVimKeys(key, state, screen) {
         } else if (key === 'CTRL_P') {
             state.mode = 'f';
             state.fileFinderQuery = '';
+            state.fileFinderIndex = 0;
             const output = execSync('fd -t f').toString();
             state.fileFindingOutput = output.split('\n');
         } else if (key === '\'') {

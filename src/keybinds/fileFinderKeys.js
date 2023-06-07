@@ -57,6 +57,7 @@ function handleFileFinderKeys(key, state, screen) {
             lineNum = parseInt(arrayForm[1], 10);
         } else {
             state.fileFinderQuery = '';
+            state.fileFinderIndex = 0;
         }
         if (newFile !== undefined) {
             let fileExists = fs.existsSync(newFile);
@@ -157,7 +158,6 @@ function handleFileFinderKeys(key, state, screen) {
             }
         }
         state.mode = 'n';
-        state.fileFinderIndex = 0;
     } else if (key === 'BACKSPACE') {
         if (state.fileFinderQuery.length > 0) {
             if (state.fileFinderQuery.endsWith('"')) {
