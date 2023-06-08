@@ -317,6 +317,7 @@ function handleVisualKeys(key, state, screen) {
                 state.prevCol = pos.prevCol;
             }
         }
+        state.previousKeys = '';
     } else if (key === '#') {
         state.fileFinderQuery = getInVisual(state);
         state.mode = 'g';
