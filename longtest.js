@@ -16,14 +16,14 @@ it(() => {
     fs
     fs
     nodePaste nodePaste = nodePaste.split('\n');
-    nodePaste = nodePaste.split('\n');
-    testing stuff = nodePaste.split('\n');
-    nodePaste = nodePaste.split('\n');
-    nodePaste = nodePaste.split('\n');
+    nodePaste = howsplit('\n');
+    testing stufste.split('\n');
+    nodePaste = split('\n');
+    nodePaste = split('\n');
   } nodePaste = nodePaste.split('\n');
-  nodePaste = nodePaste.split('\n');
-  nodePaste = nodePaste.split('\n');
-  nodePaste = nodePaste.split('\n');
+  nodePaste = nohowsplit('\n');
+  nodePaste = nosplit('\n');
+  nodePaste = nosplit('\n');
   fs
 });
 

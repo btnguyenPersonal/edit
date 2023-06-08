@@ -147,9 +147,15 @@ function handleVisualBlockKeys(key, state, screen) {
             createSnapshot(state);
             state.previousKeys = '';
         } else {
+            const c = Math.min(state.col, state.visualBlock.col);
+            const rMin = Math.min(state.row, state.visualBlock.row);
+            const rMax = Math.max(state.row, state.visualBlock.row);
             copyInVisualBlock(state);
             deleteInVisualBlock(state);
-            state.mode = 'i';
+            state.col = c;
+            state.row = rMin;
+            state.visualBlock.row = rMax;
+            state.mode = 'MULTI_CURSOR';
         }
     } else if (key === '=') {
         if (state.row >= state.visualBlock.row) {
