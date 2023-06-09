@@ -11,6 +11,17 @@ echo 'alias e="node ~/git/edit/build/out.cjs"' >> ~/.bashrc
 that's it, you should just be able to run `e path/to/file.js` in your command line and it should work!
 also, just starting as `e` should start you out with searching for the file you want 
 
+---
+
+if you want to have edit create a file if it isn't there,
+have to put this in bashrc instead:
+```
+e() {
+    touch $1
+    node ~/git/edit/build/out.cjs $1
+}
+```
+
 # keybinds
 ### vim mode (starts in this mode and has all the shortcuts)
 |key|function|
