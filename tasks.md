@@ -6,7 +6,7 @@
     - compartmentalize stuff into more functions
     - cis
     - take out i for di ci
-    - case insensitive search
+    - case insensitive search (slow)
     - visualLine work with replace
     - vertical split
     - horizontal split

@@ -486,6 +486,7 @@ function handleVimKeys(key, state, screen) {
             }
             for (let i = state.row + 1; i < state.data.length; i += 1) {
                 if (isEmptyRow(state, i)) {
+                    state.row = i;
                     break;
                 } else {
                     state.row = i;
@@ -506,7 +507,13 @@ function handleVimKeys(key, state, screen) {
                 }
                 copyToClipboard(state, newClipboard);
             }
-            createSnapshot(state);
+            if (state.row > state.data.length - 1) {
+                state.row = state.data.length - 1;
+            }
+            if (state.row < 0) {
+                state.row = 0;
+            }
+            firstNonSpace(state, state.row);
         } else if (key === 'f') {
             if (!isEmptyRow(state, state.row) && getIndentLevel(state, state.row) !== 0) {
                 const { beginning, end } = getInsideOfIndentLevel(state);
@@ -523,19 +530,19 @@ function handleVimKeys(key, state, screen) {
             }
         } else if (key === '(' || key === ')' || key === 'b') {
             const { beginning, end } = getCoorsInsideCharDiff(state, '(', ')');
-            copyInsideAreaSameLine(state, beginning, end);
+            copyInsideAreaSameLine(state, beginning - 1, end + 1);
         } else if (key === '<' || key === '>' || key === 't') {
             const { beginning, end } = getCoorsInsideCharDiff(state, '<', '>');
-            copyInsideAreaSameLine(state, beginning, end);
+            copyInsideAreaSameLine(state, beginning - 1, end + 1);
         } else if (key === '[' || key === ']' || key === 'd') {
             const { beginning, end } = getCoorsInsideCharDiff(state, '[', ']');
-            copyInsideAreaSameLine(state, beginning, end);
+            copyInsideAreaSameLine(state, beginning - 1, end + 1);
         } else if (key === '{' || key === '}' || key === 'B') {
             const { beginning, end } = getCoorsInsideCharDiff(state, '{', '}');
-            copyInsideAreaSameLine(state, beginning, end);
+            copyInsideAreaSameLine(state, beginning - 1, end + 1);
         } else if (key === '\'' || key === '"' || key === '`') {
             const { beginning, end } = getCoorsInsideCharSame(state, key);
-            copyInsideAreaSameLine(state, beginning, end);
+            copyInsideAreaSameLine(state, beginning - 1, end + 1);
         }
         state.previousKeys = '';
     } else if (state.previousKeys === 'yi') {
