@@ -1416,7 +1416,7 @@ function handleVimKeys(key, state, screen) {
             state.mode = 'f';
             state.fileFinderQuery = '';
             state.fileFinderIndex = 0;
-            const output = execSync('fd -t f --hidden').toString();
+            const output = execSync('fd -t f --hidden -E .git').toString();
             state.fileFindingOutput = output.split('\n');
         } else if (key === '\'') {
             state.row = state.mark;
