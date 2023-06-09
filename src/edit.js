@@ -80,7 +80,7 @@ if (filePath !== undefined) {
     state.allowCommandLogging = true;
     state.files.push(state.file);
 } else {
-    state.fileFindingOutput = execSync('fd -t f').toString().split('\n');
+    state.fileFindingOutput = execSync('fd -t f --hidden').toString().split('\n');
 }
 state.allowCommandLogging = true;
 renderScreen(state, screen);

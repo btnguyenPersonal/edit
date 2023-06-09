@@ -26,9 +26,9 @@ function handleFileFinderKeys(key, state, screen) {
         } else {
             let output = '';
             if (state.fileFinderQuery.length !== 0) {
-                output = execSync(`fd -t f | grep -F -i "${state.fileFinderQuery}" || true`).toString();
+                output = execSync(`fd -t f --hidden | grep -F -i "${state.fileFinderQuery}" || true`).toString();
             } else {
-                output = execSync('fd -t f').toString();
+                output = execSync('fd -t f --hidden').toString();
             }
             state.fileFindingOutput = output.split('\n');
         }
@@ -176,9 +176,9 @@ function handleFileFinderKeys(key, state, screen) {
         } else {
             let output = '';
             if (state.fileFinderQuery.length !== 0) {
-                output = execSync(`fd -t f | grep -F -i "${state.fileFinderQuery}" || true`).toString();
+                output = execSync(`fd -t f --hidden | grep -F -i "${state.fileFinderQuery}" || true`).toString();
             } else {
-                output = execSync('fd -t f').toString();
+                output = execSync('fd -t f --hidden').toString();
             }
             state.fileFindingOutput = output.split('\n');
         }
