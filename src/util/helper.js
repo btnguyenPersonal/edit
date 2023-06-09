@@ -732,7 +732,7 @@ function changeFile(state) {
     state.currentSnapshot = 0;
     state.savePoint = 0;
     state.recording = false;
-    state.mark = -1;
+    state.mark = 0;
     state.data = getData(state.file);
     createSnapshot(state);
 }

@@ -67,7 +67,7 @@ const state = {
     savePoint: 0,
     recording: false,
     macro: [],
-    mark: -1,
+    mark: 0,
     indentAmount: 4
 };
 
