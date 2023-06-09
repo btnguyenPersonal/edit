@@ -1,6 +1,9 @@
 #!/usr/bin/env node
 import { execSync } from 'child_process';
 import pkg from 'terminal-kit';
+import path from 'path';
+import os from 'os';
+import fs from 'fs';
 import {
     saveFile,
     centerScreen,
@@ -114,6 +117,8 @@ term.on('key', (key) => {
     } catch (e) {
         term.fullscreen(false);
         console.log(e);
+        console.log('crash report logged at ~/.edit_crash_report');
+        fs.writeFileSync(path.join(os.homedir(), '.edit_crash_report'), JSON.stringify({ key, ...state }), () => {});
         process.exit(0);
     }
 });
