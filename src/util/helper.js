@@ -559,9 +559,9 @@ function renderStatusBar(state, screen) {
     for (let i = 0; i < state.harpoonIndexes.length; i += 1) {
         screen.put({ attr: { color: i === state.harpoonIndex ? 'yellow' : 'grey' } }, shortenFilePath(state.files[state.harpoonIndexes[i]]) + ' ');
     }
-    const index = 6 + state.file.length + ((state.row + 1).toString().length) + ((state.row + 1).toString().length) + state.searchQuery.length;
-    screen.put({ attr: { color: 'grey' }, x: process.stdout.columns - index - 21 }, state.commandHistory.slice(-20));
-    screen.put({ attr: { color: 'green' }, x: process.stdout.columns - index }, '/' + state.searchQuery + ' ');
+    const index = 5 + state.file.length + ((state.row + 1).toString().length) + ((state.col + 1).toString().length) + state.searchQuery.length;
+    screen.put({ attr: { color: 'blue' }, x: process.stdout.columns - index - 10 }, state.commandHistory.slice(-10));
+    screen.put({ attr: { color: 'green' }, x: process.stdout.columns - index }, '/' + state.searchQuery);
     screen.put({ attr: { color: 'white' } }, '"' + state.file + ':' + (state.row + 1) + ':' + (state.col + 1) + '"');
 }
 
