@@ -230,7 +230,11 @@ function handleVisualLineKeys(key, state, screen) {
             if (state.row >= state.visualLine.row) {
                 for (let i = state.visualLine.row; i <= state.row; i += 1) {
                     let indentLevel = i - 1 < 0 ? 0 : getIndentLevelFrom(state, i - 1);
-                    if (state.data[i].trim().startsWith(')') || state.data[i].trim().startsWith('}')) {
+                    state.commandHistory += indentLevel.toString();
+                    if (state.data[i].trim().startsWith(')')
+                        || state.data[i].trim().startsWith('}')
+                        || state.data[i].trim().startsWith('</')
+                    ) {
                         indentLevel = indentLevel - state.indentAmount >= 0 ? indentLevel - state.indentAmount : 0;
                     }
                     state.data[i] = ' '.repeat(indentLevel) + state.data[i].trim();
@@ -238,12 +242,16 @@ function handleVisualLineKeys(key, state, screen) {
             } else if (state.row < state.visualLine.row) {
                 for (let i = state.row; i <= state.visualLine.row; i += 1) {
                     let indentLevel = i - 1 < 0 ? 0 : getIndentLevelFrom(state, i - 1);
-                    if (state.data[i].trim().startsWith(')') || state.data[i].trim().startsWith('}')) {
+                    if (state.data[i].trim().startsWith(')')
+                        || state.data[i].trim().startsWith('}')
+                        || state.data[i].trim().startsWith('</')
+                    ) {
                         indentLevel = indentLevel - state.indentAmount >= 0 ? indentLevel - state.indentAmount : 0;
                     }
                     state.data[i] = ' '.repeat(indentLevel) + state.data[i].trim();
                 }
             }
+            createSnapshot(state);
             state.mode = 'n';
         } else if (key === '<') {
             if (state.row >= state.visualLine.row) {

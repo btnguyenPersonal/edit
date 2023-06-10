@@ -2,7 +2,6 @@
 import { execSync } from 'child_process';
 import ncp from 'copy-paste';
 import path from 'path';
-import fs from 'fs';
 import {
     renderScreen,
     createSnapshot,
@@ -405,7 +404,10 @@ function handleVisualKeys(key, state, screen) {
         if (state.row >= state.visual.row) {
             for (let i = state.visual.row; i <= state.row; i += 1) {
                 let indentLevel = i - 1 < 0 ? 0 : getIndentLevelFrom(state, i - 1);
-                if (state.data[i].trim().startsWith(')') || state.data[i].trim().startsWith('}')) {
+                if (state.data[i].trim().startsWith(')')
+                    || state.data[i].trim().startsWith('}')
+                    || state.data[i].trim().startsWith('</')
+                ) {
                     indentLevel = indentLevel - state.indentAmount >= 0 ? indentLevel - state.indentAmount : 0;
                 }
                 state.data[i] = ' '.repeat(indentLevel) + state.data[i].trim();
@@ -413,13 +415,17 @@ function handleVisualKeys(key, state, screen) {
         } else if (state.row < state.visual.row) {
             for (let i = state.row; i <= state.visual.row; i += 1) {
                 let indentLevel = i - 1 < 0 ? 0 : getIndentLevelFrom(state, i - 1);
-                if (state.data[i].trim().startsWith(')') || state.data[i].trim().startsWith('}')) {
+                if (state.data[i].trim().startsWith(')')
+                    || state.data[i].trim().startsWith('}')
+                    || state.data[i].trim().startsWith('</')
+                ) {
                     indentLevel = indentLevel - state.indentAmount >= 0 ? indentLevel - state.indentAmount : 0;
                 }
                 state.data[i] = ' '.repeat(indentLevel) + state.data[i].trim();
             }
         }
         state.mode = 'n';
+        createSnapshot(state);
     } else if (key === '<') {
         if (state.row >= state.visual.row) {
             for (let i = state.visual.row; i <= state.row; i += 1) {
