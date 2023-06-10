@@ -1403,12 +1403,14 @@ function handleVimKeys(key, state, screen) {
             }
         } else if (key === '=') {
             let indentLevel = state.row - 1 < 0 ? 0 : getIndentLevelFrom(state, state.row - 1);
-            if (state.data[state.row].trim().startsWith(')') || state.data[state.row].trim().startsWith('}')) {
+            if (state.data[state.row].trim().startsWith(')')
+                || state.data[state.row].trim().startsWith('}')
+                || state.data[state.row].trim().startsWith('</')
+            ) {
                 indentLevel = indentLevel - state.indentAmount >= 0 ? indentLevel - state.indentAmount : 0;
             }
             state.data[state.row] = ' '.repeat(indentLevel) + state.data[state.row].trim();
             createSnapshot(state);
-            goToCoor(state, state.mark);
         } else if (key === 'CTRL_G') {
             state.mode = 'g';
             let output = '';
