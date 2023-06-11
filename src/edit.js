@@ -51,6 +51,7 @@ const state = {
     lineNumber: '',
     previousKeys: '',
     commandHistory: '',
+    commandString: '',
     previousCommand: [],
     file: filePath === undefined ? '' : filePath,
     harpoonIndex: 0,
@@ -67,7 +68,6 @@ const state = {
     windowLineHorizontal: 0,
     snapshots: [],
     currentSnapshot: 0,
-    savePoint: 0,
     recording: false,
     macro: [],
     mark: 0,
@@ -93,9 +93,9 @@ term.on('key', (key) => {
         if (key === 'CTRL_S') {
             saveFile(state);
             renderScreen(state, screen);
-        } else if (key === 'CTRL_C') {
-            term.fullscreen(false);
-            process.exit(0);
+        // } else if (key === 'CTRL_C') {
+        //     term.fullscreen(false);
+        //     process.exit(0);
         } else if (key === 'END') {
             console.log('row: ' + state.row);
             console.log('col: ' + state.col);
@@ -107,7 +107,6 @@ term.on('key', (key) => {
             console.log('windowLine: ' + state.windowLine);
             console.log('windowLineHorizontal: ' + state.windowLineHorizontal);
             console.log('currentSnapshot: ' + state.currentSnapshot);
-            console.log('savePoint: ' + state.savePoint);
             console.log('mark: ' + state.mark);
         } else if (key === 'HOME') {
             console.log(process.argv);

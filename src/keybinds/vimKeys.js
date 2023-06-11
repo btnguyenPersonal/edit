@@ -1030,7 +1030,6 @@ function handleVimKeys(key, state, screen) {
                     windowLineHorizontal: state.windowLineHorizontal,
                     currentSnapshot: state.currentSnapshot,
                     snapshots: snapshotsCopy,
-                    savePoint: state.savePoint,
                     mark: state.mark,
                     prevRow: state.prevRow,
                     prevCol: state.prevCol,
@@ -1044,7 +1043,6 @@ function handleVimKeys(key, state, screen) {
                 state.windowLineHorizontal = pos.windowLineHorizontal;
                 state.currentSnapshot = pos.currentSnapshot;
                 state.snapshots = pos.snapshots;
-                state.savePoint = pos.savePoint;
                 state.mark = pos.mark;
                 state.prevRow = pos.prevRow;
                 state.prevCol = pos.prevCol;
@@ -1062,7 +1060,6 @@ function handleVimKeys(key, state, screen) {
                     windowLine: state.windowLine,
                     windowLineHorizontal: state.windowLineHorizontal,
                     snapshots: snapshotsCopy,
-                    savePoint: state.savePoint,
                     mark: state.mark,
                     prevRow: state.prevRow,
                     prevCol: state.prevCol,
@@ -1076,7 +1073,6 @@ function handleVimKeys(key, state, screen) {
                 state.windowLineHorizontal = pos.windowLineHorizontal;
                 state.currentSnapshot = pos.currentSnapshot;
                 state.snapshots = pos.snapshots;
-                state.savePoint = pos.savePoint;
                 state.mark = pos.mark;
                 state.prevRow = pos.prevRow;
                 state.prevCol = pos.prevCol;
@@ -1100,7 +1096,6 @@ function handleVimKeys(key, state, screen) {
                     windowLineHorizontal: state.windowLineHorizontal,
                     currentSnapshot: state.currentSnapshot,
                     snapshots: snapshotsCopy,
-                    savePoint: state.savePoint,
                     mark: state.mark,
                     prevRow: state.prevRow,
                     prevCol: state.prevCol,
@@ -1114,7 +1109,6 @@ function handleVimKeys(key, state, screen) {
                 state.windowLineHorizontal = pos.windowLineHorizontal;
                 state.currentSnapshot = pos.currentSnapshot;
                 state.snapshots = pos.snapshots;
-                state.savePoint = pos.savePoint;
                 state.mark = pos.mark;
                 state.prevRow = pos.prevRow;
                 state.prevCol = pos.prevCol;
@@ -1138,7 +1132,6 @@ function handleVimKeys(key, state, screen) {
                     windowLineHorizontal: state.windowLineHorizontal,
                     currentSnapshot: state.currentSnapshot,
                     snapshots: snapshotsCopy,
-                    savePoint: state.savePoint,
                     mark: state.mark,
                     prevRow: state.prevRow,
                     prevCol: state.prevCol,
@@ -1152,7 +1145,6 @@ function handleVimKeys(key, state, screen) {
                 state.windowLineHorizontal = pos.windowLineHorizontal;
                 state.currentSnapshot = pos.currentSnapshot;
                 state.snapshots = pos.snapshots;
-                state.savePoint = pos.savePoint;
                 state.mark = pos.mark;
                 state.prevRow = pos.prevRow;
                 state.prevCol = pos.prevCol;
@@ -1460,6 +1452,8 @@ function handleVimKeys(key, state, screen) {
                     state.windowLineHorizontal = 0;
                 }
             }
+        } else if (key === ':') {
+            state.mode = ':';
         } else if (key === 'X') {
             state.harpoonIndexes = [];
             state.harpoonIndex = 0;

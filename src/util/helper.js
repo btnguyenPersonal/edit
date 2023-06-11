@@ -111,24 +111,31 @@ function getRowIfOverflow(state) {
 }
 
 function moveCursor(state, screen, windowLineHorizontal) {
-    const r = getRowIfOverflow(state);
-    let row;
-    let col;
-    if (state.data[r] !== undefined) {
-        col = state.col < state.data[r].length
+    if (state.mode === ':') {
+        screen.moveTo(
+            state.commandString.length + 1,
+            0
+        );
+    } else {
+        const r = getRowIfOverflow(state);
+        let row;
+        let col;
+        if (state.data[r] !== undefined) {
+            col = state.col < state.data[r].length
             ? state.col
             : state.data[r].length;
-    } else {
-        col = 0;
+        } else {
+            col = 0;
+        }
+        col += 5;
+        row = state.row < state.data.length ? state.row : state.data.length;
+        col -= windowLineHorizontal;
+        row -= state.windowLine;
+        screen.moveTo(
+            col,
+            row + 1
+        );
     }
-    col += 5;
-    row = state.row < state.data.length ? state.row : state.data.length;
-    col -= windowLineHorizontal;
-    row -= state.windowLine;
-    screen.moveTo(
-        col,
-        row + 1
-    );
 }
 
 function isRowHighlighted(state, i) {
@@ -406,15 +413,12 @@ function copyToClipboard(state, textArray, clipboardVisualBlock) {
 }
 
 async function saveFile(state) {
-    if (state.currentSnapshot !== state.savePoint) {
-        await (async () => fs.writeFile(state.file, state.data.join('\n'), (err) => {
-            if (err) {
-                console.log(err);
-                process.exit();
-            }
-        }))();
-        state.savePoint = state.currentSnapshot;
-    }
+    await (async () => fs.writeFile(state.file, state.data.join('\n'), (err) => {
+        if (err) {
+            console.log(err);
+            process.exit();
+        }
+    }))();
 }
 
 function applySnapshot(state, index, backwards) {
@@ -556,13 +560,17 @@ function isMergeConflictEnd(s) {
 }
 
 function renderStatusBar(state, screen) {
-    for (let i = 0; i < state.harpoonIndexes.length; i += 1) {
-        screen.put({ attr: { color: i === state.harpoonIndex ? 'yellow' : 'grey' } }, shortenFilePath(state.files[state.harpoonIndexes[i]]) + ' ');
+    if (state.mode === ':') {
+        screen.put({ attr: { color: 'white' } }, ':' + state.commandString);
+    } else {
+        for (let i = 0; i < state.harpoonIndexes.length; i += 1) {
+            screen.put({ attr: { color: i === state.harpoonIndex ? 'yellow' : 'grey' } }, shortenFilePath(state.files[state.harpoonIndexes[i]]) + ' ');
+        }
+        const index = 5 + state.file.length + ((state.row + 1).toString().length) + ((state.col + 1).toString().length) + state.searchQuery.length;
+        screen.put({ attr: { color: 'blue' }, x: process.stdout.columns - index - 10 }, state.commandHistory.slice(-10));
+        screen.put({ attr: { color: 'green' }, x: process.stdout.columns - index }, '/' + state.searchQuery);
+        screen.put({ attr: { color: 'white' } }, '"' + state.file + ':' + (state.row + 1) + ':' + (state.col + 1) + '"');
     }
-    const index = 5 + state.file.length + ((state.row + 1).toString().length) + ((state.col + 1).toString().length) + state.searchQuery.length;
-    screen.put({ attr: { color: 'blue' }, x: process.stdout.columns - index - 10 }, state.commandHistory.slice(-10));
-    screen.put({ attr: { color: 'green' }, x: process.stdout.columns - index }, '/' + state.searchQuery);
-    screen.put({ attr: { color: 'white' } }, '"' + state.file + ':' + (state.row + 1) + ':' + (state.col + 1) + '"');
 }
 
 function renderFileFinder(state, screen, mode) {
@@ -730,11 +738,26 @@ function changeFile(state) {
     state.windowLineHorizontal = 0;
     state.snapshots = [];
     state.currentSnapshot = 0;
-    state.savePoint = 0;
     state.recording = false;
     state.mark = 0;
     state.data = getData(state.file);
     createSnapshot(state);
+}
+
+function evaluateCommand(state, term) {
+    if (state.commandString === 'w') {
+        saveFile(state);
+    } else if (state.commandString === 'wq') {
+        (async () => await saveFile(state))();
+        term.fullscreen(false);
+        process.exit(0);
+    } else if (state.commandString === 'q') {
+        term.fullscreen(false);
+        process.exit(0);
+    } else if (state.commandString === 'q!') {
+        term.fullscreen(false);
+        process.exit(0);
+    }
 }
 
 export {
@@ -761,5 +784,6 @@ export {
     getRowIfOverflow,
     changeFile,
     getData,
+    evaluateCommand,
     isFile
 };
