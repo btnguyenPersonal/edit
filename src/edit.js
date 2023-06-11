@@ -52,6 +52,9 @@ const state = {
     previousKeys: '',
     commandHistory: '',
     commandString: '',
+    commandIndex: 0,
+    commands: [],
+    commandsIndex: [],
     previousCommand: [],
     file: filePath === undefined ? '' : filePath,
     harpoonIndex: 0,
@@ -93,9 +96,6 @@ term.on('key', (key) => {
         if (key === 'CTRL_S') {
             saveFile(state);
             renderScreen(state, screen);
-        // } else if (key === 'CTRL_C') {
-        //     term.fullscreen(false);
-        //     process.exit(0);
         } else if (key === 'END') {
             console.log('row: ' + state.row);
             console.log('col: ' + state.col);

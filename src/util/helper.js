@@ -113,7 +113,7 @@ function getRowIfOverflow(state) {
 function moveCursor(state, screen, windowLineHorizontal) {
     if (state.mode === ':') {
         screen.moveTo(
-            state.commandString.length + 1,
+            state.commandIndex + 1,
             0
         );
     } else {
@@ -747,6 +747,14 @@ function changeFile(state) {
 function evaluateCommand(state, term) {
     if (state.commandString === 'w') {
         saveFile(state);
+        return false;
+    } else if (state.commandString === 'wa') {
+        saveFile(state);
+        return false;
+    } else if (state.commandString === 'x') {
+        (async () => await saveFile(state))();
+        term.fullscreen(false);
+        process.exit(0);
     } else if (state.commandString === 'wq') {
         (async () => await saveFile(state))();
         term.fullscreen(false);
@@ -754,6 +762,25 @@ function evaluateCommand(state, term) {
     } else if (state.commandString === 'q') {
         term.fullscreen(false);
         process.exit(0);
+    } else if (/%s\/(.*)\/(.*)\/g/.test(state.commandString)) {
+        const match = /%s\/(.*?)\/(.*?)\/g/.exec(state.commandString);
+        for (let i = 0; i < state.data.length; i += 1) {
+            state.data[i] = state.data[i].replaceAll(new RegExp(match[1], 'g'), match[2]);
+        }
+        saveFile(state);
+        return true;
+    } else if (state.commandString === 'set ts=2') {
+        state.indentAmount = 2;
+        return false;
+    } else if (state.commandString === 'set ts=4') {
+        state.indentAmount = 4;
+        return false;
+    } else if (!isNaN(state.commandString)) {
+        const num = parseInt(state.commandString);
+        if (num > 0 && num < state.data.length) {
+            state.row = num - 1;
+        }
+        return false;
     } else if (state.commandString === 'q!') {
         term.fullscreen(false);
         process.exit(0);
