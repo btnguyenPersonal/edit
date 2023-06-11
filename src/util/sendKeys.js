@@ -7,8 +7,9 @@ import { handleVisualLineKeys } from '../keybinds/visualLineKeys.js';
 import { handleVisualBlockKeys } from '../keybinds/visualBlockKeys.js';
 import { handleSearchKeys } from '../keybinds/searchKeys.js';
 import { handleFileFinderKeys } from '../keybinds/fileFinderKeys.js';
+import { handleCommandKeys } from '../keybinds/commandKeys.js';
 
-function sendKeys(keys, state, screen) {
+function sendKeys(keys, state, screen, term) {
     if (state.data.length === 0) {
         state.data = [''];
     }
@@ -27,7 +28,9 @@ function sendKeys(keys, state, screen) {
         if (state.allowCommandLogging && state.recording && !(state.mode === 'n' && keys[i] === 'q')) {
             state.macro.push(keys[i]);
         }
-        if (state.mode === '/') {
+        if (state.mode === ':') {
+            handleCommandKeys(keys[i], state, screen, term);
+        } else if (state.mode === '/') {
             handleSearchKeys(keys[i], state, screen);
         } else if (state.mode === 'MULTI_CURSOR') {
             handleMultiCursorKeys(keys[i], state, screen);
