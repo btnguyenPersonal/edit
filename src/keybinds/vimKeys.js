@@ -1421,6 +1421,12 @@ function handleVimKeys(key, state, screen) {
             state.fileFindingOutput = output.split('\n');
         } else if (key === '\'') {
             state.row = state.mark;
+        } else if (key === '~') {
+            let chr = state.data[state.row].substring(state.col, state.col + 1);
+            chr = chr === chr.toUpperCase() ? chr.toLowerCase() : chr.toUpperCase();
+            state.data[state.row] = state.data[state.row].substring(0, state.col)
+                + chr
+                + state.data[state.row].substring(state.col + 1);
         } else if (key === 'm') {
             state.mark = state.row;
         } else if (key === '@') {
