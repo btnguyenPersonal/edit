@@ -3,6 +3,7 @@ import {
     renderScreen,
     isWritable,
     evaluateCommand,
+    createSnapshot,
     saveFile,
 } from '../util/helper.js';
 
@@ -45,6 +46,7 @@ function handleCommandKeys(key, state, screen, term) {
         state.commandString = '';
         state.mode = 'n';
         state.commandIndex = 0;
+        createSnapshot(state);
     } else if (key === 'BACKSPACE') {
         if (state.commandIndex > 0) {
             state.commandString = state.commandString.substring(0, state.commandString.length - 1);
