@@ -412,13 +412,13 @@ function copyToClipboard(state, textArray, clipboardVisualBlock) {
     ncp.copy(textArray.join('\n'));
 }
 
-async function saveFile(state) {
-    await (async () => fs.writeFile(state.file, state.data.join('\n'), (err) => {
+function saveFile(state) {
+    fs.writeFileSync(state.file, state.data.join('\n'), (err) => {
         if (err) {
             console.log(err);
             process.exit();
         }
-    }))();
+    });
 }
 
 function applySnapshot(state, index, backwards) {
@@ -752,11 +752,11 @@ function evaluateCommand(state, term) {
         saveFile(state);
         return false;
     } else if (state.commandString === 'x') {
-        (async () => await saveFile(state))();
+        saveFile(state);
         term.fullscreen(false);
         process.exit(0);
     } else if (state.commandString === 'wq') {
-        (async () => await saveFile(state))();
+        saveFile(state);
         term.fullscreen(false);
         process.exit(0);
     } else if (state.commandString === 'q') {
