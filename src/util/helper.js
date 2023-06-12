@@ -781,6 +781,12 @@ function evaluateCommand(state, term) {
             state.row = num - 1;
         }
         return false;
+    } else if (state.commandString === 'qa') {
+        term.fullscreen(false);
+        process.exit(0);
+    } else if (state.commandString === 'qa!') {
+        term.fullscreen(false);
+        process.exit(0);
     } else if (state.commandString === 'q!') {
         term.fullscreen(false);
         process.exit(0);
