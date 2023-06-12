@@ -274,6 +274,7 @@ function handleVisualKeys(key, state, screen) {
                 }
                 if (state.files.includes(state.file)) {
                     state.storePosition[state.fileIndex] = {
+                        data: state.data,
                         row: state.row,
                         col: state.col,
                         windowLine: state.windowLine,
@@ -285,6 +286,7 @@ function handleVisualKeys(key, state, screen) {
                     };
                 } else {
                     state.storePosition.push({
+                        data: state.data,
                         row: state.row,
                         col: state.col,
                         windowLine: state.windowLine,
@@ -300,6 +302,7 @@ function handleVisualKeys(key, state, screen) {
                 state.fileIndex = state.files.indexOf(state.file);
                 changeFile(state);
                 const pos = state.storePosition[state.fileIndex];
+                state.data = pos.data;
                 state.row = pos.row;
                 state.col = pos.col;
                 state.windowLine = pos.windowLine;

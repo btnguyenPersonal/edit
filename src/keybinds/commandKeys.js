@@ -6,7 +6,6 @@ import {
     searchForString,
     createSnapshot,
     evaluateCommand,
-    saveFile,
     centerScreen
 } from '../util/helper.js';
 
@@ -49,7 +48,6 @@ function handleCommandKeys(key, state, screen, term) {
         state.commandString = '';
         state.mode = 'n';
         state.commandIndex = 0;
-        // saveFile(state);
     } else if (key === 'BACKSPACE') {
         if (state.commandIndex > 0) {
             state.commandString = state.commandString.substring(0, state.commandString.length - 1);

@@ -14,7 +14,6 @@ import {
     searchForString,
     searchBackForString,
     isNumeric,
-    saveFile,
     trimTrailingWhitespace,
     logCommand,
     refreshFile,
@@ -1024,6 +1023,7 @@ function handleVimKeys(key, state, screen) {
                     snapshotsCopy.push(JSON.parse(JSON.stringify(state.snapshots[i])));
                 }
                 state.storePosition[state.fileIndex] = {
+                    data: state.data,
                     row: state.row,
                     col: state.col,
                     windowLine: state.windowLine,
@@ -1037,6 +1037,7 @@ function handleVimKeys(key, state, screen) {
                 state.fileIndex -= 1;
                 changeFile(state);
                 const pos = state.storePosition[state.fileIndex];
+                state.data = pos.data,
                 state.row = pos.row;
                 state.col = pos.col;
                 state.windowLine = pos.windowLine;
@@ -1055,6 +1056,7 @@ function handleVimKeys(key, state, screen) {
                     snapshotsCopy.push(JSON.parse(JSON.stringify(state.snapshots[i])));
                 }
                 state.storePosition[state.fileIndex] = {
+                    data: state.data,
                     row: state.row,
                     col: state.col,
                     windowLine: state.windowLine,
@@ -1067,6 +1069,7 @@ function handleVimKeys(key, state, screen) {
                 state.fileIndex += 1;
                 changeFile(state);
                 const pos = state.storePosition[state.fileIndex];
+                state.data = pos.data,
                 state.row = pos.row;
                 state.col = pos.col;
                 state.windowLine = pos.windowLine;
@@ -1090,6 +1093,7 @@ function handleVimKeys(key, state, screen) {
                     snapshotsCopy.push(JSON.parse(JSON.stringify(state.snapshots[i])));
                 }
                 state.storePosition[state.fileIndex] = {
+                    data: state.data,
                     row: state.row,
                     col: state.col,
                     windowLine: state.windowLine,
@@ -1103,6 +1107,7 @@ function handleVimKeys(key, state, screen) {
                 state.fileIndex = state.harpoonIndexes[state.harpoonIndex];
                 changeFile(state);
                 const pos = state.storePosition[state.fileIndex];
+                state.data = pos.data,
                 state.row = pos.row;
                 state.col = pos.col;
                 state.windowLine = pos.windowLine;
@@ -1126,6 +1131,7 @@ function handleVimKeys(key, state, screen) {
                     snapshotsCopy.push(JSON.parse(JSON.stringify(state.snapshots[i])));
                 }
                 state.storePosition[state.fileIndex] = {
+                    data: state.data,
                     row: state.row,
                     col: state.col,
                     windowLine: state.windowLine,
@@ -1139,6 +1145,7 @@ function handleVimKeys(key, state, screen) {
                 state.fileIndex = state.harpoonIndexes[state.harpoonIndex];
                 changeFile(state);
                 const pos = state.storePosition[state.fileIndex];
+                state.data = pos.data;
                 state.row = pos.row;
                 state.col = pos.col;
                 state.windowLine = pos.windowLine;
@@ -1362,12 +1369,10 @@ function handleVimKeys(key, state, screen) {
             if (state.currentSnapshot + 1 < state.snapshots.length) {
                 applySnapshot(state, state.currentSnapshot + 1, false);
             }
-            // saveFile(state);
         } else if (key === 'u') {
             if (state.currentSnapshot - 1 >= 0) {
                 applySnapshot(state, state.currentSnapshot - 1, true);
             }
-            // saveFile(state);
         } else if (key === '[') {
             previousSameIndentLevel(state, state.row);
         } else if (key === ']') {
