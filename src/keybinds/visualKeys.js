@@ -421,6 +421,10 @@ function handleVisualKeys(key, state, screen) {
         }
         state.mode = 'n';
         createSnapshot(state);
+    } else if (key === 'CTRL_F') {
+        state.searchQuery = getInVisual(state);
+        state.replacing = true;
+        state.mode = '/';
     } else if (key === '<') {
         if (state.row >= state.visual.row) {
             for (let i = state.visual.row; i <= state.row; i += 1) {

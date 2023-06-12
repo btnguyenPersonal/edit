@@ -5,6 +5,8 @@
     - compartmentalize stuff into more functions
     - vertical split
     - horizontal split
+    - undo ui with commands that where run before save happened
+    - run commands from within
 ## blocked
 ## in progress
 ## done
