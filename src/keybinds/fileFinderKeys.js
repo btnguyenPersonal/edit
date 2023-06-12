@@ -9,36 +9,38 @@ import {
 
 function handleFileFinderKeys(key, state, screen) {
     if (isWritable(key)) {
-        if (key === '"') {
-            state.fileFinderQuery += '\\';
-        }
-        state.fileFinderQuery += key;
-        state.fileFinderIndex = 0;
-        if (state.mode === 'g') {
-            let output = '';
-            if (state.fileFinderQuery.length !== 0) {
-                output = execSync(
-                    `git grep -n "${state.fileFinderQuery}" || true`,
-                    { maxBuffer: 1024 * 1024 * 1000 }
-                ).toString();
+        if (key !== '\\') {
+            if (key === '"') {
+                state.fileFinderQuery += '\\';
             }
-            state.fileFindingOutput = output.split('\n');
-        } else {
-            let output = '';
-            if (state.gitFinding) {
+            state.fileFinderQuery += key;
+            state.fileFinderIndex = 0;
+            if (state.mode === 'g') {
+                let output = '';
                 if (state.fileFinderQuery.length !== 0) {
-                    output = execSync(`fd -t f --hidden -E .git | grep -F -i "${state.fileFinderQuery}" || true`).toString();
-                } else {
-                    output = execSync('fd -t f --hidden -E .git').toString();
+                    output = execSync(
+                        `git grep -n "${state.fileFinderQuery}" || true`,
+                        { maxBuffer: 1024 * 1024 * 1000 }
+                    ).toString();
                 }
+                state.fileFindingOutput = output.split('\n');
             } else {
-                if (state.fileFinderQuery.length !== 0) {
-                    output = execSync(`find * -type f -name "${state.fileFinderQuery}*"`).toString();
+                let output = '';
+                if (state.gitFinding) {
+                    if (state.fileFinderQuery.length !== 0) {
+                        output = execSync(`fd -t f --hidden -E .git | grep -F -i "${state.fileFinderQuery}" || true`).toString();
+                    } else {
+                        output = execSync('fd -t f --hidden -E .git').toString();
+                    }
                 } else {
-                    output = execSync('find * -type f').toString();
+                    if (state.fileFinderQuery.length !== 0) {
+                        output = execSync(`find * -type f -name "${state.fileFinderQuery}*"`).toString();
+                    } else {
+                        output = execSync('find * -type f').toString();
+                    }
                 }
+                state.fileFindingOutput = output.split('\n');
             }
-            state.fileFindingOutput = output.split('\n');
         }
     } else if (key === 'UP') {
         if (state.fileFinderIndex > 0) {
