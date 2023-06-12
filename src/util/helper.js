@@ -450,7 +450,7 @@ function createSnapshot(state) {
         windowLine: state.windowLine
     });
     state.currentSnapshot = state.snapshots.length - 1;
-    saveFile(state);
+    // saveFile(state);
 }
 
 function searchBackForString(state, string) {
@@ -767,7 +767,6 @@ function evaluateCommand(state, term) {
         for (let i = 0; i < state.data.length; i += 1) {
             state.data[i] = state.data[i].replaceAll(new RegExp(match[1], 'g'), match[2]);
         }
-        saveFile(state);
         return true;
     } else if (state.commandString === 'set ts=2') {
         state.indentAmount = 2;

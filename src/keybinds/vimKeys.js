@@ -1362,12 +1362,12 @@ function handleVimKeys(key, state, screen) {
             if (state.currentSnapshot + 1 < state.snapshots.length) {
                 applySnapshot(state, state.currentSnapshot + 1, false);
             }
-            saveFile(state);
+            // saveFile(state);
         } else if (key === 'u') {
             if (state.currentSnapshot - 1 >= 0) {
                 applySnapshot(state, state.currentSnapshot - 1, true);
             }
-            saveFile(state);
+            // saveFile(state);
         } else if (key === '[') {
             previousSameIndentLevel(state, state.row);
         } else if (key === ']') {

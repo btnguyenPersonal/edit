@@ -94,26 +94,7 @@ renderScreen(state, screen);
 
 term.on('key', (key) => {
     try {
-        if (key === 'CTRL_S') {
-            saveFile(state);
-            renderScreen(state, screen);
-        } else if (key === 'END') {
-            console.log('row: ' + state.row);
-            console.log('col: ' + state.col);
-            console.log('previousCommand: ' + state.previousCommand);
-            console.log('previousKeys: ' + state.previousKeys);
-            console.log('file: ' + state.file);
-            console.log('files: ' + state.files);
-            console.log('fileIndex: ' + state.fileIndex);
-            console.log('windowLine: ' + state.windowLine);
-            console.log('windowLineHorizontal: ' + state.windowLineHorizontal);
-            console.log('currentSnapshot: ' + state.currentSnapshot);
-            console.log('mark: ' + state.mark);
-        } else if (key === 'HOME') {
-            console.log(process.argv);
-        } else {
-            sendKeys([key], state, screen, term);
-        }
+        sendKeys([key], state, screen, term);
     } catch (e) {
         term.fullscreen(false);
         console.log(e);
