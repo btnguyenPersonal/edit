@@ -1077,7 +1077,7 @@ function handleVimKeys(key, state, screen) {
                 state.prevRow = pos.prevRow;
                 state.prevCol = pos.prevCol;
             }
-        } else if (key === 'CTRL_J') {
+        } else if (key === 'CTRL_W') {
             if (state.harpoonIndex - 1 >= 0) {
                 state.harpoonIndex -= 1;
             } else if (state.harpoonIndexes.length > 0) {
@@ -1113,7 +1113,7 @@ function handleVimKeys(key, state, screen) {
                 state.prevRow = pos.prevRow;
                 state.prevCol = pos.prevCol;
             }
-        } else if (key === 'CTRL_K') {
+        } else if (key === 'CTRL_E') {
             if (state.harpoonIndex + 1 < state.harpoonIndexes.length) {
                 state.harpoonIndex += 1;
             } else {
@@ -1418,7 +1418,7 @@ function handleVimKeys(key, state, screen) {
             state.gitFinding = false;
             state.fileFinderQuery = '';
             state.fileFinderIndex = 0;
-            const output = execSync('find . -type f').toString();
+            const output = execSync('find * -type f').toString();
             state.fileFindingOutput = output.split('\n');
         } else if (key === 'CTRL_P') {
             state.mode = 'f';

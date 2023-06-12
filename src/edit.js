@@ -65,7 +65,7 @@ const state = {
     data: filePath === undefined ? [] : getData(filePath),
     row: 0,
     col: 0,
-    gitFinding: false,
+    gitFinding: execSync('git rev-parse --is-inside-work-tree').toString().includes('true'),
     prevRow: 0,
     prevCol: 0,
     windowLine: 0,
@@ -87,7 +87,11 @@ if (filePath !== undefined) {
     state.allowCommandLogging = true;
     state.files.push(state.file);
 } else {
-    state.fileFindingOutput = execSync('find . -type f').toString().split('\n');
+    if (state.gitFinding) {
+        state.fileFindingOutput = execSync('fd -t f --hidden -E .git').toString().split('\n');
+    } else {
+        state.fileFindingOutput = execSync('find * -type f').toString().split('\n');
+    }
 }
 state.allowCommandLogging = true;
 renderScreen(state, screen);
