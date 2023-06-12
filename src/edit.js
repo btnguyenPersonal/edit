@@ -65,6 +65,7 @@ const state = {
     data: filePath === undefined ? [] : getData(filePath),
     row: 0,
     col: 0,
+    gitFinding: false,
     prevRow: 0,
     prevCol: 0,
     windowLine: 0,
@@ -86,7 +87,7 @@ if (filePath !== undefined) {
     state.allowCommandLogging = true;
     state.files.push(state.file);
 } else {
-    state.fileFindingOutput = execSync('fd -t f --hidden -E .git').toString().split('\n');
+    state.fileFindingOutput = execSync('find . -type f').toString().split('\n');
 }
 state.allowCommandLogging = true;
 renderScreen(state, screen);

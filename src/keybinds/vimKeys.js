@@ -1077,7 +1077,7 @@ function handleVimKeys(key, state, screen) {
                 state.prevRow = pos.prevRow;
                 state.prevCol = pos.prevCol;
             }
-        } else if (key === 'CTRL_W') {
+        } else if (key === 'CTRL_J') {
             if (state.harpoonIndex - 1 >= 0) {
                 state.harpoonIndex -= 1;
             } else if (state.harpoonIndexes.length > 0) {
@@ -1113,7 +1113,7 @@ function handleVimKeys(key, state, screen) {
                 state.prevRow = pos.prevRow;
                 state.prevCol = pos.prevCol;
             }
-        } else if (key === 'CTRL_E') {
+        } else if (key === 'CTRL_K') {
             if (state.harpoonIndex + 1 < state.harpoonIndexes.length) {
                 state.harpoonIndex += 1;
             } else {
@@ -1413,8 +1413,16 @@ function handleVimKeys(key, state, screen) {
                 ).toString();
             }
             state.fileFindingOutput = output.split('\n');
+        } else if (key === 'CTRL_N') {
+            state.mode = 'f';
+            state.gitFinding = false;
+            state.fileFinderQuery = '';
+            state.fileFinderIndex = 0;
+            const output = execSync('find . -type f').toString();
+            state.fileFindingOutput = output.split('\n');
         } else if (key === 'CTRL_P') {
             state.mode = 'f';
+            state.gitFinding = true;
             state.fileFinderQuery = '';
             state.fileFinderIndex = 0;
             const output = execSync('fd -t f --hidden -E .git').toString();

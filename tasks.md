@@ -1,21 +1,23 @@
 ## backlog
     - drag select for visualLine
-    - clearall for fileFinding
 ## todo
     - every rerender don't have to recalculate the color each time
     - compartmentalize stuff into more functions
-    - cis
-    - take out i for di ci
-    - case insensitive search (slow)
-    - visualLine work with replace
     - vertical split
     - horizontal split
-    - add = work with html tags
-        - ends with > means go in one indent
-        - starts with </ means go back one indent
 ## blocked
 ## in progress
 ## done
+    - clearall for fileFinding
+    - visualLine work with replace
+    - cis
+    - case insensitive search (slow)
+    - added :%s///g
+    - added :w
+    - added :q
+    - add = work with html tags
+        - ends with > means go in one indent
+        - starts with </ means go back one indent
     - start program with fileFinding
     - get rid of state.vim
     - get rid of process.stdout.row and use screen.height screen.width (will make easier to make status bar) (passing around the screen isn't good)
