@@ -92,7 +92,6 @@ function handleFileFinderKeys(key, state, screen) {
                             prevRow: state.prevRow,
                             prevCol: state.prevCol,
                         };
-                        state.file = newFile;
                     } else {
                         state.storePosition.push({
                             file: state.file,
@@ -107,9 +106,9 @@ function handleFileFinderKeys(key, state, screen) {
                             prevRow: state.prevRow,
                             prevCol: state.prevCol,
                         });
-                        state.file = newFile;
-                        state.files.push(state.file);
                     }
+                    state.file = newFile;
+                    state.files.push(state.file);
                     state.fileIndex = state.files.length - 1;
                     changeFile(state);
                     if (lineNum !== 0) {

@@ -235,8 +235,6 @@ function handleVisualKeys(key, state, screen) {
         }
         if (fileExists) {
             if (!state.files.includes(convertedPath)) {
-                state.file = convertedPath;
-                state.files.push(state.file);
                 const snapshotsCopy = [];
                 for (let i = 0; i < state.snapshots.length; i += 1) {
                     snapshotsCopy.push(JSON.parse(JSON.stringify(state.snapshots[i])));
@@ -265,6 +263,8 @@ function handleVisualKeys(key, state, screen) {
                         prevCol: state.prevCol,
                     });
                 }
+                state.file = convertedPath;
+                state.files.push(state.file);
                 state.fileIndex = state.files.length - 1;
                 changeFile(state);
             } else {
