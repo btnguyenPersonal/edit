@@ -1,12 +1,9 @@
 /* eslint-disable import/no-cycle */
 import {
     renderScreen,
-    logCommand,
     isWritable,
-    searchForString,
-    createSnapshot,
     evaluateCommand,
-    centerScreen
+    saveFile,
 } from '../util/helper.js';
 
 function handleCommandKeys(key, state, screen, term) {

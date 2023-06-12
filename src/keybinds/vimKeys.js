@@ -1427,7 +1427,7 @@ function handleVimKeys(key, state, screen) {
             state.gitFinding = false;
             state.fileFinderQuery = '';
             state.fileFinderIndex = 0;
-            const output = execSync('find . -type f').toString();
+            const output = execSync('find * -type f').toString();
             state.fileFindingOutput = output.split('\n');
         } else if (key === 'CTRL_P') {
             state.mode = 'f';
