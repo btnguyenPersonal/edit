@@ -75,14 +75,13 @@ function handleFileFinderKeys(key, state, screen) {
             }
             if (fileExists) {
                 if (!state.files.includes(newFile)) {
-                    state.file = newFile;
-                    state.files.push(state.file);
                     const snapshotsCopy = [];
                     for (let i = 0; i < state.snapshots.length; i += 1) {
                         snapshotsCopy.push(JSON.parse(JSON.stringify(state.snapshots[i])));
                     }
                     if (state.files.includes(state.file)) {
                         state.storePosition[state.fileIndex] = {
+                            file: state.file,
                             data: state.data,
                             row: state.row,
                             col: state.col,
@@ -93,8 +92,10 @@ function handleFileFinderKeys(key, state, screen) {
                             prevRow: state.prevRow,
                             prevCol: state.prevCol,
                         };
+                        state.file = newFile;
                     } else {
                         state.storePosition.push({
+                            file: state.file,
                             data: state.data,
                             row: state.row,
                             col: state.col,
@@ -106,6 +107,8 @@ function handleFileFinderKeys(key, state, screen) {
                             prevRow: state.prevRow,
                             prevCol: state.prevCol,
                         });
+                        state.file = newFile;
+                        state.files.push(state.file);
                     }
                     state.fileIndex = state.files.length - 1;
                     changeFile(state);
@@ -120,6 +123,7 @@ function handleFileFinderKeys(key, state, screen) {
                     }
                     if (state.files.includes(state.file)) {
                         state.storePosition[state.fileIndex] = {
+                            file: state.file,
                             data: state.data,
                             row: state.row,
                             col: state.col,
@@ -132,6 +136,7 @@ function handleFileFinderKeys(key, state, screen) {
                         };
                     } else {
                         state.storePosition.push({
+                            file: state.file,
                             data: state.data,
                             row: state.row,
                             col: state.col,

@@ -1017,12 +1017,12 @@ function handleVimKeys(key, state, screen) {
     } else if (state.mode === 'n') {
         if (key === 'TAB') {
             if (state.fileIndex - 1 >= 0) {
-                state.file = state.files[state.fileIndex - 1];
                 const snapshotsCopy = [];
                 for (let i = 0; i < state.snapshots.length; i += 1) {
                     snapshotsCopy.push(JSON.parse(JSON.stringify(state.snapshots[i])));
                 }
                 state.storePosition[state.fileIndex] = {
+                    file: state.file,
                     data: state.data,
                     row: state.row,
                     col: state.col,
@@ -1034,6 +1034,7 @@ function handleVimKeys(key, state, screen) {
                     prevRow: state.prevRow,
                     prevCol: state.prevCol,
                 };
+                state.file = state.files[state.fileIndex - 1];
                 state.fileIndex -= 1;
                 changeFile(state);
                 const pos = state.storePosition[state.fileIndex];
@@ -1050,12 +1051,12 @@ function handleVimKeys(key, state, screen) {
             }
         } else if (key === 'CTRL_O') {
             if (state.fileIndex + 1 < state.files.length) {
-                state.file = state.files[state.fileIndex + 1];
                 const snapshotsCopy = [];
                 for (let i = 0; i < state.snapshots.length; i += 1) {
                     snapshotsCopy.push(JSON.parse(JSON.stringify(state.snapshots[i])));
                 }
                 state.storePosition[state.fileIndex] = {
+                    file: state.file,
                     data: state.data,
                     row: state.row,
                     col: state.col,
@@ -1066,6 +1067,7 @@ function handleVimKeys(key, state, screen) {
                     prevRow: state.prevRow,
                     prevCol: state.prevCol,
                 };
+                state.file = state.files[state.fileIndex + 1];
                 state.fileIndex += 1;
                 changeFile(state);
                 const pos = state.storePosition[state.fileIndex];
@@ -1080,19 +1082,19 @@ function handleVimKeys(key, state, screen) {
                 state.prevRow = pos.prevRow;
                 state.prevCol = pos.prevCol;
             }
-        } else if (key === 'CTRL_J') {
+        } else if (key === 'CTRL_W') {
             if (state.harpoonIndex - 1 >= 0) {
                 state.harpoonIndex -= 1;
             } else if (state.harpoonIndexes.length > 0) {
                 state.harpoonIndex = state.harpoonIndexes.length - 1;
             }
             if (state.files[state.harpoonIndexes[state.harpoonIndex]] !== undefined) {
-                state.file = state.files[state.harpoonIndexes[state.harpoonIndex]];
                 const snapshotsCopy = [];
                 for (let i = 0; i < state.snapshots.length; i += 1) {
                     snapshotsCopy.push(JSON.parse(JSON.stringify(state.snapshots[i])));
                 }
                 state.storePosition[state.fileIndex] = {
+                    file: state.file,
                     data: state.data,
                     row: state.row,
                     col: state.col,
@@ -1104,6 +1106,7 @@ function handleVimKeys(key, state, screen) {
                     prevRow: state.prevRow,
                     prevCol: state.prevCol,
                 };
+                state.file = state.files[state.harpoonIndexes[state.harpoonIndex]];
                 state.fileIndex = state.harpoonIndexes[state.harpoonIndex];
                 changeFile(state);
                 const pos = state.storePosition[state.fileIndex];
@@ -1118,19 +1121,19 @@ function handleVimKeys(key, state, screen) {
                 state.prevRow = pos.prevRow;
                 state.prevCol = pos.prevCol;
             }
-        } else if (key === 'CTRL_K') {
+        } else if (key === 'CTRL_E') {
             if (state.harpoonIndex + 1 < state.harpoonIndexes.length) {
                 state.harpoonIndex += 1;
             } else {
                 state.harpoonIndex = 0;
             }
             if (state.files[state.harpoonIndexes[state.harpoonIndex]] !== undefined) {
-                state.file = state.files[state.harpoonIndexes[state.harpoonIndex]];
                 const snapshotsCopy = [];
                 for (let i = 0; i < state.snapshots.length; i += 1) {
                     snapshotsCopy.push(JSON.parse(JSON.stringify(state.snapshots[i])));
                 }
                 state.storePosition[state.fileIndex] = {
+                    file: state.file,
                     data: state.data,
                     row: state.row,
                     col: state.col,
@@ -1142,6 +1145,7 @@ function handleVimKeys(key, state, screen) {
                     prevRow: state.prevRow,
                     prevCol: state.prevCol,
                 };
+                state.file = state.files[state.harpoonIndexes[state.harpoonIndex]];
                 state.fileIndex = state.harpoonIndexes[state.harpoonIndex];
                 changeFile(state);
                 const pos = state.storePosition[state.fileIndex];
