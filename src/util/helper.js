@@ -413,8 +413,8 @@ function copyToClipboard(state, textArray, clipboardVisualBlock) {
 }
 
 function saveAllFiles(state) {
-    state.files.forEach(() => {
-        fs.writeFileSync(state.file, state.data.join('\n'), (err) => {
+    state.storePosition.forEach((pos) => {
+        fs.writeFileSync(pos.file, pos.data.join('\n'), (err) => {
             if (err) {
                 console.log(err);
                 process.exit();
@@ -759,7 +759,7 @@ function evaluateCommand(state, term) {
         saveFile(state);
         return false;
     } else if (state.commandString === 'wa') {
-        saveFile(state);
+        saveAllFiles(state);
         return false;
     } else if (state.commandString === 'x') {
         saveFile(state);
@@ -790,6 +790,9 @@ function evaluateCommand(state, term) {
             state.row = num - 1;
         }
         return false;
+    } else if (state.commandString === 'qa') {
+        term.fullscreen(false);
+        process.exit(0);
     } else if (state.commandString === 'q!') {
         term.fullscreen(false);
         process.exit(0);

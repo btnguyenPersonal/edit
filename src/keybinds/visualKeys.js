@@ -274,6 +274,7 @@ function handleVisualKeys(key, state, screen) {
                 }
                 if (state.files.includes(state.file)) {
                     state.storePosition[state.fileIndex] = {
+                        file: state.file,
                         data: state.data,
                         row: state.row,
                         col: state.col,
@@ -286,6 +287,7 @@ function handleVisualKeys(key, state, screen) {
                     };
                 } else {
                     state.storePosition.push({
+                        file: state.file,
                         data: state.data,
                         row: state.row,
                         col: state.col,
