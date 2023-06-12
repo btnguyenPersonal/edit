@@ -685,6 +685,7 @@ function renderSingleLine(state, screen, i, mergeSection) {
         }, ' ');
     }
     screen.put({ newLine: true }, '\n');
+    return mergeSection
 }
 
 function renderWindowLines(state, screen, noCenterScreen, fullRefresh) {
@@ -692,10 +693,10 @@ function renderWindowLines(state, screen, noCenterScreen, fullRefresh) {
         centerScreen(state);
     }
     getWindowLineHorizontal(state);
-    const mergeSection = 0;
+    let mergeSection = 0;
     for (let i = state.windowLine; i < (state.windowLine + process.stdout.rows) - 1; i += 1) {
         if (state.data[i] !== undefined) {
-            renderSingleLine(state, screen, i, mergeSection);
+            mergeSection = renderSingleLine(state, screen, i, mergeSection);
         }
     }
     moveCursor(state, screen, state.windowLineHorizontal);
