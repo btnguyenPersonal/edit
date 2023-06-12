@@ -412,6 +412,17 @@ function copyToClipboard(state, textArray, clipboardVisualBlock) {
     ncp.copy(textArray.join('\n'));
 }
 
+function saveAllFiles(state) {
+    state.files.forEach(() => {
+        fs.writeFileSync(state.file, state.data.join('\n'), (err) => {
+            if (err) {
+                console.log(err);
+                process.exit();
+            }
+        });
+    });
+}
+
 function saveFile(state) {
     fs.writeFileSync(state.file, state.data.join('\n'), (err) => {
         if (err) {
@@ -450,7 +461,6 @@ function createSnapshot(state) {
         windowLine: state.windowLine
     });
     state.currentSnapshot = state.snapshots.length - 1;
-    // saveFile(state);
 }
 
 function searchBackForString(state, string) {
