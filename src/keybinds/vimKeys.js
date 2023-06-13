@@ -1434,6 +1434,7 @@ function handleVimKeys(key, state, screen) {
             state.data[state.row] = state.data[state.row].substring(0, state.col)
                 + chr
                 + state.data[state.row].substring(state.col + 1);
+            createSnapshot(state);
         } else if (key === 'm') {
             state.mark = state.row;
         } else if (key === '@') {
