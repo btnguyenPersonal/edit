@@ -76,6 +76,9 @@ function handleVimKeys(key, state, screen) {
             goToCoor(state, parseInt(state.lineNumber) - 1);
         } else if (key === 'ENTER') {
             state.previousKeys = '';
+        } else {
+            state.previousKeys = '';
+            sendKeys([key], state, screen);
         }
     } else if (state.previousKeys === 'd') {
         if (key === 'w') {
