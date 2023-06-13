@@ -1,12 +1,16 @@
 ## backlog
     - drag select for visualLine
+    - run commands from within terminal
+    - every rerender don't have to recalculate the color each time (how bad can this really be?)
 ## todo
-    - every rerender don't have to recalculate the color each time
     - compartmentalize stuff into more functions
     - vertical split
     - horizontal split
-    - undo ui with commands that where run before save happened
-    - run commands from within
+    - persistent undo between sessions??
+    - diff based undo
+    - undo tree instead of truncating on editing tree
+    - undo ui that displays all last snapshots with the commands that were run to end up there -> (12 minutes ago) jjjjjdip
+                                                                                                  (14 minutes ago) vipgc
 ## blocked
 ## in progress
 ## done
