@@ -34,8 +34,6 @@ function handleFileFinderKeys(key, state, screen) {
             } else {
                 if (state.fileFinderQuery.length !== 0) {
                     output = execSync(`find * -type f -name "${state.fileFinderQuery}*"`).toString();
-                } else {
-                    output = execSync('find * -type f').toString();
                 }
             }
             state.fileFindingOutput = output.split('\n');
@@ -187,8 +185,6 @@ function handleFileFinderKeys(key, state, screen) {
             } else {
                 if (state.fileFinderQuery.length !== 0) {
                     output = execSync(`find * -type f -name "${state.fileFinderQuery}*"`).toString();
-                } else {
-                    output = execSync('find * -type f').toString();
                 }
             }
             state.fileFindingOutput = output.split('\n');
