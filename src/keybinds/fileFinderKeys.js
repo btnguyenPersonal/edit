@@ -8,7 +8,7 @@ import {
 } from '../util/helper.js';
 
 function handleFileFinderKeys(key, state, screen) {
-    if (isWritable(key)) {
+    if (isWritable(key) && key !== '\\') {
         if (key === '"') {
             state.fileFinderQuery += '\\';
         }
