@@ -771,7 +771,7 @@ function evaluateCommand(state, term) {
         for (let i = 0; i < state.data.length; i += 1) {
             state.data[i] = state.data[i].replaceAll(new RegExp(match[1], 'g'), match[2]);
         }
-        saveFile(state);
+        createSnapshot(state);
         return true;
     } else if (state.commandString === 'set ts=2') {
         state.indentAmount = 2;
