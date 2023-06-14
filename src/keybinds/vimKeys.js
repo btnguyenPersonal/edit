@@ -1362,15 +1362,19 @@ function handleVimKeys(key, state, screen) {
             logCommand(true, state, key);
             createSnapshot(state);
         } else if (key === 'CTRL_R') {
-            if (state.currentSnapshot + 1 < state.snapshots.length) {
-                applySnapshot(state, state.currentSnapshot + 1, false);
+            if (state.data.length < 10000) {
+                if (state.currentSnapshot + 1 < state.snapshots.length) {
+                    applySnapshot(state, state.currentSnapshot + 1, false);
+                    saveFile(state);
+                }
             }
-            saveFile(state);
         } else if (key === 'u') {
-            if (state.currentSnapshot - 1 >= 0) {
-                applySnapshot(state, state.currentSnapshot - 1, true);
+            if (state.data.length < 10000) {
+                if (state.currentSnapshot - 1 >= 0) {
+                    applySnapshot(state, state.currentSnapshot - 1, true);
+                    saveFile(state);
+                }
             }
-            saveFile(state);
         } else if (key === '[') {
             previousSameIndentLevel(state, state.row);
         } else if (key === ']') {
