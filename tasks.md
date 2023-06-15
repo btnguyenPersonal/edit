@@ -9,6 +9,8 @@
     - persistent undo between sessions??
     - diff based undo
     - undo tree instead of truncating on editing tree
+    - context aware lines at top
+    - fix clipboard having double '\n'
     - undo ui that displays all last snapshots with the commands that were run to end up there -> (12 minutes ago) jjjjjdip
                                                                                                   (14 minutes ago) vipgc
 ## blocked
