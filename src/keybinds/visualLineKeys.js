@@ -66,14 +66,14 @@ function handleVisualLineKeys(key, state, screen) {
             down(state);
         } else if (key === 'y') {
             if (state.row >= state.visual.row) {
-                const newClipboard = ['\n'];
+                const newClipboard = [''];
                 for (let i = state.visual.row; i <= state.row; i += 1) {
                     newClipboard.push(state.data[i]);
                 }
                 copyToClipboard(state, newClipboard);
                 state.row = state.visual.row;
             } else if (state.row < state.visual.row) {
-                const newClipboard = ['\n'];
+                const newClipboard = [''];
                 for (let i = state.row; i <= state.visual.row; i += 1) {
                     newClipboard.push(state.data[i]);
                 }
@@ -140,7 +140,7 @@ function handleVisualLineKeys(key, state, screen) {
                 state.previousKeys = '';
             } else {
                 if (state.row >= state.visual.row) {
-                    const newClipboard = ['\n'];
+                    const newClipboard = [''];
                     for (let i = state.visual.row; i <= state.row; i += 1) {
                         newClipboard.push(state.data[i]);
                     }
@@ -148,7 +148,7 @@ function handleVisualLineKeys(key, state, screen) {
                     state.data.splice(state.visual.row, state.row - state.visual.row + 1);
                     state.row = state.visual.row;
                 } else if (state.row < state.visual.row) {
-                    const newClipboard = ['\n'];
+                    const newClipboard = [''];
                     for (let i = state.row; i <= state.visual.row; i += 1) {
                         newClipboard.push(state.data[i]);
                     }
@@ -162,7 +162,7 @@ function handleVisualLineKeys(key, state, screen) {
             }
         } else if (key === 'd') {
             if (state.row >= state.visual.row) {
-                const newClipboard = ['\n'];
+                const newClipboard = [''];
                 for (let i = state.visual.row; i <= state.row; i += 1) {
                     newClipboard.push(state.data[i]);
                 }
@@ -170,7 +170,7 @@ function handleVisualLineKeys(key, state, screen) {
                 state.data.splice(state.visual.row, state.row - state.visual.row + 1);
                 state.row = state.visual.row;
             } else if (state.row < state.visual.row) {
-                const newClipboard = ['\n'];
+                const newClipboard = [''];
                 for (let i = state.row; i <= state.visual.row; i += 1) {
                     newClipboard.push(state.data[i]);
                 }
