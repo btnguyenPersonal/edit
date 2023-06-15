@@ -335,6 +335,13 @@ function handleVisualLineKeys(key, state, screen) {
             renderScreen(state, screen);
         } else if (key === 'ESCAPE') {
             state.mode = 'n';
+        } else if (key === 'o') {
+            const tempRow = state.row;
+            const tempCol = state.col;
+            state.row = state.visualLine.row;
+            state.col = state.visualLine.col;
+            state.visualLine.row = tempRow;
+            state.visualLine.col = tempCol;
         }
     }
     logCommand(false, state, key);
