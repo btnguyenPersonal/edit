@@ -46,7 +46,7 @@ function pasteFromClipboardBefore(state) {
     systemPaste = systemPaste.split('\n');
     if (systemPaste.length > 0) {
         if (newLine) {
-            for (let i = systemPaste.length - 1; i > 0; i -= 1) {
+            for (let i = systemPaste.length - 1; i >= 0; i -= 1) {
                 state.data.splice(state.row, 0, systemPaste[i]);
             }
         } else {
@@ -74,7 +74,7 @@ function pasteFromClipboardAfter(state) {
     systemPaste = systemPaste.split('\n');
     if (systemPaste.length > 0) {
         if (newLine) {
-            for (let i = systemPaste.length - 1; i > 0; i -= 1) {
+            for (let i = systemPaste.length - 1; i >= 0; i -= 1) {
                 state.data.splice(state.row + 1, 0, systemPaste[i]);
             }
         } else {

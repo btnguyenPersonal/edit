@@ -89,7 +89,7 @@ function handleVimKeys(key, state, screen) {
             logCommand(false, state, key);
             createSnapshot(state);
         } else if (key === 'j') {
-            const newClipboard = ['\n'];
+            const newClipboard = [''];
             newClipboard.push(state.data[state.row]);
             if (state.data[state.row + 1] !== undefined) {
                 newClipboard.push(state.data[state.row + 1]);
@@ -108,7 +108,7 @@ function handleVimKeys(key, state, screen) {
             logCommand(false, state, key);
             createSnapshot(state);
         } else if (key === 'k') {
-            const newClipboard = ['\n'];
+            const newClipboard = [''];
             if (state.data[state.row - 1] !== undefined) {
                 newClipboard.push(state.data[state.row - 1]);
             }
@@ -130,7 +130,7 @@ function handleVimKeys(key, state, screen) {
             state.previousKeys += key;
             logCommand(false, state, key);
         } else if (key === 'd') {
-            copyToClipboard(state, ['\n', state.data[state.row]]);
+            copyToClipboard(state, ['', state.data[state.row]]);
             state.data.splice(state.row, 1);
             state.col = firstNonSpace(state, state.row);
             if (state.row > state.data.length - 1) {
@@ -230,7 +230,7 @@ function handleVimKeys(key, state, screen) {
                 }
             }
             if (state.row >= state.visual.row) {
-                const newClipboard = ['\n'];
+                const newClipboard = [''];
                 for (let i = state.visual.row; i <= state.row; i += 1) {
                     newClipboard.push(state.data[i]);
                 }
@@ -238,7 +238,7 @@ function handleVimKeys(key, state, screen) {
                 state.data.splice(state.visual.row, state.row - state.visual.row + 1);
                 state.row = state.visual.row;
             } else if (state.row < state.visual.row) {
-                const newClipboard = ['\n'];
+                const newClipboard = [''];
                 for (let i = state.row; i <= state.visual.row; i += 1) {
                     newClipboard.push(state.data[i]);
                 }
@@ -260,7 +260,7 @@ function handleVimKeys(key, state, screen) {
                 state.visual.row = beginning - 1;
                 state.row = end + 1;
                 state.col = 0;
-                const newClipboard = ['\n'];
+                const newClipboard = [''];
                 for (let i = state.visual.row; i <= state.row; i += 1) {
                     newClipboard.push(state.data[i]);
                 }
@@ -351,7 +351,7 @@ function handleVimKeys(key, state, screen) {
                 }
             }
             if (state.row >= state.visual.row) {
-                const newClipboard = ['\n'];
+                const newClipboard = [''];
                 for (let i = state.visual.row; i <= state.row; i += 1) {
                     newClipboard.push(state.data[i]);
                 }
@@ -359,7 +359,7 @@ function handleVimKeys(key, state, screen) {
                 state.data.splice(state.visual.row, state.row - state.visual.row + 1);
                 state.row = state.visual.row;
             } else if (state.row < state.visual.row) {
-                const newClipboard = ['\n'];
+                const newClipboard = [''];
                 for (let i = state.row; i <= state.visual.row; i += 1) {
                     newClipboard.push(state.data[i]);
                 }
@@ -381,7 +381,7 @@ function handleVimKeys(key, state, screen) {
                 state.visual.row = beginning;
                 state.row = end;
                 state.col = 0;
-                const newClipboard = ['\n'];
+                const newClipboard = [''];
                 for (let i = state.visual.row; i <= state.row; i += 1) {
                     newClipboard.push(state.data[i]);
                 }
@@ -497,14 +497,14 @@ function handleVimKeys(key, state, screen) {
                 }
             }
             if (state.row >= state.visual.row) {
-                const newClipboard = ['\n'];
+                const newClipboard = [''];
                 for (let i = state.visual.row; i <= state.row; i += 1) {
                     newClipboard.push(state.data[i]);
                 }
                 copyToClipboard(state, newClipboard);
                 state.row = state.visual.row;
             } else if (state.row < state.visual.row) {
-                const newClipboard = ['\n'];
+                const newClipboard = [''];
                 for (let i = state.row; i <= state.visual.row; i += 1) {
                     newClipboard.push(state.data[i]);
                 }
@@ -523,7 +523,7 @@ function handleVimKeys(key, state, screen) {
                 state.visual.row = beginning - 1;
                 state.row = end + 1;
                 state.col = 0;
-                const newClipboard = ['\n'];
+                const newClipboard = [''];
                 for (let i = state.visual.row; i <= state.row; i += 1) {
                     newClipboard.push(state.data[i]);
                 }
@@ -584,14 +584,14 @@ function handleVimKeys(key, state, screen) {
                 }
             }
             if (state.row >= state.visual.row) {
-                const newClipboard = ['\n'];
+                const newClipboard = [''];
                 for (let i = state.visual.row; i <= state.row; i += 1) {
                     newClipboard.push(state.data[i]);
                 }
                 copyToClipboard(state, newClipboard);
                 state.row = state.visual.row;
             } else if (state.row < state.visual.row) {
-                const newClipboard = ['\n'];
+                const newClipboard = [''];
                 for (let i = state.row; i <= state.visual.row; i += 1) {
                     newClipboard.push(state.data[i]);
                 }
@@ -604,7 +604,7 @@ function handleVimKeys(key, state, screen) {
                 state.visual.row = beginning;
                 state.row = end;
                 state.col = 0;
-                const newClipboard = ['\n'];
+                const newClipboard = [''];
                 for (let i = state.visual.row; i <= state.row; i += 1) {
                     newClipboard.push(state.data[i]);
                 }
@@ -631,7 +631,7 @@ function handleVimKeys(key, state, screen) {
         state.previousKeys = '';
     } else if (state.previousKeys === 'y') {
         if (key === 'j') {
-            const newClipboard = ['\n'];
+            const newClipboard = [''];
             newClipboard.push(state.data[state.row]);
             if (state.data[state.row + 1]) {
                 newClipboard.push(state.data[state.row + 1]);
@@ -639,7 +639,7 @@ function handleVimKeys(key, state, screen) {
             copyToClipboard(state, newClipboard);
             state.previousKeys = '';
         } else if (key === 'k') {
-            const newClipboard = ['\n'];
+            const newClipboard = [''];
             if (state.data[state.row - 1]) {
                 newClipboard.push(state.data[state.row - 1]);
             }
@@ -647,7 +647,7 @@ function handleVimKeys(key, state, screen) {
             copyToClipboard(state, newClipboard);
             state.previousKeys = '';
         } else if (key === 'y') {
-            copyToClipboard(state, ['\n', state.data[state.row]]);
+            copyToClipboard(state, ['', state.data[state.row]]);
             state.previousKeys = '';
         } else if (key === 'i' || key === 'f' || key === 'F' || key === 't' || key === 'T' || key === 'a') {
             state.previousKeys += key;
@@ -706,7 +706,7 @@ function handleVimKeys(key, state, screen) {
             state.previousKeys += key;
             logCommand(false, state, key);
         } else if (key === 'j') {
-            const newClipboard = ['\n'];
+            const newClipboard = [''];
             newClipboard.push(state.data[state.row]);
             if (state.data[state.row + 1]) {
                 newClipboard.push(state.data[state.row + 1]);
@@ -725,7 +725,7 @@ function handleVimKeys(key, state, screen) {
             createSnapshot(state);
             logCommand(false, state, key);
         } else if (key === 'k') {
-            const newClipboard = ['\n'];
+            const newClipboard = [''];
             if (state.data[state.row - 1]) {
                 newClipboard.push(state.data[state.row - 1]);
             }
@@ -846,7 +846,7 @@ function handleVimKeys(key, state, screen) {
                 }
             }
             if (state.row >= state.visual.row) {
-                const newClipboard = ['\n'];
+                const newClipboard = [''];
                 for (let i = state.visual.row; i <= state.row; i += 1) {
                     newClipboard.push(state.data[i]);
                 }
@@ -854,7 +854,7 @@ function handleVimKeys(key, state, screen) {
                 state.data.splice(state.visual.row, state.row - state.visual.row + 1);
                 state.row = state.visual.row;
             } else if (state.row < state.visual.row) {
-                const newClipboard = ['\n'];
+                const newClipboard = [''];
                 for (let i = state.row; i <= state.visual.row; i += 1) {
                     newClipboard.push(state.data[i]);
                 }
@@ -872,7 +872,7 @@ function handleVimKeys(key, state, screen) {
                 state.visual.row = beginning - 1;
                 state.row = end + 1;
                 state.col = 0;
-                const newClipboard = ['\n'];
+                const newClipboard = [''];
                 for (let i = state.visual.row; i <= state.row; i += 1) {
                     newClipboard.push(state.data[i]);
                 }
@@ -952,7 +952,7 @@ function handleVimKeys(key, state, screen) {
                 }
             }
             if (state.row >= state.visual.row) {
-                const newClipboard = ['\n'];
+                const newClipboard = [''];
                 for (let i = state.visual.row; i <= state.row; i += 1) {
                     newClipboard.push(state.data[i]);
                 }
@@ -960,7 +960,7 @@ function handleVimKeys(key, state, screen) {
                 state.data.splice(state.visual.row, state.row - state.visual.row + 1);
                 state.row = state.visual.row;
             } else if (state.row < state.visual.row) {
-                const newClipboard = ['\n'];
+                const newClipboard = [''];
                 for (let i = state.row; i <= state.visual.row; i += 1) {
                     newClipboard.push(state.data[i]);
                 }
@@ -978,7 +978,7 @@ function handleVimKeys(key, state, screen) {
                 state.visual.row = beginning;
                 state.row = end;
                 state.col = 0;
-                const newClipboard = ['\n'];
+                const newClipboard = [''];
                 for (let i = state.visual.row; i <= state.row; i += 1) {
                     newClipboard.push(state.data[i]);
                 }
