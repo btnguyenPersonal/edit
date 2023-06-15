@@ -37,12 +37,12 @@ function handleVisualLineKeys(key, state, screen) {
                 break;
             }
         }
-        state.visualLine.row = state.row;
+        state.visual.row = state.row;
         for (let i = state.row; i >= 0; i -= 1) {
             if (isEmptyRow(state, i)) {
                 break;
             } else {
-                state.visualLine.row = i;
+                state.visual.row = i;
             }
         }
         for (let i = state.row + 1; i < state.data.length; i += 1) {
@@ -65,16 +65,16 @@ function handleVisualLineKeys(key, state, screen) {
         } else if (key === 'DOWN' || key === 'j') {
             down(state);
         } else if (key === 'y') {
-            if (state.row >= state.visualLine.row) {
+            if (state.row >= state.visual.row) {
                 const newClipboard = ['\n'];
-                for (let i = state.visualLine.row; i <= state.row; i += 1) {
+                for (let i = state.visual.row; i <= state.row; i += 1) {
                     newClipboard.push(state.data[i]);
                 }
                 copyToClipboard(state, newClipboard);
-                state.row = state.visualLine.row;
-            } else if (state.row < state.visualLine.row) {
+                state.row = state.visual.row;
+            } else if (state.row < state.visual.row) {
                 const newClipboard = ['\n'];
-                for (let i = state.row; i <= state.visualLine.row; i += 1) {
+                for (let i = state.row; i <= state.visual.row; i += 1) {
                     newClipboard.push(state.data[i]);
                 }
                 copyToClipboard(state, newClipboard);
@@ -84,15 +84,15 @@ function handleVisualLineKeys(key, state, screen) {
             if (state.previousKeys === 'g') {
                 let areAllCommented = true;
                 let lowestIndent = isEmptyRow(state, state.row) ? 999 : firstNonSpace(state, state.row);
-                if (state.row <= state.visualLine.row) {
-                    for (let i = state.row + 1; i <= state.visualLine.row; i += 1) {
+                if (state.row <= state.visual.row) {
+                    for (let i = state.row + 1; i <= state.visual.row; i += 1) {
                         const currentIndent = isEmptyRow(state, i) ? 999 : firstNonSpace(state, i);
                         if (currentIndent < lowestIndent) {
                             lowestIndent = currentIndent;
                         }
                     }
                 } else {
-                    for (let i = state.row - 1; i >= state.visualLine.row; i -= 1) {
+                    for (let i = state.row - 1; i >= state.visual.row; i -= 1) {
                         const currentIndent = isEmptyRow(state, i) ? 999 : firstNonSpace(state, i);
                         if (currentIndent < lowestIndent) {
                             lowestIndent = currentIndent;
@@ -100,36 +100,36 @@ function handleVisualLineKeys(key, state, screen) {
                     }
                 }
                 if (lowestIndent !== 999) {
-                    if (state.row >= state.visualLine.row) {
-                        for (let i = state.visualLine.row; i <= state.row; i += 1) {
+                    if (state.row >= state.visual.row) {
+                        for (let i = state.visual.row; i <= state.row; i += 1) {
                             if (state.data[i].length !== 0 && !isCommented(state, i)) {
                                 areAllCommented = false;
                                 break;
                             }
                         }
                         if (areAllCommented) {
-                            for (let i = state.visualLine.row; i <= state.row; i += 1) {
+                            for (let i = state.visual.row; i <= state.row; i += 1) {
                                 toggleComment(state, i, lowestIndent, false);
                             }
                         } else {
-                            for (let i = state.visualLine.row; i <= state.row; i += 1) {
+                            for (let i = state.visual.row; i <= state.row; i += 1) {
                                 toggleComment(state, i, lowestIndent, true);
                             }
                         }
-                        state.row = state.visualLine.row;
-                    } else if (state.row < state.visualLine.row) {
-                        for (let i = state.row; i <= state.visualLine.row; i += 1) {
+                        state.row = state.visual.row;
+                    } else if (state.row < state.visual.row) {
+                        for (let i = state.row; i <= state.visual.row; i += 1) {
                             if (state.data[i].length !== 0 && !isCommented(state, i)) {
                                 areAllCommented = false;
                                 break;
                             }
                         }
                         if (areAllCommented) {
-                            for (let i = state.row; i <= state.visualLine.row; i += 1) {
+                            for (let i = state.row; i <= state.visual.row; i += 1) {
                                 toggleComment(state, i, lowestIndent, false);
                             }
                         } else {
-                            for (let i = state.row; i <= state.visualLine.row; i += 1) {
+                            for (let i = state.row; i <= state.visual.row; i += 1) {
                                 toggleComment(state, i, lowestIndent, true);
                             }
                         }
@@ -139,21 +139,21 @@ function handleVisualLineKeys(key, state, screen) {
                 createSnapshot(state);
                 state.previousKeys = '';
             } else {
-                if (state.row >= state.visualLine.row) {
+                if (state.row >= state.visual.row) {
                     const newClipboard = ['\n'];
-                    for (let i = state.visualLine.row; i <= state.row; i += 1) {
+                    for (let i = state.visual.row; i <= state.row; i += 1) {
                         newClipboard.push(state.data[i]);
                     }
                     copyToClipboard(state, newClipboard);
-                    state.data.splice(state.visualLine.row, state.row - state.visualLine.row + 1);
-                    state.row = state.visualLine.row;
-                } else if (state.row < state.visualLine.row) {
+                    state.data.splice(state.visual.row, state.row - state.visual.row + 1);
+                    state.row = state.visual.row;
+                } else if (state.row < state.visual.row) {
                     const newClipboard = ['\n'];
-                    for (let i = state.row; i <= state.visualLine.row; i += 1) {
+                    for (let i = state.row; i <= state.visual.row; i += 1) {
                         newClipboard.push(state.data[i]);
                     }
                     copyToClipboard(state, newClipboard);
-                    state.data.splice(state.row, state.visualLine.row - state.row + 1);
+                    state.data.splice(state.row, state.visual.row - state.row + 1);
                 }
                 const indentLevel = state.data[state.row] !== undefined ? getIndentLevelFrom(state, state.row) : 0;
                 state.data.splice(state.row, 0, ' '.repeat(indentLevel));
@@ -161,21 +161,21 @@ function handleVisualLineKeys(key, state, screen) {
                 state.mode = 'i';
             }
         } else if (key === 'd') {
-            if (state.row >= state.visualLine.row) {
+            if (state.row >= state.visual.row) {
                 const newClipboard = ['\n'];
-                for (let i = state.visualLine.row; i <= state.row; i += 1) {
+                for (let i = state.visual.row; i <= state.row; i += 1) {
                     newClipboard.push(state.data[i]);
                 }
                 copyToClipboard(state, newClipboard);
-                state.data.splice(state.visualLine.row, state.row - state.visualLine.row + 1);
-                state.row = state.visualLine.row;
-            } else if (state.row < state.visualLine.row) {
+                state.data.splice(state.visual.row, state.row - state.visual.row + 1);
+                state.row = state.visual.row;
+            } else if (state.row < state.visual.row) {
                 const newClipboard = ['\n'];
-                for (let i = state.row; i <= state.visualLine.row; i += 1) {
+                for (let i = state.row; i <= state.visual.row; i += 1) {
                     newClipboard.push(state.data[i]);
                 }
                 copyToClipboard(state, newClipboard);
-                state.data.splice(state.row, state.visualLine.row - state.row + 1);
+                state.data.splice(state.row, state.visual.row - state.row + 1);
             }
             if (state.row > state.data.length - 1) {
                 state.row = state.data.length - 1;
@@ -199,13 +199,13 @@ function handleVisualLineKeys(key, state, screen) {
             state.mode = 'n';
             state.allowCommandLogging = false;
             const startingPoint = state.row;
-            if (state.visualLine.row < startingPoint) {
-                for (let i = state.visualLine.row; i <= startingPoint; i += 1) {
+            if (state.visual.row < startingPoint) {
+                for (let i = state.visual.row; i <= startingPoint; i += 1) {
                     sendKeys(state.macro, state, screen);
                     up(state);
                 }
             } else {
-                for (let i = startingPoint; i <= state.visualLine.row; i += 1) {
+                for (let i = startingPoint; i <= state.visual.row; i += 1) {
                     sendKeys(state.macro, state, screen);
                     down(state);
                 }
@@ -227,8 +227,8 @@ function handleVisualLineKeys(key, state, screen) {
                 }
             }
         } else if (key === '=') {
-            if (state.row >= state.visualLine.row) {
-                for (let i = state.visualLine.row; i <= state.row; i += 1) {
+            if (state.row >= state.visual.row) {
+                for (let i = state.visual.row; i <= state.row; i += 1) {
                     let indentLevel = i - 1 < 0 ? 0 : getIndentLevelFrom(state, i - 1);
                     state.commandHistory += indentLevel.toString();
                     if (state.data[i].trim().startsWith(')')
@@ -239,8 +239,8 @@ function handleVisualLineKeys(key, state, screen) {
                     }
                     state.data[i] = ' '.repeat(indentLevel) + state.data[i].trim();
                 }
-            } else if (state.row < state.visualLine.row) {
-                for (let i = state.row; i <= state.visualLine.row; i += 1) {
+            } else if (state.row < state.visual.row) {
+                for (let i = state.row; i <= state.visual.row; i += 1) {
                     let indentLevel = i - 1 < 0 ? 0 : getIndentLevelFrom(state, i - 1);
                     if (state.data[i].trim().startsWith(')')
                         || state.data[i].trim().startsWith('}')
@@ -254,27 +254,27 @@ function handleVisualLineKeys(key, state, screen) {
             createSnapshot(state);
             state.mode = 'n';
         } else if (key === '<') {
-            if (state.row >= state.visualLine.row) {
-                for (let i = state.visualLine.row; i <= state.row; i += 1) {
+            if (state.row >= state.visual.row) {
+                for (let i = state.visual.row; i <= state.row; i += 1) {
                     decreaseIndentLevel(state, i);
                 }
-            } else if (state.row < state.visualLine.row) {
-                for (let i = state.row; i <= state.visualLine.row; i += 1) {
+            } else if (state.row < state.visual.row) {
+                for (let i = state.row; i <= state.visual.row; i += 1) {
                     decreaseIndentLevel(state, i);
                 }
             }
             state.col = firstNonSpace(state, state.row);
-            state.row = state.visualLine.row;
+            state.row = state.visual.row;
             state.mode = 'n';
             createSnapshot(state);
         } else if (key === '>') {
-            if (state.row >= state.visualLine.row) {
-                for (let i = state.visualLine.row; i <= state.row; i += 1) {
+            if (state.row >= state.visual.row) {
+                for (let i = state.visual.row; i <= state.row; i += 1) {
                     increaseIndentLevel(state, i);
                 }
-                state.row = state.visualLine.row;
-            } else if (state.row < state.visualLine.row) {
-                for (let i = state.row; i <= state.visualLine.row; i += 1) {
+                state.row = state.visual.row;
+            } else if (state.row < state.visual.row) {
+                for (let i = state.row; i <= state.visual.row; i += 1) {
                     increaseIndentLevel(state, i);
                 }
             }
@@ -282,11 +282,11 @@ function handleVisualLineKeys(key, state, screen) {
             state.mode = 'n';
             createSnapshot(state);
         } else if (key === 'x') {
-            if (state.row >= state.visualLine.row) {
-                state.data.splice(state.visualLine.row, state.row - state.visualLine.row + 1);
-                state.row = state.visualLine.row;
-            } else if (state.row < state.visualLine.row) {
-                state.data.splice(state.row, state.visualLine.row - state.row + 1);
+            if (state.row >= state.visual.row) {
+                state.data.splice(state.visual.row, state.row - state.visual.row + 1);
+                state.row = state.visual.row;
+            } else if (state.row < state.visual.row) {
+                state.data.splice(state.row, state.visual.row - state.row + 1);
             }
             if (state.row > state.data.length - 1) {
                 state.row = state.data.length - 1;
@@ -304,11 +304,11 @@ function handleVisualLineKeys(key, state, screen) {
             }
             systemPaste = systemPaste.split('\n');
             if (systemPaste.length > 0) {
-                if (state.row >= state.visualLine.row) {
-                    state.data.splice(state.visualLine.row, state.row - state.visualLine.row + 1);
-                    state.row = state.visualLine.row;
-                } else if (state.row < state.visualLine.row) {
-                    state.data.splice(state.row, state.visualLine.row - state.row + 1);
+                if (state.row >= state.visual.row) {
+                    state.data.splice(state.visual.row, state.row - state.visual.row + 1);
+                    state.row = state.visual.row;
+                } else if (state.row < state.visual.row) {
+                    state.data.splice(state.row, state.visual.row - state.row + 1);
                 }
                 if (state.row >= state.data.length) {
                     state.data.splice(state.row, 0, '');
@@ -338,10 +338,10 @@ function handleVisualLineKeys(key, state, screen) {
         } else if (key === 'o') {
             const tempRow = state.row;
             const tempCol = state.col;
-            state.row = state.visualLine.row;
-            state.col = state.visualLine.col;
-            state.visualLine.row = tempRow;
-            state.visualLine.col = tempCol;
+            state.row = state.visual.row;
+            state.col = state.visual.col;
+            state.visual.row = tempRow;
+            state.visual.col = tempCol;
         }
     }
     logCommand(false, state, key);

@@ -40,13 +40,6 @@ const state = {
         row: undefined,
         col: undefined
     },
-    visualBlock: {
-        row: undefined,
-        col: undefined
-    },
-    visualLine: {
-        row: undefined
-    },
     visual: {
         row: undefined,
         col: undefined

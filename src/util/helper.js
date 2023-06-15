@@ -140,11 +140,11 @@ function moveCursor(state, screen, windowLineHorizontal) {
 
 function isRowHighlighted(state, i) {
     if (state.mode === 'V') {
-        if ((i <= state.row && i >= state.visualLine.row) || (i >= state.row && i <= state.visualLine.row)) {
+        if ((i <= state.row && i >= state.visual.row) || (i >= state.row && i <= state.visual.row)) {
             return true;
         }
     } else if (state.mode === 'CTRL_V') {
-        if ((i <= state.row && i >= state.visualBlock.row) || (i >= state.row && i <= state.visualBlock.row)) {
+        if ((i <= state.row && i >= state.visual.row) || (i >= state.row && i <= state.visual.row)) {
             return true;
         }
     } else if (state.mode === 'v') {
@@ -161,20 +161,20 @@ function isHighlighted(state, i, j) {
         if (state.row === i && state.col === j) {
             return false;
         }
-        if ((i <= state.row && i >= state.visualLine.row) || (i >= state.row && i <= state.visualLine.row)) {
+        if ((i <= state.row && i >= state.visual.row) || (i >= state.row && i <= state.visual.row)) {
             return true;
         }
     } else if (state.mode === 'CTRL_V') {
         if (state.row === i && state.col === j) {
             return false;
         }
-        if ((i <= state.row && i >= state.visualBlock.row) || (i >= state.row && i <= state.visualBlock.row)) {
-            if (state.visualBlock.col <= state.col) {
-                if (j >= state.visualBlock.col && j <= state.col) {
+        if ((i <= state.row && i >= state.visual.row) || (i >= state.row && i <= state.visual.row)) {
+            if (state.visual.col <= state.col) {
+                if (j >= state.visual.col && j <= state.col) {
                     return true;
                 }
-            } else if (state.visualBlock.col > state.col) {
-                if (j >= state.col && j <= state.visualBlock.col) {
+            } else if (state.visual.col > state.col) {
+                if (j >= state.col && j <= state.visual.col) {
                     return true;
                 }
             }
