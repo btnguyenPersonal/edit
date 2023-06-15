@@ -335,6 +335,10 @@ function handleVisualLineKeys(key, state, screen) {
             renderScreen(state, screen);
         } else if (key === 'ESCAPE') {
             state.mode = 'n';
+        } else if (key === 'v') {
+            state.mode = 'v';
+        } else if (key === 'CTRL_V') {
+            state.mode = 'CTRL_V';
         } else if (key === 'o') {
             const tempRow = state.row;
             const tempCol = state.col;

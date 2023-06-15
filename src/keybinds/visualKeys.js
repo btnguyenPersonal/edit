@@ -492,6 +492,10 @@ function handleVisualKeys(key, state, screen) {
         state.previousKeys += key;
     } else if (key === 'ESCAPE') {
         state.mode = 'n';
+    } else if (key === 'V') {
+        state.mode = 'V';
+    } else if (key === 'CTRL_V') {
+        state.mode = 'CTRL_V';
     } else if (key === 'o') {
         const tempRow = state.row;
         const tempCol = state.col;
