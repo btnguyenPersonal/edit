@@ -1293,7 +1293,8 @@ function handleVimKeys(key, state, screen) {
         } else if (key === 'V') {
             state.mode = 'V';
             state.visual = {
-                row: state.row
+                row: state.row,
+                col: state.col
             };
             logCommand(true, state, key);
         } else if (key === 'n') {

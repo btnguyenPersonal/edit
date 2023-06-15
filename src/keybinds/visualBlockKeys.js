@@ -257,6 +257,10 @@ function handleVisualBlockKeys(key, state, screen) {
         state.mode = 'MULTI_CURSOR';
     } else if (key === 'ESCAPE') {
         state.mode = 'n';
+    } else if (key === 'v') {
+        state.mode = 'v';
+    } else if (key === 'V') {
+        state.mode = 'V';
     } else if (key === 'o') {
         const tempRow = state.row;
         const tempCol = state.col;
