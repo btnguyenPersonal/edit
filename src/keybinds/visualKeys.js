@@ -17,6 +17,8 @@ import {
     down,
     left,
     right,
+    topOfFile,
+    bottomOfFile,
     firstNonSpace,
     getCoorBeginningLastWord,
     getCoorBeginningNextWord,
@@ -175,6 +177,15 @@ function handleVisualKeys(key, state, screen) {
         left(state);
     } else if (key === 'RIGHT' || key === 'l') {
         right(state);
+    } else if (key === 'g') {
+        if (state.previousKeys === 'g') {
+            topOfFile(state);
+            state.previousKeys = '';
+        } else {
+            state.previousKeys = 'g';
+        }
+    } else if (key === 'G') {
+        bottomOfFile(state);
     } else if (key === 'w') {
         state.col = getCoorBeginningNextWord(state);
     } else if (key === 'b') {
@@ -481,6 +492,13 @@ function handleVisualKeys(key, state, screen) {
         state.previousKeys += key;
     } else if (key === 'ESCAPE') {
         state.mode = 'n';
+    } else if (key === 'o') {
+        const tempRow = state.row;
+        const tempCol = state.col;
+        state.row = state.visual.row;
+        state.col = state.visual.col;
+        state.visual.row = tempRow;
+        state.visual.col = tempCol;
     }
     logCommand(false, state, key);
     renderScreen(state, screen);

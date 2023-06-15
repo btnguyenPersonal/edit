@@ -10,6 +10,8 @@ import {
     down,
     left,
     right,
+    topOfFile,
+    bottomOfFile,
     firstNonSpace,
     getCoorBeginningLastWord,
     getCoorBeginningNextWord,
@@ -197,6 +199,15 @@ function handleVisualBlockKeys(key, state, screen) {
         state.row = state.visualBlock.row;
         state.mode = 'n';
         createSnapshot(state);
+    } else if (key === 'g') {
+        if (state.previousKeys === 'g') {
+            topOfFile(state);
+            state.previousKeys = '';
+        } else {
+            state.previousKeys = 'g';
+        }
+    } else if (key === 'G') {
+        bottomOfFile(state);
     } else if (key === '>') {
         if (state.row >= state.visualBlock.row) {
             for (let i = state.visualBlock.row; i <= state.row; i += 1) {
@@ -235,7 +246,7 @@ function handleVisualBlockKeys(key, state, screen) {
             renderScreen(state, screen);
         }
         state.previousKeys = '';
-    } else if (key === 'f' || key === 'F' || key === 't' || key === 'T' || key === 'i' || key === 'g') {
+    } else if (key === 'f' || key === 'F' || key === 't' || key === 'T' || key === 'i') {
         state.previousKeys += key;
     } else if (key === 'A') {
         state.col = Math.max(state.col, state.visualBlock.col);
@@ -246,6 +257,13 @@ function handleVisualBlockKeys(key, state, screen) {
         state.mode = 'MULTI_CURSOR';
     } else if (key === 'ESCAPE') {
         state.mode = 'n';
+    } else if (key === 'o') {
+        const tempRow = state.row;
+        const tempCol = state.col;
+        state.row = state.visualBlock.row;
+        state.col = state.visualBlock.col;
+        state.visualBlock.row = tempRow;
+        state.visualBlock.col = tempCol;
     }
     logCommand(false, state, key);
     renderScreen(state, screen);
