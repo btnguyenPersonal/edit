@@ -54,11 +54,9 @@ function handleKeys(key, state, screen) {
     } else if (key === 'ENTER') {
         let indentLevel = state.data[state.row].search(/\S|$/);
         if (state.data[state.row].endsWith('{') && state.col === state.data[state.row].length) {
-            state.data.splice(state.row + 1, 0, ' '.repeat(indentLevel) + '}');
             indentLevel += 4;
         }
         if (state.data[state.row].endsWith('(') && state.col === state.data[state.row].length) {
-            state.data.splice(state.row + 1, 0, ' '.repeat(indentLevel) + ')');
             indentLevel += 4;
         }
         if (state.data[state.row].substring(state.col)) {
@@ -88,7 +86,7 @@ function handleKeys(key, state, screen) {
             + key
             + state.data[state.row].substring(state.col);
         state.col += 1;
-        if (key === '}' && firstNonSpace(state, state.row) === state.col - 1) {
+        if ((key === '}' && firstNonSpace(state, state.row) === state.col - 1) || (key === ')' && firstNonSpace(state, state.row) === state.col - 1)) {
             let indentLevel = state.row - 1 < 0 ? 0 : getIndentLevelFrom(state, state.row - 1);
             if (state.data[state.row].trim().startsWith(')') || state.data[state.row].trim().startsWith('}')) {
                 indentLevel = indentLevel - 4 >= 0 ? indentLevel - 4 : 0;
