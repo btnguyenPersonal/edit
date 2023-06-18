@@ -73,7 +73,7 @@ function handleVisualKeys(key, state, screen) {
         } else if (key === 'f') {
             if (!isEmptyRow(state, state.row) && getIndentLevel(state, state.row) !== 0) {
                 const { beginning, end } = getInsideOfIndentLevel(state);
-                state.visualLine.row = beginning;
+                state.visual.row = beginning;
                 state.row = end;
                 state.col = 0;
                 state.mode = 'V';
@@ -88,12 +88,12 @@ function handleVisualKeys(key, state, screen) {
                     break;
                 }
             }
-            state.visualLine.row = state.row;
+            state.visual.row = state.row;
             for (let i = state.row; i >= 0; i -= 1) {
                 if (isEmptyRow(state, i)) {
                     break;
                 } else {
-                    state.visualLine.row = i;
+                    state.visual.row = i;
                 }
             }
             for (let i = state.row + 1; i < state.data.length; i += 1) {
@@ -131,7 +131,7 @@ function handleVisualKeys(key, state, screen) {
         } else if (key === 'f') {
             if (!isEmptyRow(state, state.row) && getIndentLevel(state, state.row) !== 0) {
                 const { beginning, end } = getInsideOfIndentLevel(state);
-                state.visualLine.row = beginning - 1;
+                state.visual.row = beginning - 1;
                 state.row = end + 1;
                 state.col = 0;
                 state.mode = 'V';
@@ -146,12 +146,12 @@ function handleVisualKeys(key, state, screen) {
                     break;
                 }
             }
-            state.visualLine.row = state.row;
+            state.visual.row = state.row;
             for (let i = state.row; i >= 0; i -= 1) {
                 if (isEmptyRow(state, i)) {
                     break;
                 } else {
-                    state.visualLine.row = i;
+                    state.visual.row = i;
                 }
             }
             for (let i = state.row + 1; i < state.data.length; i += 1) {
