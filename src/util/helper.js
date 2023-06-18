@@ -2,6 +2,37 @@
 import ncp from 'copy-paste';
 import fs from 'fs';
 
+function updateStorePosition(state) {
+    state.file = state.files[state.harpoonIndexes[state.harpoonIndex]];
+    const snapshotsCopy = [];
+    for (let i = 0; i < state.snapshots.length; i += 1) {
+        snapshotsCopy.push(JSON.parse(JSON.stringify(state.snapshots[i])));
+    }
+    state.storePosition[state.fileIndex] = {
+        row: state.row,
+        col: state.col,
+        windowLine: state.windowLine,
+        windowLineHorizontal: state.windowLineHorizontal,
+        currentSnapshot: state.currentSnapshot,
+        snapshots: snapshotsCopy,
+        mark: state.mark,
+        prevRow: state.prevRow,
+        prevCol: state.prevCol,
+    };
+    state.fileIndex = state.harpoonIndexes[state.harpoonIndex];
+    changeFile(state);
+    const pos = state.storePosition[state.fileIndex];
+    state.row = pos.row;
+    state.col = pos.col;
+    state.windowLine = pos.windowLine;
+    state.windowLineHorizontal = pos.windowLineHorizontal;
+    state.currentSnapshot = pos.currentSnapshot;
+    state.snapshots = pos.snapshots;
+    state.mark = pos.mark;
+    state.prevRow = pos.prevRow;
+    state.prevCol = pos.prevCol;
+}
+
 function isFile(filePath) {
     try {
         const stats = fs.statSync(filePath);
@@ -822,5 +853,6 @@ export {
     changeFile,
     getData,
     evaluateCommand,
+    updateStorePosition,
     isFile
 };

@@ -16,6 +16,7 @@ import {
     isNumeric,
     saveFile,
     trimTrailingWhitespace,
+    updateStorePosition,
     logCommand,
     refreshFile,
     changeFile,
@@ -1083,74 +1084,24 @@ function handleVimKeys(key, state, screen) {
         } else if (key === 'CTRL_W') {
             if (state.harpoonIndex - 1 >= 0) {
                 state.harpoonIndex -= 1;
-            } else if (state.harpoonIndexes.length > 0) {
-                state.harpoonIndex = state.harpoonIndexes.length - 1;
-            }
-            if (state.files[state.harpoonIndexes[state.harpoonIndex]] !== undefined) {
-                state.file = state.files[state.harpoonIndexes[state.harpoonIndex]];
-                const snapshotsCopy = [];
-                for (let i = 0; i < state.snapshots.length; i += 1) {
-                    snapshotsCopy.push(JSON.parse(JSON.stringify(state.snapshots[i])));
+                if (state.files[state.harpoonIndexes[state.harpoonIndex]] !== undefined) {
+                    updateStorePosition(state);
                 }
-                state.storePosition[state.fileIndex] = {
-                    row: state.row,
-                    col: state.col,
-                    windowLine: state.windowLine,
-                    windowLineHorizontal: state.windowLineHorizontal,
-                    currentSnapshot: state.currentSnapshot,
-                    snapshots: snapshotsCopy,
-                    mark: state.mark,
-                    prevRow: state.prevRow,
-                    prevCol: state.prevCol,
-                };
-                state.fileIndex = state.harpoonIndexes[state.harpoonIndex];
-                changeFile(state);
-                const pos = state.storePosition[state.fileIndex];
-                state.row = pos.row;
-                state.col = pos.col;
-                state.windowLine = pos.windowLine;
-                state.windowLineHorizontal = pos.windowLineHorizontal;
-                state.currentSnapshot = pos.currentSnapshot;
-                state.snapshots = pos.snapshots;
-                state.mark = pos.mark;
-                state.prevRow = pos.prevRow;
-                state.prevCol = pos.prevCol;
             }
         } else if (key === 'CTRL_E') {
             if (state.harpoonIndex + 1 < state.harpoonIndexes.length) {
                 state.harpoonIndex += 1;
-            } else {
-                state.harpoonIndex = 0;
-            }
-            if (state.files[state.harpoonIndexes[state.harpoonIndex]] !== undefined) {
-                state.file = state.files[state.harpoonIndexes[state.harpoonIndex]];
-                const snapshotsCopy = [];
-                for (let i = 0; i < state.snapshots.length; i += 1) {
-                    snapshotsCopy.push(JSON.parse(JSON.stringify(state.snapshots[i])));
+                if (state.files[state.harpoonIndexes[state.harpoonIndex]] !== undefined) {
+                    updateStorePosition(state);
                 }
-                state.storePosition[state.fileIndex] = {
-                    row: state.row,
-                    col: state.col,
-                    windowLine: state.windowLine,
-                    windowLineHorizontal: state.windowLineHorizontal,
-                    currentSnapshot: state.currentSnapshot,
-                    snapshots: snapshotsCopy,
-                    mark: state.mark,
-                    prevRow: state.prevRow,
-                    prevCol: state.prevCol,
-                };
-                state.fileIndex = state.harpoonIndexes[state.harpoonIndex];
-                changeFile(state);
-                const pos = state.storePosition[state.fileIndex];
-                state.row = pos.row;
-                state.col = pos.col;
-                state.windowLine = pos.windowLine;
-                state.windowLineHorizontal = pos.windowLineHorizontal;
-                state.currentSnapshot = pos.currentSnapshot;
-                state.snapshots = pos.snapshots;
-                state.mark = pos.mark;
-                state.prevRow = pos.prevRow;
-                state.prevCol = pos.prevCol;
+            }
+        } else if (key === 'CTRL_Q') {
+            state.harpoonIndexes = state.harpoonIndexes.filter(((e) => (e !== state.fileIndex)));
+            if (state.files[state.harpoonIndexes[state.harpoonIndex]] !== undefined) {
+                updateStorePosition(state);
+            } else if (state.harpoonIndex - 1 >= 0) {
+                state.harpoonIndex -= 1;
+                updateStorePosition(state);
             }
         } else if (key === 'CTRL_F') {
             state.replacing = true;
