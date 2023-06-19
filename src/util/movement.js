@@ -694,37 +694,37 @@ function getIndentLevelFrom(state, row, inverse) {
 
 function setVisualBlockHighlight(state, beginning, end) {
     if (beginning !== end) {
-        state.visualBlock.col = beginning + 1;
+        state.visual.col = beginning + 1;
         state.col = end - 1;
-        state.visualBlock.row = state.row;
+        state.visual.row = state.row;
     }
 }
 
 function copyInVisualBlock(state) {
     const newClipboard = ['\n'];
-    for (let i = Math.min(state.row, state.visualBlock.row); i < Math.max(state.row, state.visualBlock.row) + 1; i += 1) {
-        if (state.visualBlock.col <= state.col) {
-            newClipboard.push(state.data[i].substring(state.visualBlock.col, state.col + 1));
-        } else if (state.visualBlock.col > state.col) {
-            newClipboard.push(state.data[i].substring(state.col, state.visualBlock.col + 1));
+    for (let i = Math.min(state.row, state.visual.row); i < Math.max(state.row, state.visual.row) + 1; i += 1) {
+        if (state.visual.col <= state.col) {
+            newClipboard.push(state.data[i].substring(state.visual.col, state.col + 1));
+        } else if (state.visual.col > state.col) {
+            newClipboard.push(state.data[i].substring(state.col, state.visual.col + 1));
         }
     }
     copyToClipboard(state, newClipboard, true);
 }
 
 function deleteInVisualBlock(state) {
-    for (let i = Math.min(state.row, state.visualBlock.row); i < Math.max(state.row, state.visualBlock.row) + 1; i += 1) {
-        if (state.visualBlock.col <= state.col) {
-            state.data[i] = state.data[i].substring(0, state.visualBlock.col) + state.data[i].substring(state.col + 1);
-        } else if (state.visualBlock.col > state.col) {
-            state.data[i] = state.data[i].substring(0, state.col) + state.data[i].substring(state.visualBlock.col + 1);
+    for (let i = Math.min(state.row, state.visual.row); i < Math.max(state.row, state.visual.row) + 1; i += 1) {
+        if (state.visual.col <= state.col) {
+            state.data[i] = state.data[i].substring(0, state.visual.col) + state.data[i].substring(state.col + 1);
+        } else if (state.visual.col > state.col) {
+            state.data[i] = state.data[i].substring(0, state.col) + state.data[i].substring(state.visual.col + 1);
         }
     }
-    if (state.visualBlock.row <= state.row) {
-        state.row = state.visualBlock.row;
+    if (state.visual.row <= state.row) {
+        state.row = state.visual.row;
     }
-    if (state.visualBlock.col <= state.col) {
-        state.col = state.visualBlock.col;
+    if (state.visual.col <= state.col) {
+        state.col = state.visual.col;
     }
 }
 

@@ -17,6 +17,8 @@ import {
     down,
     left,
     right,
+    topOfFile,
+    bottomOfFile,
     firstNonSpace,
     getCoorBeginningLastWord,
     getCoorBeginningNextWord,
@@ -71,7 +73,7 @@ function handleVisualKeys(key, state, screen) {
         } else if (key === 'f') {
             if (!isEmptyRow(state, state.row) && getIndentLevel(state, state.row) !== 0) {
                 const { beginning, end } = getInsideOfIndentLevel(state);
-                state.visualLine.row = beginning;
+                state.visual.row = beginning;
                 state.row = end;
                 state.col = 0;
                 state.mode = 'V';
@@ -86,12 +88,12 @@ function handleVisualKeys(key, state, screen) {
                     break;
                 }
             }
-            state.visualLine.row = state.row;
+            state.visual.row = state.row;
             for (let i = state.row; i >= 0; i -= 1) {
                 if (isEmptyRow(state, i)) {
                     break;
                 } else {
-                    state.visualLine.row = i;
+                    state.visual.row = i;
                 }
             }
             for (let i = state.row + 1; i < state.data.length; i += 1) {
@@ -129,7 +131,7 @@ function handleVisualKeys(key, state, screen) {
         } else if (key === 'f') {
             if (!isEmptyRow(state, state.row) && getIndentLevel(state, state.row) !== 0) {
                 const { beginning, end } = getInsideOfIndentLevel(state);
-                state.visualLine.row = beginning - 1;
+                state.visual.row = beginning - 1;
                 state.row = end + 1;
                 state.col = 0;
                 state.mode = 'V';
@@ -144,12 +146,12 @@ function handleVisualKeys(key, state, screen) {
                     break;
                 }
             }
-            state.visualLine.row = state.row;
+            state.visual.row = state.row;
             for (let i = state.row; i >= 0; i -= 1) {
                 if (isEmptyRow(state, i)) {
                     break;
                 } else {
-                    state.visualLine.row = i;
+                    state.visual.row = i;
                 }
             }
             for (let i = state.row + 1; i < state.data.length; i += 1) {
@@ -175,6 +177,15 @@ function handleVisualKeys(key, state, screen) {
         left(state);
     } else if (key === 'RIGHT' || key === 'l') {
         right(state);
+    } else if (key === 'g') {
+        if (state.previousKeys === 'g') {
+            topOfFile(state);
+            state.previousKeys = '';
+        } else {
+            state.previousKeys = 'g';
+        }
+    } else if (key === 'G') {
+        bottomOfFile(state);
     } else if (key === 'w') {
         state.col = getCoorBeginningNextWord(state);
     } else if (key === 'b') {
@@ -486,6 +497,17 @@ function handleVisualKeys(key, state, screen) {
         state.previousKeys += key;
     } else if (key === 'ESCAPE') {
         state.mode = 'n';
+    } else if (key === 'V') {
+        state.mode = 'V';
+    } else if (key === 'CTRL_V') {
+        state.mode = 'CTRL_V';
+    } else if (key === 'o') {
+        const tempRow = state.row;
+        const tempCol = state.col;
+        state.row = state.visual.row;
+        state.col = state.visual.col;
+        state.visual.row = tempRow;
+        state.visual.col = tempCol;
     }
     logCommand(false, state, key);
     renderScreen(state, screen);

@@ -19,6 +19,10 @@ function getFile() {
     return process.argv[2];
 }
 
+let isInGit = false;
+// eslint-disable-next-line no-empty
+try { isInGit = execSync('git rev-parse --is-inside-work-tree').toString().includes('true'); } catch (err) {}
+
 const term = terminal();
 const filePath = getFile();
 const state = {
@@ -35,13 +39,6 @@ const state = {
     search: {
         row: undefined,
         col: undefined
-    },
-    visualBlock: {
-        row: undefined,
-        col: undefined
-    },
-    visualLine: {
-        row: undefined
     },
     visual: {
         row: undefined,
@@ -64,7 +61,7 @@ const state = {
     data: filePath === undefined ? [] : getData(filePath),
     row: 0,
     col: 0,
-    gitFinding: execSync('git rev-parse --is-inside-work-tree').toString().includes('true'),
+    gitFinding: isInGit,
     prevRow: 0,
     prevCol: 0,
     windowLine: 0,
@@ -88,8 +85,6 @@ if (filePath !== undefined) {
 } else {
     if (state.gitFinding) {
         state.fileFindingOutput = execSync('fd -t f --hidden -E .git').toString().split('\n');
-    } else {
-        state.fileFindingOutput = execSync('find * -type f').toString().split('\n');
     }
 }
 state.allowCommandLogging = true;

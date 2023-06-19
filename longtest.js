@@ -21,7 +21,3 @@ return (
         </testing>
     </>
 );
-
-funciton () {
-    
-}

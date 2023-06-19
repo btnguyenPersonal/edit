@@ -46,7 +46,7 @@ function pasteFromClipboardBefore(state) {
     systemPaste = systemPaste.split('\n');
     if (systemPaste.length > 0) {
         if (newLine) {
-            for (let i = systemPaste.length - 1; i > 0; i -= 1) {
+            for (let i = systemPaste.length - 1; i >= 0; i -= 1) {
                 state.data.splice(state.row, 0, systemPaste[i]);
             }
         } else {
@@ -74,7 +74,7 @@ function pasteFromClipboardAfter(state) {
     systemPaste = systemPaste.split('\n');
     if (systemPaste.length > 0) {
         if (newLine) {
-            for (let i = systemPaste.length - 1; i > 0; i -= 1) {
+            for (let i = systemPaste.length - 1; i >= 0; i -= 1) {
                 state.data.splice(state.row + 1, 0, systemPaste[i]);
             }
         } else {
@@ -122,8 +122,8 @@ function moveCursor(state, screen, windowLineHorizontal) {
         let col;
         if (state.data[r] !== undefined) {
             col = state.col < state.data[r].length
-            ? state.col
-            : state.data[r].length;
+                ? state.col
+                : state.data[r].length;
         } else {
             col = 0;
         }
@@ -140,11 +140,11 @@ function moveCursor(state, screen, windowLineHorizontal) {
 
 function isRowHighlighted(state, i) {
     if (state.mode === 'V') {
-        if ((i <= state.row && i >= state.visualLine.row) || (i >= state.row && i <= state.visualLine.row)) {
+        if ((i <= state.row && i >= state.visual.row) || (i >= state.row && i <= state.visual.row)) {
             return true;
         }
     } else if (state.mode === 'CTRL_V') {
-        if ((i <= state.row && i >= state.visualBlock.row) || (i >= state.row && i <= state.visualBlock.row)) {
+        if ((i <= state.row && i >= state.visual.row) || (i >= state.row && i <= state.visual.row)) {
             return true;
         }
     } else if (state.mode === 'v') {
@@ -161,20 +161,20 @@ function isHighlighted(state, i, j) {
         if (state.row === i && state.col === j) {
             return false;
         }
-        if ((i <= state.row && i >= state.visualLine.row) || (i >= state.row && i <= state.visualLine.row)) {
+        if ((i <= state.row && i >= state.visual.row) || (i >= state.row && i <= state.visual.row)) {
             return true;
         }
     } else if (state.mode === 'CTRL_V') {
         if (state.row === i && state.col === j) {
             return false;
         }
-        if ((i <= state.row && i >= state.visualBlock.row) || (i >= state.row && i <= state.visualBlock.row)) {
-            if (state.visualBlock.col <= state.col) {
-                if (j >= state.visualBlock.col && j <= state.col) {
+        if ((i <= state.row && i >= state.visual.row) || (i >= state.row && i <= state.visual.row)) {
+            if (state.visual.col <= state.col) {
+                if (j >= state.visual.col && j <= state.col) {
                     return true;
                 }
-            } else if (state.visualBlock.col > state.col) {
-                if (j >= state.col && j <= state.visualBlock.col) {
+            } else if (state.visual.col > state.col) {
+                if (j >= state.col && j <= state.visual.col) {
                     return true;
                 }
             }
@@ -433,34 +433,42 @@ function saveFile(state) {
 }
 
 function applySnapshot(state, index, backwards) {
-    const snap = state.snapshots[index];
-    if (snap !== undefined) {
-        state.data = [];
-        for (let i = 0; i < snap.data.length; i += 1) {
-            state.data.push(snap.data[i]);
-        }
-        state.currentSnapshot = index;
-        const pos = backwards ? index + 1 : index;
-        if (state.snapshots[pos]) {
-            state.row = state.snapshots[pos].row;
-            state.col = state.snapshots[pos].col;
+    if (state.data.length < 10000) {
+        const snap = state.snapshots[index];
+        if (snap !== undefined) {
+            state.data = [];
+            for (let i = 0; i < snap.data.length; i += 1) {
+                state.data.push(snap.data[i]);
+            }
+            state.currentSnapshot = index;
+            const pos = backwards ? index + 1 : index;
+            if (state.snapshots[pos]) {
+                state.row = state.snapshots[pos].row;
+                state.col = state.snapshots[pos].col;
+            }
         }
     }
 }
 
 function createSnapshot(state) {
-    state.snapshots.splice(state.currentSnapshot + 1, state.snapshots.length - (state.currentSnapshot + 1));
-    const oldData = [];
-    for (let i = 0; i < state.data.length; i += 1) {
-        oldData.push(state.data[i]);
+    if (state.data.length < 10000) {
+        state.snapshots.splice(state.currentSnapshot + 1, state.snapshots.length - (state.currentSnapshot + 1));
+        const oldData = [];
+        for (let i = 0; i < state.data.length; i += 1) {
+            oldData.push(state.data[i]);
+        }
+        state.snapshots.push({
+            data: oldData,
+            row: state.prevRow,
+            col: state.prevCol,
+            windowLine: state.windowLine
+        });
+        state.currentSnapshot = state.snapshots.length - 1;
+        if (state.snapshots.length > 200) {
+            state.snapshots.splice(0, state.snapshots.length - 200);
+        }
+        saveFile(state);
     }
-    state.snapshots.push({
-        data: oldData,
-        row: state.prevRow,
-        col: state.prevCol,
-        windowLine: state.windowLine
-    });
-    state.currentSnapshot = state.snapshots.length - 1;
 }
 
 function searchBackForString(state, string) {
@@ -778,6 +786,7 @@ function evaluateCommand(state, term) {
         for (let i = 0; i < state.data.length; i += 1) {
             state.data[i] = state.data[i].replaceAll(new RegExp(match[1], 'g'), match[2]);
         }
+        createSnapshot(state);
         return true;
     } else if (state.commandString === 'set ts=2') {
         state.indentAmount = 2;
@@ -785,7 +794,7 @@ function evaluateCommand(state, term) {
     } else if (state.commandString === 'set ts=4') {
         state.indentAmount = 4;
         return false;
-    } else if (!isNaN(state.commandString)) {
+    } else if (!Number.isNaN(state.commandString)) {
         const num = parseInt(state.commandString);
         if (num > 0 && num < state.data.length) {
             state.row = num - 1;
@@ -801,6 +810,37 @@ function evaluateCommand(state, term) {
         term.fullscreen(false);
         process.exit(0);
     }
+}
+
+function updateStorePosition(state) {
+    state.file = state.files[state.harpoonIndexes[state.harpoonIndex]];
+    const snapshotsCopy = [];
+    for (let i = 0; i < state.snapshots.length; i += 1) {
+        snapshotsCopy.push(JSON.parse(JSON.stringify(state.snapshots[i])));
+    }
+    state.storePosition[state.fileIndex] = {
+        row: state.row,
+        col: state.col,
+        windowLine: state.windowLine,
+        windowLineHorizontal: state.windowLineHorizontal,
+        currentSnapshot: state.currentSnapshot,
+        snapshots: snapshotsCopy,
+        mark: state.mark,
+        prevRow: state.prevRow,
+        prevCol: state.prevCol,
+    };
+    state.fileIndex = state.harpoonIndexes[state.harpoonIndex];
+    changeFile(state);
+    const pos = state.storePosition[state.fileIndex];
+    state.row = pos.row;
+    state.col = pos.col;
+    state.windowLine = pos.windowLine;
+    state.windowLineHorizontal = pos.windowLineHorizontal;
+    state.currentSnapshot = pos.currentSnapshot;
+    state.snapshots = pos.snapshots;
+    state.mark = pos.mark;
+    state.prevRow = pos.prevRow;
+    state.prevCol = pos.prevCol;
 }
 
 export {
@@ -828,5 +868,6 @@ export {
     changeFile,
     getData,
     evaluateCommand,
+    updateStorePosition,
     isFile
 };
