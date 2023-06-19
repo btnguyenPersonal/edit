@@ -15,6 +15,8 @@
     - :s///g (for visual)
     - :sort
     - stop using 'inString' for non-code
+    - fix new file saving/not-saving
+    - just make it :w and deal with it lol
     - undo ui that displays all last snapshots with the commands that were run to end up there -> (12 minutes ago) jjjjjdip
                                                                                                   (14 minutes ago) vipgc
 ## blocked
