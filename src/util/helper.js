@@ -616,14 +616,14 @@ function renderFileFinder(state, screen, mode) {
 
 function renderSingleLine(state, screen, i, mergeSection, isContext) {
     let section = 0;
+    let numColor = 'grey';
+    if (isContext) {
+        numColor = 'white';
+    } else if (state.recording) {
+        numColor = 'red';
+    }
     screen.put({
-        attr: {
-            color: isContext
-                ? 'white'
-                : state.recording
-                    ? 'red'
-                    : 'grey'
-        },
+        attr: { color: numColor },
         x: 0
     }, (i + 1).toString().padStart(4) + ' ');
     if (isMergeConflictStart(state.data[i])) {
@@ -696,7 +696,7 @@ function getIndent(state, row) {
 }
 
 function getContextLines(state) {
-    let contextLines = [];
+    const contextLines = [];
     let indent = state.data[state.row] !== undefined ? state.data[state.row].search(/\S|$/) : 0;
     for (let i = state.row; i >= 0; i -= 1) {
         if (getIndent(state, i) < indent) {
@@ -716,7 +716,7 @@ function renderWindowLines(state, screen, noCenterScreen, fullRefresh) {
     getWindowLineHorizontal(state);
     let mergeSection = 0;
     const contextLines = getContextLines(state).slice().reverse();
-    contextLines.forEach(line => renderSingleLine(state, screen, line, mergeSection, true));
+    contextLines.forEach((line) => renderSingleLine(state, screen, line, mergeSection, true));
     for (let i = state.windowLine; i < (state.windowLine + process.stdout.rows - contextLines.length) - 1; i += 1) {
         if (state.data[i] !== undefined) {
             mergeSection = renderSingleLine(state, screen, i, mergeSection);
