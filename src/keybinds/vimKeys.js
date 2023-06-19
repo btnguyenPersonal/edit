@@ -14,7 +14,6 @@ import {
     searchForString,
     searchBackForString,
     isNumeric,
-    saveFile,
     trimTrailingWhitespace,
     updateStorePosition,
     logCommand,
@@ -1022,12 +1021,13 @@ function handleVimKeys(key, state, screen) {
     } else if (state.mode === 'n') {
         if (key === 'TAB') {
             if (state.fileIndex - 1 >= 0) {
-                state.file = state.files[state.fileIndex - 1];
                 const snapshotsCopy = [];
                 for (let i = 0; i < state.snapshots.length; i += 1) {
                     snapshotsCopy.push(JSON.parse(JSON.stringify(state.snapshots[i])));
                 }
                 state.storePosition[state.fileIndex] = {
+                    file: state.file,
+                    data: state.data,
                     row: state.row,
                     col: state.col,
                     windowLine: state.windowLine,
@@ -1038,9 +1038,11 @@ function handleVimKeys(key, state, screen) {
                     prevRow: state.prevRow,
                     prevCol: state.prevCol,
                 };
+                state.file = state.files[state.fileIndex - 1];
                 state.fileIndex -= 1;
                 changeFile(state);
                 const pos = state.storePosition[state.fileIndex];
+                state.data = pos.data,
                 state.row = pos.row;
                 state.col = pos.col;
                 state.windowLine = pos.windowLine;
@@ -1053,12 +1055,13 @@ function handleVimKeys(key, state, screen) {
             }
         } else if (key === 'CTRL_O') {
             if (state.fileIndex + 1 < state.files.length) {
-                state.file = state.files[state.fileIndex + 1];
                 const snapshotsCopy = [];
                 for (let i = 0; i < state.snapshots.length; i += 1) {
                     snapshotsCopy.push(JSON.parse(JSON.stringify(state.snapshots[i])));
                 }
                 state.storePosition[state.fileIndex] = {
+                    file: state.file,
+                    data: state.data,
                     row: state.row,
                     col: state.col,
                     windowLine: state.windowLine,
@@ -1068,9 +1071,11 @@ function handleVimKeys(key, state, screen) {
                     prevRow: state.prevRow,
                     prevCol: state.prevCol,
                 };
+                state.file = state.files[state.fileIndex + 1];
                 state.fileIndex += 1;
                 changeFile(state);
                 const pos = state.storePosition[state.fileIndex];
+                state.data = pos.data,
                 state.row = pos.row;
                 state.col = pos.col;
                 state.windowLine = pos.windowLine;
@@ -1317,14 +1322,12 @@ function handleVimKeys(key, state, screen) {
             if (state.data.length < 10000) {
                 if (state.currentSnapshot + 1 < state.snapshots.length) {
                     applySnapshot(state, state.currentSnapshot + 1, false);
-                    saveFile(state);
                 }
             }
         } else if (key === 'u') {
             if (state.data.length < 10000) {
                 if (state.currentSnapshot - 1 >= 0) {
                     applySnapshot(state, state.currentSnapshot - 1, true);
-                    saveFile(state);
                 }
             }
         } else if (key === '[') {

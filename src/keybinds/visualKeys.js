@@ -246,8 +246,6 @@ function handleVisualKeys(key, state, screen) {
         }
         if (fileExists) {
             if (!state.files.includes(convertedPath)) {
-                state.file = convertedPath;
-                state.files.push(state.file);
                 const snapshotsCopy = [];
                 for (let i = 0; i < state.snapshots.length; i += 1) {
                     snapshotsCopy.push(JSON.parse(JSON.stringify(state.snapshots[i])));
@@ -276,6 +274,8 @@ function handleVisualKeys(key, state, screen) {
                         prevCol: state.prevCol,
                     });
                 }
+                state.file = convertedPath;
+                state.files.push(state.file);
                 state.fileIndex = state.files.length - 1;
                 changeFile(state);
             } else {
@@ -285,6 +285,8 @@ function handleVisualKeys(key, state, screen) {
                 }
                 if (state.files.includes(state.file)) {
                     state.storePosition[state.fileIndex] = {
+                        file: state.file,
+                        data: state.data,
                         row: state.row,
                         col: state.col,
                         windowLine: state.windowLine,
@@ -296,6 +298,8 @@ function handleVisualKeys(key, state, screen) {
                     };
                 } else {
                     state.storePosition.push({
+                        file: state.file,
+                        data: state.data,
                         row: state.row,
                         col: state.col,
                         windowLine: state.windowLine,
@@ -311,6 +315,7 @@ function handleVisualKeys(key, state, screen) {
                 state.fileIndex = state.files.indexOf(state.file);
                 changeFile(state);
                 const pos = state.storePosition[state.fileIndex];
+                state.data = pos.data;
                 state.row = pos.row;
                 state.col = pos.col;
                 state.windowLine = pos.windowLine;
