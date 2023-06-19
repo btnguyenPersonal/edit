@@ -467,7 +467,6 @@ function createSnapshot(state) {
         if (state.snapshots.length > 200) {
             state.snapshots.splice(0, state.snapshots.length - 200);
         }
-        saveFile(state);
     }
 }
 

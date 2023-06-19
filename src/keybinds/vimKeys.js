@@ -1322,14 +1322,12 @@ function handleVimKeys(key, state, screen) {
             if (state.data.length < 10000) {
                 if (state.currentSnapshot + 1 < state.snapshots.length) {
                     applySnapshot(state, state.currentSnapshot + 1, false);
-                    saveFile(state);
                 }
             }
         } else if (key === 'u') {
             if (state.data.length < 10000) {
                 if (state.currentSnapshot - 1 >= 0) {
                     applySnapshot(state, state.currentSnapshot - 1, true);
-                    saveFile(state);
                 }
             }
         } else if (key === '[') {
