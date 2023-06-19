@@ -16,14 +16,19 @@ function sendKeys(keys, state, screen, term) {
     for (let i = 0; i < keys.length; i += 1) {
         if (keys[i] === 'ESCAPE') {
             state.commandHistory += '<esc>';
+            state.totalCommandHistory += '<esc>';
         } else if (keys[i] === 'ENTER') {
             state.commandHistory += '<enter>';
+            state.totalCommandHistory += '<enter>';
         } else if (keys[i] === 'BACKSPACE') {
             state.commandHistory += '<bs>';
+            state.totalCommandHistory += '<bs>';
         } else if (keys[i].startsWith('CTRL_')) {
             state.commandHistory += '<c-' + keys[i].slice(-1).toLowerCase() + '>';
+            state.totalCommandHistory += '<c-' + keys[i].slice(-1).toLowerCase() + '>';
         } else {
             state.commandHistory += keys[i];
+            state.totalCommandHistory += keys[i];
         }
         if (state.allowCommandLogging && state.recording && !(state.mode === 'n' && keys[i] === 'q')) {
             state.macro.push(keys[i]);
