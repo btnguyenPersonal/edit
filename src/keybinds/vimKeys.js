@@ -656,21 +656,33 @@ function handleVimKeys(key, state, screen) {
     } else if (state.previousKeys === 'T') {
         if (isWritable(key)) {
             state.col = toBackward(state, key);
+            if (state.allowCommandLogging) {
+                state.lastSearchCommand = ['T', key];
+            }
         }
         state.previousKeys = '';
     } else if (state.previousKeys === 't') {
         if (isWritable(key)) {
             state.col = toForward(state, key);
+            if (state.allowCommandLogging) {
+                state.lastSearchCommand = ['t', key];
+            }
         }
         state.previousKeys = '';
     } else if (state.previousKeys === 'F') {
         if (isWritable(key)) {
             state.col = findBackward(state, key);
+            if (state.allowCommandLogging) {
+                state.lastSearchCommand = ['F', key];
+            }
         }
         state.previousKeys = '';
     } else if (state.previousKeys === 'f') {
         if (isWritable(key)) {
             state.col = findForward(state, key);
+            if (state.allowCommandLogging) {
+                state.lastSearchCommand = ['f', key];
+            }
         }
         state.previousKeys = '';
     } else if (state.previousKeys === 'r') {
@@ -1336,7 +1348,7 @@ function handleVimKeys(key, state, screen) {
                 state.searching = true;
                 centerScreen(state);
             }
-        } else if (key === 'q') {
+        } else if (key === 'Q') {
             if (state.recording) {
                 state.recording = false;
             } else {
@@ -1413,6 +1425,16 @@ function handleVimKeys(key, state, screen) {
                     state.windowLineHorizontal = 0;
                 }
             }
+        } else if (key === ',') {
+            state.allowCommandLogging = false;
+            let chr = state.lastSearchCommand[0];
+            chr = chr === chr.toUpperCase() ? chr.toLowerCase() : chr.toUpperCase();
+            sendKeys([chr, state.lastSearchCommand[1]], state, screen);
+            state.allowCommandLogging = true;
+        } else if (key === ';') {
+            state.allowCommandLogging = false;
+            sendKeys(state.lastSearchCommand, state, screen);
+            state.allowCommandLogging = true;
         } else if (key === ':') {
             state.mode = ':';
         } else if (key === 'X') {
@@ -1424,7 +1446,7 @@ function handleVimKeys(key, state, screen) {
             } else {
                 state.harpoonIndexes = state.harpoonIndexes.filter(((e) => (e !== state.fileIndex)));
             }
-        } else if (key === ',') {
+        } else if (key === 'q') {
             state.allowCommandLogging = false;
             sendKeys(state.macro, state, screen);
             state.allowCommandLogging = true;

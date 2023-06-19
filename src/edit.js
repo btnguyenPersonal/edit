@@ -50,6 +50,7 @@ const state = {
     commandHistory: '',
     commandString: '',
     commandIndex: 0,
+    lastSearchCommand: [],
     commands: [],
     commandsIndex: [],
     previousCommand: [],
