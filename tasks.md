@@ -1,15 +1,30 @@
 ## backlog
     - drag select for visualLine
+    - run commands from within terminal
+    - every rerender don't have to recalculate the color each time (how bad can this really be?)
 ## todo
-    - every rerender don't have to recalculate the color each time
     - compartmentalize stuff into more functions
     - vertical split
     - horizontal split
-    - undo ui with commands that where run before save happened
-    - run commands from within
+    - persistent undo between sessions??
+    - diff based undo
+    - undo tree instead of truncating on editing tree
+    - context aware lines at top
+    - visualLine move while repect indent
+    - gv
+    - :s///g (for visual)
+    - :sort
+    - stop using 'inString' for non-code
+    - fix new file saving/not-saving
+    - just make it :w and deal with it lol
+    - undo ui that displays all last snapshots with the commands that were run to end up there -> (12 minutes ago) jjjjjdip
+                                                                                                  (14 minutes ago) vipgc
 ## blocked
 ## in progress
 ## done
+    - switch between visual modes
+    - enter not putting }
+    - fix clipboard having double '\n'
     - clearall for fileFinding
     - visualLine work with replace
     - cis

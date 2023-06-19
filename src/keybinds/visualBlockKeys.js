@@ -10,6 +10,8 @@ import {
     down,
     left,
     right,
+    topOfFile,
+    bottomOfFile,
     firstNonSpace,
     getCoorBeginningLastWord,
     getCoorBeginningNextWord,
@@ -53,7 +55,7 @@ function handleVisualBlockKeys(key, state, screen) {
                 if (isEmptyRow(state, i)) {
                     break;
                 } else {
-                    state.visualBlockBlock = { row: i, col: 0 };
+                    state.visual = { row: i, col: 0 };
                 }
             }
             for (let i = state.row + 1; i < state.data.length; i += 1) {
@@ -90,11 +92,11 @@ function handleVisualBlockKeys(key, state, screen) {
         state.col = firstNonSpace(state, state.row);
     } else if (key === 'y') {
         copyInVisualBlock(state);
-        if (state.row >= state.visualBlock.row) {
-            state.row = state.visualBlock.row;
+        if (state.row >= state.visual.row) {
+            state.row = state.visual.row;
         }
-        if (state.col >= state.visualBlock.col) {
-            state.col = state.visualBlock.col;
+        if (state.col >= state.visual.col) {
+            state.col = state.visual.col;
         }
         state.mode = 'n';
     } else if (key === 'x') {
@@ -109,36 +111,36 @@ function handleVisualBlockKeys(key, state, screen) {
     } else if (key === 'c') {
         if (state.previousKeys === 'g') {
             let areAllCommented = true;
-            if (state.row >= state.visualBlock.row) {
-                for (let i = state.visualBlock.row; i <= state.row; i += 1) {
+            if (state.row >= state.visual.row) {
+                for (let i = state.visual.row; i <= state.row; i += 1) {
                     if (!isCommented(state, i)) {
                         areAllCommented = false;
                         break;
                     }
                 }
                 if (areAllCommented) {
-                    for (let i = state.visualBlock.row; i <= state.row; i += 1) {
+                    for (let i = state.visual.row; i <= state.row; i += 1) {
                         toggleComment(state, i, undefined, false);
                     }
                 } else {
-                    for (let i = state.visualBlock.row; i <= state.row; i += 1) {
-                        toggleComment(state, i, firstNonSpace(state, state.visualBlock.row), true);
+                    for (let i = state.visual.row; i <= state.row; i += 1) {
+                        toggleComment(state, i, firstNonSpace(state, state.visual.row), true);
                     }
                 }
-                state.row = state.visualBlock.row;
-            } else if (state.row < state.visualBlock.row) {
-                for (let i = state.row; i <= state.visualBlock.row; i += 1) {
+                state.row = state.visual.row;
+            } else if (state.row < state.visual.row) {
+                for (let i = state.row; i <= state.visual.row; i += 1) {
                     if (!isCommented(state, i)) {
                         areAllCommented = false;
                         break;
                     }
                 }
                 if (areAllCommented) {
-                    for (let i = state.row; i <= state.visualBlock.row; i += 1) {
+                    for (let i = state.row; i <= state.visual.row; i += 1) {
                         toggleComment(state, i, undefined, false);
                     }
                 } else {
-                    for (let i = state.row; i <= state.visualBlock.row; i += 1) {
+                    for (let i = state.row; i <= state.visual.row; i += 1) {
                         toggleComment(state, i, firstNonSpace(state, state.row), true);
                     }
                 }
@@ -147,19 +149,19 @@ function handleVisualBlockKeys(key, state, screen) {
             createSnapshot(state);
             state.previousKeys = '';
         } else {
-            const c = Math.min(state.col, state.visualBlock.col);
-            const rMin = Math.min(state.row, state.visualBlock.row);
-            const rMax = Math.max(state.row, state.visualBlock.row);
+            const c = Math.min(state.col, state.visual.col);
+            const rMin = Math.min(state.row, state.visual.row);
+            const rMax = Math.max(state.row, state.visual.row);
             copyInVisualBlock(state);
             deleteInVisualBlock(state);
             state.col = c;
             state.row = rMin;
-            state.visualBlock.row = rMax;
+            state.visual.row = rMax;
             state.mode = 'MULTI_CURSOR';
         }
     } else if (key === '=') {
-        if (state.row >= state.visualBlock.row) {
-            for (let i = state.visualBlock.row; i <= state.row; i += 1) {
+        if (state.row >= state.visual.row) {
+            for (let i = state.visual.row; i <= state.row; i += 1) {
                 let indentLevel = i - 1 < 0 ? 0 : getIndentLevelFrom(state, i - 1);
                 if (state.data[i].trim().startsWith(')')
                     || state.data[i].trim().startsWith('}')
@@ -169,8 +171,8 @@ function handleVisualBlockKeys(key, state, screen) {
                 }
                 state.data[i] = ' '.repeat(indentLevel) + state.data[i].trim();
             }
-        } else if (state.row < state.visualBlock.row) {
-            for (let i = state.row; i <= state.visualBlock.row; i += 1) {
+        } else if (state.row < state.visual.row) {
+            for (let i = state.row; i <= state.visual.row; i += 1) {
                 let indentLevel = i - 1 < 0 ? 0 : getIndentLevelFrom(state, i - 1);
                 if (state.data[i].trim().startsWith(')')
                     || state.data[i].trim().startsWith('}')
@@ -184,27 +186,36 @@ function handleVisualBlockKeys(key, state, screen) {
         state.mode = 'n';
         createSnapshot(state);
     } else if (key === '<') {
-        if (state.row >= state.visualBlock.row) {
-            for (let i = state.visualBlock.row; i <= state.row; i += 1) {
+        if (state.row >= state.visual.row) {
+            for (let i = state.visual.row; i <= state.row; i += 1) {
                 decreaseIndentLevel(state, i);
             }
-        } else if (state.row < state.visualBlock.row) {
-            for (let i = state.row; i <= state.visualBlock.row; i += 1) {
+        } else if (state.row < state.visual.row) {
+            for (let i = state.row; i <= state.visual.row; i += 1) {
                 decreaseIndentLevel(state, i);
             }
         }
         state.col = firstNonSpace(state, state.row);
-        state.row = state.visualBlock.row;
+        state.row = state.visual.row;
         state.mode = 'n';
         createSnapshot(state);
+    } else if (key === 'g') {
+        if (state.previousKeys === 'g') {
+            topOfFile(state);
+            state.previousKeys = '';
+        } else {
+            state.previousKeys = 'g';
+        }
+    } else if (key === 'G') {
+        bottomOfFile(state);
     } else if (key === '>') {
-        if (state.row >= state.visualBlock.row) {
-            for (let i = state.visualBlock.row; i <= state.row; i += 1) {
+        if (state.row >= state.visual.row) {
+            for (let i = state.visual.row; i <= state.row; i += 1) {
                 increaseIndentLevel(state, i);
             }
-            state.row = state.visualBlock.row;
-        } else if (state.row < state.visualBlock.row) {
-            for (let i = state.row; i <= state.visualBlock.row; i += 1) {
+            state.row = state.visual.row;
+        } else if (state.row < state.visual.row) {
+            for (let i = state.row; i <= state.visual.row; i += 1) {
                 increaseIndentLevel(state, i);
             }
         }
@@ -235,17 +246,28 @@ function handleVisualBlockKeys(key, state, screen) {
             renderScreen(state, screen);
         }
         state.previousKeys = '';
-    } else if (key === 'f' || key === 'F' || key === 't' || key === 'T' || key === 'i' || key === 'g') {
+    } else if (key === 'f' || key === 'F' || key === 't' || key === 'T' || key === 'i') {
         state.previousKeys += key;
     } else if (key === 'A') {
-        state.col = Math.max(state.col, state.visualBlock.col);
+        state.col = Math.max(state.col, state.visual.col);
         state.mode = 'MULTI_CURSOR';
         right(state);
     } else if (key === 'I') {
-        state.col = Math.min(state.col, state.visualBlock.col);
+        state.col = Math.min(state.col, state.visual.col);
         state.mode = 'MULTI_CURSOR';
     } else if (key === 'ESCAPE') {
         state.mode = 'n';
+    } else if (key === 'v') {
+        state.mode = 'v';
+    } else if (key === 'V') {
+        state.mode = 'V';
+    } else if (key === 'o') {
+        const tempRow = state.row;
+        const tempCol = state.col;
+        state.row = state.visual.row;
+        state.col = state.visual.col;
+        state.visual.row = tempRow;
+        state.visual.col = tempCol;
     }
     logCommand(false, state, key);
     renderScreen(state, screen);
