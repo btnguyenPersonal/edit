@@ -453,7 +453,7 @@ function createSnapshot(state) {
             windowLine: state.windowLine
         });
         state.currentSnapshot = state.snapshots.length - 1;
-        if (state.snapshots.length > 100) {
+        if (state.snapshots.length > 200) {
             state.snapshots.splice(0, state.snapshots.length - 200);
         }
         saveFile(state);
