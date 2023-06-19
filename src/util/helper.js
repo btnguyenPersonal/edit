@@ -1,4 +1,5 @@
 /* eslint-disable import/no-cycle */
+import moment from 'moment';
 import ncp from 'copy-paste';
 import fs from 'fs';
 
@@ -448,11 +449,14 @@ function createSnapshot(state) {
             oldData.push(state.data[i]);
         }
         state.snapshots.push({
+            commandHistory: state.commandHistory,
+            date: moment().format('MMMM Do YYYY, h:mm:ss a'),
             data: oldData,
             row: state.prevRow,
             col: state.prevCol,
             windowLine: state.windowLine
         });
+        state.commandHistory = '';
         state.currentSnapshot = state.snapshots.length - 1;
         if (state.snapshots.length > 200) {
             state.snapshots.splice(0, state.snapshots.length - 200);
@@ -575,16 +579,20 @@ function renderStatusBar(state, screen) {
             screen.put({ attr: { color: i === state.harpoonIndex ? 'yellow' : 'grey' } }, shortenFilePath(state.files[state.harpoonIndexes[i]]) + ' ');
         }
         const index = 5 + state.file.length + ((state.row + 1).toString().length) + ((state.col + 1).toString().length) + state.searchQuery.length;
-        screen.put({ attr: { color: 'blue' }, x: process.stdout.columns - index - 10 }, state.commandHistory.slice(-10));
+        screen.put({ attr: { color: 'blue' }, x: process.stdout.columns - index - 10 }, state.totalCommandHistory.slice(-10));
         screen.put({ attr: { color: 'green' }, x: process.stdout.columns - index }, '/' + state.searchQuery);
         screen.put({ attr: { color: 'white' } }, '"' + state.file + ':' + (state.row + 1) + ':' + (state.col + 1) + '"');
     }
 }
 
+function getFileFinderColor(s) {
+    return s === 'g' ? 'green' : 'yellow';
+}
+
 function renderFileFinder(state, screen, mode) {
     screen.put({
         attr: {
-            color: mode === 'g' ? 'green' : 'red',
+            color: getFileFinderColor(mode),
         },
         x: 0,
         wrap: false
@@ -600,7 +608,7 @@ function renderFileFinder(state, screen, mode) {
         screen.put({ newLine: true }, '\n');
         screen.put({
             attr: {
-                color: state.fileFinderIndex === i ? 'green' : 'white',
+                color: state.fileFinderIndex === i ? getFileFinderColor(mode) : 'white',
             },
             x: 0,
             wrap: false
@@ -698,8 +706,11 @@ function getIndent(state, row) {
 function getContextLines(state) {
     const contextLines = [];
     let indent = state.data[state.row] !== undefined ? state.data[state.row].search(/\S|$/) : 0;
+    if (state.data[state.row].length === 0) {
+        indent = 9999999; // if on blank line use indent of line above
+    }
     for (let i = state.row; i >= 0; i -= 1) {
-        if (getIndent(state, i) < indent) {
+        if (state.data[i].length > 0 && getIndent(state, i) < indent) {
             if (i < state.windowLine) {
                 contextLines.push(i);
             }

@@ -676,8 +676,8 @@ function handleVimKeys(key, state, screen) {
     } else if (state.previousKeys === 'r') {
         if (isWritable(key)) {
             state.data[state.row] = state.data[state.row].substring(0, state.col)
-                + key
-                + state.data[state.row].substring(state.col + 1);
+            + key
+            + state.data[state.row].substring(state.col + 1);
         }
         logCommand(false, state, key);
         createSnapshot(state);
@@ -1134,22 +1134,13 @@ function handleVimKeys(key, state, screen) {
             if (state.col < state.data[state.row].length) {
                 copyToClipboard(state, [state.data[state.row].substring(state.col, state.col + 1)]);
                 state.data[state.row] = state.data[state.row].substring(0, state.col)
-                    + state.data[state.row].substring(state.col + 1);
+                + state.data[state.row].substring(state.col + 1);
             }
             logCommand(true, state, key);
             createSnapshot(state);
         } else if (key === '$') {
             state.col = endOfLine(state, state.row);
-        } else if (key === '1'
-            || key === '2'
-            || key === '3'
-            || key === '4'
-            || key === '5'
-            || key === '6'
-            || key === '7'
-            || key === '8'
-            || key === '9'
-        ) {
+        } else if (key === '1' || key === '2' || key === '3' || key === '4' || key === '5' || key === '6' || key === '7' || key === '8' || key === '9') {
             state.previousKeys = '-';
             state.lineNumber = '';
             state.lineNumber += key;
@@ -1187,7 +1178,7 @@ function handleVimKeys(key, state, screen) {
         } else if (key === 's') {
             if (state.col < state.data[state.row].length) {
                 state.data[state.row] = state.data[state.row].substring(0, state.col)
-                    + state.data[state.row].substring(state.col + 1);
+                + state.data[state.row].substring(state.col + 1);
             }
             state.mode = 'i';
             logCommand(true, state, key);
@@ -1354,10 +1345,7 @@ function handleVimKeys(key, state, screen) {
             }
         } else if (key === '=') {
             let indentLevel = state.row - 1 < 0 ? 0 : getIndentLevelFrom(state, state.row - 1);
-            if (state.data[state.row].trim().startsWith(')')
-                || state.data[state.row].trim().startsWith('}')
-                || state.data[state.row].trim().startsWith('</')
-            ) {
+            if (state.data[state.row].trim().startsWith(')') || state.data[state.row].trim().startsWith('}') || state.data[state.row].trim().startsWith('</')) {
                 indentLevel = indentLevel - state.indentAmount >= 0 ? indentLevel - state.indentAmount : 0;
             }
             state.data[state.row] = ' '.repeat(indentLevel) + state.data[state.row].trim();
@@ -1391,8 +1379,8 @@ function handleVimKeys(key, state, screen) {
             let chr = state.data[state.row].substring(state.col, state.col + 1);
             chr = chr === chr.toUpperCase() ? chr.toLowerCase() : chr.toUpperCase();
             state.data[state.row] = state.data[state.row].substring(0, state.col)
-                + chr
-                + state.data[state.row].substring(state.col + 1);
+            + chr
+            + state.data[state.row].substring(state.col + 1);
             createSnapshot(state);
         } else if (key === 'm') {
             state.mark = state.row;

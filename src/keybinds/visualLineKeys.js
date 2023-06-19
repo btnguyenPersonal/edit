@@ -240,7 +240,6 @@ function handleVisualLineKeys(key, state, screen) {
             if (state.row >= state.visual.row) {
                 for (let i = state.visual.row; i <= state.row; i += 1) {
                     let indentLevel = i - 1 < 0 ? 0 : getIndentLevelFrom(state, i - 1);
-                    state.commandHistory += indentLevel.toString();
                     if (state.data[i].trim().startsWith(')')
                         || state.data[i].trim().startsWith('}')
                         || state.data[i].trim().startsWith('</')
@@ -276,7 +275,6 @@ function handleVisualLineKeys(key, state, screen) {
             if (state.row >= state.visual.row) {
                 for (let i = state.visual.row; i <= state.row; i += 1) {
                     let indentLevel = i - 1 < 0 ? 0 : getIndentLevelFrom(state, i - 1);
-                    state.commandHistory += indentLevel.toString();
                     if (state.data[i].trim().startsWith(')')
                         || state.data[i].trim().startsWith('}')
                         || state.data[i].trim().startsWith('</')
@@ -302,7 +300,6 @@ function handleVisualLineKeys(key, state, screen) {
             if (state.row >= state.visual.row) {
                 for (let i = state.visual.row; i <= state.row; i += 1) {
                     let indentLevel = i - 1 < 0 ? 0 : getIndentLevelFrom(state, i - 1);
-                    state.commandHistory += indentLevel.toString();
                     if (state.data[i].trim().startsWith(')')
                         || state.data[i].trim().startsWith('}')
                         || state.data[i].trim().startsWith('</')

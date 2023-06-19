@@ -46,6 +46,7 @@ const state = {
     },
     lineNumber: '',
     previousKeys: '',
+    totalCommandHistory: '',
     commandHistory: '',
     commandString: '',
     commandIndex: 0,
