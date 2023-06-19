@@ -412,6 +412,17 @@ function copyToClipboard(state, textArray, clipboardVisualBlock) {
     ncp.copy(textArray.join('\n'));
 }
 
+function saveAllFiles(state) {
+    state.storePosition.forEach((pos) => {
+        fs.writeFileSync(pos.file, pos.data.join('\n'), (err) => {
+            if (err) {
+                console.log(err);
+                process.exit();
+            }
+        });
+    });
+}
+
 function saveFile(state) {
     fs.writeFileSync(state.file, state.data.join('\n'), (err) => {
         if (err) {
@@ -456,7 +467,6 @@ function createSnapshot(state) {
         if (state.snapshots.length > 200) {
             state.snapshots.splice(0, state.snapshots.length - 200);
         }
-        saveFile(state);
     }
 }
 
@@ -682,6 +692,7 @@ function renderSingleLine(state, screen, i, mergeSection) {
         }, ' ');
     }
     screen.put({ newLine: true }, '\n');
+    return mergeSection
 }
 
 function renderWindowLines(state, screen, noCenterScreen, fullRefresh) {
@@ -689,10 +700,10 @@ function renderWindowLines(state, screen, noCenterScreen, fullRefresh) {
         centerScreen(state);
     }
     getWindowLineHorizontal(state);
-    const mergeSection = 0;
+    let mergeSection = 0;
     for (let i = state.windowLine; i < (state.windowLine + process.stdout.rows) - 1; i += 1) {
         if (state.data[i] !== undefined) {
-            renderSingleLine(state, screen, i, mergeSection);
+            mergeSection = renderSingleLine(state, screen, i, mergeSection);
         }
     }
     moveCursor(state, screen, state.windowLineHorizontal);
@@ -756,7 +767,7 @@ function evaluateCommand(state, term) {
         saveFile(state);
         return false;
     } else if (state.commandString === 'wa') {
-        saveFile(state);
+        saveAllFiles(state);
         return false;
     } else if (state.commandString === 'x') {
         saveFile(state);
