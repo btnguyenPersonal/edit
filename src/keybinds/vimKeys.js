@@ -1095,7 +1095,7 @@ function handleVimKeys(key, state, screen) {
                     updateStorePosition(state);
                 }
             }
-        } else if (key === 'CTRL_Q') {
+        } else if (key === 'CTRL_X') {
             state.harpoonIndexes = state.harpoonIndexes.filter(((e) => (e !== state.fileIndex)));
             if (state.files[state.harpoonIndexes[state.harpoonIndex]] !== undefined) {
                 updateStorePosition(state);
