@@ -458,8 +458,8 @@ function createSnapshot(state) {
         });
         state.commandHistory = '';
         state.currentSnapshot = state.snapshots.length - 1;
-        if (state.snapshots.length > 200) {
-            state.snapshots.splice(0, state.snapshots.length - 200);
+        if (state.snapshots.length > 50) {
+            state.snapshots.splice(0, state.snapshots.length - 50);
         }
         saveFile(state);
     }
