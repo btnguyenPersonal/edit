@@ -440,7 +440,7 @@ function applySnapshot(state, index) {
 
 function createSnapshot(state) {
     const currentData = state.data.join("\n");
-    const prevData = state.prevData || "";  // use empty string if prevData is not defined
+    const prevData = state.prevData || "";
     const diff = dmp.diff_main(prevData, currentData);
     dmp.diff_cleanupSemantic(diff);
 
