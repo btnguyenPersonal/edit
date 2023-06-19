@@ -227,11 +227,11 @@ function handleVisualLineKeys(key, state, screen) {
                 }
             }
         } else if (key === 'J') {
-            let { beginningRow, endRow } = state.row <= state.visual.row
+            const { beginningRow, endRow } = state.row <= state.visual.row
                 ? { beginningRow: state.row, endRow: state.visual.row }
                 : { beginningRow: state.visual.row, endRow: state.row };
             if (endRow < state.data.length - 1) {
-                let temp = state.data[endRow + 1];
+                const temp = state.data[endRow + 1];
                 state.data.splice(endRow + 1, 1);
                 state.data.splice(beginningRow, 0, temp);
             }
@@ -263,11 +263,11 @@ function handleVisualLineKeys(key, state, screen) {
             }
             createSnapshot(state);
         } else if (key === 'K') {
-            let { beginningRow, endRow } = state.row <= state.visual.row
+            const { beginningRow, endRow } = state.row <= state.visual.row
                 ? { beginningRow: state.row, endRow: state.visual.row }
                 : { beginningRow: state.visual.row, endRow: state.row };
             if (beginningRow > 0) {
-                let temp = state.data[beginningRow - 1];
+                const temp = state.data[beginningRow - 1];
                 state.data.splice(beginningRow - 1, 1);
                 state.data.splice(endRow, 0, temp);
             }
