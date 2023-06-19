@@ -614,6 +614,7 @@ function renderFileFinder(state, screen, mode) {
 }
 
 function renderSingleLine(state, screen, i, mergeSection) {
+    let section = 0;
     screen.put({
         attr: {
             color: state.recording ? 'red' : 'grey'
@@ -621,11 +622,11 @@ function renderSingleLine(state, screen, i, mergeSection) {
         x: 0
     }, (i + 1).toString().padStart(4) + ' ');
     if (isMergeConflictStart(state.data[i])) {
-        mergeSection = 1;
+        section = 1;
     } else if (isMergeConflictMiddle(state.data[i])) {
-        mergeSection = 2;
+        section = 2;
     } else if (isMergeConflictEnd(state.data[i])) {
-        mergeSection = 0;
+        section = 0;
     }
     const commentIndex = commentStartsAt(state, i);
     const colorRow = getColorRow(
@@ -645,9 +646,9 @@ function renderSingleLine(state, screen, i, mergeSection) {
     for (let j = state.windowLineHorizontal; j < displayRow.length; j += 1) {
         let color = colorRow[j];
         let bgColor;
-        if (mergeSection === 1 && !isMergeConflictStart(displayRow)) {
+        if (section === 1 && !isMergeConflictStart(displayRow)) {
             color = 'red';
-        } else if (mergeSection === 2 && !isMergeConflictMiddle(displayRow)) {
+        } else if (section === 2 && !isMergeConflictMiddle(displayRow)) {
             color = 'green';
         } else if (isMergeConflictEnd(displayRow) || isMergeConflictMiddle(displayRow) || isMergeConflictStart(displayRow)) {
             color = 'blue';
@@ -682,6 +683,19 @@ function renderSingleLine(state, screen, i, mergeSection) {
         }, ' ');
     }
     screen.put({ newLine: true }, '\n');
+    return section;
+}
+
+function getContextLines(state) {
+    let contextLines = [];
+    let indent = state.data[state.row] !== undefined ? state.data[state.row].search(/\S|$/) : 0;
+    for (let i = 0; i >= 0; i += 1) {
+        if (state.data[i].search(/\S|$/) < indent) {
+            contextLines.push({ line: i, line: state.data[i] });
+            indent = state.data[i].search(/\S|$/);
+        }
+    }
+    return contextLines;
 }
 
 function renderWindowLines(state, screen, noCenterScreen, fullRefresh) {
@@ -689,10 +703,10 @@ function renderWindowLines(state, screen, noCenterScreen, fullRefresh) {
         centerScreen(state);
     }
     getWindowLineHorizontal(state);
-    const mergeSection = 0;
+    let mergeSection = 0;
     for (let i = state.windowLine; i < (state.windowLine + process.stdout.rows) - 1; i += 1) {
         if (state.data[i] !== undefined) {
-            renderSingleLine(state, screen, i, mergeSection);
+            mergeSection = renderSingleLine(state, screen, i, mergeSection);
         }
     }
     moveCursor(state, screen, state.windowLineHorizontal);
