@@ -1,6 +1,9 @@
 /* eslint-disable import/no-cycle */
+import { diff_match_patch } from 'diff-match-patch';
 import ncp from 'copy-paste';
 import fs from 'fs';
+
+const dmp = new diff_match_patch();
 
 function isFile(filePath) {
     try {
@@ -421,40 +424,40 @@ function saveFile(state) {
     });
 }
 
-function applySnapshot(state, index, backwards) {
-    if (state.data.length < 10000) {
-        const snap = state.snapshots[index];
-        if (snap !== undefined) {
-            state.data = [];
-            for (let i = 0; i < snap.data.length; i += 1) {
-                state.data.push(snap.data[i]);
-            }
-            state.currentSnapshot = index;
-            const pos = backwards ? index + 1 : index;
-            if (state.snapshots[pos]) {
-                state.row = state.snapshots[pos].row;
-                state.col = state.snapshots[pos].col;
-            }
+function applySnapshot(state, index) {
+    if (state.snapshots[index]) {
+        let oldData = "";
+        for (let i = 0; i <= index; i++) {
+            const diff = dmp.diff_fromDelta(oldData, state.snapshots[i].diff);
+            oldData = dmp.diff_text2(diff);
         }
+        state.data = oldData.split("\n");
+        state.currentSnapshot = index;
+        state.row = state.snapshots[index].row;
+        state.col = state.snapshots[index].col;
     }
 }
 
 function createSnapshot(state) {
-    if (state.data.length < 10000) {
-        state.snapshots.splice(state.currentSnapshot + 1, state.snapshots.length - (state.currentSnapshot + 1));
-        const oldData = [];
-        for (let i = 0; i < state.data.length; i += 1) {
-            oldData.push(state.data[i]);
-        }
-        state.snapshots.push({
-            data: oldData,
-            row: state.prevRow,
-            col: state.prevCol,
-            windowLine: state.windowLine
-        });
-        state.currentSnapshot = state.snapshots.length - 1;
-        saveFile(state);
-    }
+    const currentData = state.data.join("\n");
+    const prevData = state.prevData || "";  // use empty string if prevData is not defined
+    const diff = dmp.diff_main(prevData, currentData);
+    dmp.diff_cleanupSemantic(diff);
+
+    const snapshot = {
+        diff: dmp.diff_toDelta(diff),
+        original: prevData,
+        row: state.prevRow,
+        col: state.prevCol,
+        windowLine: state.windowLine
+    };
+
+    state.snapshots = state.snapshots.slice(0, state.currentSnapshot + 1);
+    state.snapshots.push(snapshot);
+    state.currentSnapshot = state.snapshots.length - 1;
+    state.prevData = currentData;
+    
+    saveFile(state);
 }
 
 function searchBackForString(state, string) {
