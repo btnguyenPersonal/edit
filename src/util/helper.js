@@ -110,7 +110,7 @@ function getRowIfOverflow(state) {
         : state.data.length - 1;
 }
 
-function moveCursor(state, screen, windowLineHorizontal) {
+function moveCursor(state, screen, windowLineHorizontal, numContextLines) {
     if (state.mode === ':') {
         screen.moveTo(
             state.commandIndex + 1,
@@ -131,6 +131,7 @@ function moveCursor(state, screen, windowLineHorizontal) {
         row = state.row < state.data.length ? state.row : state.data.length;
         col -= windowLineHorizontal;
         row -= state.windowLine;
+        row += numContextLines;
         screen.moveTo(
             col,
             row + 1
@@ -613,11 +614,15 @@ function renderFileFinder(state, screen, mode) {
     screen.drawCursor();
 }
 
-function renderSingleLine(state, screen, i, mergeSection) {
+function renderSingleLine(state, screen, i, mergeSection, isContext) {
     let section = 0;
     screen.put({
         attr: {
-            color: state.recording ? 'red' : 'grey'
+            color: isContext
+                ? 'white'
+                : state.recording
+                    ? 'red'
+                    : 'grey'
         },
         x: 0
     }, (i + 1).toString().padStart(4) + ' ');
@@ -686,13 +691,19 @@ function renderSingleLine(state, screen, i, mergeSection) {
     return section;
 }
 
+function getIndent(state, row) {
+    return state.data[row] !== undefined ? state.data[row].search(/\S|$/) : 0;
+}
+
 function getContextLines(state) {
     let contextLines = [];
     let indent = state.data[state.row] !== undefined ? state.data[state.row].search(/\S|$/) : 0;
-    for (let i = 0; i >= 0; i += 1) {
-        if (state.data[i].search(/\S|$/) < indent) {
-            contextLines.push({ line: i, line: state.data[i] });
-            indent = state.data[i].search(/\S|$/);
+    for (let i = state.row; i >= 0; i -= 1) {
+        if (getIndent(state, i) < indent) {
+            if (i < state.windowLine) {
+                contextLines.push(i);
+            }
+            indent = getIndent(state, i);
         }
     }
     return contextLines;
@@ -704,12 +715,14 @@ function renderWindowLines(state, screen, noCenterScreen, fullRefresh) {
     }
     getWindowLineHorizontal(state);
     let mergeSection = 0;
-    for (let i = state.windowLine; i < (state.windowLine + process.stdout.rows) - 1; i += 1) {
+    const contextLines = getContextLines(state).slice().reverse();
+    contextLines.forEach(line => renderSingleLine(state, screen, line, mergeSection, true));
+    for (let i = state.windowLine; i < (state.windowLine + process.stdout.rows - contextLines.length) - 1; i += 1) {
         if (state.data[i] !== undefined) {
             mergeSection = renderSingleLine(state, screen, i, mergeSection);
         }
     }
-    moveCursor(state, screen, state.windowLineHorizontal);
+    moveCursor(state, screen, state.windowLineHorizontal, contextLines.length);
     screen.draw({ delta: !fullRefresh });
     screen.drawCursor();
 }
