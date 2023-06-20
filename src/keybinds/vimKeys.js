@@ -64,6 +64,7 @@ import {
     goToCoor,
     swapLeft,
     swapRight,
+    matchIt,
 } from '../util/movement.js';
 
 function handleVimKeys(key, state, screen) {
@@ -1407,6 +1408,8 @@ function handleVimKeys(key, state, screen) {
                 }
                 state.allowCommandLogging = true;
             }
+        } else if (key === '%') {
+            matchIt(state);
         } else if (key === '?') {
             let systemPaste = ncp.paste();
             if (systemPaste.startsWith('\n')) {
