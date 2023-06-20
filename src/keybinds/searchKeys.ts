@@ -6,7 +6,7 @@ import {
     searchForString,
     createSnapshot,
     centerScreen
-} from '../util/helper.js';
+} from '../util/helper.ts';
 
 function handleSearchKeys(key, state, screen) {
     if (state.replacing) {

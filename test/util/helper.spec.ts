@@ -1,7 +1,7 @@
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
 import chai, { expect } from 'chai';
-import * as helper from '../../src/util/helper.js';
+import * as helper from '../../src/util/helper.ts';
 
 chai.use(sinonChai);
 

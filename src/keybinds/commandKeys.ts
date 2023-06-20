@@ -4,7 +4,7 @@ import {
     isWritable,
     evaluateCommand,
     saveFile,
-} from '../util/helper.js';
+} from '../util/helper.ts';
 
 function handleCommandKeys(key, state, screen, term) {
     if (isWritable(key)) {

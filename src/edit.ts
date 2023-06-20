@@ -9,9 +9,9 @@ import {
     renderScreen,
     createSnapshot,
     getData
-} from './util/helper.js';
-import { sendKeys } from './util/sendKeys.js';
-import { handleMouseInputs } from './keybinds/mouse.js';
+} from './util/helper.ts';
+import { sendKeys } from './util/sendKeys.ts';
+import { handleMouseInputs } from './keybinds/mouse.ts';
 
 const { terminal, ScreenBuffer } = pkg;
 

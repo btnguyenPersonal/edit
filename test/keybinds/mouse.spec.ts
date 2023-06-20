@@ -1,7 +1,7 @@
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
 import chai, { expect } from 'chai';
-import { handleMouseInputs } from '../../src/keybinds/mouse.js';
+import { handleMouseInputs } from '../../src/keybinds/mouse.ts';
 
 chai.use(sinonChai);
 

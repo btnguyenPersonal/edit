@@ -11,7 +11,7 @@ import {
     changeFile,
     isFile,
     logCommand
-} from '../util/helper.js';
+} from '../util/helper.ts';
 import {
     up,
     down,
@@ -45,7 +45,7 @@ import {
     isEmptyRow,
     isCommented,
     toggleComment,
-} from '../util/movement.js';
+} from '../util/movement.ts';
 
 function handleVisualKeys(key, state, screen) {
     if (state.previousKeys === 'i') {

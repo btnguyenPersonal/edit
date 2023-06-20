@@ -4,9 +4,9 @@
   "description": "code editor experiment",
   "type": "module",
   "scripts": {
-    "dev": "node src/edit.js",
+    "dev": "npm run build && node build/out.cjs",
     "lint": "eslint .",
-    "build": "npx esbuild src/edit.js --bundle --minify --platform=node --packages=external --outfile=build/out.cjs",
+    "build": "npx esbuild src/edit.ts --tsconfig=tsconfig.json --bundle --minify --platform=node --packages=external --outfile=build/out.cjs",
     "test": "npx mocha ./test/**/*.spec.js"
   },
   "repository": {
@@ -23,7 +23,8 @@
     "copy-paste": "1.1.3",
     "esbuild": "0.17.19",
     "moment": "2.29.4",
-    "terminal-kit": "3.0.0"
+    "terminal-kit": "3.0.0",
+    "typescript": "^5.1.3"
   },
   "devDependencies": {
     "chai": "4.3.7",

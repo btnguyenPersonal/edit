@@ -5,7 +5,7 @@ import {
     renderScreen,
     isWritable,
     changeFile,
-} from '../util/helper.js';
+} from '../util/helper.ts';
 
 function handleFileFinderKeys(key, state, screen) {
     if (isWritable(key) && key !== '\\') {

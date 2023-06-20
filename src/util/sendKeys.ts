@@ -1,13 +1,13 @@
 /* eslint-disable import/no-cycle */
-import { handleKeys } from '../keybinds/normalKeys.js';
-import { handleMultiCursorKeys } from '../keybinds/multiCursorKeys.js';
-import { handleVimKeys } from '../keybinds/vimKeys.js';
-import { handleVisualKeys } from '../keybinds/visualKeys.js';
-import { handleVisualLineKeys } from '../keybinds/visualLineKeys.js';
-import { handleVisualBlockKeys } from '../keybinds/visualBlockKeys.js';
-import { handleSearchKeys } from '../keybinds/searchKeys.js';
-import { handleFileFinderKeys } from '../keybinds/fileFinderKeys.js';
-import { handleCommandKeys } from '../keybinds/commandKeys.js';
+import { handleKeys } from '../keybinds/normalKeys.ts';
+import { handleMultiCursorKeys } from '../keybinds/multiCursorKeys.ts';
+import { handleVimKeys } from '../keybinds/vimKeys.ts';
+import { handleVisualKeys } from '../keybinds/visualKeys.ts';
+import { handleVisualLineKeys } from '../keybinds/visualLineKeys.ts';
+import { handleVisualBlockKeys } from '../keybinds/visualBlockKeys.ts';
+import { handleSearchKeys } from '../keybinds/searchKeys.ts';
+import { handleFileFinderKeys } from '../keybinds/fileFinderKeys.ts';
+import { handleCommandKeys } from '../keybinds/commandKeys.ts';
 
 function sendKeys(keys, state, screen, term) {
     if (state.data.length === 0) {

@@ -1,5 +1,5 @@
 /* eslint-disable import/no-cycle */
-import { copyToClipboard, isAlphaNumeric } from './helper.js';
+import { copyToClipboard, isAlphaNumeric } from './helper.ts';
 
 function swapLeft(obj) {
     const i = obj.index;

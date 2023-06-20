@@ -1,4 +1,4 @@
-import * as helper from '../util/helper.js';
+import * as helper from '../util/helper.ts';
 
 function handleMouseInputs(name, coor, state, screen) {
     if (name === 'MOUSE_LEFT_BUTTON_PRESSED') {

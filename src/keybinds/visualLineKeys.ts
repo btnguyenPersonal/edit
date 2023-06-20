@@ -6,8 +6,8 @@ import {
     createSnapshot,
     pasteFromClipboardBefore,
     logCommand
-} from '../util/helper.js';
-import { sendKeys } from '../util/sendKeys.js';
+} from '../util/helper.ts';
+import { sendKeys } from '../util/sendKeys.ts';
 import {
     up,
     down,
@@ -26,7 +26,7 @@ import {
     isEmptyRow,
     isCommented,
     toggleComment,
-} from '../util/movement.js';
+} from '../util/movement.ts';
 
 function handleVisualLineKeys(key, state, screen) {
     if (state.previousKeys === 'i' && key === 'p') {

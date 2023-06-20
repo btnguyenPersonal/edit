@@ -4,7 +4,7 @@ import {
     renderScreen,
     createSnapshot,
     logCommand
-} from '../util/helper.js';
+} from '../util/helper.ts';
 import {
     left,
     right,
@@ -14,7 +14,7 @@ import {
     endOfLine,
     firstNonSpace,
     getCoorBeginningLastWord,
-} from '../util/movement.js';
+} from '../util/movement.ts';
 
 function handleMultiCursorKeys(key, state, screen) {
     if (key === 'DELETE') {

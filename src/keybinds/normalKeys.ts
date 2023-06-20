@@ -4,7 +4,7 @@ import {
     renderScreen,
     createSnapshot,
     logCommand
-} from '../util/helper.js';
+} from '../util/helper.ts';
 import {
     up,
     down,
@@ -17,7 +17,7 @@ import {
     endOfLine,
     firstNonSpace,
     getCoorBeginningLastWord,
-} from '../util/movement.js';
+} from '../util/movement.ts';
 
 function handleKeys(key, state, screen) {
     if (key === 'UP') {
