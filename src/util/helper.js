@@ -625,13 +625,15 @@ function renderFileFinder(state, screen, mode) {
 function renderSingleLine(state, screen, i, mergeSection, isContext) {
     let section = 0;
     let numColor = 'grey';
+    let numBgColor;
     if (isContext) {
         numColor = 'white';
+        numBgColor = 'grey';
     } else if (state.recording) {
         numColor = 'red';
     }
     screen.put({
-        attr: { color: numColor },
+        attr: { color: numColor, bgColor: numBgColor },
         x: 0
     }, (i + 1).toString().padStart(4) + ' ');
     if (isMergeConflictStart(state.data[i])) {
@@ -678,6 +680,9 @@ function renderSingleLine(state, screen, i, mergeSection, isContext) {
         } else if (colorRow[j] === 'searchCurrent') {
             color = 'black';
             bgColor = 'magenta';
+        }
+        if (isContext) {
+            bgColor = 'grey';
         }
         screen.put({
             attr: {
