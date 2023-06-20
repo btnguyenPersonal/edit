@@ -801,6 +801,64 @@ function setVisualHighlight(state, beginning, end) {
     }
 }
 
+function matchIt(state) {
+    const current = state.data[state.row].substring(state.col, state.col + 1);
+    const types = '({[)}]';
+    const currentType = types.indexOf(current);
+    if (currentType !== -1) {
+        let closingParen;
+        if (currentType < 3) {
+            const closingParen = types.substring(currentType + 3, currentType + 4)
+            let stack = 0;
+            let r = state.row;
+            let c = state.col + 1;
+            while (r < state.data.length) {
+                if (state.data[r].substring(c, c + 1) === closingParen) {
+                    if (stack <= 0) {
+                        state.row = r;
+                        state.col = c;
+                        break;
+                    } else {
+                        stack -= 1;
+                    }
+                } else if (state.data[r].substring(c, c + 1) === current) {
+                    stack += 1;
+                }
+                c += 1;
+                if (c >= state.data[r].length) {
+                    c = 0;
+                    r += 1;
+                }
+            }
+        } else {
+            const openParen = types.substring(currentType - 3, currentType - 2)
+            let stack = 0;
+            let r = state.row;
+            let c = state.col;
+            while (r >= 0) {
+                if (state.data[r].substring(c, c + 1) === openParen) {
+                    if (stack <= 1) {
+                        state.row = r;
+                        state.col = c;
+                        break;
+                    } else {
+                        stack -= 1;
+                    }
+                } else if (state.data[r].substring(c, c + 1) === current) {
+                    stack += 1;
+                }
+                c -= 1;
+                if (c < 0) {
+                    r -= 1;
+                    if (r >= 0) {
+                        c = state.data[r].length;
+                    }
+                }
+            }
+        }
+    }
+}
+
 export {
     up,
     down,
@@ -848,4 +906,5 @@ export {
     setAroundVisualHighlight,
     swapLeft,
     swapRight,
+    matchIt,
 };
