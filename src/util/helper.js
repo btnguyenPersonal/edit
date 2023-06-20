@@ -357,13 +357,13 @@ function getColorRow(replacing, replaceQuery, row, commentIndex, searching, sear
         } else {
             const s = row.substring(i, i + 1);
             if (inString) {
-                color = 'magenta';
+                color = 'cyan';
             }
             if (s === stringChar && stringChar !== undefined && !disregardNext) {
                 inString = !inString;
                 stringChar = undefined;
             } else if (s === '"' || s === '\'' || s === '`') {
-                color = 'magenta';
+                color = 'cyan';
                 if (stringChar === undefined && commentString !== '' && commentString !== '<!--') {
                     inString = !inString;
                     stringChar = s;
@@ -373,7 +373,7 @@ function getColorRow(replacing, replaceQuery, row, commentIndex, searching, sear
             } else if (!inString && (s === '[' || s === ']')) {
                 color = 'green';
             } else if (!inString && (s === '{' || s === '}')) {
-                color = 'cyan';
+                color = 'magenta';
             } else if ((replacing || searching) && searchQuery.length !== 0 && searchQuery === row.substring(i, i + searchQuery.length)) {
                 if (replacing) {
                     for (let j = 0; j < replaceQuery.length; j += 1) {
