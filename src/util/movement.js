@@ -806,9 +806,8 @@ function matchIt(state) {
     const types = '({[)}]';
     const currentType = types.indexOf(current);
     if (currentType !== -1) {
-        let closingParen;
         if (currentType < 3) {
-            const closingParen = types.substring(currentType + 3, currentType + 4)
+            const closingParen = types.substring(currentType + 3, currentType + 4);
             let stack = 0;
             let r = state.row;
             let c = state.col + 1;
@@ -831,7 +830,7 @@ function matchIt(state) {
                 }
             }
         } else {
-            const openParen = types.substring(currentType - 3, currentType - 2)
+            const openParen = types.substring(currentType - 3, currentType - 2);
             let stack = 0;
             let r = state.row;
             let c = state.col;
