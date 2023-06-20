@@ -217,8 +217,8 @@ function isHighlighted(state, i, j) {
     return false;
 }
 
-function getCommentString(state) {
-    const extension = state.file.split('.').pop().toLowerCase();
+function getCommentString(file) {
+    const extension = file.split('.').pop().toLowerCase();
     let commentString = '';
     switch (extension) {
         case 'java':
@@ -301,7 +301,7 @@ function getCommentString(state) {
 }
 
 function commentStartsAt(state, row) {
-    const commentString = getCommentString(state);
+    const commentString = getCommentString(state.file);
     let inString = false;
     let disregardNext = false;
     let stringChar;
@@ -344,7 +344,7 @@ function logCommand(newCommand, state, key) {
     }
 }
 
-function getColorRow(replacing, replaceQuery, row, commentIndex, searching, searchQuery, isCurrentRow, col) {
+function getColorRow(replacing, replaceQuery, row, commentIndex, searching, searchQuery, isCurrentRow, col, commentString) {
     const output = [];
     let inString = false;
     let stringChar;
@@ -364,7 +364,7 @@ function getColorRow(replacing, replaceQuery, row, commentIndex, searching, sear
                 stringChar = undefined;
             } else if (s === '"' || s === '\'' || s === '`') {
                 color = 'magenta';
-                if (stringChar === undefined) {
+                if (stringChar === undefined && commentString !== '' && commentString !== '<!--') {
                     inString = !inString;
                     stringChar = s;
                 }
@@ -650,7 +650,8 @@ function renderSingleLine(state, screen, i, mergeSection, isContext) {
         state.searching,
         state.searchQuery,
         state.row === i,
-        state.col
+        state.col,
+        getCommentString(state.file)
     );
     let displayRow = state.data[i];
     if (state.replacing) {
