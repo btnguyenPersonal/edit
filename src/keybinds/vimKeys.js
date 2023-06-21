@@ -1349,7 +1349,7 @@ function handleVimKeys(key, state, screen) {
                 state.searching = true;
                 centerScreen(state);
             }
-        } else if (key === 'Q') {
+        } else if (key === 'q') {
             if (state.recording) {
                 state.recording = false;
             } else {
@@ -1397,7 +1397,7 @@ function handleVimKeys(key, state, screen) {
             createSnapshot(state);
         } else if (key === 'm') {
             state.mark = state.row;
-        } else if (key === '@') {
+        } else if (key === '!') {
             if (state.searchQuery !== '') {
                 state.col = 0;
                 state.row = 0;
@@ -1449,7 +1449,7 @@ function handleVimKeys(key, state, screen) {
             } else {
                 state.harpoonIndexes = state.harpoonIndexes.filter(((e) => (e !== state.fileIndex)));
             }
-        } else if (key === 'q') {
+        } else if (key === '@') {
             state.allowCommandLogging = false;
             sendKeys(state.macro, state, screen);
             state.allowCommandLogging = true;
