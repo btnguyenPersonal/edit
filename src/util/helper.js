@@ -901,5 +901,6 @@ export {
     getData,
     evaluateCommand,
     updateStorePosition,
+    getContextLines,
     isFile
 };

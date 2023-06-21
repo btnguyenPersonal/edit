@@ -16,6 +16,11 @@
     - add %
     - undo ui that displays all last snapshots with the commands that were run to end up there -> (12 minutes ago) jjjjjdip
                                                                                                   (14 minutes ago) vipgc
+    - readme / markdown highlighting
+    - colors with hex
+    - indent work with || && and .then()
+    - synchronous copy to system clipboard
+    - mouse with context lines
 ## blocked
 ## in progress
 ## done

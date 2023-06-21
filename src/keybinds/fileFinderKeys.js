@@ -159,6 +159,29 @@ function handleFileFinderKeys(key, state, screen) {
             }
         }
         state.mode = 'n';
+    } else if (key === 'CTRL_L') {
+        state.fileFinderQuery = '';
+        if (state.mode === 'g') {
+            let output = '';
+            if (state.fileFinderQuery.length !== 0) {
+                output = execSync(`git grep -n "${state.fileFinderQuery}" || true`, { maxBuffer: 1024 * 1024 * 1000 }).toString();
+            }
+            state.fileFindingOutput = output.split('\n');
+        } else {
+            let output = '';
+            if (state.gitFinding) {
+                if (state.fileFinderQuery.length !== 0) {
+                    output = execSync(`fd -t f --hidden -E .git | grep -F -i "${state.fileFinderQuery}" || true`).toString();
+                } else {
+                    output = execSync('fd -t f --hidden -E .git').toString();
+                }
+            } else {
+                if (state.fileFinderQuery.length !== 0) {
+                    output = execSync(`find * -type f -name "${state.fileFinderQuery}*"`).toString();
+                }
+            }
+            state.fileFindingOutput = output.split('\n');
+        }
     } else if (key === 'BACKSPACE') {
         if (state.fileFinderQuery.length > 0) {
             if (state.fileFinderQuery.endsWith('"')) {
