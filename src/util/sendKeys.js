@@ -32,7 +32,7 @@ function sendKeys(keys, state, screen, term) {
                 state.totalCommandHistory += keys[i];
             }
         }
-        if (state.allowCommandLogging && state.recording && !(state.mode === 'n' && keys[i] === 'Q')) {
+        if (state.allowCommandLogging && state.recording && !(state.mode === 'n' && keys[i] === 'q')) {
             state.macro.push(keys[i]);
         }
         if (state.mode === ':') {
