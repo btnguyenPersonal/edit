@@ -5,6 +5,7 @@ import {
     renderScreen,
     createSnapshot,
     pasteFromClipboardBefore,
+    getSystemPaste,
     logCommand
 } from '../util/helper.js';
 import { sendKeys } from '../util/sendKeys.js';
@@ -367,7 +368,7 @@ function handleVisualLineKeys(key, state, screen) {
             state.mode = 'n';
             createSnapshot(state);
         } else if (key === 'p' || key === 'P') {
-            let systemPaste = ncp.paste();
+            let systemPaste = getSystemPaste(state);
             systemPaste = systemPaste.split('\n');
             if (systemPaste.length > 0) {
                 if (state.row >= state.visual.row) {

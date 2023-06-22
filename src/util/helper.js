@@ -1,6 +1,6 @@
 /* eslint-disable import/no-cycle */
-import moment from 'moment';
 import ncp from 'copy-paste';
+import moment from 'moment';
 import fs from 'fs';
 
 function isFile(filePath) {
@@ -38,7 +38,7 @@ function shortenFilePath(filePath) {
 }
 
 function pasteFromClipboardBefore(state) {
-    let systemPaste = ncp.paste();
+    let systemPaste = getSystemPaste(state);
     let newLine = false;
     if (systemPaste.startsWith('\n')) {
         systemPaste = systemPaste.substring(1);
@@ -66,7 +66,7 @@ function pasteFromClipboardBefore(state) {
 }
 
 function pasteFromClipboardAfter(state) {
-    let systemPaste = ncp.paste();
+    let systemPaste = getSystemPaste(state);
     let newLine = false;
     if (systemPaste.startsWith('\n')) {
         systemPaste = systemPaste.substring(1);
@@ -409,9 +409,18 @@ function getColorRow(replacing, replaceQuery, row, commentIndex, searching, sear
     return output;
 }
 
+function getSystemPaste(state) {
+    if (state.allowCommandLogging) {
+        return ncp.paste();
+    } else {
+        return state.clipboard;
+    }
+}
+
 function copyToClipboard(state, textArray, clipboardVisualBlock) {
     state.clipboardVisualBlock = clipboardVisualBlock;
     ncp.copy(textArray.join('\n'));
+    state.clipboard = textArray.join('\n');
 }
 
 function saveFile(state) {
@@ -902,5 +911,6 @@ export {
     evaluateCommand,
     updateStorePosition,
     getContextLines,
+    getSystemPaste,
     isFile
 };
