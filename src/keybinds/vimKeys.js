@@ -1387,7 +1387,13 @@ function handleVimKeys(key, state, screen) {
             const output = execSync('fd -t f --hidden -E .git').toString();
             state.fileFindingOutput = output.split('\n');
         } else if (key === '\'') {
-            state.row = state.mark;
+            if (state.mark !== -1) {
+                state.row = state.mark;
+            }
+        } else if (key === '"') {
+            if (state.mark2 !== -1) {
+                state.row = state.mark2;
+            }
         } else if (key === '~') {
             let chr = state.data[state.row].substring(state.col, state.col + 1);
             chr = chr === chr.toUpperCase() ? chr.toLowerCase() : chr.toUpperCase();
@@ -1395,6 +1401,8 @@ function handleVimKeys(key, state, screen) {
             + chr
             + state.data[state.row].substring(state.col + 1);
             createSnapshot(state);
+        } else if (key === 'M') {
+            state.mark2 = state.row;
         } else if (key === 'm') {
             state.mark = state.row;
         } else if (key === '!') {

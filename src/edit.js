@@ -72,7 +72,8 @@ const state = {
     currentSnapshot: 0,
     recording: false,
     macro: [],
-    mark: 0,
+    mark: -1,
+    mark2: -1,
     indentAmount: 4
 };
 
