@@ -585,7 +585,11 @@ function renderStatusBar(state, screen) {
         screen.put({ attr: { color: 'white' } }, ':' + state.commandString);
     } else {
         for (let i = 0; i < state.harpoonIndexes.length; i += 1) {
-            screen.put({ attr: { color: i === state.harpoonIndex ? 'yellow' : 'grey' } }, shortenFilePath(state.files[state.harpoonIndexes[i]]) + ' ');
+            screen.put({
+                attr: {
+                    color: i === state.harpoonIndex && state.file === state.files[state.harpoonIndexes[i]] ? 'yellow' : 'grey'
+                }
+            }, shortenFilePath(state.files[state.harpoonIndexes[i]]) + ' ');
         }
         const index = 5 + state.file.length + ((state.row + 1).toString().length) + ((state.col + 1).toString().length) + state.searchQuery.length;
         screen.put({ attr: { color: 'blue' }, x: process.stdout.columns - index - 10 }, state.totalCommandHistory.slice(-10));

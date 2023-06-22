@@ -15,9 +15,10 @@
     - :sort
     - undo ui that displays all last snapshots with the commands that were run to end up there -> (12 minutes ago) jjjjjdip
                                                                                                   (14 minutes ago) vipgc
+    - block comment highlighting
     - readme / markdown highlighting
     - colors with hex ?? might not be supported in terminal-kit
-    - indent work with || && and .then()
+    - indent work with || && and .then() also with : for python
 ## blocked
 ## in progress
 ## done
