@@ -1439,8 +1439,10 @@ function handleVimKeys(key, state, screen) {
         } else if (key === ',') {
             state.allowCommandLogging = false;
             let chr = state.lastSearchCommand[0];
-            chr = chr === chr.toUpperCase() ? chr.toLowerCase() : chr.toUpperCase();
-            sendKeys([chr, state.lastSearchCommand[1]], state, screen);
+            if (chr !== undefined) {
+                chr = chr === chr.toUpperCase() ? chr.toLowerCase() : chr.toUpperCase();
+                sendKeys([chr, state.lastSearchCommand[1]], state, screen);
+            }
             state.allowCommandLogging = true;
         } else if (key === ';') {
             state.allowCommandLogging = false;
