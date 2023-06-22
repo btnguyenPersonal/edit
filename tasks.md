@@ -2,6 +2,7 @@
     - drag select for visualLine
     - run commands from within terminal
     - every rerender don't have to recalculate the color each time (how bad can this really be?)
+    - add % to search for next })] w/ stack
 ## todo
     - compartmentalize stuff into more functions
     - vertical split
@@ -12,18 +13,18 @@
     - gv
     - :s///g (for visual)
     - :sort
-    - stop using 'inString' for non-code
-    - add %
     - undo ui that displays all last snapshots with the commands that were run to end up there -> (12 minutes ago) jjjjjdip
                                                                                                   (14 minutes ago) vipgc
     - readme / markdown highlighting
-    - colors with hex
+    - colors with hex ?? might not be supported in terminal-kit
     - indent work with || && and .then()
-    - synchronous copy to system clipboard (might be best to just use internal clipboard when state.allowCommandLogging is false)
-    - mouse with context lines
 ## blocked
 ## in progress
 ## done
+    - stop using 'inString' for non-code
+    - add %
+    - synchronous copy to system clipboard (might be best to just use internal clipboard when state.allowCommandLogging is false)
+    - mouse with context lines
     - context aware lines at top
     - visualLine move while repect indent
     - fix new file saving/not-saving
