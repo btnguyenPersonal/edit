@@ -19,7 +19,7 @@
     - readme / markdown highlighting
     - colors with hex
     - indent work with || && and .then()
-    - synchronous copy to system clipboard
+    - synchronous copy to system clipboard (might be best to just use internal clipboard when state.allowCommandLogging is false)
     - mouse with context lines
 ## blocked
 ## in progress

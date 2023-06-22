@@ -628,10 +628,12 @@ function renderSingleLine(state, screen, i, mergeSection, isContext) {
     let numColor = 'grey';
     let numBgColor;
     if (isContext) {
-        numColor = 'white';
+        numColor = 'black';
         numBgColor = 'grey';
     } else if (state.recording) {
         numColor = 'red';
+    } else if (state.row === i) {
+        numColor = 'white';
     }
     screen.put({
         attr: { color: numColor, bgColor: numBgColor },
@@ -681,9 +683,6 @@ function renderSingleLine(state, screen, i, mergeSection, isContext) {
         } else if (colorRow[j] === 'searchCurrent') {
             color = 'black';
             bgColor = 'magenta';
-        }
-        if (isContext) {
-            bgColor = 'grey';
         }
         screen.put({
             attr: {
