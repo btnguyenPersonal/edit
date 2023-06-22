@@ -647,6 +647,13 @@ function renderSingleLine(state, screen, i, mergeSection, isContext) {
     } else if (state.row === i) {
         numColor = 'white';
     }
+    if (i === state.mark) {
+        numBgColor = 'green';
+        numColor = 'black';
+    } else if (i === state.mark2) {
+        numBgColor = 'cyan';
+        numColor = 'black';
+    }
     screen.put({
         attr: { color: numColor, bgColor: numBgColor },
         x: 0
@@ -802,7 +809,8 @@ function changeFile(state) {
     state.snapshots = [];
     state.currentSnapshot = 0;
     state.recording = false;
-    state.mark = 0;
+    state.mark = -1;
+    state.mark2 = -1;
     state.data = getData(state.file);
     createSnapshot(state);
 }
