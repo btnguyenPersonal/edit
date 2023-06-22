@@ -1,5 +1,4 @@
 /* eslint-disable import/no-cycle */
-import ncp from 'copy-paste';
 import { execSync } from 'child_process';
 import {
     pasteFromClipboardBefore,
@@ -19,6 +18,7 @@ import {
     updateStorePosition,
     logCommand,
     refreshFile,
+    getSystemPaste,
     changeFile,
 } from '../util/helper.js';
 import { sendKeys } from '../util/sendKeys.js';
@@ -1411,7 +1411,7 @@ function handleVimKeys(key, state, screen) {
         } else if (key === '%') {
             matchIt(state);
         } else if (key === '?') {
-            let systemPaste = ncp.paste();
+            let systemPaste = getSystemPaste(state);
             if (systemPaste.startsWith('\n')) {
                 systemPaste = systemPaste.substring(1);
             }

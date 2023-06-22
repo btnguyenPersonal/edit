@@ -1,6 +1,5 @@
 /* eslint-disable import/no-cycle */
 import { execSync } from 'child_process';
-import ncp from 'copy-paste';
 import path from 'path';
 import {
     renderScreen,
@@ -10,6 +9,7 @@ import {
     centerScreen,
     changeFile,
     isFile,
+    getSystemPaste,
     logCommand
 } from '../util/helper.js';
 import {
@@ -197,7 +197,7 @@ function handleVisualKeys(key, state, screen) {
     } else if (key === '^') {
         state.col = firstNonSpace(state, state.row);
     } else if (key === 'p' || key === 'P') {
-        let systemPaste = ncp.paste();
+        let systemPaste = getSystemPaste(state);
         if (systemPaste.startsWith('\n')) {
             systemPaste = systemPaste.substring(1);
         }
