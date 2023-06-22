@@ -352,7 +352,7 @@ function getColorRow(replacing, replaceQuery, row, commentIndex, searching, sear
     let disregardNext = false;
     let stop = false;
     for (let i = 0; i < row.length; i += 1) {
-        if (row.length > 180) {
+        if (i > 160) {
             output.push('red');
         } else {
             const s = row.substring(i, i + 1);
