@@ -460,6 +460,7 @@ function createSnapshot(state) {
         state.currentSnapshot = state.snapshots.length - 1;
         if (state.snapshots.length > 50) {
             state.snapshots.splice(0, state.snapshots.length - 50);
+            state.currentSnapshot = state.snapshots.length - 1;
         }
         saveFile(state);
     }

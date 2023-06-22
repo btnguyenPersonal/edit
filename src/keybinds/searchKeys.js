@@ -10,6 +10,7 @@ import {
 
 function handleSearchKeys(key, state, screen) {
     if (state.replacing) {
+        logCommand(false, state, key);
         if (isWritable(key)) {
             state.replaceQuery += key;
         } else if (key === 'ESCAPE') {
@@ -29,7 +30,6 @@ function handleSearchKeys(key, state, screen) {
                 state.replaceQuery = state.replaceQuery.substring(0, state.replaceQuery.length - 1);
             }
         }
-        logCommand(false, state, key);
     } else {
         if (isWritable(key)) {
             state.searchQuery += key;

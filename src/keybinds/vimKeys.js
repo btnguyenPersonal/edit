@@ -276,9 +276,9 @@ function handleVimKeys(key, state, screen) {
                     state.row = 0;
                 }
                 firstNonSpace(state, state.row);
-                createSnapshot(state);
             }
             logCommand(false, state, key);
+            createSnapshot(state);
         } else if (key === '[' || key === ']' || key === 'd') {
             const { beginning, end } = getCoorsInsideCharDiff(state, '[', ']');
             copyToClipboard(state, [state.data[state.row].substring(beginning, end + 1)]);
@@ -397,9 +397,9 @@ function handleVimKeys(key, state, screen) {
                     state.row = 0;
                 }
                 firstNonSpace(state, state.row);
-                createSnapshot(state);
             }
             logCommand(false, state, key);
+            createSnapshot(state);
         } else if (key === '[' || key === ']' || key === 'd') {
             const { beginning, end } = getCoorsInsideCharDiff(state, '[', ']');
             copyToClipboard(state, [state.data[state.row].substring(beginning + 1, end)]);
@@ -705,14 +705,14 @@ function handleVimKeys(key, state, screen) {
             createSnapshot(state);
         } else if (key === 'e') {
             uncommentBlock(state, state.row);
-            createSnapshot(state);
             logCommand(true, state, 'g');
             logCommand(false, state, key);
+            createSnapshot(state);
         } else if (key === 'c') {
             toggleComment(state, state.row);
-            createSnapshot(state);
             logCommand(true, state, 'g');
             logCommand(false, state, key);
+            createSnapshot(state);
         }
         state.previousKeys = '';
     } else if (state.previousKeys === 'c') {
@@ -736,8 +736,8 @@ function handleVimKeys(key, state, screen) {
             state.col = indentLevel;
             state.previousKeys = '';
             state.mode = 'i';
-            createSnapshot(state);
             logCommand(false, state, key);
+            createSnapshot(state);
         } else if (key === 'k') {
             const newClipboard = [''];
             if (state.data[state.row - 1]) {
@@ -755,8 +755,8 @@ function handleVimKeys(key, state, screen) {
             state.col = indentLevel;
             state.previousKeys = '';
             state.mode = 'i';
-            createSnapshot(state);
             logCommand(false, state, key);
+            createSnapshot(state);
         } else if (key === 'w') {
             const endOfWord = getCoorForwardWord(state);
             copyToClipboard(state, [state.data[state.row].substring(state.col, endOfWord)]);
