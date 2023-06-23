@@ -1,4 +1,5 @@
 /* eslint-disable import/no-cycle */
+import moment from 'moment';
 import { execSync } from 'child_process';
 import {
     pasteFromClipboardBefore,
@@ -1379,6 +1380,13 @@ function handleVimKeys(key, state, screen) {
             state.fileFinderQuery = '';
             state.fileFinderIndex = 0;
             state.fileFindingOutput = [];
+        } else if (key === 'CTRL_Q') {
+            state.mode = 'h';
+            state.fileFindingOutput = [];
+            for (let i = 0; i < state.snapshots.length; i += 1) {
+                state.fileFindingOutput.push(i + ': (' + state.snapshots[i].date.diff(moment(), 'minutes') + ' min) ' + state.snapshots[i].commandHistory);
+            }
+            state.fileFinderIndex = state.currentSnapshot;
         } else if (key === 'CTRL_P') {
             state.mode = 'f';
             state.gitFinding = true;

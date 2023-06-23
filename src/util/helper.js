@@ -459,15 +459,15 @@ function createSnapshot(state) {
         }
         state.snapshots.push({
             commandHistory: state.commandHistory,
-            date: moment().format('MMMM Do YYYY, h:mm:ss a'),
+            date: moment(),
             data: oldData,
             row: state.prevRow,
             col: state.prevCol,
             windowLine: state.windowLine
         });
         state.commandHistory = '';
-        if (state.snapshots.length > 50) {
-            state.snapshots.splice(0, state.snapshots.length - 50);
+        if (state.snapshots.length > 200) {
+            state.snapshots.splice(0, state.snapshots.length - 200);
         }
         state.currentSnapshot = state.snapshots.length - 1;
         saveFile(state);
@@ -600,6 +600,23 @@ function renderStatusBar(state, screen) {
 
 function getFileFinderColor(s) {
     return s === 'g' ? 'green' : 'yellow';
+}
+
+function renderHistoryTree(state, screen) {
+    const index = state.fileFinderIndex - Math.floor(process.stdout.rows / 2) > 0 ? state.fileFinderIndex - Math.floor(process.stdout.rows / 2) : 0;
+    for (let i = index; i < state.fileFindingOutput.length && i < index + process.stdout.rows - 2; i += 1) {
+        screen.put({
+            attr: {
+                color: state.fileFinderIndex === i ? 'blue' : 'white',
+            },
+            x: 0,
+            wrap: false
+        }, state.fileFindingOutput[i]);
+        screen.put({ newLine: true }, '\n');
+    }
+    screen.moveTo(0, 0);
+    screen.draw({ delta: true });
+    screen.drawCursor();
 }
 
 function renderFileFinder(state, screen, mode) {
@@ -778,7 +795,9 @@ function renderScreen(state, screen, noCenterScreen, fullRefresh) {
     setHarpoonIndex(state);
     renderStatusBar(state, screen);
     screen.put({ newLine: true }, '\n');
-    if (state.mode === 'g' || state.mode === 'f') {
+    if (state.mode === 'h') {
+        renderHistoryTree(state, screen);
+    } else if (state.mode === 'g' || state.mode === 'f') {
         renderFileFinder(state, screen, state.mode);
     } else if (state.allowCommandLogging) {
         renderWindowLines(state, screen, noCenterScreen, fullRefresh);

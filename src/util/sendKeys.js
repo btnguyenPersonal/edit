@@ -8,6 +8,7 @@ import { handleVisualBlockKeys } from '../keybinds/visualBlockKeys.js';
 import { handleSearchKeys } from '../keybinds/searchKeys.js';
 import { handleFileFinderKeys } from '../keybinds/fileFinderKeys.js';
 import { handleCommandKeys } from '../keybinds/commandKeys.js';
+import { handleHistoryTreeKeys } from '../keybinds/historyTree.js';
 
 function sendKeys(keys, state, screen, term) {
     if (state.data.length === 0) {
@@ -47,6 +48,8 @@ function sendKeys(keys, state, screen, term) {
             handleVisualKeys(keys[i], state, screen);
         } else if ((state.mode === 'f' || state.mode === 'g')) {
             handleFileFinderKeys(keys[i], state, screen);
+        } else if (state.mode === 'h') {
+            handleHistoryTreeKeys(keys[i], state, screen);
         } else if (state.mode === 'V') {
             handleVisualLineKeys(keys[i], state, screen);
         } else if ((state.mode === 'n' || state.mode === 'r')) {
