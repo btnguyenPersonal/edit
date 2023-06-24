@@ -61,6 +61,7 @@ const state = {
     storePosition: [],
     fileIndex: 0,
     data: filePath === undefined ? [] : getData(filePath),
+    oldData: filePath === undefined ? [] : getData(filePath),
     row: 0,
     col: 0,
     gitFinding: isInGit,

@@ -450,22 +450,35 @@ function applySnapshot(state, index, backwards) {
     }
 }
 
+function createDiff(oldData, newData) {
+    let remove = [];
+    let add = [];
+    for (let oldIndex = 0; oldIndex < oldData.length; oldIndex += 1) {
+        for (let newIndex = 0; newIndex < newData.length; newIndex += 1) {
+            if (oldData[oldIndex] === newData[newIndex]) {
+            }
+        }
+    }
+    return [ remove, add ];
+}
+
 function createSnapshot(state) {
     if (state.data.length < 10000 && state.allowCommandLogging) {
         state.snapshots.splice(state.currentSnapshot + 1, state.snapshots.length - (state.currentSnapshot + 1));
-        const oldData = [];
-        for (let i = 0; i < state.data.length; i += 1) {
-            oldData.push(state.data[i]);
-        }
+        state
         state.snapshots.push({
             commandHistory: state.commandHistory,
             date: moment(),
-            data: oldData,
+            data: createDiff(state.oldData, state.data),
             row: state.prevRow,
             col: state.prevCol,
             windowLine: state.windowLine
         });
         state.commandHistory = '';
+        for (let i = 0; i < state.data.length; i += 1) {
+            oldData.push(state.data[i]);
+        }
+        state.oldData = oldData;
         if (state.snapshots.length > 200) {
             state.snapshots.splice(0, state.snapshots.length - 200);
         }
@@ -942,5 +955,6 @@ export {
     updateStorePosition,
     getContextLines,
     getSystemPaste,
+    createDiff,
     isFile
 };
