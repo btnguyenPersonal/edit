@@ -540,13 +540,13 @@ function createDiff(oldData, newData) {
                         'old: ', path[i].oldIndex, oldData[path[i].oldIndex].padStart(5, ' ')
                     );
                     if (path[i].newIndex === path[i + 1].newIndex && path[i].oldIndex < path[i + 1].oldIndex) {
-                        console.log('                                ==== remove ==== ', path[i].oldIndex);
+                        console.log('                                ==== remove ==== ', path[i + 1].oldIndex);
                         // remove
-                        remove.push({ l: path[i].oldIndex, s: oldData[path[i].oldIndex] });
+                        remove.push({ l: path[i + 1].oldIndex, s: oldData[path[i + 1].oldIndex] });
                     } else if (path[i].oldIndex === path[i + 1].oldIndex && path[i].newIndex < path[i + 1].newIndex) {
-                        console.log('                                ==== add ==== ', path[i].newIndex);
+                        console.log('                                ==== add ==== ', path[i + 1].newIndex);
                         // add
-                        add.push({ l: path[i].newIndex, s: newData[path[i].newIndex] });
+                        add.push({ l: path[i + 1].newIndex, s: newData[path[i + 1].newIndex] });
                     }
                 }
                     console.log(
