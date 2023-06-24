@@ -433,44 +433,59 @@ function saveFile(state) {
 }
 
 function applySnapshot(state, index, backwards) {
-    if (state.data.length < 10000) {
-        const snap = state.snapshots[index];
-        if (snap !== undefined) {
-            state.data = [];
-            for (let i = 0; i < snap.data.length; i += 1) {
-                state.data.push(snap.data[i]);
-            }
-            state.currentSnapshot = index;
-            const pos = backwards ? index + 1 : index;
-            if (state.snapshots[pos]) {
-                state.row = state.snapshots[pos].row;
-                state.col = state.snapshots[pos].col;
-            }
-        }
-    }
+    // TODO make work with diff
+    // if (state.data.length < 10000) {
+    //     const snap = state.snapshots[index];
+    //     if (snap !== undefined) {
+    //         state.data = [];
+    //         for (let i = 0; i < snap.data.length; i += 1) {
+    //             state.data.push(snap.data[i]);
+    //         }
+    //         state.currentSnapshot = index;
+    //         const pos = backwards ? index + 1 : index;
+    //         if (state.snapshots[pos]) {
+    //             state.row = state.snapshots[pos].row;
+    //             state.col = state.snapshots[pos].col;
+    //         }
+    //     }
+    // }
 }
 
 function isDone(path, newData, oldData) {
     // get if path is a valid diff or not between two data
-    // also would want sanity checks here
+    // TODO also would want sanity checks here
+    if (path === undefined) {
+        return false;
+    }
+    const lastPoint = path.at(-1);
+    return lastPoint.newIndex === newData.length - 1 && lastPoint.oldIndex === oldData.length - 1;
 }
 
-function getSmallestTraversal(newData, oldData, d, k) {
+function getSmallestTraversal(newData, oldData, d, k, V) {
     // d is number of non-diagonal moves
     // k is alloted down/up movement (k = -1 means path has one more down than up traversal)
+    // V is current vertices
+    return undefined;
 }
 
 function createDiff(oldData, newData) {
     let path;
     let done = false;
-    for (let d = 0; d < newData.length + oldData.length; d += 1) {
-        for (let k = -1 * d; k < d; k += 2) {
-            path = getSmallestTraversal(newData, oldData, d, k); // find smallest traversal
+    let remove = [];
+    let add = [];
+    let V = [{ k: 0, path: [{ newIndex: 0, oldIndex: 0}] }];
+    for (let d = 1; d < newData.length + oldData.length; d += 1) {
+        console.log('d: ', d);
+        for (let k = -1 * d; k <= d; k += 2) {
+            console.log('    k: ', k);
+            // path = getSmallestTraversal(newData, oldData, d, k, V); // find smallest traversal
             if (isDone(path, newData, oldData)) { // compare endpoint of path && exit if done
+                // convert path to remove && add
                 done = true;
                 break;
             }
         }
+        // set all V to unexplored again
         if (done) {
             break;
         }
