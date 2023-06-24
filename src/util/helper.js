@@ -534,15 +534,19 @@ function createDiff(oldData, newData) {
                 console.log(path[i].newIndex, path[i].oldIndex);
             }
             if (isDone(path, newData, oldData)) { // compare endpoint of path && exit if done
+                console.log('\n');
                 // convert path to remove && add
-                for (let i = 1; i < path.length; i += 1) {
-                    console.log(newData[path[i].newIndex], oldData[path[i].newIndex]);
-                    if (path[i].newIndex === path[i - 1].newIndex) {
+                for (let i = 2; i < path.length; i += 1) {
+                    console.log(path[i].newIndex, path[i - 1].newIndex);
+                    console.log(path[i].oldIndex, path[i - 1].oldIndex);
+                    if (path[i].newIndex === path[i - 1].newIndex && path[i].oldIndex > path[i - 1].oldIndex) {
+                        console.log('remove');
                         // remove
-                        remove.push({ l: path[i].oldIndex, s: oldData[path[i].oldIndex] });
-                    } else if (path[i].oldIndex === path[i - 1].oldIndex) {
+                        remove.push({ l: path[i - 1].oldIndex, s: oldData[path[i - 1].oldIndex] });
+                    } else if (path[i].oldIndex === path[i - 1].oldIndex && path[i].newIndex > path[i - 1].newIndex) {
+                        console.log('add');
                         // add
-                        add.push({ l: path[i].newIndex, s: newData[path[i].newIndex] });
+                        add.push({ l: path[i - 1].newIndex, s: newData[path[i - 1].newIndex] });
                     }
                 }
                 done = true;
