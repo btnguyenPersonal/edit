@@ -458,7 +458,7 @@ function isDone(path, newData, oldData) {
         return false;
     }
     const lastPoint = path.at(-1);
-    return lastPoint.newIndex === newData.length - 1 && lastPoint.oldIndex === oldData.length - 1;
+    return lastPoint.newIndex === newData.length && lastPoint.oldIndex === oldData.length;
 }
 
 function getSmallestTraversal(newData, oldData, d, k, V) {
@@ -477,7 +477,7 @@ function getSmallestTraversal(newData, oldData, d, k, V) {
                 n += 1;
                 pathCopy.push({ newIndex: n, oldIndex: o });
                 // check for diags
-                while (!isDone(pathCopy, newData, oldData) && n + 1 < newData.length && o + 1 < oldData.length) {
+                while (!isDone(pathCopy, newData, oldData)) {
                     n += 1;
                     o += 1;
                     if (newData[n] === oldData[o]) {
@@ -527,32 +527,26 @@ function createDiff(oldData, newData) {
     for (let d = 0; d < newData.length + oldData.length; d += 1) {
         for (let k = -1 * d; k <= d; k += 2) {
             path = getSmallestTraversal(newData, oldData, d, k, V); // find smallest traversal
-            // print path
             if (isDone(path, newData, oldData)) { // compare endpoint of path && exit if done
+                // print path
                 for (let i = 0; i < path.length; i++) {
                     console.log('PATH', path[i].newIndex, path[i].oldIndex);
                 }
                 console.log('\n');
                 // convert path to remove && add
+                let current;
+                let next;
                 for (let i = 1; i < path.length - 1; i += 1) {
-                    console.log(
-                        'new: ', path[i].newIndex, newData[path[i].newIndex].padStart(5, ' '),
-                        'old: ', path[i].oldIndex, oldData[path[i].oldIndex].padStart(5, ' ')
-                    );
-                    if (path[i].newIndex === path[i + 1].newIndex && path[i].oldIndex < path[i + 1].oldIndex) {
-                        console.log('                                ==== remove ==== ', path[i + 1].oldIndex);
-                        // remove
-                        remove.push({ l: path[i + 1].oldIndex, s: oldData[path[i + 1].oldIndex] });
-                    } else if (path[i].oldIndex === path[i + 1].oldIndex && path[i].newIndex < path[i + 1].newIndex) {
-                        console.log('                                ==== add ==== ', path[i + 1].newIndex);
+                    current = path[i];
+                    next = path[i + 1];
+                    if (next.newIndex > current.newIndex && next.oldIndex === current.oldIndex) {
                         // add
-                        add.push({ l: path[i + 1].newIndex, s: newData[path[i + 1].newIndex] });
+                        console.log('add ', current.newIndex);
+                    } else if (next.oldIndex > current.oldIndex && next.newIndex === current.newIndex) {
+                        // remove
+                        console.log('remove ', current.oldIndex);
                     }
                 }
-                    console.log(
-                        'new: ', path[path.length - 1].newIndex, newData[path[path.length - 1].newIndex].padStart(5, ' '),
-                        'old: ', path[path.length - 1].oldIndex, oldData[path[path.length - 1].oldIndex].padStart(5, ' ')
-                    );
                 done = true;
                 break;
             }

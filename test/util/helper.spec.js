@@ -127,6 +127,22 @@ describe('helper functions', () => {
                 ]
             ]);
         });
+        it('testing', () => {
+            state.oldData = [
+                'a',
+            ];
+            state.data = [
+                'b',
+            ];
+            expect(helper.createDiff(state.oldData, state.data)).to.deep.equal([
+                [
+                    { l: 0 , s: 'h' }
+                ],
+                [
+                    { l: 5 , s: 'g' }
+                ]
+            ]);
+        });
         it('should return one added line when first line is added', () => {
             state.data = [
                 'f',
@@ -136,7 +152,7 @@ describe('helper functions', () => {
                 'c',
                 'a',
                 't',
-            ],
+            ];
             expect(helper.createDiff(state.oldData, state.data)).to.deep.equal([
                 [
                 ],
@@ -152,7 +168,6 @@ describe('helper functions', () => {
                 'a',
                 't',
             ],
-            console.log(state.oldData);
             expect(helper.createDiff(state.oldData, state.data)).to.deep.equal([
                 [
                     { l: 0 , s: 'h' },
