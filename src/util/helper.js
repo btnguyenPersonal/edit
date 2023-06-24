@@ -530,23 +530,23 @@ function createDiff(oldData, newData) {
             console.log('    k: ', k);
             path = getSmallestTraversal(newData, oldData, d, k, V); // find smallest traversal
             // print path
-            for (let i = 0; i < path.length; i++) {
-                console.log(path[i].newIndex, path[i].oldIndex);
-            }
+            // for (let i = 0; i < path.length; i++) {
+            //     console.log(path[i].newIndex, path[i].oldIndex);
+            // }
             if (isDone(path, newData, oldData)) { // compare endpoint of path && exit if done
                 console.log('\n');
                 // convert path to remove && add
-                for (let i = 2; i < path.length; i += 1) {
-                    console.log(path[i].newIndex, path[i - 1].newIndex);
-                    console.log(path[i].oldIndex, path[i - 1].oldIndex);
-                    if (path[i].newIndex === path[i - 1].newIndex && path[i].oldIndex > path[i - 1].oldIndex) {
-                        console.log('remove');
+                for (let i = 1; i < path.length - 1; i += 1) {
+                    console.log('new: ', path[i].newIndex, path[i + 1].newIndex);
+                    console.log('old: ', path[i].oldIndex, path[i + 1].oldIndex);
+                    if (path[i].newIndex === path[i + 1].newIndex && path[i].oldIndex < path[i + 1].oldIndex) {
+                        console.log('remove', path[i].oldIndex);
                         // remove
-                        remove.push({ l: path[i - 1].oldIndex, s: oldData[path[i - 1].oldIndex] });
-                    } else if (path[i].oldIndex === path[i - 1].oldIndex && path[i].newIndex > path[i - 1].newIndex) {
-                        console.log('add');
+                        remove.push({ l: path[i].oldIndex, s: oldData[path[i].oldIndex] });
+                    } else if (path[i].oldIndex === path[i + 1].oldIndex && path[i].newIndex < path[i + 1].newIndex) {
+                        console.log('add', path[i].newIndex);
                         // add
-                        add.push({ l: path[i - 1].newIndex, s: newData[path[i - 1].newIndex] });
+                        add.push({ l: path[i].newIndex, s: newData[path[i].newIndex] });
                     }
                 }
                 done = true;

@@ -39,6 +39,40 @@ describe('helper functions', () => {
         it('should return two empty arrays when data is the same', () => {
             expect(helper.createDiff(state.oldData, state.data)).to.deep.equal([[], []]);
         });
+        it('should return one removed line when second is removed', () => {
+            state.data = [
+                'h',
+                't',
+                'c',
+                'a',
+                't',
+            ],
+            expect(helper.createDiff(state.oldData, state.data)).to.deep.equal([
+                [
+                    { l: 1 , s: 'a' }
+                ],
+                [
+                ]
+            ]);
+        });
+        it('should return one added line when second is added', () => {
+            state.data = [
+                'h',
+                'add',
+                'a',
+                't',
+                'c',
+                'a',
+                't',
+            ],
+            expect(helper.createDiff(state.oldData, state.data)).to.deep.equal([
+                [
+                ],
+                [
+                    { l: 1 , s: 'add' }
+                ]
+            ]);
+        });
         it('should return one added line to end when end line is added', () => {
             state.data = [
                 'h',
@@ -53,7 +87,7 @@ describe('helper functions', () => {
                 [
                 ],
                 [
-                    { l: 7 , s: 'end' }
+                    { l: 6 , s: 'end' }
                 ]
             ]);
         });
