@@ -926,6 +926,7 @@ function updateStorePosition(state) {
         currentSnapshot: state.currentSnapshot,
         snapshots: snapshotsCopy,
         mark: state.mark,
+        mark2: state.mark2,
         prevRow: state.prevRow,
         prevCol: state.prevCol,
     };
@@ -939,6 +940,7 @@ function updateStorePosition(state) {
     state.currentSnapshot = pos.currentSnapshot;
     state.snapshots = pos.snapshots;
     state.mark = pos.mark;
+    state.mark2 = pos.mark2;
     state.prevRow = pos.prevRow;
     state.prevCol = pos.prevCol;
 }

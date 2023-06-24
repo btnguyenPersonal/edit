@@ -260,6 +260,7 @@ function handleVisualKeys(key, state, screen) {
                         windowLineHorizontal: state.windowLineHorizontal,
                         snapshots: snapshotsCopy,
                         mark: state.mark,
+                        mark2: state.mark2,
                         prevRow: state.prevRow,
                         prevCol: state.prevCol,
                     };
@@ -272,6 +273,7 @@ function handleVisualKeys(key, state, screen) {
                         currentSnapshot: state.currentSnapshot,
                         snapshots: snapshotsCopy,
                         mark: state.mark,
+                        mark2: state.mark2,
                         prevRow: state.prevRow,
                         prevCol: state.prevCol,
                     });
@@ -291,6 +293,7 @@ function handleVisualKeys(key, state, screen) {
                         windowLineHorizontal: state.windowLineHorizontal,
                         snapshots: snapshotsCopy,
                         mark: state.mark,
+                        mark2: state.mark2,
                         prevRow: state.prevRow,
                         prevCol: state.prevCol,
                     };
@@ -303,6 +306,7 @@ function handleVisualKeys(key, state, screen) {
                         currentSnapshot: state.currentSnapshot,
                         snapshots: snapshotsCopy,
                         mark: state.mark,
+                        mark2: state.mark2,
                         prevRow: state.prevRow,
                         prevCol: state.prevCol,
                     });
@@ -318,6 +322,7 @@ function handleVisualKeys(key, state, screen) {
                 state.currentSnapshot = pos.currentSnapshot;
                 state.snapshots = pos.snapshots;
                 state.mark = pos.mark;
+                state.mark2 = pos.mark2;
                 state.prevRow = pos.prevRow;
                 state.prevCol = pos.prevCol;
             }
