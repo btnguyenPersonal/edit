@@ -468,7 +468,6 @@ function getSmallestTraversal(newData, oldData, d, k, V) {
     let path;
     for (let i = 0; i < V.length; i += 1) {
         if (V[i].d < d && V[i].k + 1 === k) {
-            console.log('hi2');
             // explore and check if still in graph might need to check if shorter path than v
             const lastPoint = V[i].path.at(-1);
             if (lastPoint.newIndex + 1 < newData.length) {
@@ -492,7 +491,6 @@ function getSmallestTraversal(newData, oldData, d, k, V) {
             }
             break;
         } else if (V[i].d < d && V[i].k - 1 === k) {
-            console.log('hi');
             // explore and check if still in graph might need to check if shorter path than v
             const lastPoint = V[i].path.at(-1);
             if (lastPoint.oldIndex + 1 < oldData.length) {
@@ -530,32 +528,37 @@ function createDiff(oldData, newData) {
         for (let k = -1 * d; k <= d; k += 2) {
             path = getSmallestTraversal(newData, oldData, d, k, V); // find smallest traversal
             // print path
-            for (let i = 0; i < path.length; i++) {
-                console.log(path[i].newIndex, path[i].oldIndex);
-            }
             if (isDone(path, newData, oldData)) { // compare endpoint of path && exit if done
+                for (let i = 0; i < path.length; i++) {
+                    console.log('PATH', path[i].newIndex, path[i].oldIndex);
+                }
                 console.log('\n');
                 // convert path to remove && add
                 for (let i = 1; i < path.length - 1; i += 1) {
-                    console.log('new: ', path[i].newIndex, path[i + 1].newIndex);
-                    console.log('old: ', path[i].oldIndex, path[i + 1].oldIndex);
+                    console.log(
+                        'new: ', path[i].newIndex, newData[path[i].newIndex].padStart(5, ' '),
+                        'old: ', path[i].oldIndex, oldData[path[i].oldIndex].padStart(5, ' ')
+                    );
                     if (path[i].newIndex === path[i + 1].newIndex && path[i].oldIndex < path[i + 1].oldIndex) {
-                        console.log('remove', path[i].oldIndex);
+                        console.log('                                ==== remove ==== ', path[i].oldIndex);
                         // remove
                         remove.push({ l: path[i].oldIndex, s: oldData[path[i].oldIndex] });
                     } else if (path[i].oldIndex === path[i + 1].oldIndex && path[i].newIndex < path[i + 1].newIndex) {
-                        console.log('add', path[i].newIndex);
+                        console.log('                                ==== add ==== ', path[i].newIndex);
                         // add
                         add.push({ l: path[i].newIndex, s: newData[path[i].newIndex] });
                     }
                 }
+                    console.log(
+                        'new: ', path[path.length - 1].newIndex, newData[path[path.length - 1].newIndex].padStart(5, ' '),
+                        'old: ', path[path.length - 1].oldIndex, oldData[path[path.length - 1].oldIndex].padStart(5, ' ')
+                    );
                 done = true;
                 break;
             }
         }
         // remove all V w/ not equal to d
         for (let i = 0; i < V.length; i += 1) {
-            console.log('V: ', V[i].d, d);
             if (V[i].d !== d) {
                 V.splice(i, 1);
                 i -= 1;
