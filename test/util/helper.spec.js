@@ -145,6 +145,41 @@ describe('helper functions', () => {
                 ]
             ]);
         });
+        it('should return two removed lines at start when first and second line is removed', () => {
+            state.data = [
+                't',
+                'c',
+                'a',
+                't',
+            ],
+            console.log(state.oldData);
+            expect(helper.createDiff(state.oldData, state.data)).to.deep.equal([
+                [
+                    { l: 0 , s: 'h' },
+                    { l: 1 , s: 'a' }
+                ],
+                [
+                ]
+            ]);
+        });
+        it('should return all removed lines when everything is removed', () => {
+            state.data = [
+                '',
+            ],
+            expect(helper.createDiff(state.oldData, state.data)).to.deep.equal([
+                [
+                    { l: 0 , s: 'h' },
+                    { l: 1 , s: 'a' },
+                    { l: 2 , s: 't' },
+                    { l: 3 , s: 'c' },
+                    { l: 4 , s: 'a' },
+                    { l: 5 , s: 't' }
+                ],
+                [
+                    { l: 0 , s: '' }
+                ]
+            ]);
+        });
         it('should return one removed line when first line is removed', () => {
             state.data = [
                 'a',
