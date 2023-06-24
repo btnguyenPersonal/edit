@@ -465,7 +465,57 @@ function getSmallestTraversal(newData, oldData, d, k, V) {
     // d is number of non-diagonal moves
     // k is alloted down/up movement (k = -1 means path has one more down than up traversal)
     // V is current vertices
-    return undefined;
+    let path;
+    for (let i = 0; i < V.length; i += 1) {
+        if (V[i].d < d && V[i].k + 1 === k) {
+            // explore and check if still in graph might need to check if shorter path than v
+            const lastPoint = V[i].path.at(-1);
+            if (lastPoint.newIndex + 1 < newData.length) {
+                let pathCopy = JSON.parse(JSON.stringify(V[i].path));
+                let n = lastPoint.newIndex;
+                let o = lastPoint.oldIndex;
+                n += 1
+                pathCopy.push({ newIndex: n, oldIndex: o });
+                // check for diags
+                while (!isDone(pathCopy, newData, oldData) && n + 1 < newData.length && o + 1 < oldData.length) {
+                    n += 1;
+                    o += 1;
+                    if (newData[n] === oldData[o]) {
+                        pathCopy.push({ newIndex: n, oldIndex: o });
+                    } else {
+                        break;
+                    }
+                }
+                V.push({ d, k, path: pathCopy });
+                path = pathCopy;
+            }
+            break;
+        } else if (V[i].d < d && V[i].k - 1 === k) {
+            // explore and check if still in graph might need to check if shorter path than v
+            const lastPoint = V[i].path.at(-1);
+            if (lastPoint.oldIndex + 1 < oldData.length) {
+                let pathCopy = JSON.parse(JSON.stringify(V[i].path));
+                let n = lastPoint.newIndex;
+                let o = lastPoint.oldIndex;
+                o += 1
+                pathCopy.push({ newIndex: n, oldIndex: o });
+                // check for diags
+                while (!isDone(pathCopy, newData, oldData) && n + 1 < newData.length && o + 1 < oldData.length) {
+                    n += 1;
+                    o += 1;
+                    if (newData[n] === oldData[o]) {
+                        pathCopy.push({ newIndex: n, oldIndex: o });
+                    } else {
+                        break;
+                    }
+                }
+                V.push({ d, k, path: pathCopy });
+                path = pathCopy;
+            }
+            break;
+        }
+    }
+    return path;
 }
 
 function createDiff(oldData, newData) {
@@ -473,19 +523,26 @@ function createDiff(oldData, newData) {
     let done = false;
     let remove = [];
     let add = [];
-    let V = [{ k: 0, path: [{ newIndex: 0, oldIndex: 0}] }];
+    let V = [{ d: 0, k: 0, path: [{ newIndex: 0, oldIndex: 0 }] }];
     for (let d = 1; d < newData.length + oldData.length; d += 1) {
         console.log('d: ', d);
         for (let k = -1 * d; k <= d; k += 2) {
             console.log('    k: ', k);
-            // path = getSmallestTraversal(newData, oldData, d, k, V); // find smallest traversal
+            path = getSmallestTraversal(newData, oldData, d, k, V); // find smallest traversal
+            console.log(JSON.stringify(V));
             if (isDone(path, newData, oldData)) { // compare endpoint of path && exit if done
                 // convert path to remove && add
                 done = true;
                 break;
             }
         }
-        // set all V to unexplored again
+        // remove all V w/ not equal to d
+        for (let i = 0; i < V.length; i += 1) {
+            if (V[i].d !== d) {
+                V.splice(i, 1);
+                i -= 1;
+            }
+        }
         if (done) {
             break;
         }
