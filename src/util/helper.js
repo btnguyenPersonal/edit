@@ -468,13 +468,14 @@ function getSmallestTraversal(newData, oldData, d, k, V) {
     let path;
     for (let i = 0; i < V.length; i += 1) {
         if (V[i].d < d && V[i].k + 1 === k) {
+            console.log('hi2');
             // explore and check if still in graph might need to check if shorter path than v
             const lastPoint = V[i].path.at(-1);
             if (lastPoint.newIndex + 1 < newData.length) {
                 let pathCopy = JSON.parse(JSON.stringify(V[i].path));
                 let n = lastPoint.newIndex;
                 let o = lastPoint.oldIndex;
-                n += 1
+                n += 1;
                 pathCopy.push({ newIndex: n, oldIndex: o });
                 // check for diags
                 while (!isDone(pathCopy, newData, oldData) && n + 1 < newData.length && o + 1 < oldData.length) {
@@ -491,13 +492,14 @@ function getSmallestTraversal(newData, oldData, d, k, V) {
             }
             break;
         } else if (V[i].d < d && V[i].k - 1 === k) {
+            console.log('hi');
             // explore and check if still in graph might need to check if shorter path than v
             const lastPoint = V[i].path.at(-1);
             if (lastPoint.oldIndex + 1 < oldData.length) {
                 let pathCopy = JSON.parse(JSON.stringify(V[i].path));
                 let n = lastPoint.newIndex;
                 let o = lastPoint.oldIndex;
-                o += 1
+                o += 1;
                 pathCopy.push({ newIndex: n, oldIndex: o });
                 // check for diags
                 while (!isDone(pathCopy, newData, oldData) && n + 1 < newData.length && o + 1 < oldData.length) {
@@ -525,14 +527,12 @@ function createDiff(oldData, newData) {
     let add = [];
     let V = [{ d: -1, k: -1, path: [{ newIndex: -1, oldIndex: 0 }] }];
     for (let d = 0; d < newData.length + oldData.length; d += 1) {
-        console.log('d: ', d);
         for (let k = -1 * d; k <= d; k += 2) {
-            console.log('    k: ', k);
             path = getSmallestTraversal(newData, oldData, d, k, V); // find smallest traversal
             // print path
-            // for (let i = 0; i < path.length; i++) {
-            //     console.log(path[i].newIndex, path[i].oldIndex);
-            // }
+            for (let i = 0; i < path.length; i++) {
+                console.log(path[i].newIndex, path[i].oldIndex);
+            }
             if (isDone(path, newData, oldData)) { // compare endpoint of path && exit if done
                 console.log('\n');
                 // convert path to remove && add
@@ -555,6 +555,7 @@ function createDiff(oldData, newData) {
         }
         // remove all V w/ not equal to d
         for (let i = 0; i < V.length; i += 1) {
+            console.log('V: ', V[i].d, d);
             if (V[i].d !== d) {
                 V.splice(i, 1);
                 i -= 1;
