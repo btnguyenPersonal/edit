@@ -450,13 +450,29 @@ function applySnapshot(state, index, backwards) {
     }
 }
 
+function isDone(path, newData, oldData) {
+    // get if path is a valid diff or not between two data
+    // also would want sanity checks here
+}
+
+function getSmallestTraversal(newData, oldData, d, k) {
+    // d is number of non-diagonal moves
+    // k is alloted down/up movement (k = -1 means path has one more down than up traversal)
+}
+
 function createDiff(oldData, newData) {
-    let remove = [];
-    let add = [];
-    for (let oldIndex = 0; oldIndex < oldData.length; oldIndex += 1) {
-        for (let newIndex = 0; newIndex < newData.length; newIndex += 1) {
-            if (oldData[oldIndex] === newData[newIndex]) {
+    let path;
+    let done = false;
+    for (let d = 0; d < newData.length + oldData.length; d += 1) {
+        for (let k = -1 * d; k < d; k += 2) {
+            path = getSmallestTraversal(newData, oldData, d, k); // find smallest traversal
+            if (isDone(path, newData, oldData)) { // compare endpoint of path && exit if done
+                done = true;
+                break;
             }
+        }
+        if (done) {
+            break;
         }
     }
     return [ remove, add ];
