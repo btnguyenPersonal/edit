@@ -16,24 +16,20 @@ describe('helper functions', () => {
             };
             state = {
                 data: [
-                    'bbbbbbbb',
-                    'aaaaaaaa',
-                    'bbbbbbbb',
-                    'aaaaaaaa',
-                    'bbbbbbbb',
-                    'aaaaaaaa',
-                    'bbbbbbbb',
-                    'aaaaaaaa',
+                    'h',
+                    'a',
+                    't',
+                    'c',
+                    'a',
+                    't',
                 ],
                 oldData: [
-                    'bbbbbbbb',
-                    'aaaaaaaa',
-                    'bbbbbbbb',
-                    'aaaaaaaa',
-                    'bbbbbbbb',
-                    'aaaaaaaa',
-                    'bbbbbbbb',
-                    'aaaaaaaa',
+                    'h',
+                    'a',
+                    't',
+                    'c',
+                    'a',
+                    't',
                 ],
             };
         });
@@ -45,17 +41,15 @@ describe('helper functions', () => {
         });
         it('should return one removed line when first line is removed', () => {
             state.oldData = [
-                'aaaaaaaa',
-                'bbbbbbbb',
-                'aaaaaaaa',
-                'bbbbbbbb',
-                'aaaaaaaa',
-                'bbbbbbbb',
-                'aaaaaaaa',
+                'a',
+                't',
+                'c',
+                'a',
+                't',
             ],
             expect(helper.createDiff(state.oldData, state.data)).to.deep.equal([
                 [
-                    { l: 0 , s: 'bbbbbbbb' }
+                    { l: 0 , s: 'h' }
                 ],
                 [
                 ]

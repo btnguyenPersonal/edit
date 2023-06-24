@@ -523,15 +523,28 @@ function createDiff(oldData, newData) {
     let done = false;
     let remove = [];
     let add = [];
-    let V = [{ d: 0, k: 0, path: [{ newIndex: 0, oldIndex: 0 }] }];
-    for (let d = 1; d < newData.length + oldData.length; d += 1) {
+    let V = [{ d: -1, k: -1, path: [{ newIndex: -1, oldIndex: 0 }] }];
+    for (let d = 0; d < newData.length + oldData.length; d += 1) {
         console.log('d: ', d);
         for (let k = -1 * d; k <= d; k += 2) {
             console.log('    k: ', k);
             path = getSmallestTraversal(newData, oldData, d, k, V); // find smallest traversal
-            console.log(JSON.stringify(V));
+            // print path
+            for (let i = 0; i < path.length; i++) {
+                console.log(path[i].newIndex, path[i].oldIndex);
+            }
             if (isDone(path, newData, oldData)) { // compare endpoint of path && exit if done
                 // convert path to remove && add
+                for (let i = 1; i < path.length; i += 1) {
+                    console.log(newData[path[i].newIndex], oldData[path[i].newIndex]);
+                    if (path[i].newIndex === path[i - 1].newIndex) {
+                        // remove
+                        remove.push({ l: path[i].oldIndex, s: oldData[path[i].oldIndex] });
+                    } else if (path[i].oldIndex === path[i - 1].oldIndex) {
+                        // add
+                        add.push({ l: path[i].newIndex, s: newData[path[i].newIndex] });
+                    }
+                }
                 done = true;
                 break;
             }
