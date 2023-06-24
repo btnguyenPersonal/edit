@@ -656,10 +656,7 @@ function renderSingleLine(state, screen, i, mergeSection, isContext) {
     let section = 0;
     let numColor = 'grey';
     let numBgColor;
-    if (isContext) {
-        numColor = 'black';
-        numBgColor = 'grey';
-    } else if (state.recording) {
+    if (state.recording) {
         numColor = 'red';
     } else if (state.row === i) {
         numColor = 'white';
@@ -672,7 +669,7 @@ function renderSingleLine(state, screen, i, mergeSection, isContext) {
         numColor = 'black';
     }
     screen.put({
-        attr: { color: numColor, bgColor: numBgColor },
+        attr: { color: numColor, bgColor: numBgColor, underline: isContext },
         x: 0
     }, (i + 1).toString().padStart(4) + ' ');
     if (isMergeConflictStart(state.data[i])) {
@@ -724,7 +721,8 @@ function renderSingleLine(state, screen, i, mergeSection, isContext) {
             attr: {
                 color,
                 bgColor,
-                inverse: isHighlighted(state, i, j)
+                inverse: isHighlighted(state, i, j),
+                underline: isContext
             },
             wrap: false
         }, displayRow.substring(j, j + 1));
@@ -769,7 +767,14 @@ function renderWindowLines(state, screen, noCenterScreen, fullRefresh) {
     getWindowLineHorizontal(state);
     let mergeSection = 0;
     const contextLines = getContextLines(state).slice().reverse();
-    contextLines.forEach((line) => renderSingleLine(state, screen, line, mergeSection, true));
+    let num = 0;
+    while (num < contextLines.length - 1) {
+        renderSingleLine(state, screen, contextLines[num], mergeSection, false);
+        num += 1
+    }
+    if (contextLines[num]) {
+        renderSingleLine(state, screen, contextLines[num], mergeSection, true);
+    }
     for (let i = state.windowLine; i < (state.windowLine + process.stdout.rows - contextLines.length) - 1; i += 1) {
         if (state.data[i] !== undefined) {
             mergeSection = renderSingleLine(state, screen, i, mergeSection);
