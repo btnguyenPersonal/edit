@@ -772,7 +772,7 @@ function renderWindowLines(state, screen, noCenterScreen, fullRefresh) {
         renderSingleLine(state, screen, contextLines[num], mergeSection, false);
         num += 1
     }
-    if (contextLines[num]) {
+    if (contextLines[num] !== undefined) {
         renderSingleLine(state, screen, contextLines[num], mergeSection, true);
     }
     for (let i = state.windowLine; i < (state.windowLine + process.stdout.rows - contextLines.length) - 1; i += 1) {
