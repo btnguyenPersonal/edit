@@ -19,13 +19,14 @@
     - readme / markdown highlighting
     - colors with hex ?? might not be supported in terminal-kit
 ## todo
-    - visualBlock movement horizontal
     - stop nesting ifs everywhere, make every key an if (previousKeys + key === 'di(') {} kind of thing
     - clean up my file switching crap spewed everywhere, and have mark2 be saved (and have macro2 if not already)
+    - go to marks in visual
     - ___this weekend start combing through all of the code and clean up everything that is icky___
 ## blocked
 ## in progress
 ## done
+    - visualLine movement horizontal
     - stop using 'inString' for non-code
     - add %
     - synchronous copy to system clipboard (might be best to just use internal clipboard when state.allowCommandLogging is false)
