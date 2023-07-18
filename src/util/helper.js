@@ -451,6 +451,7 @@ function applySnapshot(state, index, backwards) {
 
 function createSnapshot(state) {
     if (state.data.length < 10000 && state.allowCommandLogging) {
+        state.previousKeys = '';
         state.snapshots.splice(state.currentSnapshot + 1, state.snapshots.length - (state.currentSnapshot + 1));
         const oldData = [];
         for (let i = 0; i < state.data.length; i += 1) {
