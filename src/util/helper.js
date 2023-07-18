@@ -119,7 +119,7 @@ function getRowIfOverflow(state) {
         : state.data.length - 1;
 }
 
-function moveCursor(state, screen, windowLineHorizontal, numContextLines) {
+function moveCursor(state, screen, windowLineHorizontal) {
     if (state.mode === ':') {
         screen.moveTo(
             state.commandIndex + 1,
@@ -140,7 +140,6 @@ function moveCursor(state, screen, windowLineHorizontal, numContextLines) {
         row = state.row < state.data.length ? state.row : state.data.length;
         col -= windowLineHorizontal;
         row -= state.windowLine;
-        row += numContextLines;
         screen.moveTo(
             col,
             row + 1
@@ -706,12 +705,9 @@ function renderSingleLine(state, screen, i, mergeSection, isContext) {
             color = 'blue';
         }
         if (colorRow[j] === 'search') {
-            if (state.replacing) {
-                color = 'white';
-                bgColor = 'blue';
-            } else if (state.searching) {
+            if (state.replacing || state.searching) {
                 color = 'black';
-                bgColor = 'green';
+                bgColor = 'cyan';
             }
         } else if (colorRow[j] === 'searchCurrent') {
             color = 'black';
@@ -766,23 +762,12 @@ function renderWindowLines(state, screen, noCenterScreen, fullRefresh) {
     }
     getWindowLineHorizontal(state);
     let mergeSection = 0;
-    // can't be bothered right now to get this to work properly
-    // const contextLines = getContextLines(state).slice().reverse();
-    const contextLines = [];
-    let num = 0;
-    while (num < contextLines.length - 1) {
-        renderSingleLine(state, screen, contextLines[num], mergeSection, false);
-        num += 1;
-    }
-    if (contextLines[num] !== undefined) {
-        renderSingleLine(state, screen, contextLines[num], mergeSection, true);
-    }
-    for (let i = state.windowLine; i < (state.windowLine + process.stdout.rows - contextLines.length) - 1; i += 1) {
+    for (let i = state.windowLine; i < (state.windowLine + process.stdout.rows) - 1; i += 1) {
         if (state.data[i] !== undefined) {
             mergeSection = renderSingleLine(state, screen, i, mergeSection);
         }
     }
-    moveCursor(state, screen, state.windowLineHorizontal, contextLines.length);
+    moveCursor(state, screen, state.windowLineHorizontal);
     screen.draw({ delta: !fullRefresh });
     screen.drawCursor();
 }
