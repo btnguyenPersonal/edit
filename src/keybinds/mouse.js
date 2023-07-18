@@ -17,7 +17,6 @@ function handleMouseInputs(name, coor, state, screen) {
         if (state.row === -1) {
             state.row = 0;
         }
-        state.row -= helper.getContextLines(state).length;
         helper.renderScreen(state, screen);
     } else if (name === 'MOUSE_WHEEL_UP') {
         if (state.windowLine > 0) {
