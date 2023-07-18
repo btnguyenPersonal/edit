@@ -884,8 +884,8 @@ function renderWindowLines(state, screen, noCenterScreen, fullRefresh) {
     }
     getWindowLineHorizontal(state);
     let mergeSection = 0;
-    const contextLines = getContextLines(state).slice().reverse();
-    contextLines.forEach((line) => renderSingleLine(state, screen, line, mergeSection, true));
+    // const contextLines = getContextLines(state).slice().reverse();
+    // contextLines.forEach((line) => renderSingleLine(state, screen, line, mergeSection, true));
     for (let i = state.windowLine; i < (state.windowLine + process.stdout.rows - contextLines.length) - 1; i += 1) {
         if (state.data[i] !== undefined) {
             mergeSection = renderSingleLine(state, screen, i, mergeSection);

@@ -224,7 +224,7 @@ function handleVisualBlockKeys(key, state, screen) {
         createSnapshot(state);
     } else if (state.previousKeys === 'T') {
         if (isWritable(key)) {
-            state.Col = toBackward(state, key);
+            state.col = toBackward(state, key);
             renderScreen(state, screen);
         }
         state.previousKeys = '';
