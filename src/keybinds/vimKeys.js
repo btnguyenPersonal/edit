@@ -16,7 +16,7 @@ import {
     isNumeric,
     saveFile,
     trimTrailingWhitespace,
-    updateStorePosition,
+    processFile,
     logCommand,
     refreshFile,
     getSystemPaste,
@@ -1099,24 +1099,18 @@ function handleVimKeys(key, state, screen) {
             if (state.harpoonIndex - 1 >= 0) {
                 state.harpoonIndex -= 1;
             }
-            if (state.files[state.harpoonIndexes[state.harpoonIndex]] !== undefined) {
-                updateStorePosition(state);
-            }
+            processFile(state, state.files[state.harpoonIndexes[state.harpoonIndex]], 0, state.files[state.harpoonIndexes[state.harpoonIndex]] !== undefined);
         } else if (key === 'CTRL_E') {
             if (state.harpoonIndex + 1 < state.harpoonIndexes.length) {
                 state.harpoonIndex += 1;
             }
-            if (state.files[state.harpoonIndexes[state.harpoonIndex]] !== undefined) {
-                updateStorePosition(state);
-            }
+            processFile(state, state.files[state.harpoonIndexes[state.harpoonIndex]], 0, state.files[state.harpoonIndexes[state.harpoonIndex]] !== undefined);
         } else if (key === 'CTRL_X') {
             state.harpoonIndexes = state.harpoonIndexes.filter(((e) => (e !== state.fileIndex)));
-            if (state.files[state.harpoonIndexes[state.harpoonIndex]] !== undefined) {
-                updateStorePosition(state);
-            } else if (state.harpoonIndex - 1 >= 0) {
+            if (state.harpoonIndex - 1 >= 0) {
                 state.harpoonIndex -= 1;
-                updateStorePosition(state);
             }
+            processFile(state, state.files[state.harpoonIndexes[state.harpoonIndex]], 0, state.files[state.harpoonIndexes[state.harpoonIndex]] !== undefined);
         } else if (key === 'CTRL_F') {
             state.replacing = true;
             state.mode = '/';

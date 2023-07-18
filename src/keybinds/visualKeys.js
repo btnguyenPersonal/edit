@@ -45,6 +45,7 @@ import {
     isEmptyRow,
     isCommented,
     toggleComment,
+    matchIt,
 } from '../util/movement.js';
 
 function handleVisualKeys(key, state, screen) {
@@ -343,6 +344,8 @@ function handleVisualKeys(key, state, screen) {
             state.searching = true;
             centerScreen(state);
         }
+    } else if (key === '%') {
+        matchIt(state);
     } else if (key === 'y') {
         copyInVisual(state);
         if (state.row >= state.visual.row) {
