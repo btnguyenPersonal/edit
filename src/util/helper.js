@@ -3,6 +3,14 @@ import ncp from 'copy-paste';
 import moment from 'moment';
 import fs from 'fs';
 
+function getSystemPaste(state) {
+    if (state.allowCommandLogging) {
+        return ncp.paste();
+    } else {
+        return state.clipboard;
+    }
+}
+
 function isFile(filePath) {
     try {
         const stats = fs.statSync(filePath);
@@ -409,14 +417,6 @@ function getColorRow(replacing, replaceQuery, row, commentIndex, searching, sear
     return output;
 }
 
-function getSystemPaste(state) {
-    if (state.allowCommandLogging) {
-        return ncp.paste();
-    } else {
-        return state.clipboard;
-    }
-}
-
 function copyToClipboard(state, textArray, clipboardVisualBlock) {
     state.clipboardVisualBlock = clipboardVisualBlock;
     ncp.copy(textArray.join('\n'));
@@ -766,11 +766,13 @@ function renderWindowLines(state, screen, noCenterScreen, fullRefresh) {
     }
     getWindowLineHorizontal(state);
     let mergeSection = 0;
-    const contextLines = getContextLines(state).slice().reverse();
+    // can't be bothered right now to get this to work properly
+    // const contextLines = getContextLines(state).slice().reverse();
+    const contextLines = [];
     let num = 0;
     while (num < contextLines.length - 1) {
         renderSingleLine(state, screen, contextLines[num], mergeSection, false);
-        num += 1
+        num += 1;
     }
     if (contextLines[num] !== undefined) {
         renderSingleLine(state, screen, contextLines[num], mergeSection, true);

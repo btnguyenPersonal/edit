@@ -1,5 +1,4 @@
 /* eslint-disable import/no-cycle */
-import ncp from 'copy-paste';
 import {
     copyToClipboard,
     renderScreen,

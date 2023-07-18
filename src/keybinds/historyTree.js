@@ -1,5 +1,4 @@
 /* eslint-disable import/no-cycle */
-import fs from 'fs';
 import {
     renderScreen,
     applySnapshot,
