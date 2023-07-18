@@ -122,7 +122,7 @@ function getRowIfOverflow(state) {
 function moveCursor(state, screen, windowLineHorizontal) {
     if (state.mode === ':') {
         screen.moveTo(
-            state.commandIndex + 1,
+            state.commandCursorPosition + 1,
             0
         );
     } else {
@@ -581,7 +581,7 @@ function isMergeConflictEnd(s) {
 
 function renderStatusBar(state, screen) {
     if (state.mode === ':') {
-        screen.put({ attr: { color: 'white' } }, ':' + state.commandString);
+        screen.put({ attr: { color: 'white' } }, ':' + state.currentCommand);
     } else {
         for (let i = 0; i < state.harpoonIndexes.length; i += 1) {
             screen.put({
@@ -827,56 +827,56 @@ function changeFile(state) {
 }
 
 function evaluateCommand(state, term) {
-    if (state.commandString === 'w') {
+    if (state.currentCommand === 'w') {
         saveFile(state);
         return false;
-    } else if (state.commandString === 'wa') {
+    } else if (state.currentCommand === 'wa') {
         saveFile(state);
         return false;
-    } else if (state.commandString === 'x') {
+    } else if (state.currentCommand === 'x') {
         saveFile(state);
         term.fullscreen(false);
         process.exit(0);
-    } else if (state.commandString === 'wq') {
+    } else if (state.currentCommand === 'wq') {
         saveFile(state);
         term.fullscreen(false);
         process.exit(0);
-    } else if (state.commandString === 'q') {
+    } else if (state.currentCommand === 'q') {
         term.fullscreen(false);
         process.exit(0);
-    } else if (/%s\/(.*)\/(.*)\/g/.test(state.commandString)) {
-        const match = /%s\/(.*?)\/(.*?)\/g/.exec(state.commandString);
+    } else if (/%s\/(.*)\/(.*)\/g/.test(state.currentCommand)) {
+        const match = /%s\/(.*?)\/(.*?)\/g/.exec(state.currentCommand);
         for (let i = 0; i < state.data.length; i += 1) {
             state.data[i] = state.data[i].replaceAll(new RegExp(match[1], 'g'), match[2]);
         }
         createSnapshot(state);
         return true;
-    } else if (state.commandString === 'set ts=2') {
+    } else if (state.currentCommand === 'set ts=2') {
         state.indentAmount = 2;
         return false;
-    } else if (state.commandString === 'set ts=4') {
+    } else if (state.currentCommand === 'set ts=4') {
         state.indentAmount = 4;
         return false;
-    } else if (!Number.isNaN(state.commandString)) {
-        const num = parseInt(state.commandString);
+    } else if (!Number.isNaN(state.currentCommand)) {
+        const num = parseInt(state.currentCommand);
         if (num > 0 && num < state.data.length) {
             state.row = num - 1;
         }
         return false;
-    } else if (state.commandString === 'qa') {
+    } else if (state.currentCommand === 'qa') {
         term.fullscreen(false);
         process.exit(0);
-    } else if (state.commandString === 'qa!') {
+    } else if (state.currentCommand === 'qa!') {
         term.fullscreen(false);
         process.exit(0);
-    } else if (state.commandString === 'q!') {
+    } else if (state.currentCommand === 'q!') {
         term.fullscreen(false);
         process.exit(0);
     }
 }
 
 function createState(state) {
-    const snapshotsCopy = state.snapshots.map(snapshot => JSON.parse(JSON.stringify(snapshot)));
+    const snapshotsCopy = state.snapshots.map((snapshot) => JSON.parse(JSON.stringify(snapshot)));
     return {
         row: state.row,
         col: state.col,
@@ -885,6 +885,7 @@ function createState(state) {
         currentSnapshot: state.currentSnapshot,
         snapshots: snapshotsCopy,
         mark: state.mark,
+        mark2: state.mark2,
         prevRow: state.prevRow,
         prevCol: state.prevCol,
     };
@@ -892,21 +893,16 @@ function createState(state) {
 
 function updateStateFromFilePosition(state, fileIndex) {
     const pos = state.storePosition[fileIndex];
-    const keysToUpdate = [
-        'row',
-        'col',
-        'windowLine',
-        'windowLineHorizontal',
-        'currentSnapshot',
-        'snapshots',
-        'mark',
-        'prevRow',
-        'prevCol'
-    ];
-
-    for (const key of keysToUpdate) {
-        state[key] = pos[key];
-    }
+    state.row = pos.row;
+    state.col = pos.col;
+    state.windowLine = pos.windowLine;
+    state.windowLineHorizontal = pos.windowLineHorizontal;
+    state.currentSnapshot = pos.currentSnapshot;
+    state.snapshots = pos.snapshots;
+    state.mark = pos.mark;
+    state.mark2 = pos.mark2;
+    state.prevRow = pos.prevRow;
+    state.prevCol = pos.prevCol;
 }
 
 function updateFileState(state, newFile, lineNum) {

@@ -83,171 +83,180 @@ function handleVimKeys(key, state, screen) {
             state.previousKeys = '';
             sendKeys([key], state, screen);
         }
-    } else if (state.previousKeys === 'd') {
-        if (key === 'w') {
-            const endOfWord = getCoorForwardWord(state);
-            copyToClipboard(state, [state.data[state.row].substring(state.col, endOfWord)]);
-            state.data[state.row] = state.data[state.row].substring(0, state.col) + state.data[state.row].substring(endOfWord);
-            state.previousKeys = '';
-            logCommand(false, state, key);
-            createSnapshot(state);
-        } else if (key === 'j') {
+    } else if (state.previousKeys + key === 'dw') {
+        const endOfWord = getCoorForwardWord(state);
+        copyToClipboard(state, [state.data[state.row].substring(state.col, endOfWord)]);
+        state.data[state.row] = state.data[state.row].substring(0, state.col) + state.data[state.row].substring(endOfWord);
+        state.previousKeys = '';
+        logCommand(false, state, key);
+        createSnapshot(state);
+    } else if (state.previousKeys + key === 'dj') {
+        const newClipboard = [''];
+        newClipboard.push(state.data[state.row]);
+        if (state.data[state.row + 1] !== undefined) {
+            newClipboard.push(state.data[state.row + 1]);
+        }
+        copyToClipboard(state, newClipboard);
+        state.data.splice(state.row, 1);
+        state.data.splice(state.row, 1);
+        if (state.row > state.data.length - 1) {
+            state.row = state.data.length - 1;
+        }
+        if (state.row < 0) {
+            state.row = 0;
+        }
+        state.col = firstNonSpace(state, state.row);
+        state.previousKeys = '';
+        logCommand(false, state, key);
+        createSnapshot(state);
+    } else if (state.previousKeys + key === 'dk') {
+        const newClipboard = [''];
+        if (state.data[state.row - 1] !== undefined) {
+            newClipboard.push(state.data[state.row - 1]);
+        }
+        newClipboard.push(state.data[state.row]);
+        copyToClipboard(state, newClipboard);
+        state.data.splice(state.row, 1);
+        if (state.data[state.row - 1] !== undefined) {
+            state.data.splice(state.row - 1, 1);
+        }
+        if (state.row < 0) {
+            state.row = 0;
+        }
+        up(state);
+        state.col = firstNonSpace(state, state.row);
+        state.previousKeys = '';
+        logCommand(false, state, key);
+        createSnapshot(state);
+    } else if (state.previousKeys === 'd' && (key === 'i' || key === 'f' || key === 'F' || key === 't' || key === 'T' || key === 'a')) {
+        state.previousKeys += key;
+        logCommand(false, state, key);
+    } else if (state.previousKeys + key === 'dd') {
+        copyToClipboard(state, ['', state.data[state.row]]);
+        state.data.splice(state.row, 1);
+        state.col = firstNonSpace(state, state.row);
+        if (state.row > state.data.length - 1) {
+            state.row = state.data.length - 1;
+        }
+        if (state.row < 0) {
+            state.row = 0;
+        }
+        state.previousKeys = '';
+        logCommand(false, state, key);
+        createSnapshot(state);
+    } else if (state.previousKeys === 'df' && isWritable(key)) {
+        state.visual.row = state.row;
+        state.visual.col = state.col;
+        state.col = findForward(state, key);
+        copyInVisual(state);
+        deleteInVisual(state);
+        logCommand(false, state, key);
+        createSnapshot(state);
+    } else if (state.previousKeys === 'dF' && isWritable(key)) {
+        state.visual.row = state.row;
+        state.visual.col = state.col;
+        state.col = findBackward(state, key);
+        copyInVisual(state);
+        deleteInVisual(state);
+        logCommand(false, state, key);
+        createSnapshot(state);
+    } else if (state.previousKeys === 'dt' && isWritable(key)) {
+        state.visual.row = state.row;
+        state.visual.col = state.col;
+        state.col = toForward(state, key);
+        copyInVisual(state);
+        deleteInVisual(state);
+        logCommand(false, state, key);
+        createSnapshot(state);
+    } else if (state.previousKeys === 'dT' && isWritable(key)) {
+        state.visual.row = state.row;
+        state.visual.col = state.col;
+        state.col = toBackward(state, key);
+        copyInVisual(state);
+        deleteInVisual(state);
+        logCommand(false, state, key);
+        createSnapshot(state);
+    } else if (state.previousKeys + key === 'daw') {
+        const { beginning, end } = getCoorsInsideWord(state);
+        copyToClipboard(state, [state.data[state.row].substring(beginning + 1, end + 1)]);
+        removeInsideAreaSameLine(state, beginning, end + 1, 'n');
+        logCommand(false, state, key);
+        createSnapshot(state);
+    } else if (state.previousKeys + key === 'daW') {
+        const { beginning, end } = getCoorsInsideCharSame(state, ' ');
+        copyToClipboard(state, [state.data[state.row].substring(beginning + 1, end + 1)]);
+        removeInsideAreaSameLine(state, beginning, end + 1, 'n');
+        logCommand(false, state, key);
+        createSnapshot(state);
+    } else if (state.previousKeys + key === 'dap') {
+        // TODO simplify
+        state.visual = {
+            row: state.row,
+            col: state.col
+        };
+        for (let i = state.row; i < state.data.length; i += 1) {
+            if (!isEmptyRow(state, i)) {
+                state.row = i;
+                state.col = 0;
+                break;
+            }
+        }
+        state.visual.row = state.row;
+        for (let i = state.row; i >= 0; i -= 1) {
+            if (isEmptyRow(state, i)) {
+                break;
+            } else {
+                state.visual = { row: i, col: 0 };
+            }
+        }
+        for (let i = state.row + 1; i < state.data.length; i += 1) {
+            if (isEmptyRow(state, i)) {
+                state.row = i;
+                break;
+            } else {
+                state.row = i;
+                state.col = 0;
+            }
+        }
+        if (state.row >= state.visual.row) {
             const newClipboard = [''];
-            newClipboard.push(state.data[state.row]);
-            if (state.data[state.row + 1] !== undefined) {
-                newClipboard.push(state.data[state.row + 1]);
+            for (let i = state.visual.row; i <= state.row; i += 1) {
+                newClipboard.push(state.data[i]);
             }
             copyToClipboard(state, newClipboard);
-            state.data.splice(state.row, 1);
-            state.data.splice(state.row, 1);
-            if (state.row > state.data.length - 1) {
-                state.row = state.data.length - 1;
-            }
-            if (state.row < 0) {
-                state.row = 0;
-            }
-            state.col = firstNonSpace(state, state.row);
-            state.previousKeys = '';
-            logCommand(false, state, key);
-            createSnapshot(state);
-        } else if (key === 'k') {
+            state.data.splice(state.visual.row, state.row - state.visual.row + 1);
+            state.row = state.visual.row;
+        } else if (state.row < state.visual.row) {
             const newClipboard = [''];
-            if (state.data[state.row - 1] !== undefined) {
-                newClipboard.push(state.data[state.row - 1]);
+            for (let i = state.row; i <= state.visual.row; i += 1) {
+                newClipboard.push(state.data[i]);
             }
-            newClipboard.push(state.data[state.row]);
             copyToClipboard(state, newClipboard);
-            state.data.splice(state.row, 1);
-            if (state.data[state.row - 1] !== undefined) {
-                state.data.splice(state.row - 1, 1);
-            }
-            if (state.row < 0) {
-                state.row = 0;
-            }
-            up(state);
-            state.col = firstNonSpace(state, state.row);
-            state.previousKeys = '';
-            logCommand(false, state, key);
-            createSnapshot(state);
-        } else if (key === 'i' || key === 'f' || key === 'F' || key === 't' || key === 'T' || key === 'a') {
-            state.previousKeys += key;
-            logCommand(false, state, key);
-        } else if (key === 'd') {
-            copyToClipboard(state, ['', state.data[state.row]]);
-            state.data.splice(state.row, 1);
-            state.col = firstNonSpace(state, state.row);
-            if (state.row > state.data.length - 1) {
-                state.row = state.data.length - 1;
-            }
-            if (state.row < 0) {
-                state.row = 0;
-            }
-            state.previousKeys = '';
-            logCommand(false, state, key);
-            createSnapshot(state);
+            state.data.splice(state.row, state.visual.row - state.row + 1);
         }
-    } else if (state.previousKeys === 'df') {
-        if (isWritable(key)) {
-            state.visual.row = state.row;
-            state.visual.col = state.col;
-            state.col = findForward(state, key);
-            copyInVisual(state);
-            deleteInVisual(state);
-            logCommand(false, state, key);
-            createSnapshot(state);
+        if (state.row > state.data.length - 1) {
+            state.row = state.data.length - 1;
         }
-        state.previousKeys = '';
-    } else if (state.previousKeys === 'dF') {
-        if (isWritable(key)) {
-            state.visual.row = state.row;
-            state.visual.col = state.col;
-            state.col = findBackward(state, key);
-            copyInVisual(state);
-            deleteInVisual(state);
-            logCommand(false, state, key);
-            createSnapshot(state);
+        if (state.row < 0) {
+            state.row = 0;
         }
-        state.previousKeys = '';
-    } else if (state.previousKeys === 'dt') {
-        if (isWritable(key)) {
-            state.visual.row = state.row;
-            state.visual.col = state.col;
-            state.col = toForward(state, key);
-            copyInVisual(state);
-            deleteInVisual(state);
-            logCommand(false, state, key);
-            createSnapshot(state);
-        }
-        state.previousKeys = '';
-    } else if (state.previousKeys === 'dT') {
-        if (isWritable(key)) {
-            state.visual.row = state.row;
-            state.visual.col = state.col;
-            state.col = toBackward(state, key);
-            copyInVisual(state);
-            deleteInVisual(state);
-            logCommand(false, state, key);
-            createSnapshot(state);
-        }
-        state.previousKeys = '';
-    } else if (state.previousKeys === 'da') {
-        if (key === 'w') {
-            const { beginning, end } = getCoorsInsideWord(state);
-            copyToClipboard(state, [state.data[state.row].substring(beginning + 1, end + 1)]);
-            removeInsideAreaSameLine(state, beginning, end + 1, 'n');
-            logCommand(false, state, key);
-            createSnapshot(state);
-        } else if (key === 'W') {
-            const { beginning, end } = getCoorsInsideCharSame(state, ' ');
-            copyToClipboard(state, [state.data[state.row].substring(beginning + 1, end + 1)]);
-            removeInsideAreaSameLine(state, beginning, end + 1, 'n');
-            logCommand(false, state, key);
-            createSnapshot(state);
-        } else if (key === 'p') {
-            state.visual = {
-                row: state.row,
-                col: state.col
-            };
-            for (let i = state.row; i < state.data.length; i += 1) {
-                if (!isEmptyRow(state, i)) {
-                    state.row = i;
-                    state.col = 0;
-                    break;
-                }
+        firstNonSpace(state, state.row);
+        logCommand(false, state, key);
+        createSnapshot(state);
+    } else if (state.previousKeys + key === 'daf') {
+        // TODO simplify
+        if (!isEmptyRow(state, state.row) && getIndentLevel(state, state.row) !== 0) {
+            const { beginning, end } = getInsideOfIndentLevel(state);
+            state.visual.row = beginning - 1;
+            state.row = end + 1;
+            state.col = 0;
+            const newClipboard = [''];
+            for (let i = state.visual.row; i <= state.row; i += 1) {
+                newClipboard.push(state.data[i]);
             }
-            state.visual.row = state.row;
-            for (let i = state.row; i >= 0; i -= 1) {
-                if (isEmptyRow(state, i)) {
-                    break;
-                } else {
-                    state.visual = { row: i, col: 0 };
-                }
-            }
-            for (let i = state.row + 1; i < state.data.length; i += 1) {
-                if (isEmptyRow(state, i)) {
-                    state.row = i;
-                    break;
-                } else {
-                    state.row = i;
-                    state.col = 0;
-                }
-            }
-            if (state.row >= state.visual.row) {
-                const newClipboard = [''];
-                for (let i = state.visual.row; i <= state.row; i += 1) {
-                    newClipboard.push(state.data[i]);
-                }
-                copyToClipboard(state, newClipboard);
-                state.data.splice(state.visual.row, state.row - state.visual.row + 1);
-                state.row = state.visual.row;
-            } else if (state.row < state.visual.row) {
-                const newClipboard = [''];
-                for (let i = state.row; i <= state.visual.row; i += 1) {
-                    newClipboard.push(state.data[i]);
-                }
-                copyToClipboard(state, newClipboard);
-                state.data.splice(state.row, state.visual.row - state.row + 1);
-            }
+            copyToClipboard(state, newClipboard);
+            state.data.splice(state.visual.row, state.row - state.visual.row + 1);
+            state.row = state.visual.row;
             if (state.row > state.data.length - 1) {
                 state.row = state.data.length - 1;
             }
@@ -255,120 +264,119 @@ function handleVimKeys(key, state, screen) {
                 state.row = 0;
             }
             firstNonSpace(state, state.row);
-            logCommand(false, state, key);
-            createSnapshot(state);
-        } else if (key === 'f') {
-            if (!isEmptyRow(state, state.row) && getIndentLevel(state, state.row) !== 0) {
-                const { beginning, end } = getInsideOfIndentLevel(state);
-                state.visual.row = beginning - 1;
-                state.row = end + 1;
-                state.col = 0;
-                const newClipboard = [''];
-                for (let i = state.visual.row; i <= state.row; i += 1) {
-                    newClipboard.push(state.data[i]);
-                }
-                copyToClipboard(state, newClipboard);
-                state.data.splice(state.visual.row, state.row - state.visual.row + 1);
-                state.row = state.visual.row;
-                if (state.row > state.data.length - 1) {
-                    state.row = state.data.length - 1;
-                }
-                if (state.row < 0) {
-                    state.row = 0;
-                }
-                firstNonSpace(state, state.row);
-            }
-            logCommand(false, state, key);
-            createSnapshot(state);
-        } else if (key === '[' || key === ']' || key === 'd') {
-            const { beginning, end } = getCoorsInsideCharDiff(state, '[', ']');
-            copyToClipboard(state, [state.data[state.row].substring(beginning, end + 1)]);
-            removeInsideAreaSameLine(state, beginning - 1, end + 1, 'n');
-            logCommand(false, state, key);
-            createSnapshot(state);
-        } else if (key === '<' || key === '>' || key === 't') {
-            const { beginning, end } = getCoorsInsideCharDiff(state, '<', '>');
-            copyToClipboard(state, [state.data[state.row].substring(beginning, end + 1)]);
-            removeInsideAreaSameLine(state, beginning - 1, end + 1, 'n');
-            logCommand(false, state, key);
-            createSnapshot(state);
-        } else if (key === '(' || key === ')' || key === 'b') {
-            const { beginning, end } = getCoorsInsideCharDiff(state, '(', ')');
-            copyToClipboard(state, [state.data[state.row].substring(beginning, end + 1)]);
-            removeInsideAreaSameLine(state, beginning - 1, end + 1, 'n');
-            logCommand(false, state, key);
-            createSnapshot(state);
-        } else if (key === '{' || key === '}' || key === 'B') {
-            const { beginning, end } = getCoorsInsideCharDiff(state, '{', '}');
-            copyToClipboard(state, [state.data[state.row].substring(beginning, end + 1)]);
-            removeInsideAreaSameLine(state, beginning - 1, end + 1, 'n');
-            logCommand(false, state, key);
-            createSnapshot(state);
-        } else if (key === '\'' || key === '"' || key === '`') {
-            const { beginning, end } = getCoorsInsideCharSame(state, key);
-            copyToClipboard(state, [state.data[state.row].substring(beginning, end + 1)]);
-            removeInsideAreaSameLine(state, beginning - 1, end + 1, 'n');
-            logCommand(false, state, key);
-            createSnapshot(state);
         }
-        state.previousKeys = '';
-    } else if (state.previousKeys === 'di') {
-        if (key === 'w') {
-            const { beginning, end } = getCoorsInsideWord(state);
-            copyToClipboard(state, [state.data[state.row].substring(beginning + 1, end)]);
-            removeInsideAreaSameLine(state, beginning, end, 'n');
-            logCommand(false, state, key);
-            createSnapshot(state);
-        } else if (key === 'W') {
-            const { beginning, end } = getCoorsInsideCharSame(state, ' ');
-            copyToClipboard(state, [state.data[state.row].substring(beginning + 1, end)]);
-            removeInsideAreaSameLine(state, beginning, end, 'n');
-            logCommand(false, state, key);
-            createSnapshot(state);
-        } else if (key === 'p') {
-            state.visual = {
-                row: state.row,
-                col: state.col
-            };
-            for (let i = state.row; i < state.data.length; i += 1) {
-                if (!isEmptyRow(state, i)) {
-                    state.row = i;
-                    state.col = 0;
-                    break;
-                }
+        logCommand(false, state, key);
+        createSnapshot(state);
+    } else if (state.previousKeys === 'da' && (key === '[' || key === ']' || key === 'd')) {
+        const { beginning, end } = getCoorsInsideCharDiff(state, '[', ']');
+        copyToClipboard(state, [state.data[state.row].substring(beginning, end + 1)]);
+        removeInsideAreaSameLine(state, beginning - 1, end + 1, 'n');
+        logCommand(false, state, key);
+        createSnapshot(state);
+    } else if (state.previousKeys === 'da' && (key === '<' || key === '>' || key === 't')) {
+        const { beginning, end } = getCoorsInsideCharDiff(state, '<', '>');
+        copyToClipboard(state, [state.data[state.row].substring(beginning, end + 1)]);
+        removeInsideAreaSameLine(state, beginning - 1, end + 1, 'n');
+        logCommand(false, state, key);
+        createSnapshot(state);
+    } else if (state.previousKeys === 'da' && (key === '(' || key === ')' || key === 'b')) {
+        const { beginning, end } = getCoorsInsideCharDiff(state, '(', ')');
+        copyToClipboard(state, [state.data[state.row].substring(beginning, end + 1)]);
+        removeInsideAreaSameLine(state, beginning - 1, end + 1, 'n');
+        logCommand(false, state, key);
+        createSnapshot(state);
+    } else if (state.previousKeys === 'da' && (key === '{' || key === '}' || key === 'B')) {
+        const { beginning, end } = getCoorsInsideCharDiff(state, '{', '}');
+        copyToClipboard(state, [state.data[state.row].substring(beginning, end + 1)]);
+        removeInsideAreaSameLine(state, beginning - 1, end + 1, 'n');
+        logCommand(false, state, key);
+        createSnapshot(state);
+    } else if (state.previousKeys === 'da' && (key === '\'' || key === '"' || key === '`')) {
+        const { beginning, end } = getCoorsInsideCharSame(state, key);
+        copyToClipboard(state, [state.data[state.row].substring(beginning, end + 1)]);
+        removeInsideAreaSameLine(state, beginning - 1, end + 1, 'n');
+        logCommand(false, state, key);
+        createSnapshot(state);
+    } else if (state.previousKeys + key === 'diw') {
+        const { beginning, end } = getCoorsInsideWord(state);
+        copyToClipboard(state, [state.data[state.row].substring(beginning + 1, end)]);
+        removeInsideAreaSameLine(state, beginning, end, 'n');
+        logCommand(false, state, key);
+        createSnapshot(state);
+    } else if (state.previousKeys + key === 'diW') {
+        const { beginning, end } = getCoorsInsideCharSame(state, ' ');
+        copyToClipboard(state, [state.data[state.row].substring(beginning + 1, end)]);
+        removeInsideAreaSameLine(state, beginning, end, 'n');
+        logCommand(false, state, key);
+        createSnapshot(state);
+    } else if (state.previousKeys + key === 'dip') {
+        // TODO simplify
+        state.visual = {
+            row: state.row,
+            col: state.col
+        };
+        for (let i = state.row; i < state.data.length; i += 1) {
+            if (!isEmptyRow(state, i)) {
+                state.row = i;
+                state.col = 0;
+                break;
             }
-            state.visual.row = state.row;
-            for (let i = state.row; i >= 0; i -= 1) {
-                if (isEmptyRow(state, i)) {
-                    break;
-                } else {
-                    state.visual = { row: i, col: 0 };
-                }
+        }
+        state.visual.row = state.row;
+        for (let i = state.row; i >= 0; i -= 1) {
+            if (isEmptyRow(state, i)) {
+                break;
+            } else {
+                state.visual = { row: i, col: 0 };
             }
-            for (let i = state.row + 1; i < state.data.length; i += 1) {
-                if (isEmptyRow(state, i)) {
-                    break;
-                } else {
-                    state.row = i;
-                    state.col = 0;
-                }
+        }
+        for (let i = state.row + 1; i < state.data.length; i += 1) {
+            if (isEmptyRow(state, i)) {
+                break;
+            } else {
+                state.row = i;
+                state.col = 0;
             }
-            if (state.row >= state.visual.row) {
-                const newClipboard = [''];
-                for (let i = state.visual.row; i <= state.row; i += 1) {
-                    newClipboard.push(state.data[i]);
-                }
-                copyToClipboard(state, newClipboard);
-                state.data.splice(state.visual.row, state.row - state.visual.row + 1);
-                state.row = state.visual.row;
-            } else if (state.row < state.visual.row) {
-                const newClipboard = [''];
-                for (let i = state.row; i <= state.visual.row; i += 1) {
-                    newClipboard.push(state.data[i]);
-                }
-                copyToClipboard(state, newClipboard);
-                state.data.splice(state.row, state.visual.row - state.row + 1);
+        }
+        if (state.row >= state.visual.row) {
+            const newClipboard = [''];
+            for (let i = state.visual.row; i <= state.row; i += 1) {
+                newClipboard.push(state.data[i]);
             }
+            copyToClipboard(state, newClipboard);
+            state.data.splice(state.visual.row, state.row - state.visual.row + 1);
+            state.row = state.visual.row;
+        } else if (state.row < state.visual.row) {
+            const newClipboard = [''];
+            for (let i = state.row; i <= state.visual.row; i += 1) {
+                newClipboard.push(state.data[i]);
+            }
+            copyToClipboard(state, newClipboard);
+            state.data.splice(state.row, state.visual.row - state.row + 1);
+        }
+        if (state.row > state.data.length - 1) {
+            state.row = state.data.length - 1;
+        }
+        if (state.row < 0) {
+            state.row = 0;
+        }
+        firstNonSpace(state, state.row);
+        logCommand(false, state, key);
+        createSnapshot(state);
+    } else if (state.previousKeys + key === 'dif') {
+        // TODO simplify
+        if (!isEmptyRow(state, state.row) && getIndentLevel(state, state.row) !== 0) {
+            const { beginning, end } = getInsideOfIndentLevel(state);
+            state.visual.row = beginning;
+            state.row = end;
+            state.col = 0;
+            const newClipboard = [''];
+            for (let i = state.visual.row; i <= state.row; i += 1) {
+                newClipboard.push(state.data[i]);
+            }
+            copyToClipboard(state, newClipboard);
+            state.data.splice(state.visual.row, state.row - state.visual.row + 1);
+            state.row = state.visual.row;
             if (state.row > state.data.length - 1) {
                 state.row = state.data.length - 1;
             }
@@ -376,262 +384,220 @@ function handleVimKeys(key, state, screen) {
                 state.row = 0;
             }
             firstNonSpace(state, state.row);
-            logCommand(false, state, key);
-            createSnapshot(state);
-        } else if (key === 'f') {
-            if (!isEmptyRow(state, state.row) && getIndentLevel(state, state.row) !== 0) {
-                const { beginning, end } = getInsideOfIndentLevel(state);
-                state.visual.row = beginning;
-                state.row = end;
+        }
+        logCommand(false, state, key);
+        createSnapshot(state);
+    } else if (state.previousKeys === 'di' && (key === '[' || key === ']' || key === 'd')) {
+        const { beginning, end } = getCoorsInsideCharDiff(state, '[', ']');
+        copyToClipboard(state, [state.data[state.row].substring(beginning + 1, end)]);
+        removeInsideAreaSameLine(state, beginning, end, 'n');
+        logCommand(false, state, key);
+        createSnapshot(state);
+    } else if (state.previousKeys === 'di' && (key === '<' || key === '>' || key === 't')) {
+        const { beginning, end } = getCoorsInsideCharDiff(state, '<', '>');
+        copyToClipboard(state, [state.data[state.row].substring(beginning + 1, end)]);
+        removeInsideAreaSameLine(state, beginning, end, 'n');
+        logCommand(false, state, key);
+        createSnapshot(state);
+    } else if (state.previousKeys === 'di' && (key === '(' || key === ')' || key === 'b')) {
+        const { beginning, end } = getCoorsInsideCharDiff(state, '(', ')');
+        copyToClipboard(state, [state.data[state.row].substring(beginning + 1, end)]);
+        removeInsideAreaSameLine(state, beginning, end, 'n');
+        logCommand(false, state, key);
+        createSnapshot(state);
+    } else if (state.previousKeys === 'di' && (key === '{' || key === '}' || key === 'B')) {
+        const { beginning, end } = getCoorsInsideCharDiff(state, '{', '}');
+        copyToClipboard(state, [state.data[state.row].substring(beginning + 1, end)]);
+        removeInsideAreaSameLine(state, beginning, end, 'n');
+        logCommand(false, state, key);
+        createSnapshot(state);
+    } else if (state.previousKeys === 'di' && (key === '\'' || key === '"' || key === '`')) {
+        const { beginning, end } = getCoorsInsideCharSame(state, key);
+        copyToClipboard(state, [state.data[state.row].substring(beginning + 1, end)]);
+        removeInsideAreaSameLine(state, beginning, end, 'n');
+        logCommand(false, state, key);
+        createSnapshot(state);
+    } else if (state.previousKeys === 'yf' && isWritable(key)) {
+        state.visual.row = state.row;
+        state.visual.col = findForward(state, key);
+        copyInVisual(state);
+    } else if (state.previousKeys === 'yF' && isWritable(key)) {
+        state.visual.row = state.row;
+        state.visual.col = state.col;
+        state.col = findBackward(state, key);
+        copyInVisual(state);
+    } else if (state.previousKeys === 'yt' && isWritable(key)) {
+        state.visual.row = state.row;
+        state.visual.col = toForward(state, key);
+        copyInVisual(state);
+    } else if (state.previousKeys === 'yT' && isWritable(key)) {
+        state.visual.row = state.row;
+        state.visual.col = state.col;
+        state.col = toBackward(state, key);
+        copyInVisual(state);
+    } else if (state.previousKeys + key === 'yaw') {
+        const { beginning, end } = getCoorsInsideWord(state);
+        copyInsideAreaSameLine(state, beginning, end);
+    } else if (state.previousKeys + key === 'yaW') {
+        const { beginning, end } = getCoorsInsideCharSame(state, ' ');
+        copyInsideAreaSameLine(state, beginning, end);
+    } else if (state.previousKeys + key === 'yap') {
+        state.visual = {
+            row: state.row,
+            col: state.col
+        };
+        for (let i = state.row; i < state.data.length; i += 1) {
+            if (!isEmptyRow(state, i)) {
+                state.row = i;
                 state.col = 0;
-                const newClipboard = [''];
-                for (let i = state.visual.row; i <= state.row; i += 1) {
-                    newClipboard.push(state.data[i]);
-                }
-                copyToClipboard(state, newClipboard);
-                state.data.splice(state.visual.row, state.row - state.visual.row + 1);
-                state.row = state.visual.row;
-                if (state.row > state.data.length - 1) {
-                    state.row = state.data.length - 1;
-                }
-                if (state.row < 0) {
-                    state.row = 0;
-                }
-                firstNonSpace(state, state.row);
+                break;
             }
-            logCommand(false, state, key);
-            createSnapshot(state);
-        } else if (key === '[' || key === ']' || key === 'd') {
-            const { beginning, end } = getCoorsInsideCharDiff(state, '[', ']');
-            copyToClipboard(state, [state.data[state.row].substring(beginning + 1, end)]);
-            removeInsideAreaSameLine(state, beginning, end, 'n');
-            logCommand(false, state, key);
-            createSnapshot(state);
-        } else if (key === '<' || key === '>' || key === 't') {
-            const { beginning, end } = getCoorsInsideCharDiff(state, '<', '>');
-            copyToClipboard(state, [state.data[state.row].substring(beginning + 1, end)]);
-            removeInsideAreaSameLine(state, beginning, end, 'n');
-            logCommand(false, state, key);
-            createSnapshot(state);
-        } else if (key === '(' || key === ')' || key === 'b') {
-            const { beginning, end } = getCoorsInsideCharDiff(state, '(', ')');
-            copyToClipboard(state, [state.data[state.row].substring(beginning + 1, end)]);
-            removeInsideAreaSameLine(state, beginning, end, 'n');
-            logCommand(false, state, key);
-            createSnapshot(state);
-        } else if (key === '{' || key === '}' || key === 'B') {
-            const { beginning, end } = getCoorsInsideCharDiff(state, '{', '}');
-            copyToClipboard(state, [state.data[state.row].substring(beginning + 1, end)]);
-            removeInsideAreaSameLine(state, beginning, end, 'n');
-            logCommand(false, state, key);
-            createSnapshot(state);
-        } else if (key === '\'' || key === '"' || key === '`') {
-            const { beginning, end } = getCoorsInsideCharSame(state, key);
-            copyToClipboard(state, [state.data[state.row].substring(beginning + 1, end)]);
-            removeInsideAreaSameLine(state, beginning, end, 'n');
-            logCommand(false, state, key);
-            createSnapshot(state);
         }
-        state.previousKeys = '';
-    } else if (state.previousKeys === 'yf') {
-        if (isWritable(key)) {
-            state.visual.row = state.row;
-            state.visual.col = findForward(state, key);
-            copyInVisual(state);
+        state.visual.row = state.row;
+        for (let i = state.row; i >= 0; i -= 1) {
+            if (isEmptyRow(state, i)) {
+                break;
+            } else {
+                state.visual = { row: i, col: 0 };
+            }
         }
-        state.previousKeys = '';
-    } else if (state.previousKeys === 'yF') {
-        if (isWritable(key)) {
-            state.visual.row = state.row;
-            state.visual.col = state.col;
-            state.col = findBackward(state, key);
-            copyInVisual(state);
+        for (let i = state.row + 1; i < state.data.length; i += 1) {
+            if (isEmptyRow(state, i)) {
+                state.row = i;
+                break;
+            } else {
+                state.row = i;
+                state.col = 0;
+            }
         }
-        state.previousKeys = '';
-    } else if (state.previousKeys === 'yt') {
-        if (isWritable(key)) {
-            state.visual.row = state.row;
-            state.visual.col = toForward(state, key);
-            copyInVisual(state);
+        if (state.row >= state.visual.row) {
+            const newClipboard = [''];
+            for (let i = state.visual.row; i <= state.row; i += 1) {
+                newClipboard.push(state.data[i]);
+            }
+            copyToClipboard(state, newClipboard);
+            state.row = state.visual.row;
+        } else if (state.row < state.visual.row) {
+            const newClipboard = [''];
+            for (let i = state.row; i <= state.visual.row; i += 1) {
+                newClipboard.push(state.data[i]);
+            }
+            copyToClipboard(state, newClipboard);
         }
-        state.previousKeys = '';
-    } else if (state.previousKeys === 'yT') {
-        if (isWritable(key)) {
-            state.visual.row = state.row;
-            state.visual.col = state.col;
-            state.col = toBackward(state, key);
-            copyInVisual(state);
+        if (state.row > state.data.length - 1) {
+            state.row = state.data.length - 1;
         }
-        state.previousKeys = '';
-    } else if (state.previousKeys === 'ya') {
-        if (key === 'w') {
-            const { beginning, end } = getCoorsInsideWord(state);
-            copyInsideAreaSameLine(state, beginning, end);
-        } else if (key === 'W') {
-            const { beginning, end } = getCoorsInsideCharSame(state, ' ');
-            copyInsideAreaSameLine(state, beginning, end);
-        } else if (key === 'p') {
-            state.visual = {
-                row: state.row,
-                col: state.col
-            };
-            for (let i = state.row; i < state.data.length; i += 1) {
-                if (!isEmptyRow(state, i)) {
-                    state.row = i;
-                    state.col = 0;
-                    break;
-                }
+        if (state.row < 0) {
+            state.row = 0;
+        }
+        firstNonSpace(state, state.row);
+    } else if (state.previousKeys + key === 'yaf') {
+        if (!isEmptyRow(state, state.row) && getIndentLevel(state, state.row) !== 0) {
+            const { beginning, end } = getInsideOfIndentLevel(state);
+            state.visual.row = beginning - 1;
+            state.row = end + 1;
+            state.col = 0;
+            const newClipboard = [''];
+            for (let i = state.visual.row; i <= state.row; i += 1) {
+                newClipboard.push(state.data[i]);
             }
-            state.visual.row = state.row;
-            for (let i = state.row; i >= 0; i -= 1) {
-                if (isEmptyRow(state, i)) {
-                    break;
-                } else {
-                    state.visual = { row: i, col: 0 };
-                }
-            }
-            for (let i = state.row + 1; i < state.data.length; i += 1) {
-                if (isEmptyRow(state, i)) {
-                    state.row = i;
-                    break;
-                } else {
-                    state.row = i;
-                    state.col = 0;
-                }
-            }
-            if (state.row >= state.visual.row) {
-                const newClipboard = [''];
-                for (let i = state.visual.row; i <= state.row; i += 1) {
-                    newClipboard.push(state.data[i]);
-                }
-                copyToClipboard(state, newClipboard);
-                state.row = state.visual.row;
-            } else if (state.row < state.visual.row) {
-                const newClipboard = [''];
-                for (let i = state.row; i <= state.visual.row; i += 1) {
-                    newClipboard.push(state.data[i]);
-                }
-                copyToClipboard(state, newClipboard);
-            }
-            if (state.row > state.data.length - 1) {
-                state.row = state.data.length - 1;
-            }
-            if (state.row < 0) {
-                state.row = 0;
-            }
+            copyToClipboard(state, newClipboard);
+            state.row = state.visual.row;
             firstNonSpace(state, state.row);
-        } else if (key === 'f') {
-            if (!isEmptyRow(state, state.row) && getIndentLevel(state, state.row) !== 0) {
-                const { beginning, end } = getInsideOfIndentLevel(state);
-                state.visual.row = beginning - 1;
-                state.row = end + 1;
-                state.col = 0;
-                const newClipboard = [''];
-                for (let i = state.visual.row; i <= state.row; i += 1) {
-                    newClipboard.push(state.data[i]);
-                }
-                copyToClipboard(state, newClipboard);
-                state.row = state.visual.row;
-                firstNonSpace(state, state.row);
-            }
-        } else if (key === '(' || key === ')' || key === 'b') {
-            const { beginning, end } = getCoorsInsideCharDiff(state, '(', ')');
-            copyInsideAreaSameLine(state, beginning - 1, end + 1);
-        } else if (key === '<' || key === '>' || key === 't') {
-            const { beginning, end } = getCoorsInsideCharDiff(state, '<', '>');
-            copyInsideAreaSameLine(state, beginning - 1, end + 1);
-        } else if (key === '[' || key === ']' || key === 'd') {
-            const { beginning, end } = getCoorsInsideCharDiff(state, '[', ']');
-            copyInsideAreaSameLine(state, beginning - 1, end + 1);
-        } else if (key === '{' || key === '}' || key === 'B') {
-            const { beginning, end } = getCoorsInsideCharDiff(state, '{', '}');
-            copyInsideAreaSameLine(state, beginning - 1, end + 1);
-        } else if (key === '\'' || key === '"' || key === '`') {
-            const { beginning, end } = getCoorsInsideCharSame(state, key);
-            copyInsideAreaSameLine(state, beginning - 1, end + 1);
         }
-        state.previousKeys = '';
-    } else if (state.previousKeys === 'yi') {
-        if (key === 'w') {
-            const { beginning, end } = getCoorsInsideWord(state);
-            copyInsideAreaSameLine(state, beginning, end);
-        } else if (key === 'W') {
-            const { beginning, end } = getCoorsInsideCharSame(state, ' ');
-            copyInsideAreaSameLine(state, beginning, end);
-        } else if (key === 'p') {
-            state.visual = {
-                row: state.row,
-                col: state.col
-            };
-            for (let i = state.row; i < state.data.length; i += 1) {
-                if (!isEmptyRow(state, i)) {
-                    state.row = i;
-                    state.col = 0;
-                    break;
-                }
-            }
-            state.visual.row = state.row;
-            for (let i = state.row; i >= 0; i -= 1) {
-                if (isEmptyRow(state, i)) {
-                    break;
-                } else {
-                    state.visual = { row: i, col: 0 };
-                }
-            }
-            for (let i = state.row + 1; i < state.data.length; i += 1) {
-                if (isEmptyRow(state, i)) {
-                    break;
-                } else {
-                    state.row = i;
-                    state.col = 0;
-                }
-            }
-            if (state.row >= state.visual.row) {
-                const newClipboard = [''];
-                for (let i = state.visual.row; i <= state.row; i += 1) {
-                    newClipboard.push(state.data[i]);
-                }
-                copyToClipboard(state, newClipboard);
-                state.row = state.visual.row;
-            } else if (state.row < state.visual.row) {
-                const newClipboard = [''];
-                for (let i = state.row; i <= state.visual.row; i += 1) {
-                    newClipboard.push(state.data[i]);
-                }
-                copyToClipboard(state, newClipboard);
-            }
-            createSnapshot(state);
-        } else if (key === 'f') {
-            if (!isEmptyRow(state, state.row) && getIndentLevel(state, state.row) !== 0) {
-                const { beginning, end } = getInsideOfIndentLevel(state);
-                state.visual.row = beginning;
-                state.row = end;
+    } else if (state.previousKeys === 'ya' && (key === '(' || key === ')' || key === 'b')) {
+        const { beginning, end } = getCoorsInsideCharDiff(state, '(', ')');
+        copyInsideAreaSameLine(state, beginning - 1, end + 1);
+    } else if (state.previousKeys === 'ya' && (key === '<' || key === '>' || key === 't')) {
+        const { beginning, end } = getCoorsInsideCharDiff(state, '<', '>');
+        copyInsideAreaSameLine(state, beginning - 1, end + 1);
+    } else if (state.previousKeys === 'ya' && (key === '[' || key === ']' || key === 'd')) {
+        const { beginning, end } = getCoorsInsideCharDiff(state, '[', ']');
+        copyInsideAreaSameLine(state, beginning - 1, end + 1);
+    } else if (state.previousKeys === 'ya' && (key === '{' || key === '}' || key === 'B')) {
+        const { beginning, end } = getCoorsInsideCharDiff(state, '{', '}');
+        copyInsideAreaSameLine(state, beginning - 1, end + 1);
+    } else if (state.previousKeys === 'ya' && (key === '\'' || key === '"' || key === '`')) {
+        const { beginning, end } = getCoorsInsideCharSame(state, key);
+        copyInsideAreaSameLine(state, beginning - 1, end + 1);
+    } else if (state.previousKeys + key === 'yiw') {
+        const { beginning, end } = getCoorsInsideWord(state);
+        copyInsideAreaSameLine(state, beginning, end);
+    } else if (state.previousKeys + key === 'yiW') {
+        const { beginning, end } = getCoorsInsideCharSame(state, ' ');
+        copyInsideAreaSameLine(state, beginning, end);
+    } else if (state.previousKeys + key === 'yip') {
+        state.visual = {
+            row: state.row,
+            col: state.col
+        };
+        for (let i = state.row; i < state.data.length; i += 1) {
+            if (!isEmptyRow(state, i)) {
+                state.row = i;
                 state.col = 0;
-                const newClipboard = [''];
-                for (let i = state.visual.row; i <= state.row; i += 1) {
-                    newClipboard.push(state.data[i]);
-                }
-                copyToClipboard(state, newClipboard);
-                state.row = state.visual.row;
-                firstNonSpace(state, state.row);
+                break;
             }
-        } else if (key === '(' || key === ')' || key === 'b') {
-            const { beginning, end } = getCoorsInsideCharDiff(state, '(', ')');
-            copyInsideAreaSameLine(state, beginning, end);
-        } else if (key === '<' || key === '>' || key === 't') {
-            const { beginning, end } = getCoorsInsideCharDiff(state, '<', '>');
-            copyInsideAreaSameLine(state, beginning, end);
-        } else if (key === '[' || key === ']' || key === 'd') {
-            const { beginning, end } = getCoorsInsideCharDiff(state, '[', ']');
-            copyInsideAreaSameLine(state, beginning, end);
-        } else if (key === '{' || key === '}' || key === 'B') {
-            const { beginning, end } = getCoorsInsideCharDiff(state, '{', '}');
-            copyInsideAreaSameLine(state, beginning, end);
-        } else if (key === '\'' || key === '"' || key === '`') {
-            const { beginning, end } = getCoorsInsideCharSame(state, key);
-            copyInsideAreaSameLine(state, beginning, end);
         }
-        state.previousKeys = '';
+        state.visual.row = state.row;
+        for (let i = state.row; i >= 0; i -= 1) {
+            if (isEmptyRow(state, i)) {
+                break;
+            } else {
+                state.visual = { row: i, col: 0 };
+            }
+        }
+        for (let i = state.row + 1; i < state.data.length; i += 1) {
+            if (isEmptyRow(state, i)) {
+                break;
+            } else {
+                state.row = i;
+                state.col = 0;
+            }
+        }
+        if (state.row >= state.visual.row) {
+            const newClipboard = [''];
+            for (let i = state.visual.row; i <= state.row; i += 1) {
+                newClipboard.push(state.data[i]);
+            }
+            copyToClipboard(state, newClipboard);
+            state.row = state.visual.row;
+        } else if (state.row < state.visual.row) {
+            const newClipboard = [''];
+            for (let i = state.row; i <= state.visual.row; i += 1) {
+                newClipboard.push(state.data[i]);
+            }
+            copyToClipboard(state, newClipboard);
+        }
+        createSnapshot(state);
+    } else if (state.previousKeys + key === 'yif') {
+        if (!isEmptyRow(state, state.row) && getIndentLevel(state, state.row) !== 0) {
+            const { beginning, end } = getInsideOfIndentLevel(state);
+            state.visual.row = beginning;
+            state.row = end;
+            state.col = 0;
+            const newClipboard = [''];
+            for (let i = state.visual.row; i <= state.row; i += 1) {
+                newClipboard.push(state.data[i]);
+            }
+            copyToClipboard(state, newClipboard);
+            state.row = state.visual.row;
+            firstNonSpace(state, state.row);
+        }
+    } else if (state.previousKeys === 'yi' && (key === '(' || key === ')' || key === 'b')) {
+        const { beginning, end } = getCoorsInsideCharDiff(state, '(', ')');
+        copyInsideAreaSameLine(state, beginning, end);
+    } else if (state.previousKeys === 'yi' && (key === '<' || key === '>' || key === 't')) {
+        const { beginning, end } = getCoorsInsideCharDiff(state, '<', '>');
+        copyInsideAreaSameLine(state, beginning, end);
+    } else if (state.previousKeys === 'yi' && (key === '[' || key === ']' || key === 'd')) {
+        const { beginning, end } = getCoorsInsideCharDiff(state, '[', ']');
+        copyInsideAreaSameLine(state, beginning, end);
+    } else if (state.previousKeys === 'yi' && (key === '{' || key === '}' || key === 'B')) {
+        const { beginning, end } = getCoorsInsideCharDiff(state, '{', '}');
+        copyInsideAreaSameLine(state, beginning, end);
+    } else if (state.previousKeys === 'yi' && (key === '\'' || key === '"' || key === '`')) {
+        const { beginning, end } = getCoorsInsideCharSame(state, key);
+        copyInsideAreaSameLine(state, beginning, end);
     } else if (state.previousKeys === 'y') {
         if (key === 'j') {
             const newClipboard = [''];
@@ -1032,6 +998,8 @@ function handleVimKeys(key, state, screen) {
             removeInsideAreaSameLine(state, beginning, end, 'i');
             logCommand(false, state, key);
         }
+        state.previousKeys = '';
+    } else if (state.previousKeys !== '') {
         state.previousKeys = '';
     } else if (state.mode === 'n') {
         if (key === 'TAB') {
