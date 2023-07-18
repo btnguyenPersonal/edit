@@ -890,13 +890,9 @@ function evaluateCommand(state, term) {
     }
 }
 
-function updateStorePosition(state) {
-    state.file = state.files[state.harpoonIndexes[state.harpoonIndex]];
-    const snapshotsCopy = [];
-    for (let i = 0; i < state.snapshots.length; i += 1) {
-        snapshotsCopy.push(JSON.parse(JSON.stringify(state.snapshots[i])));
-    }
-    state.storePosition[state.fileIndex] = {
+function createState(state) {
+    const snapshotsCopy = state.snapshots.map(snapshot => JSON.parse(JSON.stringify(snapshot)));
+    return {
         row: state.row,
         col: state.col,
         windowLine: state.windowLine,
@@ -907,18 +903,55 @@ function updateStorePosition(state) {
         prevRow: state.prevRow,
         prevCol: state.prevCol,
     };
-    state.fileIndex = state.harpoonIndexes[state.harpoonIndex];
+}
+
+function updateStateFromFilePosition(state, fileIndex) {
+    const pos = state.storePosition[fileIndex];
+    const keysToUpdate = [
+        'row',
+        'col',
+        'windowLine',
+        'windowLineHorizontal',
+        'currentSnapshot',
+        'snapshots',
+        'mark',
+        'prevRow',
+        'prevCol'
+    ];
+
+    for (const key of keysToUpdate) {
+        state[key] = pos[key];
+    }
+}
+
+function updateFileState(state, newFile, lineNum) {
+    const fileExistsInState = state.files.includes(state.file);
+    const newState = createState(state);
+    if (fileExistsInState) {
+        state.storePosition[state.fileIndex] = newState;
+    } else {
+        state.storePosition.push(newState);
+    }
+    state.file = newFile;
+    state.fileIndex = fileExistsInState ? state.files.indexOf(state.file) : state.files.length - 1;
     changeFile(state);
-    const pos = state.storePosition[state.fileIndex];
-    state.row = pos.row;
-    state.col = pos.col;
-    state.windowLine = pos.windowLine;
-    state.windowLineHorizontal = pos.windowLineHorizontal;
-    state.currentSnapshot = pos.currentSnapshot;
-    state.snapshots = pos.snapshots;
-    state.mark = pos.mark;
-    state.prevRow = pos.prevRow;
-    state.prevCol = pos.prevCol;
+    if (lineNum !== 0) {
+        state.row = lineNum - 1;
+        state.col = 0;
+    }
+}
+
+function processFile(state, newFile, lineNum, fileExists) {
+    if (fileExists) {
+        if (!state.files.includes(newFile)) {
+            state.file = newFile;
+            state.files.push(state.file);
+            updateFileState(state, newFile, lineNum);
+        } else {
+            updateFileState(state, newFile, lineNum);
+            updateStateFromFilePosition(state, state.fileIndex);
+        }
+    }
 }
 
 export {
@@ -946,7 +979,7 @@ export {
     changeFile,
     getData,
     evaluateCommand,
-    updateStorePosition,
+    processFile,
     getContextLines,
     getSystemPaste,
     isFile

@@ -26,6 +26,7 @@ import {
     isEmptyRow,
     isCommented,
     toggleComment,
+    matchIt,
 } from '../util/movement.js';
 
 function handleVisualLineKeys(key, state, screen) {
@@ -393,6 +394,8 @@ function handleVisualLineKeys(key, state, screen) {
         } else if (key === ']') {
             nextSameIndentLevel(state, state.row);
             renderScreen(state, screen);
+        } else if (key === '%') {
+            matchIt(state);
         } else if (key === '(') {
             previousLowerIndentLevel(state, state.row);
             renderScreen(state, screen);

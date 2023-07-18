@@ -34,6 +34,7 @@ import {
     isEmptyRow,
     isCommented,
     toggleComment,
+    matchIt,
 } from '../util/movement.js';
 
 function handleVisualBlockKeys(key, state, screen) {
@@ -103,6 +104,8 @@ function handleVisualBlockKeys(key, state, screen) {
         deleteInVisualBlock(state);
         state.mode = 'n';
         createSnapshot(state);
+    } else if (key === '%') {
+        matchIt(state);
     } else if (key === 'd') {
         copyInVisualBlock(state);
         deleteInVisualBlock(state);
