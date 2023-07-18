@@ -3,7 +3,7 @@
     - run commands from within terminal
     - every rerender don't have to recalculate the color each time (how bad can this really be?)
     - add % to search for next })] w/ stack
-## todo
+    - indent work with || && and .then() also with : for python
     - compartmentalize stuff into more functions
     - vertical split
     - horizontal split
@@ -14,11 +14,15 @@
     - :s///g (for visual)
     - :sort
     - undo ui that displays all last snapshots with the commands that were run to end up there -> (12 minutes ago) jjjjjdip
-                                                                                                  (14 minutes ago) vipgc
+    (14 minutes ago) vipgc
     - block comment highlighting
     - readme / markdown highlighting
     - colors with hex ?? might not be supported in terminal-kit
-    - indent work with || && and .then() also with : for python
+## todo
+    - visualBlock movement horizontal
+    - stop nesting ifs everywhere, make every key an if (previousKeys + key === 'di(') {} kind of thing
+    - clean up my file switching crap spewed everywhere, and have mark2 be saved (and have macro2 if not already)
+    - ___this weekend start combing through all of the code and clean up everything that is icky___
 ## blocked
 ## in progress
 ## done
