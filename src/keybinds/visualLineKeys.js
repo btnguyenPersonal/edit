@@ -11,6 +11,11 @@ import { sendKeys } from '../util/sendKeys.js';
 import {
     up,
     down,
+    left,
+    right,
+    getCoorBeginningNextWord,
+    getCoorBeginningLastWord,
+    endOfLine,
     firstNonSpace,
     increaseIndentLevel,
     decreaseIndentLevel,
@@ -65,6 +70,20 @@ function handleVisualLineKeys(key, state, screen) {
             up(state);
         } else if (key === 'DOWN' || key === 'j') {
             down(state);
+        } else if (key === 'LEFT' || key === 'h') {
+            left(state);
+        } else if (key === 'RIGHT' || key === 'l') {
+            right(state);
+        } else if (key === 'w') {
+            state.col = getCoorBeginningNextWord(state);
+        } else if (key === 'b') {
+            state.col = getCoorBeginningLastWord(state);
+        } else if (key === '$') {
+            state.col = endOfLine(state, state.row);
+        } else if (key === '0') {
+            state.col = 0;
+        } else if (key === '^') {
+            state.col = firstNonSpace(state, state.row);
         } else if (key === 'y') {
             if (state.row >= state.visual.row) {
                 const newClipboard = [''];
