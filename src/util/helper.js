@@ -1,5 +1,6 @@
 /* eslint-disable import/no-cycle */
 import ncp from 'copy-paste';
+import { execSync } from 'child_process';
 import moment from 'moment';
 import fs from 'fs';
 
@@ -592,8 +593,8 @@ function renderStatusBar(state, screen) {
             }, shortenFilePath(state.files[state.harpoonIndexes[i]]) + ' ');
         }
         const index = 5 + state.file.length + ((state.row + 1).toString().length) + ((state.col + 1).toString().length) + state.searchQuery.length;
-        screen.put({ attr: { color: 'green' }, x: process.stdout.columns - index - 2 }, state.previousKeys.slice(-2));
-        screen.put({ attr: { color: 'blue' }, x: process.stdout.columns - index }, '/' + state.searchQuery);
+        screen.put({ attr: { color: 'blue' }, x: process.stdout.columns - index - 10 }, state.totalCommandHistory.slice(-10));
+        screen.put({ attr: { color: 'green' }, x: process.stdout.columns - index }, '/' + state.searchQuery);
         screen.put({ attr: { color: 'white' } }, '"' + state.file + ':' + (state.row + 1) + ':' + (state.col + 1) + '"');
     }
 }
@@ -936,6 +937,30 @@ function processFile(state, newFile, lineNum, fileExists) {
     }
 }
 
+function calcFileFinderOutput(state) {
+    if (state.mode === 'g') {
+        let output = '';
+        if (state.fileFinderQuery.length !== 0) {
+            output = execSync(`git grep -n "${state.fileFinderQuery}" || true`, { maxBuffer: 1024 * 1024 * 1000 }).toString();
+        }
+        state.fileFindingOutput = output.split('\n');
+    } else {
+        let output = '';
+        if (state.gitFinding) {
+            if (state.fileFinderQuery.length !== 0) {
+                output = execSync(`fd -t f --hidden -E .git | grep -F -i "${state.fileFinderQuery}" || true`).toString();
+            } else {
+                output = execSync('fd -t f --hidden -E .git').toString();
+            }
+        } else {
+            if (state.fileFinderQuery.length !== 0) {
+                output = execSync(`find * -type f -name "${state.fileFinderQuery}*"`).toString();
+            }
+        }
+        state.fileFindingOutput = output.split('\n');
+    }
+}
+
 export {
     pasteFromClipboardBefore,
     pasteFromClipboardAfter,
@@ -958,11 +983,11 @@ export {
     centerScreen,
     refreshFile,
     getRowIfOverflow,
-    changeFile,
     getData,
     evaluateCommand,
     processFile,
     getContextLines,
     getSystemPaste,
-    isFile
+    calcFileFinderOutput,
+    isFile,
 };
