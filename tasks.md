@@ -19,12 +19,13 @@
     - readme / markdown highlighting
     - colors with hex ?? might not be supported in terminal-kit
 ## todo
-    - stop nesting ifs everywhere, make every key an if (previousKeys + key === 'di(') {} kind of thing
-    - clean up my file switching crap spewed everywhere, and have mark2 be saved (and have macro2 if not already)
     - go to marks in visual
-    - ___this weekend start combing through all of the code and clean up everything that is icky___
 ## blocked
 ## in progress
+    - ___this weekend start combing through all of the code and clean up everything that is icky___
+        - stop nesting ifs everywhere, make every key an if (previousKeys + key === 'di(') {} kind of thing
+        - maybe make a cleanup function that runs logCommand, state.previousKeys clear, createSnapshot
+        - clean up my file switching crap spewed everywhere, and have mark2 be saved (and have macro2 if not already)
 ## done
     - visualLine movement horizontal
     - stop using 'inString' for non-code
