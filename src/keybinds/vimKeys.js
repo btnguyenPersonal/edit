@@ -1438,14 +1438,14 @@ function handleVimKeys(key, state, screen) {
                     state.windowLineHorizontal = 0;
                 }
             }
-        } else if (key === ',') {
-            state.allowCommandLogging = false;
-            let chr = state.lastSearchCommand[0];
-            if (chr !== undefined) {
-                chr = chr === chr.toUpperCase() ? chr.toLowerCase() : chr.toUpperCase();
-                sendKeys([chr, state.lastSearchCommand[1]], state, screen);
-            }
-            state.allowCommandLogging = true;
+        // } else if (key === ',') {
+        //     state.allowCommandLogging = false;
+        //     let chr = state.lastSearchCommand[0];
+        //     if (chr !== undefined) {
+        //         chr = chr === chr.toUpperCase() ? chr.toLowerCase() : chr.toUpperCase();
+        //         sendKeys([chr, state.lastSearchCommand[1]], state, screen);
+        //     }
+        //     state.allowCommandLogging = true;
         } else if (key === ';') {
             state.allowCommandLogging = false;
             sendKeys(state.lastSearchCommand, state, screen);
@@ -1461,7 +1461,7 @@ function handleVimKeys(key, state, screen) {
             } else {
                 state.harpoonIndexes = state.harpoonIndexes.filter(((e) => (e !== state.fileIndex)));
             }
-        } else if (key === '@') {
+        } else if (key === '@' || key === ',') {
             state.allowCommandLogging = false;
             sendKeys(state.macro, state, screen);
             state.allowCommandLogging = true;
