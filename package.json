@@ -35,6 +35,7 @@
     "sinon-chai": "3.7.0"
   },
   "bin": {
-    "edit": "bun run ./src/edit.js"
+    "e": "node ./build/out.js",
+    "edit": "node ./build/out.js"
   }
 }
