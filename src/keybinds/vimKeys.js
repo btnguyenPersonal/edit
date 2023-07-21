@@ -1092,13 +1092,13 @@ function handleVimKeys(key, state, screen) {
         upHalfScreen(state);
     } else if (state.previousKeys === '' && key === 'CTRL_D') {
         downHalfScreen(state);
-    } else if (state.previousKeys === '' && key === 'UP' || key === 'k') {
+    } else if (state.previousKeys === '' && (key === 'UP' || key === 'k')) {
         up(state);
-    } else if (state.previousKeys === '' && key === 'DOWN' || key === 'j') {
+    } else if (state.previousKeys === '' && (key === 'DOWN' || key === 'j')) {
         down(state);
-    } else if (state.previousKeys === '' && key === 'LEFT' || key === 'h') {
+    } else if (state.previousKeys === '' && (key === 'LEFT' || key === 'h')) {
         left(state);
-    } else if (state.previousKeys === '' && key === 'RIGHT' || key === 'l') {
+    } else if (state.previousKeys === '' && (key === 'RIGHT' || key === 'l')) {
         right(state);
     } else if (state.previousKeys === '' && key === 'i') {
         state.mode = 'i';
@@ -1117,7 +1117,10 @@ function handleVimKeys(key, state, screen) {
         createSnapshot(state);
     } else if (state.previousKeys === '' && key === '$') {
         state.col = endOfLine(state, state.row);
-    } else if (state.previousKeys === '' && key === '1' || key === '2' || key === '3' || key === '4' || key === '5' || key === '6' || key === '7' || key === '8' || key === '9') {
+    } else if (
+        state.previousKeys === ''
+        && (key === '1' || key === '2' || key === '3' || key === '4' || key === '5' || key === '6' || key === '7' || key === '8' || key === '9')
+    ) {
         state.previousKeys = '-';
         state.lineNumber = '';
         state.lineNumber += key;
@@ -1194,12 +1197,12 @@ function handleVimKeys(key, state, screen) {
             logCommand(true, state, key);
             createSnapshot(state);
         }
-    } else if (state.previousKeys === '' && key === 'f' || key === 't' || key === 'F' || key === 'T' || key === 'g' || key === '-' || key === 'y') {
+    } else if (state.previousKeys === '' && (key === 'f' || key === 't' || key === 'F' || key === 'T' || key === 'g' || key === '-' || key === 'y')) {
         if (key === '-') {
             state.lineNumber = '';
         }
         state.previousKeys = key;
-    } else if (state.previousKeys === '' && key === 'c' || key === 'r' || key === 'd') {
+    } else if (state.previousKeys === '' && (key === 'c' || key === 'r' || key === 'd')) {
         state.previousKeys = key;
         logCommand(true, state, key);
     } else if (state.previousKeys === '' && key === 'CTRL_V') {
