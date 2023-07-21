@@ -1,6 +1,5 @@
 /* eslint-disable import/no-cycle */
 import moment from 'moment';
-import { execSync } from 'child_process';
 import {
     pasteFromClipboardBefore,
     pasteFromClipboardAfter,
@@ -19,8 +18,8 @@ import {
     processFile,
     logCommand,
     refreshFile,
+    calcFileFinderOutput,
     getSystemPaste,
-    changeFile,
 } from '../util/helper.js';
 import { sendKeys } from '../util/sendKeys.js';
 import {
@@ -1003,67 +1002,6 @@ function handleVimKeys(key, state, screen) {
         removeInsideAreaSameLine(state, beginning, end, 'i');
         logCommand(false, state, key);
         state.previousKeys = '';
-    } else if (state.previousKeys === '' && key === 'TAB') {
-        if (state.fileIndex - 1 >= 0) {
-            state.file = state.files[state.fileIndex - 1];
-            const snapshotsCopy = [];
-            for (let i = 0; i < state.snapshots.length; i += 1) {
-                snapshotsCopy.push(JSON.parse(JSON.stringify(state.snapshots[i])));
-            }
-            state.storePosition[state.fileIndex] = {
-                row: state.row,
-                col: state.col,
-                windowLine: state.windowLine,
-                windowLineHorizontal: state.windowLineHorizontal,
-                currentSnapshot: state.currentSnapshot,
-                snapshots: snapshotsCopy,
-                mark: state.mark,
-                prevRow: state.prevRow,
-                prevCol: state.prevCol,
-            };
-            state.fileIndex -= 1;
-            changeFile(state);
-            const pos = state.storePosition[state.fileIndex];
-            state.row = pos.row;
-            state.col = pos.col;
-            state.windowLine = pos.windowLine;
-            state.windowLineHorizontal = pos.windowLineHorizontal;
-            state.currentSnapshot = pos.currentSnapshot;
-            state.snapshots = pos.snapshots;
-            state.mark = pos.mark;
-            state.prevRow = pos.prevRow;
-            state.prevCol = pos.prevCol;
-        }
-    } else if (state.previousKeys === '' && key === 'CTRL_O') {
-        if (state.fileIndex + 1 < state.files.length) {
-            state.file = state.files[state.fileIndex + 1];
-            const snapshotsCopy = [];
-            for (let i = 0; i < state.snapshots.length; i += 1) {
-                snapshotsCopy.push(JSON.parse(JSON.stringify(state.snapshots[i])));
-            }
-            state.storePosition[state.fileIndex] = {
-                row: state.row,
-                col: state.col,
-                windowLine: state.windowLine,
-                windowLineHorizontal: state.windowLineHorizontal,
-                snapshots: snapshotsCopy,
-                mark: state.mark,
-                prevRow: state.prevRow,
-                prevCol: state.prevCol,
-            };
-            state.fileIndex += 1;
-            changeFile(state);
-            const pos = state.storePosition[state.fileIndex];
-            state.row = pos.row;
-            state.col = pos.col;
-            state.windowLine = pos.windowLine;
-            state.windowLineHorizontal = pos.windowLineHorizontal;
-            state.currentSnapshot = pos.currentSnapshot;
-            state.snapshots = pos.snapshots;
-            state.mark = pos.mark;
-            state.prevRow = pos.prevRow;
-            state.prevCol = pos.prevCol;
-        }
     } else if (state.previousKeys === '' && key === 'CTRL_W') {
         if (state.harpoonIndex - 1 >= 0) {
             state.harpoonIndex -= 1;
@@ -1332,14 +1270,7 @@ function handleVimKeys(key, state, screen) {
         createSnapshot(state);
     } else if (state.previousKeys === '' && key === 'CTRL_G') {
         state.mode = 'g';
-        let output = '';
-        if (state.fileFinderQuery.length !== 0) {
-            output = execSync(
-                `git grep -n "${state.fileFinderQuery}" || true`,
-                { maxBuffer: 1024 * 1024 * 1000 }
-            ).toString();
-        }
-        state.fileFindingOutput = output.split('\n');
+        calcFileFinderOutput(state);
     } else if (state.previousKeys === '' && key === 'CTRL_N') {
         state.mode = 'f';
         state.gitFinding = false;
@@ -1358,8 +1289,7 @@ function handleVimKeys(key, state, screen) {
         state.gitFinding = true;
         state.fileFinderQuery = '';
         state.fileFinderIndex = 0;
-        const output = execSync('fd -t f --hidden -E .git').toString();
-        state.fileFindingOutput = output.split('\n');
+        calcFileFinderOutput(state);
     } else if (state.previousKeys === '' && key === '\'') {
         if (state.mark !== -1) {
             state.row = state.mark;

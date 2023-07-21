@@ -1,4 +1,3 @@
-/* eslint-disable import/no-cycle */
 import {
     isWritable,
     renderScreen,
@@ -10,8 +9,6 @@ import {
     down,
     left,
     right,
-    increaseIndentLevel,
-    decreaseIndentLevel,
     getIndentLevelFrom,
     isEmptyRow,
     endOfLine,
@@ -70,12 +67,6 @@ function handleKeys(key, state, screen) {
         if (state.row >= state.windowLine + process.stdout.rows - 1) {
             state.windowLine += 1;
         }
-    } else if (key === 'TAB') {
-        increaseIndentLevel(state, state.row);
-        state.col += 4;
-    } else if (key === 'SHIFT_TAB') {
-        decreaseIndentLevel(state, state.row);
-        state.col = state.col - 4 >= 0 ? state.col - 4 : 0;
     } else if (key === 'CTRL_A') {
         state.col = firstNonSpace(state, state.row);
     } else if (key === 'CTRL_E') {

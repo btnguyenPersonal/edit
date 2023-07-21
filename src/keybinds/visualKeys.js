@@ -1,5 +1,4 @@
 /* eslint-disable import/no-cycle */
-import { execSync } from 'child_process';
 import path from 'path';
 import {
     renderScreen,
@@ -7,9 +6,10 @@ import {
     isWritable,
     searchForString,
     centerScreen,
-    changeFile,
     isFile,
     getSystemPaste,
+    processFile,
+    calcFileFinderOutput,
     logCommand
 } from '../util/helper.js';
 import {
@@ -245,96 +245,12 @@ function handleVisualKeys(key, state, screen) {
             convertedPath += '/index.js';
             fileExists = isFile(convertedPath);
         }
-        if (fileExists) {
-            if (!state.files.includes(convertedPath)) {
-                state.file = convertedPath;
-                state.files.push(state.file);
-                const snapshotsCopy = [];
-                for (let i = 0; i < state.snapshots.length; i += 1) {
-                    snapshotsCopy.push(JSON.parse(JSON.stringify(state.snapshots[i])));
-                }
-                if (state.files.includes(state.file)) {
-                    state.storePosition[state.fileIndex] = {
-                        row: state.row,
-                        col: state.col,
-                        windowLine: state.windowLine,
-                        windowLineHorizontal: state.windowLineHorizontal,
-                        snapshots: snapshotsCopy,
-                        mark: state.mark,
-                        prevRow: state.prevRow,
-                        prevCol: state.prevCol,
-                    };
-                } else {
-                    state.storePosition.push({
-                        row: state.row,
-                        col: state.col,
-                        windowLine: state.windowLine,
-                        windowLineHorizontal: state.windowLineHorizontal,
-                        currentSnapshot: state.currentSnapshot,
-                        snapshots: snapshotsCopy,
-                        mark: state.mark,
-                        prevRow: state.prevRow,
-                        prevCol: state.prevCol,
-                    });
-                }
-                state.fileIndex = state.files.length - 1;
-                changeFile(state);
-            } else {
-                const snapshotsCopy = [];
-                for (let i = 0; i < state.snapshots.length; i += 1) {
-                    snapshotsCopy.push(JSON.parse(JSON.stringify(state.snapshots[i])));
-                }
-                if (state.files.includes(state.file)) {
-                    state.storePosition[state.fileIndex] = {
-                        row: state.row,
-                        col: state.col,
-                        windowLine: state.windowLine,
-                        windowLineHorizontal: state.windowLineHorizontal,
-                        snapshots: snapshotsCopy,
-                        mark: state.mark,
-                        prevRow: state.prevRow,
-                        prevCol: state.prevCol,
-                    };
-                } else {
-                    state.storePosition.push({
-                        row: state.row,
-                        col: state.col,
-                        windowLine: state.windowLine,
-                        windowLineHorizontal: state.windowLineHorizontal,
-                        currentSnapshot: state.currentSnapshot,
-                        snapshots: snapshotsCopy,
-                        mark: state.mark,
-                        prevRow: state.prevRow,
-                        prevCol: state.prevCol,
-                    });
-                }
-                state.file = convertedPath;
-                state.fileIndex = state.files.indexOf(state.file);
-                changeFile(state);
-                const pos = state.storePosition[state.fileIndex];
-                state.row = pos.row;
-                state.col = pos.col;
-                state.windowLine = pos.windowLine;
-                state.windowLineHorizontal = pos.windowLineHorizontal;
-                state.currentSnapshot = pos.currentSnapshot;
-                state.snapshots = pos.snapshots;
-                state.mark = pos.mark;
-                state.prevRow = pos.prevRow;
-                state.prevCol = pos.prevCol;
-            }
-        }
+        processFile(state, convertedPath, 0, fileExists);
         state.previousKeys = '';
     } else if (key === '#') {
         state.fileFinderQuery = getInVisual(state);
         state.mode = 'g';
-        let output = '';
-        if (state.fileFinderQuery.length !== 0) {
-            output = execSync(
-                `git grep -n "${state.fileFinderQuery}" || true`,
-                { maxBuffer: 1024 * 1024 * 1000 }
-            ).toString();
-        }
-        state.fileFindingOutput = output.split('\n');
+        calcFileFinderOutput(state);
     } else if (key === '*') {
         state.searchQuery = getInVisual(state);
         state.mode = 'n';
