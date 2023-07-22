@@ -19,6 +19,7 @@
     - readme / markdown highlighting
     - colors with hex ?? might not be supported in terminal-kit
 ## todo
+    - fix /> for closing tags
     - go to marks in visual
 ## blocked
 ## in progress
