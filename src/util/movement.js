@@ -676,6 +676,7 @@ function getIndentLevelFrom(state, row, inverse) {
         if (state.data[row].trim().startsWith('}')
             || state.data[row].trim().startsWith(')')
             || state.data[row].trim().startsWith('</')
+            || state.data[row].trim().startsWith('/>')
         ) {
             indentLevel += state.indentAmount;
         }

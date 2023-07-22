@@ -19,8 +19,9 @@
     - readme / markdown highlighting
     - colors with hex ?? might not be supported in terminal-kit
 ## todo
-    - fix /> for closing tags
+    - fix /> for closing tags indentation
     - go to marks in visual
+    - while typing show autocomplete for most used word in file
 ## blocked
 ## in progress
     - ___this weekend start combing through all of the code and clean up everything that is icky___
