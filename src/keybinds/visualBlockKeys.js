@@ -31,7 +31,6 @@ import {
     getIndentLevelFrom,
     toForward,
     toBackward,
-    isEmptyRow,
     isCommented,
     toggleComment,
     matchIt,
@@ -51,28 +50,20 @@ function handleVisualBlockKeys(key, state, screen) {
         } else if (key === '\'' || key === '"') {
             const { beginning, end } = getCoorsInsideCharSame(state, key);
             setVisualBlockHighlight(state, beginning, end);
-        } else if (key === 'p') {
-            for (let i = state.row - 1; i >= 0; i -= 1) {
-                if (isEmptyRow(state, i)) {
-                    break;
-                } else {
-                    state.visual = { row: i, col: 0 };
-                }
-            }
-            for (let i = state.row + 1; i < state.data.length; i += 1) {
-                if (isEmptyRow(state, i)) {
-                    break;
-                } else {
-                    state.row = i;
-                    state.col = 0;
-                }
-            }
         }
         state.previousKeys = '';
     } else if (key === 'CTRL_U') {
         upHalfScreen(state);
     } else if (key === 'CTRL_D') {
         downHalfScreen(state);
+    } else if (key === '\'') {
+        if (state.mark !== -1) {
+            state.row = state.mark;
+        }
+    } else if (key === '"') {
+        if (state.mark2 !== -1) {
+            state.row = state.mark2;
+        }
     } else if (key === 'UP' || key === 'k') {
         up(state);
     } else if (key === 'DOWN' || key === 'j') {
