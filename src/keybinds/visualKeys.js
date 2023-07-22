@@ -10,6 +10,8 @@ import {
     getSystemPaste,
     processFile,
     calcFileFinderOutput,
+    findNextEmptyRow,
+    findLastNonEmptyRow,
     logCommand
 } from '../util/helper.js';
 import {
@@ -24,7 +26,6 @@ import {
     getCoorBeginningNextWord,
     upHalfScreen,
     downHalfScreen,
-    getInsideOfIndentLevel,
     getCoorsInsideCharSame,
     getCoorsInsideCharDiff,
     getCoorsInsideWord,
@@ -39,10 +40,8 @@ import {
     decreaseIndentLevel,
     getIndentLevelFrom,
     setAroundVisualHighlight,
-    getIndentLevel,
     toForward,
     toBackward,
-    isEmptyRow,
     isCommented,
     toggleComment,
     matchIt,
@@ -71,39 +70,9 @@ function handleVisualKeys(key, state, screen) {
         } else if (key === '\'' || key === '"' || key === '`') {
             const { beginning, end } = getCoorsInsideCharSame(state, key);
             setVisualHighlight(state, beginning, end);
-        } else if (key === 'f') {
-            if (!isEmptyRow(state, state.row) && getIndentLevel(state, state.row) !== 0) {
-                const { beginning, end } = getInsideOfIndentLevel(state);
-                state.visual.row = beginning;
-                state.row = end;
-                state.col = 0;
-                state.mode = 'V';
-            } else {
-                state.mode = 'n';
-            }
         } else if (key === 'p') {
-            for (let i = state.row; i < state.data.length; i += 1) {
-                if (!isEmptyRow(state, i)) {
-                    state.row = i;
-                    state.col = 0;
-                    break;
-                }
-            }
-            state.visual.row = state.row;
-            for (let i = state.row; i >= 0; i -= 1) {
-                if (isEmptyRow(state, i)) {
-                    break;
-                } else {
-                    state.visual.row = i;
-                }
-            }
-            for (let i = state.row + 1; i < state.data.length; i += 1) {
-                if (isEmptyRow(state, i)) {
-                    break;
-                } else {
-                    state.row = i;
-                }
-            }
+            state.row = findLastNonEmptyRow(state, state.row);
+            state.visual.row = findNextEmptyRow(state, state.row + 1) - 1;
             state.mode = 'V';
         }
         state.previousKeys = '';
@@ -129,40 +98,9 @@ function handleVisualKeys(key, state, screen) {
         } else if (key === '\'' || key === '"' || key === '`') {
             const { beginning, end } = getCoorsInsideCharSame(state, key);
             setAroundVisualHighlight(state, beginning, end);
-        } else if (key === 'f') {
-            if (!isEmptyRow(state, state.row) && getIndentLevel(state, state.row) !== 0) {
-                const { beginning, end } = getInsideOfIndentLevel(state);
-                state.visual.row = beginning - 1;
-                state.row = end + 1;
-                state.col = 0;
-                state.mode = 'V';
-            } else {
-                state.mode = 'n';
-            }
         } else if (key === 'p') {
-            for (let i = state.row; i < state.data.length; i += 1) {
-                if (!isEmptyRow(state, i)) {
-                    state.row = i;
-                    state.col = 0;
-                    break;
-                }
-            }
-            state.visual.row = state.row;
-            for (let i = state.row; i >= 0; i -= 1) {
-                if (isEmptyRow(state, i)) {
-                    break;
-                } else {
-                    state.visual.row = i;
-                }
-            }
-            for (let i = state.row + 1; i < state.data.length; i += 1) {
-                if (isEmptyRow(state, i)) {
-                    state.row = i;
-                    break;
-                } else {
-                    state.row = i;
-                }
-            }
+            state.row = findLastNonEmptyRow(state, state.row);
+            state.visual.row = findNextEmptyRow(state, state.row + 1);
             state.mode = 'V';
         }
         state.previousKeys = '';
@@ -247,6 +185,14 @@ function handleVisualKeys(key, state, screen) {
         }
         processFile(state, convertedPath, 0, fileExists);
         state.previousKeys = '';
+    } else if (key === '\'') {
+        if (state.mark !== -1) {
+            state.row = state.mark;
+        }
+    } else if (key === '"') {
+        if (state.mark2 !== -1) {
+            state.row = state.mark2;
+        }
     } else if (key === '#') {
         state.fileFinderQuery = getInVisual(state);
         state.mode = 'g';
