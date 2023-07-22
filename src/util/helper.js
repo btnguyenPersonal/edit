@@ -3,6 +3,67 @@ import ncp from 'copy-paste';
 import { execSync } from 'child_process';
 import moment from 'moment';
 import fs from 'fs';
+import { isEmptyRow, getIndentLevelFrom } from './movement.js';
+
+function copyToClipboard(state, textArray, clipboardVisualBlock) {
+    state.clipboardVisualBlock = clipboardVisualBlock;
+    ncp.copy(textArray.join('\n'));
+    state.clipboard = textArray.join('\n');
+}
+
+function insertIndentedRow(state) {
+    const indentLevel = state.data[state.row] !== undefined ? getIndentLevelFrom(state, state.row) : 0;
+    state.data.splice(state.row, 0, ' '.repeat(indentLevel));
+    state.col = indentLevel;
+}
+
+function findNonEmptyRow(state, start) {
+    for (let i = start; i < state.data.length; i += 1) {
+        if (!isEmptyRow(state, i)) return i;
+    }
+    return -1;
+}
+
+function findLastNonEmptyRow(state, start) {
+    for (let i = start; i >= 0; i -= 1) {
+        if (isEmptyRow(state, i)) return i + 1;
+    }
+    return 0;
+}
+
+function findNextEmptyRow(state, start) {
+    for (let i = start; i < state.data.length; i += 1) {
+        if (isEmptyRow(state, i)) return i;
+    }
+    return state.data.length;
+}
+
+function copyAndRemoveRows(state, start, end, includeEnd) {
+    const newClipboard = [''];
+    const loopEnd = includeEnd ? end : end - 1;
+    for (let i = start; i <= loopEnd; i += 1) {
+        newClipboard.push(state.data[i]);
+    }
+    copyToClipboard(state, newClipboard);
+    state.data.splice(start, loopEnd - start + 1);
+}
+
+function copyRows(state, start, end, includeEnd) {
+    const newClipboard = [''];
+    const loopEnd = includeEnd ? end : end - 1;
+    for (let i = start; i <= loopEnd; i += 1) {
+        newClipboard.push(state.data[i]);
+    }
+    copyToClipboard(state, newClipboard);
+}
+
+function adjustRow(state) {
+    if (state.row > state.data.length - 1) {
+        state.row = state.data.length - 1;
+    } else if (state.row < 0) {
+        state.row = 0;
+    }
+}
 
 function getSystemPaste(state) {
     if (state.allowCommandLogging) {
@@ -415,12 +476,6 @@ function getColorRow(replacing, replaceQuery, row, commentIndex, searching, sear
         }
     }
     return output;
-}
-
-function copyToClipboard(state, textArray, clipboardVisualBlock) {
-    state.clipboardVisualBlock = clipboardVisualBlock;
-    ncp.copy(textArray.join('\n'));
-    state.clipboard = textArray.join('\n');
 }
 
 function saveFile(state) {
@@ -998,6 +1053,13 @@ export {
     getContextLines,
     getSystemPaste,
     calcFileFinderOutput,
+    findNonEmptyRow,
+    findLastNonEmptyRow,
+    findNextEmptyRow,
+    copyRows,
+    copyAndRemoveRows,
+    insertIndentedRow,
+    adjustRow,
     cleanup,
     isFile,
 };

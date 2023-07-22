@@ -19,6 +19,12 @@ import {
     logCommand,
     refreshFile,
     calcFileFinderOutput,
+    findLastNonEmptyRow,
+    findNextEmptyRow,
+    insertIndentedRow,
+    copyAndRemoveRows,
+    copyRows,
+    adjustRow,
     cleanup,
     getSystemPaste,
 } from '../util/helper.js';
@@ -29,7 +35,6 @@ import {
     left,
     right,
     firstNonSpace,
-    getInsideOfIndentLevel,
     getCoorBeginningLastWord,
     getCoorBeginningNextWord,
     increaseIndentLevel,
@@ -45,7 +50,6 @@ import {
     removeInsideAreaSameLine,
     copyInsideAreaSameLine,
     getIndentLevelFrom,
-    getIndentLevel,
     getInVisual,
     copyInVisual,
     deleteInVisual,
@@ -175,81 +179,13 @@ function handleVimKeys(key, state, screen) {
         removeInsideAreaSameLine(state, beginning, end + 1, 'n');
         cleanup(state, key, true, false, true, true);
     } else if (state.previousKeys + key === 'dap') {
-        // TODO simplify
-        state.visual = {
-            row: state.row,
-            col: state.col
-        };
-        for (let i = state.row; i < state.data.length; i += 1) {
-            if (!isEmptyRow(state, i)) {
-                state.row = i;
-                state.col = 0;
-                break;
-            }
-        }
-        state.visual.row = state.row;
-        for (let i = state.row; i >= 0; i -= 1) {
-            if (isEmptyRow(state, i)) {
-                break;
-            } else {
-                state.visual = { row: i, col: 0 };
-            }
-        }
-        for (let i = state.row + 1; i < state.data.length; i += 1) {
-            if (isEmptyRow(state, i)) {
-                state.row = i;
-                break;
-            } else {
-                state.row = i;
-                state.col = 0;
-            }
-        }
-        if (state.row >= state.visual.row) {
-            const newClipboard = [''];
-            for (let i = state.visual.row; i <= state.row; i += 1) {
-                newClipboard.push(state.data[i]);
-            }
-            copyToClipboard(state, newClipboard);
-            state.data.splice(state.visual.row, state.row - state.visual.row + 1);
-            state.row = state.visual.row;
-        } else if (state.row < state.visual.row) {
-            const newClipboard = [''];
-            for (let i = state.row; i <= state.visual.row; i += 1) {
-                newClipboard.push(state.data[i]);
-            }
-            copyToClipboard(state, newClipboard);
-            state.data.splice(state.row, state.visual.row - state.row + 1);
-        }
-        if (state.row > state.data.length - 1) {
-            state.row = state.data.length - 1;
-        }
-        if (state.row < 0) {
-            state.row = 0;
-        }
+        state.row = findLastNonEmptyRow(state, state.row);
+        state.visual.row = findNextEmptyRow(state, state.row + 1);
+        const startRow = Math.min(state.row, state.visual.row);
+        const endRow = Math.max(state.row, state.visual.row);
+        copyAndRemoveRows(state, startRow, endRow, true);
+        adjustRow(state);
         firstNonSpace(state, state.row);
-        cleanup(state, key, true, false, true, true);
-    } else if (state.previousKeys + key === 'daf') {
-        // TODO simplify
-        if (!isEmptyRow(state, state.row) && getIndentLevel(state, state.row) !== 0) {
-            const { beginning, end } = getInsideOfIndentLevel(state);
-            state.visual.row = beginning - 1;
-            state.row = end + 1;
-            state.col = 0;
-            const newClipboard = [''];
-            for (let i = state.visual.row; i <= state.row; i += 1) {
-                newClipboard.push(state.data[i]);
-            }
-            copyToClipboard(state, newClipboard);
-            state.data.splice(state.visual.row, state.row - state.visual.row + 1);
-            state.row = state.visual.row;
-            if (state.row > state.data.length - 1) {
-                state.row = state.data.length - 1;
-            }
-            if (state.row < 0) {
-                state.row = 0;
-            }
-            firstNonSpace(state, state.row);
-        }
         cleanup(state, key, true, false, true, true);
     } else if (state.previousKeys === 'da' && (key === '[' || key === ']' || key === 'd')) {
         const { beginning, end } = getCoorsInsideCharDiff(state, '[', ']');
@@ -287,80 +223,13 @@ function handleVimKeys(key, state, screen) {
         removeInsideAreaSameLine(state, beginning, end, 'n');
         cleanup(state, key, true, false, true, true);
     } else if (state.previousKeys + key === 'dip') {
-        // TODO simplify
-        state.visual = {
-            row: state.row,
-            col: state.col
-        };
-        for (let i = state.row; i < state.data.length; i += 1) {
-            if (!isEmptyRow(state, i)) {
-                state.row = i;
-                state.col = 0;
-                break;
-            }
-        }
-        state.visual.row = state.row;
-        for (let i = state.row; i >= 0; i -= 1) {
-            if (isEmptyRow(state, i)) {
-                break;
-            } else {
-                state.visual = { row: i, col: 0 };
-            }
-        }
-        for (let i = state.row + 1; i < state.data.length; i += 1) {
-            if (isEmptyRow(state, i)) {
-                break;
-            } else {
-                state.row = i;
-                state.col = 0;
-            }
-        }
-        if (state.row >= state.visual.row) {
-            const newClipboard = [''];
-            for (let i = state.visual.row; i <= state.row; i += 1) {
-                newClipboard.push(state.data[i]);
-            }
-            copyToClipboard(state, newClipboard);
-            state.data.splice(state.visual.row, state.row - state.visual.row + 1);
-            state.row = state.visual.row;
-        } else if (state.row < state.visual.row) {
-            const newClipboard = [''];
-            for (let i = state.row; i <= state.visual.row; i += 1) {
-                newClipboard.push(state.data[i]);
-            }
-            copyToClipboard(state, newClipboard);
-            state.data.splice(state.row, state.visual.row - state.row + 1);
-        }
-        if (state.row > state.data.length - 1) {
-            state.row = state.data.length - 1;
-        }
-        if (state.row < 0) {
-            state.row = 0;
-        }
+        state.row = findLastNonEmptyRow(state, state.row);
+        state.visual.row = findNextEmptyRow(state, state.row + 1);
+        const startRow = Math.min(state.row, state.visual.row);
+        const endRow = Math.max(state.row, state.visual.row);
+        copyAndRemoveRows(state, startRow, endRow, false);
+        adjustRow(state);
         firstNonSpace(state, state.row);
-        cleanup(state, key, true, false, true, true);
-    } else if (state.previousKeys + key === 'dif') {
-        // TODO simplify
-        if (!isEmptyRow(state, state.row) && getIndentLevel(state, state.row) !== 0) {
-            const { beginning, end } = getInsideOfIndentLevel(state);
-            state.visual.row = beginning;
-            state.row = end;
-            state.col = 0;
-            const newClipboard = [''];
-            for (let i = state.visual.row; i <= state.row; i += 1) {
-                newClipboard.push(state.data[i]);
-            }
-            copyToClipboard(state, newClipboard);
-            state.data.splice(state.visual.row, state.row - state.visual.row + 1);
-            state.row = state.visual.row;
-            if (state.row > state.data.length - 1) {
-                state.row = state.data.length - 1;
-            }
-            if (state.row < 0) {
-                state.row = 0;
-            }
-            firstNonSpace(state, state.row);
-        }
         cleanup(state, key, true, false, true, true);
     } else if (state.previousKeys === 'di' && (key === '[' || key === ']' || key === 'd')) {
         const { beginning, end } = getCoorsInsideCharDiff(state, '[', ']');
@@ -418,70 +287,13 @@ function handleVimKeys(key, state, screen) {
         copyInsideAreaSameLine(state, beginning, end);
         cleanup(state, key, false, false, false, true);
     } else if (state.previousKeys + key === 'yap') {
-        state.visual = {
-            row: state.row,
-            col: state.col
-        };
-        for (let i = state.row; i < state.data.length; i += 1) {
-            if (!isEmptyRow(state, i)) {
-                state.row = i;
-                state.col = 0;
-                break;
-            }
-        }
-        state.visual.row = state.row;
-        for (let i = state.row; i >= 0; i -= 1) {
-            if (isEmptyRow(state, i)) {
-                break;
-            } else {
-                state.visual = { row: i, col: 0 };
-            }
-        }
-        for (let i = state.row + 1; i < state.data.length; i += 1) {
-            if (isEmptyRow(state, i)) {
-                state.row = i;
-                break;
-            } else {
-                state.row = i;
-                state.col = 0;
-            }
-        }
-        if (state.row >= state.visual.row) {
-            const newClipboard = [''];
-            for (let i = state.visual.row; i <= state.row; i += 1) {
-                newClipboard.push(state.data[i]);
-            }
-            copyToClipboard(state, newClipboard);
-            state.row = state.visual.row;
-        } else if (state.row < state.visual.row) {
-            const newClipboard = [''];
-            for (let i = state.row; i <= state.visual.row; i += 1) {
-                newClipboard.push(state.data[i]);
-            }
-            copyToClipboard(state, newClipboard);
-        }
-        if (state.row > state.data.length - 1) {
-            state.row = state.data.length - 1;
-        }
-        if (state.row < 0) {
-            state.row = 0;
-        }
+        state.row = findLastNonEmptyRow(state, state.row);
+        state.visual.row = findNextEmptyRow(state, state.row + 1);
+        const startRow = Math.min(state.row, state.visual.row);
+        const endRow = Math.max(state.row, state.visual.row);
+        copyRows(state, startRow, endRow, true);
+        adjustRow(state);
         firstNonSpace(state, state.row);
-        cleanup(state, key, false, false, false, true);
-    } else if (state.previousKeys + key === 'yaf') {
-        if (!isEmptyRow(state, state.row) && getIndentLevel(state, state.row) !== 0) {
-            const { beginning, end } = getInsideOfIndentLevel(state);
-            state.visual.row = beginning - 1;
-            state.row = end + 1;
-            state.col = 0;
-            const newClipboard = [''];
-            for (let i = state.visual.row; i <= state.row; i += 1) {
-                newClipboard.push(state.data[i]);
-            }
-            copyToClipboard(state, newClipboard);
-            state.row = state.visual.row;
-            firstNonSpace(state, state.row);
-        }
         cleanup(state, key, false, false, false, true);
     } else if (state.previousKeys === 'ya' && (key === '(' || key === ')' || key === 'b')) {
         const { beginning, end } = getCoorsInsideCharDiff(state, '(', ')');
@@ -513,62 +325,13 @@ function handleVimKeys(key, state, screen) {
         copyInsideAreaSameLine(state, beginning, end);
         cleanup(state, key, false, false, false, true);
     } else if (state.previousKeys + key === 'yip') {
-        state.visual = {
-            row: state.row,
-            col: state.col
-        };
-        for (let i = state.row; i < state.data.length; i += 1) {
-            if (!isEmptyRow(state, i)) {
-                state.row = i;
-                state.col = 0;
-                break;
-            }
-        }
-        state.visual.row = state.row;
-        for (let i = state.row; i >= 0; i -= 1) {
-            if (isEmptyRow(state, i)) {
-                break;
-            } else {
-                state.visual = { row: i, col: 0 };
-            }
-        }
-        for (let i = state.row + 1; i < state.data.length; i += 1) {
-            if (isEmptyRow(state, i)) {
-                break;
-            } else {
-                state.row = i;
-                state.col = 0;
-            }
-        }
-        if (state.row >= state.visual.row) {
-            const newClipboard = [''];
-            for (let i = state.visual.row; i <= state.row; i += 1) {
-                newClipboard.push(state.data[i]);
-            }
-            copyToClipboard(state, newClipboard);
-            state.row = state.visual.row;
-        } else if (state.row < state.visual.row) {
-            const newClipboard = [''];
-            for (let i = state.row; i <= state.visual.row; i += 1) {
-                newClipboard.push(state.data[i]);
-            }
-            copyToClipboard(state, newClipboard);
-        }
-        cleanup(state, key, false, false, false, true);
-    } else if (state.previousKeys + key === 'yif') {
-        if (!isEmptyRow(state, state.row) && getIndentLevel(state, state.row) !== 0) {
-            const { beginning, end } = getInsideOfIndentLevel(state);
-            state.visual.row = beginning;
-            state.row = end;
-            state.col = 0;
-            const newClipboard = [''];
-            for (let i = state.visual.row; i <= state.row; i += 1) {
-                newClipboard.push(state.data[i]);
-            }
-            copyToClipboard(state, newClipboard);
-            state.row = state.visual.row;
-            firstNonSpace(state, state.row);
-        }
+        state.row = findLastNonEmptyRow(state, state.row);
+        state.visual.row = findNextEmptyRow(state, state.row + 1);
+        const startRow = Math.min(state.row, state.visual.row);
+        const endRow = Math.max(state.row, state.visual.row);
+        copyRows(state, startRow, endRow, false);
+        adjustRow(state);
+        firstNonSpace(state, state.row);
         cleanup(state, key, false, false, false, true);
     } else if (state.previousKeys === 'yi' && (key === '(' || key === ')' || key === 'b')) {
         const { beginning, end } = getCoorsInsideCharDiff(state, '(', ')');
@@ -611,53 +374,10 @@ function handleVimKeys(key, state, screen) {
         cleanup(state, key, false, false, false, true);
     } else if (state.previousKeys === 'y' && (key === 'i' || key === 'f' || key === 'F' || key === 't' || key === 'T' || key === 'a')) {
         state.previousKeys += key;
-    } else if (state.previousKeys === 'T' && isWritable(key)) {
-        state.col = toBackward(state, key);
-        if (state.allowCommandLogging) {
-            state.lastSearchCommand = ['T', key];
-        }
-        cleanup(state, key, false, false, false, true);
-    } else if (state.previousKeys === 't' && isWritable(key)) {
-        state.col = toForward(state, key);
-        if (state.allowCommandLogging) {
-            state.lastSearchCommand = ['t', key];
-        }
-        cleanup(state, key, false, false, false, true);
-    } else if (state.previousKeys === 'F' && isWritable(key)) {
-        state.col = findBackward(state, key);
-        if (state.allowCommandLogging) {
-            state.lastSearchCommand = ['F', key];
-        }
-        cleanup(state, key, false, false, false, true);
-    } else if (state.previousKeys === 'f' && isWritable(key)) {
-        state.col = findForward(state, key);
-        if (state.allowCommandLogging) {
-            state.lastSearchCommand = ['f', key];
-        }
-        cleanup(state, key, false, false, false, true);
-    } else if (state.previousKeys === 'r' && isWritable(key)) {
-        state.data[state.row] = state.data[state.row].substring(0, state.col) + key + state.data[state.row].substring(state.col + 1);
-        cleanup(state, key, true, false, true, true);
-    } else if (state.previousKeys + key === 'gg') {
-        topOfFile(state);
-        cleanup(state, key, false, false, false, true);
-    } else if (state.previousKeys + key === 'gt') {
-        trimTrailingWhitespace(state);
-        logCommand(true, state, 'g');
-        cleanup(state, key, true, false, true, true);
-    } else if (state.previousKeys + key === 'ge') {
-        uncommentBlock(state, state.row);
-        logCommand(true, state, 'g');
-        cleanup(state, key, true, false, true, true);
-    } else if (state.previousKeys + key === 'gc') {
-        toggleComment(state, state.row);
-        logCommand(true, state, 'g');
-        cleanup(state, key, true, false, true, true);
     } else if (state.previousKeys === 'c' && (key === 'i' || key === 'f' || key === 'F' || key === 't' || key === 'T' || key === 'a')) {
         state.previousKeys += key;
         cleanup(state, key, true, false, false, false);
     } else if (state.previousKeys + key === 'cj') {
-        // TODO cleanup c<key>
         const newClipboard = [''];
         newClipboard.push(state.data[state.row]);
         if (state.data[state.row + 1]) {
@@ -669,9 +389,7 @@ function handleVimKeys(key, state, screen) {
         if (state.row > state.data.length - 1) {
             state.row = state.data.length - 1;
         }
-        const indentLevel = getIndentLevelFrom(state, state.row);
-        state.data.splice(state.row, 0, ' '.repeat(indentLevel));
-        state.col = indentLevel;
+        insertIndentedRow(state);
         state.mode = 'i';
         cleanup(state, key, true, false, false, true);
     } else if (state.previousKeys + key === 'ck') {
@@ -686,9 +404,7 @@ function handleVimKeys(key, state, screen) {
             state.data.splice(state.row - 1, 1);
         }
         up(state);
-        const indentLevel = getIndentLevelFrom(state, state.row);
-        state.data.splice(state.row, 0, ' '.repeat(indentLevel));
-        state.col = indentLevel;
+        insertIndentedRow(state);
         state.mode = 'i';
         cleanup(state, key, true, false, false, true);
     } else if (state.previousKeys + key === 'cw') {
@@ -749,72 +465,13 @@ function handleVimKeys(key, state, screen) {
         removeInsideAreaSameLine(state, beginning, end + 1, 'i');
         cleanup(state, key, true, false, false, true);
     } else if (state.previousKeys + key === 'cap') {
-        state.visual = {
-            row: state.row,
-            col: state.col
-        };
-        for (let i = state.row; i < state.data.length; i += 1) {
-            if (!isEmptyRow(state, i)) {
-                state.row = i;
-                state.col = 0;
-                break;
-            }
-        }
-        state.visual.row = state.row;
-        for (let i = state.row; i >= 0; i -= 1) {
-            if (isEmptyRow(state, i)) {
-                break;
-            } else {
-                state.visual = { row: i, col: 0 };
-            }
-        }
-        for (let i = state.row + 1; i < state.data.length; i += 1) {
-            if (isEmptyRow(state, i)) {
-                state.row = i;
-                break;
-            } else {
-                state.row = i;
-                state.col = 0;
-            }
-        }
-        if (state.row >= state.visual.row) {
-            const newClipboard = [''];
-            for (let i = state.visual.row; i <= state.row; i += 1) {
-                newClipboard.push(state.data[i]);
-            }
-            copyToClipboard(state, newClipboard);
-            state.data.splice(state.visual.row, state.row - state.visual.row + 1);
-            state.row = state.visual.row;
-        } else if (state.row < state.visual.row) {
-            const newClipboard = [''];
-            for (let i = state.row; i <= state.visual.row; i += 1) {
-                newClipboard.push(state.data[i]);
-            }
-            copyToClipboard(state, newClipboard);
-            state.data.splice(state.row, state.visual.row - state.row + 1);
-        }
-        const indentLevel = state.data[state.row] !== undefined ? getIndentLevelFrom(state, state.row) : 0;
-        state.data.splice(state.row, 0, ' '.repeat(indentLevel));
-        state.col = indentLevel;
-        state.mode = 'i';
-        cleanup(state, key, true, false, false, true);
-    } else if (state.previousKeys + key === 'caf') {
-        if (!isEmptyRow(state, state.row) && getIndentLevel(state, state.row) !== 0) {
-            const { beginning, end } = getInsideOfIndentLevel(state);
-            state.visual.row = beginning - 1;
-            state.row = end + 1;
-            state.col = 0;
-            const newClipboard = [''];
-            for (let i = state.visual.row; i <= state.row; i += 1) {
-                newClipboard.push(state.data[i]);
-            }
-            copyToClipboard(state, newClipboard);
-            state.data.splice(state.visual.row, state.row - state.visual.row + 1);
-            state.row = state.visual.row;
-            const indentLevel = state.data[state.row] !== undefined ? getIndentLevelFrom(state, state.row - 1) : 0;
-            state.data.splice(state.row, 0, ' '.repeat(indentLevel));
-            state.col = indentLevel;
-        }
+        state.row = findLastNonEmptyRow(state, state.row);
+        state.visual.row = findNextEmptyRow(state, state.row + 1);
+        const startRow = Math.min(state.row, state.visual.row);
+        const endRow = Math.max(state.row, state.visual.row);
+        copyAndRemoveRows(state, startRow, endRow, true);
+        adjustRow(state);
+        insertIndentedRow(state);
         state.mode = 'i';
         cleanup(state, key, true, false, false, true);
     } else if (state.previousKeys === 'ca' && (key === '[' || key === ']' || key === 'd')) {
@@ -853,72 +510,14 @@ function handleVimKeys(key, state, screen) {
         removeInsideAreaSameLine(state, beginning, end, 'i');
         cleanup(state, key, true, false, false, true);
     } else if (state.previousKeys + key === 'cip') {
-        state.visual = {
-            row: state.row,
-            col: state.col
-        };
-        for (let i = state.row; i < state.data.length; i += 1) {
-            if (!isEmptyRow(state, i)) {
-                state.row = i;
-                state.col = 0;
-                break;
-            }
-        }
-        state.visual.row = state.row;
-        for (let i = state.row; i >= 0; i -= 1) {
-            if (isEmptyRow(state, i)) {
-                break;
-            } else {
-                state.visual = { row: i, col: 0 };
-            }
-        }
-        for (let i = state.row + 1; i < state.data.length; i += 1) {
-            if (isEmptyRow(state, i)) {
-                break;
-            } else {
-                state.row = i;
-                state.col = 0;
-            }
-        }
-        if (state.row >= state.visual.row) {
-            const newClipboard = [''];
-            for (let i = state.visual.row; i <= state.row; i += 1) {
-                newClipboard.push(state.data[i]);
-            }
-            copyToClipboard(state, newClipboard);
-            state.data.splice(state.visual.row, state.row - state.visual.row + 1);
-            state.row = state.visual.row;
-        } else if (state.row < state.visual.row) {
-            const newClipboard = [''];
-            for (let i = state.row; i <= state.visual.row; i += 1) {
-                newClipboard.push(state.data[i]);
-            }
-            copyToClipboard(state, newClipboard);
-            state.data.splice(state.row, state.visual.row - state.row + 1);
-        }
-        const indentLevel = state.data[state.row] !== undefined ? getIndentLevelFrom(state, state.row) : 0;
-        state.data.splice(state.row, 0, ' '.repeat(indentLevel));
-        state.col = indentLevel;
+        state.row = findLastNonEmptyRow(state, state.row);
+        state.visual.row = findNextEmptyRow(state, state.row + 1);
+        const startRow = Math.min(state.row, state.visual.row);
+        const endRow = Math.max(state.row, state.visual.row);
+        copyAndRemoveRows(state, startRow, endRow, false);
+        adjustRow(state);
+        insertIndentedRow(state);
         state.mode = 'i';
-        cleanup(state, key, true, false, false, true);
-    } else if (state.previousKeys + key === 'cif') {
-        if (!isEmptyRow(state, state.row) && getIndentLevel(state, state.row) !== 0) {
-            const { beginning, end } = getInsideOfIndentLevel(state);
-            state.visual.row = beginning;
-            state.row = end;
-            state.col = 0;
-            const newClipboard = [''];
-            for (let i = state.visual.row; i <= state.row; i += 1) {
-                newClipboard.push(state.data[i]);
-            }
-            copyToClipboard(state, newClipboard);
-            state.data.splice(state.visual.row, state.row - state.visual.row + 1);
-            state.row = state.visual.row;
-            const indentLevel = state.data[state.row] !== undefined ? getIndentLevelFrom(state, state.row - 1) : 0;
-            state.data.splice(state.row, 0, ' '.repeat(indentLevel));
-            state.col = indentLevel;
-            state.mode = 'i';
-        }
         cleanup(state, key, true, false, false, true);
     } else if (state.previousKeys === 'ci' && (key === '[' || key === ']' || key === 'd')) {
         const { beginning, end } = getCoorsInsideCharDiff(state, '[', ']');
@@ -945,6 +544,48 @@ function handleVimKeys(key, state, screen) {
         copyToClipboard(state, [state.data[state.row].substring(beginning + 1, end)]);
         removeInsideAreaSameLine(state, beginning, end, 'i');
         cleanup(state, key, true, false, false, true);
+    } else if (state.previousKeys === 'T' && isWritable(key)) {
+        state.col = toBackward(state, key);
+        if (state.allowCommandLogging) {
+            state.lastSearchCommand = ['T', key];
+        }
+        cleanup(state, key, false, false, false, true);
+    } else if (state.previousKeys === 't' && isWritable(key)) {
+        state.col = toForward(state, key);
+        if (state.allowCommandLogging) {
+            state.lastSearchCommand = ['t', key];
+        }
+        cleanup(state, key, false, false, false, true);
+    } else if (state.previousKeys === 'F' && isWritable(key)) {
+        state.col = findBackward(state, key);
+        if (state.allowCommandLogging) {
+            state.lastSearchCommand = ['F', key];
+        }
+        cleanup(state, key, false, false, false, true);
+    } else if (state.previousKeys === 'f' && isWritable(key)) {
+        state.col = findForward(state, key);
+        if (state.allowCommandLogging) {
+            state.lastSearchCommand = ['f', key];
+        }
+        cleanup(state, key, false, false, false, true);
+    } else if (state.previousKeys === 'r' && isWritable(key)) {
+        state.data[state.row] = state.data[state.row].substring(0, state.col) + key + state.data[state.row].substring(state.col + 1);
+        cleanup(state, key, true, false, true, true);
+    } else if (state.previousKeys + key === 'gg') {
+        topOfFile(state);
+        cleanup(state, key, false, false, false, true);
+    } else if (state.previousKeys + key === 'gt') {
+        trimTrailingWhitespace(state);
+        logCommand(true, state, 'g');
+        cleanup(state, key, true, false, true, true);
+    } else if (state.previousKeys + key === 'ge') {
+        uncommentBlock(state, state.row);
+        logCommand(true, state, 'g');
+        cleanup(state, key, true, false, true, true);
+    } else if (state.previousKeys + key === 'gc') {
+        toggleComment(state, state.row);
+        logCommand(true, state, 'g');
+        cleanup(state, key, true, false, true, true);
     } else if (state.previousKeys === '' && key === 'CTRL_W') {
         if (state.harpoonIndex - 1 >= 0) {
             state.harpoonIndex -= 1;
