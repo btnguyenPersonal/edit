@@ -1,34 +1,35 @@
 import * as helper from '../util/helper.js';
 
-function handleMouseInputs(name, coor, state, screen) {
-    if (name === 'MOUSE_LEFT_BUTTON_PRESSED') {
-        if (state.data[coor.y - 1 + (state.windowLine - 1)] && (coor.x - 1) - 5 >= 0) {
-            if ((coor.x - 1) - 5 < state.data[coor.y - 1 + (state.windowLine - 1)].length) {
-                state.col = (coor.x - 1) - 5;
-            } else {
-                state.col = state.data[coor.y - 1 + (state.windowLine - 1)].length;
+function handleMouseInputs(key, coor, state, screen) {
+    if (key === 'MOUSE_LEFT_BUTTON_PRESSED') {
+        if (state.mode !== 'i') {
+            if (coor.y - 1 < 0 || coor.x - 1 < 0) {
+                state.col = 0;
+                state.row = 0;
+                helper.renderScreen(state, screen);
+                return;
             }
-        } else {
-            state.col = 0;
+            const adjustedRow = coor.y - 1 + state.windowLine - 1;
+            const adjustedCol = coor.x - 6;
+            if (state.data[adjustedRow] && adjustedCol >= 0) {
+                const rowDataLength = state.data[adjustedRow].length;
+                state.col = Math.max(0, Math.min(adjustedCol, rowDataLength));
+            } else {
+                state.col = 0;
+            }
+            state.row = Math.max(0, Math.min(adjustedRow, state.data.length - 1));
+            helper.renderScreen(state, screen);
         }
-        state.row = (coor.y - 1) + (state.windowLine - 1) < state.data.length
-            ? (coor.y - 1) + (state.windowLine - 1)
-            : state.data.length - 1;
-        if (state.row === -1) {
-            state.row = 0;
-        }
-        helper.renderScreen(state, screen);
-    } else if (name === 'MOUSE_WHEEL_UP') {
+    } else if (key === 'MOUSE_WHEEL_UP') {
         if (state.windowLine > 0) {
             state.windowLine -= 1;
-            helper.renderScreen(state, screen, true);
         }
-    } else if (name === 'MOUSE_WHEEL_DOWN') {
-        if (state.windowLine + process.stdout.rows <= state.data.length) {
+    } else if (key === 'MOUSE_WHEEL_DOWN') {
+        if (state.windowLine <= state.data.length) {
             state.windowLine += 1;
-            helper.renderScreen(state, screen, true);
         }
     }
+    helper.renderScreen(state, screen, true);
 }
 
 export {

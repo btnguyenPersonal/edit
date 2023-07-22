@@ -1,7 +1,107 @@
 /* eslint-disable import/no-cycle */
 import ncp from 'copy-paste';
+import { execSync } from 'child_process';
 import moment from 'moment';
 import fs from 'fs';
+import { isEmptyRow, getIndentLevelFrom } from './movement.js';
+
+function substringFromRow(sentence, cursorPos) {
+    let start = cursorPos;
+    let wordChar = sentence[start] !== undefined && /[A-Za-z0-9_]/.test(sentence[start]);
+    if (wordChar) {
+        return '';
+    }
+
+    while (start > 0 && /[A-Za-z0-9_]/.test(sentence[start - 1])) {
+        start -= 1;
+    }
+
+    return sentence.substring(start, cursorPos);
+}
+
+function getSortedSubstrings(inputString, array) {
+    if (inputString === '') {
+        return '';
+    }
+
+    const counts = new Map();
+
+    for (const str of array) {
+        const substrings = str.match(/\b\w+\b/g) || [];
+
+        for (const substring of substrings) {
+            if (substring.startsWith(inputString)) {
+                counts.set(substring, (counts.get(substring) || 0) + 1);
+            }
+        }
+    }
+
+    const pairs = Array.from(counts.entries());
+
+    pairs.sort((a, b) => b[1] - a[1]);
+
+    return pairs[0][0] || '';
+}
+
+function copyToClipboard(state, textArray, clipboardVisualBlock) {
+    state.clipboardVisualBlock = clipboardVisualBlock;
+    ncp.copy(textArray.join('\n'));
+    state.clipboard = textArray.join('\n');
+}
+
+function insertIndentedRow(state) {
+    const indentLevel = state.data[state.row] !== undefined ? getIndentLevelFrom(state, state.row) : 0;
+    state.data.splice(state.row, 0, ' '.repeat(indentLevel));
+    state.col = indentLevel;
+}
+
+function findNonEmptyRow(state, start) {
+    for (let i = start; i < state.data.length; i += 1) {
+        if (!isEmptyRow(state, i)) return i;
+    }
+    return -1;
+}
+
+function findLastNonEmptyRow(state, start) {
+    for (let i = start; i >= 0; i -= 1) {
+        if (isEmptyRow(state, i)) return i + 1;
+    }
+    return 0;
+}
+
+function findNextEmptyRow(state, start) {
+    for (let i = start; i < state.data.length; i += 1) {
+        if (isEmptyRow(state, i)) return i;
+    }
+    return state.data.length;
+}
+
+function copyAndRemoveRows(state, start, end, includeEnd) {
+    const newClipboard = [''];
+    const loopEnd = includeEnd ? end : end - 1;
+    for (let i = start; i <= loopEnd; i += 1) {
+        newClipboard.push(state.data[i]);
+    }
+    copyToClipboard(state, newClipboard);
+    state.data.splice(start, loopEnd - start + 1);
+}
+
+function copyRows(state, start, end, includeEnd) {
+    const newClipboard = [''];
+    const loopEnd = includeEnd ? end : end - 1;
+    for (let i = start; i <= loopEnd; i += 1) {
+        newClipboard.push(state.data[i]);
+    }
+    copyToClipboard(state, newClipboard);
+}
+
+function adjustRow(state) {
+    if (state.row > state.data.length - 1) {
+        state.row = state.data.length - 1;
+    } else if (state.row < 0) {
+        state.row = 0;
+    }
+}
 
 function getSystemPaste(state) {
     if (state.allowCommandLogging) {
@@ -122,7 +222,7 @@ function getRowIfOverflow(state) {
 function moveCursor(state, screen, windowLineHorizontal) {
     if (state.mode === ':') {
         screen.moveTo(
-            state.commandIndex + 1,
+            state.commandCursorPosition + 1,
             0
         );
     } else {
@@ -416,12 +516,6 @@ function getColorRow(replacing, replaceQuery, row, commentIndex, searching, sear
     return output;
 }
 
-function copyToClipboard(state, textArray, clipboardVisualBlock) {
-    state.clipboardVisualBlock = clipboardVisualBlock;
-    ncp.copy(textArray.join('\n'));
-    state.clipboard = textArray.join('\n');
-}
-
 function saveFile(state) {
     fs.writeFileSync(state.file, state.data.join('\n'), (err) => {
         if (err) {
@@ -581,7 +675,7 @@ function isMergeConflictEnd(s) {
 
 function renderStatusBar(state, screen) {
     if (state.mode === ':') {
-        screen.put({ attr: { color: 'white' } }, ':' + state.commandString);
+        screen.put({ attr: { color: 'white' } }, ':' + state.currentCommand);
     } else {
         for (let i = 0; i < state.harpoonIndexes.length; i += 1) {
             screen.put({
@@ -722,6 +816,19 @@ function renderSingleLine(state, screen, i, mergeSection, isContext) {
             },
             wrap: false
         }, displayRow.substring(j, j + 1));
+        if (state.row === i && state.col - 1 === j && state.mode === 'i') {
+            const str = substringFromRow(state.data[state.row], state.col);
+            const replaceString = getSortedSubstrings(str, state.data);
+            if (str.length !== 0) {
+                screen.put({
+                    attr: {
+                        color: 'gray',
+                        bgColor: 'black'
+                    },
+                    wrap: false
+                }, replaceString.substring(str.length));
+            }
+        }
     }
     if (state.data[i] === '' && isRowHighlighted(state, i)) {
         screen.put({
@@ -827,56 +934,56 @@ function changeFile(state) {
 }
 
 function evaluateCommand(state, term) {
-    if (state.commandString === 'w') {
+    if (state.currentCommand === 'w') {
         saveFile(state);
         return false;
-    } else if (state.commandString === 'wa') {
+    } else if (state.currentCommand === 'wa') {
         saveFile(state);
         return false;
-    } else if (state.commandString === 'x') {
+    } else if (state.currentCommand === 'x') {
         saveFile(state);
         term.fullscreen(false);
         process.exit(0);
-    } else if (state.commandString === 'wq') {
+    } else if (state.currentCommand === 'wq') {
         saveFile(state);
         term.fullscreen(false);
         process.exit(0);
-    } else if (state.commandString === 'q') {
+    } else if (state.currentCommand === 'q') {
         term.fullscreen(false);
         process.exit(0);
-    } else if (/%s\/(.*)\/(.*)\/g/.test(state.commandString)) {
-        const match = /%s\/(.*?)\/(.*?)\/g/.exec(state.commandString);
+    } else if (/%s\/(.*)\/(.*)\/g/.test(state.currentCommand)) {
+        const match = /%s\/(.*?)\/(.*?)\/g/.exec(state.currentCommand);
         for (let i = 0; i < state.data.length; i += 1) {
             state.data[i] = state.data[i].replaceAll(new RegExp(match[1], 'g'), match[2]);
         }
         createSnapshot(state);
         return true;
-    } else if (state.commandString === 'set ts=2') {
+    } else if (state.currentCommand === 'set ts=2') {
         state.indentAmount = 2;
         return false;
-    } else if (state.commandString === 'set ts=4') {
+    } else if (state.currentCommand === 'set ts=4') {
         state.indentAmount = 4;
         return false;
-    } else if (!Number.isNaN(state.commandString)) {
-        const num = parseInt(state.commandString);
+    } else if (!Number.isNaN(state.currentCommand)) {
+        const num = parseInt(state.currentCommand);
         if (num > 0 && num < state.data.length) {
             state.row = num - 1;
         }
         return false;
-    } else if (state.commandString === 'qa') {
+    } else if (state.currentCommand === 'qa') {
         term.fullscreen(false);
         process.exit(0);
-    } else if (state.commandString === 'qa!') {
+    } else if (state.currentCommand === 'qa!') {
         term.fullscreen(false);
         process.exit(0);
-    } else if (state.commandString === 'q!') {
+    } else if (state.currentCommand === 'q!') {
         term.fullscreen(false);
         process.exit(0);
     }
 }
 
 function createState(state) {
-    const snapshotsCopy = state.snapshots.map(snapshot => JSON.parse(JSON.stringify(snapshot)));
+    const snapshotsCopy = state.snapshots.map((snapshot) => JSON.parse(JSON.stringify(snapshot)));
     return {
         row: state.row,
         col: state.col,
@@ -885,6 +992,7 @@ function createState(state) {
         currentSnapshot: state.currentSnapshot,
         snapshots: snapshotsCopy,
         mark: state.mark,
+        mark2: state.mark2,
         prevRow: state.prevRow,
         prevCol: state.prevCol,
     };
@@ -892,21 +1000,16 @@ function createState(state) {
 
 function updateStateFromFilePosition(state, fileIndex) {
     const pos = state.storePosition[fileIndex];
-    const keysToUpdate = [
-        'row',
-        'col',
-        'windowLine',
-        'windowLineHorizontal',
-        'currentSnapshot',
-        'snapshots',
-        'mark',
-        'prevRow',
-        'prevCol'
-    ];
-
-    for (const key of keysToUpdate) {
-        state[key] = pos[key];
-    }
+    state.row = pos.row;
+    state.col = pos.col;
+    state.windowLine = pos.windowLine;
+    state.windowLineHorizontal = pos.windowLineHorizontal;
+    state.currentSnapshot = pos.currentSnapshot;
+    state.snapshots = pos.snapshots;
+    state.mark = pos.mark;
+    state.mark2 = pos.mark2;
+    state.prevRow = pos.prevRow;
+    state.prevCol = pos.prevCol;
 }
 
 function updateFileState(state, newFile, lineNum) {
@@ -939,6 +1042,40 @@ function processFile(state, newFile, lineNum, fileExists) {
     }
 }
 
+function cleanup(state, key, log, newCommand, snapshot, resetPrevKeys) {
+    if (log) {
+        logCommand(newCommand, state, key);
+    }
+    if (snapshot) {
+        createSnapshot(state);
+    }
+    if (resetPrevKeys) {
+        state.previousKeys = '';
+    }
+}
+
+function calcFileFinderOutput(state) {
+    let output = '';
+    if (state.mode === 'g') {
+        if (state.fileFinderQuery.length !== 0) {
+            output = execSync(`git grep -n "${state.fileFinderQuery}" || true`, { maxBuffer: 1024 * 1024 * 1000 }).toString();
+        }
+    } else {
+        if (state.gitFinding) {
+            if (state.fileFinderQuery.length !== 0) {
+                output = execSync(`fd -t f --hidden -E .git | grep -F -i "${state.fileFinderQuery}" || true`).toString();
+            } else {
+                output = execSync('fd -t f --hidden -E .git').toString();
+            }
+        } else {
+            if (state.fileFinderQuery.length !== 0) {
+                output = execSync(`find * -type f -name "${state.fileFinderQuery}*"`).toString();
+            }
+        }
+    }
+    state.fileFindingOutput = output.split('\n');
+}
+
 export {
     pasteFromClipboardBefore,
     pasteFromClipboardAfter,
@@ -961,11 +1098,21 @@ export {
     centerScreen,
     refreshFile,
     getRowIfOverflow,
-    changeFile,
     getData,
     evaluateCommand,
     processFile,
     getContextLines,
     getSystemPaste,
-    isFile
+    calcFileFinderOutput,
+    findNonEmptyRow,
+    findLastNonEmptyRow,
+    findNextEmptyRow,
+    copyRows,
+    copyAndRemoveRows,
+    insertIndentedRow,
+    adjustRow,
+    cleanup,
+    substringFromRow,
+    getSortedSubstrings,
+    isFile,
 };

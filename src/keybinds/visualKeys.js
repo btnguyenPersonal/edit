@@ -1,5 +1,4 @@
 /* eslint-disable import/no-cycle */
-import { execSync } from 'child_process';
 import path from 'path';
 import {
     renderScreen,
@@ -7,9 +6,12 @@ import {
     isWritable,
     searchForString,
     centerScreen,
-    changeFile,
     isFile,
     getSystemPaste,
+    processFile,
+    calcFileFinderOutput,
+    findNextEmptyRow,
+    findLastNonEmptyRow,
     logCommand
 } from '../util/helper.js';
 import {
@@ -24,7 +26,6 @@ import {
     getCoorBeginningNextWord,
     upHalfScreen,
     downHalfScreen,
-    getInsideOfIndentLevel,
     getCoorsInsideCharSame,
     getCoorsInsideCharDiff,
     getCoorsInsideWord,
@@ -39,10 +40,8 @@ import {
     decreaseIndentLevel,
     getIndentLevelFrom,
     setAroundVisualHighlight,
-    getIndentLevel,
     toForward,
     toBackward,
-    isEmptyRow,
     isCommented,
     toggleComment,
     matchIt,
@@ -71,39 +70,9 @@ function handleVisualKeys(key, state, screen) {
         } else if (key === '\'' || key === '"' || key === '`') {
             const { beginning, end } = getCoorsInsideCharSame(state, key);
             setVisualHighlight(state, beginning, end);
-        } else if (key === 'f') {
-            if (!isEmptyRow(state, state.row) && getIndentLevel(state, state.row) !== 0) {
-                const { beginning, end } = getInsideOfIndentLevel(state);
-                state.visual.row = beginning;
-                state.row = end;
-                state.col = 0;
-                state.mode = 'V';
-            } else {
-                state.mode = 'n';
-            }
         } else if (key === 'p') {
-            for (let i = state.row; i < state.data.length; i += 1) {
-                if (!isEmptyRow(state, i)) {
-                    state.row = i;
-                    state.col = 0;
-                    break;
-                }
-            }
-            state.visual.row = state.row;
-            for (let i = state.row; i >= 0; i -= 1) {
-                if (isEmptyRow(state, i)) {
-                    break;
-                } else {
-                    state.visual.row = i;
-                }
-            }
-            for (let i = state.row + 1; i < state.data.length; i += 1) {
-                if (isEmptyRow(state, i)) {
-                    break;
-                } else {
-                    state.row = i;
-                }
-            }
+            state.row = findLastNonEmptyRow(state, state.row);
+            state.visual.row = findNextEmptyRow(state, state.row + 1) - 1;
             state.mode = 'V';
         }
         state.previousKeys = '';
@@ -129,40 +98,9 @@ function handleVisualKeys(key, state, screen) {
         } else if (key === '\'' || key === '"' || key === '`') {
             const { beginning, end } = getCoorsInsideCharSame(state, key);
             setAroundVisualHighlight(state, beginning, end);
-        } else if (key === 'f') {
-            if (!isEmptyRow(state, state.row) && getIndentLevel(state, state.row) !== 0) {
-                const { beginning, end } = getInsideOfIndentLevel(state);
-                state.visual.row = beginning - 1;
-                state.row = end + 1;
-                state.col = 0;
-                state.mode = 'V';
-            } else {
-                state.mode = 'n';
-            }
         } else if (key === 'p') {
-            for (let i = state.row; i < state.data.length; i += 1) {
-                if (!isEmptyRow(state, i)) {
-                    state.row = i;
-                    state.col = 0;
-                    break;
-                }
-            }
-            state.visual.row = state.row;
-            for (let i = state.row; i >= 0; i -= 1) {
-                if (isEmptyRow(state, i)) {
-                    break;
-                } else {
-                    state.visual.row = i;
-                }
-            }
-            for (let i = state.row + 1; i < state.data.length; i += 1) {
-                if (isEmptyRow(state, i)) {
-                    state.row = i;
-                    break;
-                } else {
-                    state.row = i;
-                }
-            }
+            state.row = findLastNonEmptyRow(state, state.row);
+            state.visual.row = findNextEmptyRow(state, state.row + 1);
             state.mode = 'V';
         }
         state.previousKeys = '';
@@ -245,96 +183,20 @@ function handleVisualKeys(key, state, screen) {
             convertedPath += '/index.js';
             fileExists = isFile(convertedPath);
         }
-        if (fileExists) {
-            if (!state.files.includes(convertedPath)) {
-                state.file = convertedPath;
-                state.files.push(state.file);
-                const snapshotsCopy = [];
-                for (let i = 0; i < state.snapshots.length; i += 1) {
-                    snapshotsCopy.push(JSON.parse(JSON.stringify(state.snapshots[i])));
-                }
-                if (state.files.includes(state.file)) {
-                    state.storePosition[state.fileIndex] = {
-                        row: state.row,
-                        col: state.col,
-                        windowLine: state.windowLine,
-                        windowLineHorizontal: state.windowLineHorizontal,
-                        snapshots: snapshotsCopy,
-                        mark: state.mark,
-                        prevRow: state.prevRow,
-                        prevCol: state.prevCol,
-                    };
-                } else {
-                    state.storePosition.push({
-                        row: state.row,
-                        col: state.col,
-                        windowLine: state.windowLine,
-                        windowLineHorizontal: state.windowLineHorizontal,
-                        currentSnapshot: state.currentSnapshot,
-                        snapshots: snapshotsCopy,
-                        mark: state.mark,
-                        prevRow: state.prevRow,
-                        prevCol: state.prevCol,
-                    });
-                }
-                state.fileIndex = state.files.length - 1;
-                changeFile(state);
-            } else {
-                const snapshotsCopy = [];
-                for (let i = 0; i < state.snapshots.length; i += 1) {
-                    snapshotsCopy.push(JSON.parse(JSON.stringify(state.snapshots[i])));
-                }
-                if (state.files.includes(state.file)) {
-                    state.storePosition[state.fileIndex] = {
-                        row: state.row,
-                        col: state.col,
-                        windowLine: state.windowLine,
-                        windowLineHorizontal: state.windowLineHorizontal,
-                        snapshots: snapshotsCopy,
-                        mark: state.mark,
-                        prevRow: state.prevRow,
-                        prevCol: state.prevCol,
-                    };
-                } else {
-                    state.storePosition.push({
-                        row: state.row,
-                        col: state.col,
-                        windowLine: state.windowLine,
-                        windowLineHorizontal: state.windowLineHorizontal,
-                        currentSnapshot: state.currentSnapshot,
-                        snapshots: snapshotsCopy,
-                        mark: state.mark,
-                        prevRow: state.prevRow,
-                        prevCol: state.prevCol,
-                    });
-                }
-                state.file = convertedPath;
-                state.fileIndex = state.files.indexOf(state.file);
-                changeFile(state);
-                const pos = state.storePosition[state.fileIndex];
-                state.row = pos.row;
-                state.col = pos.col;
-                state.windowLine = pos.windowLine;
-                state.windowLineHorizontal = pos.windowLineHorizontal;
-                state.currentSnapshot = pos.currentSnapshot;
-                state.snapshots = pos.snapshots;
-                state.mark = pos.mark;
-                state.prevRow = pos.prevRow;
-                state.prevCol = pos.prevCol;
-            }
-        }
+        processFile(state, convertedPath, 0, fileExists);
         state.previousKeys = '';
+    } else if (key === '\'') {
+        if (state.mark !== -1) {
+            state.row = state.mark;
+        }
+    } else if (key === '"') {
+        if (state.mark2 !== -1) {
+            state.row = state.mark2;
+        }
     } else if (key === '#') {
         state.fileFinderQuery = getInVisual(state);
         state.mode = 'g';
-        let output = '';
-        if (state.fileFinderQuery.length !== 0) {
-            output = execSync(
-                `git grep -n "${state.fileFinderQuery}" || true`,
-                { maxBuffer: 1024 * 1024 * 1000 }
-            ).toString();
-        }
-        state.fileFindingOutput = output.split('\n');
+        calcFileFinderOutput(state);
     } else if (key === '*') {
         state.searchQuery = getInVisual(state);
         state.mode = 'n';

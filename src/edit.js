@@ -8,6 +8,7 @@ import {
     centerScreen,
     renderScreen,
     createSnapshot,
+    calcFileFinderOutput,
     getData
 } from './util/helper.js';
 import { sendKeys } from './util/sendKeys.js';
@@ -48,11 +49,11 @@ const state = {
     previousKeys: '',
     totalCommandHistory: '',
     commandHistory: '',
-    commandString: '',
-    commandIndex: 0,
+    currentCommand: '',
+    commandCursorPosition: 0,
+    previousCommands: [],
+    historyPosition: 0,
     lastSearchCommand: [],
-    commands: [],
-    commandsIndex: [],
     previousCommand: [],
     file: filePath === undefined ? '' : filePath,
     harpoonIndex: 0,
@@ -86,9 +87,7 @@ if (filePath !== undefined) {
     state.allowCommandLogging = true;
     state.files.push(state.file);
 } else {
-    if (state.gitFinding) {
-        state.fileFindingOutput = execSync('fd -t f --hidden -E .git').toString().split('\n');
-    }
+    calcFileFinderOutput(state);
 }
 state.allowCommandLogging = true;
 renderScreen(state, screen);
