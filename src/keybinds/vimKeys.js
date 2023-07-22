@@ -1274,6 +1274,18 @@ function handleVimKeys(key, state, screen) {
                 centerScreen(state);
                 state.windowLineHorizontal = 0;
             }
+        } else if (key === '@' || key === ',') {
+            state.allowCommandLogging = false;
+            sendKeys(state.macro, state, screen);
+            state.allowCommandLogging = true;
+            createSnapshot(state);
+        } else if (key === '.') {
+            state.allowCommandLogging = false;
+            sendKeys(state.previousCommand, state, screen);
+            state.allowCommandLogging = true;
+            createSnapshot(state);
+        } else if (key === '\\') {
+            refreshFile(state);
         }
     } else if (state.previousKeys === '' && key === ',') {
         state.allowCommandLogging = false;
