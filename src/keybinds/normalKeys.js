@@ -2,6 +2,8 @@ import {
     isWritable,
     renderScreen,
     createSnapshot,
+    getSortedSubstrings,
+    substringFromRow,
     logCommand
 } from '../util/helper.js';
 import {
@@ -48,6 +50,13 @@ function handleKeys(key, state, screen) {
             state.data.splice(state.row, 1);
             state.row -= 1;
         }
+    } else if (key === 'TAB') {
+        const str = substringFromRow(state.data[state.row], state.col);
+        const replaceString = getSortedSubstrings(str, state.data);
+        state.data[state.row] = state.data[state.row].substring(0, state.col - str.length)
+            + replaceString
+            + state.data[state.row].substring(state.col);
+        state.col += replaceString.length - str.length;
     } else if (key === 'ENTER') {
         let indentLevel = state.data[state.row].search(/\S|$/);
         if (state.data[state.row].endsWith('{') && state.col === state.data[state.row].length) {
