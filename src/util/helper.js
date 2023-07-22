@@ -452,7 +452,6 @@ function applySnapshot(state, index, backwards) {
 
 function createSnapshot(state) {
     if (state.data.length < 10000 && state.allowCommandLogging) {
-        state.previousKeys = '';
         state.snapshots.splice(state.currentSnapshot + 1, state.snapshots.length - (state.currentSnapshot + 1));
         const oldData = [];
         for (let i = 0; i < state.data.length; i += 1) {
@@ -937,15 +936,25 @@ function processFile(state, newFile, lineNum, fileExists) {
     }
 }
 
+function cleanup(state, key, log, newCommand, snapshot, resetPrevKeys) {
+    if (log) {
+        logCommand(newCommand, state, key);
+    }
+    if (snapshot) {
+        createSnapshot(state);
+    }
+    if (resetPrevKeys) {
+        state.previousKeys = '';
+    }
+}
+
 function calcFileFinderOutput(state) {
+    let output = '';
     if (state.mode === 'g') {
-        let output = '';
         if (state.fileFinderQuery.length !== 0) {
             output = execSync(`git grep -n "${state.fileFinderQuery}" || true`, { maxBuffer: 1024 * 1024 * 1000 }).toString();
         }
-        state.fileFindingOutput = output.split('\n');
     } else {
-        let output = '';
         if (state.gitFinding) {
             if (state.fileFinderQuery.length !== 0) {
                 output = execSync(`fd -t f --hidden -E .git | grep -F -i "${state.fileFinderQuery}" || true`).toString();
@@ -957,8 +966,8 @@ function calcFileFinderOutput(state) {
                 output = execSync(`find * -type f -name "${state.fileFinderQuery}*"`).toString();
             }
         }
-        state.fileFindingOutput = output.split('\n');
     }
+    state.fileFindingOutput = output.split('\n');
 }
 
 export {
@@ -989,5 +998,6 @@ export {
     getContextLines,
     getSystemPaste,
     calcFileFinderOutput,
+    cleanup,
     isFile,
 };
