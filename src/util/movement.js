@@ -42,7 +42,14 @@ function firstNonSpace(state, row) {
 }
 
 function getIndentLevel(state, row) {
-    return state.data[row] !== undefined ? state.data[row].search(/\S|$/) : 0;
+    let currentRow = row;
+    while (currentRow >= 0) {
+        if (state.data[currentRow] !== undefined && !isEmptyRow(state, currentRow)) {
+            return state.data[currentRow].search(/\S|$/);
+        }
+        currentRow -= 1;
+    }
+    return 0;
 }
 
 function previousSameIndentLevel(state, row) {
