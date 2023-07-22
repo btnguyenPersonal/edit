@@ -5,6 +5,44 @@ import moment from 'moment';
 import fs from 'fs';
 import { isEmptyRow, getIndentLevelFrom } from './movement.js';
 
+function substringFromRow(sentence, cursorPos) {
+    let start = cursorPos;
+    let wordChar = sentence[start] !== undefined && /[A-Za-z0-9_]/.test(sentence[start]);
+    if (wordChar) {
+        return '';
+    }
+
+    while (start > 0 && /[A-Za-z0-9_]/.test(sentence[start - 1])) {
+        start -= 1;
+    }
+
+    return sentence.substring(start, cursorPos);
+}
+
+function getSortedSubstrings(inputString, array) {
+    if (inputString === '') {
+        return '';
+    }
+
+    const counts = new Map();
+
+    for (const str of array) {
+        const substrings = str.match(/\b\w+\b/g) || [];
+
+        for (const substring of substrings) {
+            if (substring.startsWith(inputString)) {
+                counts.set(substring, (counts.get(substring) || 0) + 1);
+            }
+        }
+    }
+
+    const pairs = Array.from(counts.entries());
+
+    pairs.sort((a, b) => b[1] - a[1]);
+
+    return pairs[0][0] || '';
+}
+
 function copyToClipboard(state, textArray, clipboardVisualBlock) {
     state.clipboardVisualBlock = clipboardVisualBlock;
     ncp.copy(textArray.join('\n'));
@@ -778,6 +816,19 @@ function renderSingleLine(state, screen, i, mergeSection, isContext) {
             },
             wrap: false
         }, displayRow.substring(j, j + 1));
+        if (state.row === i && state.col - 1 === j && state.mode === 'i') {
+            const str = substringFromRow(state.data[state.row], state.col);
+            const replaceString = getSortedSubstrings(str, state.data);
+            if (str.length !== 0) {
+                screen.put({
+                    attr: {
+                        color: 'gray',
+                        bgColor: 'black'
+                    },
+                    wrap: false
+                }, replaceString.substring(str.length));
+            }
+        }
     }
     if (state.data[i] === '' && isRowHighlighted(state, i)) {
         screen.put({
@@ -1061,5 +1112,7 @@ export {
     insertIndentedRow,
     adjustRow,
     cleanup,
+    substringFromRow,
+    getSortedSubstrings,
     isFile,
 };
