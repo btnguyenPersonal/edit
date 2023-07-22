@@ -7,8 +7,7 @@ import { isEmptyRow, getIndentLevelFrom } from './movement.js';
 
 function substringFromRow(sentence, cursorPos) {
     let start = cursorPos;
-    let wordChar = sentence[start] !== undefined && /[A-Za-z0-9_]/.test(sentence[start]);
-    if (wordChar) {
+    if (sentence[start] !== undefined && /[A-Za-z0-9_]/.test(sentence[start])) {
         return '';
     }
 
@@ -26,10 +25,11 @@ function getSortedSubstrings(inputString, array) {
 
     const counts = new Map();
 
-    for (const str of array) {
-        const substrings = str.match(/\b\w+\b/g) || [];
+    for (let i = 0; i < array.length; i += 1) {
+        const substrings = array[i].match(/\b\w+\b/g) || [];
 
-        for (const substring of substrings) {
+        for (let j = 0; j < substrings.length; j += 1) {
+            const substring = substrings[j];
             if (substring.startsWith(inputString)) {
                 counts.set(substring, (counts.get(substring) || 0) + 1);
             }
