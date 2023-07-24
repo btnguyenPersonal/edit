@@ -7,6 +7,7 @@ import { handleVisualLineKeys } from '../keybinds/visualLineKeys.js';
 import { handleVisualBlockKeys } from '../keybinds/visualBlockKeys.js';
 import { handleSearchKeys } from '../keybinds/searchKeys.js';
 import { handleFileFinderKeys } from '../keybinds/fileFinderKeys.js';
+import { handleGrepKeys } from '../keybinds/grepKeys.js';
 import { handleCommandKeys } from '../keybinds/commandKeys.js';
 import { handleHistoryTreeKeys } from '../keybinds/historyTree.js';
 
@@ -46,7 +47,9 @@ function sendKeys(keys, state, screen, term) {
             handleVisualBlockKeys(keys[i], state, screen);
         } else if (state.mode === 'v') {
             handleVisualKeys(keys[i], state, screen);
-        } else if ((state.mode === 'f' || state.mode === 'g')) {
+        } else if (state.mode === 'g') {
+            handleGrepKeys(keys[i], state, screen);
+        } else if (state.mode === 'f') {
             handleFileFinderKeys(keys[i], state, screen);
         } else if (state.mode === 'h') {
             handleHistoryTreeKeys(keys[i], state, screen);

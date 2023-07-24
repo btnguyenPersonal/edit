@@ -11,7 +11,7 @@ function handleHistoryTreeKeys(key, state, screen) {
             state.fileFinderIndex -= 1;
         }
     } else if (key === 'DOWN' || key === 'j') {
-        if (state.fileFinderIndex < state.fileFindingOutput.length - 1) {
+        if (state.fileFinderIndex < state.fileFinderOutput.length - 1) {
             state.fileFinderIndex += 1;
         }
     } else if (key === 'ESCAPE') {

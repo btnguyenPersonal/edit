@@ -697,14 +697,14 @@ function getFileFinderColor(s) {
 
 function renderHistoryTree(state, screen) {
     const index = state.fileFinderIndex - Math.floor(process.stdout.rows / 2) > 0 ? state.fileFinderIndex - Math.floor(process.stdout.rows / 2) : 0;
-    for (let i = index; i < state.fileFindingOutput.length && i < index + process.stdout.rows - 2; i += 1) {
+    for (let i = index; i < state.fileFinderOutput.length && i < index + process.stdout.rows - 2; i += 1) {
         screen.put({
             attr: {
                 color: state.fileFinderIndex === i ? 'blue' : 'white',
             },
             x: 0,
             wrap: false
-        }, state.fileFindingOutput[i]);
+        }, state.fileFinderOutput[i]);
         screen.put({ newLine: true }, '\n');
     }
     screen.moveTo(0, 0);
@@ -713,6 +713,8 @@ function renderHistoryTree(state, screen) {
 }
 
 function renderFileFinder(state, screen, mode) {
+    let query = mode === 'g' ? state.grepQuery : state.fileFinderQuery;
+    let modeIndex = mode === 'g' ? state.grepIndex : state.fileFinderIndex;
     screen.put({
         attr: {
             color: getFileFinderColor(mode),
@@ -725,20 +727,20 @@ function renderFileFinder(state, screen, mode) {
             color: 'white',
         },
         wrap: false
-    }, state.fileFinderQuery);
-    const index = state.fileFinderIndex - Math.floor(process.stdout.rows / 2) > 0 ? state.fileFinderIndex - Math.floor(process.stdout.rows / 2) : 0;
-    for (let i = index; i < state.fileFindingOutput.length && i < index + process.stdout.rows - 2; i += 1) {
+    }, query);
+    const index = modeIndex - Math.floor(process.stdout.rows / 2) > 0 ? modeIndex - Math.floor(process.stdout.rows / 2) : 0;
+    for (let i = index; i < state.fileFinderOutput.length && i < index + process.stdout.rows - 2; i += 1) {
         screen.put({ newLine: true }, '\n');
         screen.put({
             attr: {
-                color: state.fileFinderIndex === i ? getFileFinderColor(mode) : 'white',
+                color: modeIndex === i ? getFileFinderColor(mode) : 'white',
             },
             x: 0,
             wrap: false
-        }, state.fileFindingOutput[i]);
+        }, state.fileFinderOutput[i]);
     }
     screen.moveTo(
-        state.fileFinderQuery.length + 2,
+        query.length + 2,
         1
     );
     screen.draw({ delta: true });
@@ -1070,8 +1072,8 @@ function cleanup(state, key, log, newCommand, snapshot, resetPrevKeys) {
 function calcFileFinderOutput(state) {
     let output = '';
     if (state.mode === 'g') {
-        if (state.fileFinderQuery.length !== 0) {
-            output = execSync(`git grep -n "${state.fileFinderQuery}" || true`, { maxBuffer: 1024 * 1024 * 1000 }).toString();
+        if (state.grepQuery.length !== 0) {
+            output = execSync(`git grep -n "${state.grepQuery}" || true`, { maxBuffer: 1024 * 1024 * 1000 }).toString();
         }
     } else {
         if (state.gitFinding) {
@@ -1086,7 +1088,7 @@ function calcFileFinderOutput(state) {
             }
         }
     }
-    state.fileFindingOutput = output.split('\n');
+    state.fileFinderOutput = output.split('\n');
 }
 
 export {

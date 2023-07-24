@@ -852,12 +852,12 @@ function handleVimKeys(key, state, screen) {
         state.gitFinding = false;
         state.fileFinderQuery = '';
         state.fileFinderIndex = 0;
-        state.fileFindingOutput = [];
+        state.fileFinderOutput = [];
     } else if (state.previousKeys === '' && key === 'CTRL_Q') {
         state.mode = 'h';
-        state.fileFindingOutput = [];
+        state.fileFinderOutput = [];
         for (let i = 0; i < state.snapshots.length; i += 1) {
-            state.fileFindingOutput.push(i + ': (' + state.snapshots[i].date.diff(moment(), 'minutes') + ' min) ' + state.snapshots[i].commandHistory);
+            state.fileFinderOutput.push(i + ': (' + state.snapshots[i].date.diff(moment(), 'minutes') + ' min) ' + state.snapshots[i].commandHistory);
         }
         state.fileFinderIndex = state.currentSnapshot;
     } else if (state.previousKeys === '' && key === 'CTRL_P') {
