@@ -7,13 +7,15 @@ import {
 } from '../util/helper.js';
 
 function handleGrepKeys(key, state, screen) {
-    if (isWritable(key) && key !== '\\') {
-        if (key === '"') {
-            state.grepQuery += '\\';
-        }
-        state.grepQuery += key;
+    if (isWritable(key) && key !== '\\' && key !== '"') {
+        state.grepQuery = state.grepQuery.slice(0, state.grepCursorPosition) + key + state.grepQuery.slice(state.grepCursorPosition);
+        state.grepCursorPosition += 1;
         state.grepIndex = 0;
         calcFileFinderOutput(state);
+    } else if (key === 'CTRL_A') {
+        state.grepCursorPosition = 0;
+    } else if (key === 'CTRL_E') {
+        state.grepCursorPosition = state.grepQuery.length;
     } else if (key === 'CTRL_U') {
         for (let i = 0; i < process.stdout.rows / 2; i += 1) {
             if (state.grepIndex > 0) {
@@ -25,6 +27,14 @@ function handleGrepKeys(key, state, screen) {
             if (state.grepIndex < state.fileFinderOutput.length - 2) {
                 state.grepIndex += 1;
             }
+        }
+    } else if (key === 'LEFT' || key === 'CTRL_F') {
+        if (state.grepCursorPosition > 0) {
+            state.grepCursorPosition -= 1;
+        }
+    } else if (key === 'RIGHT' || key === 'CTRL_B') {
+        if (state.grepCursorPosition < state.grepQuery.length) {
+            state.grepCursorPosition += 1;
         }
     } else if (key === 'UP' || key === 'CTRL_P') {
         if (state.grepIndex > 0) {
@@ -55,12 +65,9 @@ function handleGrepKeys(key, state, screen) {
         state.grepQuery = '';
         calcFileFinderOutput(state);
     } else if (key === 'BACKSPACE') {
-        if (state.grepQuery.length > 0) {
-            if (state.grepQuery.endsWith('"')) {
-                state.grepQuery = state.grepQuery.substring(0, state.grepQuery.length - 2);
-            } else {
-                state.grepQuery = state.grepQuery.substring(0, state.grepQuery.length - 1);
-            }
+        if (state.grepCursorPosition > 0) {
+            state.grepQuery = state.grepQuery.slice(0, state.grepCursorPosition - 1) + state.grepQuery.slice(state.grepCursorPosition);
+            state.grepCursorPosition -= 1;
         }
         state.grepIndex = 0;
         calcFileFinderOutput(state);

@@ -7,13 +7,15 @@ import {
 } from '../util/helper.js';
 
 function handleFileFinderKeys(key, state, screen) {
-    if (isWritable(key) && key !== '\\') {
-        if (key === '"') {
-            state.fileFinderQuery += '\\';
-        }
-        state.fileFinderQuery += key;
+    if (isWritable(key) && key !== '\\' && key !== '"') {
+        state.fileFinderQuery = state.fileFinderQuery.slice(0, state.fileFinderCursorPosition) + key + state.fileFinderQuery.slice(state.fileFinderCursorPosition);
+        state.fileFinderCursorPosition += 1;
         state.fileFinderIndex = 0;
         calcFileFinderOutput(state);
+    } else if (key === 'CTRL_A') {
+        state.fileFinderCursorPosition = 0;
+    } else if (key === 'CTRL_E') {
+        state.fileFinderCursorPosition = state.fileFinderQuery.length;
     } else if (key === 'CTRL_U') {
         for (let i = 0; i < process.stdout.rows / 2; i += 1) {
             if (state.fileFinderIndex > 0) {
@@ -25,6 +27,14 @@ function handleFileFinderKeys(key, state, screen) {
             if (state.fileFinderIndex < state.fileFinderOutput.length - 2) {
                 state.fileFinderIndex += 1;
             }
+        }
+    } else if (key === 'LEFT' || key === 'CTRL_F') {
+        if (state.fileFinderCursorPosition > 0) {
+            state.fileFinderCursorPosition -= 1;
+        }
+    } else if (key === 'RIGHT' || key === 'CTRL_B') {
+        if (state.fileFinderCursorPosition < state.fileFinderQuery.length) {
+            state.fileFinderCursorPosition += 1;
         }
     } else if (key === 'UP' || key === 'CTRL_P') {
         if (state.fileFinderIndex > 0) {
@@ -56,12 +66,9 @@ function handleFileFinderKeys(key, state, screen) {
         state.fileFinderQuery = '';
         calcFileFinderOutput(state);
     } else if (key === 'BACKSPACE') {
-        if (state.fileFinderQuery.length > 0) {
-            if (state.fileFinderQuery.endsWith('"')) {
-                state.fileFinderQuery = state.fileFinderQuery.substring(0, state.fileFinderQuery.length - 2);
-            } else {
-                state.fileFinderQuery = state.fileFinderQuery.substring(0, state.fileFinderQuery.length - 1);
-            }
+        if (state.fileFinderCursorPosition > 0) {
+            state.fileFinderQuery = state.fileFinderQuery.slice(0, state.fileFinderCursorPosition - 1) + state.fileFinderQuery.slice(state.fileFinderCursorPosition);
+            state.fileFinderCursorPosition -= 1;
         }
         state.fileFinderIndex = 0;
         calcFileFinderOutput(state);

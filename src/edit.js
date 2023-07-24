@@ -36,9 +36,11 @@ const state = {
     replacing: false,
     fileFinderQuery: '',
     fileFinderIndex: 0,
-    fileFindingOutput: [],
+    fileFinderOutput: [],
+    fileFinderCursorPosition: 0,
     grepQuery: '',
     grepIndex: 0,
+    grepCursorPosition: 0,
     search: {
         row: undefined,
         col: undefined
