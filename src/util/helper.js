@@ -951,6 +951,18 @@ function evaluateCommand(state, term) {
     } else if (state.currentCommand === 'q') {
         term.fullscreen(false);
         process.exit(0);
+    } else if (/gs\/(.*)\/(.*)\/g/.test(state.currentCommand)) {
+        const match = /gs\/(.*?)\/(.*?)\/g/.exec(state.currentCommand);
+        try {
+            execSync(`git ls-files | xargs -I {} sed -i'' 's/${match[1]}/${match[2]}/g' "{}"`, { maxBuffer: 1024 * 1024 * 1000 });
+        } catch (e) {}
+        createSnapshot(state);
+        return true;
+    } else if (/s\/(.*)\/(.*)\/g/.test(state.currentCommand)) {
+        const match = /s\/(.*?)\/(.*?)\/g/.exec(state.currentCommand);
+        state.data[state.row] = state.data[state.row].replaceAll(new RegExp(match[1], 'g'), match[2]);
+        createSnapshot(state);
+        return true;
     } else if (/%s\/(.*)\/(.*)\/g/.test(state.currentCommand)) {
         const match = /%s\/(.*?)\/(.*?)\/g/.exec(state.currentCommand);
         for (let i = 0; i < state.data.length; i += 1) {

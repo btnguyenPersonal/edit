@@ -14,13 +14,23 @@ function handleFileFinderKeys(key, state, screen) {
         state.fileFinderQuery += key;
         state.fileFinderIndex = 0;
         calcFileFinderOutput(state);
-    } else if (key === 'UP') {
+    } else if (key === 'CTRL_U') {
+        for (let i = 0; i < process.stdout.rows / 2; i += 1) {
+            if (state.fileFinderIndex > 0) {
+                state.fileFinderIndex -= 1;
+            }
+        }
+    } else if (key === 'CTRL_D') {
+        for (let i = 0; i < process.stdout.rows / 2; i += 1) {
+            if (state.fileFinderIndex < state.fileFindingOutput.length - 2) {
+                state.fileFinderIndex += 1;
+            }
+        }
+    } else if (key === 'UP' || key === 'CTRL_P') {
         if (state.fileFinderIndex > 0) {
             state.fileFinderIndex -= 1;
-        } else {
-            state.fileFinderIndex = state.fileFindingOutput.length - 1;
         }
-    } else if (key === 'DOWN') {
+    } else if (key === 'DOWN' || key === 'CTRL_N') {
         if (state.fileFinderIndex < state.fileFindingOutput.length - 2) {
             state.fileFinderIndex += 1;
         }

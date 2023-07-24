@@ -87,7 +87,7 @@ describe('mouse input', () => {
             expect(state.col).to.equal(0);
             expect(state.row).to.equal(0);
         });
-        it('should move windowLine up when mouse wheel is moved up depending on terminal size', () => { // depends on terminal size lmao
+        it('should move windowLine up when mouse wheel is moved up depending on terminal size', () => { // depends on terminal size lmaoo
             state.windowLine = 0;
             handleMouseInputs('MOUSE_WHEEL_UP', undefined, state, term);
             if (process.stdout.rows < 8) {
