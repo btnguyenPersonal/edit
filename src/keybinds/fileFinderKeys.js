@@ -35,22 +35,14 @@ function handleFileFinderKeys(key, state, screen) {
             state.fileFinderIndex += 1;
         }
     } else if (key === 'ESCAPE') {
-        if (state.mode === 'f') {
-            state.fileFinderQuery = '';
-        }
+        state.fileFinderQuery = '';
         state.mode = 'n';
         state.fileFinderIndex = 0;
     } else if (key === 'ENTER') {
         let newFile = state.fileFinderOutput[state.fileFinderIndex];
-        let lineNum = 0;
-        if (state.mode === 'g') {
-            const arrayForm = newFile.split(':');
-            newFile = arrayForm[0];
-            lineNum = parseInt(arrayForm[1], 10);
-        } else {
-            state.fileFinderQuery = '';
-            state.fileFinderIndex = 0;
-        }
+        const lineNum = 0;
+        state.fileFinderQuery = '';
+        state.fileFinderIndex = 0;
         if (newFile !== undefined) {
             let fileExists = fs.existsSync(newFile);
             if (!fileExists) {

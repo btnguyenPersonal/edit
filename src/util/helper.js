@@ -713,8 +713,8 @@ function renderHistoryTree(state, screen) {
 }
 
 function renderFileFinder(state, screen, mode) {
-    let query = mode === 'g' ? state.grepQuery : state.fileFinderQuery;
-    let modeIndex = mode === 'g' ? state.grepIndex : state.fileFinderIndex;
+    const query = mode === 'g' ? state.grepQuery : state.fileFinderQuery;
+    const modeIndex = mode === 'g' ? state.grepIndex : state.fileFinderIndex;
     screen.put({
         attr: {
             color: getFileFinderColor(mode),

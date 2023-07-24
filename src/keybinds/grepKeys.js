@@ -35,22 +35,13 @@ function handleGrepKeys(key, state, screen) {
             state.grepIndex += 1;
         }
     } else if (key === 'ESCAPE') {
-        if (state.mode === 'f') {
-            state.grepQuery = '';
-        }
         state.mode = 'n';
         state.grepIndex = 0;
     } else if (key === 'ENTER') {
         let newFile = state.fileFinderOutput[state.grepIndex];
-        let lineNum = 0;
-        if (state.mode === 'g') {
-            const arrayForm = newFile.split(':');
-            newFile = arrayForm[0];
-            lineNum = parseInt(arrayForm[1], 10);
-        } else {
-            state.grepQuery = '';
-            state.grepIndex = 0;
-        }
+        const arrayForm = newFile.split(':');
+        newFile = arrayForm[0];
+        const lineNum = parseInt(arrayForm[1], 10);
         if (newFile !== undefined) {
             let fileExists = fs.existsSync(newFile);
             if (!fileExists) {
