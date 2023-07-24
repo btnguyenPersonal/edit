@@ -955,6 +955,7 @@ function evaluateCommand(state, term) {
         const match = /gs\/(.*?)\/(.*?)\/g/.exec(state.currentCommand);
         try {
             execSync(`git ls-files | xargs -I {} sed -i'' 's/${match[1]}/${match[2]}/g' "{}"`, { maxBuffer: 1024 * 1024 * 1000 });
+            // eslint-disable-next-line no-empty
         } catch (e) {}
         createSnapshot(state);
         return true;
