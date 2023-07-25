@@ -64,6 +64,7 @@ function handleFileFinderKeys(key, state, screen) {
         state.mode = 'n';
     } else if (key === 'CTRL_L') {
         state.fileFinderQuery = '';
+        state.fileFinderCursorPosition = 0;
         calcFileFinderOutput(state);
     } else if (key === 'BACKSPACE') {
         if (state.fileFinderCursorPosition > 0) {

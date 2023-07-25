@@ -63,6 +63,7 @@ function handleGrepKeys(key, state, screen) {
         state.mode = 'n';
     } else if (key === 'CTRL_L') {
         state.grepQuery = '';
+        state.grepCursorPosition = 0;
         calcFileFinderOutput(state);
     } else if (key === 'BACKSPACE') {
         if (state.grepCursorPosition > 0) {
