@@ -18,17 +18,18 @@
     - block comment highlighting
     - readme / markdown highlighting
     - colors with hex ?? might not be supported in terminal-kit
+    - do real indenting
 ## todo
     - fix /> for closing tags indentation
-    - go to marks in visual
-    - while typing show autocomplete for most used word in file
 ## blocked
 ## in progress
+## done
     - ___this weekend start combing through all of the code and clean up everything that is icky___
         - stop nesting ifs everywhere, make every key an if (previousKeys + key === 'di(') {} kind of thing
         - maybe make a cleanup function that runs logCommand, state.previousKeys clear, createSnapshot
         - clean up my file switching crap spewed everywhere, and have mark2 be saved (and have macro2 if not already)
-## done
+    - while typing show autocomplete for most used word in file
+    - go to marks in visual
     - visualLine movement horizontal
     - stop using 'inString' for non-code
     - add %

@@ -6,7 +6,7 @@ import {
     calcFileFinderOutput,
 } from '../util/helper.js';
 
-function handleFileFinderKeys(key, state, screen) {
+function handleFileFinderKeys(key, state, screen, term) {
     if (isWritable(key) && key !== '\\' && key !== '"') {
         state.fileFinderQuery = state.fileFinderQuery.slice(0, state.fileFinderCursorPosition) + key + state.fileFinderQuery.slice(state.fileFinderCursorPosition);
         state.fileFinderCursorPosition += 1;
@@ -45,6 +45,10 @@ function handleFileFinderKeys(key, state, screen) {
             state.fileFinderIndex += 1;
         }
     } else if (key === 'ESCAPE') {
+        if (state.file === '') {
+            term.fullscreen(false);
+            process.exit();
+        }
         state.fileFinderQuery = '';
         state.mode = 'n';
         state.fileFinderIndex = 0;

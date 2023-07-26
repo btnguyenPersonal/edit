@@ -50,7 +50,7 @@ function sendKeys(keys, state, screen, term) {
         } else if (state.mode === 'g') {
             handleGrepKeys(keys[i], state, screen);
         } else if (state.mode === 'f') {
-            handleFileFinderKeys(keys[i], state, screen);
+            handleFileFinderKeys(keys[i], state, screen, term);
         } else if (state.mode === 'h') {
             handleHistoryTreeKeys(keys[i], state, screen);
         } else if (state.mode === 'V') {
