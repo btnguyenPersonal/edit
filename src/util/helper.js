@@ -1014,9 +1014,9 @@ function createState(state) {
     };
 }
 
-function updateStateFromFilePosition(state, fileIndex) {
+function updateStateFromFilePosition(state, fileIndex, lineNum) {
     const pos = state.storePosition[fileIndex];
-    state.row = pos.row;
+    state.row = lineNum !== 0 ? lineNum - 1 : pos.row;
     state.col = pos.col;
     state.windowLine = pos.windowLine;
     state.windowLineHorizontal = pos.windowLineHorizontal;
@@ -1053,7 +1053,7 @@ function processFile(state, newFile, lineNum, fileExists) {
             updateFileState(state, newFile, lineNum);
         } else {
             updateFileState(state, newFile, lineNum);
-            updateStateFromFilePosition(state, state.fileIndex);
+            updateStateFromFilePosition(state, state.fileIndex, lineNum);
         }
     }
 }

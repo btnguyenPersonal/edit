@@ -194,7 +194,7 @@ function handleVisualKeys(key, state, screen) {
             state.row = state.mark2;
         }
     } else if (key === '#') {
-        state.fileFinderQuery = getInVisual(state);
+        state.grepQuery = getInVisual(state);
         state.mode = 'g';
         calcFileFinderOutput(state);
     } else if (key === '*') {
