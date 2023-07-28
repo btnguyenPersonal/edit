@@ -25,7 +25,7 @@ function handleMouseInputs(key, coor, state, screen) {
             state.windowLine -= 1;
         }
     } else if (key === 'MOUSE_WHEEL_DOWN') {
-        if (state.windowLine <= state.data.length) {
+        if (state.windowLine < state.data.length - 1) {
             state.windowLine += 1;
         }
     }
