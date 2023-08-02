@@ -1,7 +1,6 @@
 /* eslint-disable import/no-cycle */
 import ncp from 'copy-paste';
 import { execSync } from 'child_process';
-import moment from 'moment';
 import fs from 'fs';
 import { isEmptyRow, getIndentLevelFrom } from './movement.js';
 
@@ -552,7 +551,6 @@ function createSnapshot(state) {
         }
         state.snapshots.push({
             commandHistory: state.commandHistory,
-            date: moment(),
             data: oldData,
             row: state.prevRow,
             col: state.prevCol,

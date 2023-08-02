@@ -55,8 +55,6 @@ function handleFileFinderKeys(key, state, screen, term) {
     } else if (key === 'ENTER') {
         let newFile = state.fileFinderOutput[state.fileFinderIndex];
         const lineNum = 0;
-        state.fileFinderQuery = '';
-        state.fileFinderIndex = 0;
         if (newFile !== undefined) {
             let fileExists = fs.existsSync(newFile);
             if (!fileExists) {
