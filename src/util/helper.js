@@ -682,10 +682,9 @@ function renderStatusBar(state, screen) {
                 }
             }, shortenFilePath(state.files[state.harpoonIndexes[i]]) + ' ');
         }
-        const index = 5 + state.file.length + ((state.row + 1).toString().length) + ((state.col + 1).toString().length) + state.searchQuery.length;
-        screen.put({ attr: { color: 'blue' }, x: process.stdout.columns - index - 10 }, state.totalCommandHistory.slice(-10));
+        const index = 3 + state.file.length + state.searchQuery.length;
         screen.put({ attr: { color: 'green' }, x: process.stdout.columns - index }, '/' + state.searchQuery);
-        screen.put({ attr: { color: 'white' } }, '"' + state.file + ':' + (state.row + 1) + ':' + (state.col + 1) + '"');
+        screen.put({ attr: { color: 'white' } }, '"' + state.file + '"');
     }
 }
 
