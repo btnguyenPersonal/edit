@@ -857,9 +857,15 @@ function handleVimKeys(key, state, screen) {
             state.fileFinderOutput.push(i + ': ' + state.snapshots[i].commandHistory);
         }
         state.fileFinderIndex = state.currentSnapshot;
+    } else if (state.previousKeys === '' && key === 'CTRL_O') {
+        state.mode = 'f';
+        state.gitFinding = true;
+        calcFileFinderOutput(state);
     } else if (state.previousKeys === '' && key === 'CTRL_P') {
         state.mode = 'f';
         state.gitFinding = true;
+        state.fileFinderQuery = '';
+        state.fileFinderCursorPosition = 0;
         calcFileFinderOutput(state);
     } else if (state.previousKeys === '' && key === '\'') {
         if (state.mark !== -1) {

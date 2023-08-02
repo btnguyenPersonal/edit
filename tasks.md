@@ -19,6 +19,7 @@
     - readme / markdown highlighting
     - colors with hex ?? might not be supported in terminal-kit
     - do real indenting
+    - real file stack
 ## todo
     - fix /> for closing tags indentation
 ## blocked

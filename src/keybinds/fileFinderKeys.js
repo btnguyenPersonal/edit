@@ -8,7 +8,9 @@ import {
 
 function handleFileFinderKeys(key, state, screen, term) {
     if (isWritable(key) && key !== '\\' && key !== '"') {
-        state.fileFinderQuery = state.fileFinderQuery.slice(0, state.fileFinderCursorPosition) + key + state.fileFinderQuery.slice(state.fileFinderCursorPosition);
+        state.fileFinderQuery = state.fileFinderQuery.slice(0, state.fileFinderCursorPosition)
+            + key
+            + state.fileFinderQuery.slice(state.fileFinderCursorPosition);
         state.fileFinderCursorPosition += 1;
         state.fileFinderIndex = 0;
         calcFileFinderOutput(state);
@@ -70,7 +72,8 @@ function handleFileFinderKeys(key, state, screen, term) {
         calcFileFinderOutput(state);
     } else if (key === 'BACKSPACE') {
         if (state.fileFinderCursorPosition > 0) {
-            state.fileFinderQuery = state.fileFinderQuery.slice(0, state.fileFinderCursorPosition - 1) + state.fileFinderQuery.slice(state.fileFinderCursorPosition);
+            state.fileFinderQuery = state.fileFinderQuery.slice(0, state.fileFinderCursorPosition - 1)
+                + state.fileFinderQuery.slice(state.fileFinderCursorPosition);
             state.fileFinderCursorPosition -= 1;
         }
         state.fileFinderIndex = 0;
