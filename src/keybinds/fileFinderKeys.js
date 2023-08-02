@@ -30,11 +30,11 @@ function handleFileFinderKeys(key, state, screen, term) {
                 state.fileFinderIndex += 1;
             }
         }
-    } else if (key === 'LEFT' || key === 'CTRL_F') {
+    } else if (key === 'LEFT') {
         if (state.fileFinderCursorPosition > 0) {
             state.fileFinderCursorPosition -= 1;
         }
-    } else if (key === 'RIGHT' || key === 'CTRL_B') {
+    } else if (key === 'RIGHT') {
         if (state.fileFinderCursorPosition < state.fileFinderQuery.length) {
             state.fileFinderCursorPosition += 1;
         }

@@ -28,11 +28,11 @@ function handleGrepKeys(key, state, screen) {
                 state.grepIndex += 1;
             }
         }
-    } else if (key === 'LEFT' || key === 'CTRL_F') {
+    } else if (key === 'LEFT') {
         if (state.grepCursorPosition > 0) {
             state.grepCursorPosition -= 1;
         }
-    } else if (key === 'RIGHT' || key === 'CTRL_B') {
+    } else if (key === 'RIGHT') {
         if (state.grepCursorPosition < state.grepQuery.length) {
             state.grepCursorPosition += 1;
         }
