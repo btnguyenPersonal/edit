@@ -19,9 +19,12 @@
     - readme / markdown highlighting
     - colors with hex ?? might not be supported in terminal-kit
     - do real indenting
-    - real file stack
 ## todo
     - fix /> for closing tags indentation
+    - {d,y,c}i<any_key_here>
+    - macro editing using plain-text
+    - real file stack
+    - fix harpoon exit bug
 ## blocked
 ## in progress
 ## done

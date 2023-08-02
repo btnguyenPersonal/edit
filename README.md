@@ -5,22 +5,10 @@ this is my experiment for making a new code editor
 # installing
 ```
 npm i
-npm run build
-echo 'alias e="node ~/git/edit/build/out.cjs"' >> ~/.bashrc
+npm i -g .
 ```
 that's it, you should just be able to run `e path/to/file.js` in your command line and it should work!
 also, just starting as `e` should start you out with searching for the file you want 
-
----
-
-if you want to have edit create a file if it isn't there,
-have to put this in bashrc instead:
-```
-e() {
-    touch $1
-    node ~/git/edit/build/out.cjs $1
-}
-```
 
 # keybinds
 ### vim mode (starts in this mode and has all the shortcuts)
@@ -62,22 +50,25 @@ e() {
 |&#92;|reload file (if external program has changed it)|
 |.|repeat last command|
 |=|format indent for current line|
-|ctrl i/o|switch between all files you have visited before|
 |ctrl w/e|switch between tabs|
-|M|toggle current file as a tab|
+|ctrl h/l|move tabs|
+|space|toggle current file as a tab|
+|X|clear tabs|
+|ctrl x|remove current tab|
 |m|mark line in file|
 |'|return to mark|
+|M|alt mark line in file|
+|"|return to alt mark|
 |<>|change indent level|
 |{}|find next/prev empty lines|
 |[]|find next/prev lines with current indent level|
 |()|find next/prev lines with lesser indent level|
-|/|search in file, have to press enter to exit|
+|/|search in file, have to press enter to exit, esc to cancel|
 |*|search for word under cursor|
 |n|repeat last search|
 |N|repeat last search backwards|
 |q|start/stop recording macro|
 |,|repeat macro|
-|@|repeat macro on every search result|
 |r|replace current character with next specified character|
 |f|jumps to next specified character|
 |F|jumps to next specified character backwards|
@@ -99,7 +90,7 @@ e() {
 |cT|delete backward until right before next specified character and go to normal mode|
 |dd| basically can do exact same things with c, but doesn't go to normal mode|
 |yy| basically can do exact same things with c and d, but copies the text instead|
-|-1234| jumps to line 1234, have to press enter to exit|
+|1234| jumps to line 1234|
 |ESCAPE| quits out of current keys for example typing in "d ESCAPE j" would stop d and just go down one|
 |gc|comment / uncomment line|
 |gt|trim trailing whitespace|

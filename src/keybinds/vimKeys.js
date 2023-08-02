@@ -857,7 +857,7 @@ function handleVimKeys(key, state, screen) {
             state.fileFinderOutput.push(i + ': ' + state.snapshots[i].commandHistory);
         }
         state.fileFinderIndex = state.currentSnapshot;
-    } else if (state.previousKeys === '' && key === 'CTRL_O') {
+    } else if (state.previousKeys === '' && key === 'CTRL_Y') {
         state.mode = 'f';
         state.gitFinding = true;
         calcFileFinderOutput(state);
