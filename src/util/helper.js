@@ -729,13 +729,24 @@ function renderFileFinder(state, screen, mode) {
     const index = modeIndex - Math.floor(process.stdout.rows / 2) > 0 ? modeIndex - Math.floor(process.stdout.rows / 2) : 0;
     for (let i = index; i < state.fileFinderOutput.length && i < index + process.stdout.rows - 2; i += 1) {
         screen.put({ newLine: true }, '\n');
-        screen.put({
-            attr: {
-                color: modeIndex === i ? getFileFinderColor(mode) : 'white',
-            },
-            x: 0,
-            wrap: false
-        }, state.fileFinderOutput[i]);
+        screen.put({ newLine: true, x: 0 }, '');
+        const path = state.fileFinderOutput[i].split('/');
+        for (let j = 0; j < path.length - 1; j += 1) {
+            screen.put({
+                attr: {
+                    color: modeIndex === i ? getFileFinderColor(mode) : 'blue',
+                },
+                wrap: false
+            }, path[j] + '/');
+        }
+        if (path.length - 1 >= 0) {
+            screen.put({
+                attr: {
+                    color: modeIndex === i ? getFileFinderColor(mode) : 'white',
+                },
+                wrap: false
+            }, path[path.length - 1]);
+        }
     }
     screen.moveTo(
         curPos + 2,
