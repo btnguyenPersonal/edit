@@ -866,6 +866,7 @@ function handleVimKeys(key, state, screen) {
         state.gitFinding = true;
         state.fileFinderQuery = '';
         state.fileFinderCursorPosition = 0;
+        state.fileFinderIndex = 0;
         calcFileFinderOutput(state);
     } else if (state.previousKeys === '' && key === '\'') {
         if (state.mark !== -1) {
