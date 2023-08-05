@@ -93,6 +93,7 @@ if (filePath !== undefined) {
     state.allowCommandLogging = true;
     state.files.push(state.file);
 } else {
+    state.fileFinderFileCache = execSync('fd -t f --hidden -E .git').toString();
     calcFileFinderOutput(state);
 }
 state.allowCommandLogging = true;
