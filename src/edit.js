@@ -41,6 +41,7 @@ const state = {
     grepQuery: '',
     grepIndex: 0,
     grepCursorPosition: 0,
+    reverseSearch: false,
     search: {
         row: undefined,
         col: undefined

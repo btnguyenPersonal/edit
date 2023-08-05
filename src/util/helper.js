@@ -565,7 +565,10 @@ function createSnapshot(state) {
     }
 }
 
-function searchBackForString(state, string) {
+function searchBackForString(state, string, acceptCurrent) {
+    if (acceptCurrent && state.data[state.row].substring(state.col, state.col + string.length) === string) {
+        return true;
+    }
     if (state.data[state.row].substring(0, state.col).includes(string)) {
         state.col = state.data[state.row].substring(0, state.col).lastIndexOf(string);
         return true;

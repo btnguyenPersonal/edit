@@ -4,7 +4,7 @@
   "description": "code editor experiment",
   "type": "module",
   "scripts": {
-    "dev": "node src/edit.js",
+    "dev": "node src/edit.js test.txt",
     "lint": "eslint .",
     "test": "npx mocha ./test/**/*.spec.js"
   },

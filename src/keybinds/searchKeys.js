@@ -4,6 +4,7 @@ import {
     logCommand,
     isWritable,
     searchForString,
+    searchBackForString,
     createSnapshot,
     centerScreen
 } from '../util/helper.js';
@@ -34,7 +35,11 @@ function handleSearchKeys(key, state, screen) {
         if (isWritable(key)) {
             state.searchQuery += key;
             state.searching = true;
-            searchForString(state, state.searchQuery);
+            if (state.reverseSearch) {
+                searchBackForString(state, state.searchQuery, true);
+            } else {
+                searchForString(state, state.searchQuery);
+            }
             centerScreen(state);
         } else if (key === 'ESCAPE') {
             state.mode = 'n';

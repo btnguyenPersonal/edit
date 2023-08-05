@@ -25,7 +25,6 @@ import {
     copyRows,
     adjustRow,
     cleanup,
-    getSystemPaste,
 } from '../util/helper.js';
 import { sendKeys } from '../util/sendKeys.js';
 import {
@@ -753,9 +752,16 @@ function handleVimKeys(key, state, screen) {
             centerScreen(state);
             state.windowLineHorizontal = 0;
         }
+    } else if (state.previousKeys === '' && key === '?') {
+        state.mode = '/';
+        state.searchQuery = '';
+        state.reverseSearch = true;
+        state.search.row = state.row;
+        state.search.col = state.col;
     } else if (state.previousKeys === '' && key === '/') {
         state.mode = '/';
         state.searchQuery = '';
+        state.reverseSearch = false;
         state.search.row = state.row;
         state.search.col = state.col;
     } else if (state.previousKeys === '' && key === 'v') {
@@ -900,36 +906,6 @@ function handleVimKeys(key, state, screen) {
         }
     } else if (state.previousKeys === '' && key === '%') {
         matchIt(state);
-    } else if (state.previousKeys === '' && key === '?') {
-        let systemPaste = getSystemPaste(state);
-        if (systemPaste.startsWith('\n')) {
-            systemPaste = systemPaste.substring(1);
-        }
-        state.searchQuery = systemPaste;
-        state.searching = true;
-        if (state.searchQuery !== '') {
-            state.searching = true;
-            state.col += state.searchQuery.length + 1;
-            const result = searchForString(state, state.searchQuery);
-            if (!result) {
-                state.col -= state.searchQuery.length + 1;
-            } else {
-                centerScreen(state);
-                state.windowLineHorizontal = 0;
-            }
-        } else if (key === '@' || key === ',') {
-            state.allowCommandLogging = false;
-            sendKeys(state.macro, state, screen);
-            state.allowCommandLogging = true;
-            createSnapshot(state);
-        } else if (key === '.') {
-            state.allowCommandLogging = false;
-            sendKeys(state.previousCommand, state, screen);
-            state.allowCommandLogging = true;
-            createSnapshot(state);
-        } else if (key === '\\') {
-            refreshFile(state);
-        }
     } else if (state.previousKeys === '' && key === ',') {
         state.allowCommandLogging = false;
         let chr = state.lastSearchCommand[0];

@@ -199,6 +199,7 @@ function handleVisualKeys(key, state, screen) {
         calcFileFinderOutput(state);
     } else if (key === '*') {
         state.searchQuery = getInVisual(state);
+        state.reverseSearch = false;
         state.mode = 'n';
         if (state.searchQuery !== '') {
             state.col += state.searchQuery.length + 1;
