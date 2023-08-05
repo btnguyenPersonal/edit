@@ -1078,18 +1078,30 @@ function calcFileFinderOutput(state) {
         }
     } else {
         if (state.gitFinding) {
-            if (state.fileFinderQuery.length !== 0) {
-                output = execSync(`fd -t f --hidden -E .git | grep -F -i "${state.fileFinderQuery}" || true`).toString();
-            } else {
-                output = execSync('fd -t f --hidden -E .git').toString();
-            }
+            output = execSync('fd -t f --hidden -E .git').toString();
         } else {
             if (state.fileFinderQuery.length !== 0) {
                 output = execSync(`find * -type f -name "${state.fileFinderQuery}*"`).toString();
             }
         }
     }
-    state.fileFinderOutput = output.split('\n').filter((file) => file !== state.file);
+    state.fileFinderOutput = output.split('\n').filter((file) => file !== state.file && isValidSearch(state.fileFinderQuery, file));
+}
+    
+function isValidSearch(query, file) {
+    let counter = 0;
+    for (let i = 0; i < query.length; i += 1) {
+        for (let j = counter; j <= file.length; j += 1) {
+            if (j === file.length) {
+                return false;
+            }
+            if (query.charAt(i) === file.charAt(j)) {
+                counter = j;
+                break;
+            }
+        }
+    }
+    return true;
 }
 
 export {
