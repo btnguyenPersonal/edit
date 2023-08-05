@@ -1,4 +1,5 @@
 /* eslint-disable import/no-cycle */
+import { execSync } from 'child_process';
 import {
     pasteFromClipboardBefore,
     pasteFromClipboardAfter,
@@ -869,6 +870,7 @@ function handleVimKeys(key, state, screen) {
         calcFileFinderOutput(state);
     } else if (state.previousKeys === '' && key === 'CTRL_P') {
         state.mode = 'f';
+        state.fileFinderFileCache = execSync('fd -t f --hidden -E .git').toString();
         state.gitFinding = true;
         state.fileFinderQuery = '';
         state.fileFinderCursorPosition = 0;

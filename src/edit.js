@@ -36,6 +36,7 @@ const state = {
     replacing: false,
     fileFinderQuery: '',
     fileFinderIndex: 0,
+    fileFinderFileCache: '',
     fileFinderOutput: [],
     fileFinderCursorPosition: 0,
     grepQuery: '',
@@ -44,7 +45,7 @@ const state = {
     reverseSearch: false,
     search: {
         row: undefined,
-        col: undefined
+        col: undefined,
     },
     visual: {
         row: undefined,
