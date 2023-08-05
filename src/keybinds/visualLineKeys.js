@@ -369,6 +369,9 @@ function handleVisualLineKeys(key, state, screen) {
         createSnapshot(state);
     } else if (key === 'p' || key === 'P') {
         let systemPaste = getSystemPaste(state);
+        if (!systemPaste.startsWith('\n')) {
+            systemPaste = '\n' + systemPaste;
+        }
         systemPaste = systemPaste.split('\n');
         if (systemPaste.length > 0) {
             if (state.row >= state.visual.row) {
