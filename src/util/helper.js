@@ -1077,7 +1077,7 @@ function isValidSearch(query, file) {
             if (j === file.length) {
                 return false;
             }
-            if (query.charAt(i) === file.charAt(j)) {
+            if (query.charAt(i) === file.charAt(j).toUpperCase() || query.charAt(i) === file.charAt(j).toLowerCase()) {
                 counter = j;
                 break;
             }
