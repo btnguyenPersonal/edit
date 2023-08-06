@@ -1,7 +1,7 @@
 /* eslint-disable import/no-cycle */
-import { handleKeys } from '../keybinds/normalKeys.js';
+import { handleKeys } from '../keybinds/typingKeys.js';
 import { handleMultiCursorKeys } from '../keybinds/multiCursorKeys.js';
-import { handleVimKeys } from '../keybinds/vimKeys.js';
+import { handleShortcutKeys } from '../keybinds/shortcutKeys.js';
 import { handleVisualKeys } from '../keybinds/visualKeys.js';
 import { handleVisualLineKeys } from '../keybinds/visualLineKeys.js';
 import { handleVisualBlockKeys } from '../keybinds/visualBlockKeys.js';
@@ -56,7 +56,7 @@ function sendKeys(keys, state, screen, term) {
         } else if (state.mode === 'V') {
             handleVisualLineKeys(keys[i], state, screen);
         } else if ((state.mode === 'n' || state.mode === 'r')) {
-            handleVimKeys(keys[i], state, screen);
+            handleShortcutKeys(keys[i], state, screen);
         } else {
             handleKeys(keys[i], state, screen);
         }

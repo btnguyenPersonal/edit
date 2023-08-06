@@ -72,7 +72,7 @@ import {
     matchIt,
 } from '../util/movement.js';
 
-function handleVimKeys(key, state, screen) {
+function handleShortcutKeys(key, state, screen) {
     state.searching = false;
     if (key === 'ESCAPE') {
         state.mode = 'n';
@@ -913,14 +913,6 @@ function handleVimKeys(key, state, screen) {
         }
     } else if (state.previousKeys === '' && key === '%') {
         matchIt(state);
-    } else if (state.previousKeys === '' && key === ',') {
-        state.allowCommandLogging = false;
-        let chr = state.lastSearchCommand[0];
-        if (chr !== undefined) {
-            chr = chr === chr.toUpperCase() ? chr.toLowerCase() : chr.toUpperCase();
-            sendKeys([chr, state.lastSearchCommand[1]], state, screen);
-        }
-        state.allowCommandLogging = true;
     } else if (state.previousKeys === '' && key === ';') {
         state.allowCommandLogging = false;
         sendKeys(state.lastSearchCommand, state, screen);
@@ -936,7 +928,7 @@ function handleVimKeys(key, state, screen) {
         } else {
             state.harpoonIndexes = state.harpoonIndexes.filter(((e) => (e !== state.fileIndex)));
         }
-    } else if (state.previousKeys === '' && key === '@') {
+    } else if (state.previousKeys === '' && key === ',') {
         state.allowCommandLogging = false;
         sendKeys(state.macro, state, screen);
         state.allowCommandLogging = true;
@@ -953,5 +945,5 @@ function handleVimKeys(key, state, screen) {
 }
 
 export {
-    handleVimKeys
+    handleShortcutKeys
 };
