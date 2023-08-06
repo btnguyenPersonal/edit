@@ -674,9 +674,25 @@ function isMergeConflictEnd(s) {
     return s.startsWith('>>>>>>>');
 }
 
+function getColorFromMode(mode) {
+    if (mode === 'n' || mode === 'r' || mode === 'f' || mode === 'g') {
+        return 'white';
+    } else if (mode === 'v' || mode === 'V' || mode === 'CTRL_V') {
+        return 'cyan';
+    } else if (mode === 'i' || mode === 'MULTI_CURSOR') {
+        return 'magenta';
+    } else if (mode === 'h') {
+        return 'blue';
+    } else {
+        return 'darkgrey';
+    }
+}
+
 function renderStatusBar(state, screen) {
     if (state.mode === ':') {
         screen.put({ attr: { color: 'white' } }, ':' + state.currentCommand);
+    } else if (state.mode === '/') {
+        screen.put({ attr: { color: 'green' } }, '/' + state.searchQuery);
     } else {
         for (let i = 0; i < state.harpoonIndexes.length; i += 1) {
             screen.put({
@@ -687,7 +703,7 @@ function renderStatusBar(state, screen) {
         }
         const index = 3 + state.file.length + state.searchQuery.length;
         screen.put({ attr: { color: 'green' }, x: process.stdout.columns - index }, '/' + state.searchQuery);
-        screen.put({ attr: { color: 'white' } }, '"' + state.file + '"');
+        screen.put({ attr: { color: getColorFromMode(state.mode) } }, '"' + state.file + '"');
     }
 }
 
