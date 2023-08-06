@@ -184,7 +184,7 @@ example:
 |e| comment / uncomment|
 |<>| change indent|
 |iw| highlight word|
-|k| move highlighted section up
+|K| move highlighted section up
 |J| move highlighted section down
 |*| search in file for current highlighted text|
 |#| search in project for current highlighted text|
