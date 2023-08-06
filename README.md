@@ -158,6 +158,7 @@ example:
 
 ### typing mode
 - `i` `a` `I` `A` `O` `o` `c commands(see above)`
+
 |key|function|
 |:---:|:---:|
 |up down left right|movement|
@@ -171,6 +172,7 @@ example:
 
 ### visual modes
 - `V` `CTRL V` `v`
+
 |key|function|
 |:---:|:---:|
 |up down left right hjkl w b ctrl u ctrl d| basically all the movement keys work the same|
