@@ -15,13 +15,20 @@ function handleCommandKeys(key, state, screen, term) {
             + key
             + state.currentCommand.slice(state.commandCursorPosition);
         state.commandCursorPosition += 1;
-    } else if (key === 'DOWN') {
+    } else if (key === 'CTRL_L') {
+        state.currentCommand = '';
+        state.commandCursorPosition = 0;
+    } else if (key === 'CTRL_A') {
+        state.commandCursorPosition = 0;
+    } else if (key === 'CTRL_E') {
+        state.commandCursorPosition = state.currentCommand.length;
+    } else if (key === 'DOWN' || key === 'CTRL_N') {
         if (state.historyPosition < state.previousCommands.length - 1) {
             state.historyPosition += 1;
             state.currentCommand = state.previousCommands[state.historyPosition];
             state.commandCursorPosition = 0;
         }
-    } else if (key === 'UP') {
+    } else if (key === 'UP' || key === 'CTRL_P') {
         if (state.historyPosition > 0) {
             state.historyPosition -= 1;
             state.currentCommand = state.previousCommands[state.historyPosition];
