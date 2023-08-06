@@ -807,7 +807,7 @@ function setAroundVisualHighlight(state, beginning, end) {
 }
 
 function setVisualHighlight(state, beginning, end) {
-    if (beginning !== end && beginning !== -1 && end !== -1) {
+    if (beginning !== end && end !== -1) {
         state.visual.col = beginning + 1;
         state.col = end - 1;
         state.visual.row = state.row;
