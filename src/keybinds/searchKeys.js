@@ -1,5 +1,8 @@
 /* eslint-disable import/no-cycle */
 import {
+    SHORTCUTS
+} from '../util/modes.js';
+import {
     renderScreen,
     logCommand,
     isWritable,
@@ -17,10 +20,10 @@ function handleSearchKeys(key, state, screen) {
         } else if (key === 'ESCAPE') {
             state.replaceQuery = '';
             state.replacing = false;
-            state.mode = 'n';
+            state.mode = SHORTCUTS;
         } else if (key === 'ENTER') {
             state.replacing = false;
-            state.mode = 'n';
+            state.mode = SHORTCUTS;
             for (let i = 0; i < state.data.length; i += 1) {
                 state.data[i] = state.data[i].replaceAll(state.searchQuery, state.replaceQuery);
             }
@@ -42,11 +45,11 @@ function handleSearchKeys(key, state, screen) {
             }
             centerScreen(state);
         } else if (key === 'ESCAPE') {
-            state.mode = 'n';
+            state.mode = SHORTCUTS;
             state.row = state.search.row;
             state.col = state.search.col;
         } else if (key === 'ENTER') {
-            state.mode = 'n';
+            state.mode = SHORTCUTS;
         } else if (key === 'CTRL_F') {
             state.replacing = true;
         } else if (key === 'BACKSPACE') {

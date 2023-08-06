@@ -1,5 +1,8 @@
 import fs from 'fs';
 import {
+    SHORTCUTS,
+} from '../util/modes.js';
+import {
     renderScreen,
     isWritable,
     processFile,
@@ -52,7 +55,7 @@ function handleFileFinderKeys(key, state, screen, term) {
             process.exit();
         }
         state.fileFinderQuery = '';
-        state.mode = 'n';
+        state.mode = SHORTCUTS;
         state.fileFinderIndex = 0;
     } else if (key === 'ENTER') {
         let newFile = state.fileFinderOutput[state.fileFinderIndex];
@@ -65,7 +68,7 @@ function handleFileFinderKeys(key, state, screen, term) {
             }
             processFile(state, newFile, lineNum, fileExists);
         }
-        state.mode = 'n';
+        state.mode = SHORTCUTS;
     } else if (key === 'CTRL_L') {
         state.fileFinderQuery = '';
         state.fileFinderCursorPosition = 0;

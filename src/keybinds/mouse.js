@@ -1,8 +1,11 @@
 import * as helper from '../util/helper.js';
+import {
+    TYPING
+} from '../util/modes.js';
 
 function handleMouseInputs(key, coor, state, screen) {
     if (key === 'MOUSE_LEFT_BUTTON_PRESSED') {
-        if (state.mode !== 'i') {
+        if (state.mode !== TYPING) {
             if (coor.y - 1 < 0 || coor.x - 1 < 0) {
                 state.col = 0;
                 state.row = 0;

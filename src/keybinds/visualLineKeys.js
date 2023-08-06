@@ -9,6 +9,12 @@ import {
 } from '../util/helper.js';
 import { sendKeys } from '../util/sendKeys.js';
 import {
+    TYPING,
+    SHORTCUTS,
+    VISUAL,
+    VISUALBLOCK
+} from '../util/modes.js';
+import {
     up,
     down,
     left,
@@ -80,7 +86,7 @@ function handleVisualLineKeys(key, state, screen) {
             }
             copyToClipboard(state, newClipboard);
         }
-        state.mode = 'n';
+        state.mode = SHORTCUTS;
     } else if ((state.previousKeys === 'g' && key === 'c') || key === 'e') {
         let areAllCommented = true;
         let lowestIndent = isEmptyRow(state, state.row) ? 999 : firstNonSpace(state, state.row);
@@ -135,7 +141,7 @@ function handleVisualLineKeys(key, state, screen) {
                 }
             }
         }
-        state.mode = 'n';
+        state.mode = SHORTCUTS;
         createSnapshot(state);
         state.previousKeys = '';
     } else if (key === 'c') {
@@ -158,7 +164,7 @@ function handleVisualLineKeys(key, state, screen) {
         const indentLevel = state.data[state.row] !== undefined ? getIndentLevelFrom(state, state.row) : 0;
         state.data.splice(state.row, 0, ' '.repeat(indentLevel));
         state.col = indentLevel;
-        state.mode = 'i';
+        state.mode = TYPING;
     } else if (key === 'd') {
         if (state.row >= state.visual.row) {
             const newClipboard = [''];
@@ -183,7 +189,7 @@ function handleVisualLineKeys(key, state, screen) {
             state.row = 0;
         }
         firstNonSpace(state, state.row);
-        state.mode = 'n';
+        state.mode = SHORTCUTS;
         createSnapshot(state);
     } else if (key === 'g') {
         if (state.previousKeys === 'g') {
@@ -195,7 +201,7 @@ function handleVisualLineKeys(key, state, screen) {
     } else if (key === 'G') {
         bottomOfFile(state);
     } else if (key === ',') {
-        state.mode = 'n';
+        state.mode = SHORTCUTS;
         state.allowCommandLogging = false;
         const startingPoint = state.row;
         if (state.visual.row < startingPoint) {
@@ -320,7 +326,7 @@ function handleVisualLineKeys(key, state, screen) {
             }
         }
         createSnapshot(state);
-        state.mode = 'n';
+        state.mode = SHORTCUTS;
     } else if (key === '<') {
         if (state.row >= state.visual.row) {
             for (let i = state.visual.row; i <= state.row; i += 1) {
@@ -333,7 +339,7 @@ function handleVisualLineKeys(key, state, screen) {
         }
         state.col = firstNonSpace(state, state.row);
         state.row = state.visual.row;
-        state.mode = 'n';
+        state.mode = SHORTCUTS;
         createSnapshot(state);
     } else if (key === '>') {
         if (state.row >= state.visual.row) {
@@ -347,7 +353,7 @@ function handleVisualLineKeys(key, state, screen) {
             }
         }
         state.col = firstNonSpace(state, state.row);
-        state.mode = 'n';
+        state.mode = SHORTCUTS;
         createSnapshot(state);
     } else if (key === 'x') {
         if (state.row >= state.visual.row) {
@@ -363,7 +369,7 @@ function handleVisualLineKeys(key, state, screen) {
             state.row = 0;
         }
         firstNonSpace(state, state.row);
-        state.mode = 'n';
+        state.mode = SHORTCUTS;
         createSnapshot(state);
     } else if (key === 'p' || key === 'P') {
         let systemPaste = getSystemPaste(state);
@@ -385,7 +391,7 @@ function handleVisualLineKeys(key, state, screen) {
                 pasteFromClipboardBefore(state);
             }
         }
-        state.mode = 'n';
+        state.mode = SHORTCUTS;
         createSnapshot(state);
     } else if (key === 'i') {
         state.previousKeys = 'i';
@@ -404,11 +410,11 @@ function handleVisualLineKeys(key, state, screen) {
         nextLowerIndentLevel(state, state.row);
         renderScreen(state, screen);
     } else if (key === 'ESCAPE') {
-        state.mode = 'n';
+        state.mode = SHORTCUTS;
     } else if (key === 'v') {
-        state.mode = 'v';
+        state.mode = VISUAL;
     } else if (key === 'CTRL_V') {
-        state.mode = 'CTRL_V';
+        state.mode = VISUALBLOCK;
     } else if (key === 'o') {
         const tempRow = state.row;
         const tempCol = state.col;

@@ -1,5 +1,8 @@
 /* eslint-disable import/no-cycle */
 import {
+    SHORTCUTS,
+} from '../util/modes.js';
+import {
     renderScreen,
     applySnapshot,
     saveFile,
@@ -15,11 +18,11 @@ function handleHistoryTreeKeys(key, state, screen) {
             state.fileFinderIndex += 1;
         }
     } else if (key === 'ESCAPE') {
-        state.mode = 'n';
+        state.mode = SHORTCUTS;
         state.fileFinderOutput = [];
         state.fileFinderIndex = 0;
     } else if (key === 'ENTER') {
-        state.mode = 'n';
+        state.mode = SHORTCUTS;
         applySnapshot(state, state.fileFinderIndex, false);
         state.currentSnapshot = state.fileFinderIndex;
         saveFile(state);

@@ -15,6 +15,14 @@ import {
     logCommand
 } from '../util/helper.js';
 import {
+    TYPING,
+    SHORTCUTS,
+    GREP,
+    VISUALLINE,
+    VISUALBLOCK,
+    SEARCH
+} from '../util/modes.js';
+import {
     up,
     down,
     left,
@@ -73,7 +81,7 @@ function handleVisualKeys(key, state, screen) {
         } else if (key === 'p') {
             state.row = findLastNonEmptyRow(state, state.row);
             state.visual.row = findNextEmptyRow(state, state.row + 1) - 1;
-            state.mode = 'V';
+            state.mode = VISUALLINE;
         }
         state.previousKeys = '';
     } else if (state.previousKeys === 'a') {
@@ -101,7 +109,7 @@ function handleVisualKeys(key, state, screen) {
         } else if (key === 'p') {
             state.row = findLastNonEmptyRow(state, state.row);
             state.visual.row = findNextEmptyRow(state, state.row + 1);
-            state.mode = 'V';
+            state.mode = VISUALLINE;
         }
         state.previousKeys = '';
     } else if (key === 'CTRL_U') {
@@ -167,7 +175,7 @@ function handleVisualKeys(key, state, screen) {
             }
             state.data[counterRow] += cutoff;
         }
-        state.mode = 'n';
+        state.mode = SHORTCUTS;
         createSnapshot(state);
     } else if (state.previousKeys === 'g' && key === 'f') {
         const newFile = getInVisual(state);
@@ -196,12 +204,12 @@ function handleVisualKeys(key, state, screen) {
     } else if (key === '#') {
         state.grepQuery = getInVisual(state);
         state.grepIndex = 0;
-        state.mode = 'g';
+        state.mode = GREP;
         calcGrepOutput(state);
     } else if (key === '*') {
         state.searchQuery = getInVisual(state);
         state.reverseSearch = false;
-        state.mode = 'n';
+        state.mode = SHORTCUTS;
         if (state.searchQuery !== '') {
             state.col += state.searchQuery.length + 1;
             searchForString(state, state.searchQuery);
@@ -218,15 +226,15 @@ function handleVisualKeys(key, state, screen) {
         if (state.col >= state.visual.col) {
             state.col = state.visual.col;
         }
-        state.mode = 'n';
+        state.mode = SHORTCUTS;
     } else if (key === 'x') {
         deleteInVisual(state);
-        state.mode = 'n';
+        state.mode = SHORTCUTS;
         createSnapshot(state);
     } else if (key === 'd') {
         copyInVisual(state);
         deleteInVisual(state);
-        state.mode = 'n';
+        state.mode = SHORTCUTS;
         createSnapshot(state);
     } else if ((state.previousKeys === 'g' && key === 'c') || key === 'e') {
         let areAllCommented = true;
@@ -264,13 +272,13 @@ function handleVisualKeys(key, state, screen) {
                 }
             }
         }
-        state.mode = 'n';
+        state.mode = SHORTCUTS;
         createSnapshot(state);
         state.previousKeys = '';
     } else if (key === 'c') {
         copyInVisual(state);
         deleteInVisual(state);
-        state.mode = 'i';
+        state.mode = TYPING;
     } else if (key === '=') {
         if (state.row >= state.visual.row) {
             for (let i = state.visual.row; i <= state.row; i += 1) {
@@ -295,12 +303,12 @@ function handleVisualKeys(key, state, screen) {
                 state.data[i] = ' '.repeat(indentLevel) + state.data[i].trim();
             }
         }
-        state.mode = 'n';
+        state.mode = SHORTCUTS;
         createSnapshot(state);
     } else if (key === 'CTRL_F') {
         state.searchQuery = getInVisual(state);
         state.replacing = true;
-        state.mode = '/';
+        state.mode = SEARCH;
     } else if (key === '<') {
         if (state.row >= state.visual.row) {
             for (let i = state.visual.row; i <= state.row; i += 1) {
@@ -313,7 +321,7 @@ function handleVisualKeys(key, state, screen) {
         }
         state.col = firstNonSpace(state, state.row);
         state.row = state.visual.row;
-        state.mode = 'n';
+        state.mode = SHORTCUTS;
         createSnapshot(state);
     } else if (key === '>') {
         if (state.row >= state.visual.row) {
@@ -327,7 +335,7 @@ function handleVisualKeys(key, state, screen) {
             }
         }
         state.col = firstNonSpace(state, state.row);
-        state.mode = 'n';
+        state.mode = SHORTCUTS;
         createSnapshot(state);
     } else if (state.previousKeys === 'T') {
         if (isWritable(key)) {
@@ -356,11 +364,11 @@ function handleVisualKeys(key, state, screen) {
     } else if (key === 'f' || key === 'F' || key === 't' || key === 'T' || key === 'i' || key === 'g' || key === 'a') {
         state.previousKeys += key;
     } else if (key === 'ESCAPE') {
-        state.mode = 'n';
+        state.mode = SHORTCUTS;
     } else if (key === 'V') {
-        state.mode = 'V';
+        state.mode = VISUALLINE;
     } else if (key === 'CTRL_V') {
-        state.mode = 'CTRL_V';
+        state.mode = VISUALBLOCK;
     } else if (key === 'o') {
         const tempRow = state.row;
         const tempCol = state.col;

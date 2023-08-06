@@ -5,6 +5,10 @@ import path from 'path';
 import os from 'os';
 import fs from 'fs';
 import {
+    SHORTCUTS,
+    FILEFINDER,
+} from './util/modes.js';
+import {
     centerScreen,
     renderScreen,
     createSnapshot,
@@ -29,7 +33,7 @@ const term = terminal();
 const filePath = getFile();
 const state = {
     allowCommandLogging: false,
-    mode: filePath === undefined ? 'f' : 'n',
+    mode: filePath === undefined ? FILEFINDER : SHORTCUTS,
     clipboardVisualBlock: false,
     searchQuery: '',
     searching: false,

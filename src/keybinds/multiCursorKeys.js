@@ -1,5 +1,8 @@
 /* eslint-disable import/no-cycle */
 import {
+    SHORTCUTS,
+} from '../util/modes.js';
+import {
     isWritable,
     renderScreen,
     createSnapshot,
@@ -130,7 +133,7 @@ function handleMultiCursorKeys(key, state, screen) {
             state.data[state.row] = '';
         }
         left(state);
-        state.mode = 'n';
+        state.mode = SHORTCUTS;
         createSnapshot(state);
     }
     logCommand(false, state, key);

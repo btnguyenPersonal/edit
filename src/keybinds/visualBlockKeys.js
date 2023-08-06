@@ -6,6 +6,12 @@ import {
     logCommand
 } from '../util/helper.js';
 import {
+    SHORTCUTS,
+    VISUAL,
+    VISUALLINE,
+    MULTICURSOR
+} from '../util/modes.js';
+import {
     up,
     down,
     left,
@@ -90,17 +96,17 @@ function handleVisualBlockKeys(key, state, screen) {
         if (state.col >= state.visual.col) {
             state.col = state.visual.col;
         }
-        state.mode = 'n';
+        state.mode = SHORTCUTS;
     } else if (key === 'x') {
         deleteInVisualBlock(state);
-        state.mode = 'n';
+        state.mode = SHORTCUTS;
         createSnapshot(state);
     } else if (key === '%') {
         matchIt(state);
     } else if (key === 'd') {
         copyInVisualBlock(state);
         deleteInVisualBlock(state);
-        state.mode = 'n';
+        state.mode = SHORTCUTS;
         createSnapshot(state);
     } else if ((state.previousKeys === 'g' && key === 'c') || key === 'e') {
         let areAllCommented = true;
@@ -138,7 +144,7 @@ function handleVisualBlockKeys(key, state, screen) {
                 }
             }
         }
-        state.mode = 'n';
+        state.mode = SHORTCUTS;
         createSnapshot(state);
         state.previousKeys = '';
     } else if (key === 'c') {
@@ -150,7 +156,7 @@ function handleVisualBlockKeys(key, state, screen) {
         state.col = c;
         state.row = rMin;
         state.visual.row = rMax;
-        state.mode = 'MULTI_CURSOR';
+        state.mode = MULTICURSOR;
     } else if (key === '=') {
         if (state.row >= state.visual.row) {
             for (let i = state.visual.row; i <= state.row; i += 1) {
@@ -175,7 +181,7 @@ function handleVisualBlockKeys(key, state, screen) {
                 state.data[i] = ' '.repeat(indentLevel) + state.data[i].trim();
             }
         }
-        state.mode = 'n';
+        state.mode = SHORTCUTS;
         createSnapshot(state);
     } else if (key === '<') {
         if (state.row >= state.visual.row) {
@@ -189,7 +195,7 @@ function handleVisualBlockKeys(key, state, screen) {
         }
         state.col = firstNonSpace(state, state.row);
         state.row = state.visual.row;
-        state.mode = 'n';
+        state.mode = SHORTCUTS;
         createSnapshot(state);
     } else if (key === 'g') {
         if (state.previousKeys === 'g') {
@@ -212,7 +218,7 @@ function handleVisualBlockKeys(key, state, screen) {
             }
         }
         state.col = firstNonSpace(state, state.row);
-        state.mode = 'n';
+        state.mode = SHORTCUTS;
         createSnapshot(state);
     } else if (state.previousKeys === 'T') {
         if (isWritable(key)) {
@@ -242,17 +248,17 @@ function handleVisualBlockKeys(key, state, screen) {
         state.previousKeys += key;
     } else if (key === 'A') {
         state.col = Math.max(state.col, state.visual.col);
-        state.mode = 'MULTI_CURSOR';
+        state.mode = MULTICURSOR;
         right(state);
     } else if (key === 'I') {
         state.col = Math.min(state.col, state.visual.col);
-        state.mode = 'MULTI_CURSOR';
+        state.mode = MULTICURSOR;
     } else if (key === 'ESCAPE') {
-        state.mode = 'n';
+        state.mode = SHORTCUTS;
     } else if (key === 'v') {
-        state.mode = 'v';
+        state.mode = VISUAL;
     } else if (key === 'V') {
-        state.mode = 'V';
+        state.mode = VISUALLINE;
     } else if (key === 'o') {
         const tempRow = state.row;
         const tempCol = state.col;

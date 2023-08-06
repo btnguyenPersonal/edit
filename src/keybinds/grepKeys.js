@@ -1,5 +1,8 @@
 import fs from 'fs';
 import {
+    SHORTCUTS,
+} from '../util/modes.js';
+import {
     renderScreen,
     isWritable,
     processFile,
@@ -45,7 +48,7 @@ function handleGrepKeys(key, state, screen) {
             state.grepIndex += 1;
         }
     } else if (key === 'ESCAPE') {
-        state.mode = 'n';
+        state.mode = SHORTCUTS;
         state.grepIndex = 0;
     } else if (key === 'ENTER') {
         let newFile = state.fileFinderOutput[state.grepIndex];
@@ -60,7 +63,7 @@ function handleGrepKeys(key, state, screen) {
             }
             processFile(state, newFile, lineNum, fileExists);
         }
-        state.mode = 'n';
+        state.mode = SHORTCUTS;
     } else if (key === 'CTRL_L') {
         state.grepQuery = '';
         state.grepCursorPosition = 0;

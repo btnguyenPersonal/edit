@@ -1,6 +1,5 @@
 const TYPING = 'TYPING';
 const SHORTCUTS = 'SHORTCUTS';
-const REPLACE = 'REPLACE';
 const COMMAND = 'COMMAND';
 const GREP = 'GREP';
 const FILEFINDER = 'FILEFINDER';
@@ -14,7 +13,6 @@ const MULTICURSOR = 'MULTICURSOR';
 export {
     TYPING,
     SHORTCUTS,
-    REPLACE,
     COMMAND,
     GREP,
     FILEFINDER,

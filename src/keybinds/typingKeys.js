@@ -7,6 +7,9 @@ import {
     logCommand
 } from '../util/helper.js';
 import {
+    SHORTCUTS
+} from '../util/modes.js';
+import {
     up,
     down,
     left,
@@ -99,7 +102,7 @@ function handleKeys(key, state, screen) {
             state.data[state.row] = '';
         }
         left(state);
-        state.mode = 'n';
+        state.mode = SHORTCUTS;
         createSnapshot(state);
     }
     logCommand(false, state, key);

@@ -1,5 +1,8 @@
 /* eslint-disable import/no-cycle */
 import {
+    SHORTCUTS,
+} from '../util/modes.js';
+import {
     renderScreen,
     isWritable,
     evaluateCommand,
@@ -34,7 +37,7 @@ function handleCommandKeys(key, state, screen, term) {
         }
     } else if (key === 'ESCAPE') {
         state.currentCommand = '';
-        state.mode = 'n';
+        state.mode = SHORTCUTS;
         state.commandCursorPosition = 0;
     } else if (key === 'ENTER') {
         const log = evaluateCommand(state, term);
@@ -43,7 +46,7 @@ function handleCommandKeys(key, state, screen, term) {
             state.historyPosition = state.previousCommands.length;
         }
         state.currentCommand = '';
-        state.mode = 'n';
+        state.mode = SHORTCUTS;
         state.commandCursorPosition = 0;
         saveFile(state);
     } else if (key === 'BACKSPACE') {

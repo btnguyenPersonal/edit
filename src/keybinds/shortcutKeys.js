@@ -30,6 +30,18 @@ import {
 } from '../util/helper.js';
 import { sendKeys } from '../util/sendKeys.js';
 import {
+    TYPING,
+    SHORTCUTS,
+    COMMAND,
+    GREP,
+    FILEFINDER,
+    VISUAL,
+    VISUALLINE,
+    VISUALBLOCK,
+    HISTORY,
+    SEARCH
+} from '../util/modes.js';
+import {
     up,
     down,
     left,
@@ -75,7 +87,7 @@ import {
 function handleShortcutKeys(key, state, screen) {
     state.searching = false;
     if (key === 'ESCAPE') {
-        state.mode = 'n';
+        state.mode = SHORTCUTS;
         cleanup(state, key, false, false, false, true);
     } else if (state.previousKeys === '-') {
         if (isNumeric(key)) {
@@ -390,7 +402,7 @@ function handleShortcutKeys(key, state, screen) {
             state.row = state.data.length - 1;
         }
         insertIndentedRow(state);
-        state.mode = 'i';
+        state.mode = TYPING;
         cleanup(state, key, true, false, false, true);
     } else if (state.previousKeys + key === 'ck') {
         const newClipboard = [''];
@@ -405,13 +417,13 @@ function handleShortcutKeys(key, state, screen) {
         }
         up(state);
         insertIndentedRow(state);
-        state.mode = 'i';
+        state.mode = TYPING;
         cleanup(state, key, true, false, false, true);
     } else if (state.previousKeys + key === 'cw') {
         const endOfWord = getCoorForwardWord(state);
         copyToClipboard(state, [state.data[state.row].substring(state.col, endOfWord)]);
         state.data[state.row] = state.data[state.row].substring(0, state.col) + state.data[state.row].substring(endOfWord);
-        state.mode = 'i';
+        state.mode = TYPING;
         cleanup(state, key, true, false, false, true);
     } else if (state.previousKeys + key === 'cc') {
         let indentLevel = 0;
@@ -420,7 +432,7 @@ function handleShortcutKeys(key, state, screen) {
         }
         state.col = indentLevel;
         state.data[state.row] = ' '.repeat(indentLevel);
-        state.mode = 'i';
+        state.mode = TYPING;
         cleanup(state, key, true, false, false, true);
     } else if (state.previousKeys === 'cf' && isWritable(key)) {
         state.visual.row = state.row;
@@ -428,7 +440,7 @@ function handleShortcutKeys(key, state, screen) {
         state.col = findForward(state, key);
         copyInVisual(state);
         deleteInVisual(state);
-        state.mode = 'i';
+        state.mode = TYPING;
         cleanup(state, key, true, false, false, true);
     } else if (state.previousKeys === 'cF' && isWritable(key)) {
         state.visual.row = state.row;
@@ -436,7 +448,7 @@ function handleShortcutKeys(key, state, screen) {
         state.col = findBackward(state, key);
         copyInVisual(state);
         deleteInVisual(state);
-        state.mode = 'i';
+        state.mode = TYPING;
         cleanup(state, key, true, false, false, true);
     } else if (state.previousKeys === 'ct' && isWritable(key)) {
         state.visual.row = state.row;
@@ -444,7 +456,7 @@ function handleShortcutKeys(key, state, screen) {
         state.col = toForward(state, key);
         copyInVisual(state);
         deleteInVisual(state);
-        state.mode = 'i';
+        state.mode = TYPING;
         cleanup(state, key, true, false, false, true);
     } else if (state.previousKeys === 'cT' && isWritable(key)) {
         state.visual.row = state.row;
@@ -452,7 +464,7 @@ function handleShortcutKeys(key, state, screen) {
         state.col = toBackward(state, key);
         copyInVisual(state);
         deleteInVisual(state);
-        state.mode = 'i';
+        state.mode = TYPING;
         cleanup(state, key, true, false, false, true);
     } else if (state.previousKeys + key === 'caw') {
         const { beginning, end } = getCoorsInsideWord(state);
@@ -472,7 +484,7 @@ function handleShortcutKeys(key, state, screen) {
         copyAndRemoveRows(state, startRow, endRow, true);
         adjustRow(state);
         insertIndentedRow(state);
-        state.mode = 'i';
+        state.mode = TYPING;
         cleanup(state, key, true, false, false, true);
     } else if (state.previousKeys === 'ca' && (key === '[' || key === ']' || key === 'd')) {
         const { beginning, end } = getCoorsInsideCharDiff(state, '[', ']');
@@ -517,7 +529,7 @@ function handleShortcutKeys(key, state, screen) {
         copyAndRemoveRows(state, startRow, endRow, false);
         adjustRow(state);
         insertIndentedRow(state);
-        state.mode = 'i';
+        state.mode = TYPING;
         cleanup(state, key, true, false, false, true);
     } else if (state.previousKeys === 'ci' && (key === '[' || key === ']' || key === 'd')) {
         const { beginning, end } = getCoorsInsideCharDiff(state, '[', ']');
@@ -607,7 +619,7 @@ function handleShortcutKeys(key, state, screen) {
         processFile(state, state.files[state.harpoonIndexes[state.harpoonIndex]], 0, state.files[state.harpoonIndexes[state.harpoonIndex]] !== undefined);
     } else if (state.previousKeys === '' && key === 'CTRL_F') {
         state.replacing = true;
-        state.mode = '/';
+        state.mode = SEARCH;
         cleanup(state, key, true, true, false, false);
     } else if (state.previousKeys === '' && key === 'BACKSPACE') {
         state.harpoonIndex = swapLeft({ array: state.harpoonIndexes, index: state.harpoonIndex });
@@ -626,11 +638,11 @@ function handleShortcutKeys(key, state, screen) {
     } else if (state.previousKeys === '' && (key === 'RIGHT' || key === 'l')) {
         right(state);
     } else if (state.previousKeys === '' && key === 'i') {
-        state.mode = 'i';
+        state.mode = TYPING;
         cleanup(state, key, true, true, false, false);
     } else if (state.previousKeys === '' && key === 'a') {
         right(state);
-        state.mode = 'i';
+        state.mode = TYPING;
         cleanup(state, key, true, true, false, false);
     } else if (state.previousKeys === '' && key === 'x') {
         if (state.col < state.data[state.row].length) {
@@ -654,7 +666,7 @@ function handleShortcutKeys(key, state, screen) {
         state.col = firstNonSpace(state, state.row);
     } else if (state.previousKeys === '' && key === 'I') {
         state.col = firstNonSpace(state, state.row);
-        state.mode = 'i';
+        state.mode = TYPING;
         cleanup(state, key, true, true, false, false);
     } else if (state.previousKeys === '' && key === 'w') {
         state.col = getCoorBeginningNextWord(state);
@@ -662,17 +674,17 @@ function handleShortcutKeys(key, state, screen) {
         state.col = getCoorBeginningLastWord(state);
     } else if (state.previousKeys === '' && key === 'A') {
         state.col = state.data[state.row].length;
-        state.mode = 'i';
+        state.mode = TYPING;
         cleanup(state, key, true, true, false, false);
     } else if (state.previousKeys === '' && key === 'S') {
         state.data[state.row] = '';
-        state.mode = 'i';
+        state.mode = TYPING;
         cleanup(state, key, true, true, false, false);
     } else if (state.previousKeys === '' && key === 'Y') {
         copyToClipboard(state, [state.data[state.row].substring(state.col)]);
     } else if (state.previousKeys === '' && key === 'C') {
         state.data[state.row] = state.data[state.row].substring(0, state.col);
-        state.mode = 'i';
+        state.mode = TYPING;
         cleanup(state, key, true, true, false, false);
     } else if (state.previousKeys === '' && key === 'D') {
         copyToClipboard(state, [state.data[state.row].substring(state.col)]);
@@ -683,20 +695,20 @@ function handleShortcutKeys(key, state, screen) {
             state.data[state.row] = state.data[state.row].substring(0, state.col)
                 + state.data[state.row].substring(state.col + 1);
         }
-        state.mode = 'i';
+        state.mode = TYPING;
         cleanup(state, key, true, true, false, false);
     } else if (state.previousKeys === '' && key === 'O') {
         const indentLevel = getIndentLevelFrom(state, state.row, true);
         state.data.splice(state.row, 0, ' '.repeat(indentLevel));
         state.col = indentLevel;
-        state.mode = 'i';
+        state.mode = TYPING;
         cleanup(state, key, true, true, false, false);
     } else if (state.previousKeys === '' && key === 'o') {
         const indentLevel = getIndentLevelFrom(state, state.row);
         state.data.splice(state.row + 1, 0, ' '.repeat(indentLevel));
         down(state);
         state.col = indentLevel;
-        state.mode = 'i';
+        state.mode = TYPING;
         cleanup(state, key, true, true, false, false);
     } else if (state.previousKeys === '' && key === '>') {
         increaseIndentLevel(state, state.row);
@@ -725,14 +737,14 @@ function handleShortcutKeys(key, state, screen) {
         state.previousKeys = key;
         cleanup(state, key, true, true, false, false);
     } else if (state.previousKeys === '' && key === 'CTRL_V') {
-        state.mode = 'CTRL_V';
+        state.mode = VISUALBLOCK;
         state.visual = {
             row: state.row,
             col: state.col
         };
         cleanup(state, key, true, true, false, false);
     } else if (state.previousKeys === '' && key === 'V') {
-        state.mode = 'V';
+        state.mode = VISUALLINE;
         state.visual = {
             row: state.row,
             col: state.col
@@ -758,19 +770,19 @@ function handleShortcutKeys(key, state, screen) {
             state.windowLineHorizontal = 0;
         }
     } else if (state.previousKeys === '' && key === '?') {
-        state.mode = '/';
+        state.mode = SEARCH;
         state.searchQuery = '';
         state.reverseSearch = true;
         state.search.row = state.row;
         state.search.col = state.col;
     } else if (state.previousKeys === '' && key === '/') {
-        state.mode = '/';
+        state.mode = SEARCH;
         state.searchQuery = '';
         state.reverseSearch = false;
         state.search.row = state.row;
         state.search.col = state.col;
     } else if (state.previousKeys === '' && key === 'v') {
-        state.mode = 'v';
+        state.mode = VISUAL;
         state.visual = {
             row: state.row,
             col: state.col
@@ -855,26 +867,26 @@ function handleShortcutKeys(key, state, screen) {
         state.data[state.row] = ' '.repeat(indentLevel) + state.data[state.row].trim();
         cleanup(state, key, false, false, true, false);
     } else if (state.previousKeys === '' && key === 'CTRL_G') {
-        state.mode = 'g';
+        state.mode = GREP;
         calcGrepOutput(state);
     } else if (state.previousKeys === '' && key === 'CTRL_N') {
-        state.mode = 'f';
+        state.mode = FILEFINDER;
         state.gitFinding = false;
         setFileSearchOutput(state);
         calcFileFinderOutput(state);
     } else if (state.previousKeys === '' && key === 'CTRL_Q') {
-        state.mode = 'h';
+        state.mode = HISTORY;
         state.fileFinderOutput = [];
         for (let i = 0; i < state.snapshots.length; i += 1) {
             state.fileFinderOutput.push(i + ': ' + state.snapshots[i].commandHistory);
         }
         state.fileFinderIndex = state.currentSnapshot;
     } else if (state.previousKeys === '' && key === 'CTRL_Y') {
-        state.mode = 'f';
+        state.mode = FILEFINDER;
         state.gitFinding = true;
         calcFileFinderOutput(state);
     } else if (state.previousKeys === '' && key === 'CTRL_P') {
-        state.mode = 'f';
+        state.mode = FILEFINDER;
         setFileSearchOutput(state);
         state.gitFinding = true;
         state.fileFinderQuery = '';
@@ -918,7 +930,7 @@ function handleShortcutKeys(key, state, screen) {
         sendKeys(state.lastSearchCommand, state, screen);
         state.allowCommandLogging = true;
     } else if (state.previousKeys === '' && key === ':') {
-        state.mode = ':';
+        state.mode = COMMAND;
     } else if (state.previousKeys === '' && key === 'X') {
         state.harpoonIndexes = [];
         state.harpoonIndex = 0;

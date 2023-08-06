@@ -3,6 +3,19 @@ import ncp from 'copy-paste';
 import { execSync } from 'child_process';
 import fs from 'fs';
 import { isEmptyRow, getIndentLevelFrom } from './movement.js';
+import {
+    TYPING,
+    SHORTCUTS,
+    COMMAND,
+    GREP,
+    FILEFINDER,
+    VISUAL,
+    VISUALLINE,
+    VISUALBLOCK,
+    HISTORY,
+    SEARCH,
+    MULTICURSOR
+} from './modes.js';
 
 function substringFromRow(sentence, cursorPos) {
     let start = cursorPos;
@@ -219,7 +232,7 @@ function getRowIfOverflow(state) {
 }
 
 function moveCursor(state, screen, windowLineHorizontal) {
-    if (state.mode === ':') {
+    if (state.mode === COMMAND) {
         screen.moveTo(
             state.commandCursorPosition + 1,
             0
@@ -247,15 +260,15 @@ function moveCursor(state, screen, windowLineHorizontal) {
 }
 
 function isRowHighlighted(state, i) {
-    if (state.mode === 'V') {
+    if (state.mode === VISUALLINE) {
         if ((i <= state.row && i >= state.visual.row) || (i >= state.row && i <= state.visual.row)) {
             return true;
         }
-    } else if (state.mode === 'CTRL_V') {
+    } else if (state.mode === VISUALBLOCK) {
         if ((i <= state.row && i >= state.visual.row) || (i >= state.row && i <= state.visual.row)) {
             return true;
         }
-    } else if (state.mode === 'v') {
+    } else if (state.mode === VISUAL) {
         if ((i <= state.row && i >= state.visual.row) || (i >= state.row && i <= state.visual.row)) {
             return true;
         }
@@ -265,14 +278,14 @@ function isRowHighlighted(state, i) {
 }
 
 function isHighlighted(state, i, j) {
-    if (state.mode === 'V') {
+    if (state.mode === VISUALLINE) {
         if (state.row === i && state.col === j) {
             return false;
         }
         if ((i <= state.row && i >= state.visual.row) || (i >= state.row && i <= state.visual.row)) {
             return true;
         }
-    } else if (state.mode === 'CTRL_V') {
+    } else if (state.mode === VISUALBLOCK) {
         if (state.row === i && state.col === j) {
             return false;
         }
@@ -288,7 +301,7 @@ function isHighlighted(state, i, j) {
             }
         }
         return false;
-    } else if (state.mode === 'v') {
+    } else if (state.mode === VISUAL) {
         if (state.row === i && state.col === j) {
             return false;
         }
@@ -675,13 +688,13 @@ function isMergeConflictEnd(s) {
 }
 
 function getColorFromMode(mode) {
-    if (mode === 'n' || mode === 'r' || mode === 'f' || mode === 'g') {
+    if (mode === SHORTCUTS || mode === FILEFINDER || mode === GREP) {
         return 'white';
-    } else if (mode === 'v' || mode === 'V' || mode === 'CTRL_V') {
+    } else if (mode === VISUAL || mode === VISUALLINE || mode === VISUALBLOCK) {
         return 'cyan';
-    } else if (mode === 'i' || mode === 'MULTI_CURSOR') {
+    } else if (mode === TYPING || mode === MULTICURSOR) {
         return 'magenta';
-    } else if (mode === 'h') {
+    } else if (mode === HISTORY) {
         return 'blue';
     } else {
         return 'darkgrey';
@@ -689,9 +702,9 @@ function getColorFromMode(mode) {
 }
 
 function renderStatusBar(state, screen) {
-    if (state.mode === ':') {
+    if (state.mode === COMMAND) {
         screen.put({ attr: { color: 'white' } }, ':' + state.currentCommand);
-    } else if (state.mode === '/') {
+    } else if (state.mode === SEARCH) {
         screen.put({ attr: { color: 'green' } }, '/' + state.searchQuery);
     } else {
         for (let i = 0; i < state.harpoonIndexes.length; i += 1) {
@@ -729,9 +742,9 @@ function renderHistoryTree(state, screen) {
 }
 
 function renderFileFinder(state, screen, mode) {
-    const query = mode === 'g' ? state.grepQuery : state.fileFinderQuery;
-    const modeIndex = mode === 'g' ? state.grepIndex : state.fileFinderIndex;
-    const curPos = mode === 'g' ? state.grepCursorPosition : state.fileFinderCursorPosition;
+    const query = mode === GREP ? state.grepQuery : state.fileFinderQuery;
+    const modeIndex = mode === GREP ? state.grepIndex : state.fileFinderIndex;
+    const curPos = mode === GREP ? state.grepCursorPosition : state.fileFinderCursorPosition;
     screen.put({
         attr: {
             color: getFileFinderColor(mode),
@@ -835,7 +848,7 @@ function renderSingleLine(state, screen, i, mergeSection, isContext) {
             },
             wrap: false
         }, displayRow.substring(j, j + 1));
-        if (state.row === i && state.col - 1 === j && state.mode === 'i') {
+        if (state.row === i && state.col - 1 === j && state.mode === TYPING) {
             const str = substringFromRow(state.data[state.row], state.col);
             const replaceString = getSortedSubstrings(str, state.data);
             if (str.length !== 0) {
@@ -913,9 +926,9 @@ function renderScreen(state, screen, noCenterScreen, fullRefresh) {
     setHarpoonIndex(state);
     renderStatusBar(state, screen);
     screen.put({ newLine: true }, '\n');
-    if (state.mode === 'h') {
+    if (state.mode === HISTORY) {
         renderHistoryTree(state, screen);
-    } else if (state.mode === 'g' || state.mode === 'f') {
+    } else if (state.mode === GREP || state.mode === FILEFINDER) {
         renderFileFinder(state, screen, state.mode);
     } else if (state.allowCommandLogging) {
         renderWindowLines(state, screen, noCenterScreen, fullRefresh);
@@ -938,7 +951,7 @@ function refreshFile(state) {
 }
 
 function changeFile(state) {
-    state.mode = 'n';
+    state.mode = SHORTCUTS;
     state.row = 0;
     state.col = 0;
     state.windowLine = 0;
