@@ -44,7 +44,7 @@ example:
     }
     ```
 
-- go up two lines `kk`
+- go to top of file `gg`
     ```
     function testing(hi) {
         int y;
@@ -67,14 +67,8 @@ example:
 
 # keybinds
 ### shortcut mode
-```
-    k
-    |
-h -- -- l
-    |
-    j
-```
 - `escape`
+
 |key|function|
 |:---:|:---:|
 |:q|quit|
