@@ -586,6 +586,9 @@ function handleVimKeys(key, state, screen) {
         toggleComment(state, state.row);
         logCommand(true, state, 'g');
         cleanup(state, key, true, false, true, true);
+    } else if (state.previousKeys === '' && key === 'e') {
+        toggleComment(state, state.row);
+        cleanup(state, key, true, false, true, true);
     } else if (state.previousKeys === '' && key === 'CTRL_W') {
         if (state.harpoonIndex - 1 >= 0) {
             state.harpoonIndex -= 1;

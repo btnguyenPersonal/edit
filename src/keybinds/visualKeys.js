@@ -227,51 +227,49 @@ function handleVisualKeys(key, state, screen) {
         deleteInVisual(state);
         state.mode = 'n';
         createSnapshot(state);
-    } else if (key === 'c') {
-        if (state.previousKeys === 'g') {
-            let areAllCommented = true;
-            if (state.row >= state.visual.row) {
-                for (let i = state.visual.row; i <= state.row; i += 1) {
-                    if (state.data[i].length !== 0 && !isCommented(state, i)) {
-                        areAllCommented = false;
-                        break;
-                    }
-                }
-                if (areAllCommented) {
-                    for (let i = state.visual.row; i <= state.row; i += 1) {
-                        toggleComment(state, i, undefined, false);
-                    }
-                } else {
-                    for (let i = state.visual.row; i <= state.row; i += 1) {
-                        toggleComment(state, i, firstNonSpace(state, state.visual.row), true);
-                    }
-                }
-                state.row = state.visual.row;
-            } else if (state.row < state.visual.row) {
-                for (let i = state.row; i <= state.visual.row; i += 1) {
-                    if (state.data[i].length !== 0 && !isCommented(state, i)) {
-                        areAllCommented = false;
-                        break;
-                    }
-                }
-                if (areAllCommented) {
-                    for (let i = state.row; i <= state.visual.row; i += 1) {
-                        toggleComment(state, i, undefined, false);
-                    }
-                } else {
-                    for (let i = state.row; i <= state.visual.row; i += 1) {
-                        toggleComment(state, i, firstNonSpace(state, state.row), true);
-                    }
+    } else if ((state.previousKeys === 'g' && key === 'c') || key === 'e') {
+        let areAllCommented = true;
+        if (state.row >= state.visual.row) {
+            for (let i = state.visual.row; i <= state.row; i += 1) {
+                if (state.data[i].length !== 0 && !isCommented(state, i)) {
+                    areAllCommented = false;
+                    break;
                 }
             }
-            state.mode = 'n';
-            createSnapshot(state);
-            state.previousKeys = '';
-        } else {
-            copyInVisual(state);
-            deleteInVisual(state);
-            state.mode = 'i';
+            if (areAllCommented) {
+                for (let i = state.visual.row; i <= state.row; i += 1) {
+                    toggleComment(state, i, undefined, false);
+                }
+            } else {
+                for (let i = state.visual.row; i <= state.row; i += 1) {
+                    toggleComment(state, i, firstNonSpace(state, state.visual.row), true);
+                }
+            }
+            state.row = state.visual.row;
+        } else if (state.row < state.visual.row) {
+            for (let i = state.row; i <= state.visual.row; i += 1) {
+                if (state.data[i].length !== 0 && !isCommented(state, i)) {
+                    areAllCommented = false;
+                    break;
+                }
+            }
+            if (areAllCommented) {
+                for (let i = state.row; i <= state.visual.row; i += 1) {
+                    toggleComment(state, i, undefined, false);
+                }
+            } else {
+                for (let i = state.row; i <= state.visual.row; i += 1) {
+                    toggleComment(state, i, firstNonSpace(state, state.row), true);
+                }
+            }
         }
+        state.mode = 'n';
+        createSnapshot(state);
+        state.previousKeys = '';
+    } else if (key === 'c') {
+        copyInVisual(state);
+        deleteInVisual(state);
+        state.mode = 'i';
     } else if (key === '=') {
         if (state.row >= state.visual.row) {
             for (let i = state.visual.row; i <= state.row; i += 1) {

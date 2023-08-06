@@ -102,57 +102,55 @@ function handleVisualBlockKeys(key, state, screen) {
         deleteInVisualBlock(state);
         state.mode = 'n';
         createSnapshot(state);
-    } else if (key === 'c') {
-        if (state.previousKeys === 'g') {
-            let areAllCommented = true;
-            if (state.row >= state.visual.row) {
-                for (let i = state.visual.row; i <= state.row; i += 1) {
-                    if (!isCommented(state, i)) {
-                        areAllCommented = false;
-                        break;
-                    }
-                }
-                if (areAllCommented) {
-                    for (let i = state.visual.row; i <= state.row; i += 1) {
-                        toggleComment(state, i, undefined, false);
-                    }
-                } else {
-                    for (let i = state.visual.row; i <= state.row; i += 1) {
-                        toggleComment(state, i, firstNonSpace(state, state.visual.row), true);
-                    }
-                }
-                state.row = state.visual.row;
-            } else if (state.row < state.visual.row) {
-                for (let i = state.row; i <= state.visual.row; i += 1) {
-                    if (!isCommented(state, i)) {
-                        areAllCommented = false;
-                        break;
-                    }
-                }
-                if (areAllCommented) {
-                    for (let i = state.row; i <= state.visual.row; i += 1) {
-                        toggleComment(state, i, undefined, false);
-                    }
-                } else {
-                    for (let i = state.row; i <= state.visual.row; i += 1) {
-                        toggleComment(state, i, firstNonSpace(state, state.row), true);
-                    }
+    } else if ((state.previousKeys === 'g' && key === 'c') || key === 'e') {
+        let areAllCommented = true;
+        if (state.row >= state.visual.row) {
+            for (let i = state.visual.row; i <= state.row; i += 1) {
+                if (!isCommented(state, i)) {
+                    areAllCommented = false;
+                    break;
                 }
             }
-            state.mode = 'n';
-            createSnapshot(state);
-            state.previousKeys = '';
-        } else {
-            const c = Math.min(state.col, state.visual.col);
-            const rMin = Math.min(state.row, state.visual.row);
-            const rMax = Math.max(state.row, state.visual.row);
-            copyInVisualBlock(state);
-            deleteInVisualBlock(state);
-            state.col = c;
-            state.row = rMin;
-            state.visual.row = rMax;
-            state.mode = 'MULTI_CURSOR';
+            if (areAllCommented) {
+                for (let i = state.visual.row; i <= state.row; i += 1) {
+                    toggleComment(state, i, undefined, false);
+                }
+            } else {
+                for (let i = state.visual.row; i <= state.row; i += 1) {
+                    toggleComment(state, i, firstNonSpace(state, state.visual.row), true);
+                }
+            }
+            state.row = state.visual.row;
+        } else if (state.row < state.visual.row) {
+            for (let i = state.row; i <= state.visual.row; i += 1) {
+                if (!isCommented(state, i)) {
+                    areAllCommented = false;
+                    break;
+                }
+            }
+            if (areAllCommented) {
+                for (let i = state.row; i <= state.visual.row; i += 1) {
+                    toggleComment(state, i, undefined, false);
+                }
+            } else {
+                for (let i = state.row; i <= state.visual.row; i += 1) {
+                    toggleComment(state, i, firstNonSpace(state, state.row), true);
+                }
+            }
         }
+        state.mode = 'n';
+        createSnapshot(state);
+        state.previousKeys = '';
+    } else if (key === 'c') {
+        const c = Math.min(state.col, state.visual.col);
+        const rMin = Math.min(state.row, state.visual.row);
+        const rMax = Math.max(state.row, state.visual.row);
+        copyInVisualBlock(state);
+        deleteInVisualBlock(state);
+        state.col = c;
+        state.row = rMin;
+        state.visual.row = rMax;
+        state.mode = 'MULTI_CURSOR';
     } else if (key === '=') {
         if (state.row >= state.visual.row) {
             for (let i = state.visual.row; i <= state.row; i += 1) {
