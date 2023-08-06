@@ -195,6 +195,7 @@ function handleVisualKeys(key, state, screen) {
         }
     } else if (key === '#') {
         state.grepQuery = getInVisual(state);
+        state.grepIndex = 0;
         state.mode = 'g';
         calcGrepOutput(state);
     } else if (key === '*') {
