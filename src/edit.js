@@ -9,6 +9,7 @@ import {
     renderScreen,
     createSnapshot,
     calcFileFinderOutput,
+    setFileSearchOutput,
     getData
 } from './util/helper.js';
 import { sendKeys } from './util/sendKeys.js';
@@ -93,7 +94,7 @@ if (filePath !== undefined) {
     state.allowCommandLogging = true;
     state.files.push(state.file);
 } else {
-    state.fileFinderFileCache = execSync('fd -t f --hidden -E .git').toString();
+    setFileSearchOutput(state);
     calcFileFinderOutput(state);
 }
 state.allowCommandLogging = true;

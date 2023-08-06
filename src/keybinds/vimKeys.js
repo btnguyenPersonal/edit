@@ -1,8 +1,9 @@
 /* eslint-disable import/no-cycle */
-import { execSync } from 'child_process';
 import {
     pasteFromClipboardBefore,
     pasteFromClipboardAfter,
+    setFileSearchOutput,
+    calcGrepOutput,
     copyToClipboard,
     isWritable,
     renderScreen,
@@ -852,11 +853,12 @@ function handleVimKeys(key, state, screen) {
         cleanup(state, key, false, false, true, false);
     } else if (state.previousKeys === '' && key === 'CTRL_G') {
         state.mode = 'g';
-        calcFileFinderOutput(state);
+        calcGrepOutput(state);
     } else if (state.previousKeys === '' && key === 'CTRL_N') {
         state.mode = 'f';
         state.gitFinding = false;
-        state.fileFinderOutput = [];
+        setFileSearchOutput(state);
+        calcFileFinderOutput(state);
     } else if (state.previousKeys === '' && key === 'CTRL_Q') {
         state.mode = 'h';
         state.fileFinderOutput = [];
@@ -870,7 +872,7 @@ function handleVimKeys(key, state, screen) {
         calcFileFinderOutput(state);
     } else if (state.previousKeys === '' && key === 'CTRL_P') {
         state.mode = 'f';
-        state.fileFinderFileCache = execSync('fd -t f --hidden -E .git').toString();
+        setFileSearchOutput(state);
         state.gitFinding = true;
         state.fileFinderQuery = '';
         state.fileFinderCursorPosition = 0;

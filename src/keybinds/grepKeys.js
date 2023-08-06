@@ -3,7 +3,7 @@ import {
     renderScreen,
     isWritable,
     processFile,
-    calcFileFinderOutput,
+    calcGrepOutput,
 } from '../util/helper.js';
 
 function handleGrepKeys(key, state, screen) {
@@ -11,7 +11,7 @@ function handleGrepKeys(key, state, screen) {
         state.grepQuery = state.grepQuery.slice(0, state.grepCursorPosition) + key + state.grepQuery.slice(state.grepCursorPosition);
         state.grepCursorPosition += 1;
         state.grepIndex = 0;
-        calcFileFinderOutput(state);
+        calcGrepOutput(state);
     } else if (key === 'CTRL_A') {
         state.grepCursorPosition = 0;
     } else if (key === 'CTRL_E') {
@@ -64,14 +64,14 @@ function handleGrepKeys(key, state, screen) {
     } else if (key === 'CTRL_L') {
         state.grepQuery = '';
         state.grepCursorPosition = 0;
-        calcFileFinderOutput(state);
+        calcGrepOutput(state);
     } else if (key === 'BACKSPACE') {
         if (state.grepCursorPosition > 0) {
             state.grepQuery = state.grepQuery.slice(0, state.grepCursorPosition - 1) + state.grepQuery.slice(state.grepCursorPosition);
             state.grepCursorPosition -= 1;
         }
         state.grepIndex = 0;
-        calcFileFinderOutput(state);
+        calcGrepOutput(state);
     }
     renderScreen(state, screen);
 }

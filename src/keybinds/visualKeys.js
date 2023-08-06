@@ -9,7 +9,7 @@ import {
     isFile,
     getSystemPaste,
     processFile,
-    calcFileFinderOutput,
+    calcGrepOutput,
     findNextEmptyRow,
     findLastNonEmptyRow,
     logCommand
@@ -196,7 +196,7 @@ function handleVisualKeys(key, state, screen) {
     } else if (key === '#') {
         state.grepQuery = getInVisual(state);
         state.mode = 'g';
-        calcFileFinderOutput(state);
+        calcGrepOutput(state);
     } else if (key === '*') {
         state.searchQuery = getInVisual(state);
         state.reverseSearch = false;

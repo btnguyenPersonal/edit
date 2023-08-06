@@ -1086,25 +1086,26 @@ function isValidSearch(query, file) {
     return true;
 }
 
-function calcFileFinderOutput(state) {
-    let output = '';
-    if (state.mode === 'g') {
-        if (state.grepQuery.length !== 0) {
-            output = execSync(`git grep -n "${state.grepQuery}" || true`, { maxBuffer: 1024 * 1024 * 1000 }).toString();
-        }
+function setFileSearchOutput(state) {
+    if (state.gitFinding) {
+        state.fileFinderFileCache = execSync('fd -t f --hidden -E .git').toString();
     } else {
-        if (state.gitFinding) {
-            output = state.fileFinderFileCache;
-        } else {
-            if (state.fileFinderQuery.length !== 0) {
-                output = execSync(`find * -type f -name "${state.fileFinderQuery}*"`).toString();
-            }
-        }
+        state.fileFinderFileCache = execSync('find * -type f').toString();
     }
-    state.fileFinderOutput = output.split('\n').filter((file) => file !== state.file && isValidSearch(state.fileFinderQuery, file));
+}
+
+function calcGrepOutput(state) {
+    if (state.grepQuery.length !== 0) {
+        state.fileFinderOutput = execSync(`git grep -n "${state.grepQuery}" || true`, { maxBuffer: 1024 * 1024 * 1000 }).toString().split('\n');
+    }
+}
+
+function calcFileFinderOutput(state) {
+    state.fileFinderOutput = state.fileFinderFileCache.split('\n').filter((file) => file !== state.file && isValidSearch(state.fileFinderQuery, file));
 }
 
 export {
+    calcGrepOutput,
     pasteFromClipboardBefore,
     pasteFromClipboardAfter,
     copyToClipboard,
@@ -1142,5 +1143,6 @@ export {
     cleanup,
     substringFromRow,
     getSortedSubstrings,
+    setFileSearchOutput,
     isFile,
 };
