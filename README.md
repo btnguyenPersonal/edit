@@ -13,9 +13,13 @@ also, just starting as `e` should start you out with searching for the file you 
 ### Idea for editor:
 I don't like holding ctrl all the time to do shortcuts, and I was mostly just using shortcuts exclusively when editing code anyway
 
-so now this editor switches between "modes" where vim mode is basically all the shortcuts without having to hold ctrl
+so now this editor switches between "modes"
+- shortcut mode: basically all the shortcuts without having to hold ctrl
+- typing mode: normal keyboard
+- visual mode: highlighting stuff
 
 example:
+
     ```
     function testing(hi) {
         int l;
