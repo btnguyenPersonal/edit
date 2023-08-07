@@ -707,6 +707,7 @@ function renderStatusBar(state, screen) {
     } else if (state.mode === SEARCH) {
         screen.put({ attr: { color: 'green' } }, '/' + state.searchQuery);
     } else {
+        screen.put({ attr: { color: 'green' } }, '/' + state.searchQuery);
         for (let i = 0; i < state.harpoonIndexes.length; i += 1) {
             screen.put({
                 attr: {
@@ -720,8 +721,8 @@ function renderStatusBar(state, screen) {
     }
 }
 
-function getFileFinderColor(s) {
-    return s === 'g' ? 'green' : 'yellow';
+function getFileFinderColor(mode) {
+    return mode === GREP ? 'green' : 'yellow';
 }
 
 function renderHistoryTree(state, screen) {
