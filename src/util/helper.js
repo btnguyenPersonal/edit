@@ -1104,7 +1104,11 @@ function isValidSearch(query, file) {
             if (j === file.length) {
                 return false;
             }
-            if (query.charAt(i) === file.charAt(j)) {
+            if (query.charAt(i) === query.charAt(i).toUpperCase() && query.charAt(i) === file.charAt(j)) {
+                counter = j;
+                break;
+            } else if (query.charAt(i) === query.charAt(i).toLowerCase()
+                && (query.charAt(i) === file.charAt(j).toUpperCase() || query.charAt(i) === file.charAt(j).toLowerCase())) {
                 counter = j;
                 break;
             }
