@@ -2,7 +2,7 @@ import {
     isWritable,
     renderScreen,
     createSnapshot,
-    getSortedSubstrings,
+    autocomplete,
     getCurrentWord,
     logCommand
 } from '../util/helper.js';
@@ -55,7 +55,7 @@ function handleKeys(key, state, screen) {
         }
     } else if (key === 'TAB') {
         const str = getCurrentWord(state.data[state.row], state.col);
-        const replaceString = getSortedSubstrings(str, state.data);
+        const replaceString = autocomplete(str, state.data);
         state.data[state.row] = state.data[state.row].substring(0, state.col - str.length)
             + replaceString
             + state.data[state.row].substring(state.col);

@@ -30,7 +30,7 @@ function getCurrentWord(sentence, cursorPos) {
     return sentence.substring(start, cursorPos);
 }
 
-function getSortedSubstrings(inputString, array) {
+function autocomplete(inputString, array) {
     if (inputString === '') {
         return '';
     }
@@ -847,7 +847,7 @@ function renderSingleLine(state, screen, i, mergeSection, isContext) {
         }, displayRow.substring(j, j + 1));
         if (state.row === i && state.col - 1 === j && state.mode === TYPING) {
             const str = getCurrentWord(state.data[state.row], state.col);
-            const replaceString = getSortedSubstrings(str, state.data);
+            const replaceString = autocomplete(str, state.data);
             if (str.length !== 0) {
                 screen.put({
                     attr: {
@@ -986,6 +986,7 @@ function evaluateCommand(state, term) {
             execSync(`git ls-files | xargs -I {} sed -i'' "s/${match[1]}/${match[2]}/g" "{}"`, { maxBuffer: 1024 * 1024 * 1000 });
             // eslint-disable-next-line no-empty
         } catch (e) {}
+        refreshFile(state);
         createSnapshot(state);
         return true;
     } else if (/s\/(.*)\/(.*)\/g/.test(state.currentCommand)) {
@@ -1195,7 +1196,7 @@ export {
     adjustRow,
     cleanup,
     getCurrentWord,
-    getSortedSubstrings,
+    autocomplete,
     setFileSearchOutput,
     isFile,
 };
