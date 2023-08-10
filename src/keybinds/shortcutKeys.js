@@ -594,10 +594,6 @@ function handleShortcutKeys(key, state, screen) {
         uncommentBlock(state, state.row);
         logCommand(true, state, 'g');
         cleanup(state, key, true, false, true, true);
-    } else if (state.previousKeys + key === 'gc') {
-        toggleComment(state, state.row);
-        logCommand(true, state, 'g');
-        cleanup(state, key, true, false, true, true);
     } else if (state.previousKeys === '' && key === 'e') {
         toggleComment(state, state.row);
         cleanup(state, key, true, false, true, true);

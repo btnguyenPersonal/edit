@@ -236,7 +236,7 @@ function handleVisualKeys(key, state, screen) {
         deleteInVisual(state);
         state.mode = SHORTCUTS;
         createSnapshot(state);
-    } else if ((state.previousKeys === 'g' && key === 'c') || key === 'e') {
+    } else if (key === 'e') {
         let areAllCommented = true;
         if (state.row >= state.visual.row) {
             for (let i = state.visual.row; i <= state.row; i += 1) {

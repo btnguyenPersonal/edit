@@ -704,8 +704,6 @@ function getColorFromMode(mode) {
 function renderStatusBar(state, screen) {
     if (state.mode === COMMAND) {
         screen.put({ attr: { color: 'white' } }, ':' + state.currentCommand);
-    } else if (state.mode === SEARCH) {
-        screen.put({ attr: { color: 'green' } }, '/' + state.searchQuery);
     } else {
         screen.put({ attr: { color: 'green' } }, '/' + state.searchQuery);
         for (let i = 0; i < state.harpoonIndexes.length; i += 1) {

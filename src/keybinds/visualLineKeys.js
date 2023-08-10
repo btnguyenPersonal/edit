@@ -87,7 +87,7 @@ function handleVisualLineKeys(key, state, screen) {
             copyToClipboard(state, newClipboard);
         }
         state.mode = SHORTCUTS;
-    } else if ((state.previousKeys === 'g' && key === 'c') || key === 'e') {
+    } else if (key === 'e') {
         let areAllCommented = true;
         let lowestIndent = isEmptyRow(state, state.row) ? 999 : firstNonSpace(state, state.row);
         if (state.row <= state.visual.row) {
