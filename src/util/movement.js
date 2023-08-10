@@ -4,8 +4,8 @@ import { copyToClipboard, isAlphaNumeric } from './helper.js';
 function swapLeft(obj) {
     const i = obj.index;
     const arr = obj.array;
-    if (i <= 0) return obj.index;
     const temp = arr[i];
+    if (i <= 0 || temp === undefined) return obj.index;
     arr[i] = arr[i - 1];
     arr[i - 1] = temp;
     obj.index = i - 1;
@@ -15,8 +15,8 @@ function swapLeft(obj) {
 function swapRight(obj) {
     const i = obj.index;
     const arr = obj.array;
-    if (i >= arr.length - 1) return obj.index;
     const temp = arr[i];
+    if (i >= arr.length - 1 || temp === undefined) return obj.index;
     arr[i] = arr[i + 1];
     arr[i + 1] = temp;
     obj.index = i + 1;
