@@ -29,7 +29,7 @@ function handleFileFinderKeys(key, state, screen, term) {
         }
     } else if (key === 'CTRL_D') {
         for (let i = 0; i < process.stdout.rows / 2; i += 1) {
-            if (state.fileFinderIndex < state.fileFinderOutput.length - 2) {
+            if (state.fileFinderIndex < state.fileFinderOutput.length - 1) {
                 state.fileFinderIndex += 1;
             }
         }
@@ -46,7 +46,7 @@ function handleFileFinderKeys(key, state, screen, term) {
             state.fileFinderIndex -= 1;
         }
     } else if (key === 'DOWN' || key === 'CTRL_N') {
-        if (state.fileFinderIndex < state.fileFinderOutput.length - 2) {
+        if (state.fileFinderIndex < state.fileFinderOutput.length - 1) {
             state.fileFinderIndex += 1;
         }
     } else if (key === 'ESCAPE') {

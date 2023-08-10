@@ -27,7 +27,7 @@ function handleGrepKeys(key, state, screen) {
         }
     } else if (key === 'CTRL_D') {
         for (let i = 0; i < process.stdout.rows / 2; i += 1) {
-            if (state.grepIndex < state.fileFinderOutput.length - 2) {
+            if (state.grepIndex < state.fileFinderOutput.length - 1) {
                 state.grepIndex += 1;
             }
         }
@@ -44,7 +44,7 @@ function handleGrepKeys(key, state, screen) {
             state.grepIndex -= 1;
         }
     } else if (key === 'DOWN' || key === 'CTRL_N') {
-        if (state.grepIndex < state.fileFinderOutput.length - 2) {
+        if (state.grepIndex < state.fileFinderOutput.length - 1) {
             state.grepIndex += 1;
         }
     } else if (key === 'ESCAPE') {

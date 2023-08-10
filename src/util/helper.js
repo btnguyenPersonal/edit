@@ -705,7 +705,7 @@ function renderStatusBar(state, screen) {
     if (state.mode === COMMAND) {
         screen.put({ attr: { color: 'white' } }, ':' + state.currentCommand);
     } else {
-        screen.put({ attr: { color: 'green' } }, '/' + state.searchQuery);
+        screen.put({ attr: { color: 'green' } }, '/' + state.searchQuery + ' ');
         for (let i = 0; i < state.harpoonIndexes.length; i += 1) {
             screen.put({
                 attr: {
@@ -713,9 +713,7 @@ function renderStatusBar(state, screen) {
                 }
             }, shortenFilePath(state.files[state.harpoonIndexes[i]]) + ' ');
         }
-        const index = 3 + state.file.length + state.searchQuery.length;
-        screen.put({ attr: { color: 'green' }, x: process.stdout.columns - index }, '/' + state.searchQuery);
-        screen.put({ attr: { color: getColorFromMode(state.mode) } }, '"' + state.file + '"');
+        screen.put({ attr: { color: getColorFromMode(state.mode) }, x: process.stdout.columns - (2 + state.file.length) }, '"' + state.file + '"');
     }
 }
 
@@ -1125,6 +1123,8 @@ function setFileSearchOutput(state) {
 function calcGrepOutput(state) {
     if (state.grepQuery.length !== 0) {
         state.fileFinderOutput = execSync(`git grep -n "${state.grepQuery}" || true`, { maxBuffer: 1024 * 1024 * 1000 }).toString().split('\n');
+    } else {
+        state.fileFinderOutput = [];
     }
 }
 
