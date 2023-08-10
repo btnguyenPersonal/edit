@@ -774,7 +774,7 @@ function renderFileFinder(state, screen, mode) {
 }
 
 function renderSingleLine(state, screen, i, mergeSection, isContext) {
-    let section = 0;
+    let section = mergeSection;
     let numColor = 'grey';
     let numBgColor;
     if (state.recording) {
