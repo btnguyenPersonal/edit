@@ -167,7 +167,7 @@ example:
 |ctrl a|go to start of words in line|
 |ctrl e|go to end of line|
 |ctrl s|save (should auto save for you tho)|
-|tab|autocomplete|
+|tab|getCurrentWord|
 |ESCAPE|go to shortcut mode|
 
 ### visual modes

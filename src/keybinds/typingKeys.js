@@ -3,7 +3,7 @@ import {
     renderScreen,
     createSnapshot,
     getSortedSubstrings,
-    substringFromRow,
+    getCurrentWord,
     logCommand
 } from '../util/helper.js';
 import {
@@ -54,7 +54,7 @@ function handleKeys(key, state, screen) {
             state.row -= 1;
         }
     } else if (key === 'TAB') {
-        const str = substringFromRow(state.data[state.row], state.col);
+        const str = getCurrentWord(state.data[state.row], state.col);
         const replaceString = getSortedSubstrings(str, state.data);
         state.data[state.row] = state.data[state.row].substring(0, state.col - str.length)
             + replaceString

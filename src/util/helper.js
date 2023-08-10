@@ -17,7 +17,7 @@ import {
     MULTICURSOR
 } from './modes.js';
 
-function substringFromRow(sentence, cursorPos) {
+function getCurrentWord(sentence, cursorPos) {
     let start = cursorPos;
     if (sentence[start] !== undefined && /[A-Za-z0-9_]/.test(sentence[start])) {
         return '';
@@ -846,7 +846,7 @@ function renderSingleLine(state, screen, i, mergeSection, isContext) {
             wrap: false
         }, displayRow.substring(j, j + 1));
         if (state.row === i && state.col - 1 === j && state.mode === TYPING) {
-            const str = substringFromRow(state.data[state.row], state.col);
+            const str = getCurrentWord(state.data[state.row], state.col);
             const replaceString = getSortedSubstrings(str, state.data);
             if (str.length !== 0) {
                 screen.put({
@@ -1194,7 +1194,7 @@ export {
     insertIndentedRow,
     adjustRow,
     cleanup,
-    substringFromRow,
+    getCurrentWord,
     getSortedSubstrings,
     setFileSearchOutput,
     isFile,

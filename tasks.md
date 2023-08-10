@@ -32,7 +32,7 @@
         - stop nesting ifs everywhere, make every key an if (previousKeys + key === 'di(') {} kind of thing
         - maybe make a cleanup function that runs logCommand, state.previousKeys clear, createSnapshot
         - clean up my file switching crap spewed everywhere, and have mark2 be saved (and have macro2 if not already)
-    - while typing show autocomplete for most used word in file
+    - while typing show getCurrentWord for most used word in file
     - go to marks in visual
     - visualLine movement horizontal
     - stop using 'inString' for non-code
