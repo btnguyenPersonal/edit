@@ -13,7 +13,6 @@ import {
     VISUALLINE,
     VISUALBLOCK,
     HISTORY,
-    SEARCH,
     MULTICURSOR
 } from './modes.js';
 
@@ -1136,8 +1135,8 @@ function calcGrepOutput(state) {
 function findLongestSubstringLength(str, query) {
     let longest = 0;
 
-    for (let i = 0; i < str.length; i++) {
-        for (let j = i; j < str.length; j++) {
+    for (let i = 0; i < str.length; i += 1) {
+        for (let j = i; j < str.length; j += 1) {
             const sub = str.substring(i, j + 1);
             if (query.includes(sub) && sub.length > longest) {
                 longest = sub.length;
