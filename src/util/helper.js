@@ -1103,7 +1103,7 @@ function isValidSearch(query, file) {
             if (j === file.length) {
                 return false;
             }
-            if (query.charAt(i) === file.charAt(j).toUpperCase() || query.charAt(i) === file.charAt(j).toLowerCase()) {
+            if (query.charAt(i) === file.charAt(j)) {
                 counter = j;
                 break;
             }
@@ -1128,8 +1128,33 @@ function calcGrepOutput(state) {
     }
 }
 
+function findLongestSubstringLength(str, query) {
+    let longest = 0;
+
+    for (let i = 0; i < str.length; i++) {
+        for (let j = i; j < str.length; j++) {
+            const sub = str.substring(i, j + 1);
+            if (query.includes(sub) && sub.length > longest) {
+                longest = sub.length;
+            }
+        }
+    }
+
+    return longest;
+}
+
+function sortOutputBySubstring(state, query) {
+    state.fileFinderOutput.sort((a, b) => {
+        const lenA = findLongestSubstringLength(a, query);
+        const lenB = findLongestSubstringLength(b, query);
+
+        return lenB - lenA || a.localeCompare(b);
+    });
+}
+
 function calcFileFinderOutput(state) {
     state.fileFinderOutput = state.fileFinderFileCache.split('\n').filter((file) => file !== state.file && isValidSearch(state.fileFinderQuery, file));
+    sortOutputBySubstring(state, state.fileFinderQuery);
 }
 
 export {
