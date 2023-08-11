@@ -1157,7 +1157,9 @@ function sortOutputBySubstring(state, query) {
 }
 
 function calcFileFinderOutput(state) {
-    state.fileFinderOutput = state.fileFinderFileCache.split('\n').filter((file) => file !== state.file && isValidSearch(state.fileFinderQuery, file));
+    state.fileFinderOutput = state.fileFinderFileCache.split('\n').filter(
+        (file) => file !== state.file && file.trim() !== '' && isValidSearch(state.fileFinderQuery, file)
+    );
     sortOutputBySubstring(state, state.fileFinderQuery);
 }
 
