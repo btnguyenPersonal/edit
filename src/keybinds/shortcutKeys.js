@@ -838,6 +838,16 @@ function handleShortcutKeys(key, state, screen) {
         previousLowerIndentLevel(state, state.row);
     } else if (state.previousKeys === '' && key === ')') {
         nextLowerIndentLevel(state, state.row);
+    } else if (state.previousKeys === '' && key === '#') {
+        const { beginning, end } = getCoorsInsideWord(state);
+        setVisualHighlight(state, beginning, end);
+        state.grepQuery = getInVisual(state);
+        if (state.grepQuery !== '') {
+            state.grepIndex = 0;
+            state.grepCursorPosition = state.grepQuery.length;
+            state.mode = GREP;
+            calcGrepOutput(state);
+        }
     } else if (state.previousKeys === '' && key === '*') {
         const { beginning, end } = getCoorsInsideWord(state);
         setVisualHighlight(state, beginning, end);
