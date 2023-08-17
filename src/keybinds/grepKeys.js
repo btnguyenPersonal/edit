@@ -10,7 +10,7 @@ import {
 } from '../util/helper.js';
 
 function handleGrepKeys(key, state, screen) {
-    if (isWritable(key) && key !== '\\' && key !== '"') {
+    if (isWritable(key) && key !== '\\' && key !== '`' && key !== '"') {
         state.grepQuery = state.grepQuery.slice(0, state.grepCursorPosition) + key + state.grepQuery.slice(state.grepCursorPosition);
         state.grepCursorPosition += 1;
         state.grepIndex = 0;
