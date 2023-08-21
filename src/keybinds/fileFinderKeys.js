@@ -1,11 +1,13 @@
 import fs from 'fs';
 import {
     SHORTCUTS,
+    GREP,
 } from '../util/modes.js';
 import {
     renderScreen,
     isWritable,
     processFile,
+    calcGrepOutput,
     calcFileFinderOutput,
 } from '../util/helper.js';
 
@@ -17,6 +19,9 @@ function handleFileFinderKeys(key, state, screen, term) {
         state.fileFinderCursorPosition += 1;
         state.fileFinderIndex = 0;
         calcFileFinderOutput(state);
+    } else if (key === 'CTRL_G') {
+        state.mode = GREP;
+        calcGrepOutput(state);
     } else if (key === 'CTRL_A') {
         state.fileFinderCursorPosition = 0;
     } else if (key === 'CTRL_E') {

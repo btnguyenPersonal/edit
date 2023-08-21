@@ -1,12 +1,15 @@
 import fs from 'fs';
 import {
     SHORTCUTS,
+    FILEFINDER,
 } from '../util/modes.js';
 import {
     renderScreen,
     isWritable,
     processFile,
     calcGrepOutput,
+    setFileSearchOutput,
+    calcFileFinderOutput,
 } from '../util/helper.js';
 
 function handleGrepKeys(key, state, screen) {
@@ -15,6 +18,14 @@ function handleGrepKeys(key, state, screen) {
         state.grepCursorPosition += 1;
         state.grepIndex = 0;
         calcGrepOutput(state);
+    } else if (key === 'CTRL_P') {
+        state.mode = FILEFINDER;
+        setFileSearchOutput(state);
+        state.gitFinding = true;
+        state.fileFinderQuery = '';
+        state.fileFinderCursorPosition = 0;
+        state.fileFinderIndex = 0;
+        calcFileFinderOutput(state);
     } else if (key === 'CTRL_A') {
         state.grepCursorPosition = 0;
     } else if (key === 'CTRL_E') {
