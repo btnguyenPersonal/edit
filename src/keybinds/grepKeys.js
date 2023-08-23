@@ -18,7 +18,7 @@ function handleGrepKeys(key, state, screen) {
         state.grepCursorPosition += 1;
         state.grepIndex = 0;
         calcGrepOutput(state);
-    } else if (key === 'CTRL_P') {
+    } else if (key === 'CTRL_G') {
         state.mode = FILEFINDER;
         setFileSearchOutput(state);
         state.gitFinding = true;
