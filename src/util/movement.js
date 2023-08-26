@@ -5,7 +5,7 @@ function swapLeft(obj) {
     const i = obj.index;
     const arr = obj.array;
     const temp = arr[i];
-    if (i <= 0 || temp === undefined) return obj.index;
+    if (i <= 0 || temp === undefined || arr[i - 1] === undefined) return obj.index;
     arr[i] = arr[i - 1];
     arr[i - 1] = temp;
     obj.index = i - 1;
@@ -16,7 +16,7 @@ function swapRight(obj) {
     const i = obj.index;
     const arr = obj.array;
     const temp = arr[i];
-    if (i >= arr.length - 1 || temp === undefined) return obj.index;
+    if (i >= arr.length - 1 || temp === undefined || arr[i + 1] === undefined) return obj.index;
     arr[i] = arr[i + 1];
     arr[i + 1] = temp;
     obj.index = i + 1;

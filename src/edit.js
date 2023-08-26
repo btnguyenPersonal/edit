@@ -39,6 +39,8 @@ const state = {
     searching: false,
     replaceQuery: '',
     replacing: false,
+    fileStack: [],
+    fileStackIndex: -1,
     fileFinderQuery: '',
     fileFinderIndex: 0,
     fileFinderFileCache: '',
@@ -97,6 +99,8 @@ if (filePath !== undefined) {
     createSnapshot(state);
     state.allowCommandLogging = true;
     state.files.push(state.file);
+    state.fileStack.push(state.file);
+    state.fileStackIndex += 1;
 } else {
     setFileSearchOutput(state);
     calcFileFinderOutput(state);

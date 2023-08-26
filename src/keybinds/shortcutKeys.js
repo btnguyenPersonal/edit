@@ -597,6 +597,16 @@ function handleShortcutKeys(key, state, screen) {
     } else if (state.previousKeys === '' && key === 'e') {
         toggleComment(state, state.row);
         cleanup(state, key, true, false, true, true);
+    } else if (state.previousKeys === '' && key === 'CTRL_O') {
+        if (state.fileStack[state.fileStackIndex - 1]) {
+            processFile(state, state.fileStack[state.fileStackIndex - 1], 0, true);
+            state.fileStackIndex -= 1;
+        }
+    } else if (state.previousKeys === '' && key === 'TAB') {
+        if (state.fileStack[state.fileStackIndex + 1]) {
+            processFile(state, state.fileStack[state.fileStackIndex + 1], 0, true);
+            state.fileStackIndex += 1;
+        }
     } else if (state.previousKeys === '' && key === 'CTRL_W') {
         if (state.harpoonIndex - 1 >= 0) {
             state.harpoonIndex -= 1;

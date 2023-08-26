@@ -958,6 +958,11 @@ function changeFile(state) {
     state.mark = -1;
     state.mark2 = -1;
     state.data = getData(state.file);
+    if (!state.fileStack.includes(state.file)) {
+        state.fileStack.splice(state.fileStackIndex + 1, state.fileStack.length - (state.fileStackIndex + 1));
+        state.fileStack.push(state.file);
+        state.fileStackIndex = state.fileStack.length - 1;
+    }
     createSnapshot(state);
 }
 
