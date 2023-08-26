@@ -599,30 +599,36 @@ function handleShortcutKeys(key, state, screen) {
         cleanup(state, key, true, false, true, true);
     } else if (state.previousKeys === '' && key === 'CTRL_O') {
         if (state.fileStack[state.fileStackIndex - 1]) {
-            processFile(state, state.fileStack[state.fileStackIndex - 1], 0, true);
+            processFile(state, state.fileStack[state.fileStackIndex - 1], -1);
             state.fileStackIndex -= 1;
         }
     } else if (state.previousKeys === '' && key === 'TAB') {
         if (state.fileStack[state.fileStackIndex + 1]) {
-            processFile(state, state.fileStack[state.fileStackIndex + 1], 0, true);
+            processFile(state, state.fileStack[state.fileStackIndex + 1], -1);
             state.fileStackIndex += 1;
         }
     } else if (state.previousKeys === '' && key === 'CTRL_W') {
         if (state.harpoonIndex - 1 >= 0) {
             state.harpoonIndex -= 1;
         }
-        processFile(state, state.files[state.harpoonIndexes[state.harpoonIndex]], 0, state.files[state.harpoonIndexes[state.harpoonIndex]] !== undefined);
+        if (state.files[state.harpoonIndexes[state.harpoonIndex]] !== undefined) {
+            processFile(state, state.files[state.harpoonIndexes[state.harpoonIndex]], -1);
+        }
     } else if (state.previousKeys === '' && key === 'CTRL_E') {
         if (state.harpoonIndex + 1 < state.harpoonIndexes.length) {
             state.harpoonIndex += 1;
         }
-        processFile(state, state.files[state.harpoonIndexes[state.harpoonIndex]], 0, state.files[state.harpoonIndexes[state.harpoonIndex]] !== undefined);
+        if (state.files[state.harpoonIndexes[state.harpoonIndex]] !== undefined) {
+            processFile(state, state.files[state.harpoonIndexes[state.harpoonIndex]], -1);
+        }
     } else if (state.previousKeys === '' && key === 'CTRL_X') {
         state.harpoonIndexes = state.harpoonIndexes.filter(((e) => (e !== state.fileIndex)));
         if (state.harpoonIndex - 1 >= 0) {
             state.harpoonIndex -= 1;
         }
-        processFile(state, state.files[state.harpoonIndexes[state.harpoonIndex]], 0, state.files[state.harpoonIndexes[state.harpoonIndex]] !== undefined);
+        if (state.files[state.harpoonIndexes[state.harpoonIndex]] !== undefined) {
+            processFile(state, state.files[state.harpoonIndexes[state.harpoonIndex]], -1);
+        }
     } else if (state.previousKeys === '' && key === 'CTRL_F') {
         state.replacing = true;
         state.mode = SEARCH;

@@ -1070,22 +1070,20 @@ function updateFileState(state, newFile, lineNum) {
     state.file = newFile;
     state.fileIndex = fileExistsInState ? state.files.indexOf(state.file) : state.files.length - 1;
     changeFile(state);
-    if (lineNum !== 0) {
+    if (lineNum !== -1) {
         state.row = lineNum - 1;
         state.col = 0;
     }
 }
 
-function processFile(state, newFile, lineNum, fileExists) {
-    if (fileExists) {
-        if (!state.files.includes(newFile)) {
-            state.file = newFile;
-            state.files.push(state.file);
-            updateFileState(state, newFile, lineNum);
-        } else {
-            updateFileState(state, newFile, lineNum);
-            updateStateFromFilePosition(state, state.fileIndex, lineNum);
-        }
+function processFile(state, newFile, lineNum) {
+    if (!state.files.includes(newFile)) {
+        state.file = newFile;
+        state.files.push(state.file);
+        updateFileState(state, newFile, lineNum);
+    } else {
+        updateFileState(state, newFile, lineNum);
+        updateStateFromFilePosition(state, state.fileIndex, lineNum);
     }
 }
 

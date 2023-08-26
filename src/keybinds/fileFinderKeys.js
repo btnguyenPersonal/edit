@@ -71,7 +71,9 @@ function handleFileFinderKeys(key, state, screen, term) {
                 newFile += '.js';
                 fileExists = fs.existsSync(newFile);
             }
-            processFile(state, newFile, lineNum, fileExists);
+            if (fileExists) {
+                processFile(state, newFile, lineNum);
+            }
         }
         state.mode = SHORTCUTS;
     } else if (key === 'CTRL_L') {

@@ -191,7 +191,9 @@ function handleVisualKeys(key, state, screen) {
             convertedPath += '/index.js';
             fileExists = isFile(convertedPath);
         }
-        processFile(state, convertedPath, 0, fileExists);
+        if (fileExists) {
+            processFile(state, convertedPath, -1);
+        }
         state.previousKeys = '';
     } else if (key === '\'') {
         if (state.mark !== -1) {
