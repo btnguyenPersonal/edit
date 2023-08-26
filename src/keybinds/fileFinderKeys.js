@@ -64,7 +64,6 @@ function handleFileFinderKeys(key, state, screen, term) {
         state.fileFinderIndex = 0;
     } else if (key === 'ENTER') {
         let newFile = state.fileFinderOutput[state.fileFinderIndex];
-        const lineNum = 0;
         if (newFile !== undefined) {
             let fileExists = fs.existsSync(newFile);
             if (!fileExists) {
@@ -72,7 +71,7 @@ function handleFileFinderKeys(key, state, screen, term) {
                 fileExists = fs.existsSync(newFile);
             }
             if (fileExists) {
-                processFile(state, newFile, lineNum);
+                processFile(state, newFile, -1);
             }
         }
         state.mode = SHORTCUTS;

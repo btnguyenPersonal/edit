@@ -1047,7 +1047,7 @@ function createState(state) {
 
 function updateStateFromFilePosition(state, fileIndex, lineNum) {
     const pos = state.storePosition[fileIndex];
-    state.row = lineNum !== 0 ? lineNum - 1 : pos.row;
+    state.row = lineNum !== -1 ? lineNum - 1 : pos.row;
     state.col = pos.col;
     state.windowLine = pos.windowLine;
     state.windowLineHorizontal = pos.windowLineHorizontal;
