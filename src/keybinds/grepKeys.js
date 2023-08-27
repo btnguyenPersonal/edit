@@ -12,12 +12,12 @@ import {
     calcFileFinderOutput,
 } from '../util/helper.js';
 
-function handleGrepKeys(key, state, screen) {
-    if (isWritable(key) && key !== '\\' && key !== '`' && key !== '"') {
+async function handleGrepKeys(key, state, screen) {
+    if (isWritable(key)) {
         state.grepQuery = state.grepQuery.slice(0, state.grepCursorPosition) + key + state.grepQuery.slice(state.grepCursorPosition);
         state.grepCursorPosition += 1;
         state.grepIndex = 0;
-        calcGrepOutput(state);
+        await calcGrepOutput(state);
     } else if (key === 'CTRL_G') {
         state.mode = FILEFINDER;
         setFileSearchOutput(state);
@@ -80,14 +80,14 @@ function handleGrepKeys(key, state, screen) {
     } else if (key === 'CTRL_L') {
         state.grepQuery = '';
         state.grepCursorPosition = 0;
-        calcGrepOutput(state);
+        await calcGrepOutput(state);
     } else if (key === 'BACKSPACE') {
         if (state.grepCursorPosition > 0) {
             state.grepQuery = state.grepQuery.slice(0, state.grepCursorPosition - 1) + state.grepQuery.slice(state.grepCursorPosition);
             state.grepCursorPosition -= 1;
         }
         state.grepIndex = 0;
-        calcGrepOutput(state);
+        await calcGrepOutput(state);
     }
     renderScreen(state, screen);
 }

@@ -1,6 +1,6 @@
 /* eslint-disable import/no-cycle */
 import ncp from 'copy-paste';
-import { execSync } from 'child_process';
+import { execSync, exec } from 'child_process';
 import fs from 'fs';
 import { isEmptyRow, getIndentLevelFrom } from './movement.js';
 import {
@@ -1119,6 +1119,22 @@ function isValidSearch(query, file) {
     return true;
 }
 
+function runExternalCommand(command) {
+    return new Promise((resolve) => {
+        exec(command, (err, stdout) => {
+            if (err) {
+                resolve([]);
+            } else {
+                const lines = stdout.toString().split('\n');
+                if (lines[lines.length - 1] === '') {
+                    lines.pop();
+                }
+                resolve(lines);
+            }
+        });
+    });
+}
+
 function setFileSearchOutput(state) {
     if (state.gitFinding) {
         state.fileFinderFileCache = execSync('fd -t f --hidden -E .git').toString();
@@ -1127,9 +1143,9 @@ function setFileSearchOutput(state) {
     }
 }
 
-function calcGrepOutput(state) {
+async function calcGrepOutput(state) {
     if (state.grepQuery.length !== 0) {
-        state.fileFinderOutput = execSync(`git grep -n "${state.grepQuery}" || true`, { maxBuffer: 1024 * 1024 * 1000 }).toString().split('\n');
+        state.fileFinderOutput = await runExternalCommand(`git grep -n "${state.grepQuery}"`);
     } else {
         state.fileFinderOutput = [];
     }
