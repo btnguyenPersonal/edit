@@ -102,8 +102,13 @@ if (filePath !== undefined) {
     state.fileStack.push(state.file);
     state.fileStackIndex += 1;
 } else {
-    setFileSearchOutput(state);
-    calcFileFinderOutput(state);
+    if (state.gitFinding) {
+        setFileSearchOutput(state);
+        calcFileFinderOutput(state);
+    } else {
+        console.log('TODO: implement searching for non-git directories that doesn\'t break');
+        process.exit(0);
+    }
 }
 state.allowCommandLogging = true;
 renderScreen(state, screen);
