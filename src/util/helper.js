@@ -1145,7 +1145,8 @@ function setFileSearchOutput(state) {
 
 async function calcGrepOutput(state) {
     if (state.grepQuery.length !== 0) {
-        state.fileFinderOutput = await runExternalCommand(`git grep -n "${state.grepQuery}"`);
+        const sanitized = state.grepQuery.replace(/'/g, "'\\''");
+        state.fileFinderOutput = await runExternalCommand(`git grep -n '${sanitized}'`);
     } else {
         state.fileFinderOutput = [];
     }
