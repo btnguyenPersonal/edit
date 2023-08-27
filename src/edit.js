@@ -106,6 +106,7 @@ if (filePath !== undefined) {
         setFileSearchOutput(state);
         calcFileFinderOutput(state);
     } else {
+        term.fullscreen(false);
         console.log('TODO: implement searching for non-git directories that doesn\'t break');
         process.exit(0);
     }
