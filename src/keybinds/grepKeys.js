@@ -63,10 +63,10 @@ function handleGrepKeys(key, state, screen) {
         state.grepIndex = 0;
     } else if (key === 'ENTER') {
         let newFile = state.fileFinderOutput[state.grepIndex];
-        const arrayForm = newFile.split(':');
-        newFile = arrayForm[0];
-        const lineNum = parseInt(arrayForm[1], 10);
         if (newFile !== undefined) {
+            const arrayForm = newFile.split(':');
+            newFile = arrayForm[0];
+            const lineNum = parseInt(arrayForm[1], 10);
             let fileExists = fs.existsSync(newFile);
             if (!fileExists) {
                 newFile += '.js';
@@ -75,8 +75,8 @@ function handleGrepKeys(key, state, screen) {
             if (fileExists) {
                 processFile(state, newFile, lineNum);
             }
+            state.mode = SHORTCUTS;
         }
-        state.mode = SHORTCUTS;
     } else if (key === 'CTRL_L') {
         state.grepQuery = '';
         state.grepCursorPosition = 0;
