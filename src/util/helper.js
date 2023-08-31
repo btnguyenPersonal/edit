@@ -54,8 +54,7 @@ function autocomplete(inputString, array) {
     return pairs[0][0] || '';
 }
 
-function copyToClipboard(state, textArray, clipboardVisualBlock) {
-    state.clipboardVisualBlock = clipboardVisualBlock;
+function copyToClipboard(state, textArray) {
     ncp.copy(textArray.join('\n'));
     state.clipboard = textArray.join('\n');
 }
@@ -456,9 +455,9 @@ function logCommand(newCommand, state, key) {
     }
     if (state.allowCommandLogging) {
         if (newCommand) {
-            state.previousCommand = [];
+            state.dot = [];
         }
-        state.previousCommand.push(key);
+        state.dot.push(key);
     }
 }
 
@@ -958,10 +957,10 @@ function changeFile(state) {
     state.mark = -1;
     state.mark2 = -1;
     state.data = getData(state.file);
-    if (!state.fileStack.includes(state.file)) {
-        state.fileStack.splice(state.fileStackIndex + 1, state.fileStack.length - (state.fileStackIndex + 1));
-        state.fileStack.push(state.file);
-        state.fileStackIndex = state.fileStack.length - 1;
+    if (!state.fileStack.stack.includes(state.file)) {
+        state.fileStack.stack.splice(state.fileStack.index + 1, state.fileStack.stack.length - (state.fileStack.index + 1));
+        state.fileStack.stack.push(state.file);
+        state.fileStack.index = state.fileStack.stack.length - 1;
     }
     createSnapshot(state);
 }

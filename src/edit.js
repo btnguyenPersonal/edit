@@ -34,56 +34,76 @@ const filePath = getFile();
 const state = {
     allowCommandLogging: false,
     mode: filePath === undefined ? FILEFINDER : SHORTCUTS,
-    clipboardVisualBlock: false,
-    searchQuery: '',
-    searching: false,
-    replaceQuery: '',
-    replacing: false,
-    fileStack: [],
-    fileStackIndex: -1,
-    fileFinderQuery: '',
-    fileFinderIndex: 0,
-    fileFinderFileCache: '',
-    fileFinderOutput: [],
-    fileFinderCursorPosition: 0,
-    grepQuery: '',
-    grepIndex: 0,
-    grepCursorPosition: 0,
-    reverseSearch: false,
+    replace: {
+        query: '',
+        replacing: false,
+    },
+    fileStack: {
+        stack: [],
+        index: -1,
+    },
+    fileFinder: {
+        query: '',
+        cursorPosition: 0,
+        index: 0,
+        fileCache: '',
+        output: [],
+    },
+    grep: {
+        query: '',
+        cursorPosition: 0,
+        index: 0,
+        output: [],
+    },
     search: {
         row: undefined,
         col: undefined,
+        query: '',
+        searching: false,
+        reverse: false,
     },
     visual: {
         row: undefined,
         col: undefined
     },
     lineNumber: '',
-    previousKeys: '',
-    totalCommandHistory: '',
-    commandHistory: '',
-    currentCommand: '',
-    commandCursorPosition: 0,
-    previousCommands: [],
-    historyPosition: 0,
+    log: {
+        prevKeys: '',
+        history: '',
+        totalHistory: '',
+    },
+    command: {
+        current: '',
+        cursorPosition: 0,
+        history: [],
+        historyPosition: 0,
+    },
     lastSearchCommand: [],
-    previousCommand: [],
-    file: filePath === undefined ? '' : filePath,
-    harpoonIndex: 0,
-    harpoonIndexes: [],
-    files: [],
+    dot: [],
+    file: {
+        current: filePath === undefined ? '' : filePath,
+        all: [],
+        index: 0,
+    },
+    harpoon: {
+        index: 0,
+        files: [],
+    },
     storePosition: [],
-    fileIndex: 0,
     data: filePath === undefined ? [] : getData(filePath),
     row: 0,
     col: 0,
     gitFinding: isInGit,
     prevRow: 0,
     prevCol: 0,
-    windowLine: 0,
-    windowLineHorizontal: 0,
-    snapshots: [],
-    currentSnapshot: 0,
+    window: {
+        vertical: 0,
+        horizontal: 0,
+    },
+    snapshots: {
+        array: [],
+        current: 0,
+    },
     recording: false,
     macro: [],
     mark: -1,
@@ -99,8 +119,8 @@ if (filePath !== undefined) {
     createSnapshot(state);
     state.allowCommandLogging = true;
     state.files.push(state.file);
-    state.fileStack.push(state.file);
-    state.fileStackIndex += 1;
+    state.fileStack.stack.push(state.file);
+    state.fileStack.index += 1;
 } else {
     if (state.gitFinding) {
         setFileSearchOutput(state);
