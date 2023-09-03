@@ -220,6 +220,20 @@ function isAlphaNumeric(s) {
     return '1234567890QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm_'.indexOf(s) > -1;
 }
 
+function sortLines(state) {
+    const lines = [];
+    let begin = state.row;
+    let end = state.visual.row;
+    if (begin > end) {
+        begin = state.visual.row;
+        end = state.row;
+    }
+    for (let i = begin; i <= end; i += 1) {
+        lines.push(state.data[i]);
+    }
+    return lines.sort();
+}
+
 function isWritable(s) {
     return ' qwertyuiop[]\\asdfghjkl;\'zxcvbnm,./`1234567890-=~!@#$%^&*()_+QWERTYUIOP{}|ASDFGHJKL:"ZXCVBNM<>?'.indexOf(s) > -1;
 }
@@ -1205,6 +1219,7 @@ export {
     adjustRow,
     cleanup,
     getCurrentWord,
+    sortLines,
     autocomplete,
     setFileSearchOutput,
     isFile,

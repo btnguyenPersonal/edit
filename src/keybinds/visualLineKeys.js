@@ -4,6 +4,7 @@ import {
     renderScreen,
     createSnapshot,
     pasteFromClipboardBefore,
+    sortLines,
     getSystemPaste,
     logCommand
 } from '../util/helper.js';
@@ -217,6 +218,17 @@ function handleVisualLineKeys(key, state, screen) {
         }
         state.allowCommandLogging = true;
         renderScreen(state, screen);
+    } else if (key === '_') {
+        const sortedLines = sortLines(state);
+        let begin = state.row;
+        let end = state.visual.row;
+        if (begin > end) {
+            begin = state.visual.row;
+            end = state.row;
+        }
+        var args = [begin, end - begin + 1].concat(sortedLines);
+        Array.prototype.splice.apply(state.data, args);
+        state.mode = SHORTCUTS;
     } else if (key === '}') {
         for (let i = state.row + 1; i < state.data.length; i += 1) {
             if (isEmptyRow(state, i)) {
