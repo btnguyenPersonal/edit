@@ -228,6 +228,7 @@ function handleVisualLineKeys(key, state, screen) {
         }
         var args = [begin, end - begin + 1].concat(sortedLines);
         Array.prototype.splice.apply(state.data, args);
+        createSnapshot(state);
         state.mode = SHORTCUTS;
     } else if (key === '}') {
         for (let i = state.row + 1; i < state.data.length; i += 1) {
