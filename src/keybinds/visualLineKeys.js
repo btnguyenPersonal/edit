@@ -1,44 +1,44 @@
 /* eslint-disable import/no-cycle */
 import {
     copyToClipboard,
-    renderScreen,
     createSnapshot,
-    pasteFromClipboardBefore,
-    sortLines,
     getSystemPaste,
-    logCommand
+    logCommand,
+    pasteFromClipboardBefore,
+    renderScreen,
+    sortLines,
 } from '../util/helper.js';
 import { sendKeys } from '../util/sendKeys.js';
 import {
-    TYPING,
     SHORTCUTS,
+    TYPING,
     VISUAL,
-    VISUALBLOCK
+    VISUALBLOCK,
 } from '../util/modes.js';
 import {
-    up,
+    bottomOfFile,
+    decreaseIndentLevel,
     down,
-    left,
-    right,
-    getCoorBeginningNextWord,
-    getCoorBeginningLastWord,
+    downHalfScreen,
     endOfLine,
     firstNonSpace,
-    increaseIndentLevel,
-    decreaseIndentLevel,
-    topOfFile,
-    bottomOfFile,
-    upHalfScreen,
-    downHalfScreen,
+    getCoorBeginningLastWord,
+    getCoorBeginningNextWord,
     getIndentLevelFrom,
-    previousSameIndentLevel,
+    increaseIndentLevel,
+    isCommented,
+    isEmptyRow,
+    left,
+    matchIt,
+    nextLowerIndentLevel,
     nextSameIndentLevel,
     previousLowerIndentLevel,
-    nextLowerIndentLevel,
-    isEmptyRow,
-    isCommented,
+    previousSameIndentLevel,
+    right,
     toggleComment,
-    matchIt,
+    topOfFile,
+    up,
+    upHalfScreen,
 } from '../util/movement.js';
 
 function handleVisualLineKeys(key, state, screen) {
@@ -226,7 +226,7 @@ function handleVisualLineKeys(key, state, screen) {
             begin = state.visual.row;
             end = state.row;
         }
-        var args = [begin, end - begin + 1].concat(sortedLines);
+        const args = [begin, end - begin + 1].concat(sortedLines);
         Array.prototype.splice.apply(state.data, args);
         createSnapshot(state);
         state.mode = SHORTCUTS;

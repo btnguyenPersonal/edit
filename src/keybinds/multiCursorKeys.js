@@ -3,20 +3,20 @@ import {
     SHORTCUTS,
 } from '../util/modes.js';
 import {
-    isWritable,
-    renderScreen,
     createSnapshot,
-    logCommand
+    isWritable,
+    logCommand,
+    renderScreen,
 } from '../util/helper.js';
 import {
-    left,
-    right,
-    increaseIndentLevel,
     decreaseIndentLevel,
-    isEmptyRow,
     endOfLine,
     firstNonSpace,
     getCoorBeginningLastWord,
+    increaseIndentLevel,
+    isEmptyRow,
+    left,
+    right,
 } from '../util/movement.js';
 
 function handleMultiCursorKeys(key, state, screen) {
