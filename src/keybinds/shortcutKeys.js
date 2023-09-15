@@ -183,12 +183,12 @@ function handleShortcutKeys(key, state, screen) {
     } else if (state.previousKeys + key === 'daw') {
         const { beginning, end } = getCoorsInsideWord(state);
         copyToClipboard(state, [state.data[state.row].substring(beginning + 1, end + 1)]);
-        removeInsideAreaSameLine(state, beginning, end + 1, 'n');
+        removeInsideAreaSameLine(state, beginning, end + 1, SHORTCUTS);
         cleanup(state, key, true, false, true, true);
     } else if (state.previousKeys + key === 'daW') {
         const { beginning, end } = getCoorsInsideCharSame(state, ' ');
         copyToClipboard(state, [state.data[state.row].substring(beginning + 1, end + 1)]);
-        removeInsideAreaSameLine(state, beginning, end + 1, 'n');
+        removeInsideAreaSameLine(state, beginning, end + 1, SHORTCUTS);
         cleanup(state, key, true, false, true, true);
     } else if (state.previousKeys + key === 'dap') {
         state.row = findLastNonEmptyRow(state, state.row);
@@ -202,27 +202,27 @@ function handleShortcutKeys(key, state, screen) {
     } else if (state.previousKeys === 'da' && (key === '[' || key === ']' || key === 'd')) {
         const { beginning, end } = getCoorsInsideCharDiff(state, '[', ']');
         copyToClipboard(state, [state.data[state.row].substring(beginning, end + 1)]);
-        removeInsideAreaSameLine(state, beginning - 1, end + 1, 'n');
+        removeInsideAreaSameLine(state, beginning - 1, end + 1, SHORTCUTS);
         cleanup(state, key, true, false, true, true);
     } else if (state.previousKeys === 'da' && (key === '<' || key === '>' || key === 't')) {
         const { beginning, end } = getCoorsInsideCharDiff(state, '<', '>');
         copyToClipboard(state, [state.data[state.row].substring(beginning, end + 1)]);
-        removeInsideAreaSameLine(state, beginning - 1, end + 1, 'n');
+        removeInsideAreaSameLine(state, beginning - 1, end + 1, SHORTCUTS);
         cleanup(state, key, true, false, true, true);
     } else if (state.previousKeys === 'da' && (key === '(' || key === ')' || key === 'b')) {
         const { beginning, end } = getCoorsInsideCharDiff(state, '(', ')');
         copyToClipboard(state, [state.data[state.row].substring(beginning, end + 1)]);
-        removeInsideAreaSameLine(state, beginning - 1, end + 1, 'n');
+        removeInsideAreaSameLine(state, beginning - 1, end + 1, SHORTCUTS);
         cleanup(state, key, true, false, true, true);
     } else if (state.previousKeys === 'da' && (key === '{' || key === '}' || key === 'B')) {
         const { beginning, end } = getCoorsInsideCharDiff(state, '{', '}');
         copyToClipboard(state, [state.data[state.row].substring(beginning, end + 1)]);
-        removeInsideAreaSameLine(state, beginning - 1, end + 1, 'n');
+        removeInsideAreaSameLine(state, beginning - 1, end + 1, SHORTCUTS);
         cleanup(state, key, true, false, true, true);
     } else if (state.previousKeys === 'da' && (key === '\'' || key === '"' || key === '`')) {
         const { beginning, end } = getCoorsInsideCharSame(state, key);
         copyToClipboard(state, [state.data[state.row].substring(beginning, end + 1)]);
-        removeInsideAreaSameLine(state, beginning - 1, end + 1, 'n');
+        removeInsideAreaSameLine(state, beginning - 1, end + 1, SHORTCUTS);
         cleanup(state, key, true, false, true, true);
     } else if (state.previousKeys + key === 'diw') {
         const { beginning, end } = getCoorsInsideWord(state);
@@ -469,12 +469,12 @@ function handleShortcutKeys(key, state, screen) {
     } else if (state.previousKeys + key === 'caw') {
         const { beginning, end } = getCoorsInsideWord(state);
         copyToClipboard(state, [state.data[state.row].substring(beginning + 1, end + 1)]);
-        removeInsideAreaSameLine(state, beginning, end + 1, 'i');
+        removeInsideAreaSameLine(state, beginning, end + 1, TYPING);
         cleanup(state, key, true, false, false, true);
     } else if (state.previousKeys + key === 'caW') {
         const { beginning, end } = getCoorsInsideCharSame(state, ' ');
         copyToClipboard(state, [state.data[state.row].substring(beginning + 1, end + 1)]);
-        removeInsideAreaSameLine(state, beginning, end + 1, 'i');
+        removeInsideAreaSameLine(state, beginning, end + 1, TYPING);
         cleanup(state, key, true, false, false, true);
     } else if (state.previousKeys + key === 'cap') {
         state.row = findLastNonEmptyRow(state, state.row);
@@ -489,27 +489,27 @@ function handleShortcutKeys(key, state, screen) {
     } else if (state.previousKeys === 'ca' && (key === '[' || key === ']' || key === 'd')) {
         const { beginning, end } = getCoorsInsideCharDiff(state, '[', ']');
         copyToClipboard(state, [state.data[state.row].substring(beginning, end + 1)]);
-        removeInsideAreaSameLine(state, beginning - 1, end + 1, 'i');
+        removeInsideAreaSameLine(state, beginning - 1, end + 1, TYPING);
         cleanup(state, key, true, false, false, true);
     } else if (state.previousKeys === 'ca' && (key === '<' || key === '>' || key === 't')) {
         const { beginning, end } = getCoorsInsideCharDiff(state, '<', '>');
         copyToClipboard(state, [state.data[state.row].substring(beginning, end + 1)]);
-        removeInsideAreaSameLine(state, beginning - 1, end + 1, 'i');
+        removeInsideAreaSameLine(state, beginning - 1, end + 1, TYPING);
         cleanup(state, key, true, false, false, true);
     } else if (state.previousKeys === 'ca' && (key === '(' || key === ')' || key === 'b')) {
         const { beginning, end } = getCoorsInsideCharDiff(state, '(', ')');
         copyToClipboard(state, [state.data[state.row].substring(beginning, end + 1)]);
-        removeInsideAreaSameLine(state, beginning - 1, end + 1, 'i');
+        removeInsideAreaSameLine(state, beginning - 1, end + 1, TYPING);
         cleanup(state, key, true, false, false, true);
     } else if (state.previousKeys === 'ca' && (key === '{' || key === '}' || key === 'B')) {
         const { beginning, end } = getCoorsInsideCharDiff(state, '{', '}');
         copyToClipboard(state, [state.data[state.row].substring(beginning, end + 1)]);
-        removeInsideAreaSameLine(state, beginning - 1, end + 1, 'i');
+        removeInsideAreaSameLine(state, beginning - 1, end + 1, TYPING);
         cleanup(state, key, true, false, false, true);
     } else if (state.previousKeys === 'ca' && (key === '\'' || key === '"' || key === '`')) {
         const { beginning, end } = getCoorsInsideCharSame(state, key);
         copyToClipboard(state, [state.data[state.row].substring(beginning, end + 1)]);
-        removeInsideAreaSameLine(state, beginning - 1, end + 1, 'i');
+        removeInsideAreaSameLine(state, beginning - 1, end + 1, TYPING);
         cleanup(state, key, true, false, false, true);
     } else if (state.previousKeys + key === 'ciw') {
         const { beginning, end } = getCoorsInsideWord(state);
