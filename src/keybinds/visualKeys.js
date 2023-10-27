@@ -7,12 +7,12 @@ import {
     findLastNonEmptyRow,
     findNextEmptyRow,
     getSystemPaste,
-    isFile,
     isWritable,
     logCommand,
     processFile,
     renderScreen,
     searchForString,
+    tryPaths,
 } from '../util/helper.js';
 import {
     GREP,
@@ -180,31 +180,9 @@ function handleVisualKeys(key, state, screen) {
     } else if (state.previousKeys === 'g' && key === 'f') {
         const newFile = getInVisual(state);
         const currentDirectory = path.dirname(state.file);
-        let convertedPath = path.join(currentDirectory, newFile);
-        let fileExists = isFile(convertedPath);
-        let originalPath = convertedPath;
-        // TODO make this cleaner
-        if (!fileExists) {
-            convertedPath += '.js';
-            fileExists = isFile(convertedPath);
-        }
-        if (!fileExists) {
-            convertedPath = originalPath;
-            convertedPath += '.ts';
-            fileExists = isFile(convertedPath);
-        }
-        if (!fileExists) {
-            convertedPath = originalPath;
-            convertedPath += '.tsx';
-            fileExists = isFile(convertedPath);
-        }
-        if (!fileExists) {
-            convertedPath = originalPath;
-            convertedPath += '/index.js';
-            fileExists = isFile(convertedPath);
-        }
-        if (fileExists) {
-            processFile(state, convertedPath, -1);
+        let validPath = tryPaths(path.join(currentDirectory, newFile));
+        if (validPath) {
+            processFile(state, validPath, -1);
         }
         state.previousKeys = '';
     } else if (key === '\'') {

@@ -16,6 +16,30 @@ import {
     VISUALLINE,
 } from './modes.js';
 
+function tryPaths(path) {
+    let extensions = [
+        '',
+        '.rs',
+        '.cpp',
+        '.c',
+        '.py',
+        '.js',
+        '.jsx',
+        '.ts',
+        '.tsx',
+        '/index.js',
+        '/index.jsx',
+        '/index.ts',
+        '/index.tsx',
+    ];
+    for (let i = 0; i < extensions.length; i += 1) {
+        if (isFile(path + extensions[i])) {
+            return path + extensions[i];
+        }
+    }
+    return undefined;
+}
+
 function getCurrentWord(sentence, cursorPos) {
     let start = cursorPos;
     if (sentence[start] !== undefined && /[A-Za-z0-9_]/.test(sentence[start])) {
@@ -1223,4 +1247,5 @@ export {
     setFileSearchOutput,
     sortLines,
     trimTrailingWhitespace,
+    tryPaths,
 };
