@@ -182,12 +182,24 @@ function handleVisualKeys(key, state, screen) {
         const currentDirectory = path.dirname(state.file);
         let convertedPath = path.join(currentDirectory, newFile);
         let fileExists = isFile(convertedPath);
+        let originalPath = convertedPath;
+        // TODO make this cleaner
         if (!fileExists) {
             convertedPath += '.js';
             fileExists = isFile(convertedPath);
         }
         if (!fileExists) {
-            convertedPath = convertedPath.slice(0, -3);
+            convertedPath = originalPath;
+            convertedPath += '.ts';
+            fileExists = isFile(convertedPath);
+        }
+        if (!fileExists) {
+            convertedPath = originalPath;
+            convertedPath += '.tsx';
+            fileExists = isFile(convertedPath);
+        }
+        if (!fileExists) {
+            convertedPath = originalPath;
             convertedPath += '/index.js';
             fileExists = isFile(convertedPath);
         }

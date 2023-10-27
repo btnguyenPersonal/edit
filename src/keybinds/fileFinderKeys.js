@@ -64,15 +64,8 @@ function handleFileFinderKeys(key, state, screen, term) {
         state.fileFinderIndex = 0;
     } else if (key === 'ENTER') {
         let newFile = state.fileFinderOutput[state.fileFinderIndex];
-        if (newFile !== undefined) {
-            let fileExists = fs.existsSync(newFile);
-            if (!fileExists) {
-                newFile += '.js';
-                fileExists = fs.existsSync(newFile);
-            }
-            if (fileExists) {
-                processFile(state, newFile, -1);
-            }
+        if (newFile && fs.existsSync(newFile)) {
+            processFile(state, newFile, -1);
         }
         state.mode = SHORTCUTS;
     } else if (key === 'CTRL_L') {
