@@ -1,4 +1,5 @@
 /* eslint-disable import/no-cycle */
+import path from 'path';
 import ncp from 'copy-paste';
 import { execSync } from 'child_process';
 import fs from 'fs';
@@ -16,8 +17,21 @@ import {
     VISUALLINE,
 } from './modes.js';
 
-function tryPaths(path) {
-    let extensions = [
+function isFile(filePath) {
+    try {
+        const stats = fs.statSync(filePath);
+        return stats.isFile();
+    } catch (err) {
+        if (err.code === 'ENOENT') {
+            return false;
+        } else {
+            throw err;
+        }
+    }
+}
+
+function tryPaths(input) {
+    const extensions = [
         '',
         '.rs',
         '.cpp',
@@ -33,8 +47,8 @@ function tryPaths(path) {
         '/index.tsx',
     ];
     for (let i = 0; i < extensions.length; i += 1) {
-        if (isFile(path + extensions[i])) {
-            return path + extensions[i];
+        if (isFile(input + extensions[i])) {
+            return input + extensions[i];
         }
     }
     return undefined;
@@ -143,19 +157,6 @@ function getSystemPaste(state) {
         return ncp.paste();
     } else {
         return state.clipboard;
-    }
-}
-
-function isFile(filePath) {
-    try {
-        const stats = fs.statSync(filePath);
-        return stats.isFile();
-    } catch (err) {
-        if (err.code === 'ENOENT') {
-            return false;
-        } else {
-            throw err;
-        }
     }
 }
 
@@ -1004,69 +1005,6 @@ function changeFile(state) {
     createSnapshot(state);
 }
 
-function evaluateCommand(state, term) {
-    if (state.currentCommand === 'w') {
-        saveFile(state);
-        return false;
-    } else if (state.currentCommand === 'wa') {
-        saveFile(state);
-        return false;
-    } else if (state.currentCommand === 'x') {
-        saveFile(state);
-        term.fullscreen(false);
-        process.exit(0);
-    } else if (state.currentCommand === 'wq') {
-        saveFile(state);
-        term.fullscreen(false);
-        process.exit(0);
-    } else if (state.currentCommand === 'q') {
-        term.fullscreen(false);
-        process.exit(0);
-    } else if (/gs\/(.*)\/(.*)\/g/.test(state.currentCommand)) {
-        const match = /gs\/(.*?)\/(.*?)\/g/.exec(state.currentCommand);
-        try {
-            execSync(`git ls-files | xargs -I {} sed -i'' "s/${match[1]}/${match[2]}/g" "{}"`, { maxBuffer: 1024 * 1024 * 1000 });
-            // eslint-disable-next-line no-empty
-        } catch (e) {}
-        refreshFile(state);
-        createSnapshot(state);
-        return true;
-    } else if (/s\/(.*)\/(.*)\/g/.test(state.currentCommand)) {
-        const match = /s\/(.*?)\/(.*?)\/g/.exec(state.currentCommand);
-        state.data[state.row] = state.data[state.row].replaceAll(new RegExp(match[1], 'g'), match[2]);
-        createSnapshot(state);
-        return true;
-    } else if (/%s\/(.*)\/(.*)\/g/.test(state.currentCommand)) {
-        const match = /%s\/(.*?)\/(.*?)\/g/.exec(state.currentCommand);
-        for (let i = 0; i < state.data.length; i += 1) {
-            state.data[i] = state.data[i].replaceAll(new RegExp(match[1], 'g'), match[2]);
-        }
-        createSnapshot(state);
-        return true;
-    } else if (state.currentCommand === 'set ts=2') {
-        state.indentAmount = 2;
-        return false;
-    } else if (state.currentCommand === 'set ts=4') {
-        state.indentAmount = 4;
-        return false;
-    } else if (!Number.isNaN(state.currentCommand)) {
-        const num = parseInt(state.currentCommand);
-        if (num > 0 && num < state.data.length) {
-            state.row = num - 1;
-        }
-        return false;
-    } else if (state.currentCommand === 'qa') {
-        term.fullscreen(false);
-        process.exit(0);
-    } else if (state.currentCommand === 'qa!') {
-        term.fullscreen(false);
-        process.exit(0);
-    } else if (state.currentCommand === 'q!') {
-        term.fullscreen(false);
-        process.exit(0);
-    }
-}
-
 function createState(state) {
     const snapshotsCopy = state.snapshots.map((snapshot) => JSON.parse(JSON.stringify(snapshot)));
     return {
@@ -1203,6 +1141,76 @@ function calcFileFinderOutput(state) {
         (file) => file !== state.file && file.trim() !== '' && isValidSearch(state.fileFinderQuery, file)
     );
     sortOutputBySubstring(state, state.fileFinderQuery);
+}
+
+function evaluateCommand(state, term) {
+    if (state.currentCommand.startsWith('e ')) {
+        const newFile = state.currentCommand.substring(2);
+        const currentDirectory = path.dirname(state.file);
+        const validPath = tryPaths(path.join(currentDirectory, newFile));
+        if (validPath) {
+            processFile(state, validPath, -1);
+        }
+    } else if (state.currentCommand === 'w') {
+        saveFile(state);
+        return false;
+    } else if (state.currentCommand === 'wa') {
+        saveFile(state);
+        return false;
+    } else if (state.currentCommand === 'x') {
+        saveFile(state);
+        term.fullscreen(false);
+        process.exit(0);
+    } else if (state.currentCommand === 'wq') {
+        saveFile(state);
+        term.fullscreen(false);
+        process.exit(0);
+    } else if (state.currentCommand === 'q') {
+        term.fullscreen(false);
+        process.exit(0);
+    } else if (/gs\/(.*)\/(.*)\/g/.test(state.currentCommand)) {
+        const match = /gs\/(.*?)\/(.*?)\/g/.exec(state.currentCommand);
+        try {
+            execSync(`git ls-files | xargs -I {} sed -i'' "s/${match[1]}/${match[2]}/g" "{}"`, { maxBuffer: 1024 * 1024 * 1000 });
+            // eslint-disable-next-line no-empty
+        } catch (e) {}
+        refreshFile(state);
+        createSnapshot(state);
+        return true;
+    } else if (/s\/(.*)\/(.*)\/g/.test(state.currentCommand)) {
+        const match = /s\/(.*?)\/(.*?)\/g/.exec(state.currentCommand);
+        state.data[state.row] = state.data[state.row].replaceAll(new RegExp(match[1], 'g'), match[2]);
+        createSnapshot(state);
+        return true;
+    } else if (/%s\/(.*)\/(.*)\/g/.test(state.currentCommand)) {
+        const match = /%s\/(.*?)\/(.*?)\/g/.exec(state.currentCommand);
+        for (let i = 0; i < state.data.length; i += 1) {
+            state.data[i] = state.data[i].replaceAll(new RegExp(match[1], 'g'), match[2]);
+        }
+        createSnapshot(state);
+        return true;
+    } else if (state.currentCommand === 'set ts=2') {
+        state.indentAmount = 2;
+        return false;
+    } else if (state.currentCommand === 'set ts=4') {
+        state.indentAmount = 4;
+        return false;
+    } else if (!Number.isNaN(state.currentCommand)) {
+        const num = parseInt(state.currentCommand);
+        if (num > 0 && num < state.data.length) {
+            state.row = num - 1;
+        }
+        return false;
+    } else if (state.currentCommand === 'qa') {
+        term.fullscreen(false);
+        process.exit(0);
+    } else if (state.currentCommand === 'qa!') {
+        term.fullscreen(false);
+        process.exit(0);
+    } else if (state.currentCommand === 'q!') {
+        term.fullscreen(false);
+        process.exit(0);
+    }
 }
 
 export {

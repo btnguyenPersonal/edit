@@ -180,7 +180,7 @@ function handleVisualKeys(key, state, screen) {
     } else if (state.previousKeys === 'g' && key === 'f') {
         const newFile = getInVisual(state);
         const currentDirectory = path.dirname(state.file);
-        let validPath = tryPaths(path.join(currentDirectory, newFile));
+        const validPath = tryPaths(path.join(currentDirectory, newFile));
         if (validPath) {
             processFile(state, validPath, -1);
         }
