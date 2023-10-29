@@ -41,6 +41,8 @@ const state = {
     currentSnapshot: 0,
     data: filePath === undefined ? [] : getData(filePath),
     file: filePath === undefined ? '' : filePath,
+    fileExplorerOutput: [],
+    fileExplorerIndex: 0,
     fileFinderCursorPosition: 0,
     fileFinderFileCache: '',
     fileFinderIndex: 0,

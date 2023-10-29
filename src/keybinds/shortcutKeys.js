@@ -2,6 +2,7 @@
 import {
     adjustRow,
     applySnapshot,
+    calcFileExplorerOutput,
     calcFileFinderOutput,
     calcGrepOutput,
     centerScreen,
@@ -31,6 +32,7 @@ import {
 import { sendKeys } from '../util/sendKeys.js';
 import {
     COMMAND,
+    FILEEXPLORER,
     FILEFINDER,
     GREP,
     HISTORY,
@@ -641,6 +643,9 @@ function handleShortcutKeys(key, state, screen) {
         upHalfScreen(state);
     } else if (state.previousKeys === '' && key === 'CTRL_D') {
         downHalfScreen(state);
+    } else if (state.previousKeys === '' && key === 'CTRL_S') {
+        state.mode = FILEEXPLORER;
+        calcFileExplorerOutput(state);
     } else if (state.previousKeys === '' && (key === 'UP' || key === 'k')) {
         up(state);
     } else if (state.previousKeys === '' && (key === 'DOWN' || key === 'j')) {

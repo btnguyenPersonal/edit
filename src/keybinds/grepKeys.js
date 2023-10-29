@@ -55,7 +55,7 @@ function handleGrepKeys(key, state, screen) {
             state.grepIndex -= 1;
         }
     } else if (key === 'DOWN' || key === 'CTRL_N') {
-        if (state.grepIndex < state.fileFinderOutput.length - 1) {
+        if (state.grepIndex + 1 < state.fileFinderOutput.length - 1) {
             state.grepIndex += 1;
         }
     } else if (key === 'ESCAPE') {
