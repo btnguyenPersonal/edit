@@ -1159,7 +1159,17 @@ function calcFileExplorerOutput(state) {
         let indent = 0;
         while (splitPath.length !== 1) {
             const dir = splitPath.shift();
-            if (!state.fileExplorerOutput.includes('__DIR' + ' '.repeat(indent) + dir)) {
+            let foundDir = false;
+            for (let j = i; j >= 0; j -= 1) {
+                if (state.fileExplorerOutput[j].startsWith('__DIR') && state.fileExplorerOutput[j].substring(5).search(/\S|$/) < indent) {
+                    break;
+                }
+                if (state.fileExplorerOutput[j] === ('__DIR' + ' '.repeat(indent) + dir)) {
+                    foundDir = true;
+                    break;
+                }
+            }
+            if (!foundDir) {
                 state.fileExplorerOutput.splice(i, 0, '__DIR' + ' '.repeat(indent) + dir);
                 i += 1;
             }
