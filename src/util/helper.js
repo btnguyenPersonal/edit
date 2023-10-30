@@ -1154,6 +1154,7 @@ function calcFileExplorerOutput(state) {
     state.fileExplorerCopyOutput = execSync('fd -t f --hidden -E .git').toString().split('\n');
     state.fileExplorerOutput = execSync('fd -t f --hidden -E .git').toString().split('\n');
     for (let i = 0; i < state.fileExplorerOutput.length; i += 1) {
+        const original = state.fileExplorerOutput[i];
         const splitPath = state.fileExplorerOutput[i].split('/');
         let indent = 0;
         while (splitPath.length !== 1) {
@@ -1164,6 +1165,9 @@ function calcFileExplorerOutput(state) {
             }
             indent += 2;
             state.fileExplorerOutput[i] = ' '.repeat(indent) + splitPath.join('/');
+        }
+        if (original === state.file) {
+            state.fileExplorerIndex = i;
         }
     }
 }
