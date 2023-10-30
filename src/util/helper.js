@@ -765,11 +765,12 @@ function renderFileExplorer(state, screen) {
     for (let i = index; i < state.fileExplorerOutput.length && i < index + process.stdout.rows - 2; i += 1) {
         screen.put({
             attr: {
-                color: state.fileExplorerIndex === i ? 'red' : 'white',
+                color: state.fileExplorerOutput[i].includes('__DIR') ? 'blue' : 'white',
+                inverse: state.fileExplorerIndex === i,
             },
             x: 0,
-            wrap: false
-        }, state.fileExplorerOutput[i]);
+            wrap: false,
+        }, state.fileExplorerOutput[i].replace(/__DIR/, ''));
         screen.put({ newLine: true }, '\n');
     }
     screen.moveTo(0, 0);
@@ -1164,14 +1165,16 @@ function calcFileFinderOutput(state) {
 }
 
 function calcFileExplorerOutput(state) {
+    // TODO make not trash have actual tree
+    state.fileExplorerCopyOutput = execSync('fd -t f --hidden -E .git').toString().split('\n');
     state.fileExplorerOutput = execSync('fd -t f --hidden -E .git').toString().split('\n');
     for (let i = 0; i < state.fileExplorerOutput.length; i += 1) {
         const splitPath = state.fileExplorerOutput[i].split('/');
         let indent = 0;
         while (splitPath.length !== 1) {
             const dir = splitPath.shift();
-            if (!state.fileExplorerOutput.includes(' '.repeat(indent) + dir)) {
-                state.fileExplorerOutput.splice(i, 0, ' '.repeat(indent) + dir);
+            if (!state.fileExplorerOutput.includes('__DIR' + ' '.repeat(indent) + dir)) {
+                state.fileExplorerOutput.splice(i, 0, '__DIR' + ' '.repeat(indent) + dir);
                 i += 1;
             }
             indent += 2;
