@@ -10,7 +10,6 @@ import {
     FILEFINDER,
     GREP,
     HISTORY,
-    MULTICURSOR,
     SHORTCUTS,
     TYPING,
     VISUAL,
@@ -726,20 +725,6 @@ function isMergeConflictEnd(s) {
     return s.startsWith('>>>>>>>');
 }
 
-function getColorFromMode(mode) {
-    if (mode === SHORTCUTS || mode === FILEFINDER || mode === GREP) {
-        return 'white';
-    } else if (mode === VISUAL || mode === VISUALLINE || mode === VISUALBLOCK) {
-        return 'cyan';
-    } else if (mode === TYPING || mode === MULTICURSOR) {
-        return 'magenta';
-    } else if (mode === HISTORY) {
-        return 'blue';
-    } else {
-        return 'darkgrey';
-    }
-}
-
 function renderStatusBar(state, screen) {
     if (state.mode === COMMAND) {
         screen.put({ attr: { color: 'white' } }, ':' + state.currentCommand);
@@ -752,7 +737,7 @@ function renderStatusBar(state, screen) {
                 }
             }, shortenFilePath(state.files[state.harpoonIndexes[i]]) + ' ');
         }
-        screen.put({ attr: { color: getColorFromMode(state.mode) }, x: process.stdout.columns - (2 + state.file.length) }, '"' + state.file + '"');
+        screen.put({ attr: { color: 'white' }, x: process.stdout.columns - (2 + state.file.length) }, '"' + state.file + '"');
     }
 }
 
