@@ -1193,6 +1193,7 @@ function calcFileExplorerOutput(state) {
             state.fileExplorerIndex = i;
         }
     }
+    state.fileExplorerOutput.unshift('__DIR.')
 }
 
 function getFolderFromExplorer(state) {
