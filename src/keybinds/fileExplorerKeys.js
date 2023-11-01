@@ -4,9 +4,9 @@ import {
 } from '../util/modes.js';
 import {
     getFileFromExplorer,
+    calcFileExplorerOutput,
     processFile,
     renderScreen,
-    setFileExplorerFiles,
 } from '../util/helper.js';
 
 function handleFileExplorerKeys(key, state, screen) {
@@ -36,8 +36,10 @@ function handleFileExplorerKeys(key, state, screen) {
         if (!state.fileExplorerOutput[state.fileExplorerIndex].includes('__DIR')) {
             const selectedFile = getFileFromExplorer(state);
             if (selectedFile && fs.existsSync(selectedFile)) {
-                fs.unlink(selectedFile);
-                setFileExplorerFiles(state);
+                fs.rmSync(selectedFile, {
+                    force: true,
+                });
+                calcFileExplorerOutput(state);
             }
         }
     } else if (key === 'ENTER') {

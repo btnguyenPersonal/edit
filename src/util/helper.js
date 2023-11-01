@@ -1307,7 +1307,6 @@ export {
     searchForString,
     searchForStringNoWrap,
     setFileSearchOutput,
-    setFileExplorerFiles,
     sortLines,
     trimTrailingWhitespace,
     tryPaths,
