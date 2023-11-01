@@ -14,14 +14,32 @@ function handleFileExplorerKeys(key, state, screen) {
     if (state.renamingFile && key === 'ESCAPE') {
         state.renamingFile = false;
         state.newFile = '';
+        state.newFileIndex = 0;
+    } else if (state.renamingFile && key === 'CTRL_W') {
+        state.newFile = state.newFile.substring(state.newFileIndex);
+        state.newFileIndex = 0;
     } else if (state.renamingFile && key === 'CTRL_L') {
         state.newFile = '';
+        state.newFileIndex = 0;
     } else if (state.renamingFile && key === 'BACKSPACE') {
-        if (state.newFile.length > 0) {
-            state.newFile = state.newFile.substring(0, state.newFile.length - 1);
+        if (state.newFileIndex > 0) {
+            state.newFile = state.newFile.slice(0, state.newFileIndex - 1)
+                + state.newFile.slice(state.newFileIndex);
+            state.newFileIndex -= 1;
+        }
+    } else if (state.renamingFile && key === 'LEFT') {
+        if (state.newFileIndex > 0) {
+            state.newFileIndex -= 1;
+        }
+    } else if (state.renamingFile && key === 'RIGHT') {
+        if (state.newFileIndex < state.newFile.length) {
+            state.newFileIndex += 1;
         }
     } else if (state.renamingFile && isWritable(key)) {
-        state.newFile += key;
+        state.newFile = state.newFile.slice(0, state.newFileIndex)
+            + key
+            + state.newFile.slice(state.newFileIndex);
+        state.newFileIndex += 1;
     } else if (key === 'ESCAPE') {
         state.mode = SHORTCUTS;
     } else if (key === 'k' || key === 'UP' || key === 'CTRL_P') {
@@ -49,6 +67,8 @@ function handleFileExplorerKeys(key, state, screen) {
             const selectedFile = getFileFromExplorer(state);
             if (selectedFile && fs.existsSync(selectedFile)) {
                 state.selectedFile = selectedFile;
+                state.newFile = selectedFile.split('/').pop();
+                state.newFileIndex = state.newFile.length;
                 state.renamingFile = true;
             }
         }
@@ -73,6 +93,7 @@ function handleFileExplorerKeys(key, state, screen) {
             }
             state.renamingFile = false;
             state.newFile = '';
+            state.newFileIndex = 0;
         } else {
             if (!state.fileExplorerOutput[state.fileExplorerIndex].includes('__DIR')) {
                 const selectedFile = getFileFromExplorer(state);

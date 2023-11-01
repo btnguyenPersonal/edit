@@ -760,7 +760,7 @@ function renderFileExplorer(state, screen) {
         }, state.fileExplorerOutput[i].replace(/__DIR/, ''));
         screen.put({ newLine: true }, '\n');
     }
-    screen.moveTo(state.newFile.length + 2, 0);
+    screen.moveTo(state.newFileIndex + 2, 0);
     screen.draw({ delta: true });
     screen.drawCursor();
 }

@@ -85,6 +85,7 @@ const state = {
     searching: false,
     selectedFile: '',
     newFile: '',
+    newFileIndex: 0,
     renamingFile: false,
     snapshots: [],
     storePosition: [],
