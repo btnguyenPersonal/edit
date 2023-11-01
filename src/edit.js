@@ -89,6 +89,7 @@ const state = {
     newFileIndex: 0,
     renamingFile: false,
     copyingFile: false,
+    selectedFileExplorerIndex: -1,
     snapshots: [],
     storePosition: [],
     totalCommandHistory: '',

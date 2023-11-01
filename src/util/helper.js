@@ -752,7 +752,15 @@ function renderFileExplorer(state, screen) {
     for (let i = index; i < state.fileExplorerOutput.length && i < index + process.stdout.rows - 2; i += 1) {
         screen.put({
             attr: {
-                color: state.fileExplorerOutput[i].includes('__DIR') ? 'blue' : 'white',
+                color: state.fileExplorerOutput[i].includes('__DIR') ? (
+                    'blue'
+                ) : (
+                    state.selectedFileExplorerIndex !== -1 && state.selectedFileExplorerIndex === i ? (
+                        'yellow'
+                    ) : (
+                        'white'
+                    )
+                ),
                 inverse: state.fileExplorerIndex === i,
             },
             x: 0,

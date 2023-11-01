@@ -13,6 +13,7 @@ import {
 
 function handleFileExplorerKeys(key, state, screen) {
     if (state.renamingFile && key === 'ESCAPE') {
+        state.selectedFileExplorerIndex = -1;
         state.renamingFile = false;
         state.copyingFile = false;
         state.newFile = '';
@@ -43,6 +44,7 @@ function handleFileExplorerKeys(key, state, screen) {
             + state.newFile.slice(state.newFileIndex);
         state.newFileIndex += 1;
     } else if (key === 'ESCAPE') {
+        state.selectedFileExplorerIndex = -1;
         state.mode = SHORTCUTS;
     } else if (key === 'k' || key === 'UP' || key === 'CTRL_P') {
         if (state.fileExplorerIndex - 1 >= 0) {
@@ -78,6 +80,7 @@ function handleFileExplorerKeys(key, state, screen) {
             const selectedFile = getFileFromExplorer(state);
             if (selectedFile && fs.existsSync(selectedFile)) {
                 state.selectedFile = selectedFile;
+                state.selectedFileExplorerIndex = state.fileExplorerIndex;
             }
         }
     } else if (key === 'r') {
@@ -85,6 +88,7 @@ function handleFileExplorerKeys(key, state, screen) {
             const selectedFile = getFileFromExplorer(state);
             if (selectedFile && fs.existsSync(selectedFile)) {
                 state.selectedFile = selectedFile;
+                state.selectedFileExplorerIndex = state.fileExplorerIndex;
                 state.newFile = selectedFile.split('/').pop();
                 state.newFileIndex = state.newFile.length;
                 state.renamingFile = true;
@@ -101,6 +105,7 @@ function handleFileExplorerKeys(key, state, screen) {
             }
         }
     } else if (key === 'ENTER') {
+        state.selectedFileExplorerIndex = -1;
         if (state.copyingFile) {
             const newFilePath = state.selectedFolder + '/' + state.newFile;
             if (state.selectedFile !== '' && state.newFile !== '' && newFilePath !== state.selectedFile && !fs.existsSync(newFilePath)) {
