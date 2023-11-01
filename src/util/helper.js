@@ -1187,6 +1187,18 @@ function calcFileExplorerOutput(state) {
     }
 }
 
+function getFolderFromExplorer(state) {
+    let dir = '';
+    let indent = state.fileExplorerOutput[state.fileExplorerIndex].substring(5).search(/\S|$/);
+    for (let i = state.fileExplorerIndex - 1; i >= 0; i -= 1) {
+        if (state.fileExplorerOutput[i].includes('__DIR') && state.fileExplorerOutput[i].substring(5).search(/\S|$/) < indent) {
+            dir = state.fileExplorerOutput[i].substring(5) + '/';
+            indent = state.fileExplorerOutput[i].substring(5).search(/\S|$/);
+        }
+    }
+    return dir + state.fileExplorerOutput[state.fileExplorerIndex].substring(5).trim();
+}
+
 function getFileFromExplorer(state) {
     let numDir = 0;
     for (let i = state.fileExplorerIndex; i >= 0; i -= 1) {
@@ -1288,6 +1300,7 @@ export {
     getCurrentWord,
     getData,
     getFileFromExplorer,
+    getFolderFromExplorer,
     getRowIfOverflow,
     getSystemPaste,
     insertIndentedRow,

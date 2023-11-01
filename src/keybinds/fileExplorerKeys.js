@@ -5,6 +5,7 @@ import {
 import {
     calcFileExplorerOutput,
     getFileFromExplorer,
+    getFolderFromExplorer,
     isWritable,
     processFile,
     renderScreen,
@@ -13,6 +14,7 @@ import {
 function handleFileExplorerKeys(key, state, screen) {
     if (state.renamingFile && key === 'ESCAPE') {
         state.renamingFile = false;
+        state.copyingFile = false;
         state.newFile = '';
         state.newFileIndex = 0;
     } else if (state.renamingFile && key === 'CTRL_W') {
@@ -62,6 +64,22 @@ function handleFileExplorerKeys(key, state, screen) {
                 state.fileExplorerIndex += 1;
             }
         }
+    } else if (key === 'p' || key === 'P') {
+        if (state.fileExplorerOutput[state.fileExplorerIndex].includes('__DIR') && state.selectedFile) {
+            const selectedFolder = getFolderFromExplorer(state);
+            if (selectedFolder && fs.existsSync(selectedFolder)) {
+                state.selectedFolder = selectedFolder;
+                state.renamingFile = true;
+                state.copyingFile = true;
+            }
+        }
+    } else if (key === 'y') {
+        if (!state.fileExplorerOutput[state.fileExplorerIndex].includes('__DIR')) {
+            const selectedFile = getFileFromExplorer(state);
+            if (selectedFile && fs.existsSync(selectedFile)) {
+                state.selectedFile = selectedFile;
+            }
+        }
     } else if (key === 'r') {
         if (!state.fileExplorerOutput[state.fileExplorerIndex].includes('__DIR')) {
             const selectedFile = getFileFromExplorer(state);
@@ -83,7 +101,17 @@ function handleFileExplorerKeys(key, state, screen) {
             }
         }
     } else if (key === 'ENTER') {
-        if (state.renamingFile) {
+        if (state.copyingFile) {
+            const newFilePath = state.selectedFolder + '/' + state.newFile;
+            if (state.selectedFile !== '' && state.newFile !== '' && newFilePath !== state.selectedFile && !fs.existsSync(newFilePath)) {
+                fs.copyFileSync(state.selectedFile, newFilePath);
+                calcFileExplorerOutput(state);
+            }
+            state.renamingFile = false;
+            state.copyingFile = false;
+            state.newFile = '';
+            state.newFileIndex = 0;
+        } else if (state.renamingFile) {
             let newFilePath = state.selectedFile.split('/');
             newFilePath[newFilePath.length - 1] = state.newFile;
             newFilePath = newFilePath.join('/');
