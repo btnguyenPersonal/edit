@@ -726,7 +726,9 @@ function isMergeConflictEnd(s) {
 }
 
 function renderStatusBar(state, screen) {
-    if (state.mode === COMMAND) {
+    if (state.mode === FILEEXPLORER) {
+        screen.put({ attr: { color: state.renamingFile ? 'white' : 'grey' } }, '> ' + state.newFile);
+    } else if (state.mode === COMMAND) {
         screen.put({ attr: { color: 'white' } }, ':' + state.currentCommand);
     } else {
         screen.put({ attr: { color: 'green' } }, '/' + state.searchQuery + ' ');
@@ -758,7 +760,7 @@ function renderFileExplorer(state, screen) {
         }, state.fileExplorerOutput[i].replace(/__DIR/, ''));
         screen.put({ newLine: true }, '\n');
     }
-    screen.moveTo(0, 0);
+    screen.moveTo(state.newFile.length + 2, 0);
     screen.draw({ delta: true });
     screen.drawCursor();
 }
