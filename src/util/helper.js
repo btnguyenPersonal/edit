@@ -1149,10 +1149,13 @@ function calcFileFinderOutput(state) {
     sortOutputBySubstring(state, state.fileFinderQuery);
 }
 
-function calcFileExplorerOutput(state) {
-    // TODO make not trash have actual tree
+function setFileExplorerFiles(state) {
     state.fileExplorerCopyOutput = execSync('fd -t f --hidden -E .git').toString().split('\n');
     state.fileExplorerOutput = execSync('fd -t f --hidden -E .git').toString().split('\n');
+}
+
+function calcFileExplorerOutput(state) {
+    setFileExplorerFiles(state);
     for (let i = 0; i < state.fileExplorerOutput.length; i += 1) {
         const original = state.fileExplorerOutput[i];
         const splitPath = state.fileExplorerOutput[i].split('/');
@@ -1180,6 +1183,16 @@ function calcFileExplorerOutput(state) {
             state.fileExplorerIndex = i;
         }
     }
+}
+
+function getFileFromExplorer(state) {
+    let numDir = 0;
+    for (let i = state.fileExplorerIndex; i >= 0; i -= 1) {
+        if (state.fileExplorerOutput[i].includes('__DIR')) {
+            numDir += 1;
+        }
+    }
+    return state.fileExplorerCopyOutput[state.fileExplorerIndex - numDir];
 }
 
 function evaluateCommand(state, term) {
@@ -1272,6 +1285,7 @@ export {
     getContextLines,
     getCurrentWord,
     getData,
+    getFileFromExplorer,
     getRowIfOverflow,
     getSystemPaste,
     insertIndentedRow,
@@ -1293,6 +1307,7 @@ export {
     searchForString,
     searchForStringNoWrap,
     setFileSearchOutput,
+    setFileExplorerFiles,
     sortLines,
     trimTrailingWhitespace,
     tryPaths,

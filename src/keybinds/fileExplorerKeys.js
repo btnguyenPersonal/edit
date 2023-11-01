@@ -3,8 +3,10 @@ import {
     SHORTCUTS,
 } from '../util/modes.js';
 import {
-    renderScreen,
+    getFileFromExplorer,
     processFile,
+    renderScreen,
+    setFileExplorerFiles,
 } from '../util/helper.js';
 
 function handleFileExplorerKeys(key, state, screen) {
@@ -30,15 +32,17 @@ function handleFileExplorerKeys(key, state, screen) {
                 state.fileExplorerIndex += 1;
             }
         }
+    } else if (key === 'x') {
+        if (!state.fileExplorerOutput[state.fileExplorerIndex].includes('__DIR')) {
+            const selectedFile = getFileFromExplorer(state);
+            if (selectedFile && fs.existsSync(selectedFile)) {
+                fs.unlink(selectedFile);
+                setFileExplorerFiles(state);
+            }
+        }
     } else if (key === 'ENTER') {
         if (!state.fileExplorerOutput[state.fileExplorerIndex].includes('__DIR')) {
-            let numDir = 0;
-            for (let i = state.fileExplorerIndex; i >= 0; i -= 1) {
-                if (state.fileExplorerOutput[i].includes('__DIR')) {
-                    numDir += 1;
-                }
-            }
-            const selectedFile = state.fileExplorerCopyOutput[state.fileExplorerIndex - numDir];
+            const selectedFile = getFileFromExplorer(state);
             if (selectedFile && fs.existsSync(selectedFile)) {
                 processFile(state, selectedFile, -1);
             }
