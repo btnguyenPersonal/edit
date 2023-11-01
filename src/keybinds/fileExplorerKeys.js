@@ -14,6 +14,8 @@ function handleFileExplorerKeys(key, state, screen) {
     if (state.renamingFile && key === 'ESCAPE') {
         state.renamingFile = false;
         state.newFile = '';
+    } else if (state.renamingFile && key === 'CTRL_L') {
+        state.newFile = '';
     } else if (state.renamingFile && key === 'BACKSPACE') {
         if (state.newFile.length > 0) {
             state.newFile = state.newFile.substring(0, state.newFile.length - 1);
@@ -64,13 +66,13 @@ function handleFileExplorerKeys(key, state, screen) {
         if (state.renamingFile) {
             let newFilePath = state.selectedFile.split('/');
             newFilePath[newFilePath.length - 1] = state.newFile;
-            newFilePath.join('/');
+            newFilePath = newFilePath.join('/');
             if (state.selectedFile !== '' && state.newFile !== '' && newFilePath !== state.selectedFile) {
                 fs.renameSync(state.selectedFile, newFilePath);
-                state.newFile = '';
-                state.renamingFile = false;
                 calcFileExplorerOutput(state);
             }
+            state.renamingFile = false;
+            state.newFile = '';
         } else {
             if (!state.fileExplorerOutput[state.fileExplorerIndex].includes('__DIR')) {
                 const selectedFile = getFileFromExplorer(state);
