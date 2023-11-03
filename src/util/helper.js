@@ -727,7 +727,7 @@ function isMergeConflictEnd(s) {
 
 function renderStatusBar(state, screen) {
     if (state.mode === FILEEXPLORER) {
-        screen.put({ attr: { color: state.renamingFile ? 'white' : 'grey' } }, '> ' + state.newFile);
+        screen.put({ attr: { color: state.typing ? 'white' : 'grey' } }, '> ' + state.newFile);
     } else if (state.mode === COMMAND) {
         screen.put({ attr: { color: 'white' } }, ':' + state.currentCommand);
     } else {

@@ -12,33 +12,35 @@ import {
 } from '../util/helper.js';
 
 function handleFileExplorerKeys(key, state, screen) {
-    if (state.renamingFile && key === 'ESCAPE') {
+    if (state.typing && key === 'ESCAPE') {
         state.selectedFileExplorerIndex = -1;
+        state.typing = false;
         state.renamingFile = false;
         state.copyingFile = false;
+        state.creatingFile = false;
         state.newFile = '';
         state.newFileIndex = 0;
-    } else if (state.renamingFile && key === 'CTRL_W') {
+    } else if (state.typing && key === 'CTRL_W') {
         state.newFile = state.newFile.substring(state.newFileIndex);
         state.newFileIndex = 0;
-    } else if (state.renamingFile && key === 'CTRL_L') {
+    } else if (state.typing && key === 'CTRL_L') {
         state.newFile = '';
         state.newFileIndex = 0;
-    } else if (state.renamingFile && key === 'BACKSPACE') {
+    } else if (state.typing && key === 'BACKSPACE') {
         if (state.newFileIndex > 0) {
             state.newFile = state.newFile.slice(0, state.newFileIndex - 1)
                 + state.newFile.slice(state.newFileIndex);
             state.newFileIndex -= 1;
         }
-    } else if (state.renamingFile && key === 'LEFT') {
+    } else if (state.typing && key === 'LEFT') {
         if (state.newFileIndex > 0) {
             state.newFileIndex -= 1;
         }
-    } else if (state.renamingFile && key === 'RIGHT') {
+    } else if (state.typing && key === 'RIGHT') {
         if (state.newFileIndex < state.newFile.length) {
             state.newFileIndex += 1;
         }
-    } else if (state.renamingFile && isWritable(key)) {
+    } else if (state.typing && isWritable(key)) {
         state.newFile = state.newFile.slice(0, state.newFileIndex)
             + key
             + state.newFile.slice(state.newFileIndex);
@@ -66,12 +68,21 @@ function handleFileExplorerKeys(key, state, screen) {
                 state.fileExplorerIndex += 1;
             }
         }
+    } else if (key === 'n') {
+        if (state.fileExplorerOutput[state.fileExplorerIndex].includes('__DIR')) {
+            const selectedFolder = getFolderFromExplorer(state);
+            if (selectedFolder && fs.existsSync(selectedFolder)) {
+                state.selectedFolder = selectedFolder;
+                state.typing = true;
+                state.creatingFile = true;
+            }
+        }
     } else if (key === 'p' || key === 'P') {
         if (state.fileExplorerOutput[state.fileExplorerIndex].includes('__DIR') && state.selectedFile) {
             const selectedFolder = getFolderFromExplorer(state);
             if (selectedFolder && fs.existsSync(selectedFolder)) {
                 state.selectedFolder = selectedFolder;
-                state.renamingFile = true;
+                state.typing = true;
                 state.copyingFile = true;
             }
         }
@@ -91,6 +102,7 @@ function handleFileExplorerKeys(key, state, screen) {
                 state.selectedFileExplorerIndex = state.fileExplorerIndex;
                 state.newFile = selectedFile.split('/').pop();
                 state.newFileIndex = state.newFile.length;
+                state.typing = true;
                 state.renamingFile = true;
             }
         }
@@ -106,13 +118,22 @@ function handleFileExplorerKeys(key, state, screen) {
         }
     } else if (key === 'ENTER') {
         state.selectedFileExplorerIndex = -1;
-        if (state.copyingFile) {
+        if (state.creatingFile) {
+            const newFilePath = state.selectedFolder + '/' + state.newFile;
+            if (state.newFile !== '' && !fs.existsSync(newFilePath)) {
+                fs.openSync(newFilePath, 'w');
+                calcFileExplorerOutput(state);
+            }
+            state.typing = false;
+            state.creatingFile = false;
+            state.newFile = '';
+            state.newFileIndex = 0;
+        } else if (state.copyingFile) {
             const newFilePath = state.selectedFolder + '/' + state.newFile;
             if (state.selectedFile !== '' && state.newFile !== '' && newFilePath !== state.selectedFile && !fs.existsSync(newFilePath)) {
                 fs.copyFileSync(state.selectedFile, newFilePath);
                 calcFileExplorerOutput(state);
             }
-            state.renamingFile = false;
             state.copyingFile = false;
             state.newFile = '';
             state.newFileIndex = 0;
@@ -124,6 +145,7 @@ function handleFileExplorerKeys(key, state, screen) {
                 fs.renameSync(state.selectedFile, newFilePath);
                 calcFileExplorerOutput(state);
             }
+            state.typing = false;
             state.renamingFile = false;
             state.newFile = '';
             state.newFileIndex = 0;
