@@ -1203,7 +1203,7 @@ function getFolderFromExplorer(state) {
     let indent = state.fileExplorerOutput[state.fileExplorerIndex].substring(5).search(/\S|$/);
     for (let i = state.fileExplorerIndex - 1; i >= 0; i -= 1) {
         if (state.fileExplorerOutput[i].includes('__DIR') && state.fileExplorerOutput[i].substring(5).search(/\S|$/) < indent) {
-            dir = state.fileExplorerOutput[i].substring(5) + '/';
+            dir = state.fileExplorerOutput[i].substring(5).trim() + '/' + dir;
             indent = state.fileExplorerOutput[i].substring(5).search(/\S|$/);
         }
     }
