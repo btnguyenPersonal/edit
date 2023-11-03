@@ -744,7 +744,7 @@ function renderStatusBar(state, screen) {
 }
 
 function getFileFinderColor(mode) {
-    return mode === GREP ? 'green' : 'blue';
+    return mode === GREP ? 'green' : 'yellow';
 }
 
 function renderFileExplorer(state, screen) {
@@ -812,7 +812,8 @@ function renderFileFinder(state, screen, mode) {
         screen.put({ newLine: true }, '\n');
         screen.put({
             attr: {
-                color: modeIndex === i ? getFileFinderColor(mode) : 'white',
+                color: 'white',
+                inverse: modeIndex === i
             },
             x: 0,
             wrap: false
