@@ -1160,8 +1160,9 @@ function calcFileFinderOutput(state) {
 }
 
 function setFileExplorerFiles(state) {
-    state.fileExplorerCopyOutput = execSync('fd -t f --hidden -E .git').toString().split('\n');
-    state.fileExplorerOutput = execSync('fd -t f --hidden -E .git').toString().split('\n');
+    const output = execSync('fd -t f --hidden -E .git').toString();
+    state.fileExplorerCopyOutput = output.split('\n');
+    state.fileExplorerOutput = output.split('\n');
 }
 
 function calcFileExplorerOutput(state) {
@@ -1190,7 +1191,7 @@ function calcFileExplorerOutput(state) {
             state.fileExplorerOutput[i] = ' '.repeat(indent) + splitPath.join('/');
         }
         if (original === state.file) {
-            state.fileExplorerIndex = i;
+            state.fileExplorerIndex = i + 1;
         }
     }
     state.fileExplorerOutput.unshift('__DIR.')
