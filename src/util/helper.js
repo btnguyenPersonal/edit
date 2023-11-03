@@ -744,7 +744,7 @@ function renderStatusBar(state, screen) {
 }
 
 function getFileFinderColor(mode) {
-    return mode === GREP ? 'green' : 'yellow';
+    return mode === GREP ? 'green' : 'blue';
 }
 
 function renderFileExplorer(state, screen) {
@@ -778,7 +778,7 @@ function renderHistoryTree(state, screen) {
     for (let i = index; i < state.fileFinderOutput.length && i < index + process.stdout.rows - 2; i += 1) {
         screen.put({
             attr: {
-                color: state.fileFinderIndex === i ? 'blue' : 'white',
+                color: state.fileFinderIndex === i ? 'red' : 'white',
             },
             x: 0,
             wrap: false
