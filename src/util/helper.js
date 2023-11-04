@@ -747,20 +747,22 @@ function getFileFinderColor(mode) {
     return mode === GREP ? 'green' : 'yellow';
 }
 
+function getExplorerColor(state, i) {
+    if (state.fileExplorerOutput[i].includes('__DIR')) {
+        return 'blue';
+    } else if (state.selectedFileExplorerIndex !== -1 && state.selectedFileExplorerIndex === i) {
+        return 'yellow';
+    } else {
+        return 'white';
+    }
+}
+
 function renderFileExplorer(state, screen) {
     const index = state.fileExplorerIndex - Math.floor(process.stdout.rows / 2) > 0 ? state.fileExplorerIndex - Math.floor(process.stdout.rows / 2) : 0;
     for (let i = index; i < state.fileExplorerOutput.length && i < index + process.stdout.rows - 2; i += 1) {
         screen.put({
             attr: {
-                color: state.fileExplorerOutput[i].includes('__DIR') ? (
-                    'blue'
-                ) : (
-                    state.selectedFileExplorerIndex !== -1 && state.selectedFileExplorerIndex === i ? (
-                        'yellow'
-                    ) : (
-                        'white'
-                    )
-                ),
+                color: getExplorerColor(state, i),
                 inverse: state.fileExplorerIndex === i,
             },
             x: 0,
@@ -1204,7 +1206,7 @@ function calcFileExplorerOutput(state) {
             state.fileExplorerIndex = i + 1;
         }
     }
-    state.fileExplorerOutput.unshift('__DIR.')
+    state.fileExplorerOutput.unshift('__DIR.');
 }
 
 function getFolderFromExplorer(state) {
@@ -1217,6 +1219,44 @@ function getFolderFromExplorer(state) {
         }
     }
     return dir + state.fileExplorerOutput[state.fileExplorerIndex].substring(5).trim();
+}
+
+function findCurrentIndentLevel(state, prevLine, currentLine) {
+    let indent = prevLine.search(/\S|$/);
+    if (currentLine.startsWith(getCommentString(state.file))) {
+        return indent;
+    }
+    if (prevLine.endsWith('(') || prevLine.endsWith('{')) {
+        indent += state.indentAmount;
+    }
+    if (currentLine.startsWith(')') || currentLine.startsWith('}')) {
+        indent -= state.indentAmount;
+    }
+    if (currentLine.startsWith('<')) {
+        const prevLineOpensTag = prevLine.includes('<') && !prevLine.includes('/>');
+        const prevLineClosesTag = prevLine.includes('/>');
+        const currentLineClosesTag = currentLine.includes('</');
+        if (prevLineOpensTag) {
+            indent += state.indentAmount;
+        } else if (prevLineClosesTag && currentLineClosesTag) {
+            indent -= state.indentAmount;
+        }
+    }
+    return indent >= 0 ? indent : 0;
+}
+
+function getFormattedLines(state, start, end) {
+    const lines = [];
+    for (let i = start; i <= end; i += 1) {
+        lines.push(state.data[i].trim());
+    }
+    let lastLine = start - 1 < 0 ? '' : state.data[start - 1];
+    for (let i = 0; i < lines.length; i += 1) {
+        const indent = findCurrentIndentLevel(state, lastLine, lines[i]);
+        lines[i] = ' '.repeat(indent) + lines[i];
+        lastLine = lines[i];
+    }
+    return lines;
 }
 
 function getFileFromExplorer(state) {
@@ -1322,6 +1362,7 @@ export {
     getData,
     getFileFromExplorer,
     getFolderFromExplorer,
+    getFormattedLines,
     getRowIfOverflow,
     getSystemPaste,
     insertIndentedRow,

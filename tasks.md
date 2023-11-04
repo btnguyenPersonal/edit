@@ -12,22 +12,22 @@
     - undo tree instead of truncating on editing tree
     - gv
     - :s///g (for visual)
-    - :sort
-    - undo ui that displays all last snapshots with the commands that were run to end up there -> (12 minutes ago) jjjjjdip
-    (14 minutes ago) vipgc
     - block comment highlighting
     - readme / markdown highlighting
     - colors with hex ?? might not be supported in terminal-kit
     - do real indenting
 ## todo
-    - fix /> for closing tags indentation
-    - {d,y,c}i<any_key_here>
     - macro editing using plain-text
     - real file stack (and jump list?)
-    - fix harpoon exit bug
 ## blocked
 ## in progress
+    - fix /> for closing tags indentation
 ## done
+    - :sort
+    - undo ui that displays all last snapshots with the commands that were run to end up there -> (12 minutes ago) jjjjjdip
+    (14 minutes ago) vipgc
+    - fix harpoon exit bug
+    - {d,y,c}i<any_key_here>
     - ___this weekend start combing through all of the code and clean up everything that is icky___
         - stop nesting ifs everywhere, make every key an if (previousKeys + key === 'di(') {} kind of thing
         - maybe make a cleanup function that runs logCommand, state.previousKeys clear, createSnapshot
