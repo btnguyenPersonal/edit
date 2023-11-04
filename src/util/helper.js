@@ -1112,6 +1112,15 @@ function isValidSearch(query, file) {
     return true;
 }
 
+function createFolderIfNotExists(state) {
+    if (state.newFile.includes('/')) {
+        let createdPath = state.newFile.split('/');
+        createdPath.pop();
+        createdPath = createdPath.join('/');
+        fs.mkdirSync(state.selectedFolder + '/' + createdPath, { recursive: true });
+    }
+}
+
 function setFileSearchOutput(state) {
     if (state.gitFinding) {
         state.fileFinderFileCache = execSync('fd -t f --hidden -E .git').toString();
@@ -1301,6 +1310,7 @@ export {
     cleanup,
     copyAndRemoveRows,
     copyRows,
+    createFolderIfNotExists,
     copyToClipboard,
     createSnapshot,
     evaluateCommand,

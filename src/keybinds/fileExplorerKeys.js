@@ -3,6 +3,7 @@ import {
     SHORTCUTS,
 } from '../util/modes.js';
 import {
+    createFolderIfNotExists,
     calcFileExplorerOutput,
     getFileFromExplorer,
     getFolderFromExplorer,
@@ -117,26 +118,20 @@ function handleFileExplorerKeys(key, state, screen) {
             }
         }
     } else if (key === 'ENTER') {
-        state.selectedFileExplorerIndex = -1;
         if (state.creatingFile) {
+            createFolderIfNotExists(state);
             const newFilePath = state.selectedFolder + '/' + state.newFile;
             if (state.newFile !== '' && !fs.existsSync(newFilePath)) {
                 fs.openSync(newFilePath, 'w');
                 calcFileExplorerOutput(state);
             }
-            state.typing = false;
-            state.creatingFile = false;
-            state.newFile = '';
-            state.newFileIndex = 0;
         } else if (state.copyingFile) {
+            createFolderIfNotExists(state);
             const newFilePath = state.selectedFolder + '/' + state.newFile;
             if (state.selectedFile !== '' && state.newFile !== '' && newFilePath !== state.selectedFile && !fs.existsSync(newFilePath)) {
                 fs.copyFileSync(state.selectedFile, newFilePath);
                 calcFileExplorerOutput(state);
             }
-            state.copyingFile = false;
-            state.newFile = '';
-            state.newFileIndex = 0;
         } else if (state.renamingFile) {
             let newFilePath = state.selectedFile.split('/');
             newFilePath[newFilePath.length - 1] = state.newFile;
@@ -145,10 +140,6 @@ function handleFileExplorerKeys(key, state, screen) {
                 fs.renameSync(state.selectedFile, newFilePath);
                 calcFileExplorerOutput(state);
             }
-            state.typing = false;
-            state.renamingFile = false;
-            state.newFile = '';
-            state.newFileIndex = 0;
         } else {
             if (!state.fileExplorerOutput[state.fileExplorerIndex].includes('__DIR')) {
                 const selectedFile = getFileFromExplorer(state);
@@ -157,6 +148,12 @@ function handleFileExplorerKeys(key, state, screen) {
                 }
             }
         }
+        state.typing = false;
+        state.renamingFile = false;
+        state.creatingFile = false;
+        state.copyingFile = false;
+        state.newFile = '';
+        state.newFileIndex = 0;
     }
     renderScreen(state, screen);
 }
