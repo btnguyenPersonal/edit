@@ -49,6 +49,20 @@ function handleFileExplorerKeys(key, state, screen) {
     } else if (key === 'ESCAPE') {
         state.selectedFileExplorerIndex = -1;
         state.mode = SHORTCUTS;
+    } else if (key === ']') {
+        for (let i = state.fileExplorerIndex + 1; i < state.fileExplorerOutput.length; i += 1) {
+            if (state.fileExplorerOutput[i].startsWith('__DIR')) {
+                state.fileExplorerIndex = i;
+                break;
+            }
+        }
+    } else if (key === '[') {
+        for (let i = state.fileExplorerIndex - 1; i >= 0; i -= 1) {
+            if (state.fileExplorerOutput[i].startsWith('__DIR')) {
+                state.fileExplorerIndex = i;
+                break;
+            }
+        }
     } else if (key === 'k' || key === 'UP' || key === 'CTRL_P') {
         if (state.fileExplorerIndex - 1 >= 0) {
             state.fileExplorerIndex -= 1;
