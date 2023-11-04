@@ -1232,11 +1232,11 @@ function findCurrentIndentLevel(state, prevLine, currentLine) {
     const currentLineClosesTag = /<\/[^>]+>/.test(currentLine);
     if (prevLineOpensTag) {
         indent += state.indentAmount;
-        return indent;
+        return Math.max(0, indent);
     }
-    if (prevLineClosesTag || currentLineClosesTag || prevLine.trim() === '</>') {
+    if (prevLineClosesTag || currentLineClosesTag || currentLine.trim() === '</>') {
         indent -= state.indentAmount;
-        return indent;
+        return Math.max(0, indent);
     }
     if (prevLine.endsWith('(') || prevLine.endsWith('{')) {
         indent += state.indentAmount;
@@ -1244,7 +1244,7 @@ function findCurrentIndentLevel(state, prevLine, currentLine) {
     if (currentLine.startsWith(')') || currentLine.startsWith('}')) {
         indent -= state.indentAmount;
     }
-    return indent >= 0 ? indent : 0;
+    return Math.max(0, indent);
 }
 
 function getFormattedLines(state, start, end) {
@@ -1356,6 +1356,7 @@ export {
     copyToClipboard,
     createSnapshot,
     evaluateCommand,
+    findCurrentIndentLevel,
     findLastNonEmptyRow,
     findNextEmptyRow,
     findNonEmptyRow,

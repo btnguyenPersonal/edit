@@ -11,6 +11,7 @@ import {
     copyRows,
     copyToClipboard,
     createSnapshot,
+    findCurrentIndentLevel,
     findLastNonEmptyRow,
     findNextEmptyRow,
     getFormattedLines,
@@ -716,13 +717,19 @@ function handleShortcutKeys(key, state, screen) {
         state.mode = TYPING;
         cleanup(state, key, true, true, false, false);
     } else if (state.previousKeys === '' && key === 'O') {
-        const indentLevel = getIndentLevelFrom(state, state.row, true);
+        // TODO fix this
+        const indentLevel = findCurrentIndentLevel(
+            state,
+            ' '.repeat(state.data[state.row].length - state.data[state.row].trimLeft().length),
+            state.data[state.row]
+        );
+        state.searchQuery = indentLevel;
         state.data.splice(state.row, 0, ' '.repeat(indentLevel));
         state.col = indentLevel;
         state.mode = TYPING;
         cleanup(state, key, true, true, false, false);
     } else if (state.previousKeys === '' && key === 'o') {
-        const indentLevel = getIndentLevelFrom(state, state.row);
+        const indentLevel = findCurrentIndentLevel(state, state.data[state.row], '');
         state.data.splice(state.row + 1, 0, ' '.repeat(indentLevel));
         down(state);
         state.col = indentLevel;

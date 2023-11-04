@@ -318,7 +318,7 @@ function handleVisualLineKeys(key, state, screen) {
     } else if (key === '=') {
         const start = Math.min(state.row, state.visual.row);
         const end = Math.max(state.row, state.visual.row);
-        const lines = getFormattedLines(state, start, end)
+        const lines = getFormattedLines(state, start, end);
         for (let i = 0; i <= end - start; i += 1) {
             state.data[start + i] = lines[i];
         }
