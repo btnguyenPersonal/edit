@@ -4,6 +4,7 @@ import {
     createSnapshot,
     autocomplete,
     getCurrentWord,
+    findCurrentIndentLevel,
     logCommand
 } from '../util/helper.js';
 import {
@@ -61,13 +62,8 @@ function handleKeys(key, state, screen) {
             + state.data[state.row].substring(state.col);
         state.col += replaceString.length - str.length;
     } else if (key === 'ENTER') {
-        let indentLevel = state.data[state.row].search(/\S|$/);
-        if (state.data[state.row].endsWith('{') && state.col === state.data[state.row].length) {
-            indentLevel += 4;
-        }
-        if (state.data[state.row].endsWith('(') && state.col === state.data[state.row].length) {
-            indentLevel += 4;
-        }
+        const indentLevel = findCurrentIndentLevel(state, state.data[state.row], '');
+        state.data.splice(state.row + 1, 0, ' '.repeat(indentLevel));
         if (state.data[state.row].substring(state.col)) {
             state.data.splice(state.row + 1, 0, ' '.repeat(indentLevel) + state.data[state.row].substring(state.col));
             state.data[state.row] = state.data[state.row].substring(0, state.col);
