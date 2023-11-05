@@ -7,13 +7,13 @@
     - diff based undo
     - block comment highlighting
 ## todo
-    - add % to search for next })] w/ stack
     - expand dib cib ... to handle multi-line brackets
 ## blocked
     - drag select for visualLine (needs some terminal-kit internals research)
     - colors with hex ?? might not be supported in terminal-kit (needs some terminal-kit internals research)
 ## in progress
 ## done
+    - add % to search for next })] w/ stack
     - cib bugging sometimes pasting entire line after if unclosed parenthesis
     - readme / markdown highlighting
     - z force redraw
