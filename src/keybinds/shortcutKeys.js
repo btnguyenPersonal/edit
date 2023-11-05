@@ -717,12 +717,7 @@ function handleShortcutKeys(key, state, screen) {
         state.mode = TYPING;
         cleanup(state, key, true, true, false, false);
     } else if (state.previousKeys === '' && key === 'O') {
-        // TODO fix this
-        const indentLevel = findCurrentIndentLevel(
-            state,
-            ' '.repeat(state.data[state.row].length - state.data[state.row].trimLeft().length),
-            state.data[state.row]
-        );
+        const indentLevel = findCurrentIndentLevel(state, state.data[state.row - 1] ? state.data[state.row - 1] : '', '');
         state.searchQuery = indentLevel;
         state.data.splice(state.row, 0, ' '.repeat(indentLevel));
         state.col = indentLevel;
