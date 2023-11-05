@@ -1,28 +1,20 @@
 ## backlog
-    - drag select for visualLine
-    - run commands from within terminal
     - every rerender don't have to recalculate the color each time (how bad can this really be?)
-    - add % to search for next })] w/ stack
     - compartmentalize stuff into more functions
-    - vertical split
-    - horizontal split
-    - persistent undo between sessions??
+        - (visual modes are horrendous)
     - diff based undo
-    - undo tree instead of truncating on editing tree
-    - gv
-    - :s///g (for visual)
     - block comment highlighting
-    - readme / markdown highlighting
-    - colors with hex ?? might not be supported in terminal-kit
-    - macro editing using plain-text
-    - do real indenting
 ## todo
-    - z force redraw
+    - add % to search for next })] w/ stack
 ## blocked
+    - drag select for visualLine (needs some terminal-kit internals research)
+    - colors with hex ?? might not be supported in terminal-kit (needs some terminal-kit internals research)
 ## in progress
     - indent work with || && and .then() also with : for python
-        - seems to instead be based on an unclosed ( which would require parsing entire file, do I want that?
+        - seems to instead be based on an unclosed ( which would also need some nuiance around ( inside strings
 ## done
+    - readme / markdown highlighting
+    - z force redraw
     - fix if () { // eslint-disable-line not indenting correctly
     - real file stack (and jump list?)
     - fix /> for closing tags indentation
