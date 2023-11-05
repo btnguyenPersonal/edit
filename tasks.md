@@ -1,4 +1,6 @@
 ## backlog
+    - indent work with || && and .then() also with : for python
+        - seems to instead be based on an unclosed ( which would also need some nuiance around ( inside strings
     - every rerender don't have to recalculate the color each time (how bad can this really be?)
     - compartmentalize stuff into more functions
         - (visual modes are horrendous)
@@ -6,13 +8,13 @@
     - block comment highlighting
 ## todo
     - add % to search for next })] w/ stack
+    - expand dib cib ... to handle multi-line brackets
 ## blocked
     - drag select for visualLine (needs some terminal-kit internals research)
     - colors with hex ?? might not be supported in terminal-kit (needs some terminal-kit internals research)
 ## in progress
-    - indent work with || && and .then() also with : for python
-        - seems to instead be based on an unclosed ( which would also need some nuiance around ( inside strings
 ## done
+    - cib bugging sometimes pasting entire line after if unclosed parenthesis
     - readme / markdown highlighting
     - z force redraw
     - fix if () { // eslint-disable-line not indenting correctly

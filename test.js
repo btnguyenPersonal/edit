@@ -1,8 +1,8 @@
 testing { todo } from 'todo-mvc';
 convertedPath = originalPath;
-function () { // eslint-disable-next-line
-    if () {
-        case 500:
+const getTesting = (testing) => {
+    if (testing) {
+        return 500;
         break;
     }
 }

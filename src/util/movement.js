@@ -628,6 +628,7 @@ function getCoorsInsideCharDiff(state, openKey, closeKey) {
                 stack -= 1;
             }
         } else if (i === state.data[state.row].length - 1) {
+            beginning = -1;
             end = -1;
         }
     }
@@ -635,6 +636,12 @@ function getCoorsInsideCharDiff(state, openKey, closeKey) {
 }
 
 function getCoorsInsideWord(state) {
+    for (let i = state.col; i < state.data[state.row].length; i += 1) {
+        if (isAlphaNumeric(state.data[state.row].substring(i, i + 1))) {
+            state.col = i;
+            break;
+        }
+    }
     let beginning = state.col;
     for (let i = state.col; i >= 0; i -= 1) {
         if (!isAlphaNumeric(state.data[state.row].substring(i, i + 1))) {
@@ -657,7 +664,7 @@ function getCoorsInsideWord(state) {
 }
 
 function removeInsideAreaSameLine(state, beginning, end, mode) {
-    if (beginning !== end) {
+    if (beginning !== end && beginning !== -2) {
         state.data[state.row] = state.data[state.row].substring(0, beginning + 1) + state.data[state.row].substring(end);
         state.col = beginning + 1;
         state.mode = mode;
