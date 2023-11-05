@@ -822,6 +822,9 @@ function setVisualHighlight(state, beginning, end) {
 }
 
 function matchIt(state) {
+    if (state.col >= state.data[state.row].length) {
+        state.col = Math.max(state.data[state.row].length - 1, 0);
+    }
     const current = state.data[state.row].substring(state.col, state.col + 1);
     const types = '({[)}]';
     const currentType = types.indexOf(current);
@@ -873,6 +876,28 @@ function matchIt(state) {
                         c = state.data[r].length;
                     }
                 }
+            }
+        }
+    } else {
+        let stack = 0;
+        let r = state.row;
+        let c = state.col;
+        while (r < state.data.length) {
+            if (types.indexOf(state.data[r].substring(c, c + 1)) >= 3) {
+                if (stack <= 0) {
+                    state.row = r;
+                    state.col = c;
+                    break;
+                } else {
+                    stack -= 1;
+                }
+            } else if (types.indexOf(state.data[r].substring(c, c + 1)) < 3 && types.indexOf(state.data[r].substring(c, c + 1)) >= 0) {
+                stack += 1;
+            }
+            c += 1;
+            if (c >= state.data[r].length) {
+                c = 0;
+                r += 1;
             }
         }
     }

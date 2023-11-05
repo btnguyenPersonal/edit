@@ -63,7 +63,6 @@ function handleKeys(key, state, screen) {
         state.col += replaceString.length - str.length;
     } else if (key === 'ENTER') {
         const indentLevel = findCurrentIndentLevel(state, state.data[state.row], '');
-        state.data.splice(state.row + 1, 0, ' '.repeat(indentLevel));
         if (state.data[state.row].substring(state.col)) {
             state.data.splice(state.row + 1, 0, ' '.repeat(indentLevel) + state.data[state.row].substring(state.col));
             state.data[state.row] = state.data[state.row].substring(0, state.col);
