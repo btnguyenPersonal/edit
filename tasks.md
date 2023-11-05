@@ -3,7 +3,6 @@
     - run commands from within terminal
     - every rerender don't have to recalculate the color each time (how bad can this really be?)
     - add % to search for next })] w/ stack
-    - indent work with || && and .then() also with : for python
     - compartmentalize stuff into more functions
     - vertical split
     - horizontal split
@@ -15,14 +14,18 @@
     - block comment highlighting
     - readme / markdown highlighting
     - colors with hex ?? might not be supported in terminal-kit
+    - macro editing using plain-text
     - do real indenting
 ## todo
-    - macro editing using plain-text
-    - real file stack (and jump list?)
+    - z force redraw
 ## blocked
 ## in progress
-    - fix /> for closing tags indentation
+    - indent work with || && and .then() also with : for python
+        - seems to instead be based on an unclosed ( which would require parsing entire file, do I want that?
 ## done
+    - fix if () { // eslint-disable-line not indenting correctly
+    - real file stack (and jump list?)
+    - fix /> for closing tags indentation
     - :sort
     - undo ui that displays all last snapshots with the commands that were run to end up there -> (12 minutes ago) jjjjjdip
     (14 minutes ago) vipgc

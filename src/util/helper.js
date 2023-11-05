@@ -1222,6 +1222,8 @@ function getFolderFromExplorer(state) {
 }
 
 function findCurrentIndentLevel(state, prevLine, currentLine) {
+    prevLine = prevLine.replace(new RegExp(`${getCommentString(state.file)}.*$`, 'gm'), '').trimEnd();
+    currentLine = currentLine.replace(new RegExp(`${getCommentString(state.file)}.*$`, 'gm'), '').trimEnd();
     let indent = prevLine.search(/\S|$/);
     if (currentLine.startsWith(getCommentString(state.file))) {
         return indent;
