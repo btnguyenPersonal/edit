@@ -896,10 +896,6 @@ function handleShortcutKeys(key, state, screen) {
     } else if (state.previousKeys === '' && key === '=') {
         const lines = getFormattedLines(state, state.row, state.row);
         state.data[state.row] = lines[0];
-        // if (state.data[state.row].trim().startsWith(')') || state.data[state.row].trim().startsWith('}') || state.data[state.row].trim().startsWith('</')) {
-        //     indentLevel = indentLevel - state.indentAmount >= 0 ? indentLevel - state.indentAmount : 0;
-        // }
-        // state.data[state.row] = ' '.repeat(indentLevel) + state.data[state.row].trim();
         cleanup(state, key, false, false, true, false);
     } else if (state.previousKeys === '' && key === 'CTRL_G') {
         state.mode = GREP;
