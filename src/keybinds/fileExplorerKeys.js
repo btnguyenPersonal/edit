@@ -129,7 +129,7 @@ function handleFileExplorerKeys(key, state, screen) {
                 fs.rmSync(selectedFile, {
                     force: true,
                 });
-                calcFileExplorerOutput(state);
+                calcFileExplorerOutput(state, true);
             }
         }
     } else if (key === 'ENTER') {
@@ -138,14 +138,14 @@ function handleFileExplorerKeys(key, state, screen) {
             const newFilePath = state.selectedFolder + '/' + state.newFile;
             if (state.newFile !== '' && !fs.existsSync(newFilePath)) {
                 fs.openSync(newFilePath, 'w');
-                calcFileExplorerOutput(state);
+                calcFileExplorerOutput(state, true);
             }
         } else if (state.copyingFile) {
             createFolderIfNotExists(state);
             const newFilePath = state.selectedFolder + '/' + state.newFile;
             if (state.selectedFile !== '' && state.newFile !== '' && newFilePath !== state.selectedFile && !fs.existsSync(newFilePath)) {
                 fs.copyFileSync(state.selectedFile, newFilePath);
-                calcFileExplorerOutput(state);
+                calcFileExplorerOutput(state, true);
             }
         } else if (state.renamingFile) {
             let newFilePath = state.selectedFile.split('/');
@@ -153,7 +153,7 @@ function handleFileExplorerKeys(key, state, screen) {
             newFilePath = newFilePath.join('/');
             if (state.selectedFile !== '' && state.newFile !== '' && newFilePath !== state.selectedFile) {
                 fs.renameSync(state.selectedFile, newFilePath);
-                calcFileExplorerOutput(state);
+                calcFileExplorerOutput(state, true);
             }
         } else {
             if (!state.fileExplorerOutput[state.fileExplorerIndex].includes('__DIR')) {

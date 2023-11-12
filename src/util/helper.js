@@ -1177,7 +1177,7 @@ function setFileExplorerFiles(state) {
     state.fileExplorerOutput = output.split('\n');
 }
 
-function calcFileExplorerOutput(state) {
+function calcFileExplorerOutput(state, keepPosition) {
     setFileExplorerFiles(state);
     for (let i = 0; i < state.fileExplorerOutput.length; i += 1) {
         const original = state.fileExplorerOutput[i];
@@ -1202,7 +1202,7 @@ function calcFileExplorerOutput(state) {
             indent += 2;
             state.fileExplorerOutput[i] = ' '.repeat(indent) + splitPath.join('/');
         }
-        if (original === state.file) {
+        if (!keepPosition && original === state.file) {
             state.fileExplorerIndex = i + 1;
         }
     }
