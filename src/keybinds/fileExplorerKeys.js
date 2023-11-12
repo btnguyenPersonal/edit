@@ -103,6 +103,7 @@ function handleFileExplorerKeys(key, state, screen) {
         }
     } else if (key === 'y') {
         if (!state.fileExplorerOutput[state.fileExplorerIndex].includes('__DIR')) {
+            state.copiedFileName = state.fileExplorerOutput[state.fileExplorerIndex];
             const selectedFile = getFileFromExplorer(state);
             if (selectedFile && fs.existsSync(selectedFile)) {
                 state.selectedFile = selectedFile;
@@ -161,6 +162,9 @@ function handleFileExplorerKeys(key, state, screen) {
                     processFile(state, selectedFile, -1);
                 }
             }
+        }
+        if (state.copiedFileName !== state.fileExplorerOutput[state.selectedFileExplorerIndex]) {
+            state.selectedFileExplorerIndex += 1;
         }
         state.typing = false;
         state.renamingFile = false;

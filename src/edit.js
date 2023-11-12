@@ -101,6 +101,7 @@ const state = {
     },
     windowLine: 0,
     windowLineHorizontal: 0,
+    copiedFileName: '',
 };
 
 term.grabInput({ mouse: 'button' });
