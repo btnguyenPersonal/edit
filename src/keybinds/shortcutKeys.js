@@ -29,6 +29,7 @@ import {
     searchForString,
     searchForStringNoWrap,
     setFileSearchOutput,
+    findLastIndentLevel,
     trimTrailingWhitespace,
 } from '../util/helper.js';
 import { sendKeys } from '../util/sendKeys.js';
@@ -332,7 +333,6 @@ function handleShortcutKeys(key, state, screen) {
         copyInsideAreaSameLine(state, beginning - 1, end + 1);
         cleanup(state, key, false, false, false, true);
     } else if (state.previousKeys + key === 'yiw') {
-        state.previousKeys = 'hello';
         const { beginning, end } = getCoorsInsideWord(state);
         copyInsideAreaSameLine(state, beginning, end);
         cleanup(state, key, false, false, false, true);
@@ -717,14 +717,13 @@ function handleShortcutKeys(key, state, screen) {
         state.mode = TYPING;
         cleanup(state, key, true, true, false, false);
     } else if (state.previousKeys === '' && key === 'O') {
-        const indentLevel = findCurrentIndentLevel(state, state.data[state.row - 1] ? state.data[state.row - 1] : '', '');
-        state.searchQuery = indentLevel;
+        const indentLevel = findCurrentIndentLevel(state, findLastIndentLevel(state, state.row), '');
         state.data.splice(state.row, 0, ' '.repeat(indentLevel));
         state.col = indentLevel;
         state.mode = TYPING;
         cleanup(state, key, true, true, false, false);
     } else if (state.previousKeys === '' && key === 'o') {
-        const indentLevel = findCurrentIndentLevel(state, state.data[state.row], '');
+        const indentLevel = findCurrentIndentLevel(state, findLastIndentLevel(state, state.row + 1), '');
         state.data.splice(state.row + 1, 0, ' '.repeat(indentLevel));
         down(state);
         state.col = indentLevel;

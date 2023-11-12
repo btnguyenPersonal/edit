@@ -1258,16 +1258,27 @@ function findCurrentIndentLevel(state, prevLine, currentLine) {
     return Math.max(0, indent);
 }
 
+function findLastIndentLevel(state, start) {
+    for (let i = start - 1; i >= 0; i -= 1) {
+        if (state.data[i].trimEnd() !== '') {
+            return state.data[i];
+        }
+    }
+    return '';
+}
+
 function getFormattedLines(state, start, end) {
     const lines = [];
     for (let i = start; i <= end; i += 1) {
         lines.push(state.data[i].trim());
     }
-    let lastLine = start - 1 < 0 ? '' : state.data[start - 1];
+    let lastLine = findLastIndentLevel(state, start);
     for (let i = 0; i < lines.length; i += 1) {
         const indent = findCurrentIndentLevel(state, lastLine, lines[i]);
-        lines[i] = ' '.repeat(indent) + lines[i];
-        lastLine = lines[i];
+        if (lines[i] !== '') {
+            lines[i] = ' '.repeat(indent) + lines[i];
+            lastLine = lines[i];
+        }
     }
     return lines;
 }
@@ -1399,6 +1410,7 @@ export {
     searchForStringNoWrap,
     setFileSearchOutput,
     sortLines,
+    findLastIndentLevel,
     trimTrailingWhitespace,
     tryPaths,
 };

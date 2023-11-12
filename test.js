@@ -1,8 +1,8 @@
 testing { todo } from 'todo-mvc';
 convertedPath = originalPath;
 const getTesting = (testing) => {
-    return testing;
-    if (testing) {'testing')0)0)0)0)))))))))))))))))))))))0
+    const testing = Math.randInt(0, 5);
+    if (testing) {
         return {
             <>
                 <hello>fajsdklfjalsdf</hello>
