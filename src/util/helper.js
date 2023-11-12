@@ -501,7 +501,14 @@ function logCommand(newCommand, state, key) {
     }
 }
 
-function calcIsInString({ color, s, stringChar, disregardNext, commentString, inString }) {
+function calcIsInString(
+    color,
+    s,
+    stringChar,
+    disregardNext,
+    commentString,
+    inString
+) {
     if (s === stringChar && stringChar !== undefined && !disregardNext) {
         inString = !inString;
         stringChar = undefined;
@@ -512,7 +519,7 @@ function calcIsInString({ color, s, stringChar, disregardNext, commentString, in
             stringChar = s;
         }
     }
-    return [ color, inString, stringChar ];
+    return [color, inString, stringChar];
 }
 
 function getColorRow(replacing, replaceQuery, row, commentIndex, searching, searchQuery, isCurrentRow, col, commentString) {
@@ -521,7 +528,6 @@ function getColorRow(replacing, replaceQuery, row, commentIndex, searching, sear
     let stringChar;
     let color = 'white';
     let disregardNext = false;
-    let stop = false;
     let counter = 0;
     for (let i = 0; i < row.length; i += 1) {
         if (i > 160) {
@@ -531,8 +537,8 @@ function getColorRow(replacing, replaceQuery, row, commentIndex, searching, sear
             if (inString) {
                 color = 'cyan';
             }
-            [ color, inString, stringChar ] = calcIsInString({ color, s, stringChar, disregardNext, commentString, inString });
-            if (counter !== 0 || (replacing || searching) && searchQuery.length !== 0 && searchQuery === row.substring(i, i + searchQuery.length)) {
+            [color, inString, stringChar] = calcIsInString(color, s, stringChar, disregardNext, commentString, inString);
+            if (counter !== 0 || (searchQuery.length !== 0 && searchQuery === row.substring(i, i + searchQuery.length))) {
                 if (replacing) {
                     if (counter === 0) {
                         counter = replaceQuery.length;
