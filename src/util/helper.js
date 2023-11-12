@@ -501,6 +501,20 @@ function logCommand(newCommand, state, key) {
     }
 }
 
+function calcIsInString({ color, s, stringChar, disregardNext, commentString, inString }) {
+    if (s === stringChar && stringChar !== undefined && !disregardNext) {
+        inString = !inString;
+        stringChar = undefined;
+    } else if (s === '"' || s === '\'' || s === '`') {
+        color = 'cyan';
+        if (stringChar === undefined && commentString !== '' && commentString !== '<!--') {
+            inString = !inString;
+            stringChar = s;
+        }
+    }
+    return [ color, inString, stringChar ];
+}
+
 function getColorRow(replacing, replaceQuery, row, commentIndex, searching, searchQuery, isCurrentRow, col, commentString) {
     const output = [];
     let inString = false;
@@ -508,6 +522,7 @@ function getColorRow(replacing, replaceQuery, row, commentIndex, searching, sear
     let color = 'white';
     let disregardNext = false;
     let stop = false;
+    let counter = 0;
     for (let i = 0; i < row.length; i += 1) {
         if (i > 160) {
             output.push('red');
@@ -516,14 +531,22 @@ function getColorRow(replacing, replaceQuery, row, commentIndex, searching, sear
             if (inString) {
                 color = 'cyan';
             }
-            if (s === stringChar && stringChar !== undefined && !disregardNext) {
-                inString = !inString;
-                stringChar = undefined;
-            } else if (s === '"' || s === '\'' || s === '`') {
-                color = 'cyan';
-                if (stringChar === undefined && commentString !== '' && commentString !== '<!--') {
-                    inString = !inString;
-                    stringChar = s;
+            [ color, inString, stringChar ] = calcIsInString({ color, s, stringChar, disregardNext, commentString, inString });
+            if (counter !== 0 || (replacing || searching) && searchQuery.length !== 0 && searchQuery === row.substring(i, i + searchQuery.length)) {
+                if (replacing) {
+                    if (counter === 0) {
+                        counter = replaceQuery.length;
+                    }
+                    output.push('search');
+                } else if (searching) {
+                    if (counter === 0) {
+                        counter = searchQuery.length;
+                    }
+                    if (isCurrentRow && i >= col && i < col + searchQuery.length) {
+                        output.push('searchCurrent');
+                    } else {
+                        output.push('search');
+                    }
                 }
             } else if (!inString && (s === '(' || s === ')')) {
                 color = 'yellow';
@@ -531,27 +554,11 @@ function getColorRow(replacing, replaceQuery, row, commentIndex, searching, sear
                 color = 'green';
             } else if (!inString && (s === '{' || s === '}')) {
                 color = 'magenta';
-            } else if ((replacing || searching) && searchQuery.length !== 0 && searchQuery === row.substring(i, i + searchQuery.length)) {
-                if (replacing) {
-                    for (let j = 0; j < replaceQuery.length; j += 1) {
-                        output.push('search');
-                    }
-                } else if (searching) {
-                    for (let j = 0; j < searchQuery.length; j += 1) {
-                        if (isCurrentRow && i <= col && i + searchQuery.length >= col) {
-                            output.push('searchCurrent');
-                        } else {
-                            output.push('search');
-                        }
-                    }
-                }
-                i += searchQuery.length - 1;
-                stop = true;
             }
             if (i >= commentIndex && commentIndex !== -1) {
                 color = 'green';
             }
-            if (!stop) {
+            if (counter === 0) {
                 output.push(color);
             }
             if (inString && s === '\\' && !disregardNext) {
@@ -560,7 +567,9 @@ function getColorRow(replacing, replaceQuery, row, commentIndex, searching, sear
                 disregardNext = false;
             }
             color = 'white';
-            stop = false;
+            if (counter > 0) {
+                counter -= 1;
+            }
         }
     }
     return output;
