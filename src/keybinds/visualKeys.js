@@ -67,7 +67,7 @@ function handleVisualKeys(key, state, screen) {
             const { beginning, end } = getCoorsInsideCharDiff(state, '(', ')');
             setVisualHighlight(state, beginning, end);
         } else if (key === '<' || key === '>' || key === 't') {
-            const { beginning, end } = getCoorsInsideCharDiff(state, '<', '>');
+            const { beginning, end } = getCoorsInsideCharDiff(state, '>', '<');
             setVisualHighlight(state, beginning, end);
         } else if (key === '[' || key === ']' || key === 'd') {
             const { beginning, end } = getCoorsInsideCharDiff(state, '[', ']');
@@ -95,7 +95,7 @@ function handleVisualKeys(key, state, screen) {
             const { beginning, end } = getCoorsInsideCharDiff(state, '(', ')');
             setAroundVisualHighlight(state, beginning, end);
         } else if (key === '<' || key === '>' || key === 't') {
-            const { beginning, end } = getCoorsInsideCharDiff(state, '<', '>');
+            const { beginning, end } = getCoorsInsideCharDiff(state, '>', '<');
             setAroundVisualHighlight(state, beginning, end);
         } else if (key === '[' || key === ']' || key === 'd') {
             const { beginning, end } = getCoorsInsideCharDiff(state, '[', ']');

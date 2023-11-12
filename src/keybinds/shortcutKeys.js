@@ -209,7 +209,7 @@ function handleShortcutKeys(key, state, screen) {
         removeInsideAreaSameLine(state, beginning - 1, end + 1, SHORTCUTS);
         cleanup(state, key, true, false, true, true);
     } else if (state.previousKeys === 'da' && (key === '<' || key === '>' || key === 't')) {
-        const { beginning, end } = getCoorsInsideCharDiff(state, '<', '>');
+        const { beginning, end } = getCoorsInsideCharDiff(state, '>', '<');
         copyToClipboard(state, [state.data[state.row].substring(beginning, end + 1)]);
         removeInsideAreaSameLine(state, beginning - 1, end + 1, SHORTCUTS);
         cleanup(state, key, true, false, true, true);
@@ -253,7 +253,7 @@ function handleShortcutKeys(key, state, screen) {
         removeInsideAreaSameLine(state, beginning, end, SHORTCUTS);
         cleanup(state, key, true, false, true, true);
     } else if (state.previousKeys === 'di' && (key === '<' || key === '>' || key === 't')) {
-        const { beginning, end } = getCoorsInsideCharDiff(state, '<', '>');
+        const { beginning, end } = getCoorsInsideCharDiff(state, '>', '<');
         copyToClipboard(state, [state.data[state.row].substring(beginning + 1, end)]);
         removeInsideAreaSameLine(state, beginning, end, SHORTCUTS);
         cleanup(state, key, true, false, true, true);
@@ -316,7 +316,7 @@ function handleShortcutKeys(key, state, screen) {
         copyInsideAreaSameLine(state, beginning - 1, end + 1);
         cleanup(state, key, false, false, false, true);
     } else if (state.previousKeys === 'ya' && (key === '<' || key === '>' || key === 't')) {
-        const { beginning, end } = getCoorsInsideCharDiff(state, '<', '>');
+        const { beginning, end } = getCoorsInsideCharDiff(state, '>', '<');
         copyInsideAreaSameLine(state, beginning - 1, end + 1);
         cleanup(state, key, false, false, false, true);
     } else if (state.previousKeys === 'ya' && (key === '[' || key === ']' || key === 'd')) {
@@ -354,7 +354,7 @@ function handleShortcutKeys(key, state, screen) {
         copyInsideAreaSameLine(state, beginning, end);
         cleanup(state, key, false, false, false, true);
     } else if (state.previousKeys === 'yi' && (key === '<' || key === '>' || key === 't')) {
-        const { beginning, end } = getCoorsInsideCharDiff(state, '<', '>');
+        const { beginning, end } = getCoorsInsideCharDiff(state, '>', '<');
         copyInsideAreaSameLine(state, beginning, end);
         cleanup(state, key, false, false, false, true);
     } else if (state.previousKeys === 'yi' && (key === '[' || key === ']' || key === 'd')) {
@@ -496,7 +496,7 @@ function handleShortcutKeys(key, state, screen) {
         removeInsideAreaSameLine(state, beginning - 1, end + 1, TYPING);
         cleanup(state, key, true, false, false, true);
     } else if (state.previousKeys === 'ca' && (key === '<' || key === '>' || key === 't')) {
-        const { beginning, end } = getCoorsInsideCharDiff(state, '<', '>');
+        const { beginning, end } = getCoorsInsideCharDiff(state, '>', '<');
         copyToClipboard(state, [state.data[state.row].substring(beginning, end + 1)]);
         removeInsideAreaSameLine(state, beginning - 1, end + 1, TYPING);
         cleanup(state, key, true, false, false, true);
@@ -541,7 +541,7 @@ function handleShortcutKeys(key, state, screen) {
         removeInsideAreaSameLine(state, beginning, end, TYPING);
         cleanup(state, key, true, false, false, true);
     } else if (state.previousKeys === 'ci' && (key === '<' || key === '>' || key === 't')) {
-        const { beginning, end } = getCoorsInsideCharDiff(state, '<', '>');
+        const { beginning, end } = getCoorsInsideCharDiff(state, '>', '<');
         copyToClipboard(state, [state.data[state.row].substring(beginning + 1, end)]);
         removeInsideAreaSameLine(state, beginning, end, TYPING);
         cleanup(state, key, true, false, false, true);
