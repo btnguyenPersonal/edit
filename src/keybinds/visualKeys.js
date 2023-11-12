@@ -56,7 +56,27 @@ import {
 } from '../util/movement.js';
 
 function handleVisualKeys(key, state, screen) {
-    if (state.previousKeys === 'i') {
+    if (state.previousKeys === 'T') {
+        if (isWritable(key)) {
+            state.col = toBackward(state, key);
+        }
+        state.previousKeys = '';
+    } else if (state.previousKeys === 't') {
+        if (isWritable(key)) {
+            state.col = toForward(state, key);
+        }
+        state.previousKeys = '';
+    } else if (state.previousKeys === 'F') {
+        if (isWritable(key)) {
+            state.col = findBackward(state, key);
+        }
+        state.previousKeys = '';
+    } else if (state.previousKeys === 'f') {
+        if (isWritable(key)) {
+            state.col = findForward(state, key);
+        }
+        state.previousKeys = '';
+    } else if (state.previousKeys === 'i') {
         if (key === 'w') {
             const { beginning, end } = getCoorsInsideWord(state);
             setVisualHighlight(state, beginning, end);
@@ -313,30 +333,6 @@ function handleVisualKeys(key, state, screen) {
         state.col = firstNonSpace(state, state.row);
         state.mode = SHORTCUTS;
         createSnapshot(state);
-    } else if (state.previousKeys === 'T') {
-        if (isWritable(key)) {
-            state.col = toBackward(state, key);
-            renderScreen(state, screen);
-        }
-        state.previousKeys = '';
-    } else if (state.previousKeys === 't') {
-        if (isWritable(key)) {
-            state.col = toForward(state, key);
-            renderScreen(state, screen);
-        }
-        state.previousKeys = '';
-    } else if (state.previousKeys === 'F') {
-        if (isWritable(key)) {
-            state.col = findBackward(state, key);
-            renderScreen(state, screen);
-        }
-        state.previousKeys = '';
-    } else if (state.previousKeys === 'f') {
-        if (isWritable(key)) {
-            state.col = findForward(state, key);
-            renderScreen(state, screen);
-        }
-        state.previousKeys = '';
     } else if (key === 'f' || key === 'F' || key === 't' || key === 'T' || key === 'i' || key === 'g' || key === 'a') {
         state.previousKeys += key;
     } else if (key === 'ESCAPE') {
