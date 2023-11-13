@@ -115,7 +115,7 @@ function handleFileExplorerKeys(key, state, screen) {
             const selectedFile = getFileFromExplorer(state);
             if (selectedFile && fs.existsSync(selectedFile)) {
                 state.selectedFile = selectedFile;
-                state.selectedFileExplorerIndex = state.fileExplorerIndex;
+                state.selectedFileExplorerIndex = -1;
                 state.newFile = selectedFile.split('/').pop();
                 state.newFileIndex = state.newFile.length;
                 state.typing = true;
@@ -163,7 +163,10 @@ function handleFileExplorerKeys(key, state, screen) {
                 }
             }
         }
-        if (state.copiedFileName !== state.fileExplorerOutput[state.selectedFileExplorerIndex]) {
+        if (state.copiedFileName !== ''
+            && state.selectedFileExplorerIndex !== -1
+            && state.copiedFileName !== state.fileExplorerOutput[state.selectedFileExplorerIndex]
+        ) {
             state.selectedFileExplorerIndex += 1;
         }
         state.typing = false;
