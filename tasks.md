@@ -1,16 +1,27 @@
+
 ## backlog
-    - indent work with || && and .then() also with : for python
-        - seems to instead be based on an unclosed ( which would also need some nuiance around ( inside strings
+    - indent work with ||, &&, and .then() also with : for python
     - every rerender don't have to recalculate the color each time (how bad can this really be?)
-    - compartmentalize stuff into more functions
-        - (visual modes are horrendous)
-    - diff based undo
-    - block comment highlighting
-## todo
+    - compartmentalize logic in visual modes into more helper functions (and don't repeat yourself everywhere)
+    - diff based undo (instead of saving entire state every single history snapshot)
+    - block comment syntax highlighting
     - expand dib cib ... to handle multi-line brackets
+    - work on windows?
+    - C# syntax highlighting ?
 ## blocked
-    - drag select for visualLine (needs some terminal-kit internals research)
-    - colors with hex ?? might not be supported in terminal-kit (needs some terminal-kit internals research)
+    - click & drag select for visualLine (needs some terminal-kit internals research)
+    - colors with hex instead of terminal colors ?? might not be supported in terminal-kit (needs some terminal-kit internals research)
+## todo
+    - fix having file in tab spot, then delete file, then try to navigate to it
+    - have a line at top/bottom for status messages
+    - clean up god-awful render functions
+    - have much better helper function names
+    - clean up state variable names
+    - fix CTRL_N sometimes breaking (maybe not enough memory allocated to call?)
+    - change undo to diff based
+    - auto-highlight matching parenthesis when cursor is over it
+    - syntax highlighting for keywords system
+    - blend all visual modes into one file? (could eliminate a bunch of dupe logic)
 ## in progress
 ## done
     - add % to search for next })] w/ stack
