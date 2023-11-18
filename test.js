@@ -6,10 +6,10 @@ const getTesting = (testing) => {
     if (testing) { // eslint-disable-next-line
         return {
             <>
-                <hello>fajsdklfjalsdf</hello>
-                <hello>sldhflskdfj</hello>
-                <hello>fajsdklfjalsdf</hello>
-                <hello>fajsdklfjalsdf</hello>
+                <faj>fajsdklfjalsdf</faj>
+                <faj>sldhflskdfj</faj>
+                <faj>fajsdklfjalsdf</faj>
+                <faj>fajsdklfjalsdf</faj>
             </>
         }
         break;

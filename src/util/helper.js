@@ -538,21 +538,19 @@ function getColorRow(replacing, replaceQuery, row, commentIndex, searching, sear
                 color = 'cyan';
             }
             [color, inString, stringChar] = calcIsInString(color, s, stringChar, disregardNext, commentString, inString);
-            if (counter !== 0 || (searchQuery.length !== 0 && searchQuery === row.substring(i, i + searchQuery.length))) {
-                if (replacing) {
-                    if (counter === 0) {
-                        counter = replaceQuery.length;
-                    }
+            if (counter !== 0 || (replaceQuery.length !== 0 && replaceQuery === row.substring(i, i + replaceQuery.length))) {
+                if (counter === 0) {
+                    counter = replaceQuery.length;
+                }
+                output.push('search');
+            } else if (counter !== 0 || (searchQuery.length !== 0 && searchQuery === row.substring(i, i + searchQuery.length))) {
+                if (counter === 0) {
+                    counter = searchQuery.length;
+                }
+                if (isCurrentRow && i >= col && i < col + searchQuery.length) {
+                    output.push('searchCurrent');
+                } else {
                     output.push('search');
-                } else if (searching) {
-                    if (counter === 0) {
-                        counter = searchQuery.length;
-                    }
-                    if (isCurrentRow && i >= col && i < col + searchQuery.length) {
-                        output.push('searchCurrent');
-                    } else {
-                        output.push('search');
-                    }
                 }
             } else if (!inString && (s === '(' || s === ')')) {
                 color = 'yellow';
@@ -872,10 +870,14 @@ function renderSingleLine(state, screen, i, mergeSection, isContext) {
         section = 0;
     }
     const commentIndex = commentStartsAt(state, i);
+    let displayRow = state.data[i];
+    if (state.replacing) {
+        displayRow = displayRow.replaceAll(state.searchQuery, state.replaceQuery);
+    }
     const colorRow = getColorRow(
         state.replacing,
         state.replaceQuery,
-        state.data[i],
+        displayRow,
         commentIndex,
         state.searching,
         state.searchQuery,
@@ -883,10 +885,6 @@ function renderSingleLine(state, screen, i, mergeSection, isContext) {
         state.col,
         getCommentString(state.file)
     );
-    let displayRow = state.data[i];
-    if (state.replacing) {
-        displayRow = displayRow.replaceAll(state.searchQuery, state.replaceQuery);
-    }
     for (let j = state.windowLineHorizontal; j < displayRow.length; j += 1) {
         let color = colorRow[j];
         let bgColor;
