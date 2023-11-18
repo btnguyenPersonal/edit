@@ -1304,8 +1304,7 @@ function getFileFromExplorer(state) {
 function evaluateCommand(state, term) {
     if (state.currentCommand.startsWith('e ')) {
         const newFile = state.currentCommand.substring(2);
-        const currentDirectory = path.dirname(state.file);
-        const validPath = tryPaths(path.join(currentDirectory, newFile));
+        const validPath = tryPaths(path.join(process.cwd(), newFile));
         if (validPath) {
             processFile(state, validPath, -1);
         }

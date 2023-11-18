@@ -92,6 +92,7 @@ function handleFileExplorerKeys(key, state, screen) {
                 state.creatingFile = true;
             }
         }
+        state.selectedFileExplorerIndex = -1;
     } else if (key === 'p' || key === 'P') {
         if (state.fileExplorerOutput[state.fileExplorerIndex].includes('__DIR') && state.selectedFile) {
             const selectedFolder = getFolderFromExplorer(state);
@@ -122,6 +123,7 @@ function handleFileExplorerKeys(key, state, screen) {
                 state.renamingFile = true;
             }
         }
+        state.selectedFileExplorerIndex = -1;
     } else if (key === 'x') {
         if (!state.fileExplorerOutput[state.fileExplorerIndex].includes('__DIR')) {
             const selectedFile = getFileFromExplorer(state);
@@ -132,6 +134,7 @@ function handleFileExplorerKeys(key, state, screen) {
                 calcFileExplorerOutput(state, true);
             }
         }
+        state.selectedFileExplorerIndex = -1;
     } else if (key === 'ENTER') {
         if (state.creatingFile) {
             createFolderIfNotExists(state);
@@ -146,6 +149,9 @@ function handleFileExplorerKeys(key, state, screen) {
             if (state.selectedFile !== '' && state.newFile !== '' && newFilePath !== state.selectedFile && !fs.existsSync(newFilePath)) {
                 fs.copyFileSync(state.selectedFile, newFilePath);
                 calcFileExplorerOutput(state, true);
+                if (state.copiedFileName !== state.fileExplorerOutput[state.selectedFileExplorerIndex]) {
+                    state.selectedFileExplorerIndex += 1;
+                }
             }
         } else if (state.renamingFile) {
             let newFilePath = state.selectedFile.split('/');
@@ -162,12 +168,6 @@ function handleFileExplorerKeys(key, state, screen) {
                     processFile(state, selectedFile, -1);
                 }
             }
-        }
-        if (state.copiedFileName !== ''
-            && state.selectedFileExplorerIndex !== -1
-            && state.copiedFileName !== state.fileExplorerOutput[state.selectedFileExplorerIndex]
-        ) {
-            state.selectedFileExplorerIndex += 1;
         }
         state.typing = false;
         state.renamingFile = false;
