@@ -8,6 +8,7 @@
     - expand dib cib ... to handle multi-line brackets
     - work on windows?
     - C# syntax highlighting ?
+    - history broken on gitignored files?
 ## blocked
     - click & drag select for visualLine (needs some terminal-kit internals research)
     - colors with hex instead of terminal colors ?? might not be supported in terminal-kit (needs some terminal-kit internals research)
