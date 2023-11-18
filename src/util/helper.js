@@ -1185,7 +1185,7 @@ function calcFileFinderOutput(state) {
 }
 
 function setFileExplorerFiles(state) {
-    const output = execSync('fd -t f --hidden -E .git').toString();
+    const output = execSync('fd -t f --hidden -E .git', { maxBuffer: 1024 * 1024 * 1000 }).toString();
     state.fileExplorerCopyOutput = output.split('\n');
     state.fileExplorerOutput = output.split('\n');
 }

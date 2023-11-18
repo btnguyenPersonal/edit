@@ -1,4 +1,5 @@
 /* eslint-disable import/no-cycle */
+import fs from 'fs';
 import {
     adjustRow,
     applySnapshot,
@@ -616,14 +617,22 @@ function handleShortcutKeys(key, state, screen) {
             state.harpoonIndex -= 1;
         }
         if (state.files[state.harpoonIndexes[state.harpoonIndex]] !== undefined) {
-            processFile(state, state.files[state.harpoonIndexes[state.harpoonIndex]], -1);
+            if (fs.existsSync(state.files[state.harpoonIndexes[state.harpoonIndex]])) {
+                processFile(state, state.files[state.harpoonIndexes[state.harpoonIndex]], -1);
+            } else {
+                state.harpoonIndexes.splice(state.harpoonIndex, 1);
+            }
         }
     } else if (state.previousKeys === '' && key === 'CTRL_E') {
         if (state.harpoonIndex + 1 < state.harpoonIndexes.length) {
             state.harpoonIndex += 1;
         }
         if (state.files[state.harpoonIndexes[state.harpoonIndex]] !== undefined) {
-            processFile(state, state.files[state.harpoonIndexes[state.harpoonIndex]], -1);
+            if (fs.existsSync(state.files[state.harpoonIndexes[state.harpoonIndex]])) {
+                processFile(state, state.files[state.harpoonIndexes[state.harpoonIndex]], -1);
+            } else {
+                state.harpoonIndexes.splice(state.harpoonIndex, 1);
+            }
         }
     } else if (state.previousKeys === '' && key === 'CTRL_X') {
         state.harpoonIndexes = state.harpoonIndexes.filter(((e) => (e !== state.fileIndex)));
