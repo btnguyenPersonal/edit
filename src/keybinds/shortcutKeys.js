@@ -621,6 +621,7 @@ function handleShortcutKeys(key, state, screen) {
                 processFile(state, state.files[state.harpoonIndexes[state.harpoonIndex]], -1);
             } else {
                 state.harpoonIndexes.splice(state.harpoonIndex, 1);
+                state.status = 'file not found';
             }
         }
     } else if (state.previousKeys === '' && key === 'CTRL_E') {
@@ -632,6 +633,7 @@ function handleShortcutKeys(key, state, screen) {
                 processFile(state, state.files[state.harpoonIndexes[state.harpoonIndex]], -1);
             } else {
                 state.harpoonIndexes.splice(state.harpoonIndex, 1);
+                state.status = 'file not found';
             }
         }
     } else if (state.previousKeys === '' && key === 'CTRL_X') {

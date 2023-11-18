@@ -102,6 +102,7 @@ const state = {
     windowLine: 0,
     windowLineHorizontal: 0,
     copiedFileName: '',
+    status: '',
 };
 
 term.grabInput({ mouse: 'button' });
@@ -110,7 +111,6 @@ const screen = new ScreenBuffer({ dst: term, noFill: true });
 if (filePath !== undefined) {
     centerScreen(state);
     createSnapshot(state);
-    state.allowCommandLogging = true;
     state.files.push(state.file);
     state.fileStack.push(state.file);
     state.fileStackIndex += 1;
@@ -128,6 +128,7 @@ state.allowCommandLogging = true;
 renderScreen(state, screen);
 
 term.on('key', (key) => {
+    state.status = '';
     try {
         sendKeys([key], state, screen, term);
     } catch (e) {

@@ -13,18 +13,19 @@
     - click & drag select for visualLine (needs some terminal-kit internals research)
     - colors with hex instead of terminal colors ?? might not be supported in terminal-kit (needs some terminal-kit internals research)
 ## todo
-    - fix having file in tab spot, then delete file, then try to navigate to it
-    - have a line at top/bottom for status messages
     - clean up god-awful render functions
     - have much better helper function names
     - clean up state variable names
-    - fix CTRL_N sometimes breaking (maybe not enough memory allocated to call?)
     - change undo to diff based
     - auto-highlight matching parenthesis when cursor is over it
     - syntax highlighting for keywords system
+    - show num search matches (6/40)
     - blend all visual modes into one file? (could eliminate a bunch of dupe logic)
 ## in progress
 ## done
+    - have a line at top/bottom for status messages
+    - fix having file in tab spot, then delete file, then try to navigate to it
+    - fix CTRL_N sometimes breaking (maybe not enough memory allocated to call?)
     - add % to search for next })] w/ stack
     - cib bugging sometimes pasting entire line after if unclosed parenthesis
     - readme / markdown highlighting

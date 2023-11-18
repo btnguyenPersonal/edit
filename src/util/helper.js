@@ -739,10 +739,14 @@ function isMergeConflictEnd(s) {
 }
 
 function renderStatusBar(state, screen) {
+    if (state.status !== '') {
+        screen.put({ attr: { color: 'red' } }, state.status + ' ');
+    }
     if (state.mode === FILEEXPLORER) {
         screen.put({ attr: { color: state.typing ? 'white' : 'grey' } }, '> ' + state.newFile);
     } else if (state.mode === COMMAND) {
         screen.put({ attr: { color: 'white' } }, ':' + state.currentCommand);
+        screen.put({ attr: { color: 'white' }, x: process.stdout.columns - (2 + state.file.length) }, '"' + state.file + '"');
     } else {
         screen.put({ attr: { color: 'green' } }, '/' + state.searchQuery + ' ');
         for (let i = 0; i < state.harpoonIndexes.length; i += 1) {
@@ -1306,6 +1310,7 @@ function evaluateCommand(state, term) {
         if (validPath) {
             processFile(state, validPath, -1);
         }
+        return false;
     } else if (state.currentCommand === 'w') {
         saveFile(state);
         return false;
