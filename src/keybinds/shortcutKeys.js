@@ -119,12 +119,6 @@ function handleShortcutKeys(key, state, screen) {
         copyToClipboard(state, newClipboard);
         state.data.splice(state.row, 1);
         state.data.splice(state.row, 1);
-        if (state.row > state.data.length - 1) {
-            state.row = state.data.length - 1;
-        }
-        if (state.row < 0) {
-            state.row = 0;
-        }
         state.col = firstNonSpace(state, state.row);
         cleanup(state, key, true, false, true, true);
     } else if (state.previousKeys + key === 'dk') {
@@ -138,12 +132,6 @@ function handleShortcutKeys(key, state, screen) {
         if (state.data[state.row - 1] !== undefined) {
             state.data.splice(state.row - 1, 1);
         }
-        if (state.row > state.data.length - 1) {
-            state.row = state.data.length - 1;
-        }
-        if (state.row < 0) {
-            state.row = 0;
-        }
         up(state);
         state.col = firstNonSpace(state, state.row);
         cleanup(state, key, true, false, true, true);
@@ -154,12 +142,6 @@ function handleShortcutKeys(key, state, screen) {
         copyToClipboard(state, ['', state.data[state.row]]);
         state.data.splice(state.row, 1);
         state.col = firstNonSpace(state, state.row);
-        if (state.row > state.data.length - 1) {
-            state.row = state.data.length - 1;
-        }
-        if (state.row < 0) {
-            state.row = 0;
-        }
         cleanup(state, key, true, false, true, true);
     } else if (state.previousKeys === 'df' && isWritable(key)) {
         state.visual.row = state.row;
@@ -417,9 +399,6 @@ function handleShortcutKeys(key, state, screen) {
         copyToClipboard(state, newClipboard);
         state.data.splice(state.row, 1);
         state.data.splice(state.row, 1);
-        if (state.row > state.data.length - 1) {
-            state.row = state.data.length - 1;
-        }
         insertIndentedRow(state);
         state.mode = TYPING;
         cleanup(state, key, true, false, false, true);
@@ -445,12 +424,8 @@ function handleShortcutKeys(key, state, screen) {
         state.mode = TYPING;
         cleanup(state, key, true, false, false, true);
     } else if (state.previousKeys + key === 'cc') {
-        let indentLevel = 0;
-        if (state.row - 1 > 0) {
-            indentLevel = getIndentLevelFrom(state, state.row - 1);
-        }
-        state.col = indentLevel;
-        state.data[state.row] = ' '.repeat(indentLevel);
+        state.data.splice(state.row, 1);
+        insertIndentedRow(state);
         state.mode = TYPING;
         cleanup(state, key, true, false, false, true);
     } else if (state.previousKeys === 'cf' && isWritable(key)) {
@@ -748,16 +723,12 @@ function handleShortcutKeys(key, state, screen) {
         state.mode = TYPING;
         cleanup(state, key, true, true, false, false);
     } else if (state.previousKeys === '' && key === 'O') {
-        const indentLevel = findCurrentIndentLevel(state, findLastIndentLevel(state, state.row), '');
-        state.data.splice(state.row, 0, ' '.repeat(indentLevel));
-        state.col = indentLevel;
+        insertIndentedRow(state);
         state.mode = TYPING;
         cleanup(state, key, true, true, false, false);
     } else if (state.previousKeys === '' && key === 'o') {
-        const indentLevel = findCurrentIndentLevel(state, findLastIndentLevel(state, state.row + 1), '');
-        state.data.splice(state.row + 1, 0, ' '.repeat(indentLevel));
         down(state);
-        state.col = indentLevel;
+        insertIndentedRow(state);
         state.mode = TYPING;
         cleanup(state, key, true, true, false, false);
     } else if (state.previousKeys === '' && key === '>') {

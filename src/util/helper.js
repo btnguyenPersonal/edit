@@ -99,7 +99,7 @@ function copyToClipboard(state, textArray, clipboardVisualBlock) {
 }
 
 function insertIndentedRow(state) {
-    const indentLevel = state.data[state.row] !== undefined ? getIndentLevelFrom(state, state.row) : 0;
+    const indentLevel = findCurrentIndentLevel(state, findLastIndentLevel(state, state.row), '');
     state.data.splice(state.row, 0, ' '.repeat(indentLevel));
     state.col = indentLevel;
 }
@@ -1100,6 +1100,12 @@ function processFile(state, newFile, lineNum) {
 }
 
 function cleanup(state, key, log, newCommand, snapshot, resetPrevKeys) {
+    if (state.row > state.data.length - 1) {
+        state.row = state.data.length - 1;
+    }
+    if (state.row < 0) {
+        state.row = 0;
+    }
     if (log) {
         logCommand(newCommand, state, key);
     }

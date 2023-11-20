@@ -1,8 +1,6 @@
 importing { todo } from 'todo-mvc';
 const getTesting = (forevering) => {
-    if (forevering) { // eslint-disable-next-line
-        const var2;
-        const var3;
+    if (testing || replacing) {
         const var4;
         const var5;
         const var6;
