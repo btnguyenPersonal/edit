@@ -538,12 +538,7 @@ function getColorRow(replacing, replaceQuery, row, commentIndex, searching, sear
                 color = 'cyan';
             }
             [color, inString, stringChar] = calcIsInString(color, s, stringChar, disregardNext, commentString, inString);
-            if (counter !== 0 || (replaceQuery.length !== 0 && replaceQuery === row.substring(i, i + replaceQuery.length))) {
-                if (counter === 0) {
-                    counter = replaceQuery.length;
-                }
-                output.push('search');
-            } else if (counter !== 0 || (searchQuery.length !== 0 && searchQuery === row.substring(i, i + searchQuery.length))) {
+            if (counter !== 0 || (searching && searchQuery.length !== 0 && searchQuery === row.substring(i, i + searchQuery.length))) {
                 if (counter === 0) {
                     counter = searchQuery.length;
                 }
@@ -552,6 +547,11 @@ function getColorRow(replacing, replaceQuery, row, commentIndex, searching, sear
                 } else {
                     output.push('search');
                 }
+            } else if (counter !== 0 || (replacing && replaceQuery.length !== 0 && replaceQuery === row.substring(i, i + replaceQuery.length))) {
+                if (counter === 0) {
+                    counter = replaceQuery.length;
+                }
+                output.push('search');
             } else if (!inString && (s === '(' || s === ')')) {
                 color = 'yellow';
             } else if (!inString && (s === '[' || s === ']')) {
