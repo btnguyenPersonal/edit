@@ -47,11 +47,9 @@ function handleCommandKeys(key, state, screen, term) {
         state.mode = SHORTCUTS;
         state.commandCursorPosition = 0;
     } else if (key === 'ENTER') {
-        const log = evaluateCommand(state, term);
-        if (log) {
-            state.previousCommands.push(state.currentCommand);
-            state.historyPosition = state.previousCommands.length;
-        }
+        evaluateCommand(state, term);
+        state.previousCommands.push(state.currentCommand);
+        state.historyPosition = state.previousCommands.length;
         state.currentCommand = '';
         state.mode = SHORTCUTS;
         state.commandCursorPosition = 0;

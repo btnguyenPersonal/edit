@@ -1310,13 +1310,10 @@ function evaluateCommand(state, term) {
         if (validPath) {
             processFile(state, validPath, -1);
         }
-        return false;
     } else if (state.currentCommand === 'w') {
         saveFile(state);
-        return false;
     } else if (state.currentCommand === 'wa') {
         saveFile(state);
-        return false;
     } else if (state.currentCommand === 'x') {
         saveFile(state);
         term.fullscreen(false);
@@ -1328,7 +1325,7 @@ function evaluateCommand(state, term) {
     } else if (state.currentCommand === 'q') {
         term.fullscreen(false);
         process.exit(0);
-    } else if (/gs\/(.*)\/(.*)\/g/.test(state.currentCommand)) {
+    } else if (/^gs\/(.*)\/(.*)\/g$/.test(state.currentCommand)) {
         const match = /gs\/(.*?)\/(.*?)\/g/.exec(state.currentCommand);
         try {
             execSync(`git ls-files | xargs -I {} sed -i'' "s/${match[1]}/${match[2]}/g" "{}"`, { maxBuffer: 1024 * 1024 * 1000 });
@@ -1336,31 +1333,25 @@ function evaluateCommand(state, term) {
         } catch (e) {}
         refreshFile(state);
         createSnapshot(state);
-        return true;
-    } else if (/s\/(.*)\/(.*)\/g/.test(state.currentCommand)) {
+    } else if (/^s\/(.*)\/(.*)\/g$/.test(state.currentCommand)) {
         const match = /s\/(.*?)\/(.*?)\/g/.exec(state.currentCommand);
         state.data[state.row] = state.data[state.row].replaceAll(new RegExp(match[1], 'g'), match[2]);
         createSnapshot(state);
-        return true;
-    } else if (/%s\/(.*)\/(.*)\/g/.test(state.currentCommand)) {
+    } else if (/^%s\/(.*)\/(.*)\/g$/.test(state.currentCommand)) {
         const match = /%s\/(.*?)\/(.*?)\/g/.exec(state.currentCommand);
         for (let i = 0; i < state.data.length; i += 1) {
             state.data[i] = state.data[i].replaceAll(new RegExp(match[1], 'g'), match[2]);
         }
         createSnapshot(state);
-        return true;
     } else if (state.currentCommand === 'set ts=2') {
         state.indentAmount = 2;
-        return false;
     } else if (state.currentCommand === 'set ts=4') {
         state.indentAmount = 4;
-        return false;
     } else if (!Number.isNaN(state.currentCommand)) {
         const num = parseInt(state.currentCommand);
         if (num > 0 && num < state.data.length) {
             state.row = num - 1;
         }
-        return false;
     } else if (state.currentCommand === 'qa') {
         term.fullscreen(false);
         process.exit(0);
