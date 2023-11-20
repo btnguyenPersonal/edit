@@ -3,7 +3,6 @@ import path from 'path';
 import ncp from 'copy-paste';
 import { execSync } from 'child_process';
 import fs from 'fs';
-import { isEmptyRow, getIndentLevelFrom } from './movement.js';
 import {
     COMMAND,
     FILEEXPLORER,
@@ -96,33 +95,6 @@ function copyToClipboard(state, textArray, clipboardVisualBlock) {
     state.clipboardVisualBlock = clipboardVisualBlock;
     ncp.copy(textArray.join('\n'));
     state.clipboard = textArray.join('\n');
-}
-
-function insertIndentedRow(state) {
-    const indentLevel = findCurrentIndentLevel(state, findLastIndentLevel(state, state.row), '');
-    state.data.splice(state.row, 0, ' '.repeat(indentLevel));
-    state.col = indentLevel;
-}
-
-function findNonEmptyRow(state, start) {
-    for (let i = start; i < state.data.length; i += 1) {
-        if (!isEmptyRow(state, i)) return i;
-    }
-    return -1;
-}
-
-function findLastNonEmptyRow(state, start) {
-    for (let i = start; i >= 0; i -= 1) {
-        if (isEmptyRow(state, i)) return i + 1;
-    }
-    return 0;
-}
-
-function findNextEmptyRow(state, start) {
-    for (let i = start; i < state.data.length; i += 1) {
-        if (isEmptyRow(state, i)) return i;
-    }
-    return state.data.length;
 }
 
 function copyAndRemoveRows(state, start, end, includeEnd) {
@@ -1309,6 +1281,12 @@ function getFileFromExplorer(state) {
     return state.fileExplorerCopyOutput[state.fileExplorerIndex - numDir];
 }
 
+function insertIndentedRow(state) {
+    const indentLevel = findCurrentIndentLevel(state, findLastIndentLevel(state, state.row), '');
+    state.data.splice(state.row, 0, ' '.repeat(indentLevel));
+    state.col = indentLevel;
+}
+
 function evaluateCommand(state, term) {
     if (state.currentCommand.startsWith('e ')) {
         const newFile = state.currentCommand.substring(2);
@@ -1387,9 +1365,6 @@ export {
     createSnapshot,
     evaluateCommand,
     findCurrentIndentLevel,
-    findLastNonEmptyRow,
-    findNextEmptyRow,
-    findNonEmptyRow,
     getContextLines,
     getCurrentWord,
     getData,

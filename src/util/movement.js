@@ -32,6 +32,27 @@ function isEmptyRow(state, row) {
     return true;
 }
 
+function findNonEmptyRow(state, start) {
+    for (let i = start; i < state.data.length; i += 1) {
+        if (!isEmptyRow(state, i)) return i;
+    }
+    return -1;
+}
+
+function findLastNonEmptyRow(state, start) {
+    for (let i = start; i >= 0; i -= 1) {
+        if (isEmptyRow(state, i)) return i + 1;
+    }
+    return 0;
+}
+
+function findNextEmptyRow(state, start) {
+    for (let i = start; i < state.data.length; i += 1) {
+        if (isEmptyRow(state, i)) return i;
+    }
+    return state.data.length;
+}
+
 function firstNonSpace(state, row) {
     for (let i = 0; i < state.data[row]?.length; i += 1) {
         if (state.data[row].charAt(i) !== ' ') {
@@ -949,6 +970,9 @@ export {
     toggleComment,
     topOfFile,
     uncommentBlock,
+    findLastNonEmptyRow,
+    findNextEmptyRow,
+    findNonEmptyRow,
     up,
     upHalfScreen,
 };

@@ -12,9 +12,6 @@ import {
     copyRows,
     copyToClipboard,
     createSnapshot,
-    findCurrentIndentLevel,
-    findLastNonEmptyRow,
-    findNextEmptyRow,
     getFormattedLines,
     insertIndentedRow,
     isNumeric,
@@ -30,7 +27,6 @@ import {
     searchForString,
     searchForStringNoWrap,
     setFileSearchOutput,
-    findLastIndentLevel,
     trimTrailingWhitespace,
 } from '../util/helper.js';
 import { sendKeys } from '../util/sendKeys.js';
@@ -48,6 +44,8 @@ import {
     VISUALLINE,
 } from '../util/modes.js';
 import {
+    findLastNonEmptyRow,
+    findNextEmptyRow,
     bottomOfFile,
     copyInVisual,
     copyInsideAreaSameLine,
@@ -66,7 +64,6 @@ import {
     getCoorsInsideCharSame,
     getCoorsInsideWord,
     getInVisual,
-    getIndentLevelFrom,
     goToCoor,
     increaseIndentLevel,
     isEmptyRow,

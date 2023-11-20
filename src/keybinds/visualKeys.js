@@ -4,8 +4,6 @@ import {
     calcGrepOutput,
     centerScreen,
     createSnapshot,
-    findLastNonEmptyRow,
-    findNextEmptyRow,
     getFormattedLines,
     getSystemPaste,
     isWritable,
@@ -25,6 +23,8 @@ import {
 } from '../util/modes.js';
 import {
     bottomOfFile,
+    findLastNonEmptyRow,
+    findNextEmptyRow,
     copyInVisual,
     decreaseIndentLevel,
     deleteInVisual,
