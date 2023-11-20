@@ -542,7 +542,7 @@ function getColorRow(replacing, replaceQuery, row, commentIndex, searching, sear
                 if (counter === 0) {
                     counter = searchQuery.length;
                 }
-                if (isCurrentRow && i >= col && i < col + searchQuery.length) {
+                if (!replacing && isCurrentRow && i >= col && i < col + searchQuery.length) {
                     output.push('searchCurrent');
                 } else {
                     output.push('search');
@@ -627,6 +627,7 @@ function createSnapshot(state) {
         state.currentSnapshot = state.snapshots.length - 1;
         saveFile(state);
     }
+    state.status = state.snapshots.length;
 }
 
 function searchBackForString(state, string, acceptCurrent) {

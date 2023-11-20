@@ -32,7 +32,7 @@ try { isInGit = execSync('git rev-parse --is-inside-work-tree').toString().inclu
 const term = terminal();
 const filePath = getFile();
 const state = {
-    allowCommandLogging: false,
+    allowCommandLogging: true,
     clipboardVisualBlock: false,
     col: 0,
     commandCursorPosition: 0,
@@ -124,7 +124,6 @@ if (filePath !== undefined) {
         process.exit(0);
     }
 }
-state.allowCommandLogging = true;
 renderScreen(state, screen);
 
 term.on('key', (key) => {

@@ -230,6 +230,12 @@ function handleShortcutKeys(key, state, screen) {
         copyToClipboard(state, [state.data[state.row].substring(beginning, end + 1)]);
         removeInsideAreaSameLine(state, beginning - 1, end + 1, SHORTCUTS);
         cleanup(state, key, true, false, true, true);
+    } else if (state.previousKeys + key === 'ds') {
+        const beginning = state.col - 1;
+        const end = state.col + state.searchQuery.length;
+        copyToClipboard(state, [state.data[state.row].substring(beginning + 1, end)]);
+        removeInsideAreaSameLine(state, beginning, end, SHORTCUTS);
+        cleanup(state, key, true, false, true, true);
     } else if (state.previousKeys + key === 'diw') {
         const { beginning, end } = getCoorsInsideWord(state);
         copyToClipboard(state, [state.data[state.row].substring(beginning + 1, end)]);
@@ -332,6 +338,11 @@ function handleShortcutKeys(key, state, screen) {
     } else if (state.previousKeys === 'ya' && (key === '\'' || key === '"' || key === '`')) {
         const { beginning, end } = getCoorsInsideCharSame(state, key);
         copyInsideAreaSameLine(state, beginning - 1, end + 1);
+        cleanup(state, key, false, false, false, true);
+    } else if (state.previousKeys + key === 'ys') {
+        const beginning = state.col - 1;
+        const end = state.col + state.searchQuery.length;
+        copyInsideAreaSameLine(state, beginning, end);
         cleanup(state, key, false, false, false, true);
     } else if (state.previousKeys + key === 'yiw') {
         const { beginning, end } = getCoorsInsideWord(state);
@@ -515,6 +526,12 @@ function handleShortcutKeys(key, state, screen) {
         const { beginning, end } = getCoorsInsideCharSame(state, key);
         copyToClipboard(state, [state.data[state.row].substring(beginning, end + 1)]);
         removeInsideAreaSameLine(state, beginning - 1, end + 1, TYPING);
+        cleanup(state, key, true, false, false, true);
+    } else if (state.previousKeys + key === 'cs') {
+        const beginning = state.col - 1;
+        const end = state.col + state.searchQuery.length;
+        copyToClipboard(state, [state.data[state.row].substring(beginning + 1, end)]);
+        removeInsideAreaSameLine(state, beginning, end, TYPING);
         cleanup(state, key, true, false, false, true);
     } else if (state.previousKeys + key === 'ciw') {
         const { beginning, end } = getCoorsInsideWord(state);

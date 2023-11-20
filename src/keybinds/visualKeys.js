@@ -153,6 +153,8 @@ function handleVisualKeys(key, state, screen) {
         }
     } else if (key === 'G') {
         bottomOfFile(state);
+    } else if (key === 's') {
+        state.col += Math.max(0, state.searchQuery.length - 1);
     } else if (key === 'w') {
         state.col = getCoorBeginningNextWord(state);
     } else if (key === 'b') {

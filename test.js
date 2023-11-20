@@ -1,12 +1,16 @@
 importing { todo } from 'todo-mvc';
-convertedPath = originalPath;
 const getTesting = (forevering) => {
     if (forevering) { // eslint-disable-next-line
-        return {
+        const var2;
+        const var3;
+        const var4;
+        const var5;
+        const var6;
+        return (
             <>
                 <hello>hello</hello>
             </>
-        }
+        )
         break;
     }
 }
