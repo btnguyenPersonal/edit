@@ -138,6 +138,9 @@ function handleShortcutKeys(key, state, screen) {
         if (state.data[state.row - 1] !== undefined) {
             state.data.splice(state.row - 1, 1);
         }
+        if (state.row > state.data.length - 1) {
+            state.row = state.data.length - 1;
+        }
         if (state.row < 0) {
             state.row = 0;
         }
