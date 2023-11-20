@@ -627,7 +627,6 @@ function createSnapshot(state) {
         state.currentSnapshot = state.snapshots.length - 1;
         saveFile(state);
     }
-    state.status = state.snapshots.length;
 }
 
 function searchBackForString(state, string, acceptCurrent) {
