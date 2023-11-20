@@ -913,6 +913,9 @@ function handleShortcutKeys(key, state, screen) {
     } else if (state.previousKeys === '' && key === 'CTRL_N') {
         state.mode = FILEFINDER;
         state.gitFinding = false;
+        state.fileFinderQuery = '';
+        state.fileFinderCursorPosition = 0;
+        state.fileFinderIndex = 0;
         setFileSearchOutput(state);
         calcFileFinderOutput(state);
     } else if (state.previousKeys === '' && key === 'CTRL_Q') {

@@ -21,6 +21,9 @@
     - syntax highlighting for keywords system
     - show num search matches (6/40)
     - blend all visual modes into one file? (could eliminate a bunch of dupe logic)
+    - blend all query type stuff into one?
+        - can't have different queries
+    - use ctrl w more
 ## in progress
 ## done
     - have a line at top/bottom for status messages
