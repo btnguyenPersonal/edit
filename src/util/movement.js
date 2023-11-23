@@ -924,8 +924,30 @@ function matchIt(state) {
     }
 }
 
+function commentVisualLines(state, beginning, end) {
+    let areAllCommented = true;
+    for (let i = beginning; i <= end; i += 1) {
+        if (state.data[i].length !== 0 && !isCommented(state, i)) {
+            areAllCommented = false;
+            break;
+        }
+    }
+    let lowestIndent;
+    for (let i = beginning; i <= end; i += 1) {
+        const currentIndent = isEmptyRow(state, i) ? undefined : firstNonSpace(state, i);
+        if (currentIndent < lowestIndent || lowestIndent === undefined) {
+            lowestIndent = currentIndent;
+        }
+    }
+    for (let i = beginning; i <= end; i += 1) {
+        toggleComment(state, i, lowestIndent, !areAllCommented);
+    }
+    state.row = beginning;
+}
+
 export {
     bottomOfFile,
+    commentVisualLines,
     copyInVisual,
     copyInVisualBlock,
     copyInsideAreaSameLine,

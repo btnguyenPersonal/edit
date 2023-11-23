@@ -14,6 +14,7 @@ import {
 } from '../util/modes.js';
 import {
     bottomOfFile,
+    commentVisualLines,
     copyInVisualBlock,
     decreaseIndentLevel,
     deleteInVisualBlock,
@@ -29,14 +30,12 @@ import {
     getCoorsInsideCharSame,
     getCoorsInsideWord,
     increaseIndentLevel,
-    isCommented,
     left,
     matchIt,
     right,
     setVisualBlockHighlight,
     toBackward,
     toForward,
-    toggleComment,
     topOfFile,
     up,
     upHalfScreen,
@@ -129,41 +128,7 @@ function handleVisualBlockKeys(key, state, screen) {
         state.mode = SHORTCUTS;
         createSnapshot(state);
     } else if (key === 'e') {
-        let areAllCommented = true;
-        if (state.row >= state.visual.row) {
-            for (let i = state.visual.row; i <= state.row; i += 1) {
-                if (!isCommented(state, i)) {
-                    areAllCommented = false;
-                    break;
-                }
-            }
-            if (areAllCommented) {
-                for (let i = state.visual.row; i <= state.row; i += 1) {
-                    toggleComment(state, i, undefined, false);
-                }
-            } else {
-                for (let i = state.visual.row; i <= state.row; i += 1) {
-                    toggleComment(state, i, firstNonSpace(state, state.visual.row), true);
-                }
-            }
-            state.row = state.visual.row;
-        } else if (state.row < state.visual.row) {
-            for (let i = state.row; i <= state.visual.row; i += 1) {
-                if (!isCommented(state, i)) {
-                    areAllCommented = false;
-                    break;
-                }
-            }
-            if (areAllCommented) {
-                for (let i = state.row; i <= state.visual.row; i += 1) {
-                    toggleComment(state, i, undefined, false);
-                }
-            } else {
-                for (let i = state.row; i <= state.visual.row; i += 1) {
-                    toggleComment(state, i, firstNonSpace(state, state.row), true);
-                }
-            }
-        }
+        commentVisualLines(state, Math.min(state.row, state.visual.row), Math.max(state.row, state.visual.row));
         state.mode = SHORTCUTS;
         createSnapshot(state);
         state.previousKeys = '';
