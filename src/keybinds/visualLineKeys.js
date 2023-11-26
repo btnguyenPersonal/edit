@@ -193,17 +193,14 @@ function handleVisualLineKeys(key, state, screen) {
             }
         }
     } else if (key === 'J') {
-        const { beginningRow, endRow } = state.row <= state.visual.row
-            ? { beginningRow: state.row, endRow: state.visual.row }
-            : { beginningRow: state.visual.row, endRow: state.row };
-        if (endRow < state.data.length - 1) {
-            const temp = state.data[endRow + 1];
-            state.data.splice(endRow + 1, 1);
-            state.data.splice(beginningRow, 0, temp);
+        const start = Math.min(state.row, state.visual.row);
+        const end = Math.max(state.row, state.visual.row);
+        if (end < state.data.length - 1) {
+            const temp = state.data[end + 1];
+            state.data.splice(end + 1, 1);
+            state.data.splice(start, 0, temp);
             state.row += 1;
             state.visual.row += 1;
-            const start = Math.min(state.row, state.visual.row);
-            const end = Math.max(state.row, state.visual.row);
             const lines = getFormattedLines(state, start, end);
             for (let i = 0; i <= end - start; i += 1) {
                 state.data[start + i] = lines[i];
@@ -211,17 +208,14 @@ function handleVisualLineKeys(key, state, screen) {
         }
         createSnapshot(state);
     } else if (key === 'K') {
-        const { beginningRow, endRow } = state.row <= state.visual.row
-            ? { beginningRow: state.row, endRow: state.visual.row }
-            : { beginningRow: state.visual.row, endRow: state.row };
-        if (beginningRow > 0) {
-            const temp = state.data[beginningRow - 1];
-            state.data.splice(beginningRow - 1, 1);
-            state.data.splice(endRow, 0, temp);
+        const start = Math.min(state.row, state.visual.row);
+        const end = Math.max(state.row, state.visual.row);
+        if (start > 0) {
+            const temp = state.data[start - 1];
+            state.data.splice(start - 1, 1);
+            state.data.splice(end, 0, temp);
             state.row -= 1;
             state.visual.row -= 1;
-            const start = Math.min(state.row, state.visual.row);
-            const end = Math.max(state.row, state.visual.row);
             const lines = getFormattedLines(state, start, end);
             for (let i = 0; i <= end - start; i += 1) {
                 state.data[start + i] = lines[i];
