@@ -495,33 +495,44 @@ function calcIsInString(
 }
 
 function getColorRow(replacing, replaceQuery, row, commentIndex, searching, searchQuery, isCurrentRow, col, commentString) {
+    let displayRow = row;
+    if (replacing) {
+        displayRow = displayRow.replaceAll(searchQuery, replaceQuery);
+    }
     const output = [];
     let inString = false;
     let stringChar;
     let color = 'white';
     let disregardNext = false;
     let counter = 0;
-    for (let i = 0; i < row.length; i += 1) {
+    let j = 0;
+    for (let i = 0; i < displayRow.length; i += 1) {
         if (i > 160) {
             output.push('red');
         } else {
-            const s = row.substring(i, i + 1);
+            const s = displayRow.substring(i, i + 1);
             if (inString) {
                 color = 'cyan';
             }
             [color, inString, stringChar] = calcIsInString(color, s, stringChar, disregardNext, commentString, inString);
-            if (counter !== 0 || (searching && searchQuery.length !== 0 && searchQuery === row.substring(i, i + searchQuery.length))) {
+            if (counter !== 0 || (searching && searchQuery.length !== 0 && searchQuery === displayRow.substring(i, i + searchQuery.length))) {
                 if (counter === 0) {
                     counter = searchQuery.length;
+                    j += searchQuery.length;
                 }
                 if (!replacing && isCurrentRow && i >= col && i < col + searchQuery.length) {
                     output.push('searchCurrent');
                 } else {
                     output.push('search');
                 }
-            } else if (counter !== 0 || (replacing && replaceQuery.length !== 0 && replaceQuery === row.substring(i, i + replaceQuery.length))) {
+            } else if (counter !== 0 || (
+                replacing && replaceQuery.length !== 0
+                && replaceQuery === displayRow.substring(i, i + replaceQuery.length)
+                && searchQuery === row.substring(j, j + searchQuery.length)
+            )) {
                 if (counter === 0) {
                     counter = replaceQuery.length;
+                    j += searchQuery.length;
                 }
                 output.push('search');
             } else if (!inString && (s === '(' || s === ')')) {
@@ -545,6 +556,8 @@ function getColorRow(replacing, replaceQuery, row, commentIndex, searching, sear
             color = 'white';
             if (counter > 0) {
                 counter -= 1;
+            } else {
+                j += 1;
             }
         }
     }
@@ -845,14 +858,10 @@ function renderSingleLine(state, screen, i, mergeSection, isContext) {
         section = 0;
     }
     const commentIndex = commentStartsAt(state, i);
-    let displayRow = state.data[i];
-    if (state.replacing) {
-        displayRow = displayRow.replaceAll(state.searchQuery, state.replaceQuery);
-    }
     const colorRow = getColorRow(
         state.replacing,
         state.replaceQuery,
-        displayRow,
+        state.data[i],
         commentIndex,
         state.searching,
         state.searchQuery,
@@ -860,6 +869,10 @@ function renderSingleLine(state, screen, i, mergeSection, isContext) {
         state.col,
         getCommentString(state.file)
     );
+    let displayRow = state.data[i];
+    if (state.replacing) {
+        displayRow = displayRow.replaceAll(state.searchQuery, state.replaceQuery);
+    }
     for (let j = state.windowLineHorizontal; j < displayRow.length; j += 1) {
         let color = colorRow[j];
         let bgColor;
