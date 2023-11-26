@@ -724,8 +724,8 @@ function handleShortcutKeys(key, state, screen) {
         state.mode = TYPING;
         cleanup(state, key, true, true, false, false);
     } else if (state.previousKeys === '' && key === 'o') {
+        insertIndentedRow(state, true);
         down(state);
-        insertIndentedRow(state);
         state.mode = TYPING;
         cleanup(state, key, true, true, false, false);
     } else if (state.previousKeys === '' && key === '>') {

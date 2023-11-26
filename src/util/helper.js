@@ -1281,10 +1281,16 @@ function getFileFromExplorer(state) {
     return state.fileExplorerCopyOutput[state.fileExplorerIndex - numDir];
 }
 
-function insertIndentedRow(state) {
-    const indentLevel = findCurrentIndentLevel(state, findLastIndentLevel(state, state.row), '');
-    state.data.splice(state.row, 0, ' '.repeat(indentLevel));
-    state.col = indentLevel;
+function insertIndentedRow(state, insertUnder) {
+    if (insertUnder) {
+        const indentLevel = findCurrentIndentLevel(state, findLastIndentLevel(state, state.row + 1), '');
+        state.data.splice(state.row + 1, 0, ' '.repeat(indentLevel));
+        state.col = indentLevel;
+    } else {
+        const indentLevel = findCurrentIndentLevel(state, findLastIndentLevel(state, state.row), '');
+        state.data.splice(state.row, 0, ' '.repeat(indentLevel));
+        state.col = indentLevel;
+    }
 }
 
 function evaluateCommand(state, term) {

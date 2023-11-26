@@ -193,6 +193,7 @@ function handleVisualLineKeys(key, state, screen) {
             }
         }
     } else if (key === 'J') {
+        // TODO fix indentation here
         const { beginningRow, endRow } = state.row <= state.visual.row
             ? { beginningRow: state.row, endRow: state.visual.row }
             : { beginningRow: state.visual.row, endRow: state.row };
@@ -200,30 +201,30 @@ function handleVisualLineKeys(key, state, screen) {
             const temp = state.data[endRow + 1];
             state.data.splice(endRow + 1, 1);
             state.data.splice(beginningRow, 0, temp);
-        }
-        state.row += 1;
-        state.visual.row += 1;
-        if (state.row >= state.visual.row) {
-            for (let i = state.visual.row; i <= state.row; i += 1) {
-                let indentLevel = i - 1 < 0 ? 0 : getIndentLevelFrom(state, i - 1);
-                if (state.data[i].trim().startsWith(')')
-                    || state.data[i].trim().startsWith('}')
-                    || state.data[i].trim().startsWith('</')
-                ) {
-                    indentLevel = indentLevel - state.indentAmount >= 0 ? indentLevel - state.indentAmount : 0;
+            state.row += 1;
+            state.visual.row += 1;
+            if (state.row >= state.visual.row) {
+                for (let i = state.visual.row; i <= state.row; i += 1) {
+                    let indentLevel = i - 1 < 0 ? 0 : getIndentLevelFrom(state, i - 1);
+                    if (state.data[i].trim().startsWith(')')
+                        || state.data[i].trim().startsWith('}')
+                        || state.data[i].trim().startsWith('</')
+                    ) {
+                        indentLevel = indentLevel - state.indentAmount >= 0 ? indentLevel - state.indentAmount : 0;
+                    }
+                    state.data[i] = ' '.repeat(indentLevel) + state.data[i].trim();
                 }
-                state.data[i] = ' '.repeat(indentLevel) + state.data[i].trim();
-            }
-        } else if (state.row < state.visual.row) {
-            for (let i = state.row; i <= state.visual.row; i += 1) {
-                let indentLevel = i - 1 < 0 ? 0 : getIndentLevelFrom(state, i - 1);
-                if (state.data[i].trim().startsWith(')')
-                    || state.data[i].trim().startsWith('}')
-                    || state.data[i].trim().startsWith('</')
-                ) {
-                    indentLevel = indentLevel - state.indentAmount >= 0 ? indentLevel - state.indentAmount : 0;
+            } else if (state.row < state.visual.row) {
+                for (let i = state.row; i <= state.visual.row; i += 1) {
+                    let indentLevel = i - 1 < 0 ? 0 : getIndentLevelFrom(state, i - 1);
+                    if (state.data[i].trim().startsWith(')')
+                        || state.data[i].trim().startsWith('}')
+                        || state.data[i].trim().startsWith('</')
+                    ) {
+                        indentLevel = indentLevel - state.indentAmount >= 0 ? indentLevel - state.indentAmount : 0;
+                    }
+                    state.data[i] = ' '.repeat(indentLevel) + state.data[i].trim();
                 }
-                state.data[i] = ' '.repeat(indentLevel) + state.data[i].trim();
             }
         }
         createSnapshot(state);
@@ -235,30 +236,30 @@ function handleVisualLineKeys(key, state, screen) {
             const temp = state.data[beginningRow - 1];
             state.data.splice(beginningRow - 1, 1);
             state.data.splice(endRow, 0, temp);
-        }
-        state.row -= 1;
-        state.visual.row -= 1;
-        if (state.row >= state.visual.row) {
-            for (let i = state.visual.row; i <= state.row; i += 1) {
-                let indentLevel = i - 1 < 0 ? 0 : getIndentLevelFrom(state, i - 1);
-                if (state.data[i].trim().startsWith(')')
-                    || state.data[i].trim().startsWith('}')
-                    || state.data[i].trim().startsWith('</')
-                ) {
-                    indentLevel = indentLevel - state.indentAmount >= 0 ? indentLevel - state.indentAmount : 0;
+            state.row -= 1;
+            state.visual.row -= 1;
+            if (state.row >= state.visual.row) {
+                for (let i = state.visual.row; i <= state.row; i += 1) {
+                    let indentLevel = i - 1 < 0 ? 0 : getIndentLevelFrom(state, i - 1);
+                    if (state.data[i].trim().startsWith(')')
+                        || state.data[i].trim().startsWith('}')
+                        || state.data[i].trim().startsWith('</')
+                    ) {
+                        indentLevel = indentLevel - state.indentAmount >= 0 ? indentLevel - state.indentAmount : 0;
+                    }
+                    state.data[i] = ' '.repeat(indentLevel) + state.data[i].trim();
                 }
-                state.data[i] = ' '.repeat(indentLevel) + state.data[i].trim();
-            }
-        } else if (state.row < state.visual.row) {
-            for (let i = state.row; i <= state.visual.row; i += 1) {
-                let indentLevel = i - 1 < 0 ? 0 : getIndentLevelFrom(state, i - 1);
-                if (state.data[i].trim().startsWith(')')
-                    || state.data[i].trim().startsWith('}')
-                    || state.data[i].trim().startsWith('</')
-                ) {
-                    indentLevel = indentLevel - state.indentAmount >= 0 ? indentLevel - state.indentAmount : 0;
+            } else if (state.row < state.visual.row) {
+                for (let i = state.row; i <= state.visual.row; i += 1) {
+                    let indentLevel = i - 1 < 0 ? 0 : getIndentLevelFrom(state, i - 1);
+                    if (state.data[i].trim().startsWith(')')
+                        || state.data[i].trim().startsWith('}')
+                        || state.data[i].trim().startsWith('</')
+                    ) {
+                        indentLevel = indentLevel - state.indentAmount >= 0 ? indentLevel - state.indentAmount : 0;
+                    }
+                    state.data[i] = ' '.repeat(indentLevel) + state.data[i].trim();
                 }
-                state.data[i] = ' '.repeat(indentLevel) + state.data[i].trim();
             }
         }
         createSnapshot(state);
