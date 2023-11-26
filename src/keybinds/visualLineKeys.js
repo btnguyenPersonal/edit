@@ -235,8 +235,8 @@ function handleVisualLineKeys(key, state, screen) {
         for (let i = 0; i <= end - start; i += 1) {
             state.data[start + i] = lines[i];
         }
+        state.row = start;
         state.col = firstNonSpace(state, state.row);
-        state.row = state.visual.row;
         createSnapshot(state);
         state.mode = SHORTCUTS;
     } else if (key === '<') {
@@ -245,9 +245,6 @@ function handleVisualLineKeys(key, state, screen) {
         for (let i = start; i <= end; i += 1) {
             decreaseIndentLevel(state, i);
         }
-        state.col = firstNonSpace(state, state.row);
-        state.row = state.visual.row;
-        state.mode = SHORTCUTS;
         createSnapshot(state);
     } else if (key === '>') {
         const start = Math.min(state.row, state.visual.row);
@@ -255,9 +252,6 @@ function handleVisualLineKeys(key, state, screen) {
         for (let i = start; i <= end; i += 1) {
             increaseIndentLevel(state, i);
         }
-        state.col = firstNonSpace(state, state.row);
-        state.row = state.visual.row;
-        state.mode = SHORTCUTS;
         createSnapshot(state);
     } else if (key === 'x') {
         if (state.row >= state.visual.row) {
