@@ -193,7 +193,6 @@ function handleVisualLineKeys(key, state, screen) {
             }
         }
     } else if (key === 'J') {
-        // TODO fix indentation here
         const { beginningRow, endRow } = state.row <= state.visual.row
             ? { beginningRow: state.row, endRow: state.visual.row }
             : { beginningRow: state.visual.row, endRow: state.row };
@@ -203,28 +202,11 @@ function handleVisualLineKeys(key, state, screen) {
             state.data.splice(beginningRow, 0, temp);
             state.row += 1;
             state.visual.row += 1;
-            if (state.row >= state.visual.row) {
-                for (let i = state.visual.row; i <= state.row; i += 1) {
-                    let indentLevel = i - 1 < 0 ? 0 : getIndentLevelFrom(state, i - 1);
-                    if (state.data[i].trim().startsWith(')')
-                        || state.data[i].trim().startsWith('}')
-                        || state.data[i].trim().startsWith('</')
-                    ) {
-                        indentLevel = indentLevel - state.indentAmount >= 0 ? indentLevel - state.indentAmount : 0;
-                    }
-                    state.data[i] = ' '.repeat(indentLevel) + state.data[i].trim();
-                }
-            } else if (state.row < state.visual.row) {
-                for (let i = state.row; i <= state.visual.row; i += 1) {
-                    let indentLevel = i - 1 < 0 ? 0 : getIndentLevelFrom(state, i - 1);
-                    if (state.data[i].trim().startsWith(')')
-                        || state.data[i].trim().startsWith('}')
-                        || state.data[i].trim().startsWith('</')
-                    ) {
-                        indentLevel = indentLevel - state.indentAmount >= 0 ? indentLevel - state.indentAmount : 0;
-                    }
-                    state.data[i] = ' '.repeat(indentLevel) + state.data[i].trim();
-                }
+            const start = Math.min(state.row, state.visual.row);
+            const end = Math.max(state.row, state.visual.row);
+            const lines = getFormattedLines(state, start, end);
+            for (let i = 0; i <= end - start; i += 1) {
+                state.data[start + i] = lines[i];
             }
         }
         createSnapshot(state);
@@ -238,28 +220,11 @@ function handleVisualLineKeys(key, state, screen) {
             state.data.splice(endRow, 0, temp);
             state.row -= 1;
             state.visual.row -= 1;
-            if (state.row >= state.visual.row) {
-                for (let i = state.visual.row; i <= state.row; i += 1) {
-                    let indentLevel = i - 1 < 0 ? 0 : getIndentLevelFrom(state, i - 1);
-                    if (state.data[i].trim().startsWith(')')
-                        || state.data[i].trim().startsWith('}')
-                        || state.data[i].trim().startsWith('</')
-                    ) {
-                        indentLevel = indentLevel - state.indentAmount >= 0 ? indentLevel - state.indentAmount : 0;
-                    }
-                    state.data[i] = ' '.repeat(indentLevel) + state.data[i].trim();
-                }
-            } else if (state.row < state.visual.row) {
-                for (let i = state.row; i <= state.visual.row; i += 1) {
-                    let indentLevel = i - 1 < 0 ? 0 : getIndentLevelFrom(state, i - 1);
-                    if (state.data[i].trim().startsWith(')')
-                        || state.data[i].trim().startsWith('}')
-                        || state.data[i].trim().startsWith('</')
-                    ) {
-                        indentLevel = indentLevel - state.indentAmount >= 0 ? indentLevel - state.indentAmount : 0;
-                    }
-                    state.data[i] = ' '.repeat(indentLevel) + state.data[i].trim();
-                }
+            const start = Math.min(state.row, state.visual.row);
+            const end = Math.max(state.row, state.visual.row);
+            const lines = getFormattedLines(state, start, end);
+            for (let i = 0; i <= end - start; i += 1) {
+                state.data[start + i] = lines[i];
             }
         }
         createSnapshot(state);
@@ -270,34 +235,28 @@ function handleVisualLineKeys(key, state, screen) {
         for (let i = 0; i <= end - start; i += 1) {
             state.data[start + i] = lines[i];
         }
+        state.col = firstNonSpace(state, state.row);
+        state.row = state.visual.row;
         createSnapshot(state);
         state.mode = SHORTCUTS;
     } else if (key === '<') {
-        if (state.row >= state.visual.row) {
-            for (let i = state.visual.row; i <= state.row; i += 1) {
-                decreaseIndentLevel(state, i);
-            }
-        } else if (state.row < state.visual.row) {
-            for (let i = state.row; i <= state.visual.row; i += 1) {
-                decreaseIndentLevel(state, i);
-            }
+        const start = Math.min(state.row, state.visual.row);
+        const end = Math.max(state.row, state.visual.row);
+        for (let i = start; i <= end; i += 1) {
+            decreaseIndentLevel(state, i);
         }
         state.col = firstNonSpace(state, state.row);
         state.row = state.visual.row;
         state.mode = SHORTCUTS;
         createSnapshot(state);
     } else if (key === '>') {
-        if (state.row >= state.visual.row) {
-            for (let i = state.visual.row; i <= state.row; i += 1) {
-                increaseIndentLevel(state, i);
-            }
-            state.row = state.visual.row;
-        } else if (state.row < state.visual.row) {
-            for (let i = state.row; i <= state.visual.row; i += 1) {
-                increaseIndentLevel(state, i);
-            }
+        const start = Math.min(state.row, state.visual.row);
+        const end = Math.max(state.row, state.visual.row);
+        for (let i = start; i <= end; i += 1) {
+            increaseIndentLevel(state, i);
         }
         state.col = firstNonSpace(state, state.row);
+        state.row = state.visual.row;
         state.mode = SHORTCUTS;
         createSnapshot(state);
     } else if (key === 'x') {

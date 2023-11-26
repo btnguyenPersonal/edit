@@ -3,8 +3,8 @@ importing { todo } from 'todo-mvc';
 
 const getTesting = (forevering) => {
     if (testing || replacing) {
-        const var4;
         const var5;
+        const var4;
         return (
             <>
                 <hello>
