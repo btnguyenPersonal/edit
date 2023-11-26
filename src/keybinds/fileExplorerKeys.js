@@ -3,6 +3,7 @@ import {
     SHORTCUTS,
 } from '../util/modes.js';
 import {
+    copyToClipboard,
     createFolderIfNotExists,
     calcFileExplorerOutput,
     getFileFromExplorer,
@@ -108,6 +109,7 @@ function handleFileExplorerKeys(key, state, screen) {
             const selectedFile = getFileFromExplorer(state);
             if (selectedFile && fs.existsSync(selectedFile)) {
                 state.selectedFile = selectedFile;
+                copyToClipboard(state, [selectedFile]);
                 state.selectedFileExplorerIndex = state.fileExplorerIndex;
             }
         }
