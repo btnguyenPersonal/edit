@@ -272,34 +272,6 @@ function handleVisualKeys(key, state, screen) {
         state.searchQuery = getInVisual(state);
         state.replacing = true;
         state.mode = SEARCH;
-    } else if (key === '<') {
-        if (state.row >= state.visual.row) {
-            for (let i = state.visual.row; i <= state.row; i += 1) {
-                decreaseIndentLevel(state, i);
-            }
-        } else if (state.row < state.visual.row) {
-            for (let i = state.row; i <= state.visual.row; i += 1) {
-                decreaseIndentLevel(state, i);
-            }
-        }
-        state.col = firstNonSpace(state, state.row);
-        state.row = state.visual.row;
-        state.mode = SHORTCUTS;
-        createSnapshot(state);
-    } else if (key === '>') {
-        if (state.row >= state.visual.row) {
-            for (let i = state.visual.row; i <= state.row; i += 1) {
-                increaseIndentLevel(state, i);
-            }
-            state.row = state.visual.row;
-        } else if (state.row < state.visual.row) {
-            for (let i = state.row; i <= state.visual.row; i += 1) {
-                increaseIndentLevel(state, i);
-            }
-        }
-        state.col = firstNonSpace(state, state.row);
-        state.mode = SHORTCUTS;
-        createSnapshot(state);
     } else if (key === 'f' || key === 'F' || key === 't' || key === 'T' || key === 'i' || key === 'g' || key === 'a') {
         state.previousKeys += key;
     } else if (key === 'ESCAPE') {
