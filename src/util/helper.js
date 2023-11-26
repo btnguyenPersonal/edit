@@ -718,9 +718,8 @@ function renderStatusBar(state, screen) {
         screen.put({ attr: { color: state.typing ? 'white' : 'grey' } }, '> ' + state.newFile);
     } else if (state.mode === COMMAND) {
         screen.put({ attr: { color: 'white' } }, ':' + state.currentCommand);
-        screen.put({ attr: { color: 'white' }, x: process.stdout.columns - (2 + state.file.length) }, '"' + state.file + '"');
     } else {
-        screen.put({ attr: { color: 'green' } }, '/' + state.searchQuery + '/ ');
+        screen.put({ attr: { color: 'green' } }, '/' + state.searchQuery + ' ');
         for (let i = 0; i < state.harpoonIndexes.length; i += 1) {
             screen.put({
                 attr: {
@@ -728,8 +727,8 @@ function renderStatusBar(state, screen) {
                 }
             }, shortenFilePath(state.files[state.harpoonIndexes[i]]) + ' ');
         }
-        screen.put({ attr: { color: 'white' }, x: process.stdout.columns - (2 + state.file.length) }, '"' + state.file + '"');
     }
+    screen.put({ attr: { color: 'white' }, x: process.stdout.columns - (2 + state.file.length) }, '"' + state.file + '"');
 }
 
 function getFileFinderColor(mode) {
