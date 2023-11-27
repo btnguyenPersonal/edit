@@ -59,6 +59,7 @@ import {
     firstNonSpace,
     getCoorBeginningLastWord,
     getCoorBeginningNextWord,
+    getCoorEndNextWord,
     getCoorForwardWord,
     getCoorsInsideCharDiff,
     getCoorsInsideCharSame,
@@ -591,6 +592,8 @@ function handleShortcutKeys(key, state, screen) {
         uncommentBlock(state, state.row);
         logCommand(true, state, 'g');
         cleanup(state, key, true, false, true, true);
+    } else if (state.previousKeys === '' && key === 'E') {
+        state.col = getCoorEndNextWord(state);
     } else if (state.previousKeys === '' && key === 'e') {
         toggleComment(state, state.row);
         cleanup(state, key, true, false, true, true);

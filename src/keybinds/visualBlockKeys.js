@@ -16,20 +16,19 @@ import {
     bottomOfFile,
     commentVisualLines,
     copyInVisualBlock,
-    decreaseIndentLevel,
     deleteInVisualBlock,
     down,
     downHalfScreen,
     endOfLine,
     findBackward,
     findForward,
+    getCoorEndNextWord,
     firstNonSpace,
     getCoorBeginningLastWord,
     getCoorBeginningNextWord,
     getCoorsInsideCharDiff,
     getCoorsInsideCharSame,
     getCoorsInsideWord,
-    increaseIndentLevel,
     left,
     matchIt,
     right,
@@ -97,6 +96,8 @@ function handleVisualBlockKeys(key, state, screen) {
         left(state);
     } else if (key === 'RIGHT' || key === 'l') {
         right(state);
+    } else if (state.previousKeys === '' && key === 'E') {
+        state.col = getCoorEndNextWord(state);
     } else if (key === 'w') {
         state.col = getCoorBeginningNextWord(state);
     } else if (key === 'b') {

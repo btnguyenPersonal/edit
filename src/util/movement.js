@@ -1,6 +1,18 @@
 /* eslint-disable import/no-cycle */
 import { copyToClipboard, isAlphaNumeric } from './helper.js';
 
+function getCoorEndNextWord(state) {
+    let hasHitAlphaNum = false;
+    for (let i = state.col + 1; i < state.data[state.row].length; i += 1) {
+        if (hasHitAlphaNum && !isAlphaNumeric(state.data[state.row].charAt(i))) {
+            return i - 1;
+        } else if (!hasHitAlphaNum) {
+            hasHitAlphaNum = isAlphaNumeric(state.data[state.row].charAt(i));
+        }
+    }
+    return state.col;
+}
+
 function swapLeft(obj) {
     const i = obj.index;
     const arr = obj.array;
@@ -963,6 +975,7 @@ export {
     getCoorBeginningLastWord,
     getCoorBeginningNextWord,
     getCoorForwardWord,
+    getCoorEndNextWord,
     getCoorsInsideCharDiff,
     getCoorsInsideCharSame,
     getCoorsInsideWord,

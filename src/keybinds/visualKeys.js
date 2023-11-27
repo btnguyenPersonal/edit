@@ -27,7 +27,6 @@ import {
     findLastNonEmptyRow,
     findNextEmptyRow,
     copyInVisual,
-    decreaseIndentLevel,
     deleteInVisual,
     down,
     downHalfScreen,
@@ -40,8 +39,8 @@ import {
     getCoorsInsideCharDiff,
     getCoorsInsideCharSame,
     getCoorsInsideWord,
+    getCoorEndNextWord,
     getInVisual,
-    increaseIndentLevel,
     left,
     matchIt,
     right,
@@ -154,6 +153,8 @@ function handleVisualKeys(key, state, screen) {
         bottomOfFile(state);
     } else if (key === 's') {
         state.col += Math.max(0, state.searchQuery.length - 1);
+    } else if (state.previousKeys === '' && key === 'E') {
+        state.col = getCoorEndNextWord(state);
     } else if (key === 'w') {
         state.col = getCoorBeginningNextWord(state);
     } else if (key === 'b') {
