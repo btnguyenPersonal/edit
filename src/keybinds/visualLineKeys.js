@@ -240,6 +240,12 @@ function handleVisualLineKeys(key, state, screen) {
             decreaseIndentLevel(state, i);
         }
         createSnapshot(state);
+        if (state.row === start) {
+            state.row = end;
+        } else {
+            state.row = start;
+        }
+        state.mode = SHORTCUTS;
     } else if (key === '>') {
         const start = Math.min(state.row, state.visual.row);
         const end = Math.max(state.row, state.visual.row);
@@ -247,6 +253,12 @@ function handleVisualLineKeys(key, state, screen) {
             increaseIndentLevel(state, i);
         }
         createSnapshot(state);
+        if (state.row === start) {
+            state.row = end;
+        } else {
+            state.row = start;
+        }
+        state.mode = SHORTCUTS;
     } else if (key === 'x') {
         if (state.row >= state.visual.row) {
             state.data.splice(state.visual.row, state.row - state.visual.row + 1);
