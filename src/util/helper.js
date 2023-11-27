@@ -1197,19 +1197,22 @@ function calcFileExplorerOutput(state, keepPosition) {
     state.fileExplorerOutput.forEach((filePath) => {
         const splitPath = filePath.split('/');
         let indent = 0;
+        let fullPath = '';
 
         splitPath.forEach((segment, idx) => {
             if (idx < splitPath.length - 1) {
+                fullPath += (fullPath ? '/' : '') + segment;
                 const dirKey = '__DIR' + ' '.repeat(indent) + segment;
-                if (!existingDirs.has(dirKey)) {
+                if (!existingDirs.has(fullPath)) {
                     newOutput.push(dirKey);
-                    existingDirs.add(dirKey);
+                    existingDirs.add(fullPath);
                 }
                 indent += 2;
             } else {
                 newOutput.push(' '.repeat(indent) + segment);
             }
         });
+
         if (!keepPosition && filePath === state.file) {
             state.fileExplorerIndex = newOutput.length - 1;
         }
