@@ -1157,10 +1157,10 @@ function findLongestSubstringLength(str, query) {
     return longest;
 }
 
-function sortOutputBySubstring(state, query) {
+function sortOutputBySubstring(state, lengthCache) {
     state.fileFinderOutput.sort((a, b) => {
-        const lenA = findLongestSubstringLength(a, query);
-        const lenB = findLongestSubstringLength(b, query);
+        const lenA = lengthCache.get(a);
+        const lenB = lengthCache.get(b);
 
         return lenB - lenA || a.localeCompare(b);
     });
@@ -1170,7 +1170,11 @@ function calcFileFinderOutput(state) {
     state.fileFinderOutput = state.fileFinderFileCache.split('\n').filter(
         (file) => file !== state.file && file.trim() !== '' && isValidSearch(state.fileFinderQuery, file)
     );
-    // sortOutputBySubstring(state, state.fileFinderQuery);
+    const lengthCache = new Map();
+    state.fileFinderOutput.forEach((item) => {
+        lengthCache.set(item, findLongestSubstringLength(item, state.fileFinderQuery));
+    });
+    sortOutputBySubstring(state, lengthCache);
 }
 
 function setFileExplorerFiles(state) {
