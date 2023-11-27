@@ -1170,7 +1170,7 @@ function calcFileFinderOutput(state) {
     state.fileFinderOutput = state.fileFinderFileCache.split('\n').filter(
         (file) => file !== state.file && file.trim() !== '' && isValidSearch(state.fileFinderQuery, file)
     );
-    sortOutputBySubstring(state, state.fileFinderQuery);
+    // sortOutputBySubstring(state, state.fileFinderQuery);
 }
 
 function setFileExplorerFiles(state) {
