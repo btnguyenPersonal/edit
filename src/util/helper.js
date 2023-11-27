@@ -1206,7 +1206,8 @@ function sortOutputBySubstring(state, lengthCache) {
 function calcFileFinderOutput(state) {
     // TODO: make async?? or speed up substring methods in lengthCache
     const lengthCache = new Map();
-    const skip = state.skipSortingFileFinder || state.fileFinderQuery !== '';
+    // const skip = state.skipSortingFileFinder || state.fileFinderQuery !== '';
+    const skip = false;
     state.fileFinderOutput = state.fileFinderFileCache.filter(
         (file) => file !== state.file && file.trim() !== '' && isValidSearch(state.fileFinderQuery, file, lengthCache, skip)
     );
