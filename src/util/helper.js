@@ -1160,7 +1160,10 @@ function setFileSearchOutput(state) {
     if (state.gitFinding) {
         state.fileFinderFileCache = execSync('fd -t f --hidden -E .git', { maxBuffer: 1024 * 1024 * 1000 }).toString();
     } else {
-        state.fileFinderFileCache = execSync('find * -type f -not -path "node_modules/*"', { maxBuffer: 1024 * 1024 * 1000 }).toString();
+        state.fileFinderFileCache = execSync(
+            'find . -type f -not -path "./.git/*" -not -path "./node_modules/*" -printf "%P\n"',
+            { maxBuffer: 1024 * 1024 * 1000 }
+        ).toString();
     }
 }
 
