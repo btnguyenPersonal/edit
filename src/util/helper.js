@@ -1097,32 +1097,47 @@ function cleanup(state, key, log, newCommand, snapshot, resetPrevKeys) {
 }
 
 function findLongestSubstringLength(str, query) {
+    let dp = Array.from({ length: str.length + 1 }, () => Array(query.length + 1).fill(0));
     let longest = 0;
 
-    const querySet = new Set();
-    for (let i = 0; i < query.length; i += 1) {
-        for (let j = i + 1; j <= query.length; j += 1) {
-            querySet.add(query.substring(i, j));
-        }
-    }
-
-    for (let i = 0; i < str.length; i += 1) {
-        if (str.length - i <= longest) {
-            break;
-        }
-
-        for (let j = i; j < str.length; j += 1) {
-            const subLength = j - i + 1;
-            if (subLength > longest) {
-                if (querySet.has(str.substring(i, j + 1))) {
-                    longest = subLength;
-                }
+    for (let i = 1; i <= str.length; i++) {
+        for (let j = 1; j <= query.length; j++) {
+            if (str[i - 1] === query[j - 1]) {
+                dp[i][j] = dp[i - 1][j - 1] + 1;
+                longest = Math.max(longest, dp[i][j]);
             }
         }
     }
 
     return longest;
 }
+// function findLongestSubstringLength(str, query) {
+//     let longest = 0;
+
+//     const querySet = new Set();
+//     for (let i = 0; i < query.length; i += 1) {
+//         for (let j = i + 1; j <= query.length; j += 1) {
+//             querySet.add(query.substring(i, j));
+//         }
+//     }
+
+//     for (let i = 0; i < str.length; i += 1) {
+//         if (str.length - i <= longest) {
+//             break;
+//         }
+
+//         for (let j = i; j < str.length; j += 1) {
+//             const subLength = j - i + 1;
+//             if (subLength > longest) {
+//                 if (querySet.has(str.substring(i, j + 1))) {
+//                     longest = subLength;
+//                 }
+//             }
+//         }
+//     }
+
+//     return longest;
+// }
 
 function isValidSearch(query, file, lengthCache, skip) {
     let counter = 0;
@@ -1189,6 +1204,7 @@ function sortOutputBySubstring(state, lengthCache) {
 }
 
 function calcFileFinderOutput(state) {
+    // TODO: make async?? or speed up substring methods in lengthCache
     const lengthCache = new Map();
     const skip = state.skipSortingFileFinder || state.fileFinderQuery !== '';
     state.fileFinderOutput = state.fileFinderFileCache.filter(
