@@ -1124,7 +1124,7 @@ function findLongestSubstringLength(str, query) {
     return longest;
 }
 
-function isValidSearch(query, file, lengthCache) {
+function isValidSearch(query, file, lengthCache, skip) {
     let counter = 0;
     for (let i = 0; i < query.length; i += 1) {
         for (let j = counter; j <= file.length; j += 1) {
@@ -1141,7 +1141,7 @@ function isValidSearch(query, file, lengthCache) {
             }
         }
     }
-    if (query !== '') {
+    if (!skip) {
         lengthCache.set(file, findLongestSubstringLength(file, query));
     }
     return true;
@@ -1190,10 +1190,11 @@ function sortOutputBySubstring(state, lengthCache) {
 
 function calcFileFinderOutput(state) {
     const lengthCache = new Map();
+    const skip = state.skipSortingFileFinder || state.fileFinderQuery !== '';
     state.fileFinderOutput = state.fileFinderFileCache.filter(
-        (file) => file !== state.file && file.trim() !== '' && isValidSearch(state.fileFinderQuery, file, lengthCache)
+        (file) => file !== state.file && file.trim() !== '' && isValidSearch(state.fileFinderQuery, file, lengthCache, skip)
     );
-    if (state.fileFinderQuery !== '' || state.skipSortingFileFinder) {
+    if (!skip) {
         sortOutputBySubstring(state, lengthCache);
     }
 }
