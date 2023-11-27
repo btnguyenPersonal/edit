@@ -1096,6 +1096,34 @@ function cleanup(state, key, log, newCommand, snapshot, resetPrevKeys) {
     }
 }
 
+function findLongestSubstringLength(str, query) {
+    let longest = 0;
+
+    const querySet = new Set();
+    for (let i = 0; i < query.length; i += 1) {
+        for (let j = i + 1; j <= query.length; j += 1) {
+            querySet.add(query.substring(i, j));
+        }
+    }
+
+    for (let i = 0; i < str.length; i += 1) {
+        if (str.length - i <= longest) {
+            break;
+        }
+
+        for (let j = i; j < str.length; j += 1) {
+            const subLength = j - i + 1;
+            if (subLength > longest) {
+                if (querySet.has(str.substring(i, j + 1))) {
+                    longest = subLength;
+                }
+            }
+        }
+    }
+
+    return longest;
+}
+
 function isValidSearch(query, file, lengthCache) {
     let counter = 0;
     for (let i = 0; i < query.length; i += 1) {
@@ -1143,21 +1171,6 @@ function calcGrepOutput(state) {
     } else {
         state.fileFinderOutput = [];
     }
-}
-
-function findLongestSubstringLength(str, query) {
-    let longest = 0;
-
-    for (let i = 0; i < str.length; i += 1) {
-        for (let j = i; j < str.length; j += 1) {
-            const sub = str.substring(i, j + 1);
-            if (query.includes(sub) && sub.length > longest) {
-                longest = sub.length;
-            }
-        }
-    }
-
-    return longest;
 }
 
 function sortOutputBySubstring(state, lengthCache) {
