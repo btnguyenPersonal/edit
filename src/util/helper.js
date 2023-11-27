@@ -1113,7 +1113,9 @@ function isValidSearch(query, file, lengthCache) {
             }
         }
     }
-    lengthCache.set(file, findLongestSubstringLength(file, query));
+    if (query !== '') {
+        lengthCache.set(file, findLongestSubstringLength(file, query));
+    }
     return true;
 }
 
@@ -1172,7 +1174,9 @@ function calcFileFinderOutput(state) {
     state.fileFinderOutput = state.fileFinderFileCache.split('\n').filter(
         (file) => file !== state.file && file.trim() !== '' && isValidSearch(state.fileFinderQuery, file, lengthCache)
     );
-    sortOutputBySubstring(state, lengthCache);
+    if (state.fileFinderQuery !== '') {
+        sortOutputBySubstring(state, lengthCache);
+    }
 }
 
 function setFileExplorerFiles(state) {
