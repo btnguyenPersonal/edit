@@ -1,4 +1,3 @@
-
 ## backlog
     - indent work with ||, &&, and .then() also with : for python
     - every rerender don't have to recalculate the color each time (how bad can this really be?)
@@ -9,21 +8,25 @@
     - work on windows?
     - C# syntax highlighting ?
     - history broken on gitignored files?
-## blocked
-    - click & drag select for visualLine (needs some terminal-kit internals research)
-    - colors with hex instead of terminal colors ?? might not be supported in terminal-kit (needs some terminal-kit internals research)
-## todo
     - clean up god-awful render functions
     - have much better helper function names
     - clean up state variable names
-    - change undo to diff based
     - auto-highlight matching parenthesis when cursor is over it
     - syntax highlighting for keywords system
     - show num search matches (6/40)
     - blend all visual modes into one file? (could eliminate a bunch of dupe logic)
     - blend all query type stuff into one?
-        - can't have different queries
+    - can't have different queries
+    - scrollbar on right?
+    - open browser links on gf?
     - use ctrl w more
+## blocked
+    - click & drag select for visualLine (needs some terminal-kit internals research)
+    - colors with hex instead of terminal colors ?? might not be supported in terminal-kit (needs some terminal-kit internals research)
+## todo
+    - have grep not block typing (maybe have a render, then trigger a callback render when done?)
+    - search inside of fileExplorer
+    - change undo to diff based
 ## in progress
 ## done
     - have a line at top/bottom for status messages

@@ -412,6 +412,7 @@ function getCommentString(file) {
         case 'properties':
         case 'cson':
         case 'env':
+        case 'md':
             commentString = '#';
             break;
         case 'css':
@@ -420,7 +421,6 @@ function getCommentString(file) {
         case 'html':
         case 'xml':
         case 'markdown':
-        case 'md':
             commentString = '<!--';
             break;
         default:
