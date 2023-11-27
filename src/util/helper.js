@@ -1205,38 +1205,6 @@ function setFileExplorerFiles(state) {
     state.fileExplorerOutput = output.split('\n');
 }
 
-// function calcFileExplorerOutput(state, keepPosition) {
-//     setFileExplorerFiles(state);
-//     for (let i = 0; i < state.fileExplorerOutput.length; i += 1) {
-//         const original = state.fileExplorerOutput[i];
-//         const splitPath = state.fileExplorerOutput[i].split('/');
-//         let indent = 0;
-//         while (splitPath.length !== 1) {
-//             const dir = splitPath.shift();
-//             let foundDir = false;
-//             for (let j = i; j >= 0; j -= 1) {
-//                 if (state.fileExplorerOutput[j].startsWith('__DIR') && state.fileExplorerOutput[j].substring(5).search(/\S|$/) < indent) {
-//                     break;
-//                 }
-//                 if (state.fileExplorerOutput[j] === ('__DIR' + ' '.repeat(indent) + dir)) {
-//                     foundDir = true;
-//                     break;
-//                 }
-//             }
-//             if (!foundDir) {
-//                 state.fileExplorerOutput.splice(i, 0, '__DIR' + ' '.repeat(indent) + dir);
-//                 i += 1;
-//             }
-//             indent += 2;
-//             state.fileExplorerOutput[i] = ' '.repeat(indent) + splitPath.join('/');
-//         }
-//         if (!keepPosition && original === state.file) {
-//             state.fileExplorerIndex = i + 1;
-//         }
-//     }
-//     state.fileExplorerOutput.unshift('__DIR.');
-// }
-
 function calcFileExplorerOutput(state, keepPosition) {
     setFileExplorerFiles(state);
 
