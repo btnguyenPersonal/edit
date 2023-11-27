@@ -693,9 +693,9 @@ function handleShortcutKeys(key, state, screen) {
         state.col = firstNonSpace(state, state.row);
         state.mode = TYPING;
         cleanup(state, key, true, true, false, false);
-    } else if (state.previousKeys === '' && key === 'w') {
+    } else if (state.previousKeys === '' && (key === 'w' || key === 'W')) {
         state.col = getCoorBeginningNextWord(state);
-    } else if (state.previousKeys === '' && key === 'b') {
+    } else if (state.previousKeys === '' && (key === 'b' || key === 'B')) {
         state.col = getCoorBeginningLastWord(state);
     } else if (state.previousKeys === '' && key === 'A') {
         state.col = state.data[state.row].length;

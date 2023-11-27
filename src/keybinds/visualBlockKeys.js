@@ -98,9 +98,9 @@ function handleVisualBlockKeys(key, state, screen) {
         right(state);
     } else if (state.previousKeys === '' && key === 'E') {
         state.col = getCoorEndNextWord(state);
-    } else if (key === 'w') {
+    } else if (key === 'w' || key === 'W') {
         state.col = getCoorBeginningNextWord(state);
-    } else if (key === 'b') {
+    } else if (key === 'b' || key === 'B') {
         state.col = getCoorBeginningLastWord(state);
     } else if (key === '$') {
         state.col = endOfLine(state, state.row);
