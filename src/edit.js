@@ -91,6 +91,7 @@ const state = {
     renamingFile: false,
     copyingFile: false,
     creatingFile: false,
+    skipSortingFileFinder: false,
     selectedFileExplorerIndex: -1,
     snapshots: [],
     storePosition: [],

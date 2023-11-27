@@ -1158,12 +1158,15 @@ function createFolderIfNotExists(state) {
 
 function setFileSearchOutput(state) {
     if (state.gitFinding) {
-        state.fileFinderFileCache = execSync('fd -t f --hidden -E .git', { maxBuffer: 1024 * 1024 * 1000 }).toString();
+        state.fileFinderFileCache = execSync('fd -t f --hidden -E .git', { maxBuffer: 1024 * 1024 * 1000 }).toString().split('\n');
     } else {
         state.fileFinderFileCache = execSync(
             'find . -type f -not -path "./.git/*" -not -path "./node_modules/*" -printf "%P\n"',
             { maxBuffer: 1024 * 1024 * 1000 }
-        ).toString();
+        ).toString().split('\n');
+    }
+    if (state.fileFinderFileCache.length > 1000) {
+        state.skipSortingFileFinder = true;
     }
 }
 
@@ -1187,10 +1190,10 @@ function sortOutputBySubstring(state, lengthCache) {
 
 function calcFileFinderOutput(state) {
     const lengthCache = new Map();
-    state.fileFinderOutput = state.fileFinderFileCache.split('\n').filter(
+    state.fileFinderOutput = state.fileFinderFileCache.filter(
         (file) => file !== state.file && file.trim() !== '' && isValidSearch(state.fileFinderQuery, file, lengthCache)
     );
-    if (state.fileFinderQuery !== '') {
+    if (state.fileFinderQuery !== '' || state.skipSortingFileFinder) {
         sortOutputBySubstring(state, lengthCache);
     }
 }
