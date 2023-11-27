@@ -1096,7 +1096,7 @@ function cleanup(state, key, log, newCommand, snapshot, resetPrevKeys) {
     }
 }
 
-function isValidSearch(query, file) {
+function isValidSearch(query, file, lengthCache) {
     let counter = 0;
     for (let i = 0; i < query.length; i += 1) {
         for (let j = counter; j <= file.length; j += 1) {
@@ -1113,6 +1113,7 @@ function isValidSearch(query, file) {
             }
         }
     }
+    lengthCache.set(file, findLongestSubstringLength(file, query)
     return true;
 }
 
@@ -1167,13 +1168,10 @@ function sortOutputBySubstring(state, lengthCache) {
 }
 
 function calcFileFinderOutput(state) {
-    state.fileFinderOutput = state.fileFinderFileCache.split('\n').filter(
-        (file) => file !== state.file && file.trim() !== '' && isValidSearch(state.fileFinderQuery, file)
-    );
     const lengthCache = new Map();
-    state.fileFinderOutput.forEach((item) => {
-        lengthCache.set(item, findLongestSubstringLength(item, state.fileFinderQuery));
-    });
+    state.fileFinderOutput = state.fileFinderFileCache.split('\n').filter(
+        (file) => file !== state.file && file.trim() !== '' && isValidSearch(state.fileFinderQuery, file, lengthCache)
+    );
     sortOutputBySubstring(state, lengthCache);
 }
 
