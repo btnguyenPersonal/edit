@@ -1113,7 +1113,7 @@ function isValidSearch(query, file, lengthCache) {
             }
         }
     }
-    lengthCache.set(file, findLongestSubstringLength(file, query)
+    lengthCache.set(file, findLongestSubstringLength(file, query));
     return true;
 }
 
