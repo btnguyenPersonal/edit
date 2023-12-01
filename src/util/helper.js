@@ -1158,8 +1158,9 @@ function setFileSearchOutput(state) {
 
 function calcGrepOutput(state) {
     if (state.grepQuery.length !== 0) {
-        const sanitized = state.grepQuery.replace(/"/g, '\\\"');
-        state.fileFinderOutput = execSync(`rg --no-heading -n "${sanitized}" . | cut -c 3- || true`, { maxBuffer: 1024 * 1024 * 1000 }).toString().split('\n');
+        let sanitized = state.grepQuery.replace(/\\/g, '\\\\\\\\');
+        sanitized = sanitized.replace(/"/g, '\\"');
+        state.fileFinderOutput = execSync(`git grep -n "${sanitized}" || true`, { maxBuffer: 1024 * 1024 * 1000 }).toString().split('\n');
     } else {
         state.fileFinderOutput = [];
     }
