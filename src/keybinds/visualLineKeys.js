@@ -152,19 +152,16 @@ function handleVisualLineKeys(key, state, screen) {
     } else if (key === ',') {
         state.mode = SHORTCUTS;
         state.allowCommandLogging = false;
-        const startingPoint = state.row;
-        if (state.visual.row < startingPoint) {
-            for (let i = state.visual.row; i <= startingPoint; i += 1) {
-                sendKeys(state.macro, state, screen);
-                up(state);
-            }
-        } else {
-            for (let i = startingPoint; i <= state.visual.row; i += 1) {
-                sendKeys(state.macro, state, screen);
-                down(state);
-            }
+        const start = Math.min(state.visual.row, state.row);
+        const end = Math.max(state.visual.row, state.row);
+        state.row = start;
+        state.visual.row = end;
+        for (let i = state.row; i <= state.visual.row; i += 1) {
+            sendKeys(state.macro, state, screen);
+            down(state);
         }
         state.allowCommandLogging = true;
+        createSnapshot(state);
         renderScreen(state, screen);
     } else if (key === '_') {
         const sortedLines = sortLines(state);

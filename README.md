@@ -4,11 +4,9 @@ this is my experiment for making a new code editor
 
 # installing
 
-Install bun: https://bun.sh/docs/installation
-
 ```
-bun i
-bun link
+npm i
+npm link
 ```
 that's it, you should just be able to run `e path/to/file.js` in your command line and it should work!
 also, just starting as `e` should start you out with searching for the file you want

@@ -76,6 +76,11 @@ function handleKeys(key, state, screen) {
         if (state.row >= state.windowLine + process.stdout.rows - 1) {
             state.windowLine += 1;
         }
+    } else if (key === 'CTRL_D') {
+        state.data[state.row] = state.data[state.row].substring(0, state.col)
+            + (state.row + 1)
+            + state.data[state.row].substring(state.col);
+        state.col += (state.row + 1).toString().length;
     } else if (key === 'CTRL_A') {
         state.col = firstNonSpace(state, state.row);
     } else if (key === 'CTRL_E') {
