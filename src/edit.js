@@ -1,4 +1,4 @@
-#!/usr/bin/env bun
+#!/usr/bin/env node
 import { execSync } from 'child_process';
 import pkg from 'terminal-kit';
 import path from 'path';
