@@ -1160,7 +1160,8 @@ function calcGrepOutput(state) {
     if (state.grepQuery.length !== 0) {
         let sanitized = state.grepQuery.replace(/\\/g, '\\\\\\\\');
         sanitized = sanitized.replace(/"/g, '\\"');
-        state.fileFinderOutput = execSync(`git grep -n "${sanitized}" || true`, { maxBuffer: 1024 * 1024 * 1000 }).toString().split('\n');
+        const ignoredFiles = '":!package-lock.json" ":!pnpm-lock.yaml" ":!bun.lockb" ":!yarn.lock"';
+        state.fileFinderOutput = execSync(`git grep -n "${sanitized}" -- ${ignoredFiles} || true`, { maxBuffer: 1024 * 1024 * 1000 }).toString().split('\n');
     } else {
         state.fileFinderOutput = [];
     }
