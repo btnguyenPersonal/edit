@@ -97,6 +97,7 @@ function handleShortcutKeys(key, state, screen) {
         if (isNumeric(key)) {
             state.lineNumber += key;
             goToCoor(state, parseInt(state.lineNumber) - 1);
+            state.status = state.lineNumber;
         } else if (key === 'ENTER') {
             cleanup(state, key, false, false, false, true);
         } else {
@@ -685,6 +686,8 @@ function handleShortcutKeys(key, state, screen) {
         state.previousKeys = '-';
         state.lineNumber = '';
         state.lineNumber += key;
+        goToCoor(state, parseInt(state.lineNumber) - 1);
+        state.status = state.lineNumber;
     } else if (state.previousKeys === '' && key === '0') {
         state.col = 0;
     } else if (state.previousKeys === '' && key === '^') {
