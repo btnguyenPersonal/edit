@@ -4,11 +4,15 @@ import {
     FILEFINDER,
 } from '../util/modes.js';
 import {
+    firstNonSpace,
+} from '../util/movement.js';
+import {
     renderScreen,
     isWritable,
     processFile,
     calcGrepOutput,
     setFileSearchOutput,
+    centerScreen,
     calcFileFinderOutput,
 } from '../util/helper.js';
 
@@ -76,6 +80,8 @@ function handleGrepKeys(key, state, screen) {
                 processFile(state, newFile, lineNum);
             }
             state.mode = SHORTCUTS;
+            centerScreen(state);
+            state.col = firstNonSpace(state, state.row);
         }
     } else if (key === 'CTRL_L') {
         state.grepQuery = '';
