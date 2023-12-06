@@ -190,14 +190,16 @@ function handleVisualLineKeys(key, state, screen) {
             }
         }
     } else if (key === 'J') {
-        const start = Math.min(state.row, state.visual.row);
-        const end = Math.max(state.row, state.visual.row);
+        let start = Math.min(state.row, state.visual.row);
+        let end = Math.max(state.row, state.visual.row);
         if (end < state.data.length - 1) {
             const temp = state.data[end + 1];
             state.data.splice(end + 1, 1);
             state.data.splice(start, 0, temp);
             state.row += 1;
             state.visual.row += 1;
+            start += 1;
+            end += 1;
             const lines = getFormattedLines(state, start, end);
             for (let i = 0; i <= end - start; i += 1) {
                 state.data[start + i] = lines[i];
@@ -205,14 +207,16 @@ function handleVisualLineKeys(key, state, screen) {
         }
         createSnapshot(state);
     } else if (key === 'K') {
-        const start = Math.min(state.row, state.visual.row);
-        const end = Math.max(state.row, state.visual.row);
+        let start = Math.min(state.row, state.visual.row);
+        let end = Math.max(state.row, state.visual.row);
         if (start > 0) {
             const temp = state.data[start - 1];
             state.data.splice(start - 1, 1);
             state.data.splice(end, 0, temp);
             state.row -= 1;
             state.visual.row -= 1;
+            start -= 1;
+            end -= 1;
             const lines = getFormattedLines(state, start, end);
             for (let i = 0; i <= end - start; i += 1) {
                 state.data[start + i] = lines[i];
