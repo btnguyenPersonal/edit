@@ -501,6 +501,7 @@ function getColorRow(state, row, displayRow, commentIndex, isCurrentRow, comment
     let color = 'white';
     let disregardNext = false;
     let counter = 0;
+    let startOfSearch;
     let nonDisplayRowIndex = 0;
     for (let i = 0; i < displayRow.length; i += 1) {
         if (i > 160) {
@@ -516,10 +517,11 @@ function getColorRow(state, row, displayRow, commentIndex, isCurrentRow, comment
                 && state.searchQuery === displayRow.substring(i, i + state.searchQuery.length)
             )) {
                 if (counter === 0) {
+                    startOfSearch = i;
                     counter = state.searchQuery.length;
                     nonDisplayRowIndex += state.searchQuery.length;
                 }
-                if (!state.replacing && isCurrentRow && i >= state.col && i < state.col + state.searchQuery.length) {
+                if (!state.replacing && isCurrentRow && startOfSearch + state.searchQuery.length >= state.col && startOfSearch <= state.col) {
                     output.push('searchCurrent');
                 } else {
                     output.push('search');
