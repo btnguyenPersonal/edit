@@ -24,10 +24,13 @@
     - click & drag select for visualLine (needs some terminal-kit internals research)
     - colors with hex instead of terminal colors ?? might not be supported in terminal-kit (needs some terminal-kit internals research)
 ## todo
+    - git log viewer
     - have grep not block typing (maybe have a render, then trigger a callback render when done?)
     - search inside of fileExplorer
     - change undo to diff based
 ## in progress
+    - error when ctrl p when not in git
+    - fix current search when mousing over
 ## done
     - have a line at top/bottom for status messages
     - fix having file in tab spot, then delete file, then try to navigate to it
