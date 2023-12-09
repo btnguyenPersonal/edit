@@ -31,8 +31,9 @@
 ## in progress
     - error when ctrl p when not in git
     - fix w b E
-    - v : switches to :s///g mode
+    - fix indent for []
 ## done
+    - v : switches to :s///g mode
     - fix current search when mousing over
     - have a line at top/bottom for status messages
     - fix having file in tab spot, then delete file, then try to navigate to it

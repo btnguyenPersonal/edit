@@ -16,6 +16,14 @@ import {
     VISUALLINE,
 } from './modes.js';
 
+function isInGit() {
+    try {
+        return execSync('git rev-parse --is-inside-work-tree').toString().includes('true');
+    } catch (err) {
+        return false;
+    }
+}
+
 function isFile(filePath) {
     try {
         const stats = fs.statSync(filePath);
@@ -1144,9 +1152,13 @@ function createFolderIfNotExists(state) {
     }
 }
 
-function setFileSearchOutput(state) {
-    if (state.gitFinding) {
-        state.fileFinderFileCache = execSync('fd -t f --hidden -E .git', { maxBuffer: 1024 * 1024 * 1000 }).toString().split('\n');
+function setFileSearchOutput(state, useGit) {
+    if (useGit) {
+        if (state.git) {
+            state.fileFinderFileCache = execSync('fd -t f --hidden -E .git', { maxBuffer: 1024 * 1024 * 1000 }).toString().split('\n');
+        } else {
+            state.status = 'not in git repository';
+        }
     } else {
         state.fileFinderFileCache = execSync(
             'find . -type f -not -path "./.git/*" -not -path "./node_modules/*" -printf "%P\n"',
@@ -1394,6 +1406,7 @@ export {
     copyToClipboard,
     createSnapshot,
     evaluateCommand,
+    isInGit,
     findCurrentIndentLevel,
     getContextLines,
     getCurrentWord,

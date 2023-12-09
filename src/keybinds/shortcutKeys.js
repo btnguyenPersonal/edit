@@ -906,11 +906,10 @@ function handleShortcutKeys(key, state, screen) {
         calcGrepOutput(state);
     } else if (state.previousKeys === '' && key === 'CTRL_N') {
         state.mode = FILEFINDER;
-        state.gitFinding = false;
         state.fileFinderQuery = '';
         state.fileFinderCursorPosition = 0;
         state.fileFinderIndex = 0;
-        setFileSearchOutput(state);
+        setFileSearchOutput(state, false);
         calcFileFinderOutput(state);
     } else if (state.previousKeys === '' && key === 'CTRL_Q') {
         state.mode = HISTORY;
@@ -921,12 +920,10 @@ function handleShortcutKeys(key, state, screen) {
         state.fileFinderIndex = state.currentSnapshot;
     } else if (state.previousKeys === '' && key === 'CTRL_Y') {
         state.mode = FILEFINDER;
-        state.gitFinding = true;
         calcFileFinderOutput(state);
     } else if (state.previousKeys === '' && key === 'CTRL_P') {
         state.mode = FILEFINDER;
-        setFileSearchOutput(state);
-        state.gitFinding = true;
+        setFileSearchOutput(state, true);
         state.fileFinderQuery = '';
         state.fileFinderCursorPosition = 0;
         state.fileFinderIndex = 0;

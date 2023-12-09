@@ -1,5 +1,4 @@
 #!/usr/bin/env node
-import { execSync } from 'child_process';
 import pkg from 'terminal-kit';
 import path from 'path';
 import os from 'os';
@@ -12,6 +11,7 @@ import {
     calcFileFinderOutput,
     centerScreen,
     createSnapshot,
+    isInGit,
     getData,
     renderScreen,
     setFileSearchOutput,
@@ -24,10 +24,6 @@ const { terminal, ScreenBuffer } = pkg;
 function getFile() {
     return process.argv[2];
 }
-
-let isInGit = false;
-// eslint-disable-next-line no-empty
-try { isInGit = execSync('git rev-parse --is-inside-work-tree').toString().includes('true'); } catch (err) {}
 
 const term = terminal();
 const filePath = getFile();
@@ -53,7 +49,7 @@ const state = {
     fileStack: [],
     fileStackIndex: -1,
     files: [],
-    gitFinding: isInGit,
+    git: isInGit(),
     grepCursorPosition: 0,
     grepIndex: 0,
     grepQuery: '',
@@ -116,8 +112,8 @@ if (filePath !== undefined) {
     state.fileStack.push(state.file);
     state.fileStackIndex += 1;
 } else {
-    if (state.gitFinding) {
-        setFileSearchOutput(state);
+    if (state.git) {
+        setFileSearchOutput(state, true);
         calcFileFinderOutput(state);
     } else {
         term.fullscreen(false);
