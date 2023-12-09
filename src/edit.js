@@ -113,12 +113,8 @@ if (filePath !== undefined) {
     state.fileStack.push(state.file);
     state.fileStackIndex += 1;
 } else {
-    if (state.git) {
-        setFileSearchOutput(state, true);
-        calcFileFinderOutput(state);
-    } else {
-        state.mode = FILEEXPLORER;
-    }
+    setFileSearchOutput(state, state.git);
+    calcFileFinderOutput(state);
 }
 renderScreen(state, screen);
 
