@@ -14,6 +14,7 @@ import {
     tryPaths,
 } from '../util/helper.js';
 import {
+    COMMAND,
     GREP,
     SEARCH,
     SHORTCUTS,
@@ -231,6 +232,11 @@ function handleVisualKeys(key, state, screen) {
             state.searching = true;
             centerScreen(state);
         }
+    } else if (key === ':') {
+        const query = getInVisual(state);
+        state.currentCommand = `s/${query}//g`;
+        state.commandCursorPosition = 3 + query.length;
+        state.mode = COMMAND;
     } else if (key === '%') {
         matchIt(state);
     } else if (key === 'y') {

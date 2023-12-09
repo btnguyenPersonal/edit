@@ -945,6 +945,7 @@ function handleShortcutKeys(key, state, screen) {
         state.data[state.row] = state.data[state.row].substring(0, state.col)
             + chr
             + state.data[state.row].substring(state.col + 1);
+        right(state);
         cleanup(state, key, false, false, true, false);
     } else if (state.previousKeys === '' && key === 'M') {
         state.mark2 = state.row;
