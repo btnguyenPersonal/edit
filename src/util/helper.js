@@ -1194,11 +1194,13 @@ function sortOutputBySubstring(state, lengthCache) {
 }
 
 function calcFileFinderOutput(state) {
-    const lengthCache = new Map();
-    state.fileFinderOutput = state.fileFinderFileCache.filter(
-        (file) => file !== state.file && file.trim() !== '' && isValidSearch(state.fileFinderQuery, file, lengthCache)
-    );
-    sortOutputBySubstring(state, lengthCache);
+    if (state.fileFinderFileCache.length > 1) {
+        const lengthCache = new Map();
+        state.fileFinderOutput = state.fileFinderFileCache.filter(
+            (file) => file !== state.file && file.trim() !== '' && isValidSearch(state.fileFinderQuery, file, lengthCache)
+        );
+        sortOutputBySubstring(state, lengthCache);
+    }
 }
 
 function setFileExplorerFiles(state) {
