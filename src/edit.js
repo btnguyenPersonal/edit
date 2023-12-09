@@ -6,6 +6,7 @@ import fs from 'fs';
 import {
     FILEFINDER,
     SHORTCUTS,
+    FILEEXPLORER,
 } from './util/modes.js';
 import {
     calcFileFinderOutput,
@@ -116,9 +117,7 @@ if (filePath !== undefined) {
         setFileSearchOutput(state, true);
         calcFileFinderOutput(state);
     } else {
-        term.fullscreen(false);
-        console.log('TODO: implement searching for non-git directories that doesn\'t break');
-        process.exit(0);
+        state.mode = FILEEXPLORER;
     }
 }
 renderScreen(state, screen);
