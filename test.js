@@ -6,9 +6,7 @@ const getTesting = (forevering) => {
         const const var4;
         return (
             <>
-                <hello>
-                    hello
-                </hello>
+                hello
             </>
         )
         break;

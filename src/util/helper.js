@@ -86,7 +86,7 @@ function autocomplete(inputString, array) {
 
         for (let j = 0; j < substrings.length; j += 1) {
             const substring = substrings[j];
-            if (substring.startsWith(inputString)) {
+            if (substring.startsWith(inputString) && substring !== inputString) {
                 counts.set(substring, (counts.get(substring) || 0) + 1);
             }
         }
