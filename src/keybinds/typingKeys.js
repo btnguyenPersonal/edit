@@ -91,7 +91,7 @@ function handleKeys(key, state, screen) {
             + key
             + state.data[state.row].substring(state.col);
         state.col += 1;
-        if ((key === '}' && firstNonSpace(state, state.row) === state.col - 1) || (key === ')' && firstNonSpace(state, state.row) === state.col - 1)) {
+        if (firstNonSpace(state, state.row) === state.col - 1) {
             let indentLevel = state.row - 1 < 0 ? 0 : getIndentLevelFrom(state, state.row - 1);
             if (state.data[state.row].trim().startsWith(')') || state.data[state.row].trim().startsWith('}')) {
                 indentLevel = indentLevel - 4 >= 0 ? indentLevel - 4 : 0;

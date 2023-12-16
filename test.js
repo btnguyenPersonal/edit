@@ -5,7 +5,10 @@ const getTesting = (forevering) => {
         const const var5;
         const const var4;
         return (
+            let test = [
+            ];
             <>
+                hello
                 hello
             </>
         )
