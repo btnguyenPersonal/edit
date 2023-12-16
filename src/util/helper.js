@@ -1282,10 +1282,10 @@ function findCurrentIndentLevel(state, prevLine, currentLine) {
         indent -= state.indentAmount;
         return Math.max(0, indent);
     }
-    if (prevLine.endsWith('(') || prevLine.endsWith('{')) {
+    if (prevLine.endsWith('[') || prevLine.endsWith('(') || prevLine.endsWith('{')) {
         indent += state.indentAmount;
     }
-    if (currentLine.startsWith(')') || currentLine.startsWith('}')) {
+    if (currentLine.startsWith(']') || currentLine.startsWith(')') || currentLine.startsWith('}')) {
         indent -= state.indentAmount;
     }
     return Math.max(0, indent);
