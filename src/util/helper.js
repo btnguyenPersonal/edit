@@ -96,7 +96,7 @@ function autocomplete(inputString, array) {
 
     pairs.sort((a, b) => b[1] - a[1]);
 
-    return pairs[0][0] || '';
+    return pairs[0] ? pairs[0][0] : '';
 }
 
 function copyToClipboard(state, textArray, clipboardVisualBlock) {
