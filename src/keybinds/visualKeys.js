@@ -9,10 +9,10 @@ import {
     isWritable,
     logCommand,
     processFile,
-    renderScreen,
     searchForString,
     tryPaths,
 } from '../util/helper.js';
+import { render } from '../util/render.js';
 import {
     COMMAND,
     GREP,
@@ -296,7 +296,7 @@ function handleVisualKeys(key, state, screen) {
         state.visual.col = tempCol;
     }
     logCommand(false, state, key);
-    renderScreen(state, screen);
+    render(state, screen);
 }
 
 export {

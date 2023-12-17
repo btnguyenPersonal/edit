@@ -3,7 +3,6 @@ import {
     SHORTCUTS
 } from '../util/modes.js';
 import {
-    renderScreen,
     logCommand,
     isWritable,
     searchForString,
@@ -11,6 +10,7 @@ import {
     createSnapshot,
     centerScreen
 } from '../util/helper.js';
+import { render } from '../util/render.js';
 
 function handleSearchKeys(key, state, screen) {
     if (state.replacing) {
@@ -58,7 +58,7 @@ function handleSearchKeys(key, state, screen) {
             }
         }
     }
-    renderScreen(state, screen);
+    render(state, screen);
 }
 
 export {

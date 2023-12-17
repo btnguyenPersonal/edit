@@ -21,7 +21,6 @@ import {
     pasteFromClipboardBefore,
     processFile,
     refreshFile,
-    renderScreen,
     saveFile,
     searchBackForString,
     searchForString,
@@ -29,6 +28,7 @@ import {
     setFileSearchOutput,
     trimTrailingWhitespace,
 } from '../util/helper.js';
+import { render } from '../util/render.js';
 import { sendKeys } from '../util/sendKeys.js';
 import {
     COMMAND,
@@ -829,7 +829,7 @@ function handleShortcutKeys(key, state, screen) {
     } else if (state.previousKeys === '' && key === 'z') {
         centerScreen(state);
         state.windowLineHorizontal = 0;
-        renderScreen(state, screen, undefined, true);
+        render(state, screen, undefined, true);
     } else if (state.previousKeys === '' && key === 'K') {
         if (state.data[state.row + 1] !== undefined) {
             state.col = state.data[state.row].length;
@@ -989,7 +989,7 @@ function handleShortcutKeys(key, state, screen) {
     } else if (state.previousKeys === '' && key === '\\') {
         refreshFile(state);
     }
-    renderScreen(state, screen);
+    render(state, screen);
 }
 
 export {

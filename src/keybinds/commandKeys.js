@@ -3,11 +3,11 @@ import {
     SHORTCUTS,
 } from '../util/modes.js';
 import {
-    renderScreen,
     isWritable,
     evaluateCommand,
     saveFile,
 } from '../util/helper.js';
+import { render } from '../util/render.js';
 
 function handleCommandKeys(key, state, screen, term) {
     if (isWritable(key)) {
@@ -60,7 +60,7 @@ function handleCommandKeys(key, state, screen, term) {
             state.commandCursorPosition -= 1;
         }
     }
-    renderScreen(state, screen);
+    render(state, screen);
 }
 
 export {

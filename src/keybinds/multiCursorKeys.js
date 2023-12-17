@@ -6,8 +6,8 @@ import {
     createSnapshot,
     isWritable,
     logCommand,
-    renderScreen,
 } from '../util/helper.js';
+import { render } from '../util/render.js';
 import {
     decreaseIndentLevel,
     endOfLine,
@@ -137,7 +137,7 @@ function handleMultiCursorKeys(key, state, screen) {
         createSnapshot(state);
     }
     logCommand(false, state, key);
-    renderScreen(state, screen);
+    render(state, screen);
 }
 
 export {

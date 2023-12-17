@@ -4,12 +4,12 @@ import {
     GREP,
 } from '../util/modes.js';
 import {
-    renderScreen,
     isWritable,
     processFile,
     calcGrepOutput,
     calcFileFinderOutput,
 } from '../util/helper.js';
+import { render } from '../util/render.js';
 
 function handleFileFinderKeys(key, state, screen, term) {
     if (isWritable(key) && key !== '\\' && key !== '"') {
@@ -81,7 +81,7 @@ function handleFileFinderKeys(key, state, screen, term) {
         state.fileFinderIndex = 0;
         calcFileFinderOutput(state);
     }
-    renderScreen(state, screen);
+    render(state, screen);
 }
 
 export {

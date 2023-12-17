@@ -3,10 +3,10 @@ import {
     SHORTCUTS,
 } from '../util/modes.js';
 import {
-    renderScreen,
     applySnapshot,
     saveFile,
 } from '../util/helper.js';
+import { render } from '../util/render.js';
 
 function handleHistoryTreeKeys(key, state, screen) {
     if (key === 'UP' || key === 'k') {
@@ -29,7 +29,7 @@ function handleHistoryTreeKeys(key, state, screen) {
         state.fileFinderOutput = [];
         state.fileFinderIndex = 0;
     }
-    renderScreen(state, screen);
+    render(state, screen);
 }
 
 export {

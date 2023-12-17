@@ -7,7 +7,6 @@ import {
     firstNonSpace,
 } from '../util/movement.js';
 import {
-    renderScreen,
     isWritable,
     processFile,
     calcGrepOutput,
@@ -15,6 +14,7 @@ import {
     centerScreen,
     calcFileFinderOutput,
 } from '../util/helper.js';
+import { render } from '../util/render.js';
 
 function handleGrepKeys(key, state, screen) {
     if (isWritable(key)) {
@@ -95,7 +95,7 @@ function handleGrepKeys(key, state, screen) {
         state.grepIndex = 0;
         calcGrepOutput(state);
     }
-    renderScreen(state, screen);
+    render(state, screen);
 }
 
 export {

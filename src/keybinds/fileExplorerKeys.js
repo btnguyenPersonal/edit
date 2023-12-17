@@ -10,8 +10,8 @@ import {
     getFolderFromExplorer,
     isWritable,
     processFile,
-    renderScreen,
 } from '../util/helper.js';
+import { render } from '../util/render.js';
 
 function handleFileExplorerKeys(key, state, screen) {
     if (state.typing && key === 'ESCAPE') {
@@ -178,7 +178,7 @@ function handleFileExplorerKeys(key, state, screen) {
         state.newFile = '';
         state.newFileIndex = 0;
     }
-    renderScreen(state, screen);
+    render(state, screen);
 }
 
 export {

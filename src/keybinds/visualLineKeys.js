@@ -6,9 +6,9 @@ import {
     getSystemPaste,
     logCommand,
     pasteFromClipboardBefore,
-    renderScreen,
     sortLines,
 } from '../util/helper.js';
+import { render } from '../util/render.js';
 import { sendKeys } from '../util/sendKeys.js';
 import {
     SHORTCUTS,
@@ -162,7 +162,6 @@ function handleVisualLineKeys(key, state, screen) {
         }
         state.allowCommandLogging = true;
         createSnapshot(state);
-        renderScreen(state, screen);
     } else if (key === '_') {
         const sortedLines = sortLines(state);
         let begin = state.row;
@@ -302,18 +301,14 @@ function handleVisualLineKeys(key, state, screen) {
         state.previousKeys = 'i';
     } else if (key === '[') {
         previousSameIndentLevel(state, state.row);
-        renderScreen(state, screen);
     } else if (key === ']') {
         nextSameIndentLevel(state, state.row);
-        renderScreen(state, screen);
     } else if (key === '%') {
         matchIt(state);
     } else if (key === '(') {
         previousLowerIndentLevel(state, state.row);
-        renderScreen(state, screen);
     } else if (key === ')') {
         nextLowerIndentLevel(state, state.row);
-        renderScreen(state, screen);
     } else if (key === 'ESCAPE') {
         state.mode = SHORTCUTS;
     } else if (key === 'v') {
@@ -329,7 +324,7 @@ function handleVisualLineKeys(key, state, screen) {
         state.visual.col = tempCol;
     }
     logCommand(false, state, key);
-    renderScreen(state, screen);
+    render(state, screen);
 }
 
 export {
