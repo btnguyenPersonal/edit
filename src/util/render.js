@@ -1,7 +1,22 @@
-// import {
-//     RED,
-//     GREEN,
-// } from './color.js';
+import {
+    BLACK,
+    GREY,
+    RED,
+    GREEN,
+    YELLOW,
+    BLUE,
+    MAGENTA,
+    CYAN,
+    WHITE,
+    DARKGREEN,
+    FADEDRED,
+    FADEDGREEN,
+    FADEDYELLOW,
+    FADEDBLUE,
+    FADEDMAGENTA,
+    FADEDCYAN,
+    SILVER,
+} from './color.js';
 import {
     COMMAND,
     FILEEXPLORER,
@@ -197,7 +212,7 @@ function calcIsInString(
         inString = !inString;
         stringChar = undefined;
     } else if (s === '"' || s === '\'' || s === '`') {
-        color = 'cyan';
+        color = CYAN;
         if (stringChar === undefined && commentString !== '' && commentString !== '<!--') {
             inString = !inString;
             stringChar = s;
@@ -210,18 +225,18 @@ function getColorRow(state, row, displayRow, commentIndex, isCurrentRow, comment
     const output = [];
     let inString = false;
     let stringChar;
-    let color = 'white';
+    let color = WHITE;
     let disregardNext = false;
     let counter = 0;
     let startOfSearch;
     let nonDisplayRowIndex = 0;
     for (let i = 0; i < displayRow.length; i += 1) {
         if (i > 160) {
-            output.push('red');
+            output.push(RED);
         } else {
             const s = displayRow.substring(i, i + 1);
             if (inString) {
-                color = 'cyan';
+                color = CYAN;
             }
             [color, inString, stringChar] = calcIsInString(color, s, stringChar, disregardNext, commentString, inString);
             if (counter !== 0 || (
@@ -249,14 +264,14 @@ function getColorRow(state, row, displayRow, commentIndex, isCurrentRow, comment
                 }
                 output.push('search');
             } else if (!inString && (s === '(' || s === ')')) {
-                color = 'yellow';
+                color = YELLOW;
             } else if (!inString && (s === '[' || s === ']')) {
-                color = 'green';
+                color = GREEN;
             } else if (!inString && (s === '{' || s === '}')) {
-                color = 'magenta';
+                color = MAGENTA;
             }
             if (i >= commentIndex && commentIndex !== -1) {
-                color = 'green';
+                color = GREEN;
             }
             if (counter === 0) {
                 output.push(color);
@@ -266,7 +281,7 @@ function getColorRow(state, row, displayRow, commentIndex, isCurrentRow, comment
             } else {
                 disregardNext = false;
             }
-            color = 'white';
+            color = WHITE;
             if (counter > 0) {
                 counter -= 1;
             } else {
@@ -279,19 +294,19 @@ function getColorRow(state, row, displayRow, commentIndex, isCurrentRow, comment
 
 function renderSingleLine(state, screen, i, mergeSection, isContext) {
     let section = mergeSection;
-    let numColor = 'grey';
-    let numBgColor;
+    let numColor = GREY;
+    let numBgColor = BLACK;
     if (state.recording) {
-        numColor = 'red';
+        numColor = RED;
     } else if (state.row === i) {
-        numColor = 'white';
+        numColor = WHITE;
     }
     if (i === state.mark) {
-        numBgColor = 'green';
-        numColor = 'black';
+        numBgColor = GREEN;
+        numColor = BLACK;
     } else if (i === state.mark2) {
-        numBgColor = 'cyan';
-        numColor = 'black';
+        numBgColor = CYAN;
+        numColor = BLACK;
     }
     screen.put({
         attr: { color: numColor, bgColor: numBgColor, underline: isContext },
@@ -318,22 +333,22 @@ function renderSingleLine(state, screen, i, mergeSection, isContext) {
     );
     for (let j = state.windowLineHorizontal; j < displayRow.length; j += 1) {
         let color = colorRow[j];
-        let bgColor;
+        let bgColor = BLACK;
         if (section === 1 && !isMergeConflictStart(displayRow)) {
-            color = 'red';
+            color = RED;
         } else if (section === 2 && !isMergeConflictMiddle(displayRow)) {
-            color = 'green';
+            color = GREEN;
         } else if (isMergeConflictEnd(displayRow) || isMergeConflictMiddle(displayRow) || isMergeConflictStart(displayRow)) {
-            color = 'blue';
+            color = BLUE;
         }
         if (colorRow[j] === 'search') {
             if (state.replacing || state.searching) {
-                color = 'black';
-                bgColor = 'cyan';
+                color = BLACK;
+                bgColor = CYAN;
             }
         } else if (colorRow[j] === 'searchCurrent') {
-            color = 'black';
-            bgColor = 'magenta';
+            color = BLACK;
+            bgColor = MAGENTA;
         }
         screen.put({
             attr: {
@@ -351,7 +366,7 @@ function renderSingleLine(state, screen, i, mergeSection, isContext) {
                 screen.put({
                     attr: {
                         color: 'gray',
-                        bgColor: 'black'
+                        bgColor: BLACK
                     },
                     wrap: false
                 }, replaceString.substring(str.length));
@@ -407,7 +422,7 @@ function renderHistoryTree(state, screen) {
     for (let i = index; i < state.fileFinderOutput.length && i < index + process.stdout.rows - 2; i += 1) {
         screen.put({
             attr: {
-                color: state.fileFinderIndex === i ? 'red' : 'white',
+                color: state.fileFinderIndex === i ? RED : WHITE,
             },
             x: 0,
             wrap: false
@@ -420,16 +435,16 @@ function renderHistoryTree(state, screen) {
 }
 
 function getFileFinderColor(mode) {
-    return mode === GREP ? 'green' : 'yellow';
+    return mode === GREP ? GREEN : YELLOW;
 }
 
 function getExplorerColor(state, i) {
     if (state.fileExplorerOutput[i].includes('__DIR')) {
-        return 'blue';
+        return BLUE;
     } else if (state.selectedFileExplorerIndex !== -1 && state.selectedFileExplorerIndex === i) {
-        return 'yellow';
+        return YELLOW;
     } else {
-        return 'white';
+        return WHITE;
     }
 }
 
@@ -446,7 +461,7 @@ function renderFileFinder(state, screen, mode) {
     }, '> ');
     screen.put({
         attr: {
-            color: 'white',
+            color: WHITE,
         },
         wrap: false
     }, query);
@@ -455,7 +470,7 @@ function renderFileFinder(state, screen, mode) {
         screen.put({ newLine: true }, '\n');
         screen.put({
             attr: {
-                color: 'white',
+                color: WHITE,
                 inverse: modeIndex === i
             },
             x: 0,
@@ -490,23 +505,24 @@ function renderFileExplorer(state, screen) {
 
 function renderStatusBar(state, screen) {
     if (state.status !== '') {
-        screen.put({ attr: { color: 'red' } }, state.status + ' ');
+        screen.put({ attr: { color: RED, bgColor: BLACK } }, state.status + ' ');
     }
     if (state.mode === FILEEXPLORER) {
-        screen.put({ attr: { color: state.typing ? 'white' : 'grey' } }, '> ' + state.newFile);
+        screen.put({ attr: { color: state.typing ? WHITE : GREY, bgColor: BLACK } }, '> ' + state.newFile);
     } else if (state.mode === COMMAND) {
-        screen.put({ attr: { color: 'white' } }, ':' + state.currentCommand);
+        screen.put({ attr: { color: WHITE, bgColor: BLACK } }, ':' + state.currentCommand);
     } else {
-        screen.put({ attr: { color: 'green' } }, '/' + state.searchQuery + ' ');
+        screen.put({ attr: { color: GREEN, bgColor: BLACK } }, '/' + state.searchQuery + ' ');
         for (let i = 0; i < state.harpoonIndexes.length; i += 1) {
             screen.put({
                 attr: {
-                    color: i === state.harpoonIndex && state.file === state.files[state.harpoonIndexes[i]] ? 'yellow' : 'grey'
+                    color: i === state.harpoonIndex && state.file === state.files[state.harpoonIndexes[i]] ? YELLOW : GREY,
+                    bgColor: BLACK
                 }
             }, shortenFilePath(state.files[state.harpoonIndexes[i]]) + ' ');
         }
     }
-    screen.put({ attr: { color: 'white' }, x: process.stdout.columns - (2 + state.file.length) }, '"' + state.file + '"');
+    screen.put({ attr: { color: WHITE, bgColor: BLACK }, x: process.stdout.columns - (2 + state.file.length) }, '"' + state.file + '"');
 }
 
 function setHarpoonIndex(state) {

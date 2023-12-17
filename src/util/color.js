@@ -1,4 +1,4 @@
-const BLACK = 0;
+const BLACK = 232;
 const GREY = 8;
 const RED = 9;
 const GREEN = 10;

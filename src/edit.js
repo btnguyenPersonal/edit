@@ -7,6 +7,7 @@ import {
     FILEFINDER,
     SHORTCUTS,
 } from './util/modes.js';
+import { BLACK } from './util/color.js';
 import {
     calcFileFinderOutput,
     centerScreen,
@@ -25,7 +26,7 @@ function getFile() {
     return process.argv[2];
 }
 
-const term = terminal();
+const term = terminal({ bgColor: BLACK });
 const filePath = getFile();
 const state = {
     allowCommandLogging: true,
