@@ -1,5 +1,5 @@
 const BLACK = 232;
-const GREY = 	244;
+const GREY =	238;
 const RED = 196;
 const GREEN = 46;
 const YELLOW = 226;
