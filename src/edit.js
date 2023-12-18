@@ -26,7 +26,7 @@ function getFile() {
     return process.argv[2];
 }
 
-const term = terminal({ bgColor: BLACK });
+const term = terminal();
 const filePath = getFile();
 const state = {
     allowCommandLogging: true,

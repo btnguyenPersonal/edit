@@ -1,20 +1,13 @@
 const BLACK = 232;
-const GREY = 8;
-const RED = 9;
-const GREEN = 10;
-const YELLOW = 11;
-const BLUE = 12;
-const MAGENTA = 13;
-const CYAN = 14;
-const WHITE = 15;
-const DARKGREEN = 22;
-const FADEDRED = 1;
-const FADEDGREEN = 2;
-const FADEDYELLOW = 3;
-const FADEDBLUE = 4;
-const FADEDMAGENTA = 5;
-const FADEDCYAN = 6;
-const SILVER = 7;
+const GREY = 	244;
+const RED = 196;
+const GREEN = 46;
+const YELLOW = 226;
+const BLUE = 21;
+const MAGENTA = 201;
+const CYAN = 51;
+const WHITE = 231;
+const DARKGREEN = 231;
 
 export {
     BLACK,
@@ -26,12 +19,4 @@ export {
     MAGENTA,
     CYAN,
     WHITE,
-    DARKGREEN,
-    FADEDRED,
-    FADEDGREEN,
-    FADEDYELLOW,
-    FADEDBLUE,
-    FADEDMAGENTA,
-    FADEDCYAN,
-    SILVER,
 };

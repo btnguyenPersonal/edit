@@ -8,14 +8,6 @@ import {
     MAGENTA,
     CYAN,
     WHITE,
-    DARKGREEN,
-    FADEDRED,
-    FADEDGREEN,
-    FADEDYELLOW,
-    FADEDBLUE,
-    FADEDMAGENTA,
-    FADEDCYAN,
-    SILVER,
 } from './color.js';
 import {
     COMMAND,
@@ -423,6 +415,7 @@ function renderHistoryTree(state, screen) {
         screen.put({
             attr: {
                 color: state.fileFinderIndex === i ? RED : WHITE,
+                bgColor: BLACK,
             },
             x: 0,
             wrap: false
@@ -455,6 +448,7 @@ function renderFileFinder(state, screen, mode) {
     screen.put({
         attr: {
             color: getFileFinderColor(mode),
+            bgColor: BLACK,
         },
         x: 0,
         wrap: false
@@ -462,6 +456,7 @@ function renderFileFinder(state, screen, mode) {
     screen.put({
         attr: {
             color: WHITE,
+            bgColor: BLACK,
         },
         wrap: false
     }, query);
@@ -471,6 +466,7 @@ function renderFileFinder(state, screen, mode) {
         screen.put({
             attr: {
                 color: WHITE,
+                bgColor: BLACK,
                 inverse: modeIndex === i
             },
             x: 0,
@@ -491,6 +487,7 @@ function renderFileExplorer(state, screen) {
         screen.put({
             attr: {
                 color: getExplorerColor(state, i),
+                bgColor: BLACK,
                 inverse: state.fileExplorerIndex === i,
             },
             x: 0,
@@ -535,7 +532,9 @@ function render(state, screen, noCenterScreen, fullRefresh) {
     if (state.data.length === 0) {
         state.data = [''];
     }
-    screen.fill({ char: ' ' });
+    screen.fill({
+        attr: { bgColor: BLACK }
+    });
     screen.moveTo(0, 0);
     setHarpoonIndex(state);
     renderStatusBar(state, screen);
