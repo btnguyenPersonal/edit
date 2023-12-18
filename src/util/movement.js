@@ -1,18 +1,6 @@
 /* eslint-disable import/no-cycle */
 import { copyToClipboard, isAlphaNumeric } from './helper.js';
 
-function getCoorEndNextWord(state) {
-    let hasHitAlphaNum = false;
-    for (let i = state.col + 1; i < state.data[state.row].length; i += 1) {
-        if (hasHitAlphaNum && !isAlphaNumeric(state.data[state.row].charAt(i))) {
-            return i - 1;
-        } else if (!hasHitAlphaNum) {
-            hasHitAlphaNum = isAlphaNumeric(state.data[state.row].charAt(i));
-        }
-    }
-    return state.col;
-}
-
 function swapLeft(obj) {
     const i = obj.index;
     const arr = obj.array;
@@ -483,39 +471,69 @@ function getCoorForwardWord(state) {
 }
 
 function getCoorBeginningNextWord(state) {
-    let hasHitNonAlphaNum = false;
-    for (let i = state.col; i < state.data[state.row].length; i += 1) {
-        if (hasHitNonAlphaNum && isAlphaNumeric(state.data[state.row].charAt(i))) {
+    let isSpecial = !isAlphaNumeric(state.data[state.row].charAt(state.col));
+    let isOnSpace = state.data[state.row].charAt(state.col) === ' ';
+    let space = false;
+    for (let i = state.col + 1; i < state.data[state.row].length; i += 1) {
+        if (state.data[state.row].charAt(i) === ' ') {
+            space = true;
+        } else if (isOnSpace || isSpecial === isAlphaNumeric(state.data[state.row].charAt(i))) {
             return i;
-        } else if (!hasHitNonAlphaNum) {
-            hasHitNonAlphaNum = !isAlphaNumeric(state.data[state.row].charAt(i));
+        } else if ((isOnSpace || space) && !isSpecial === isAlphaNumeric(state.data[state.row].charAt(i))) {
+            return i;
         }
     }
     return state.col;
 }
 
+function getCoorEndNextWord(state) {
+    let ret = state.col;
+    let isSpecial = !isAlphaNumeric(state.data[state.row].charAt(state.col));
+    let isOnSpace = state.data[state.row].charAt(state.col) === ' ';
+    for (let i = state.col + 1; i < state.data[state.row].length; i += 1) {
+        if (state.data[state.row].charAt(i) !== ' ') {
+            ret = i;
+            break;
+        }
+    }
+    let currentAlpha = isAlphaNumeric(state.data[state.row].charAt(ret));
+    for (let i = ret + 1; i < state.data[state.row].length; i += 1) {
+        if (state.data[state.row].charAt(i) === ' ') {
+            break;
+        } else if (currentAlpha === isAlphaNumeric(state.data[state.row].charAt(i))) {
+            ret = i;
+        } else {
+            break;
+        }
+    }
+    return ret;
+}
+
 function getCoorBeginningLastWord(state) {
-    if (state.col > state.data[state.row].length - 1 && state.data[state.row].length > 0) {
-        state.col = state.data[state.row].length - 1;
-    }
-    let hasHitNonAlphaNum = isAlphaNumeric(state.data[state.row].substring(state.col - 1, state.col))
-        && isAlphaNumeric(state.data[state.row].substring(state.col, state.col + 1));
-    let { col } = state;
-    for (let i = col; i >= 0; i -= 1) {
-        if (hasHitNonAlphaNum && isAlphaNumeric(state.data[state.row].charAt(i))) {
-            col = i;
+    let isSpecial = !isAlphaNumeric(state.data[state.row].charAt(state.col));
+    let isOnSpace = state.data[state.row].charAt(state.col) === ' ';
+    let space = false;
+    let ret = state.col;
+    for (let i = state.col - 1; i >= 0; i -= 1) {
+        if (state.data[state.row].charAt(i) === ' ') {
+            space = true;
+        } else if (isOnSpace || isSpecial === isAlphaNumeric(state.data[state.row].charAt(i))) {
+            ret = i;
             break;
-        } else if (!hasHitNonAlphaNum) {
-            hasHitNonAlphaNum = !isAlphaNumeric(state.data[state.row].charAt(i));
-        }
-    }
-    for (let i = col; i >= 0; i -= 1) {
-        if (!isAlphaNumeric(state.data[state.row].charAt(i))) {
+        } else if ((isOnSpace || space) && !isSpecial === isAlphaNumeric(state.data[state.row].charAt(i))) {
+            ret = i;
             break;
         }
-        col = i;
     }
-    return col;
+    let currentAlpha = isAlphaNumeric(state.data[state.row].charAt(ret));
+    for (let i = ret - 1; i >= 0; i -= 1) {
+        if (state.data[state.row].charAt(i) === ' ') {
+            break;
+        } else if (currentAlpha === isAlphaNumeric(state.data[state.row].charAt(i))) {
+            ret = i;
+        }
+    }
+    return ret;
 }
 
 function goToCoor(state, row) {

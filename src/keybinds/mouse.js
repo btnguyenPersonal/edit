@@ -1,7 +1,7 @@
-import * as helper from '../util/helper.js';
 import {
     TYPING
 } from '../util/modes.js';
+import { render } from '../util/render.js';
 
 function handleMouseInputs(key, coor, state, screen) {
     if (key === 'MOUSE_LEFT_BUTTON_PRESSED') {
@@ -9,7 +9,7 @@ function handleMouseInputs(key, coor, state, screen) {
             if (coor.y - 1 < 0 || coor.x - 1 < 0) {
                 state.col = 0;
                 state.row = 0;
-                helper.renderScreen(state, screen);
+                render(state, screen);
                 return;
             }
             const adjustedRow = coor.y - 1 + state.windowLine - 1;
@@ -21,7 +21,7 @@ function handleMouseInputs(key, coor, state, screen) {
                 state.col = 0;
             }
             state.row = Math.max(0, Math.min(adjustedRow, state.data.length - 1));
-            helper.renderScreen(state, screen);
+            render(state, screen);
         }
     } else if (key === 'MOUSE_WHEEL_UP') {
         state.totalCommandHistory += '<w-u>';
@@ -34,7 +34,7 @@ function handleMouseInputs(key, coor, state, screen) {
             state.windowLine += 1;
         }
     }
-    helper.renderScreen(state, screen, true);
+    render(state, screen, true);
 }
 
 export {

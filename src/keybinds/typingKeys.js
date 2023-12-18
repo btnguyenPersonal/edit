@@ -1,6 +1,5 @@
 import {
     isWritable,
-    renderScreen,
     createSnapshot,
     autocomplete,
     getCurrentWord,
@@ -8,6 +7,7 @@ import {
     findLastIndentLevel,
     logCommand
 } from '../util/helper.js';
+import { render } from '../util/render.js';
 import {
     SHORTCUTS
 } from '../util/modes.js';
@@ -108,7 +108,7 @@ function handleKeys(key, state, screen) {
         createSnapshot(state);
     }
     logCommand(false, state, key);
-    renderScreen(state, screen);
+    render(state, screen);
 }
 
 export {

@@ -7,7 +7,6 @@ import {
     firstNonSpace,
 } from '../util/movement.js';
 import {
-    renderScreen,
     isWritable,
     processFile,
     calcGrepOutput,
@@ -15,6 +14,7 @@ import {
     centerScreen,
     calcFileFinderOutput,
 } from '../util/helper.js';
+import { render } from '../util/render.js';
 
 function handleGrepKeys(key, state, screen) {
     if (isWritable(key)) {
@@ -58,7 +58,7 @@ function handleGrepKeys(key, state, screen) {
             state.grepIndex -= 1;
         }
     } else if (key === 'DOWN' || key === 'CTRL_N') {
-        if (state.grepIndex + 1 < state.fileFinderOutput.length - 1) {
+        if (state.grepIndex < state.fileFinderOutput.length - 1) {
             state.grepIndex += 1;
         }
     } else if (key === 'ESCAPE') {
@@ -95,7 +95,7 @@ function handleGrepKeys(key, state, screen) {
         state.grepIndex = 0;
         calcGrepOutput(state);
     }
-    renderScreen(state, screen);
+    render(state, screen);
 }
 
 export {

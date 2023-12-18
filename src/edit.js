@@ -6,17 +6,17 @@ import fs from 'fs';
 import {
     FILEFINDER,
     SHORTCUTS,
-    FILEEXPLORER,
 } from './util/modes.js';
+import { BLACK } from './util/color.js';
 import {
     calcFileFinderOutput,
     centerScreen,
     createSnapshot,
     isInGit,
     getData,
-    renderScreen,
     setFileSearchOutput,
 } from './util/helper.js';
+import { render } from './util/render.js';
 import { sendKeys } from './util/sendKeys.js';
 import { handleMouseInputs } from './keybinds/mouse.js';
 
@@ -116,7 +116,7 @@ if (filePath !== undefined) {
     setFileSearchOutput(state, state.git);
     calcFileFinderOutput(state);
 }
-renderScreen(state, screen);
+render(state, screen);
 
 term.on('key', (key) => {
     state.status = '';
@@ -143,7 +143,7 @@ term.on('mouse', (name, coor) => {
 
 term.on('resize', () => {
     try {
-        renderScreen(state, screen);
+        render(state, screen);
     } catch (e) {
         term.fullscreen(false);
         console.log(e);

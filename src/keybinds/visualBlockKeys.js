@@ -4,8 +4,8 @@ import {
     isWritable,
     getFormattedLines,
     logCommand,
-    renderScreen,
 } from '../util/helper.js';
+import { render } from '../util/render.js';
 import {
     MULTICURSOR,
     SHORTCUTS,
@@ -185,7 +185,7 @@ function handleVisualBlockKeys(key, state, screen) {
         state.visual.col = tempCol;
     }
     logCommand(false, state, key);
-    renderScreen(state, screen);
+    render(state, screen);
 }
 
 export {
