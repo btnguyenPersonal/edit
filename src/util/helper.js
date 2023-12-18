@@ -638,7 +638,7 @@ function setFileSearchOutput(state, useGit) {
         state.fileFinderFileCache = execSync(
             'find . -type f -not -path "./.git/*" -not -path "./node_modules/*"',
             { maxBuffer: 1024 * 1024 * 1000 }
-        ).toString().split('\n').map(line => line.substring(2));
+        ).toString().split('\n').map((line) => line.substring(2));
     }
     if (state.fileFinderFileCache.length > 1000) {
         state.skipSortingFileFinder = true;
@@ -661,7 +661,7 @@ function calcGrepOutput(state) {
                 { maxBuffer: 1024 * 1024 * 1000 }
             ).toString().split('\n');
         }
-        state.fileFinderOutput = state.fileFinderOutput.filter(line => line.length > 0);
+        state.fileFinderOutput = state.fileFinderOutput.filter((line) => line.length > 0);
     } else {
         state.fileFinderOutput = [];
     }

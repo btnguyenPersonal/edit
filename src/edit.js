@@ -7,7 +7,6 @@ import {
     FILEFINDER,
     SHORTCUTS,
 } from './util/modes.js';
-import { BLACK } from './util/color.js';
 import {
     calcFileFinderOutput,
     centerScreen,

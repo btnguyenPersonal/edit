@@ -471,8 +471,8 @@ function getCoorForwardWord(state) {
 }
 
 function getCoorBeginningNextWord(state) {
-    let isSpecial = !isAlphaNumeric(state.data[state.row].charAt(state.col));
-    let isOnSpace = state.data[state.row].charAt(state.col) === ' ';
+    const isSpecial = !isAlphaNumeric(state.data[state.row].charAt(state.col));
+    const isOnSpace = state.data[state.row].charAt(state.col) === ' ';
     let space = false;
     for (let i = state.col + 1; i < state.data[state.row].length; i += 1) {
         if (state.data[state.row].charAt(i) === ' ') {
@@ -488,15 +488,13 @@ function getCoorBeginningNextWord(state) {
 
 function getCoorEndNextWord(state) {
     let ret = state.col;
-    let isSpecial = !isAlphaNumeric(state.data[state.row].charAt(state.col));
-    let isOnSpace = state.data[state.row].charAt(state.col) === ' ';
     for (let i = state.col + 1; i < state.data[state.row].length; i += 1) {
         if (state.data[state.row].charAt(i) !== ' ') {
             ret = i;
             break;
         }
     }
-    let currentAlpha = isAlphaNumeric(state.data[state.row].charAt(ret));
+    const currentAlpha = isAlphaNumeric(state.data[state.row].charAt(ret));
     for (let i = ret + 1; i < state.data[state.row].length; i += 1) {
         if (state.data[state.row].charAt(i) === ' ') {
             break;
@@ -510,8 +508,8 @@ function getCoorEndNextWord(state) {
 }
 
 function getCoorBeginningLastWord(state) {
-    let isSpecial = !isAlphaNumeric(state.data[state.row].charAt(state.col));
-    let isOnSpace = state.data[state.row].charAt(state.col) === ' ';
+    const isSpecial = !isAlphaNumeric(state.data[state.row].charAt(state.col));
+    const isOnSpace = state.data[state.row].charAt(state.col) === ' ';
     let space = false;
     let ret = state.col;
     for (let i = state.col - 1; i >= 0; i -= 1) {
@@ -525,7 +523,7 @@ function getCoorBeginningLastWord(state) {
             break;
         }
     }
-    let currentAlpha = isAlphaNumeric(state.data[state.row].charAt(ret));
+    const currentAlpha = isAlphaNumeric(state.data[state.row].charAt(ret));
     for (let i = ret - 1; i >= 0; i -= 1) {
         if (state.data[state.row].charAt(i) === ' ') {
             break;
