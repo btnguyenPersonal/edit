@@ -25,13 +25,17 @@ function handleMouseInputs(key, coor, state, screen) {
         }
     } else if (key === 'MOUSE_WHEEL_UP') {
         state.totalCommandHistory += '<w-u>';
-        if (state.windowLine > 0) {
-            state.windowLine -= 1;
+        for (let i = 0; i < 5; i += 1) {
+            if (state.windowLine > 0) {
+                state.windowLine -= 1;
+            }
         }
     } else if (key === 'MOUSE_WHEEL_DOWN') {
         state.totalCommandHistory += '<w-d>';
-        if (state.windowLine < state.data.length - 1) {
-            state.windowLine += 1;
+        for (let i = 0; i < 5; i += 1) {
+            if (state.windowLine < state.data.length - 1) {
+                state.windowLine += 1;
+            }
         }
     }
     render(state, screen, true);
