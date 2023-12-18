@@ -661,6 +661,7 @@ function calcGrepOutput(state) {
                 { maxBuffer: 1024 * 1024 * 1000 }
             ).toString().split('\n');
         }
+        state.fileFinderOutput = state.fileFinderOutput.filter(line => line.length > 0);
     } else {
         state.fileFinderOutput = [];
     }
