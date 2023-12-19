@@ -529,6 +529,8 @@ function getCoorBeginningLastWord(state) {
             break;
         } else if (currentAlpha === isAlphaNumeric(state.data[state.row].charAt(i))) {
             ret = i;
+        } else {
+            break;
         }
     }
     return ret;
