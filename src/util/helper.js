@@ -636,7 +636,7 @@ function setFileSearchOutput(state, useGit) {
         }
     } else {
         state.fileFinderFileCache = execSync(
-            'find . -type f -not -path "./.git/*" -not -path "./node_modules/*"',
+            'find . -type f -not -path "./.next/*" -not -path "./.git/*" -not -path "./node_modules/*"',
             { maxBuffer: 1024 * 1024 * 1000 }
         ).toString().split('\n').map((line) => line.substring(2));
     }

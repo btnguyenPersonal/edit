@@ -21,7 +21,6 @@ function handleGrepKeys(key, state, screen) {
         state.grepQuery = state.grepQuery.slice(0, state.grepCursorPosition) + key + state.grepQuery.slice(state.grepCursorPosition);
         state.grepCursorPosition += 1;
         state.grepIndex = 0;
-        calcGrepOutput(state);
     } else if (key === 'CTRL_G') {
         state.mode = FILEFINDER;
         setFileSearchOutput(state, true);
@@ -83,17 +82,18 @@ function handleGrepKeys(key, state, screen) {
             state.col = firstNonSpace(state, state.row);
             state.mark2 = state.row;
         }
+    } else if (key === 'CTRL_R') {
+        render(state, screen);
+        calcGrepOutput(state);
     } else if (key === 'CTRL_L') {
         state.grepQuery = '';
         state.grepCursorPosition = 0;
-        calcGrepOutput(state);
     } else if (key === 'BACKSPACE') {
         if (state.grepCursorPosition > 0) {
             state.grepQuery = state.grepQuery.slice(0, state.grepCursorPosition - 1) + state.grepQuery.slice(state.grepCursorPosition);
             state.grepCursorPosition -= 1;
         }
         state.grepIndex = 0;
-        calcGrepOutput(state);
     }
     render(state, screen);
 }
