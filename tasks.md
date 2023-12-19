@@ -24,11 +24,11 @@
     - click & drag select for visualLine (needs some terminal-kit internals research)
 ## todo
     - git log viewer
-    - have grep not block typing (maybe have a render, then trigger a callback render when done?)
     - change undo to diff based
 ## in progress
-    - fix w b E
+    - have grep not block typing (maybe have a render, then trigger a callback render when done?)
 ## done
+    - fix w b E
     - search inside of fileExplorer
     - error when ctrl p when not in git
     - fix indent for []
