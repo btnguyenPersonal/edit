@@ -746,23 +746,24 @@ function findCurrentIndentLevel(state, prevLine, currentLine) {
     if (currentLine.startsWith(getCommentString(state.file))) {
         return indent;
     }
+    const isHTML = prevLine.startsWith('<') || prevLine.startsWith('>') || currentLine.startsWith('<') || currentLine.startsWith('>');
     const prevLineSelfClosingTag = /<[^/]*\/>/.test(prevLine);
     const prevLineOpensTag = /<[^/]*>/.test(prevLine) && !prevLineSelfClosingTag;
     const prevLineClosesTag = /<\/[^>]+>/.test(prevLine);
     const currentLineClosesTag = /<\/[^>]+>/.test(currentLine);
-    if (prevLineOpensTag) {
-        indent += state.indentAmount;
-        return Math.max(0, indent);
-    }
-    if (prevLineClosesTag || currentLineClosesTag || currentLine.trim() === '</>') {
-        indent -= state.indentAmount;
-        return Math.max(0, indent);
-    }
     if (prevLine.endsWith('[') || prevLine.endsWith('(') || prevLine.endsWith('{')) {
         indent += state.indentAmount;
     }
     if (currentLine.startsWith(']') || currentLine.startsWith(')') || currentLine.startsWith('}')) {
         indent -= state.indentAmount;
+    }
+    if (isHTML) {
+        if (prevLineOpensTag) {
+            indent += state.indentAmount;
+        }
+        if (prevLineClosesTag || currentLineClosesTag || currentLine.trim() === '</>') {
+            indent -= state.indentAmount;
+        }
     }
     return Math.max(0, indent);
 }
