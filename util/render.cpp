@@ -1,13 +1,15 @@
+#pragma once
+
 #include <ncurses.h>
 #include <string>
 #include <vector>
+#include "state.cpp"
 
-void renderScreen(std::vector<std::string> file_contents) {
+void renderScreen(State state) {
     // TODO partial update
     clear();
-    for (int i = 0; i < file_contents.size(); i++) {
-        printw(file_contents[i].c_str());
-        printw("\n");
+    for (int i = 0; i < state.data.size(); i++) {
+        printw("%s\n", state.data[i].c_str());
     }
     refresh();
 }

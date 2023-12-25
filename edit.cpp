@@ -4,23 +4,21 @@
 #include <ncurses.h>
 #include "util/helper.cpp"
 #include "util/render.cpp"
+#include "util/state.cpp"
+#include "util/sendKeys.cpp"
 
 int main(int argc, char* argv[]) {
     if (argc < 2) {
         std::cerr << "usage: edit [file]" << std::endl;
         exit(1);
     }
-    std::vector<std::string> file_contents = readFile(argv[1]);
-    for (std::string line : file_contents) {
-        std::cout << line << std::endl;
-    }
+    State state(argv[1]);
     initscr();
-    renderScreen(file_contents);
-    refresh();
-    while (true) {
-        char c = getchar();
-        renderScreen(file_contents);
-        refresh();
+    renderScreen(state);
+    char c;
+    while (c = getchar()) {
+        sendKeys(&state, c);
+        renderScreen(state);
     }
     endwin();
     return 0;
