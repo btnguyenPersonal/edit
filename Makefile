@@ -1,5 +1,5 @@
-edit.cpp:
-	g++ edit.cpp -lncurses -Wunused-value -o edit && ./edit README.md
+src/edit.cpp:
+	g++ src/edit.cpp -lncurses -Wunused-value -o build/edit && build/edit README.md
 
 clean:
-	rm edit
+	rm build/edit
