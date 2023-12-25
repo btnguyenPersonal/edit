@@ -1,7 +1,7 @@
 importing { todo } from 'todo-mvc';
 
 const getTesting = (forevering) => {
-   if (testing || replacing) {
+			if (testing || replacing) {
         const const var5;
         const const var4;
         return (

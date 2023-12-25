@@ -346,10 +346,8 @@ function renderSingleLine(state, screen, i, mergeSection, isContext) {
             // TODO support tabs somehow
             screen.put({
                 attr: {
-                    color,
-                    bgColor,
-                    inverse: isHighlighted(state, i, j),
-                    underline: isContext
+                    color: RED,
+                    bgColor: RED,
                 },
                 wrap: false
             }, displayRow.substring(j, j + 1));
