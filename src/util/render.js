@@ -342,15 +342,28 @@ function renderSingleLine(state, screen, i, mergeSection, isContext) {
             color = BLACK;
             bgColor = MAGENTA;
         }
-        screen.put({
-            attr: {
-                color,
-                bgColor,
-                inverse: isHighlighted(state, i, j),
-                underline: isContext
-            },
-            wrap: false
-        }, displayRow.substring(j, j + 1));
+        if (displayRow.substring(j, j + 1) === '\t') {
+            // TODO support tabs somehow
+            screen.put({
+                attr: {
+                    color,
+                    bgColor,
+                    inverse: isHighlighted(state, i, j),
+                    underline: isContext
+                },
+                wrap: false
+            }, displayRow.substring(j, j + 1));
+        } else {
+            screen.put({
+                attr: {
+                    color,
+                    bgColor,
+                    inverse: isHighlighted(state, i, j),
+                    underline: isContext
+                },
+                wrap: false
+            }, displayRow.substring(j, j + 1));
+        }
         if (state.row === i && state.col - 1 === j && state.mode === TYPING) {
             const str = getCurrentWord(state.data[state.row], state.col);
             const replaceString = autocomplete(str, state.data);

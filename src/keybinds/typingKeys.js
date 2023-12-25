@@ -55,6 +55,10 @@ function handleKeys(key, state, screen) {
             state.data.splice(state.row, 1);
             state.row -= 1;
         }
+    } else if (key === 'CTRL_T') {
+        state.data[state.row] = state.data[state.row].substring(0, state.col)
+            + '\t'
+            + state.data[state.row].substring(state.col);
     } else if (key === 'TAB') {
         const str = getCurrentWord(state.data[state.row], state.col);
         const replaceString = autocomplete(str, state.data);
