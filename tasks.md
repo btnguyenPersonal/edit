@@ -25,8 +25,9 @@
 ## todo
     - git log viewer
     - change undo to diff based
-## in progress
+    - change getCommentSting to getFileType, so later can have differnt indent rules based on diff file types
     - have grep not block typing (maybe have a render, then trigger a callback render when done?)
+## in progress
 ## done
     - fix w b E
     - search inside of fileExplorer
