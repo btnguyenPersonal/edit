@@ -751,7 +751,7 @@ function findCurrentIndentLevel(state, prevLine, currentLine) {
     const prevLineOpensTag = /<[^/]*>/.test(prevLine) && !prevLineSelfClosingTag;
     const prevLineClosesTag = /<\/[^>]+>/.test(prevLine);
     const currentLineClosesTag = /<\/[^>]+>/.test(currentLine);
-    if (prevLine.endsWith('[') || prevLine.endsWith('(') || prevLine.endsWith('{')) {
+    if (prevLine.endsWith('[') || prevLine.endsWith('(') || prevLine.endsWith('{') || prevLine.endsWith(':')) {
         indent += state.indentAmount;
     }
     if (currentLine.startsWith(']') || currentLine.startsWith(')') || currentLine.startsWith('}')) {

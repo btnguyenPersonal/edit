@@ -5,7 +5,8 @@ import {
     getCurrentWord,
     findCurrentIndentLevel,
     findLastIndentLevel,
-    logCommand
+    logCommand,
+    getFormattedLines,
 } from '../util/helper.js';
 import { render } from '../util/render.js';
 import {
@@ -16,7 +17,6 @@ import {
     down,
     left,
     right,
-    getIndentLevelFrom,
     isEmptyRow,
     endOfLine,
     firstNonSpace,
@@ -95,12 +95,9 @@ function handleKeys(key, state, screen) {
             + key
             + state.data[state.row].substring(state.col);
         state.col += 1;
-        if (firstNonSpace(state, state.row) === state.col - 1) {
-            let indentLevel = state.row - 1 < 0 ? 0 : getIndentLevelFrom(state, state.row - 1);
-            if (state.data[state.row].trim().startsWith(')') || state.data[state.row].trim().startsWith('}')) {
-                indentLevel = indentLevel - 4 >= 0 ? indentLevel - 4 : 0;
-            }
-            state.data[state.row] = ' '.repeat(indentLevel) + state.data[state.row].trim();
+        if (firstNonSpace(state, state.row) === state.col - 1 && state.row > 0) {
+            const lines = getFormattedLines(state, state.row - 1, state.row);
+            state.data[state.row] = lines[1];
             state.col = firstNonSpace(state, state.row) + 1;
         }
     } else if (key === 'ESCAPE') {
