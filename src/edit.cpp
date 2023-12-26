@@ -16,7 +16,8 @@ int main(int argc, char* argv[]) {
     initscr();
     renderScreen(state);
     char c;
-    while ((c = getchar())) {
+    while (true) {
+        c = getchar();
         sendKeys(&state, c);
         renderScreen(state);
     }
