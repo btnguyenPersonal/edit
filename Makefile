@@ -1,8 +1,10 @@
 # Compiler
 CC = g++
+CFLAGS = -Wall -lncurses
 
 # Directories
 SRC_DIR = src
+KEYBINDS_DIR = $(SRC_DIR)/keybinds
 UTIL_DIR = $(SRC_DIR)/util
 BUILD_DIR = build
 
@@ -10,8 +12,10 @@ BUILD_DIR = build
 SOURCES = $(SRC_DIR)/edit.cpp \
           $(UTIL_DIR)/helper.cpp \
           $(UTIL_DIR)/render.cpp \
-          $(UTIL_DIR)/sendKeys.cpp \
-          $(UTIL_DIR)/state.cpp
+          $(UTIL_DIR)/state.cpp \
+          $(KEYBINDS_DIR)/sendKeys.cpp \
+          $(KEYBINDS_DIR)/sendShortcutKeys.cpp \
+          $(KEYBINDS_DIR)/sendTypingKeys.cpp
 
 # Object files
 OBJECTS = $(SOURCES:$(SRC_DIR)/%.cpp=$(BUILD_DIR)/%.o)
@@ -23,13 +27,13 @@ EXECUTABLE = $(BUILD_DIR)/e
 all: $(BUILD_DIR) $(EXECUTABLE)
 
 $(BUILD_DIR):
-	mkdir -p $(BUILD_DIR)/util
+	mkdir -p $(BUILD_DIR)/util $(BUILD_DIR)/keybinds
 
 $(EXECUTABLE): $(OBJECTS)
-	$(CC) $^ -o $@ -lncurses
+	$(CC) $^ -o $@ $(CFLAGS)
 
 $(BUILD_DIR)/%.o: $(SRC_DIR)/%.cpp
-	$(CC) -c $< -o $@
+	$(CC) -c $< -o $@ $(CFLAGS)
 
 # Clean rule
 clean:

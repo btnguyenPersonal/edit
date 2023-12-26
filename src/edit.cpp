@@ -5,18 +5,18 @@
 #include "util/helper.h"
 #include "util/render.h"
 #include "util/state.h"
-#include "util/sendKeys.h"
+#include "keybinds/sendKeys.h"
 
 int main(int argc, char* argv[]) {
     if (argc < 2) {
         std::cerr << "usage: edit [file]" << std::endl;
-        exit(1);
+       exit(1);
     }
     State state(argv[1]);
     initscr();
     renderScreen(state);
     char c;
-    while (c = getchar()) {
+    while ((c = getchar())) {
         sendKeys(&state, c);
         renderScreen(state);
     }
