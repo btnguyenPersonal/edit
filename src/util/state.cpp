@@ -1,15 +1,9 @@
-#pragma once
-
 #include <string>
 #include <vector>
-#include "helper.cpp"
+#include "helper.h"
+#include "state.h"
 
-class State {
-    public:
-        char* filename;
-        std::vector<std::string> data;
-        State(char* filename) {
-            this->filename = filename;
-            this->data = readFile(filename);
-        }
-};
+State::State(char* filename) {
+    this->filename = filename;
+    this->data = readFile(filename);
+}

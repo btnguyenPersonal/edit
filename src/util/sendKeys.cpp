@@ -1,9 +1,7 @@
-#pragma once
-
 #include <string>
 #include <vector>
-#include "state.cpp"
-#include "render.cpp"
+#include "render.h"
+#include "state.h"
 
 void sendKeys(State* state, char c) {
     if (c == 'k') {

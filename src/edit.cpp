@@ -2,10 +2,10 @@
 #include <iostream>
 #include <vector>
 #include <ncurses.h>
-#include "util/helper.cpp"
-#include "util/render.cpp"
-#include "util/state.cpp"
-#include "util/sendKeys.cpp"
+#include "util/helper.h"
+#include "util/render.h"
+#include "util/state.h"
+#include "util/sendKeys.h"
 
 int main(int argc, char* argv[]) {
     if (argc < 2) {
