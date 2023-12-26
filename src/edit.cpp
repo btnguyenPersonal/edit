@@ -14,6 +14,12 @@ int main(int argc, char* argv[]) {
     }
     State state(argv[1]);
     initscr();
+    if (has_colors() == FALSE) {
+        endwin();
+        std::cout << "Your terminal does not support color" << std::endl;
+        return 1;
+    }
+    start_color();
     renderScreen(state);
     char c;
     while (true) {
