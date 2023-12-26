@@ -232,7 +232,6 @@ function getCommentString(file) {
         case 'h':
         case 'rs':
         case 'cs':
-        case 'Makefile':
         case 'php':
         case 'js':
         case 'swift':
@@ -289,6 +288,7 @@ function getCommentString(file) {
         case 'cson':
         case 'env':
         case 'md':
+        case 'makefile':
             commentString = '#';
             break;
         case 'css':
