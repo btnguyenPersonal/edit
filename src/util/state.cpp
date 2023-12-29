@@ -9,6 +9,7 @@ State::State(char* filename) {
     this->data = readFile(filename);
     this->row = 0;
     this->col = 0;
+    this->commandLineQuery = std::string("");
     this->prevKeys = std::string("");
     this->status = std::string("");
     this->mode = SHORTCUTS;

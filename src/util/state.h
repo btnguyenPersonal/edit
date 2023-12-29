@@ -11,6 +11,7 @@ class State {
         std::vector<std::string> data;
         uint row;
         uint col;
+        std::string commandLineQuery;
         std::string prevKeys;
         std::string status;
         Mode mode;

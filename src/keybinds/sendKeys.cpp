@@ -1,5 +1,6 @@
 #include "sendShortcutKeys.h"
 #include "sendTypingKeys.h"
+#include "sendCommandLineKeys.h"
 #include "../util/state.h"
 #include "../util/modes.h"
 
@@ -8,5 +9,7 @@ void sendKeys(State* state, char c) {
         sendTypingKeys(state, c);
     } else if (state->mode == SHORTCUTS) {
         sendShortcutKeys(state, c);
+    } else if (state->mode == COMMANDLINE) {
+        sendCommandLineKeys(state, c);
     }
 }

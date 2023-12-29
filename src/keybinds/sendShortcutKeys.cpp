@@ -8,6 +8,8 @@
 void sendShortcutKeys(State* state, char c) {
     if (c == 27) { // ESC
         state->prevKeys = "";
+    } else if (c == ':') {
+        state->mode = COMMANDLINE;
     } else if (c == 'h') {
         if (state->col > 0) {
             state->col -= 1;
@@ -24,11 +26,6 @@ void sendShortcutKeys(State* state, char c) {
         if (state->row > 0) {
             state->row -= 1;
         }
-    } else if (c == 19) { // CTRL-S
-        saveFile(state->filename, state->data);
-    } else if (c == 'q') {
-        endwin();
-        exit(0);
     } else if (c == 'i') {
         state->mode = TYPING;
     } else {

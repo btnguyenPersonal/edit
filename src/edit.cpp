@@ -26,6 +26,7 @@ int main(int argc, char* argv[]) {
     renderScreen(state);
     char c;
     while (true) {
+        state.status = std::string("");
         c = getchar();
         sendKeys(&state, c);
         renderScreen(state);
