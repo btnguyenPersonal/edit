@@ -1,6 +1,8 @@
 #include <string>
 #include <vector>
+#include <ncurses.h>
 #include "../util/state.h"
+#include "../util/helper.h"
 #include "../util/modes.h"
 
 void sendShortcutKeys(State* state, char c) {
@@ -22,6 +24,11 @@ void sendShortcutKeys(State* state, char c) {
         if (state->row > 0) {
             state->row -= 1;
         }
+    } else if (c == 19) { // CTRL-S
+        saveFile(state->filename, state->data);
+    } else if (c == 'q') {
+        endwin();
+        exit(0);
     } else if (c == 'i') {
         state->mode = TYPING;
     } else {
