@@ -81,7 +81,6 @@ function handleGrepKeys(key, state, screen) {
             state.mode = SHORTCUTS;
             centerScreen(state);
             state.col = firstNonSpace(state, state.row);
-            state.mark2 = state.row;
         }
     } else if (key === 'CTRL_L') {
         state.grepQuery = '';
