@@ -3,5 +3,6 @@
 #include "state.h"
 
 void initColors();
-void renderStatusBar(State state);
-void renderScreen(State state);
+int renderStatusBar(State state);
+void renderVisibleLines(State state);
+void renderScreen(State state, int maxY, int maxX);

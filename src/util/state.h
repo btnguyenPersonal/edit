@@ -2,13 +2,13 @@
 
 #include <string>
 #include <vector>
-#include "helper.h"
 #include "modes.h"
 
 class State {
     public:
         char* filename;
         std::vector<std::string> data;
+        uint windowPosition;
         uint row;
         uint col;
         std::string commandLineQuery;

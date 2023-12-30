@@ -8,6 +8,8 @@
 #include "keybinds/sendKeys.h"
 
 int main(int argc, char* argv[]) {
+    char c;
+    int maxY, maxX;
     if (argc < 2) {
         std::cerr << "usage: edit [file]" << std::endl;
        exit(1);
@@ -23,13 +25,17 @@ int main(int argc, char* argv[]) {
         return 1;
     }
     start_color();
-    renderScreen(state);
-    char c;
+    getmaxyx(stdscr, maxY, maxX);
+    renderScreen(state, maxY, maxX);
     while (true) {
         state.status = std::string("");
         c = getchar();
         sendKeys(&state, c);
-        renderScreen(state);
+        getmaxyx(stdscr, maxY, maxX);
+        if (isWindowPositionInvalid(state, maxY)) {
+            centerScreen(&state, maxY);
+        }
+        renderScreen(state, maxY, maxX);
     }
     endwin();
     return 0;

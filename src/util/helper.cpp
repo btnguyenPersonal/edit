@@ -2,6 +2,7 @@
 #include <iterator>
 #include <vector>
 #include <fstream>
+#include "state.h"
 
 void saveFile(std::string filename, std::vector<std::string> data) {
     std::ofstream file(filename);
@@ -17,4 +18,16 @@ std::vector<std::string> readFile(std::string filename) {
         file_contents.push_back(str);
     }
     return file_contents;
+}
+
+bool isWindowPositionInvalid(State state, int maxY) {
+    return state.row < state.windowPosition || ((int) state.row) - ((int) state.windowPosition) > (maxY - 2);
+}
+
+void centerScreen(State* state, int maxY) {
+    if (state->row < (uint) maxY / 2) {
+        state->windowPosition = 0;
+    } else {
+        state->windowPosition = state->row - (uint) maxY / 2;
+    }
 }

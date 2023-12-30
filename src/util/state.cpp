@@ -7,6 +7,7 @@
 State::State(char* filename) {
     this->filename = filename;
     this->data = readFile(filename);
+    this->windowPosition = 0;
     this->row = 0;
     this->col = 0;
     this->commandLineQuery = std::string("");
