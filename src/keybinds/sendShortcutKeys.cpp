@@ -11,19 +11,24 @@ void sendShortcutKeys(State* state, char c) {
     } else if (c == ':') {
         state->mode = COMMANDLINE;
     } else if (c == 'h') {
-        if (state->col > 0) {
-            state->col -= 1;
-        }
+        left(state);
     } else if (c == 'l') {
-        if (state->col < state->data[state->row].length()) {
-            state->col += 1;
-        }
-    } else if (c == 'j') {
-        down(state);
+        right(state);
     } else if (c == 'k') {
         up(state);
+    } else if (c == 'j') {
+        down(state);
     } else if (c == 'i') {
         state->mode = TYPING;
+    } else if (c == 'a') {
+        right(state);
+        state->mode = TYPING;
+    } else if (c == ctrl('u')) {
+        upHalfScreen(state);
+    } else if (c == ctrl('d')) {
+        downHalfScreen(state);
+    } else if (c == 'z') {
+        centerScreen(state);
     } else {
         state->status = std::string(1, c) + " <" + std::to_string((int)c) + ">";
     }

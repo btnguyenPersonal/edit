@@ -9,7 +9,6 @@
 
 int main(int argc, char* argv[]) {
     char c;
-    int maxY, maxX;
     if (argc < 2) {
         std::cerr << "usage: edit [file]" << std::endl;
        exit(1);
@@ -25,18 +24,13 @@ int main(int argc, char* argv[]) {
     }
     start_color();
     State state(argv[1]);
-    getmaxyx(stdscr, maxY, maxX);
-    State::setMaxYX(maxY, maxX);
+    calcWindowBounds();
     renderScreen(state);
     while (true) {
         state.status = std::string("");
         c = getchar();
-        // calc new window barriers
-        getmaxyx(stdscr, maxY, maxX);
-        State::setMaxYX(maxY, maxX);
-        // send keys
+        calcWindowBounds();
         sendKeys(&state, c);
-        // if offscreen, center screen
         if (isWindowPositionInvalid(state)) {
             centerScreen(&state);
         }
