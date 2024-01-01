@@ -41,6 +41,10 @@ void sendShortcutKeys(State* state, char c) {
         state->col = state->data[state->row].length();
     } else if (c == 'z') {
         centerScreen(state);
+    } else if (c == 'p') {
+        state->status = getFromClipboard();
+    } else if (c == 'y') {
+        copyToClipboard(state->data[state->row]);
     } else {
         state->status = std::string(1, c) + " <" + std::to_string((int)c) + ">";
     }

@@ -1,6 +1,7 @@
 #include <string>
 #include <iterator>
 #include <vector>
+#include <array>
 #include <fstream>
 #include <curses.h>
 #include "state.h"
@@ -93,6 +94,41 @@ int getIndexFirstNonSpace(State* state) {
         }
     }
     return i;
+}
+
+std::string getFromClipboard() {
+    std::string command;
+    #ifdef __APPLE__
+        command = "pbpaste";
+    #elif defined(__linux__)
+        command = "xclip -selection clipboard -o";
+    #else
+        #error "Platform not supported"
+    #endif
+
+    std::string result;
+    std::array<char, 256> buffer;
+    FILE *pipe = popen(command.c_str(), "r");
+    if (!pipe) throw std::runtime_error("popen() failed!");
+
+    while (fgets(buffer.data(), buffer.size(), pipe) != nullptr) {
+        result += buffer.data();
+    }
+
+    pclose(pipe);
+    return result;
+}
+
+void copyToClipboard(std::string s) {
+    std::string command;
+    #ifdef __APPLE__
+        command = "echo \"" + s + "\" | pbcopy";
+    #elif defined(__linux__)
+        command = "echo \"" + s + "\" | xclip -selection clipboard";
+    #else
+        #error "Platform not supported"
+    #endif
+    std::system(command.c_str());
 }
 
 void calcWindowBounds() {
