@@ -27,6 +27,18 @@ void sendShortcutKeys(State* state, char c) {
         upHalfScreen(state);
     } else if (c == ctrl('d')) {
         downHalfScreen(state);
+    } else if (c == 'I') {
+        state->col = getIndexFirstNonSpace(state);
+        state->mode = TYPING;
+    } else if (c == 'A') {
+        state->col = state->data[state->row].length();
+        state->mode = TYPING;
+    } else if (c == '^') {
+        state->col = getIndexFirstNonSpace(state);
+    } else if (c == '0') {
+        state->col = 0;
+    } else if (c == '$') {
+        state->col = state->data[state->row].length();
     } else if (c == 'z') {
         centerScreen(state);
     } else {

@@ -85,6 +85,16 @@ void right(State* state) {
     }
 }
 
+int getIndexFirstNonSpace(State* state) {
+    int i;
+    for (i = 0; i < (int) state->data[state->row].length(); i++) {
+        if (state->data[state->row][i] != ' ') {
+            return i;
+        }
+    }
+    return i;
+}
+
 void calcWindowBounds() {
     int y, x;
     getmaxyx(stdscr, y, x);

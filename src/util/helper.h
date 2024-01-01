@@ -17,3 +17,4 @@ char ctrl(char c);
 void left(State* state);
 void right(State* state);
 void calcWindowBounds();
+int getIndexFirstNonSpace(State* state);
