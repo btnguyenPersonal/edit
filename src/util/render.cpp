@@ -61,7 +61,11 @@ void moveCursor(State state, int commandLineCursorPosition) {
         } else {
             row = 1;
         }
-        move(row, state.col + 5);
+        uint col = state.col + 5;
+        if (state.col > state.data[state.row].length()) {
+            col = state.data[state.row].length() + 5;
+        }
+        move(row, col);
     }
 }
 

@@ -5,6 +5,7 @@
 #include "util/helper.h"
 #include "util/render.h"
 #include "util/state.h"
+#include "util/modes.h"
 #include "keybinds/sendKeys.h"
 
 int main(int argc, char* argv[]) {
@@ -33,6 +34,9 @@ int main(int argc, char* argv[]) {
         sendKeys(&state, c);
         if (state.row >= state.data.size()) {
             state.row = state.data.size() - 1;
+        }
+        if (state.mode == TYPING && state.col > state.data[state.row].length()) {
+            state.col = state.data[state.row].length();
         }
         if (isWindowPositionInvalid(state)) {
             centerScreen(&state);
