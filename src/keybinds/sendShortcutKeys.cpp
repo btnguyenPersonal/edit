@@ -19,21 +19,9 @@ void sendShortcutKeys(State* state, char c) {
             state->col += 1;
         }
     } else if (c == 'j') {
-        if (state->row < state->data.size() - 1) {
-            state->row += 1;
-        }
+        down(state);
     } else if (c == 'k') {
-        if (state->row > 0) {
-            state->row -= 1;
-        }
-    } else if (c == 21) { // CTRL_U
-        if (state->windowPosition > 0) {
-            state->windowPosition -= 1;
-        }
-    } else if (c == 4) { // CTRL_D
-        if (state->windowPosition < state->data.size()) {
-            state->windowPosition += 1;
-        }
+        up(state);
     } else if (c == 'i') {
         state->mode = TYPING;
     } else {

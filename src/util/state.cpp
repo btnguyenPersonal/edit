@@ -4,6 +4,9 @@
 #include "state.h"
 #include "modes.h"
 
+uint State::maxX = 0;
+uint State::maxY = 0;
+
 State::State(char* filename) {
     this->filename = filename;
     this->data = readFile(filename);
@@ -14,4 +17,9 @@ State::State(char* filename) {
     this->prevKeys = std::string("");
     this->status = std::string("");
     this->mode = SHORTCUTS;
+}
+
+void State::setMaxYX(int y, int x) {
+    State::maxY = (uint) y;
+    State::maxX = (uint) x;
 }

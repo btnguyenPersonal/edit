@@ -9,6 +9,8 @@ class State {
         char* filename;
         std::vector<std::string> data;
         uint windowPosition;
+        static uint maxX;
+        static uint maxY;
         uint row;
         uint col;
         std::string commandLineQuery;
@@ -16,4 +18,5 @@ class State {
         std::string status;
         Mode mode;
         State(char* filename);
+        static void setMaxYX(int y, int x);
 };

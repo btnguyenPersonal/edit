@@ -20,14 +20,32 @@ std::vector<std::string> readFile(std::string filename) {
     return file_contents;
 }
 
-bool isWindowPositionInvalid(State state, int maxY) {
-    return state.row < state.windowPosition || ((int) state.row) - ((int) state.windowPosition) > (maxY - 2);
+bool isWindowPositionInvalid(State state) {
+    return state.row < state.windowPosition || (int) state.row - (int) state.windowPosition > ((int) state.maxY - 2);
 }
 
-void centerScreen(State* state, int maxY) {
-    if (state->row < (uint) maxY / 2) {
+void centerScreen(State* state) {
+    if (state->row < state->maxY / 2) {
         state->windowPosition = 0;
     } else {
-        state->windowPosition = state->row - (uint) maxY / 2;
+        state->windowPosition = state->row - state->maxY / 2;
+    }
+}
+
+void up(State* state) {
+    if (state->row > 0) {
+        state->row -= 1;
+    }
+    if (state->row < state->windowPosition) {
+        state->windowPosition -= 1;
+    }
+}
+
+void down(State* state) {
+    if (state->row < state->data.size() - 1) {
+        state->row += 1;
+    }
+    if ((int) state->row - (int) state->windowPosition > ((int) state->maxY - 2)) {
+        state->windowPosition += 1;
     }
 }

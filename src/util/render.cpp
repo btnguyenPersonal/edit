@@ -41,9 +41,9 @@ int renderStatusBar(State state) {
     return 0;
 }
 
-void renderVisibleLines(State state, int maxY, int maxX) {
+void renderVisibleLines(State state) {
     // TODO fix maxX as well
-    for (int i = state.windowPosition; i < (int) state.data.size() && i < maxY + (int) state.windowPosition; i++) {
+    for (int i = state.windowPosition; i < (int) state.data.size() && i < (int) (state.maxY + state.windowPosition); i++) {
         attron(COLOR_PAIR(GREY));
         mvprintw(i - state.windowPosition + 1, 0, "%4d ", i + 1);
         attroff(COLOR_PAIR(GREY));
@@ -65,11 +65,11 @@ void moveCursor(State state, int commandLineCursorPosition) {
     }
 }
 
-void renderScreen(State state, int maxY, int maxX) {
+void renderScreen(State state) {
     // TODO partial update
     clear();
     initColors();
-    renderVisibleLines(state, maxY, maxX);
+    renderVisibleLines(state);
     int commandLineCursorPosition = renderStatusBar(state);
     moveCursor(state, commandLineCursorPosition);
     refresh();
