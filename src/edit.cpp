@@ -31,6 +31,9 @@ int main(int argc, char* argv[]) {
         c = getchar();
         calcWindowBounds();
         sendKeys(&state, c);
+        if (state.row >= state.data.size()) {
+            state.row = state.data.size() - 1;
+        }
         if (isWindowPositionInvalid(state)) {
             centerScreen(&state);
         }

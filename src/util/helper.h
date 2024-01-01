@@ -20,3 +20,5 @@ void calcWindowBounds();
 int getIndexFirstNonSpace(State* state);
 void copyToClipboard(std::string s);
 std::string getFromClipboard();
+bool handleMotion(State* state, char c, std::string motion);
+bool isMotionCompleted(State* state);

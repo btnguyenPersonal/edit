@@ -136,3 +136,26 @@ void calcWindowBounds() {
     getmaxyx(stdscr, y, x);
     State::setMaxYX(y, x);
 }
+
+bool isMotionCompleted(State* state) {
+    return state->prevKeys == "";
+}
+
+bool handleMotion(State* state, char c, std::string motion) {
+    size_t i;
+    for (i = 0; i < state->prevKeys.length(); i++) {
+        if (state->prevKeys[i] != motion[i]) {
+            return FALSE;
+        }
+    }
+    if (motion[i] == c) {
+        if (i < motion.length() - 1) {
+            state->prevKeys += c;
+        } else {
+            state->prevKeys = "";
+        }
+        return TRUE;
+    } else {
+        return FALSE;
+    }
+}
