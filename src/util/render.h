@@ -6,3 +6,4 @@ void initColors();
 int renderStatusBar(State state);
 void renderVisibleLines(State state);
 void renderScreen(State state);
+void initTerminal();

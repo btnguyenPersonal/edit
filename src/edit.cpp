@@ -12,32 +12,18 @@ int main(int argc, char* argv[]) {
     char c;
     if (argc < 2) {
         std::cerr << "usage: edit [file]" << std::endl;
-       exit(1);
+        exit(1);
     }
-    initscr();
-    raw();
-    keypad(stdscr, TRUE);
-    noecho();
-    if (has_colors() == FALSE) {
-        endwin();
-        std::cout << "Your terminal does not support color" << std::endl;
-        return 1;
-    }
-    start_color();
     State state(argv[1]);
+    initTerminal();
     calcWindowBounds();
     renderScreen(state);
     while (true) {
-        state.status = std::string("");
         c = getchar();
+        state.status = std::string("");
         calcWindowBounds();
         sendKeys(&state, c);
-        if (state.row >= state.data.size()) {
-            state.row = state.data.size() - 1;
-        }
-        if (state.mode == TYPING && state.col > state.data[state.row].length()) {
-            state.col = state.data[state.row].length();
-        }
+        sanityCheckRowColOutOfBounds(&state);
         if (isWindowPositionInvalid(state)) {
             centerScreen(&state);
         }

@@ -1,4 +1,5 @@
 #include <ncurses.h>
+#include <iostream>
 #include "state.h"
 #include "modes.h"
 
@@ -77,4 +78,17 @@ void renderScreen(State state) {
     int commandLineCursorPosition = renderStatusBar(state);
     moveCursor(state, commandLineCursorPosition);
     refresh();
+}
+
+void initTerminal() {
+    initscr();
+    raw();
+    keypad(stdscr, TRUE);
+    noecho();
+    if (has_colors() == FALSE) {
+        endwin();
+        std::cout << "Your terminal does not support color" << std::endl;
+        exit(1);
+    }
+    start_color();
 }

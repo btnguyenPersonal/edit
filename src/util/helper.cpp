@@ -159,3 +159,12 @@ bool handleMotion(State* state, char c, std::string motion) {
         return FALSE;
     }
 }
+
+void sanityCheckRowColOutOfBounds(State* state) {
+    if (state->row >= state->data.size()) {
+        state->row = state->data.size() - 1;
+    }
+    if ((state->mode == HIGHLIGHTING || state->mode == TYPING) && state->col > state->data[state->row].length()) {
+        state->col = state->data[state->row].length();
+    }
+}
