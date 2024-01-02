@@ -24,7 +24,7 @@ got bones working to start displaying file
   - bruh have to wrap the compile command with `bear` and then generate `compile_commands.json`
 
 # questions about c++
-- # pragma once?
+- pragma once?
 - are linters a thing?
 - how do you run tests?
 - what is good style to put in .h vs .cpp?
@@ -36,3 +36,21 @@ got bones working to start displaying file
 - should you always free everything before returning from main?
 - is there a way to find out if any of my imports are not being used?
 - what is good practice for `auto`? what about uint vs int?
+
+# day 2-3
+- got motions set up, much cleaner than edit1.0
+- have copy paste working with system paste, just need to make a paste shortcut and set up logic to paste into current file
+- this time wanna put all HIGHLIGHTING into one file (maybe another enum specifying what type of HIGHLIGHTING we are in(v ctrLv or V)
+- cursor is fully working, and logic is better because there is a sanity check every render, and no weird edge cases
+- found out that terminal window size detection actually works unlike js
+- got a shower thought that for big files want to do DoubleLinkedList<DoubleLinkedList> data, because for inserting and deleting would be faster
+  - will have to test performance, but inserting be O(1) should make things a lot faster I would think, because that's almost all the actions going on
+- I wonder how bad perf is right now for >1GB files?
+
+```
+line 0 | 'H' <-> 'E' <-> 'L' <-> 'L' <-> 'O'
+line 1 | 'W' <-> 'O' <-> 'R' <-> 'L' <-> 'D' <-> '!'
+line 2 | ''
+
+0 <-> 1 <-> 2
+```
