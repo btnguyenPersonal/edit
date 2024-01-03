@@ -42,13 +42,55 @@ int renderStatusBar(State state) {
     return 0;
 }
 
+int getColorFromChar(char c) {
+    if (c == '[' || c == ']') {
+        return GREEN;
+    } else if (c == '(' || c == ')') {
+        return YELLOW;
+    } else if (c == '{' || c == '}') {
+        return MAGENTA;
+    } else if (c == '\'' || c == '"' || c == '`') {
+        return CYAN;
+    } else {
+        return WHITE;
+    }
+}
+
+void printChar(int windowPosition, int i, int j, char c, bool isInString) {
+    int color;
+    if (isInString == FALSE) {
+        color = getColorFromChar(c);
+    } else {
+        color = CYAN;
+    }
+    attron(COLOR_PAIR(color));
+    mvaddch(i - windowPosition + 1, j + 5, c);
+    attroff(COLOR_PAIR(color));
+}
+
+void printLine(std::string line, int i, int windowPosition) {
+    attron(COLOR_PAIR(GREY));
+    mvprintw(i - windowPosition + 1, 0, "%4d ", i + 1);
+    attroff(COLOR_PAIR(GREY));
+    bool isInString = FALSE;
+    char stringType;
+    for (int j = 0; j < (int) line.length(); j++) {
+        char current = line[j];
+        // TODO fix isInString for strings w/ escape characters like this '\''
+        if (isInString == FALSE && (current == '"' || current == '`' || current == '\'')) {
+            isInString = TRUE;
+            stringType = current;
+        } else if (isInString == TRUE && current == stringType) {
+            isInString = FALSE;
+        }
+        printChar(windowPosition, i, j, line[j], isInString);
+    }
+}
+
 void renderVisibleLines(State state) {
     // TODO fix maxX as well
     for (int i = state.windowPosition; i < (int) state.data.size() && i < (int) (state.maxY + state.windowPosition); i++) {
-        attron(COLOR_PAIR(GREY));
-        mvprintw(i - state.windowPosition + 1, 0, "%4d ", i + 1);
-        attroff(COLOR_PAIR(GREY));
-        mvprintw(i - state.windowPosition + 1, 5, "%s\n", state.data[i].c_str());
+        printLine(state.data[i], i, state.windowPosition);
     }
 }
 
