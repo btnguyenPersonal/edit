@@ -26,8 +26,8 @@ std::vector<std::string> readFile(std::string filename) {
     return file_contents;
 }
 
-bool isWindowPositionInvalid(State state) {
-    return state.row < state.windowPosition || (int) state.row - (int) state.windowPosition > ((int) state.maxY - 2);
+bool isWindowPositionInvalid(State* state) {
+    return state->row < state->windowPosition || (int) state->row - (int) state->windowPosition > ((int) state->maxY - 2);
 }
 
 void centerScreen(State* state) {

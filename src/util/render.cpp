@@ -13,6 +13,8 @@
 #define CYAN 51
 #define WHITE 231
 
+#define LINE_NUM_OFFSET 6
+
 void initColors() {
     init_pair(BLACK, BLACK, COLOR_BLACK);
     init_pair(GREY, GREY, COLOR_BLACK);
@@ -26,17 +28,17 @@ void initColors() {
 
 }
 
-int renderStatusBar(State state) {
+int renderStatusBar(State* state) {
     int offset = 0;
-    if (state.status.length() > 0) {
+    if (state->status.length() > 0) {
         attron(COLOR_PAIR(RED));
-        mvprintw(0, 0, "%s ", state.status.c_str());
+        mvprintw(0, 0, "%s ", state->status.c_str());
         attroff(COLOR_PAIR(RED));
-        offset += state.status.length() + 2;
+        offset += state->status.length() + 2;
     }
-    if (state.mode == COMMANDLINE) {
-        mvprintw(0, offset, ":%s", state.commandLineQuery.c_str());
-        offset += state.commandLineQuery.length() + 1;
+    if (state->mode == COMMANDLINE) {
+        mvprintw(0, offset, ":%s", state->commandLineQuery.c_str());
+        offset += state->commandLineQuery.length() + 1;
         return offset;
     }
     return 0;
@@ -64,55 +66,69 @@ void printChar(int windowPosition, int i, int j, char c, bool isInString) {
         color = CYAN;
     }
     attron(COLOR_PAIR(color));
-    mvaddch(i - windowPosition + 1, j + 5, c);
+    mvaddch(i - windowPosition + 1, j + LINE_NUM_OFFSET, c);
     attroff(COLOR_PAIR(color));
 }
 
-void printLine(std::string line, int i, int windowPosition) {
+void printLineNumber(int i, int windowPosition) {
     attron(COLOR_PAIR(GREY));
-    mvprintw(i - windowPosition + 1, 0, "%4d ", i + 1);
+    mvprintw(i - windowPosition + 1, 0, "%5d ", i + 1);
     attroff(COLOR_PAIR(GREY));
+}
+
+void printLine(std::string line, int i, int windowPosition) {
+    printLineNumber(i, windowPosition);
     bool isInString = FALSE;
+    bool skipNext = FALSE;
     char stringType;
+    // TODO if in comment put in green
+    // TODO visual mode reversed
     for (int j = 0; j < (int) line.length(); j++) {
-        char current = line[j];
-        // TODO fix isInString for strings w/ escape characters like this '\''
-        if (isInString == FALSE && (current == '"' || current == '`' || current == '\'')) {
-            isInString = TRUE;
-            stringType = current;
-        } else if (isInString == TRUE && current == stringType) {
-            isInString = FALSE;
+        if (skipNext == FALSE) {
+            char current = line[j];
+            if (isInString && current == '\\') {
+                skipNext = TRUE;
+            } else {
+                if (isInString == FALSE && (current == '"' || current == '`' || current == '\'')) {
+                    isInString = TRUE;
+                    stringType = current;
+                } else if (isInString == TRUE && current == stringType) {
+                    isInString = FALSE;
+                }
+            }
+        } else {
+            skipNext = FALSE;
         }
         printChar(windowPosition, i, j, line[j], isInString);
     }
 }
 
-void renderVisibleLines(State state) {
+void renderVisibleLines(State* state) {
     // TODO fix maxX as well
-    for (int i = state.windowPosition; i < (int) state.data.size() && i < (int) (state.maxY + state.windowPosition); i++) {
-        printLine(state.data[i], i, state.windowPosition);
+    for (int i = state->windowPosition; i < (int) state->data.size() && i < (int) (state->maxY + state->windowPosition) - 1; i++) {
+        printLine(state->data[i], i, state->windowPosition);
     }
 }
 
-void moveCursor(State state, int commandLineCursorPosition) {
+void moveCursor(State* state, int commandLineCursorPosition) {
     if (commandLineCursorPosition != 0) {
         move(0, commandLineCursorPosition);
     } else {
-        uint row = state.row + 1;
-        if (row > state.windowPosition) {
-            row -= state.windowPosition;
+        uint row = state->row + 1;
+        if (row > state->windowPosition) {
+            row -= state->windowPosition;
         } else {
             row = 1;
         }
-        uint col = state.col + 5;
-        if (state.col > state.data[state.row].length()) {
-            col = state.data[state.row].length() + 5;
+        uint col = state->col + LINE_NUM_OFFSET;
+        if (state->col > state->data[state->row].length()) {
+            col = state->data[state->row].length() + LINE_NUM_OFFSET;
         }
         move(row, col);
     }
 }
 
-void renderScreen(State state) {
+void renderScreen(State* state) {
     // TODO partial update
     clear();
     initColors();

@@ -54,3 +54,23 @@ line 2 | ''
 
 0 <-> 1 <-> 2
 ```
+
+# day 4ish
+- colors!!
+- made render function amazing, can deal with files that are 256000 lines long comfortably
+- omg pointers make everything so fast, didn't know that putting something in function params made a copy neat
+- putting a huge file in made a huge difference for finding bugs
+- maybe later will test with even larger files
+- want to start self editing, but at least need
+    - visual mode
+    - diff based undo
+    - commenting
+    - searching
+
+    - autosave feels really nice
+    - tab completion
+    - file tabs
+    (wanna try making these fullscreen ones off to the side maybe?? atleast fileexplorer should be)
+    - grep
+    - filefinder
+    - fileexplorer

@@ -17,17 +17,17 @@ int main(int argc, char* argv[]) {
     State state(argv[1]);
     initTerminal();
     calcWindowBounds();
-    renderScreen(state);
+    renderScreen(&state);
     while (true) {
         c = getchar();
         state.status = std::string("");
         calcWindowBounds();
         sendKeys(&state, c);
         sanityCheckRowColOutOfBounds(&state);
-        if (isWindowPositionInvalid(state)) {
+        if (isWindowPositionInvalid(&state)) {
             centerScreen(&state);
         }
-        renderScreen(state);
+        renderScreen(&state);
     }
     endwin();
     return 0;
