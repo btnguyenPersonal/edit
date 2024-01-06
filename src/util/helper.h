@@ -18,8 +18,6 @@ void left(State* state);
 void right(State* state);
 void calcWindowBounds();
 int getIndexFirstNonSpace(State* state);
-void copyToClipboard(std::string s);
-std::string getFromClipboard();
 bool handleMotion(State* state, char c, std::string motion);
 bool isMotionCompleted(State* state);
 void sanityCheckRowColOutOfBounds(State* state);

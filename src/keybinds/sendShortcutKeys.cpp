@@ -4,6 +4,7 @@
 #include "../util/state.h"
 #include "../util/helper.h"
 #include "../util/modes.h"
+#include "../util/clipboard.h"
 #include "../util/visualType.h"
 
 void sendShortcutKeys(State* state, char c) {
@@ -78,9 +79,10 @@ void sendShortcutKeys(State* state, char c) {
         state->col = state->data[state->row].length();
     } else if (c == 'z') {
         centerScreen(state);
+    } else if (c == 'P') {
+        pasteFromClipboard(state);
     } else if (c == 'p') {
-        // TODO paste from clipboard
-        state->status = getFromClipboard();
+        pasteFromClipboardAfter(state);
     } else if (c == 'G') {
         state->row = state->data.size() - 1;
     } else {

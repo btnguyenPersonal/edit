@@ -13,6 +13,7 @@ SOURCES = $(SRC_DIR)/edit.cpp \
           $(UTIL_DIR)/helper.cpp \
           $(UTIL_DIR)/render.cpp \
           $(UTIL_DIR)/state.cpp \
+          $(UTIL_DIR)/clipboard.cpp \
           $(KEYBINDS_DIR)/sendKeys.cpp \
           $(KEYBINDS_DIR)/sendVisualKeys.cpp \
           $(KEYBINDS_DIR)/sendCommandLineKeys.cpp \
