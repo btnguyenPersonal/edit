@@ -81,7 +81,7 @@ int getColorFromChar(char c) {
     }
 }
 
-void printChar(int windowPosition, int i, int j, char c, bool isInString, bool isInverted) {
+void printChar(int row, int col, char c, bool isInString, bool isInverted) {
     int color;
     if (isInString == FALSE) {
         color = getColorFromChar(c);
@@ -93,7 +93,7 @@ void printChar(int windowPosition, int i, int j, char c, bool isInString, bool i
     } else {
         attron(COLOR_PAIR(invertColor(color)));
     }
-    mvaddch(i - windowPosition + 1, j + LINE_NUM_OFFSET, c);
+    mvaddch(row, col + LINE_NUM_OFFSET, c);
     if (isInverted == FALSE) {
         attroff(COLOR_PAIR(color));
     } else {
@@ -101,25 +101,23 @@ void printChar(int windowPosition, int i, int j, char c, bool isInString, bool i
     }
 }
 
-void printLineNumber(int i, int windowPosition) {
+void printLineNumber(int r, int i) {
     attron(COLOR_PAIR(GREY));
-    mvprintw(i - windowPosition + 1, 0, "%5d ", i + 1);
+    mvprintw(r, 0, "%5d ", i + 1);
     attroff(COLOR_PAIR(GREY));
 }
 
-void printLine(std::string line, int i, int windowPosition, bool isInverted) {
-    printLineNumber(i, windowPosition);
+void printLine(std::string line, int row, bool isInverted) {
     if (isInverted == TRUE && line.length() == 0) {
-        printChar(windowPosition, i, 0, ' ', false, isInverted);
+        printChar(row, 0, ' ', false, isInverted);
     } else {
         bool isInString = FALSE;
         bool skipNext = FALSE;
         char stringType;
         // TODO if in comment put in green
-        // TODO visual mode reversed
-        for (int j = 0; j < (int) line.length(); j++) {
+        for (int col = 0; col < (int) line.length(); col++) {
             if (skipNext == FALSE) {
-                char current = line[j];
+                char current = line[col];
                 if (isInString && current == '\\') {
                     skipNext = TRUE;
                 } else {
@@ -133,7 +131,7 @@ void printLine(std::string line, int i, int windowPosition, bool isInverted) {
             } else {
                 skipNext = FALSE;
             }
-            printChar(windowPosition, i, j, line[j], isInString, isInverted);
+            printChar(row, col, line[col], isInString, isInverted);
         }
     }
 }
@@ -152,7 +150,8 @@ bool isRowInVisual(State* state, uint i) {
 void renderVisibleLines(State* state) {
     // TODO fix maxX as well
     for (int i = state->windowPosition; i < (int) state->data.size() && i < (int) (state->maxY + state->windowPosition) - 1; i++) {
-        printLine(state->data[i], i, state->windowPosition, isRowInVisual(state, (uint) i));
+        printLineNumber(i - state->windowPosition + 1, i);
+        printLine(state->data[i], i - state->windowPosition + 1, isRowInVisual(state, (uint) i));
     }
 }
 
@@ -175,7 +174,6 @@ void moveCursor(State* state, int commandLineCursorPosition) {
 }
 
 void renderScreen(State* state) {
-    // TODO partial update
     clear();
     initColors();
     renderVisibleLines(state);
