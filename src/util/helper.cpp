@@ -105,6 +105,14 @@ bool isMotionCompleted(State* state) {
     return state->prevKeys == "";
 }
 
+void insertEmptyLineBelow(State* state) {
+    state->data.insert(state->data.begin() + state->row + 1, "");
+}
+
+void insertEmptyLine(State* state) {
+    state->data.insert(state->data.begin() + state->row, "");
+}
+
 bool handleMotion(State* state, char c, std::string motion) {
     size_t i;
     for (i = 0; i < state->prevKeys.length(); i++) {

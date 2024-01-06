@@ -65,6 +65,13 @@ void sendShortcutKeys(State* state, char c) {
         upHalfScreen(state);
     } else if (c == ctrl('d')) {
         downHalfScreen(state);
+    } else if (c == 'o') {
+        insertEmptyLineBelow(state);
+        down(state);
+        state->mode = TYPING;
+    } else if (c == 'O') {
+        insertEmptyLine(state);
+        state->mode = TYPING;
     } else if (c == 'I') {
         state->col = getIndexFirstNonSpace(state);
         state->mode = TYPING;
