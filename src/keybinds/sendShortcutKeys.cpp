@@ -4,6 +4,7 @@
 #include "../util/state.h"
 #include "../util/helper.h"
 #include "../util/modes.h"
+#include "../util/visualType.h"
 
 void sendShortcutKeys(State* state, char c) {
     if (c == 27) { // ESC
@@ -49,6 +50,11 @@ void sendShortcutKeys(State* state, char c) {
         up(state);
     } else if (c == 'j') {
         down(state);
+    } else if (c == 'V') {
+        state->mode = VISUAL;
+        state->visualType = LINE;
+        state->visual.row = state->row;
+        state->visual.col = state->col;
     } else if (c == 'i') {
         state->mode = TYPING;
     } else if (c == 'a') {

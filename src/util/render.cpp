@@ -3,29 +3,52 @@
 #include "state.h"
 #include "modes.h"
 
-#define BLACK 232
-#define GREY 242
-#define RED 196
-#define GREEN 46
-#define YELLOW 226
-#define BLUE 21
-#define MAGENTA 201
-#define CYAN 51
-#define WHITE 231
+#define _COLOR_BLACK 232
+#define _COLOR_GREY 242
+#define _COLOR_RED 196
+#define _COLOR_GREEN 46
+#define _COLOR_YELLOW 226
+#define _COLOR_BLUE 21
+#define _COLOR_MAGENTA 201
+#define _COLOR_CYAN 51
+#define _COLOR_WHITE 231
+
+#define BLACK 1
+#define GREY 2
+#define RED 3
+#define GREEN 4
+#define YELLOW 5
+#define BLUE 6
+#define MAGENTA 7
+#define CYAN 8
+#define WHITE 9
 
 #define LINE_NUM_OFFSET 6
 
-void initColors() {
-    init_pair(BLACK, BLACK, COLOR_BLACK);
-    init_pair(GREY, GREY, COLOR_BLACK);
-    init_pair(RED, RED, COLOR_BLACK);
-    init_pair(GREEN, GREEN, COLOR_BLACK);
-    init_pair(YELLOW, YELLOW, COLOR_BLACK);
-    init_pair(BLUE, BLUE, COLOR_BLACK);
-    init_pair(MAGENTA, MAGENTA, COLOR_BLACK);
-    init_pair(CYAN, CYAN, COLOR_BLACK);
-    init_pair(WHITE, WHITE, COLOR_BLACK);
+int invertColor(int color) {
+    return color + 9;
+}
 
+void initColors() {
+    init_pair(BLACK, _COLOR_BLACK, _COLOR_BLACK);
+    init_pair(GREY, _COLOR_GREY, _COLOR_BLACK);
+    init_pair(RED, _COLOR_RED, _COLOR_BLACK);
+    init_pair(GREEN, _COLOR_GREEN, _COLOR_BLACK);
+    init_pair(YELLOW, _COLOR_YELLOW, _COLOR_BLACK);
+    init_pair(BLUE, _COLOR_BLUE, _COLOR_BLACK);
+    init_pair(MAGENTA, _COLOR_MAGENTA, _COLOR_BLACK);
+    init_pair(CYAN, _COLOR_CYAN, _COLOR_BLACK);
+    init_pair(WHITE, _COLOR_WHITE, _COLOR_BLACK);
+
+    init_pair(invertColor(BLACK), _COLOR_BLACK, _COLOR_BLACK);
+    init_pair(invertColor(GREY), _COLOR_BLACK, _COLOR_GREY);
+    init_pair(invertColor(RED), _COLOR_BLACK, _COLOR_RED);
+    init_pair(invertColor(GREEN), _COLOR_BLACK, _COLOR_GREEN);
+    init_pair(invertColor(YELLOW), _COLOR_BLACK, _COLOR_YELLOW);
+    init_pair(invertColor(BLUE), _COLOR_BLACK, _COLOR_BLUE);
+    init_pair(invertColor(MAGENTA), _COLOR_BLACK, _COLOR_MAGENTA);
+    init_pair(invertColor(CYAN), _COLOR_BLACK, _COLOR_CYAN);
+    init_pair(invertColor(WHITE), _COLOR_BLACK, _COLOR_WHITE);
 }
 
 int renderStatusBar(State* state) {
@@ -58,16 +81,24 @@ int getColorFromChar(char c) {
     }
 }
 
-void printChar(int windowPosition, int i, int j, char c, bool isInString) {
+void printChar(int windowPosition, int i, int j, char c, bool isInString, bool isInverted) {
     int color;
     if (isInString == FALSE) {
         color = getColorFromChar(c);
     } else {
         color = CYAN;
     }
-    attron(COLOR_PAIR(color));
+    if (isInverted == FALSE) {
+        attron(COLOR_PAIR(color));
+    } else {
+        attron(COLOR_PAIR(invertColor(color)));
+    }
     mvaddch(i - windowPosition + 1, j + LINE_NUM_OFFSET, c);
-    attroff(COLOR_PAIR(color));
+    if (isInverted == FALSE) {
+        attroff(COLOR_PAIR(color));
+    } else {
+        attroff(COLOR_PAIR(invertColor(color)));
+    }
 }
 
 void printLineNumber(int i, int windowPosition) {
@@ -76,37 +107,52 @@ void printLineNumber(int i, int windowPosition) {
     attroff(COLOR_PAIR(GREY));
 }
 
-void printLine(std::string line, int i, int windowPosition) {
+void printLine(std::string line, int i, int windowPosition, bool isInverted) {
     printLineNumber(i, windowPosition);
-    bool isInString = FALSE;
-    bool skipNext = FALSE;
-    char stringType;
-    // TODO if in comment put in green
-    // TODO visual mode reversed
-    for (int j = 0; j < (int) line.length(); j++) {
-        if (skipNext == FALSE) {
-            char current = line[j];
-            if (isInString && current == '\\') {
-                skipNext = TRUE;
-            } else {
-                if (isInString == FALSE && (current == '"' || current == '`' || current == '\'')) {
-                    isInString = TRUE;
-                    stringType = current;
-                } else if (isInString == TRUE && current == stringType) {
-                    isInString = FALSE;
+    if (isInverted == TRUE && line.length() == 0) {
+        printChar(windowPosition, i, 0, ' ', false, isInverted);
+    } else {
+        bool isInString = FALSE;
+        bool skipNext = FALSE;
+        char stringType;
+        // TODO if in comment put in green
+        // TODO visual mode reversed
+        for (int j = 0; j < (int) line.length(); j++) {
+            if (skipNext == FALSE) {
+                char current = line[j];
+                if (isInString && current == '\\') {
+                    skipNext = TRUE;
+                } else {
+                    if (isInString == FALSE && (current == '"' || current == '`' || current == '\'')) {
+                        isInString = TRUE;
+                        stringType = current;
+                    } else if (isInString == TRUE && current == stringType) {
+                        isInString = FALSE;
+                    }
                 }
+            } else {
+                skipNext = FALSE;
             }
-        } else {
-            skipNext = FALSE;
+            printChar(windowPosition, i, j, line[j], isInString, isInverted);
         }
-        printChar(windowPosition, i, j, line[j], isInString);
     }
+}
+
+bool isRowInVisual(State* state, uint i) {
+    if (state->mode == VISUAL) {
+        if (state->visualType == LINE) {
+            if ((state->row <= i && i <= state->visual.row) || (state->visual.row <= i && i <= state->row)) {
+                return TRUE;
+            }
+        }
+    }
+    return FALSE;
 }
 
 void renderVisibleLines(State* state) {
     // TODO fix maxX as well
     for (int i = state->windowPosition; i < (int) state->data.size() && i < (int) (state->maxY + state->windowPosition) - 1; i++) {
-        printLine(state->data[i], i, state->windowPosition);
+        printLine(state->data[i], i, state->windowPosition, isRowInVisual(state, (uint) i));
     }
 }
 

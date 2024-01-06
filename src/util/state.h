@@ -3,6 +3,12 @@
 #include <string>
 #include <vector>
 #include "modes.h"
+#include "visualType.h"
+
+struct Position {
+    uint row;
+    uint col;
+};
 
 class State {
     public:
@@ -11,6 +17,8 @@ class State {
         uint windowPosition;
         static uint maxX;
         static uint maxY;
+        VisualType visualType;
+        struct Position visual;
         uint row;
         uint col;
         std::string commandLineQuery;

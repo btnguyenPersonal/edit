@@ -1,7 +1,7 @@
 #pragma once
 
 enum Mode {
-    HIGHLIGHTING,
+    VISUAL,
     COMMANDLINE,
     TYPING,
     SHORTCUTS

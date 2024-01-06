@@ -3,6 +3,7 @@
 #include "helper.h"
 #include "state.h"
 #include "modes.h"
+#include "visualType.h"
 
 uint State::maxX = 0;
 uint State::maxY = 0;
@@ -11,6 +12,9 @@ State::State(char* filename) {
     this->filename = filename;
     this->data = readFile(filename);
     this->windowPosition = 0;
+    this->visualType = NORMAL;
+    this->visual.row = 0;
+    this->visual.col = 0;
     this->row = 0;
     this->col = 0;
     this->commandLineQuery = std::string("");
