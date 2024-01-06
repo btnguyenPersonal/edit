@@ -74,3 +74,17 @@ line 2 | ''
     - grep
     - filefinder
     - fileexplorer
+
+# day 5ish
+- added visualLine
+- wow much cleaner than the js crap I had
+- std::vector has cool iterators
+- had to add the same if (deleted entire file) { add empty line }
+- also black seems a bit different color but idk
+- plan for tomorrow:
+    - paste
+    - visual (normal)
+    - visual (block)
+    - commenting
+- plan for sunday:
+    - undo (diff based) don't chicken out again I tried in edit1.0 like 2 times and failed

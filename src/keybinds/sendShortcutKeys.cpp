@@ -79,6 +79,7 @@ void sendShortcutKeys(State* state, char c) {
     } else if (c == 'z') {
         centerScreen(state);
     } else if (c == 'p') {
+        // TODO paste from clipboard
         state->status = getFromClipboard();
     } else if (c == 'G') {
         state->row = state->data.size() - 1;
