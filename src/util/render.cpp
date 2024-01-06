@@ -156,7 +156,7 @@ void renderVisibleLines(State* state) {
 }
 
 void moveCursor(State* state, int commandLineCursorPosition) {
-    if (commandLineCursorPosition != 0) {
+    if (state->mode == COMMANDLINE) {
         move(0, commandLineCursorPosition);
     } else {
         uint row = state->row + 1;

@@ -160,6 +160,22 @@ bool handleMotion(State* state, char c, std::string motion) {
     }
 }
 
+int maximum(int a, int b) {
+    if (a > b) {
+        return a;
+    } else {
+        return b;
+    }
+}
+
+int minimum(int a, int b) {
+    if (a <= b) {
+        return a;
+    } else {
+        return b;
+    }
+}
+
 void sanityCheckRowColOutOfBounds(State* state) {
     if (state->row >= state->data.size()) {
         state->row = state->data.size() - 1;

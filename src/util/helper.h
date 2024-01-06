@@ -23,3 +23,5 @@ std::string getFromClipboard();
 bool handleMotion(State* state, char c, std::string motion);
 bool isMotionCompleted(State* state);
 void sanityCheckRowColOutOfBounds(State* state);
+int minimum(int a, int b);
+int maximum(int a, int b);

@@ -24,19 +24,19 @@ void sendShortcutKeys(State* state, char c) {
         }
     } else if (handleMotion(state, c, "yk")) {
         if (isMotionCompleted(state)) {
-            std::string clip = state->data[state->row];
+            std::string clip = state->data[state->row] + "\n";
             if (state->row - 1 >= 0) {
                 clip = state->data[state->row - 1] + "\n" + clip;
             }
-            copyToClipboard(clip + "\n");
+            copyToClipboard(clip);
         }
     } else if (handleMotion(state, c, "yj")) {
         if (isMotionCompleted(state)) {
-            std::string clip = state->data[state->row];
+            std::string clip = state->data[state->row] + "\n";
             if (state->row + 1 < state->data.size()) {
-                clip += "\n" + state->data[state->row + 1];
+                clip += state->data[state->row + 1] + "\n";
             }
-            copyToClipboard(clip + "\n");
+            copyToClipboard(clip);
         }
     } else if (state->prevKeys != "") {
         state->prevKeys = "";

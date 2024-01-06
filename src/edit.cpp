@@ -23,6 +23,9 @@ int main(int argc, char* argv[]) {
         state.status = std::string("");
         calcWindowBounds();
         sendKeys(&state, c);
+        if (state.data.size() == 0) {
+            state.data.push_back("");
+        }
         sanityCheckRowColOutOfBounds(&state);
         if (isWindowPositionInvalid(&state)) {
             centerScreen(&state);
