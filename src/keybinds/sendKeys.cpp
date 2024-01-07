@@ -3,9 +3,12 @@
 #include "sendCommandLineKeys.h"
 #include "sendVisualKeys.h"
 #include "../util/state.h"
+#include "../util/helper.h"
 #include "../util/modes.h"
 
 void sendKeys(State* state, char c) {
+    state->status = std::string("");
+    calcWindowBounds();
     if (state->mode == TYPING) {
         sendTypingKeys(state, c);
     } else if (state->mode == VISUAL) {
@@ -14,5 +17,9 @@ void sendKeys(State* state, char c) {
         sendShortcutKeys(state, c);
     } else if (state->mode == COMMANDLINE) {
         sendCommandLineKeys(state, c);
+    }
+    sanityCheckRowColOutOfBounds(state);
+    if (isWindowPositionInvalid(state)) {
+        centerScreen(state);
     }
 }

@@ -1,11 +1,32 @@
 #include <vector>
 #include <string>
+#include "state.h"
 
 struct diffLine {
     uint lineNum;
     bool add; // true for add, false for delete
     std::string line;
 };
+
+void applyDiff(State* state, const std::vector<diffLine>& diff, bool reverse) {
+    if (reverse == false) {
+        for (int i = ((int) diff.size()) - 1; i >= 0; i--) {
+            if (diff[i].add == true) {
+                state->data.erase(state->data.begin() + diff[i].lineNum);
+            } else {
+                state->data.insert(state->data.begin() + diff[i].lineNum, diff[i].line);
+            }
+        }
+    } else if (reverse == true) {
+        for (int i = 0; i < ((int) diff.size()); i++) {
+            if (diff[i].add == true) {
+                state->data.insert(state->data.begin() + diff[i].lineNum, diff[i].line);
+            } else {
+                state->data.erase(state->data.begin() + diff[i].lineNum);
+            }
+        }
+    }
+}
 
 std::vector<diffLine> generateDiff(const std::vector<std::string>& prev, const std::vector<std::string>& curr) {
     std::vector<diffLine> diffs;
