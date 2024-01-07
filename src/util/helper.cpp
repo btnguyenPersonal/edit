@@ -140,9 +140,9 @@ bool handleMotion(State* state, char c, std::string motion) {
         } else {
             state->prevKeys = "";
         }
-        return TRUE;
+        return true;
     } else {
-        return FALSE;
+        return false;
     }
 }
 
