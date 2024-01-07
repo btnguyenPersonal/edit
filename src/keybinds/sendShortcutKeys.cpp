@@ -19,16 +19,46 @@ void sendShortcutKeys(State* state, char c) {
             copyToClipboard(state->data[state->row] + "\n");
             state->data.erase(state->data.begin()+state->row);
         }
+    } else if (handleMotion(state, c, "dk")) {
+        if (isMotionCompleted(state)) {
+            std::string clip = state->data[state->row] + "\n";
+            if (state->row - 1 >= 0) {
+                clip = state->data[state->row - 1] + "\n" + clip;
+            }
+            state->data.erase(state->data.begin()+state->row);
+            if (state->row - 1 >= 0) {
+                state->data.erase(state->data.begin()+state->row - 1);
+                state->row -= 1;
+            }
+            state->col = getIndexFirstNonSpace(state);
+            copyToClipboard(clip);
+        }
+    } else if (handleMotion(state, c, "dj")) {
+        if (isMotionCompleted(state)) {
+            std::string clip = state->data[state->row] + "\n";
+            if (state->row + 1 < state->data.size()) {
+                clip += state->data[state->row + 1] + "\n";
+            }
+            state->data.erase(state->data.begin()+state->row);
+            if (state->row >= 0) {
+                state->data.erase(state->data.begin()+state->row);
+            }
+            state->col = getIndexFirstNonSpace(state);
+            copyToClipboard(clip);
+        }
     } else if (handleMotion(state, c, "yy")) {
         if (isMotionCompleted(state)) {
             copyToClipboard(state->data[state->row] + "\n");
+            state->col = getIndexFirstNonSpace(state);
         }
     } else if (handleMotion(state, c, "yk")) {
         if (isMotionCompleted(state)) {
             std::string clip = state->data[state->row] + "\n";
             if (state->row - 1 >= 0) {
                 clip = state->data[state->row - 1] + "\n" + clip;
+                state->row -= 1;
             }
+            state->col = getIndexFirstNonSpace(state);
             copyToClipboard(clip);
         }
     } else if (handleMotion(state, c, "yj")) {
@@ -37,12 +67,19 @@ void sendShortcutKeys(State* state, char c) {
             if (state->row + 1 < state->data.size()) {
                 clip += state->data[state->row + 1] + "\n";
             }
+            state->col = getIndexFirstNonSpace(state);
             copyToClipboard(clip);
         }
     } else if (state->prevKeys != "") {
         state->prevKeys = "";
     } else if (c == ':') {
         state->mode = COMMANDLINE;
+    } else if (c == '<') {
+        deindent(state);
+        state->col = getIndexFirstNonSpace(state);
+    } else if (c == '>') {
+        indent(state);
+        state->col = getIndexFirstNonSpace(state);
     } else if (c == 'h') {
         left(state);
     } else if (c == 'l') {
@@ -71,6 +108,15 @@ void sendShortcutKeys(State* state, char c) {
         state->mode = TYPING;
     } else if (c == 'O') {
         insertEmptyLine(state);
+        state->mode = TYPING;
+    } else if (c == 'Y') {
+        copyToClipboard(state->data[state->row].substr(state->col));
+    } else if (c == 'D') {
+        copyToClipboard(state->data[state->row].substr(state->col));
+        state->data[state->row] = state->data[state->row].substr(0, state->col);
+    } else if (c == 'C') {
+        copyToClipboard(state->data[state->row].substr(state->col));
+        state->data[state->row] = state->data[state->row].substr(0, state->col);
         state->mode = TYPING;
     } else if (c == 'I') {
         state->col = getIndexFirstNonSpace(state);

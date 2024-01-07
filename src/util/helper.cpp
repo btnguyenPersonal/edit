@@ -85,6 +85,20 @@ void right(State* state) {
     }
 }
 
+void indent(State* state) {
+    for (uint i = 0; i < state->indent; i++) {
+        state->data[state->row] = " " + state->data[state->row];
+    }
+}
+
+void deindent(State* state) {
+    for (uint i = 0; i < state->indent; i++) {
+        if (state->data[state->row].substr(0, 1) == " ") {
+            state->data[state->row] = state->data[state->row].substr(1);
+        }
+    }
+}
+
 int getIndexFirstNonSpace(State* state) {
     int i;
     for (i = 0; i < (int) state->data[state->row].length(); i++) {

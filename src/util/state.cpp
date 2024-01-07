@@ -17,6 +17,7 @@ State::State(char* filename) {
     this->visual.col = 0;
     this->row = 0;
     this->col = 0;
+    this->indent = 4;
     this->commandLineQuery = std::string("");
     this->prevKeys = std::string("");
     this->status = std::string("");

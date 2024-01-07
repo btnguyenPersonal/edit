@@ -14,6 +14,7 @@ class State {
     public:
         char* filename;
         std::vector<std::string> data;
+        uint indent;
         uint windowPosition;
         static uint maxX;
         static uint maxY;

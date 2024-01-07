@@ -4,6 +4,7 @@
 #include "../util/state.h"
 #include "../util/helper.h"
 #include "../util/modes.h"
+#include "../util/clipboard.h"
 
 int changeInVisual(State* state) {
     int min = minimum(state->row, state->visual.row);
