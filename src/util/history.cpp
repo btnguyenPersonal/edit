@@ -1,10 +1,15 @@
 #include <vector>
 #include <string>
+#include <climits>
 #include "state.h"
 
-void applyDiff(State* state, const std::vector<diffLine>& diff, bool reverse) {
+uint applyDiff(State* state, const std::vector<diffLine>& diff, bool reverse) {
+    uint min = UINT_MAX;
     if (reverse == false) {
         for (int i = ((int) diff.size()) - 1; i >= 0; i--) {
+            if (diff[i].lineNum < min) {
+                min = diff[i].lineNum;
+            }
             if (diff[i].add == true) {
                 state->data.erase(state->data.begin() + diff[i].lineNum);
             } else {
@@ -13,6 +18,9 @@ void applyDiff(State* state, const std::vector<diffLine>& diff, bool reverse) {
         }
     } else if (reverse == true) {
         for (int i = 0; i < ((int) diff.size()); i++) {
+            if (diff[i].lineNum < min) {
+                min = diff[i].lineNum;
+            }
             if (diff[i].add == true) {
                 state->data.insert(state->data.begin() + diff[i].lineNum, diff[i].line);
             } else {
@@ -20,6 +28,8 @@ void applyDiff(State* state, const std::vector<diffLine>& diff, bool reverse) {
             }
         }
     }
+    // TODO check min isn't UINT_MAX?? maybe don't need
+    return min;
 }
 
 std::vector<diffLine> generateDiff(const std::vector<std::string>& prev, const std::vector<std::string>& curr) {
