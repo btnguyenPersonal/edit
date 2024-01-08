@@ -87,7 +87,7 @@ void sendShortcutKeys(State* state, char c) {
             state->historyPosition--;
         }
     } else if (c == ctrl('r')) {
-        if (state->historyPosition < (int) state->history.size()) {
+        if (state->historyPosition < ((int) state->history.size()) - 1) {
             applyDiff(state, state->history[state->historyPosition + 1], true);
             state->historyPosition++;
         }
