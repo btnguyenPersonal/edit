@@ -88,3 +88,10 @@ line 2 | ''
     - commenting
 - plan for sunday:
     - undo (diff based) don't chicken out again I tried in edit1.0 like 2 times and failed
+
+# weekend over
+- paste working, uses newline at end like correct
+- visualLine working, need visual and visualBlock
+- wow why was undo so hard before?
+- i mean i didn't get the most efficient one, but whatever I'll fix it later when i need perf
+- undo also why didn't i just find the location change happened instead of storing it with the diff???
