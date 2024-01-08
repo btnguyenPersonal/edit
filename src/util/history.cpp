@@ -54,7 +54,7 @@ std::vector<diffLine> generateDiff(const std::vector<std::string>& prev, const s
                 lookaheadIndex++;
             }
 
-            // If prev found in curr, add all all lines inbetween found line and curr
+            // If prev found in curr, add all lines between lookaheadIndex and curr
             if (lookaheadIndex < curr.size()) {
                 while (currIndex < lookaheadIndex) {
                     diffs.push_back({currIndex, true, curr[currIndex]});
