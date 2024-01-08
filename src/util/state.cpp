@@ -11,6 +11,9 @@ uint State::maxY = 0;
 State::State(char* filename) {
     this->filename = filename;
     this->data = readFile(filename);
+    this->previousState = std::vector<std::string>();
+    this->history = std::vector<std::vector<diffLine>>();
+    this->historyPosition = -1;
     this->windowPosition = 0;
     this->visualType = NORMAL;
     this->visual.row = 0;

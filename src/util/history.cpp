@@ -2,12 +2,6 @@
 #include <string>
 #include "state.h"
 
-struct diffLine {
-    uint lineNum;
-    bool add; // true for add, false for delete
-    std::string line;
-};
-
 void applyDiff(State* state, const std::vector<diffLine>& diff, bool reverse) {
     if (reverse == false) {
         for (int i = ((int) diff.size()) - 1; i >= 0; i--) {
@@ -33,6 +27,9 @@ std::vector<diffLine> generateDiff(const std::vector<std::string>& prev, const s
     uint prevIndex = 0;
     uint currIndex = 0;
 
+    // TODO make more efficient
+    // https://blog.jcoglan.com/2017/02/12/the-myers-diff-algorithm-part-1/
+    // https://news.ycombinator.com/item?id=21383393
     while (prevIndex < prev.size() && currIndex < curr.size()) {
         if (prev[prevIndex] == curr[currIndex]) {
             // Lines are the same, move to next line in both vectors

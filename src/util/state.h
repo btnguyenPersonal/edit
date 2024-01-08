@@ -5,6 +5,12 @@
 #include "modes.h"
 #include "visualType.h"
 
+struct diffLine {
+    uint lineNum;
+    bool add; // true for add, false for delete
+    std::string line;
+};
+
 struct Position {
     uint row;
     uint col;
@@ -14,6 +20,9 @@ class State {
     public:
         char* filename;
         std::vector<std::string> data;
+        std::vector<std::string> previousState;
+        std::vector<std::vector<diffLine>> history;
+        int historyPosition;
         uint indent;
         uint windowPosition;
         static uint maxX;
