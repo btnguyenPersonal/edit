@@ -132,7 +132,7 @@ bool handleMotion(State* state, char c, std::string motion) {
     size_t i;
     for (i = 0; i < state->prevKeys.length(); i++) {
         if (state->prevKeys[i] != motion[i]) {
-            return FALSE;
+            return false;
         }
     }
     if (motion[i] == c) {
@@ -141,9 +141,9 @@ bool handleMotion(State* state, char c, std::string motion) {
         } else {
             state->prevKeys = "";
         }
-        return TRUE;
+        return true;
     } else {
-        return FALSE;
+        return false;
     }
 }
 

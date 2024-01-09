@@ -83,18 +83,18 @@ int getColorFromChar(char c) {
 
 void printChar(int row, int col, char c, bool isInString, bool isInverted) {
     int color;
-    if (isInString == FALSE) {
+    if (isInString == false) {
         color = getColorFromChar(c);
     } else {
         color = CYAN;
     }
-    if (isInverted == FALSE) {
+    if (isInverted == false) {
         attron(COLOR_PAIR(color));
     } else {
         attron(COLOR_PAIR(invertColor(color)));
     }
     mvaddch(row, col + LINE_NUM_OFFSET, c);
-    if (isInverted == FALSE) {
+    if (isInverted == false) {
         attroff(COLOR_PAIR(color));
     } else {
         attroff(COLOR_PAIR(invertColor(color)));
@@ -108,28 +108,28 @@ void printLineNumber(int r, int i) {
 }
 
 void printLine(std::string line, int row, bool isInverted) {
-    if (isInverted == TRUE && line.length() == 0) {
+    if (isInverted == true && line.length() == 0) {
         printChar(row, 0, ' ', false, isInverted);
     } else {
-        bool isInString = FALSE;
-        bool skipNext = FALSE;
+        bool isInString = false;
+        bool skipNext = false;
         char stringType;
         // TODO if in comment put in green
         for (int col = 0; col < (int) line.length(); col++) {
-            if (skipNext == FALSE) {
+            if (skipNext == false) {
                 char current = line[col];
                 if (isInString && current == '\\') {
-                    skipNext = TRUE;
+                    skipNext = true;
                 } else {
-                    if (isInString == FALSE && (current == '"' || current == '`' || current == '\'')) {
-                        isInString = TRUE;
+                    if (isInString == false && (current == '"' || current == '`' || current == '\'')) {
+                        isInString = true;
                         stringType = current;
-                    } else if (isInString == TRUE && current == stringType) {
-                        isInString = FALSE;
+                    } else if (isInString == true && current == stringType) {
+                        isInString = false;
                     }
                 }
             } else {
-                skipNext = FALSE;
+                skipNext = false;
             }
             printChar(row, col, line[col], isInString, isInverted);
         }
@@ -140,11 +140,11 @@ bool isRowInVisual(State* state, uint i) {
     if (state->mode == VISUAL) {
         if (state->visualType == LINE) {
             if ((state->row <= i && i <= state->visual.row) || (state->visual.row <= i && i <= state->row)) {
-                return TRUE;
+                return true;
             }
         }
     }
-    return FALSE;
+    return false;
 }
 
 void renderVisibleLines(State* state) {
@@ -185,9 +185,9 @@ void renderScreen(State* state) {
 void initTerminal() {
     initscr();
     raw();
-    keypad(stdscr, TRUE);
+    keypad(stdscr, true);
     noecho();
-    if (has_colors() == FALSE) {
+    if (has_colors() == false) {
         endwin();
         std::cout << "Your terminal does not support color" << std::endl;
         exit(1);
