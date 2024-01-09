@@ -88,6 +88,11 @@ void sendShortcutKeys(State* state, char c) {
         up(state);
     } else if (c == 'j') {
         down(state);
+    } else if (c == 'v') {
+        state->mode = VISUAL;
+        state->visualType = NORMAL;
+        state->visual.row = state->row;
+        state->visual.col = state->col;
     } else if (c == 'V') {
         state->mode = VISUAL;
         state->visualType = LINE;
