@@ -9,6 +9,55 @@ char ctrl(char c) {
     return c - 'a' + 1;
 }
 
+bool isAlphaNumeric(char c) {
+    return ('a' <= c && c <= 'z') || ('A' <= c && c <= 'Z');
+}
+
+uint w(State* state) {
+    bool isSpecial = !isAlphaNumeric(state->data[state->row][state->col]);
+    bool isOnSpace = state->data[state->row][state->col] == ' ';
+    bool space = false;
+    for (uint i = state->col + 1; i < state->data[state->row].size(); i += 1) {
+        if (state->data[state->row][i] == ' ') {
+            space = true;
+        } else if (isOnSpace || isSpecial == isAlphaNumeric(state->data[state->row][i])) {
+            return i;
+        } else if ((isOnSpace || space) && !isSpecial == isAlphaNumeric(state->data[state->row][i])) {
+            return i;
+        }
+    }
+    return state->col;
+}
+
+uint b(State* state) {
+    bool isSpecial = !isAlphaNumeric(state->data[state->row][state->col]);
+    bool isOnSpace = state->data[state->row][state->col] == ' ';
+    bool space = false;
+    uint ret = state->col;
+    for (uint i = state->col; i > 0; i -= 1) {
+        if (state->data[state->row][i - 1] == ' ') {
+            space = true;
+        } else if (isOnSpace || isSpecial == isAlphaNumeric(state->data[state->row][i - 1])) {
+            ret = i - 1;
+            break;
+        } else if ((isOnSpace || space) && !isSpecial == isAlphaNumeric(state->data[state->row][i - 1])) {
+            ret = i;
+            break;
+        }
+    }
+    bool currentAlpha = isAlphaNumeric(state->data[state->row][ret]);
+    for (uint i = ret; i > 0; i -= 1) {
+        if (state->data[state->row][i - 1] == ' ') {
+            break;
+        } else if (currentAlpha == isAlphaNumeric(state->data[state->row][i - 1])) {
+            ret = i - 1;
+        } else {
+            break;
+        }
+    }
+    return ret;
+}
+
 void saveFile(std::string filename, std::vector<std::string> data) {
     std::ofstream file(filename);
     std::ostream_iterator<std::string> output_iterator(file, "\n");

@@ -6,36 +6,118 @@
 #include "../util/modes.h"
 #include "../util/clipboard.h"
 
-int changeInVisual(State* state) {
-    int min = minimum(state->row, state->visual.row);
-    int max = maximum(state->row, state->visual.row);
-    if (state->visualType == LINE) {
-        state->data.erase(state->data.begin() + min, state->data.begin() + max);
-        state->data[min] = std::string("");
+Position changeInVisual(State* state) {
+    uint minR;
+    uint maxR;
+    uint minC;
+    uint maxC;
+    if (state->row < state->visual.row) {
+        minR = state->row;
+        minC = state->col;
+        maxR = state->visual.row;
+        maxC = state->visual.col;
+    } else if (state->row > state->visual.row) {
+        minR = state->visual.row;
+        minC = state->visual.col;
+        maxR = state->row;
+        maxC = state->col;
+    } else {
+        minR = state->visual.row;
+        maxR = state->row;
+        minC = std::min(state->col, state->visual.col);
+        maxC = std::max(state->col, state->visual.col);
     }
-    return min;
+    if (state->visualType == LINE) {
+        state->data.erase(state->data.begin() + minR, state->data.begin() + maxR);
+        state->data[minR] = std::string("");
+    } else if (state->visualType == NORMAL) {
+        state->data[minR] = state->data[minR].substr(0, minC) + state->data[maxR].substr(maxC + 1);
+        state->data.erase(state->data.begin() + minR + 1, state->data.begin() + maxR + 1);
+    }
+    Position pos = Position();
+    pos.row = minR;
+    pos.col = minC;
+    return pos;
 }
 
-int copyInVisual(State* state) {
-    int min = minimum(state->row, state->visual.row);
-    int max = maximum(state->row, state->visual.row);
+Position copyInVisual(State* state) {
+    uint minR;
+    uint maxR;
+    uint minC;
+    uint maxC;
+    if (state->row < state->visual.row) {
+        minR = state->row;
+        minC = state->col;
+        maxR = state->visual.row;
+        maxC = state->visual.col;
+    } else if (state->row > state->visual.row) {
+        minR = state->visual.row;
+        minC = state->visual.col;
+        maxR = state->row;
+        maxC = state->col;
+    } else {
+        minR = state->visual.row;
+        maxR = state->row;
+        minC = std::min(state->col, state->visual.col);
+        maxC = std::max(state->col, state->visual.col);
+    }
     if (state->visualType == LINE) {
         std::string clip = "";
-        for (size_t i = min; i <= (uint) max; i++) {
+        for (size_t i = minR; i <= maxR; i++) {
             clip += state->data[i] + "\n";
         }
         copyToClipboard(clip);
+    } else if (state->visualType == NORMAL) {
+        std::string clip = "";
+        uint index = minC;
+        for (size_t i = minR; i < maxR; i++) {
+            while (index < state->data[i].size()) {
+                clip += state->data[i][index];
+                index += 1;
+            }
+            index = 0;
+            clip += '\n';
+        }
+        clip += state->data[maxR].substr(index, maxC + 1);
+        copyToClipboard(clip);
     }
-    return min;
+    Position pos = Position();
+    pos.row = minR;
+    pos.col = minC;
+    return pos;
 }
 
-int deleteInVisual(State* state) {
-    int min = minimum(state->row, state->visual.row);
-    int max = maximum(state->row, state->visual.row);
-    if (state->visualType == LINE) {
-        state->data.erase(state->data.begin() + min, state->data.begin() + max + 1);
+Position deleteInVisual(State* state) {
+    uint minR;
+    uint maxR;
+    uint minC;
+    uint maxC;
+    if (state->row < state->visual.row) {
+        minR = state->row;
+        minC = state->col;
+        maxR = state->visual.row;
+        maxC = state->visual.col;
+    } else if (state->row > state->visual.row) {
+        minR = state->visual.row;
+        minC = state->visual.col;
+        maxR = state->row;
+        maxC = state->col;
+    } else {
+        minR = state->visual.row;
+        maxR = state->row;
+        minC = std::min(state->col, state->visual.col);
+        maxC = std::max(state->col, state->visual.col);
     }
-    return min;
+    if (state->visualType == LINE) {
+        state->data.erase(state->data.begin() + minR, state->data.begin() + maxR + 1);
+    } else if (state->visualType == NORMAL) {
+        state->data[minR] = state->data[minR].substr(0, minC) + state->data[maxR].substr(maxC + 1);
+        state->data.erase(state->data.begin() + minR + 1, state->data.begin() + maxR + 1);
+    }
+    Position pos = Position();
+    pos.row = minR;
+    pos.col = minC;
+    return pos;
 }
 
 void sendVisualKeys(State* state, char c) {
@@ -51,6 +133,10 @@ void sendVisualKeys(State* state, char c) {
         state->col = 0;
     } else if (c == '$') {
         state->col = state->data[state->row].length();
+    } else if (c == 'b') {
+        state->col = b(state);
+    } else if (c == 'w') {
+        state->col = w(state);
     } else if (c == 'h') {
         left(state);
     } else if (c == 'l') {
@@ -61,15 +147,27 @@ void sendVisualKeys(State* state, char c) {
         down(state);
     } else if (c == 'G') {
         state->row = state->data.size() - 1;
+    } else if (c == 'p') {
+        auto pos = deleteInVisual(state);
+        state->row = pos.row;
+        state->col = pos.col;
+        pasteFromClipboard(state);
+        state->mode = SHORTCUTS;
     } else if (c == 'd') {
         copyInVisual(state);
-        state->row = deleteInVisual(state);
+        auto pos = deleteInVisual(state);
+        state->row = pos.row;
+        state->col = pos.col;
         state->mode = SHORTCUTS;
     } else if (c == 'y') {
-        state->row = copyInVisual(state);
+        auto pos = copyInVisual(state);
+        state->row = pos.row;
+        state->col = pos.col;
         state->mode = SHORTCUTS;
     } else if (c == 'c') {
-        state->row = changeInVisual(state);
+        auto pos = changeInVisual(state);
+        state->row = pos.row;
+        state->col = pos.col;
         state->mode = TYPING;
     } else {
         state->status = std::string(1, c) + " <" + std::to_string((int)c) + ">";
