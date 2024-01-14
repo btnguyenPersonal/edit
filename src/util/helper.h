@@ -5,6 +5,9 @@
 #include <fstream>
 #include "state.h"
 
+bool isAlphaNumeric(char c);
+uint w(State* state);
+uint b(State* state);
 void insertEmptyLineBelow(State* state);
 void indent(State* state);
 void deindent(State* state);

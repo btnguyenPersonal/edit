@@ -10,6 +10,6 @@ void renderVisibleLines(State* state);
 void renderScreen(State* state);
 void initTerminal();
 void printChar(State* state, size_t i, size_t j);
-void printLine(std::string line, int i, int windowPosition);
+void printLine(State* state, int i);
 void printLineNumber(int i, int windowPosition);
-bool isRowInVisual(State* state, int i);
+bool isRowColInVisual(State* state, uint i, uint j);

@@ -3,6 +3,6 @@
 #include "../util/state.h"
 
 void sendVisualKeys(State* state, char c);
-int changeInVisual(State* state);
-int copyInVisual(State* state);
-int deleteInVisual(State* state);
+Position changeInVisual(State* state);
+Position copyInVisual(State* state);
+Position deleteInVisual(State* state);

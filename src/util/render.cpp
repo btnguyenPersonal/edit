@@ -83,18 +83,18 @@ int getColorFromChar(char c) {
 
 void printChar(int row, int col, char c, bool isInString, bool isInverted) {
     int color;
-    if (isInString == FALSE) {
+    if (isInString == false) {
         color = getColorFromChar(c);
     } else {
         color = CYAN;
     }
-    if (isInverted == FALSE) {
+    if (isInverted == false) {
         attron(COLOR_PAIR(color));
     } else {
         attron(COLOR_PAIR(invertColor(color)));
     }
     mvaddch(row, col + LINE_NUM_OFFSET, c);
-    if (isInverted == FALSE) {
+    if (isInverted == false) {
         attroff(COLOR_PAIR(color));
     } else {
         attroff(COLOR_PAIR(invertColor(color)));
@@ -113,51 +113,76 @@ void printLineNumber(int r, int i, bool isCurrentRow) {
     }
 }
 
-void printLine(std::string line, int row, bool isInverted) {
-    if (isInverted == TRUE && line.length() == 0) {
-        printChar(row, 0, ' ', false, isInverted);
+bool isRowColInVisual(State* state, uint i, uint j) {
+    if (state->mode == VISUAL) {
+        uint minR;
+        uint minC;
+        uint maxR;
+        uint maxC;
+        if (state->row < state->visual.row) {
+            minR = state->row;
+            minC = state->col;
+            maxR = state->visual.row;
+            maxC = state->visual.col;
+        } else {
+            minR = state->visual.row;
+            minC = state->visual.col;
+            maxR = state->row;
+            maxC = state->col;
+        }
+        if (state->visualType == LINE) {
+            if (minR <= i && i <= maxR) {
+                return true;
+            }
+        } else if (state->visualType == NORMAL) {
+            if (minR < i && i < maxR) {
+                return true;
+            } else if (minR == i && maxR == i) {
+                return (minC <= j && j <= maxC) || (maxC <= j && j <= minC);
+            } else if (minR == i) {
+                return minC <= j;
+            } else if (maxR == i) {
+                return maxC >= j;
+            }
+        }
+    }
+    return false;
+}
+
+void printLine(State* state, int row) {
+    if (isRowColInVisual(state, row, 0) == true && state->data[row].length() == 0) {
+        printChar(row - state->windowPosition + 1, 0, ' ', false, true);
     } else {
-        bool isInString = FALSE;
-        bool skipNext = FALSE;
+        bool isInString = false;
+        bool skipNext = false;
         char stringType;
         // TODO if in comment put in green
-        for (int col = 0; col < (int) line.length(); col++) {
-            if (skipNext == FALSE) {
-                char current = line[col];
+        for (int col = 0; col < (int) state->data[row].length(); col++) {
+            if (skipNext == false) {
+                char current = state->data[row][col];
                 if (isInString && current == '\\') {
-                    skipNext = TRUE;
+                    skipNext = true;
                 } else {
-                    if (isInString == FALSE && (current == '"' || current == '`' || current == '\'')) {
-                        isInString = TRUE;
+                    if (isInString == false && (current == '"' || current == '`' || current == '\'')) {
+                        isInString = true;
                         stringType = current;
-                    } else if (isInString == TRUE && current == stringType) {
-                        isInString = FALSE;
+                    } else if (isInString == true && current == stringType) {
+                        isInString = false;
                     }
                 }
             } else {
-                skipNext = FALSE;
+                skipNext = false;
             }
-            printChar(row, col, line[col], isInString, isInverted);
+            printChar(row - state->windowPosition + 1, col, state->data[row][col], isInString, isRowColInVisual(state, row, col));
         }
     }
-}
-
-bool isRowInVisual(State* state, uint i) {
-    if (state->mode == VISUAL) {
-        if (state->visualType == LINE) {
-            if ((state->row <= i && i <= state->visual.row) || (state->visual.row <= i && i <= state->row)) {
-                return TRUE;
-            }
-        }
-    }
-    return FALSE;
 }
 
 void renderVisibleLines(State* state) {
     // TODO fix maxX as well
     for (int i = state->windowPosition; i < (int) state->data.size() && i < (int) (state->maxY + state->windowPosition) - 1; i++) {
-        printLineNumber(i - state->windowPosition + 1, i, i == (int) state->row);
-        printLine(state->data[i], i - state->windowPosition + 1, isRowInVisual(state, (uint) i));
+        printLineNumber(i - state->windowPosition + 1, i);
+        printLine(state, i);
     }
 }
 
@@ -191,9 +216,9 @@ void renderScreen(State* state) {
 void initTerminal() {
     initscr();
     raw();
-    keypad(stdscr, TRUE);
+    keypad(stdscr, true);
     noecho();
-    if (has_colors() == FALSE) {
+    if (has_colors() == false) {
         endwin();
         std::cout << "Your terminal does not support color" << std::endl;
         exit(1);
