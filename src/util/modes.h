@@ -4,5 +4,6 @@ enum Mode {
     VISUAL,
     COMMANDLINE,
     TYPING,
-    SHORTCUTS
+    SHORTCUTS,
+    FINDFILE
 };

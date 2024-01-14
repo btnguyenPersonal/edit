@@ -2,6 +2,7 @@
 #include "sendTypingKeys.h"
 #include "sendCommandLineKeys.h"
 #include "sendVisualKeys.h"
+#include "sendFindFileKeys.h"
 #include "../util/state.h"
 #include "../util/helper.h"
 #include "../util/history.h"
@@ -19,6 +20,8 @@ void sendKeys(State* state, char c) {
         sendVisualKeys(state, c);
     } else if (state->mode == COMMANDLINE) {
         sendCommandLineKeys(state, c);
+    } else if (state->mode == FINDFILE) {
+        sendFindFileKeys(state, c);
     }
     sanityCheckRowColOutOfBounds(state);
     if (isWindowPositionInvalid(state)) {

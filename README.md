@@ -95,3 +95,7 @@ line 2 | ''
 - wow why was undo so hard before?
 - i mean i didn't get the most efficient one, but whatever I'll fix it later when i need perf
 - undo also why didn't i just find the location change happened instead of storing it with the diff???
+
+# switch over
+- let's see how this goes, hopefully no bugs pop up fingers crossed
+

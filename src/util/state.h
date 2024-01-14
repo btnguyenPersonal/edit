@@ -32,6 +32,7 @@ class State {
         uint row;
         uint col;
         std::string commandLineQuery;
+        std::string findFileQuery;
         std::string prevKeys;
         std::string status;
         Mode mode;

@@ -22,6 +22,7 @@ State::State(char* filename) {
     this->col = 0;
     this->indent = 4;
     this->commandLineQuery = std::string("");
+    this->findFileQuery = std::string("");
     this->prevKeys = std::string("");
     this->status = std::string("");
     this->mode = SHORTCUTS;

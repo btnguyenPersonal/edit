@@ -2,13 +2,11 @@
 CC = g++
 CFLAGS = -Wall -lncurses
 
-# Directories
 SRC_DIR = src
 KEYBINDS_DIR = $(SRC_DIR)/keybinds
 UTIL_DIR = $(SRC_DIR)/util
 BUILD_DIR = build
 
-# Source files
 SOURCES = $(SRC_DIR)/edit.cpp \
           $(UTIL_DIR)/helper.cpp \
           $(UTIL_DIR)/render.cpp \
@@ -17,17 +15,15 @@ SOURCES = $(SRC_DIR)/edit.cpp \
           $(UTIL_DIR)/history.cpp \
           $(KEYBINDS_DIR)/sendKeys.cpp \
           $(KEYBINDS_DIR)/sendVisualKeys.cpp \
+          $(KEYBINDS_DIR)/sendFindFileKeys.cpp \
           $(KEYBINDS_DIR)/sendCommandLineKeys.cpp \
           $(KEYBINDS_DIR)/sendShortcutKeys.cpp \
           $(KEYBINDS_DIR)/sendTypingKeys.cpp
 
-# Object files
 OBJECTS = $(SOURCES:$(SRC_DIR)/%.cpp=$(BUILD_DIR)/%.o)
 
-# Executable name
 EXECUTABLE = $(BUILD_DIR)/e
 
-# Compile and link
 all: $(BUILD_DIR) $(EXECUTABLE)
 
 $(BUILD_DIR):
@@ -39,7 +35,9 @@ $(EXECUTABLE): $(OBJECTS)
 $(BUILD_DIR)/%.o: $(SRC_DIR)/%.cpp
 	$(CC) -c $< -o $@ $(CFLAGS)
 
-# Clean rule
+install:
+	make all && sudo cp build/e /usr/bin
+
 clean:
 	rm -rf $(BUILD_DIR)
 

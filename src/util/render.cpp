@@ -1,3 +1,8 @@
+#include <fstream>
+#include <string>
+#include <filesystem>
+#include <vector>
+
 #include <ncurses.h>
 #include <iostream>
 #include "state.h"
@@ -62,6 +67,10 @@ int renderStatusBar(State* state) {
     if (state->mode == COMMANDLINE) {
         mvprintw(0, offset, ":%s", state->commandLineQuery.c_str());
         offset += state->commandLineQuery.length() + 1;
+        return offset;
+    } else if (state->mode == FINDFILE) {
+        mvprintw(0, offset, "> %s", state->findFileQuery.c_str());
+        offset += state->findFileQuery.length() + 2;
         return offset;
     }
     return 0;
@@ -178,6 +187,56 @@ void printLine(State* state, int row) {
     }
 }
 
+bool containsSubstring(const std::filesystem::path& file_path, const std::string& query) {
+    // TODO make fzf
+    std::ifstream file(file_path);
+    std::string line;
+
+    while (std::getline(file, line)) {
+        if (line.find(query) != std::string::npos) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+bool shouldIgnoreFile(const std::filesystem::path& path) {
+    std::vector<std::string> ignoreList = {".git", "node_modules"};
+    for (uint i = 0; i < ignoreList.size(); i++) {
+        if (path.string().find(ignoreList[i]) != std::string::npos) {
+            return true;
+        }
+    }
+    return false;
+}
+
+std::vector<std::filesystem::path> findFilesWithSubstring(const std::filesystem::path& dir_path, const std::string& query) {
+    std::vector<std::filesystem::path> matching_files;
+
+    for (const auto& entry : std::filesystem::recursive_directory_iterator(dir_path)) {
+        if (shouldIgnoreFile(entry.path())) {
+            continue;
+        }
+
+        if (std::filesystem::is_regular_file(entry) && containsSubstring(entry.path(), query)) {
+            matching_files.push_back(entry.path());
+        }
+    }
+
+    return matching_files;
+}
+
+void renderFindFileOutput(State* state) {
+    std::filesystem::path dir_path = std::filesystem::current_path();
+    auto matching_files = findFilesWithSubstring(dir_path, state->findFileQuery);
+
+    printw("\n");
+    for (const auto& file_path : matching_files) {
+        printw("%s\n", file_path.c_str());
+    }
+}
+
 void renderVisibleLines(State* state) {
     // TODO fix maxX as well
     for (int i = state->windowPosition; i < (int) state->data.size() && i < (int) (state->maxY + state->windowPosition) - 1; i++) {
@@ -186,9 +245,9 @@ void renderVisibleLines(State* state) {
     }
 }
 
-void moveCursor(State* state, int commandLineCursorPosition) {
-    if (state->mode == COMMANDLINE) {
-        move(0, commandLineCursorPosition);
+void moveCursor(State* state, int cursorPosition) {
+    if (state->mode == COMMANDLINE || state->mode == FINDFILE) {
+        move(0, cursorPosition);
     } else {
         uint row = state->row + 1;
         if (row > state->windowPosition) {
@@ -207,9 +266,13 @@ void moveCursor(State* state, int commandLineCursorPosition) {
 void renderScreen(State* state) {
     clear();
     initColors();
-    renderVisibleLines(state);
-    int commandLineCursorPosition = renderStatusBar(state);
-    moveCursor(state, commandLineCursorPosition);
+    if (state->mode == FINDFILE) {
+        renderFindFileOutput(state);
+    } else {
+        renderVisibleLines(state);
+    }
+    int cursorPosition = renderStatusBar(state);
+    moveCursor(state, cursorPosition);
     refresh();
 }
 
