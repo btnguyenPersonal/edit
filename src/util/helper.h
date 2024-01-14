@@ -5,6 +5,7 @@
 #include <fstream>
 #include "state.h"
 
+void generateFindFileOutput(State* state);
 bool isAlphaNumeric(char c);
 uint w(State* state);
 uint b(State* state);

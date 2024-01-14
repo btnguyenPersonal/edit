@@ -2,6 +2,7 @@
 
 #include <string>
 #include <vector>
+#include <filesystem>
 #include "modes.h"
 #include "visualType.h"
 
@@ -18,7 +19,7 @@ struct Position {
 
 class State {
     public:
-        char* filename;
+        const char* filename;
         std::vector<std::string> data;
         std::vector<std::string> previousState;
         std::vector<std::vector<diffLine>> history;
@@ -33,9 +34,11 @@ class State {
         uint col;
         std::string commandLineQuery;
         std::string findFileQuery;
+        uint findFileSelection;
+        std::vector<std::filesystem::path> findFileOutput;
         std::string prevKeys;
         std::string status;
         Mode mode;
-        State(char* filename);
+        State(const char* filename);
         static void setMaxYX(int y, int x);
 };

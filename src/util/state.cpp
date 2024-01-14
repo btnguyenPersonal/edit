@@ -8,7 +8,7 @@
 uint State::maxX = 0;
 uint State::maxY = 0;
 
-State::State(char* filename) {
+State::State(const char* filename) {
     this->filename = filename;
     this->data = readFile(filename);
     this->previousState = std::vector<std::string>();
@@ -23,6 +23,7 @@ State::State(char* filename) {
     this->indent = 4;
     this->commandLineQuery = std::string("");
     this->findFileQuery = std::string("");
+    this->findFileSelection = 0;
     this->prevKeys = std::string("");
     this->status = std::string("");
     this->mode = SHORTCUTS;

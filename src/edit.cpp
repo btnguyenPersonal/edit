@@ -12,13 +12,14 @@ int main(int argc, char* argv[]) {
         exit(1);
     }
     initTerminal();
-    State state(argv[1]);
+    const char* filename = argv[1];
+    State* state = new State(filename);
     calcWindowBounds();
-    renderScreen(&state);
+    renderScreen(state);
     while (true) {
         c = getchar();
-        sendKeys(&state, c);
-        renderScreen(&state);
+        sendKeys(state, c);
+        renderScreen(state);
     }
     endwin();
     return 0;

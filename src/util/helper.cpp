@@ -13,6 +13,41 @@ bool isAlphaNumeric(char c) {
     return ('a' <= c && c <= 'z') || ('A' <= c && c <= 'Z');
 }
 
+bool filePathContainsSubstring(const std::filesystem::path& filePath, const std::string& query) {
+    // TODO make fzf
+    return filePath.string().find(query) != std::string::npos;
+}
+
+bool shouldIgnoreFile(const std::filesystem::path& path) {
+    std::vector<std::string> ignoreList = {".git", "node_modules"};
+    for (uint i = 0; i < ignoreList.size(); i++) {
+        if (path.string().find(ignoreList[i]) != std::string::npos) {
+            return true;
+        }
+    }
+    return false;
+}
+
+std::vector<std::filesystem::path> findFilesWithSubstring(const std::filesystem::path& dir_path, const std::string& query) {
+    std::vector<std::filesystem::path> matching_files;
+
+    for (const auto& entry : std::filesystem::recursive_directory_iterator(dir_path)) {
+        if (shouldIgnoreFile(entry.path())) {
+            continue;
+        }
+
+        if (std::filesystem::is_regular_file(entry) && filePathContainsSubstring(entry.path(), query)) {
+            matching_files.push_back(entry.path());
+        }
+    }
+
+    return matching_files;
+}
+
+void generateFindFileOutput(State* state) {
+    state->findFileOutput = findFilesWithSubstring(std::filesystem::current_path(), state->findFileQuery);
+}
+
 uint w(State* state) {
     bool isSpecial = !isAlphaNumeric(state->data[state->row][state->col]);
     bool isOnSpace = state->data[state->row][state->col] == ' ';

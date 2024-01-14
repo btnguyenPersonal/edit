@@ -187,53 +187,17 @@ void printLine(State* state, int row) {
     }
 }
 
-bool containsSubstring(const std::filesystem::path& file_path, const std::string& query) {
-    // TODO make fzf
-    std::ifstream file(file_path);
-    std::string line;
-
-    while (std::getline(file, line)) {
-        if (line.find(query) != std::string::npos) {
-            return true;
-        }
-    }
-
-    return false;
-}
-
-bool shouldIgnoreFile(const std::filesystem::path& path) {
-    std::vector<std::string> ignoreList = {".git", "node_modules"};
-    for (uint i = 0; i < ignoreList.size(); i++) {
-        if (path.string().find(ignoreList[i]) != std::string::npos) {
-            return true;
-        }
-    }
-    return false;
-}
-
-std::vector<std::filesystem::path> findFilesWithSubstring(const std::filesystem::path& dir_path, const std::string& query) {
-    std::vector<std::filesystem::path> matching_files;
-
-    for (const auto& entry : std::filesystem::recursive_directory_iterator(dir_path)) {
-        if (shouldIgnoreFile(entry.path())) {
-            continue;
-        }
-
-        if (std::filesystem::is_regular_file(entry) && containsSubstring(entry.path(), query)) {
-            matching_files.push_back(entry.path());
-        }
-    }
-
-    return matching_files;
-}
-
 void renderFindFileOutput(State* state) {
-    std::filesystem::path dir_path = std::filesystem::current_path();
-    auto matching_files = findFilesWithSubstring(dir_path, state->findFileQuery);
-
-    printw("\n");
-    for (const auto& file_path : matching_files) {
-        printw("%s\n", file_path.c_str());
+    uint i = 1;
+    for (const auto& file_path : state->findFileOutput) {
+        if (i - 1 == state->findFileSelection) {
+            attron(COLOR_PAIR(invertColor(WHITE)));
+            mvprintw(i, 0, "%s\n", file_path.c_str());
+            attroff(COLOR_PAIR(invertColor(WHITE)));
+        } else {
+            mvprintw(i, 0, "%s\n", file_path.c_str());
+        }
+        i += 1;
     }
 }
 

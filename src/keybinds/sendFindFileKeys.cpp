@@ -7,13 +7,31 @@
 void sendFindFileKeys(State* state, char c) {
     if (c == 27) { // ESC
         state->findFileQuery = std::string("");
+        state->findFileSelection = 0;
         state->mode = SHORTCUTS;
     } else if (' ' <= c && c <= '~') {
         state->findFileQuery += c;
-    } else if (c == 13) { // ENTER
-        state->findFileQuery = std::string("");
-        state->mode = SHORTCUTS;
+        state->findFileSelection = 0;
+    } else if (c == 127) { // BACKSPACE
+        state->findFileQuery = state->findFileQuery.substr(0, state->findFileQuery.length() - 1);
+        state->findFileSelection = 0;
+    } else if (c == ctrl('n')) {
+        state->findFileSelection += 1;
+    } else if (c == ctrl('p')) {
+        if (state->findFileSelection > 0) {
+            state->findFileSelection -= 1;
+        }
+    } else if (c == ctrl('m')) { // ENTER
+        auto selectedFile = state->findFileOutput[state->findFileSelection].string();
+        if (state != nullptr) {
+            delete state;
+            state = nullptr;
+        }
+        state = new State(selectedFile.c_str());
     } else {
         state->status = std::string(1, c) + " <" + std::to_string((int)c) + ">";
+    }
+    if (state->mode == FINDFILE) {
+        generateFindFileOutput(state);
     }
 }
