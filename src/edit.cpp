@@ -1,11 +1,8 @@
-#include <string>
 #include <iostream>
-#include <vector>
 #include <ncurses.h>
-#include "util/helper.h"
 #include "util/render.h"
 #include "util/state.h"
-#include "util/modes.h"
+#include "util/helper.h"
 #include "keybinds/sendKeys.h"
 
 int main(int argc, char* argv[]) {
@@ -14,22 +11,13 @@ int main(int argc, char* argv[]) {
         std::cerr << "usage: edit [file]" << std::endl;
         exit(1);
     }
-    State state(argv[1]);
     initTerminal();
+    State state(argv[1]);
     calcWindowBounds();
     renderScreen(&state);
     while (true) {
         c = getchar();
-        state.status = std::string("");
-        calcWindowBounds();
         sendKeys(&state, c);
-        if (state.data.size() == 0) {
-            state.data.push_back("");
-        }
-        sanityCheckRowColOutOfBounds(&state);
-        if (isWindowPositionInvalid(&state)) {
-            centerScreen(&state);
-        }
         renderScreen(&state);
     }
     endwin();

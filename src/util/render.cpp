@@ -101,10 +101,16 @@ void printChar(int row, int col, char c, bool isInString, bool isInverted) {
     }
 }
 
-void printLineNumber(int r, int i) {
-    attron(COLOR_PAIR(GREY));
-    mvprintw(r, 0, "%5d ", i + 1);
-    attroff(COLOR_PAIR(GREY));
+void printLineNumber(int r, int i, bool isCurrentRow) {
+    if (isCurrentRow == true) {
+        attron(COLOR_PAIR(WHITE));
+        mvprintw(r, 0, "%5d ", i + 1);
+        attroff(COLOR_PAIR(WHITE));
+    } else {
+        attron(COLOR_PAIR(GREY));
+        mvprintw(r, 0, "%5d ", i + 1);
+        attroff(COLOR_PAIR(GREY));
+    }
 }
 
 bool isRowColInVisual(State* state, uint i, uint j) {
@@ -175,7 +181,6 @@ void printLine(State* state, int row) {
 void renderVisibleLines(State* state) {
     // TODO fix maxX as well
     for (int i = state->windowPosition; i < (int) state->data.size() && i < (int) (state->maxY + state->windowPosition) - 1; i++) {
-        state->status = std::to_string(state->windowPosition);
         printLineNumber(i - state->windowPosition + 1, i);
         printLine(state, i);
     }
