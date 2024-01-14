@@ -37,5 +37,4 @@ void sendKeys(State* state, char c) {
             state->historyPosition = (int) state->history.size() - 1;
         }
     }
-    state->status = std::__cxx11::to_string(state->history.size());
 }
