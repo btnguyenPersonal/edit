@@ -145,6 +145,10 @@ void sendVisualKeys(State* state, char c) {
         up(state);
     } else if (c == 'j') {
         down(state);
+    } else if (c == 'V') {
+        state->visualType = LINE;
+    } else if (c == 'v') {
+        state->visualType = NORMAL;
     } else if (c == 'G') {
         state->row = state->data.size() - 1;
     } else if (c == 'p') {
