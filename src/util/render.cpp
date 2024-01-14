@@ -181,7 +181,7 @@ void printLine(State* state, int row) {
 void renderVisibleLines(State* state) {
     // TODO fix maxX as well
     for (int i = state->windowPosition; i < (int) state->data.size() && i < (int) (state->maxY + state->windowPosition) - 1; i++) {
-        printLineNumber(i - state->windowPosition + 1, i);
+        printLineNumber(i - state->windowPosition + 1, i, i == (int) state->row);
         printLine(state, i);
     }
 }
