@@ -31,12 +31,10 @@ bool shouldIgnoreFile(const std::filesystem::path& path) {
 
 std::vector<grepMatch> grepFiles(const std::filesystem::path& dir_path, const std::string& query) {
     std::vector<grepMatch> matches;
-
     for (const auto& entry : std::filesystem::recursive_directory_iterator(dir_path)) {
         if (shouldIgnoreFile(entry.path())) {
             continue;
         }
-
         if (std::filesystem::is_regular_file(entry)) {
             std::ifstream file(entry.path());
             std::string line;
@@ -45,7 +43,7 @@ std::vector<grepMatch> grepFiles(const std::filesystem::path& dir_path, const st
                 lineNumber++;
                 if (line.find(query) != std::string::npos) {
                     grepMatch match = grepMatch();
-                    match.path = entry.path();
+                    match.path = std::filesystem::relative(entry.path(), dir_path);
                     match.lineNum = lineNumber;
                     match.line = line;
                     matches.push_back(match);
@@ -53,23 +51,19 @@ std::vector<grepMatch> grepFiles(const std::filesystem::path& dir_path, const st
             }
         }
     }
-
     return matches;
 }
 
 std::vector<std::filesystem::path> findFiles(const std::filesystem::path& dir_path, const std::string& query) {
     std::vector<std::filesystem::path> matching_files;
-
     for (const auto& entry : std::filesystem::recursive_directory_iterator(dir_path)) {
         if (shouldIgnoreFile(entry.path())) {
             continue;
         }
-
         if (std::filesystem::is_regular_file(entry) && filePathContainsSubstring(entry.path(), query)) {
-            matching_files.push_back(entry.path());
+            matching_files.push_back(std::filesystem::relative(entry.path(), dir_path));
         }
     }
-
     return matching_files;
 }
 

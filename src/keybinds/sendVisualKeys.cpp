@@ -110,6 +110,7 @@ void sendVisualKeys(State* state, char c) {
     } else if (c == '#') {
         state->grepQuery = getInVisual(state);
         state->mode = GREP;
+        generateGrepOutput(state);
     } else if (c == 'l') {
         right(state);
     } else if (c == 'k') {

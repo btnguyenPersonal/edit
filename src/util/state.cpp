@@ -10,7 +10,7 @@ uint State::maxX = 0;
 uint State::maxY = 0;
 
 void State::resetState(const char* filename) {
-    this->filename = filename;
+    this->filename = std::string(filename);
     this->data = readFile(filename);
     this->previousState = std::vector<std::string>();
     this->history = std::vector<std::vector<diffLine>>();
@@ -37,7 +37,7 @@ void State::resetState(const char* filename) {
 }
 
 State::State(const char* filename) {
-    this->filename = filename;
+    this->filename = std::string(filename);
     this->data = readFile(filename);
     this->previousState = std::vector<std::string>();
     this->history = std::vector<std::vector<diffLine>>();

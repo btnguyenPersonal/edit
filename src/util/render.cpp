@@ -82,6 +82,7 @@ int renderStatusBar(State* state) {
         offset += state->findFileQuery.length() + 2;
         return offset;
     }
+    mvprintw(0, state->maxX - state->filename.length() - 2, "\"%s\"", state->filename.c_str());
     return -1;
 }
 

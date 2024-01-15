@@ -25,7 +25,7 @@ struct Position {
 
 class State {
     public:
-        const char* filename;
+        std::string filename;
         std::vector<std::string> data;
         std::vector<std::string> previousState;
         std::vector<std::vector<diffLine>> history;
