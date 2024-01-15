@@ -26,10 +26,7 @@ void sendGrepKeys(State* state, char c) {
     } else if (c == ctrl('m')) { // ENTER
         std::filesystem::path selectedFile = state->grepOutput[state->grepSelection].path;
         int lineNum = state->grepOutput[state->grepSelection].lineNum;
-        if (state != nullptr) {
-            delete state;
-            state = nullptr;
-        }
+        delete state;
         state = new State(selectedFile.c_str());
         state->row = lineNum;
     } else {
