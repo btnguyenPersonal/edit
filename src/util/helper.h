@@ -3,10 +3,16 @@
 #include <string>
 #include <vector>
 #include <fstream>
+#include <filesystem>
 #include "state.h"
 
-void generateFindFileOutput(State* state);
+std::vector<grepMatch> grepFiles(const std::filesystem::path& dir_path, const std::string& query);
+void generateGrepOutput(State* state);
 bool isAlphaNumeric(char c);
+bool filePathContainsSubstring(const std::filesystem::path& filePath, const std::string& query);
+bool shouldIgnoreFile(const std::filesystem::path& path);
+std::vector<std::filesystem::path> findFiles(const std::filesystem::path& dir_path, const std::string& query);
+void generateFindFileOutput(State* state);
 uint w(State* state);
 uint b(State* state);
 void insertEmptyLineBelow(State* state);

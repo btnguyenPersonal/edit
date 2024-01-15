@@ -6,6 +6,12 @@
 #include "modes.h"
 #include "visualType.h"
 
+struct grepMatch {
+    std::filesystem::path path;
+    int lineNum;
+    std::string line;
+};
+
 struct diffLine {
     uint lineNum;
     bool add; // true for add, false for delete
@@ -36,6 +42,9 @@ class State {
         std::string findFileQuery;
         uint findFileSelection;
         std::vector<std::filesystem::path> findFileOutput;
+        std::string grepQuery;
+        uint grepSelection;
+        std::vector<grepMatch> grepOutput;
         std::string prevKeys;
         std::string status;
         Mode mode;

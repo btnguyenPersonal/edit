@@ -99,6 +99,8 @@ void sendShortcutKeys(State* state, char c) {
         up(state);
     } else if (c == 'j') {
         down(state);
+    } else if (c == ctrl('g')) {
+        state->mode = GREP;
     } else if (c == ctrl('p')) {
         state->mode = FINDFILE;
     } else if (c == 'v') {

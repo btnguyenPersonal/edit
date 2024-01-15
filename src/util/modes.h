@@ -5,5 +5,6 @@ enum Mode {
     COMMANDLINE,
     TYPING,
     SHORTCUTS,
-    FINDFILE
+    FINDFILE,
+    GREP
 };

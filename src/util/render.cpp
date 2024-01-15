@@ -68,12 +68,16 @@ int renderStatusBar(State* state) {
         mvprintw(0, offset, ":%s", state->commandLineQuery.c_str());
         offset += state->commandLineQuery.length() + 1;
         return offset;
+    } else if (state->mode == GREP) {
+        mvprintw(0, offset, "> %s", state->grepQuery.c_str());
+        offset += state->grepQuery.length() + 2;
+        return offset;
     } else if (state->mode == FINDFILE) {
         mvprintw(0, offset, "> %s", state->findFileQuery.c_str());
         offset += state->findFileQuery.length() + 2;
         return offset;
     }
-    return 0;
+    return -1;
 }
 
 int getColorFromChar(char c) {
@@ -187,6 +191,20 @@ void printLine(State* state, int row) {
     }
 }
 
+void renderGrepOutput(State* state) {
+    uint i = 1;
+    for (const grepMatch& match : state->grepOutput) {
+        if (i - 1 == state->grepSelection) {
+            attron(COLOR_PAIR(invertColor(WHITE)));
+            mvprintw(i, 0, "%s:%d %s\n", match.path.c_str(), match.lineNum, match.line.c_str());
+            attroff(COLOR_PAIR(invertColor(WHITE)));
+        } else {
+            mvprintw(i, 0, "%s:%d %s\n", match.path.c_str(), match.lineNum, match.line.c_str());
+        }
+        i += 1;
+    }
+}
+
 void renderFindFileOutput(State* state) {
     uint i = 1;
     for (const auto& file_path : state->findFileOutput) {
@@ -210,7 +228,7 @@ void renderVisibleLines(State* state) {
 }
 
 void moveCursor(State* state, int cursorPosition) {
-    if (state->mode == COMMANDLINE || state->mode == FINDFILE) {
+    if (cursorPosition != -1) {
         move(0, cursorPosition);
     } else {
         uint row = state->row + 1;
@@ -232,6 +250,8 @@ void renderScreen(State* state) {
     initColors();
     if (state->mode == FINDFILE) {
         renderFindFileOutput(state);
+    } else if (state->mode == GREP) {
+        renderGrepOutput(state);
     } else {
         renderVisibleLines(state);
     }

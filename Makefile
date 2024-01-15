@@ -16,6 +16,7 @@ SOURCES = $(SRC_DIR)/edit.cpp \
           $(KEYBINDS_DIR)/sendKeys.cpp \
           $(KEYBINDS_DIR)/sendVisualKeys.cpp \
           $(KEYBINDS_DIR)/sendFindFileKeys.cpp \
+          $(KEYBINDS_DIR)/sendGrepKeys.cpp \
           $(KEYBINDS_DIR)/sendCommandLineKeys.cpp \
           $(KEYBINDS_DIR)/sendShortcutKeys.cpp \
           $(KEYBINDS_DIR)/sendTypingKeys.cpp

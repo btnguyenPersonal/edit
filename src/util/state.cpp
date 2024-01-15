@@ -24,6 +24,8 @@ State::State(const char* filename) {
     this->commandLineQuery = std::string("");
     this->findFileQuery = std::string("");
     this->findFileSelection = 0;
+    this->grepQuery = std::string("");
+    this->grepSelection = 0;
     this->prevKeys = std::string("");
     this->status = std::string("");
     this->mode = SHORTCUTS;

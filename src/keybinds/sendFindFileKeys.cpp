@@ -16,7 +16,9 @@ void sendFindFileKeys(State* state, char c) {
         state->findFileQuery = state->findFileQuery.substr(0, state->findFileQuery.length() - 1);
         state->findFileSelection = 0;
     } else if (c == ctrl('n')) {
-        state->findFileSelection += 1;
+        if (state->findFileSelection + 1 < state->findFileOutput.size()) {
+            state->findFileSelection += 1;
+        }
     } else if (c == ctrl('p')) {
         if (state->findFileSelection > 0) {
             state->findFileSelection -= 1;
@@ -31,7 +33,7 @@ void sendFindFileKeys(State* state, char c) {
     } else {
         state->status = std::string(1, c) + " <" + std::to_string((int)c) + ">";
     }
-    if (state->mode == FINDFILE) {
+    if (state->mode == FINDFILE && c != ctrl('p') && c != ctrl('n')) {
         generateFindFileOutput(state);
     }
 }

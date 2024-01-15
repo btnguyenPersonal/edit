@@ -19,7 +19,7 @@ bool filePathContainsSubstring(const std::filesystem::path& filePath, const std:
 }
 
 bool shouldIgnoreFile(const std::filesystem::path& path) {
-    std::vector<std::string> ignoreList = {".git", "node_modules"};
+    std::vector<std::string> ignoreList = {".git", "node_modules", "build", "dist"};
     for (uint i = 0; i < ignoreList.size(); i++) {
         if (path.string().find(ignoreList[i]) != std::string::npos) {
             return true;
@@ -28,7 +28,35 @@ bool shouldIgnoreFile(const std::filesystem::path& path) {
     return false;
 }
 
-std::vector<std::filesystem::path> findFilesWithSubstring(const std::filesystem::path& dir_path, const std::string& query) {
+std::vector<grepMatch> grepFiles(const std::filesystem::path& dir_path, const std::string& query) {
+    std::vector<grepMatch> matches;
+
+    for (const auto& entry : std::filesystem::recursive_directory_iterator(dir_path)) {
+        if (shouldIgnoreFile(entry.path())) {
+            continue;
+        }
+
+        if (std::filesystem::is_regular_file(entry)) {
+            std::ifstream file(entry.path());
+            std::string line;
+            int lineNumber = 0;
+            while (std::getline(file, line)) {
+                lineNumber++;
+                if (line.find(query) != std::string::npos) {
+                    grepMatch match = grepMatch();
+                    match.path = entry.path();
+                    match.lineNum = lineNumber;
+                    match.line = line;
+                    matches.push_back(match);
+                }
+            }
+        }
+    }
+
+    return matches;
+}
+
+std::vector<std::filesystem::path> findFiles(const std::filesystem::path& dir_path, const std::string& query) {
     std::vector<std::filesystem::path> matching_files;
 
     for (const auto& entry : std::filesystem::recursive_directory_iterator(dir_path)) {
@@ -44,8 +72,12 @@ std::vector<std::filesystem::path> findFilesWithSubstring(const std::filesystem:
     return matching_files;
 }
 
+void generateGrepOutput(State* state) {
+    state->grepOutput = grepFiles(std::filesystem::current_path(), state->grepQuery);
+}
+
 void generateFindFileOutput(State* state) {
-    state->findFileOutput = findFilesWithSubstring(std::filesystem::current_path(), state->findFileQuery);
+    state->findFileOutput = findFiles(std::filesystem::current_path(), state->findFileQuery);
 }
 
 uint w(State* state) {
