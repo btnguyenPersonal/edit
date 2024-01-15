@@ -99,3 +99,7 @@ line 2 | ''
 # switch over
 - let's see how this goes, hopefully no bugs pop up fingers crossed
 
+
+# grep & findfile working
+todo need harpoon(need to figure out how to store old states, maybe make an archive? maps filename to old state)
+search replace
