@@ -78,13 +78,40 @@ Position copyInVisual(State* state) {
             index = 0;
             clip += '\n';
         }
-        clip += state->data[maxR].substr(index, maxC + 1);
+        clip += state->data[maxR].substr(index, maxC - index + 1);
         copyToClipboard(clip);
     }
     Position pos = Position();
     pos.row = minR;
     pos.col = minC;
     return pos;
+}
+
+std::string getInVisual(State* state) {
+    uint minR;
+    uint maxR;
+    uint minC;
+    uint maxC;
+    if (state->row < state->visual.row) {
+        minR = state->row;
+        minC = state->col;
+        maxR = state->visual.row;
+        maxC = state->visual.col;
+    } else if (state->row > state->visual.row) {
+        minR = state->visual.row;
+        minC = state->visual.col;
+        maxR = state->row;
+        maxC = state->col;
+    } else {
+        minR = state->visual.row;
+        maxR = state->row;
+        minC = std::min(state->col, state->visual.col);
+        maxC = std::max(state->col, state->visual.col);
+    }
+    if (state->visualType == NORMAL && minR == maxR) {
+        return state->data[maxR].substr(minC, maxC - minC + 1);
+    }
+    return std::string("");
 }
 
 Position deleteInVisual(State* state) {
@@ -139,6 +166,9 @@ void sendVisualKeys(State* state, char c) {
         state->col = w(state);
     } else if (c == 'h') {
         left(state);
+    } else if (c == '#') {
+        state->grepQuery = getInVisual(state);
+        state->mode = GREP;
     } else if (c == 'l') {
         right(state);
     } else if (c == 'k') {
