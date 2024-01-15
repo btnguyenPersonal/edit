@@ -7,6 +7,7 @@
 #include <iostream>
 #include "state.h"
 #include "modes.h"
+#include "render.h"
 
 #define _COLOR_BLACK 232
 #define _COLOR_GREY 242

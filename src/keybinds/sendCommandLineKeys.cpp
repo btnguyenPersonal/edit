@@ -4,6 +4,7 @@
 #include "../util/state.h"
 #include "../util/helper.h"
 #include "../util/modes.h"
+#include "sendCommandLineKeys.h"
 
 void evaluateCommandLineQuery(State* state) {
     if (state->commandLineQuery == "q") {

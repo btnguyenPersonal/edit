@@ -4,6 +4,7 @@
 #include "state.h"
 #include "modes.h"
 #include "visualType.h"
+#include "state.h"
 
 uint State::maxX = 0;
 uint State::maxY = 0;

@@ -3,6 +3,7 @@
 #include "../util/state.h"
 #include "../util/helper.h"
 #include "../util/modes.h"
+#include "sendGrepKeys.h"
 
 void sendGrepKeys(State* state, char c) {
     if (c == 27) { // ESC

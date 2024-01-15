@@ -2,6 +2,7 @@
 #include <string>
 #include <climits>
 #include "state.h"
+#include "history.h"
 
 uint applyDiff(State* state, const std::vector<diffLine>& diff, bool reverse) {
     uint min = UINT_MAX;

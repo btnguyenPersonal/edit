@@ -7,6 +7,7 @@
 #include "../util/modes.h"
 #include "../util/clipboard.h"
 #include "../util/visualType.h"
+#include "sendShortcutKeys.h"
 
 void sendShortcutKeys(State* state, char c) {
     if (c == 27) { // ESC

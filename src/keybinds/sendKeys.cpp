@@ -1,3 +1,4 @@
+#include "sendKeys.h"
 #include "sendShortcutKeys.h"
 #include "sendTypingKeys.h"
 #include "sendCommandLineKeys.h"

@@ -4,6 +4,7 @@
 #include <fstream>
 #include <curses.h>
 #include "state.h"
+#include "helper.h"
 
 char ctrl(char c) {
     return c - 'a' + 1;

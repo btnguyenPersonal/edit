@@ -3,6 +3,7 @@
 #include "../util/helper.h"
 #include "../util/state.h"
 #include "../util/modes.h"
+#include "sendTypingKeys.h"
 
 void sendTypingKeys(State* state, char c) {
     if (c == 27) { // ESC

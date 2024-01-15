@@ -5,72 +5,18 @@
 #include "../util/helper.h"
 #include "../util/modes.h"
 #include "../util/clipboard.h"
+#include "sendVisualKeys.h"
 
-Position changeInVisual(State* state) {
-    uint minR;
-    uint maxR;
-    uint minC;
-    uint maxC;
-    if (state->row < state->visual.row) {
-        minR = state->row;
-        minC = state->col;
-        maxR = state->visual.row;
-        maxC = state->visual.col;
-    } else if (state->row > state->visual.row) {
-        minR = state->visual.row;
-        minC = state->visual.col;
-        maxR = state->row;
-        maxC = state->col;
-    } else {
-        minR = state->visual.row;
-        maxR = state->row;
-        minC = std::min(state->col, state->visual.col);
-        maxC = std::max(state->col, state->visual.col);
-    }
+std::string getInVisual(State* state) {
+    Bounds bounds = getBounds(state);
+    std::string clip = "";
     if (state->visualType == LINE) {
-        state->data.erase(state->data.begin() + minR, state->data.begin() + maxR);
-        state->data[minR] = std::string("");
-    } else if (state->visualType == NORMAL) {
-        state->data[minR] = state->data[minR].substr(0, minC) + state->data[maxR].substr(maxC + 1);
-        state->data.erase(state->data.begin() + minR + 1, state->data.begin() + maxR + 1);
-    }
-    Position pos = Position();
-    pos.row = minR;
-    pos.col = minC;
-    return pos;
-}
-
-Position copyInVisual(State* state) {
-    uint minR;
-    uint maxR;
-    uint minC;
-    uint maxC;
-    if (state->row < state->visual.row) {
-        minR = state->row;
-        minC = state->col;
-        maxR = state->visual.row;
-        maxC = state->visual.col;
-    } else if (state->row > state->visual.row) {
-        minR = state->visual.row;
-        minC = state->visual.col;
-        maxR = state->row;
-        maxC = state->col;
-    } else {
-        minR = state->visual.row;
-        maxR = state->row;
-        minC = std::min(state->col, state->visual.col);
-        maxC = std::max(state->col, state->visual.col);
-    }
-    if (state->visualType == LINE) {
-        std::string clip = "";
-        for (size_t i = minR; i <= maxR; i++) {
+        for (size_t i = bounds.minR; i <= bounds.maxR; i++) {
             clip += state->data[i] + "\n";
         }
-        copyToClipboard(clip);
     } else if (state->visualType == NORMAL) {
-        std::string clip = "";
-        uint index = minC;
-        for (size_t i = minR; i < maxR; i++) {
+        uint index = bounds.minC;
+        for (size_t i = bounds.minR; i < bounds.maxR; i++) {
             while (index < state->data[i].size()) {
                 clip += state->data[i][index];
                 index += 1;
@@ -78,72 +24,67 @@ Position copyInVisual(State* state) {
             index = 0;
             clip += '\n';
         }
-        clip += state->data[maxR].substr(index, maxC - index + 1);
-        copyToClipboard(clip);
+        clip += state->data[bounds.maxR].substr(index, bounds.maxC - index + 1);
+    }
+    return clip;
+}
+
+Bounds getBounds(State* state) {
+    Bounds bounds;
+    if (state->row < state->visual.row) {
+        bounds.minR = state->row;
+        bounds.minC = state->col;
+        bounds.maxR = state->visual.row;
+        bounds.maxC = state->visual.col;
+    } else if (state->row > state->visual.row) {
+        bounds.minR = state->visual.row;
+        bounds.minC = state->visual.col;
+        bounds.maxR = state->row;
+        bounds.maxC = state->col;
+    } else {
+        bounds.minR = state->visual.row;
+        bounds.maxR = state->row;
+        bounds.minC = std::min(state->col, state->visual.col);
+        bounds.maxC = std::max(state->col, state->visual.col);
+    }
+    return bounds;
+}
+
+Position changeInVisual(State* state) {
+    Bounds bounds = getBounds(state);
+    if (state->visualType == LINE) {
+        state->data.erase(state->data.begin() + bounds.minR, state->data.begin() + bounds.maxR);
+        state->data[bounds.minR] = std::string("");
+    } else if (state->visualType == NORMAL) {
+        state->data[bounds.minR] = state->data[bounds.minR].substr(0, bounds.minC) + state->data[bounds.maxR].substr(bounds.maxC + 1);
+        state->data.erase(state->data.begin() + bounds.minR + 1, state->data.begin() + bounds.maxR + 1);
     }
     Position pos = Position();
-    pos.row = minR;
-    pos.col = minC;
+    pos.row = bounds.minR;
+    pos.col = bounds.minC;
     return pos;
 }
 
-std::string getInVisual(State* state) {
-    uint minR;
-    uint maxR;
-    uint minC;
-    uint maxC;
-    if (state->row < state->visual.row) {
-        minR = state->row;
-        minC = state->col;
-        maxR = state->visual.row;
-        maxC = state->visual.col;
-    } else if (state->row > state->visual.row) {
-        minR = state->visual.row;
-        minC = state->visual.col;
-        maxR = state->row;
-        maxC = state->col;
-    } else {
-        minR = state->visual.row;
-        maxR = state->row;
-        minC = std::min(state->col, state->visual.col);
-        maxC = std::max(state->col, state->visual.col);
-    }
-    if (state->visualType == NORMAL && minR == maxR) {
-        return state->data[maxR].substr(minC, maxC - minC + 1);
-    }
-    return std::string("");
+Position copyInVisual(State* state) {
+    Bounds bounds = getBounds(state);
+    copyToClipboard(getInVisual(state));
+    Position pos = Position();
+    pos.row = bounds.minR;
+    pos.col = bounds.minC;
+    return pos;
 }
 
 Position deleteInVisual(State* state) {
-    uint minR;
-    uint maxR;
-    uint minC;
-    uint maxC;
-    if (state->row < state->visual.row) {
-        minR = state->row;
-        minC = state->col;
-        maxR = state->visual.row;
-        maxC = state->visual.col;
-    } else if (state->row > state->visual.row) {
-        minR = state->visual.row;
-        minC = state->visual.col;
-        maxR = state->row;
-        maxC = state->col;
-    } else {
-        minR = state->visual.row;
-        maxR = state->row;
-        minC = std::min(state->col, state->visual.col);
-        maxC = std::max(state->col, state->visual.col);
-    }
+    Bounds bounds = getBounds(state);
     if (state->visualType == LINE) {
-        state->data.erase(state->data.begin() + minR, state->data.begin() + maxR + 1);
+        state->data.erase(state->data.begin() + bounds.minR, state->data.begin() + bounds.maxR + 1);
     } else if (state->visualType == NORMAL) {
-        state->data[minR] = state->data[minR].substr(0, minC) + state->data[maxR].substr(maxC + 1);
-        state->data.erase(state->data.begin() + minR + 1, state->data.begin() + maxR + 1);
+        state->data[bounds.minR] = state->data[bounds.minR].substr(0, bounds.minC) + state->data[bounds.maxR].substr(bounds.maxC + 1);
+        state->data.erase(state->data.begin() + bounds.minR + 1, state->data.begin() + bounds.maxR + 1);
     }
     Position pos = Position();
-    pos.row = minR;
-    pos.col = minC;
+    pos.row = bounds.minR;
+    pos.col = bounds.minC;
     return pos;
 }
 

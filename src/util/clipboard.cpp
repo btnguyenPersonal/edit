@@ -4,6 +4,7 @@
 #include <iterator>
 #include <vector>
 #include "state.h"
+#include "clipboard.h"
 
 std::vector<std::string> getFromClipboard() {
     std::string command;
