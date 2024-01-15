@@ -196,30 +196,42 @@ void printLine(State* state, int row) {
 }
 
 void renderGrepOutput(State* state) {
-    uint i = 1;
-    for (const grepMatch& match : state->grepOutput) {
-        if (i - 1 == state->grepSelection) {
+    uint index;
+    if ((int) state->grepSelection - ((int) state->maxY / 2) > 0) {
+        index = state->grepSelection - state->maxY / 2;
+    } else {
+        index = 0;
+    }
+    uint renderIndex = 1;
+    for (uint i = index; i < state->grepOutput.size() && i < index + state->maxY; i++) {
+        if (i == state->grepSelection) {
             attron(COLOR_PAIR(invertColor(WHITE)));
-            mvprintw(i, 0, "%s:%d %s\n", match.path.c_str(), match.lineNum, match.line.c_str());
+            mvprintw(renderIndex, 0, "%s:%d %s\n", state->grepOutput[i].path.c_str(), state->grepOutput[i].lineNum, state->grepOutput[i].line.c_str());
             attroff(COLOR_PAIR(invertColor(WHITE)));
         } else {
-            mvprintw(i, 0, "%s:%d %s\n", match.path.c_str(), match.lineNum, match.line.c_str());
+            mvprintw(renderIndex, 0, "%s:%d %s\n", state->grepOutput[i].path.c_str(), state->grepOutput[i].lineNum, state->grepOutput[i].line.c_str());
         }
-        i += 1;
+        renderIndex++;
     }
 }
 
 void renderFindFileOutput(State* state) {
-    uint i = 1;
-    for (const auto& file_path : state->findFileOutput) {
-        if (i - 1 == state->findFileSelection) {
+    uint index;
+    if ((int) state->findFileSelection - ((int) state->maxY / 2) > 0) {
+        index = state->findFileSelection - state->maxY / 2;
+    } else {
+        index = 0;
+    }
+    uint renderIndex = 1;
+    for (uint i = index; i < state->findFileOutput.size() && i < index + state->maxY; i++) {
+        if (i == state->findFileSelection) {
             attron(COLOR_PAIR(invertColor(WHITE)));
-            mvprintw(i, 0, "%s\n", file_path.c_str());
+            mvprintw(renderIndex, 0, "%s\n", state->findFileOutput[i].c_str());
             attroff(COLOR_PAIR(invertColor(WHITE)));
         } else {
-            mvprintw(i, 0, "%s\n", file_path.c_str());
+            mvprintw(renderIndex, 0, "%s\n", state->findFileOutput[i].c_str());
         }
-        i += 1;
+        renderIndex++;
     }
 }
 

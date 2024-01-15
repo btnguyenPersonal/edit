@@ -6,8 +6,6 @@
 
 void sendFindFileKeys(State* state, char c) {
     if (c == 27) { // ESC
-        state->findFileQuery = std::string("");
-        state->findFileSelection = 0;
         state->mode = SHORTCUTS;
     } else if (' ' <= c && c <= '~') {
         state->findFileQuery += c;

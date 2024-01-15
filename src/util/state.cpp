@@ -17,7 +17,6 @@ void State::resetState(const char* filename) {
     // this->grepQuery = std::string("");
     // this->grepSelection = 0;
     // this->grepOutput = std::vector<grepMatch>();
-    this->findFileOutput = std::vector<std::filesystem::path>();
     this->historyPosition = -1;
     this->windowPosition = 0;
     this->visualType = NORMAL;
@@ -27,8 +26,10 @@ void State::resetState(const char* filename) {
     this->col = 0;
     this->indent = 4;
     this->commandLineQuery = std::string("");
-    this->findFileQuery = std::string("");
-    this->findFileSelection = 0;
+    // keep findFile state
+    // this->findFileQuery = std::string("");
+    // this->findFileSelection = 0;
+    // this->findFileOutput = std::vector<std::filesystem::path>();
     this->prevKeys = std::string("");
     this->status = std::string("");
     this->mode = SHORTCUTS;
