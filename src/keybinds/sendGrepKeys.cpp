@@ -6,8 +6,6 @@
 
 void sendGrepKeys(State* state, char c) {
     if (c == 27) { // ESC
-        state->grepQuery = std::string("");
-        state->grepSelection = 0;
         state->mode = SHORTCUTS;
     } else if (' ' <= c && c <= '~') {
         state->grepQuery += c;
@@ -15,6 +13,8 @@ void sendGrepKeys(State* state, char c) {
     } else if (c == 127) { // BACKSPACE
         state->grepQuery = state->grepQuery.substr(0, state->grepQuery.length() - 1);
         state->grepSelection = 0;
+    } else if (c == ctrl('l')) {
+        state->grepQuery = std::string("");
     } else if (c == ctrl('n')) {
         if (state->grepSelection + 1 < state->grepOutput.size()) {
             state->grepSelection += 1;

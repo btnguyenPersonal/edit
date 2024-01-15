@@ -73,11 +73,19 @@ std::vector<std::filesystem::path> findFiles(const std::filesystem::path& dir_pa
 }
 
 void generateGrepOutput(State* state) {
-    state->grepOutput = grepFiles(std::filesystem::current_path(), state->grepQuery);
+    if (state->grepQuery == "") {
+        state->grepOutput.clear();
+    } else {
+        state->grepOutput = grepFiles(std::filesystem::current_path(), state->grepQuery);
+    }
 }
 
 void generateFindFileOutput(State* state) {
-    state->findFileOutput = findFiles(std::filesystem::current_path(), state->findFileQuery);
+    if (state->findFileQuery == "") {
+        state->findFileOutput.clear();
+    } else {
+        state->findFileOutput = findFiles(std::filesystem::current_path(), state->findFileQuery);
+    }
 }
 
 uint w(State* state) {

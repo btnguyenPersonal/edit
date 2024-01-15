@@ -69,11 +69,15 @@ int renderStatusBar(State* state) {
         offset += state->commandLineQuery.length() + 1;
         return offset;
     } else if (state->mode == GREP) {
+        attron(COLOR_PAIR(GREEN));
         mvprintw(0, offset, "> %s", state->grepQuery.c_str());
+        attroff(COLOR_PAIR(GREEN));
         offset += state->grepQuery.length() + 2;
         return offset;
     } else if (state->mode == FINDFILE) {
+        attron(COLOR_PAIR(YELLOW));
         mvprintw(0, offset, "> %s", state->findFileQuery.c_str());
+        attroff(COLOR_PAIR(YELLOW));
         offset += state->findFileQuery.length() + 2;
         return offset;
     }
