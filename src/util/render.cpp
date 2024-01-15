@@ -247,7 +247,6 @@ void moveCursor(State* state, int cursorPosition) {
 
 void renderScreen(State* state) {
     clear();
-    initColors();
     if (state->mode == FINDFILE) {
         renderFindFileOutput(state);
     } else if (state->mode == GREP) {
@@ -271,4 +270,5 @@ void initTerminal() {
         exit(1);
     }
     start_color();
+    initColors();
 }

@@ -25,8 +25,7 @@ void sendFindFileKeys(State* state, char c) {
         }
     } else if (c == ctrl('m')) { // ENTER
         auto selectedFile = state->findFileOutput[state->findFileSelection].string();
-        delete state;
-        state = new State(selectedFile.c_str());
+        state->resetState(selectedFile.c_str());
     } else {
         state->status = std::string(1, c) + " <" + std::to_string((int)c) + ">";
     }
