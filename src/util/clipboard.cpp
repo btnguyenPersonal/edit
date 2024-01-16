@@ -39,7 +39,14 @@ std::vector<std::string> getFromClipboard() {
 
 void pasteFromClipboard(State* state) {
     std::vector<std::string> clip = getFromClipboard();
-    if (clip.back() == "") {
+    if (state->data.size() == 0) {
+        if (clip.back() == "") {
+            clip.pop_back();
+        }
+        for (uint i = 0; i < clip.size(); i++) {
+            state->data.push_back(clip[i]);
+        }
+    } else if (clip.back() == "") {
         clip.pop_back();
         for (int i = 0; i < (int) clip.size(); i++) {
             state->data.insert(state->data.begin() + i + state->row, clip[i]);

@@ -44,7 +44,7 @@ uint getNextLineSameIndent(State* state) {
     return state->row;
 }
 
-WordPosition findParentheses(const std::string &str, char openParen, char closeParen, uint cursor) {
+WordPosition findParentheses(const std::string &str, char openParen, char closeParen, uint cursor, bool includeParen) {
     WordPosition pos = {0, 0};
     int balance = 0;
     int openParenIndex = -1;
@@ -87,7 +87,11 @@ WordPosition findParentheses(const std::string &str, char openParen, char closeP
             balance--;
         } else if (str[i] == closeParen) {
             if (balance == 0) {
-                return {(uint) openParenIndex, (uint) i};
+                if (i - openParenIndex == 1 || includeParen) {
+                    return {(uint) openParenIndex, (uint) i};
+                } else {
+                    return {(uint) openParenIndex + 1, (uint) i - 1};
+                }
             } else {
                 balance++;
             }

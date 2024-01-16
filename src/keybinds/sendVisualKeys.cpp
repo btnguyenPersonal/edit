@@ -7,6 +7,14 @@
 #include "../util/clipboard.h"
 #include "sendVisualKeys.h"
 
+void setStateFromWordPosition(State* state, WordPosition pos) {
+    if (pos.min != 0 || pos.max != 0) {
+        state->visual.col = pos.min;
+        state->col = pos.max;
+        state->visual.row = state->row;
+    }
+}
+
 std::string getInVisual(State* state) {
     Bounds bounds = getBounds(state);
     std::string clip = "";
@@ -91,23 +99,49 @@ Position deleteInVisual(State* state) {
 void sendVisualKeys(State* state, char c) {
     if (c == 27) { // ESC
         state->mode = SHORTCUTS;
+    } else if (handleMotion(state, c, "aT")) {
+        if (isMotionCompleted(state)) {
+            setStateFromWordPosition(state, findParentheses(state->data[state->row], '>', '<', state->col, true));
+        }
+    } else if (handleMotion(state, c, "at")) {
+        if (isMotionCompleted(state)) {
+            setStateFromWordPosition(state, findParentheses(state->data[state->row], '<', '>', state->col, true));
+        }
+    } else if (handleMotion(state, c, "ad")) {
+        if (isMotionCompleted(state)) {
+            setStateFromWordPosition(state, findParentheses(state->data[state->row], '[', ']', state->col, true));
+        }
+    } else if (handleMotion(state, c, "aB")) {
+        if (isMotionCompleted(state)) {
+            setStateFromWordPosition(state, findParentheses(state->data[state->row], '{', '}', state->col, true));
+        }
+    } else if (handleMotion(state, c, "ab")) {
+        if (isMotionCompleted(state)) {
+            setStateFromWordPosition(state, findParentheses(state->data[state->row], '(', ')', state->col, true));
+        }
+    } else if (handleMotion(state, c, "iT")) {
+        if (isMotionCompleted(state)) {
+            setStateFromWordPosition(state, findParentheses(state->data[state->row], '>', '<', state->col, false));
+        }
+    } else if (handleMotion(state, c, "it")) {
+        if (isMotionCompleted(state)) {
+            setStateFromWordPosition(state, findParentheses(state->data[state->row], '<', '>', state->col, false));
+        }
+    } else if (handleMotion(state, c, "id")) {
+        if (isMotionCompleted(state)) {
+            setStateFromWordPosition(state, findParentheses(state->data[state->row], '[', ']', state->col, false));
+        }
+    } else if (handleMotion(state, c, "iB")) {
+        if (isMotionCompleted(state)) {
+            setStateFromWordPosition(state, findParentheses(state->data[state->row], '{', '}', state->col, false));
+        }
     } else if (handleMotion(state, c, "ib")) {
         if (isMotionCompleted(state)) {
-            WordPosition pos = findParentheses(state->data[state->row], '(', ')', state->col);
-            if (pos.min != 0 || pos.max != 0) {
-                state->visual.col = pos.min;
-                state->col = pos.max;
-                state->visual.row = state->row;
-            }
+            setStateFromWordPosition(state, findParentheses(state->data[state->row], '(', ')', state->col, false));
         }
     } else if (handleMotion(state, c, "iw")) {
         if (isMotionCompleted(state)) {
-            WordPosition pos = getWordPosition(state->data[state->row], state->col);
-            if (pos.min != 0 || pos.max != 0) {
-                state->visual.col = pos.min;
-                state->col = pos.max;
-                state->visual.row = state->row;
-            }
+            setStateFromWordPosition(state, getWordPosition(state->data[state->row], state->col));
         }
     } else if (handleMotion(state, c, "gg")) {
         if (isMotionCompleted(state)) {
@@ -149,9 +183,6 @@ void sendVisualKeys(State* state, char c) {
         auto pos = deleteInVisual(state);
         state->row = pos.row;
         state->col = pos.col;
-        // TODO figure out how fails on empty doc
-        sanityCheckDocumentEmpty(state);
-        sanityCheckRowColOutOfBounds(state);
         pasteFromClipboard(state);
         state->mode = SHORTCUTS;
     } else if (c == 'd') {
