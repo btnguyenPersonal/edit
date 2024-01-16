@@ -17,6 +17,293 @@ void sendShortcutKeys(State* state, char c) {
         if (isMotionCompleted(state)) {
             state->row = 0;
         }
+    } else if (handleMotion(state, c, "caT")) {
+        if (isMotionCompleted(state)) {
+            state->visualType = NORMAL;
+            state->visual.row = state->row;
+            state->visual.col = state->col;
+            setStateFromWordPosition(state, findParentheses(state->data[state->row], '>', '<', state->col, true));
+            copyInVisual(state);
+            auto pos = changeInVisual(state);
+            state->row = pos.row;
+            state->col = pos.col;
+            state->mode = TYPING;
+        }
+    } else if (handleMotion(state, c, "cat")) {
+        if (isMotionCompleted(state)) {
+            state->visualType = NORMAL;
+            state->visual.row = state->row;
+            state->visual.col = state->col;
+            setStateFromWordPosition(state, findParentheses(state->data[state->row], '<', '>', state->col, true));
+            copyInVisual(state);
+            auto pos = changeInVisual(state);
+            state->row = pos.row;
+            state->col = pos.col;
+            state->mode = TYPING;
+        }
+    } else if (handleMotion(state, c, "cad")) {
+        if (isMotionCompleted(state)) {
+            state->visualType = NORMAL;
+            state->visual.row = state->row;
+            state->visual.col = state->col;
+            setStateFromWordPosition(state, findParentheses(state->data[state->row], '[', ']', state->col, true));
+            copyInVisual(state);
+            auto pos = changeInVisual(state);
+            state->row = pos.row;
+            state->col = pos.col;
+            state->mode = TYPING;
+        }
+    } else if (handleMotion(state, c, "caB")) {
+        if (isMotionCompleted(state)) {
+            state->visualType = NORMAL;
+            state->visual.row = state->row;
+            state->visual.col = state->col;
+            setStateFromWordPosition(state, findParentheses(state->data[state->row], '{', '}', state->col, true));
+            copyInVisual(state);
+            auto pos = changeInVisual(state);
+            state->row = pos.row;
+            state->col = pos.col;
+            state->mode = TYPING;
+        }
+    } else if (handleMotion(state, c, "cab")) {
+        if (isMotionCompleted(state)) {
+            state->visualType = NORMAL;
+            state->visual.row = state->row;
+            state->visual.col = state->col;
+            setStateFromWordPosition(state, findParentheses(state->data[state->row], '(', ')', state->col, true));
+            copyInVisual(state);
+            auto pos = changeInVisual(state);
+            state->row = pos.row;
+            state->col = pos.col;
+            state->mode = TYPING;
+        }
+    } else if (handleMotion(state, c, "ciT")) {
+        if (isMotionCompleted(state)) {
+            state->visualType = NORMAL;
+            state->visual.row = state->row;
+            state->visual.col = state->col;
+            setStateFromWordPosition(state, findParentheses(state->data[state->row], '>', '<', state->col, false));
+            copyInVisual(state);
+            auto pos = changeInVisual(state);
+            state->row = pos.row;
+            state->col = pos.col;
+            state->mode = TYPING;
+        }
+    } else if (handleMotion(state, c, "cit")) {
+        if (isMotionCompleted(state)) {
+            state->visualType = NORMAL;
+            state->visual.row = state->row;
+            state->visual.col = state->col;
+            setStateFromWordPosition(state, findParentheses(state->data[state->row], '<', '>', state->col, false));
+            copyInVisual(state);
+            auto pos = changeInVisual(state);
+            state->row = pos.row;
+            state->col = pos.col;
+            state->mode = TYPING;
+        }
+    } else if (handleMotion(state, c, "cid")) {
+        if (isMotionCompleted(state)) {
+            state->visualType = NORMAL;
+            state->visual.row = state->row;
+            state->visual.col = state->col;
+            setStateFromWordPosition(state, findParentheses(state->data[state->row], '[', ']', state->col, false));
+            copyInVisual(state);
+            auto pos = changeInVisual(state);
+            state->row = pos.row;
+            state->col = pos.col;
+            state->mode = TYPING;
+        }
+    } else if (handleMotion(state, c, "ciB")) {
+        if (isMotionCompleted(state)) {
+            state->visualType = NORMAL;
+            state->visual.row = state->row;
+            state->visual.col = state->col;
+            setStateFromWordPosition(state, findParentheses(state->data[state->row], '{', '}', state->col, false));
+            copyInVisual(state);
+            auto pos = changeInVisual(state);
+            state->row = pos.row;
+            state->col = pos.col;
+            state->mode = TYPING;
+        }
+    } else if (handleMotion(state, c, "cib")) {
+        if (isMotionCompleted(state)) {
+            state->visualType = NORMAL;
+            state->visual.row = state->row;
+            state->visual.col = state->col;
+            setStateFromWordPosition(state, findParentheses(state->data[state->row], '(', ')', state->col, false));
+            copyInVisual(state);
+            auto pos = changeInVisual(state);
+            state->row = pos.row;
+            state->col = pos.col;
+            state->mode = TYPING;
+        }
+    } else if (handleMotion(state, c, "ciw")) {
+        if (isMotionCompleted(state)) {
+            state->visualType = NORMAL;
+            state->visual.row = state->row;
+            state->visual.col = state->col;
+            setStateFromWordPosition(state, getWordPosition(state->data[state->row], state->col));
+            copyInVisual(state);
+            auto pos = changeInVisual(state);
+            state->row = pos.row;
+            state->col = pos.col;
+            state->mode = TYPING;
+        }
+    } else if (handleMotion(state, c, "cc")) {
+        if (isMotionCompleted(state)) {
+            state->visualType = LINE;
+            state->visual.row = state->row;
+            state->visual.col = state->col;
+            copyInVisual(state);
+            changeInVisual(state);
+            state->col = getIndexFirstNonSpace(state);
+            state->mode = TYPING;
+        }
+    } else if (handleMotion(state, c, "ck")) {
+        if (isMotionCompleted(state)) {
+            state->visualType = LINE;
+            state->visual.row = state->row;
+            state->visual.col = state->col;
+            up(state);
+            copyInVisual(state);
+            auto pos = changeInVisual(state);
+            state->row = pos.row;
+            state->col = getIndexFirstNonSpace(state);
+            state->mode = TYPING;
+        }
+    } else if (handleMotion(state, c, "cj")) {
+        if (isMotionCompleted(state)) {
+            state->visualType = LINE;
+            state->visual.row = state->row;
+            state->visual.col = state->col;
+            down(state);
+            copyInVisual(state);
+            auto pos = changeInVisual(state);
+            state->row = pos.row;
+            state->col = getIndexFirstNonSpace(state);
+            state->mode = TYPING;
+        }
+    } else if (handleMotion(state, c, "daT")) {
+        if (isMotionCompleted(state)) {
+            state->visualType = NORMAL;
+            state->visual.row = state->row;
+            state->visual.col = state->col;
+            setStateFromWordPosition(state, findParentheses(state->data[state->row], '>', '<', state->col, true));
+            copyInVisual(state);
+            auto pos = deleteInVisual(state);
+            state->row = pos.row;
+            state->col = pos.col;
+        }
+    } else if (handleMotion(state, c, "dat")) {
+        if (isMotionCompleted(state)) {
+            state->visualType = NORMAL;
+            state->visual.row = state->row;
+            state->visual.col = state->col;
+            setStateFromWordPosition(state, findParentheses(state->data[state->row], '<', '>', state->col, true));
+            copyInVisual(state);
+            auto pos = deleteInVisual(state);
+            state->row = pos.row;
+            state->col = pos.col;
+        }
+    } else if (handleMotion(state, c, "dad")) {
+        if (isMotionCompleted(state)) {
+            state->visualType = NORMAL;
+            state->visual.row = state->row;
+            state->visual.col = state->col;
+            setStateFromWordPosition(state, findParentheses(state->data[state->row], '[', ']', state->col, true));
+            copyInVisual(state);
+            auto pos = deleteInVisual(state);
+            state->row = pos.row;
+            state->col = pos.col;
+        }
+    } else if (handleMotion(state, c, "daB")) {
+        if (isMotionCompleted(state)) {
+            state->visualType = NORMAL;
+            state->visual.row = state->row;
+            state->visual.col = state->col;
+            setStateFromWordPosition(state, findParentheses(state->data[state->row], '{', '}', state->col, true));
+            copyInVisual(state);
+            auto pos = deleteInVisual(state);
+            state->row = pos.row;
+            state->col = pos.col;
+        }
+    } else if (handleMotion(state, c, "dab")) {
+        if (isMotionCompleted(state)) {
+            state->visualType = NORMAL;
+            state->visual.row = state->row;
+            state->visual.col = state->col;
+            setStateFromWordPosition(state, findParentheses(state->data[state->row], '(', ')', state->col, true));
+            copyInVisual(state);
+            auto pos = deleteInVisual(state);
+            state->row = pos.row;
+            state->col = pos.col;
+        }
+    } else if (handleMotion(state, c, "diT")) {
+        if (isMotionCompleted(state)) {
+            state->visualType = NORMAL;
+            state->visual.row = state->row;
+            state->visual.col = state->col;
+            setStateFromWordPosition(state, findParentheses(state->data[state->row], '>', '<', state->col, false));
+            copyInVisual(state);
+            auto pos = deleteInVisual(state);
+            state->row = pos.row;
+            state->col = pos.col;
+        }
+    } else if (handleMotion(state, c, "dit")) {
+        if (isMotionCompleted(state)) {
+            state->visualType = NORMAL;
+            state->visual.row = state->row;
+            state->visual.col = state->col;
+            setStateFromWordPosition(state, findParentheses(state->data[state->row], '<', '>', state->col, false));
+            copyInVisual(state);
+            auto pos = deleteInVisual(state);
+            state->row = pos.row;
+            state->col = pos.col;
+        }
+    } else if (handleMotion(state, c, "did")) {
+        if (isMotionCompleted(state)) {
+            state->visualType = NORMAL;
+            state->visual.row = state->row;
+            state->visual.col = state->col;
+            setStateFromWordPosition(state, findParentheses(state->data[state->row], '[', ']', state->col, false));
+            copyInVisual(state);
+            auto pos = deleteInVisual(state);
+            state->row = pos.row;
+            state->col = pos.col;
+        }
+    } else if (handleMotion(state, c, "diB")) {
+        if (isMotionCompleted(state)) {
+            state->visualType = NORMAL;
+            state->visual.row = state->row;
+            state->visual.col = state->col;
+            setStateFromWordPosition(state, findParentheses(state->data[state->row], '{', '}', state->col, false));
+            copyInVisual(state);
+            auto pos = deleteInVisual(state);
+            state->row = pos.row;
+            state->col = pos.col;
+        }
+    } else if (handleMotion(state, c, "dib")) {
+        if (isMotionCompleted(state)) {
+            state->visualType = NORMAL;
+            state->visual.row = state->row;
+            state->visual.col = state->col;
+            setStateFromWordPosition(state, findParentheses(state->data[state->row], '(', ')', state->col, false));
+            copyInVisual(state);
+            auto pos = deleteInVisual(state);
+            state->row = pos.row;
+            state->col = pos.col;
+        }
+    } else if (handleMotion(state, c, "diw")) {
+        if (isMotionCompleted(state)) {
+            state->visualType = NORMAL;
+            state->visual.row = state->row;
+            state->visual.col = state->col;
+            setStateFromWordPosition(state, getWordPosition(state->data[state->row], state->col));
+            copyInVisual(state);
+            auto pos = deleteInVisual(state);
+            state->row = pos.row;
+            state->col = pos.col;
+        }
     } else if (handleMotion(state, c, "dd")) {
         if (isMotionCompleted(state)) {
             state->visualType = LINE;
@@ -47,6 +334,118 @@ void sendShortcutKeys(State* state, char c) {
             auto pos = deleteInVisual(state);
             state->row = pos.row;
             state->col = getIndexFirstNonSpace(state);
+        }
+    } else if (handleMotion(state, c, "yaT")) {
+        if (isMotionCompleted(state)) {
+            state->visualType = NORMAL;
+            state->visual.row = state->row;
+            state->visual.col = state->col;
+            setStateFromWordPosition(state, findParentheses(state->data[state->row], '>', '<', state->col, true));
+            copyInVisual(state);
+            auto pos = deleteInVisual(state);
+            state->row = pos.row;
+            state->col = pos.col;
+        }
+    } else if (handleMotion(state, c, "yat")) {
+        if (isMotionCompleted(state)) {
+            state->visualType = NORMAL;
+            state->visual.row = state->row;
+            state->visual.col = state->col;
+            setStateFromWordPosition(state, findParentheses(state->data[state->row], '<', '>', state->col, true));
+            copyInVisual(state);
+            auto pos = deleteInVisual(state);
+            state->row = pos.row;
+            state->col = pos.col;
+        }
+    } else if (handleMotion(state, c, "yad")) {
+        if (isMotionCompleted(state)) {
+            state->visualType = NORMAL;
+            state->visual.row = state->row;
+            state->visual.col = state->col;
+            setStateFromWordPosition(state, findParentheses(state->data[state->row], '[', ']', state->col, true));
+            auto pos = copyInVisual(state);
+            state->row = pos.row;
+            state->col = pos.col;
+        }
+    } else if (handleMotion(state, c, "yaB")) {
+        if (isMotionCompleted(state)) {
+            state->visualType = NORMAL;
+            state->visual.row = state->row;
+            state->visual.col = state->col;
+            setStateFromWordPosition(state, findParentheses(state->data[state->row], '{', '}', state->col, true));
+            auto pos = copyInVisual(state);
+            state->row = pos.row;
+            state->col = pos.col;
+        }
+    } else if (handleMotion(state, c, "yab")) {
+        if (isMotionCompleted(state)) {
+            state->visualType = NORMAL;
+            state->visual.row = state->row;
+            state->visual.col = state->col;
+            setStateFromWordPosition(state, findParentheses(state->data[state->row], '(', ')', state->col, true));
+            auto pos = copyInVisual(state);
+            state->row = pos.row;
+            state->col = pos.col;
+        }
+    } else if (handleMotion(state, c, "yiT")) {
+        if (isMotionCompleted(state)) {
+            state->visualType = NORMAL;
+            state->visual.row = state->row;
+            state->visual.col = state->col;
+            setStateFromWordPosition(state, findParentheses(state->data[state->row], '>', '<', state->col, false));
+            auto pos = copyInVisual(state);
+            state->row = pos.row;
+            state->col = pos.col;
+        }
+    } else if (handleMotion(state, c, "yit")) {
+        if (isMotionCompleted(state)) {
+            state->visualType = NORMAL;
+            state->visual.row = state->row;
+            state->visual.col = state->col;
+            setStateFromWordPosition(state, findParentheses(state->data[state->row], '<', '>', state->col, false));
+            auto pos = copyInVisual(state);
+            state->row = pos.row;
+            state->col = pos.col;
+        }
+    } else if (handleMotion(state, c, "yid")) {
+        if (isMotionCompleted(state)) {
+            state->visualType = NORMAL;
+            state->visual.row = state->row;
+            state->visual.col = state->col;
+            setStateFromWordPosition(state, findParentheses(state->data[state->row], '[', ']', state->col, false));
+            auto pos = copyInVisual(state);
+            state->row = pos.row;
+            state->col = pos.col;
+        }
+    } else if (handleMotion(state, c, "yiB")) {
+        if (isMotionCompleted(state)) {
+            state->visualType = NORMAL;
+            state->visual.row = state->row;
+            state->visual.col = state->col;
+            setStateFromWordPosition(state, findParentheses(state->data[state->row], '{', '}', state->col, false));
+            auto pos = copyInVisual(state);
+            state->row = pos.row;
+            state->col = pos.col;
+        }
+    } else if (handleMotion(state, c, "yib")) {
+        if (isMotionCompleted(state)) {
+            state->visualType = NORMAL;
+            state->visual.row = state->row;
+            state->visual.col = state->col;
+            setStateFromWordPosition(state, findParentheses(state->data[state->row], '(', ')', state->col, false));
+            auto pos = copyInVisual(state);
+            state->row = pos.row;
+            state->col = pos.col;
+        }
+    } else if (handleMotion(state, c, "yiw")) {
+        if (isMotionCompleted(state)) {
+            state->visualType = NORMAL;
+            state->visual.row = state->row;
+            state->visual.col = state->col;
+            setStateFromWordPosition(state, getWordPosition(state->data[state->row], state->col));
+            auto pos = copyInVisual(state);
+            state->row = pos.row;
+            state->col = pos.col;
         }
     } else if (handleMotion(state, c, "yy")) {
         if (isMotionCompleted(state)) {
