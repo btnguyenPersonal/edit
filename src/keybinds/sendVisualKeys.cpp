@@ -91,6 +91,15 @@ Position deleteInVisual(State* state) {
 void sendVisualKeys(State* state, char c) {
     if (c == 27) { // ESC
         state->mode = SHORTCUTS;
+    } else if (handleMotion(state, c, "iw")) {
+        if (isMotionCompleted(state)) {
+            WordPosition pos = getWordPosition(state->data[state->row], state->col);
+            if (pos.min != 0 && pos.max != 0) {
+                state->visual.col = pos.min;
+                state->col = pos.max;
+                state->visual.row = state->row;
+            }
+        }
     } else if (handleMotion(state, c, "gg")) {
         if (isMotionCompleted(state)) {
             state->row = 0;
@@ -107,6 +116,10 @@ void sendVisualKeys(State* state, char c) {
         state->col = w(state);
     } else if (c == 'h') {
         left(state);
+    } else if (c == '[') {
+        state->row = getPrevLineSameIndent(state);
+    } else if (c == ']') {
+        state->row = getNextLineSameIndent(state);
     } else if (c == '#') {
         state->grepQuery = getInVisual(state);
         state->mode = GREP;

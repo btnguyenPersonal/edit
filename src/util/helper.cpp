@@ -11,7 +11,65 @@ char ctrl(char c) {
 }
 
 bool isAlphaNumeric(char c) {
-    return ('a' <= c && c <= 'z') || ('A' <= c && c <= 'Z');
+    // TODO replace all instances w/ std call
+    return std::isalnum(c);
+}
+
+uint getIndent(const std::string& str) {
+    for (uint i = 0; i < str.length(); i++) {
+        if (str[i] != ' ') {
+            return i;
+        }
+    }
+    return 0;
+}
+
+uint getPrevLineSameIndent(State* state) {
+    uint current = getIndent(state->data[state->row]);
+    for (int i = (int) state->row - 1; i >= 0; i--) {
+        if (current == getIndent(state->data[i])) {
+            return i;
+        }
+    }
+    return state->row;
+}
+
+uint getNextLineSameIndent(State* state) {
+    uint current = getIndent(state->data[state->row]);
+    for (uint i = state->row + 1; i < state->data.size(); i++) {
+        if (current == getIndent(state->data[i])) {
+            return i;
+        }
+    }
+    return state->row;
+}
+
+WordPosition getWordPosition(const std::string& str, uint cursor) {
+    if (cursor >= str.size()) {
+        return {0, 0};
+    }
+    // Move cursor to the start of the current chunk
+    while (cursor > 0 && str[cursor - 1] != ' ' && str[cursor] != ' ' && (std::isalnum(str[cursor]) == std::isalnum(str[cursor - 1]))) {
+        cursor--;
+    }
+    // If cursor is on a space, move to the next chunk
+    if (str[cursor] == ' ') {
+        while (cursor < str.size() && str[cursor] == ' ') {
+            cursor++;
+        }
+    }
+    // If no non-space chunk is found
+    if (cursor >= str.size()) {
+        return {0, 0};
+    }
+    // Find the end of the chunk
+    uint start = cursor;
+    uint end = start;
+    while (end < str.size() && str[end] != ' ' && (std::isalnum(str[start]) == std::isalnum(str[end]))) {
+        end++;
+    }
+
+    return {start, end - 1};
 }
 
 bool filePathContainsSubstring(const std::filesystem::path& filePath, const std::string& query) {

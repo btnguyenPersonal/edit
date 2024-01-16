@@ -23,6 +23,11 @@ struct Position {
     uint col;
 };
 
+struct WordPosition {
+    uint min;
+    uint max;
+};
+
 class State {
     public:
         std::string filename;

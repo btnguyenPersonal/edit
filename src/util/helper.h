@@ -6,6 +6,10 @@
 #include <filesystem>
 #include "state.h"
 
+uint getIndent(const std::string& str);
+uint getNextLineSameIndent(State* state);
+uint getPrevLineSameIndent(State* state);
+WordPosition getWordPosition(const std::string& str, uint cursor);
 std::vector<grepMatch> grepFiles(const std::filesystem::path& dir_path, const std::string& query);
 void generateGrepOutput(State* state);
 bool isAlphaNumeric(char c);
