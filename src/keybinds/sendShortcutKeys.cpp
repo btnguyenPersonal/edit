@@ -7,6 +7,7 @@
 #include "../util/modes.h"
 #include "../util/clipboard.h"
 #include "../util/visualType.h"
+#include "sendVisualKeys.h"
 #include "sendShortcutKeys.h"
 
 void sendShortcutKeys(State* state, char c) {
@@ -18,59 +19,62 @@ void sendShortcutKeys(State* state, char c) {
         }
     } else if (handleMotion(state, c, "dd")) {
         if (isMotionCompleted(state)) {
-            copyToClipboard(state->data[state->row] + "\n");
-            state->data.erase(state->data.begin()+state->row);
+            state->visualType = LINE;
+            state->visual.row = state->row;
+            state->visual.col = state->col;
+            copyInVisual(state);
+            deleteInVisual(state);
+            state->col = getIndexFirstNonSpace(state);
         }
     } else if (handleMotion(state, c, "dk")) {
         if (isMotionCompleted(state)) {
-            std::string clip = state->data[state->row] + "\n";
-            if (state->row - 1 >= 0) {
-                clip = state->data[state->row - 1] + "\n" + clip;
-            }
-            state->data.erase(state->data.begin()+state->row);
-            if (state->row - 1 >= 0) {
-                state->data.erase(state->data.begin()+state->row - 1);
-                state->row -= 1;
-            }
+            state->visualType = LINE;
+            state->visual.row = state->row;
+            state->visual.col = state->col;
+            up(state);
+            copyInVisual(state);
+            auto pos = deleteInVisual(state);
+            state->row = pos.row;
             state->col = getIndexFirstNonSpace(state);
-            copyToClipboard(clip);
         }
     } else if (handleMotion(state, c, "dj")) {
         if (isMotionCompleted(state)) {
-            std::string clip = state->data[state->row] + "\n";
-            if (state->row + 1 < state->data.size()) {
-                clip += state->data[state->row + 1] + "\n";
-            }
-            state->data.erase(state->data.begin()+state->row);
-            if (state->row >= 0) {
-                state->data.erase(state->data.begin()+state->row);
-            }
+            state->visualType = LINE;
+            state->visual.row = state->row;
+            state->visual.col = state->col;
+            down(state);
+            copyInVisual(state);
+            auto pos = deleteInVisual(state);
+            state->row = pos.row;
             state->col = getIndexFirstNonSpace(state);
-            copyToClipboard(clip);
         }
     } else if (handleMotion(state, c, "yy")) {
         if (isMotionCompleted(state)) {
-            copyToClipboard(state->data[state->row] + "\n");
+            state->visualType = LINE;
+            state->visual.row = state->row;
+            state->visual.col = state->col;
+            copyInVisual(state);
             state->col = getIndexFirstNonSpace(state);
         }
     } else if (handleMotion(state, c, "yk")) {
         if (isMotionCompleted(state)) {
-            std::string clip = state->data[state->row] + "\n";
-            if (state->row - 1 >= 0) {
-                clip = state->data[state->row - 1] + "\n" + clip;
-                state->row -= 1;
-            }
+            state->visualType = LINE;
+            state->visual.row = state->row;
+            state->visual.col = state->col;
+            up(state);
+            auto pos = copyInVisual(state);
+            state->row = pos.row;
             state->col = getIndexFirstNonSpace(state);
-            copyToClipboard(clip);
         }
     } else if (handleMotion(state, c, "yj")) {
         if (isMotionCompleted(state)) {
-            std::string clip = state->data[state->row] + "\n";
-            if (state->row + 1 < state->data.size()) {
-                clip += state->data[state->row + 1] + "\n";
-            }
+            state->visualType = LINE;
+            state->visual.row = state->row;
+            state->visual.col = state->col;
+            down(state);
+            auto pos = copyInVisual(state);
+            state->row = pos.row;
             state->col = getIndexFirstNonSpace(state);
-            copyToClipboard(clip);
         }
     } else if (state->prevKeys != "") {
         state->prevKeys = "";

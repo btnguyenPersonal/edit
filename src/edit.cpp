@@ -11,8 +11,7 @@ int main(int argc, char* argv[]) {
     if (argc < 2) {
         state = new State();
     } else {
-        const char* filename = argv[1];
-        state = new State(filename);
+        state = new State(argv[1]);
     }
     initTerminal();
     calcWindowBounds();
