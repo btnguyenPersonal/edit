@@ -91,6 +91,15 @@ Position deleteInVisual(State* state) {
 void sendVisualKeys(State* state, char c) {
     if (c == 27) { // ESC
         state->mode = SHORTCUTS;
+    } else if (handleMotion(state, c, "ib")) {
+        if (isMotionCompleted(state)) {
+            WordPosition pos = findParentheses(state->data[state->row], '(', ')', state->col);
+            if (pos.min != 0 && pos.max != 0) {
+                state->visual.col = pos.min;
+                state->col = pos.max;
+                state->visual.row = state->row;
+            }
+        }
     } else if (handleMotion(state, c, "iw")) {
         if (isMotionCompleted(state)) {
             WordPosition pos = getWordPosition(state->data[state->row], state->col);
@@ -136,10 +145,13 @@ void sendVisualKeys(State* state, char c) {
         state->visualType = NORMAL;
     } else if (c == 'G') {
         state->row = state->data.size() - 1;
-    } else if (c == 'p') {
+    } else if (c == 'p' || c == 'P') {
         auto pos = deleteInVisual(state);
         state->row = pos.row;
         state->col = pos.col;
+        // TODO figure out how fails on empty doc
+        sanityCheckDocumentEmpty(state);
+        sanityCheckRowColOutOfBounds(state);
         pasteFromClipboard(state);
         state->mode = SHORTCUTS;
     } else if (c == 'd') {

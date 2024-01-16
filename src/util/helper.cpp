@@ -44,6 +44,32 @@ uint getNextLineSameIndent(State* state) {
     return state->row;
 }
 
+WordPosition findParentheses(const std::string &str, char openParen, char closeParen, unsigned int cursor) {
+    WordPosition pos = {0, 0};
+    int balance = 0;
+    int lastOpenParenIndex = -1;
+    for (unsigned int i = 0; i < str.length(); ++i) {
+        if (str[i] == openParen) {
+            if (balance == 0) lastOpenParenIndex = i; // Record the last unmatched opening parenthesis
+            balance++;
+        } else if (str[i] == closeParen) {
+            balance--;
+            if (balance < 0) return {0, 0}; // Unbalanced parentheses, return {0,0}
+            if (balance == 0 && lastOpenParenIndex != -1) {
+                if (i >= cursor && lastOpenParenIndex <= cursor) {
+                    // Found the relevant parenthesis pair around the cursor
+                    pos.min = lastOpenParenIndex;
+                    pos.max = i;
+                    return pos;
+                }
+                lastOpenParenIndex = -1; // Reset for the next pair
+            }
+        }
+    }
+    if (balance != 0) return {0, 0}; // Unbalanced at the end
+    return pos;
+}
+
 WordPosition getWordPosition(const std::string& str, uint cursor) {
     if (cursor >= str.size()) {
         return {0, 0};
@@ -188,8 +214,12 @@ uint b(State* state) {
 
 void saveFile(std::string filename, std::vector<std::string> data) {
     std::ofstream file(filename);
-    std::ostream_iterator<std::string> output_iterator(file, "\n");
-    std::copy(std::begin(data), std::end(data), output_iterator);
+    if (!data.empty()) {
+        for (size_t i = 0; i < data.size() - 1; ++i) {
+            file << data[i] << "\n";
+        }
+        file << data.back();
+    }
 }
 
 std::vector<std::string> readFile(std::string filename) {
@@ -340,10 +370,13 @@ int minimum(int a, int b) {
     }
 }
 
-void sanityCheckRowColOutOfBounds(State* state) {
+void sanityCheckDocumentEmpty(State* state) {
     if (state->data.size() == 0) {
         state->data.push_back("");
     }
+}
+
+void sanityCheckRowColOutOfBounds(State* state) {
     if (state->row >= state->data.size()) {
         state->row = state->data.size() - 1;
     }

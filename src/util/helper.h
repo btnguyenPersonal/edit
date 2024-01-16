@@ -6,6 +6,7 @@
 #include <filesystem>
 #include "state.h"
 
+WordPosition findParentheses(const std::string &str, char openParen, char closeParen, unsigned int cursor);
 uint getIndent(const std::string& str);
 uint getNextLineSameIndent(State* state);
 uint getPrevLineSameIndent(State* state);
@@ -39,5 +40,6 @@ int getIndexFirstNonSpace(State* state);
 bool handleMotion(State* state, char c, std::string motion);
 bool isMotionCompleted(State* state);
 void sanityCheckRowColOutOfBounds(State* state);
+void sanityCheckDocumentEmpty(State* state);
 int minimum(int a, int b);
 int maximum(int a, int b);

@@ -27,6 +27,7 @@ void sendKeys(State* state, char c) {
     } else if (state->mode == GREP) {
         sendGrepKeys(state, c);
     }
+    sanityCheckDocumentEmpty(state);
     sanityCheckRowColOutOfBounds(state);
     if (isWindowPositionInvalid(state)) {
         centerScreen(state);
