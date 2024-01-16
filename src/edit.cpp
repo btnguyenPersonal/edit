@@ -7,13 +7,14 @@
 
 int main(int argc, char* argv[]) {
     char c;
+    State* state;
     if (argc < 2) {
-        std::cerr << "usage: edit [file]" << std::endl;
-        exit(1);
+        state = new State();
+    } else {
+        const char* filename = argv[1];
+        state = new State(filename);
     }
     initTerminal();
-    const char* filename = argv[1];
-    State* state = new State(filename);
     calcWindowBounds();
     renderScreen(state);
     while (true) {

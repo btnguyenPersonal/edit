@@ -14,8 +14,11 @@ void sendFindFileKeys(State* state, char c) {
     } else if (c == 127) { // BACKSPACE
         state->findFileQuery = state->findFileQuery.substr(0, state->findFileQuery.length() - 1);
         state->findFileSelection = 0;
+    } else if (c == ctrl('g')) {
+        state->mode = GREP;
     } else if (c == ctrl('l')) {
         state->findFileQuery = std::string("");
+        state->findFileSelection = 0;
     } else if (c == ctrl('n')) {
         if (state->findFileSelection + 1 < state->findFileOutput.size()) {
             state->findFileSelection += 1;

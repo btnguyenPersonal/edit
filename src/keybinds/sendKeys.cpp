@@ -1,3 +1,4 @@
+#include <ncurses.h>
 #include "sendKeys.h"
 #include "sendShortcutKeys.h"
 #include "sendTypingKeys.h"
@@ -26,6 +27,10 @@ void sendKeys(State* state, char c) {
         sendFindFileKeys(state, c);
     } else if (state->mode == GREP) {
         sendGrepKeys(state, c);
+    }
+    if (state->mode == SHORTCUTS && state->filename == "") {
+        endwin();
+        exit(0);
     }
     sanityCheckDocumentEmpty(state);
     sanityCheckRowColOutOfBounds(state);

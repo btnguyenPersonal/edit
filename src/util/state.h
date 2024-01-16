@@ -53,6 +53,7 @@ class State {
         std::string prevKeys;
         std::string status;
         Mode mode;
+        State();
         State(const char* filename);
         void resetState(const char* filename);
         static void setMaxYX(int y, int x);
