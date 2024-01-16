@@ -6,6 +6,7 @@
 #include <filesystem>
 #include "state.h"
 
+bool is_number(const std::string& s);
 WordPosition findParentheses(const std::string &str, char openParen, char closeParen, uint cursor, bool includeParen);
 uint getIndent(const std::string& str);
 uint getNextLineSameIndent(State* state);

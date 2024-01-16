@@ -6,6 +6,12 @@
 #include "state.h"
 #include "helper.h"
 
+bool is_number(const std::string& s) {
+    std::string::const_iterator it = s.begin();
+    while (it != s.end() && std::isdigit(*it)) ++it;
+    return !s.empty() && it == s.end();
+}
+
 char ctrl(char c) {
     return c - 'a' + 1;
 }
