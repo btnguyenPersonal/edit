@@ -94,7 +94,7 @@ void sendVisualKeys(State* state, char c) {
     } else if (handleMotion(state, c, "ib")) {
         if (isMotionCompleted(state)) {
             WordPosition pos = findParentheses(state->data[state->row], '(', ')', state->col);
-            if (pos.min != 0 && pos.max != 0) {
+            if (pos.min != 0 || pos.max != 0) {
                 state->visual.col = pos.min;
                 state->col = pos.max;
                 state->visual.row = state->row;
@@ -103,7 +103,7 @@ void sendVisualKeys(State* state, char c) {
     } else if (handleMotion(state, c, "iw")) {
         if (isMotionCompleted(state)) {
             WordPosition pos = getWordPosition(state->data[state->row], state->col);
-            if (pos.min != 0 && pos.max != 0) {
+            if (pos.min != 0 || pos.max != 0) {
                 state->visual.col = pos.min;
                 state->col = pos.max;
                 state->visual.row = state->row;

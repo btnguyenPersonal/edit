@@ -44,29 +44,55 @@ uint getNextLineSameIndent(State* state) {
     return state->row;
 }
 
-WordPosition findParentheses(const std::string &str, char openParen, char closeParen, unsigned int cursor) {
+WordPosition findParentheses(const std::string &str, char openParen, char closeParen, uint cursor) {
     WordPosition pos = {0, 0};
     int balance = 0;
-    int lastOpenParenIndex = -1;
-    for (unsigned int i = 0; i < str.length(); ++i) {
+    int openParenIndex = -1;
+    // look back for openParen
+    for (int i = cursor; i >= 0; i--) {
         if (str[i] == openParen) {
-            if (balance == 0) lastOpenParenIndex = i; // Record the last unmatched opening parenthesis
-            balance++;
+            if (balance == 0) {
+                openParenIndex = i;
+                break;
+            } else {
+                balance--;
+            }
         } else if (str[i] == closeParen) {
-            balance--;
-            if (balance < 0) return {0, 0}; // Unbalanced parentheses, return {0,0}
-            if (balance == 0 && lastOpenParenIndex != -1) {
-                if (i >= cursor && lastOpenParenIndex <= cursor) {
-                    // Found the relevant parenthesis pair around the cursor
-                    pos.min = lastOpenParenIndex;
-                    pos.max = i;
-                    return pos;
+            balance++;
+        }
+    }
+    balance = 0;
+    // if haven't found yet look forward for openParen
+    if (openParenIndex == -1) {
+        for (int i = cursor; i < (int) str.length(); i++) {
+            if (str[i] == openParen) {
+                if (balance == 0) {
+                    openParenIndex = i;
+                    break;
+                } else {
+                    balance--;
                 }
-                lastOpenParenIndex = -1; // Reset for the next pair
+            } else if (str[i] == closeParen) {
+                balance++;
             }
         }
     }
-    if (balance != 0) return {0, 0}; // Unbalanced at the end
+    balance = 0;
+    // if haven't found return {0,0}
+    if (openParenIndex == -1) {
+        return {0,0};
+    }
+    for (int i = openParenIndex + 1; i < (int) str.length(); i++) {
+        if (str[i] == openParen) {
+            balance--;
+        } else if (str[i] == closeParen) {
+            if (balance == 0) {
+                return {(uint) openParenIndex, (uint) i};
+            } else {
+                balance++;
+            }
+        }
+    }
     return pos;
 }
 
@@ -282,12 +308,18 @@ void down(State* state) {
 }
 
 void left(State* state) {
+    if (state->col >= state->data[state->row].length()) {
+        state->col = state->data[state->row].length();
+    }
     if (state->col > 0) {
         state->col -= 1;
     }
 }
 
 void right(State* state) {
+    if (state->col >= state->data[state->row].length()) {
+        state->col = state->data[state->row].length();
+    }
     if (state->col < state->data[state->row].length()) {
         state->col += 1;
     }
