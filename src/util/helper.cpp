@@ -21,8 +21,8 @@ bool isAlphaNumeric(char c) {
     return std::isalnum(c);
 }
 
-uint getIndent(const std::string& str) {
-    for (uint i = 0; i < str.length(); i++) {
+unsigned int getIndent(const std::string& str) {
+    for (unsigned int i = 0; i < str.length(); i++) {
         if (str[i] != ' ') {
             return i;
         }
@@ -30,8 +30,8 @@ uint getIndent(const std::string& str) {
     return 0;
 }
 
-uint getPrevLineSameIndent(State* state) {
-    uint current = getIndent(state->data[state->row]);
+unsigned int getPrevLineSameIndent(State* state) {
+    unsigned int current = getIndent(state->data[state->row]);
     for (int i = (int) state->row - 1; i >= 0; i--) {
         if (current == getIndent(state->data[i])) {
             return i;
@@ -40,9 +40,9 @@ uint getPrevLineSameIndent(State* state) {
     return state->row;
 }
 
-uint getNextLineSameIndent(State* state) {
-    uint current = getIndent(state->data[state->row]);
-    for (uint i = state->row + 1; i < state->data.size(); i++) {
+unsigned int getNextLineSameIndent(State* state) {
+    unsigned int current = getIndent(state->data[state->row]);
+    for (unsigned int i = state->row + 1; i < state->data.size(); i++) {
         if (current == getIndent(state->data[i])) {
             return i;
         }
@@ -50,7 +50,7 @@ uint getNextLineSameIndent(State* state) {
     return state->row;
 }
 
-WordPosition findParentheses(const std::string &str, char openParen, char closeParen, uint cursor, bool includeParen) {
+WordPosition findParentheses(const std::string &str, char openParen, char closeParen, unsigned int cursor, bool includeParen) {
     WordPosition pos = {0, 0};
     int balance = 0;
     int openParenIndex = -1;
@@ -94,9 +94,9 @@ WordPosition findParentheses(const std::string &str, char openParen, char closeP
         } else if (str[i] == closeParen) {
             if (balance == 0) {
                 if (i - openParenIndex == 1 || includeParen) {
-                    return {(uint) openParenIndex, (uint) i};
+                    return {(unsigned int) openParenIndex, (unsigned int) i};
                 } else {
-                    return {(uint) openParenIndex + 1, (uint) i - 1};
+                    return {(unsigned int) openParenIndex + 1, (unsigned int) i - 1};
                 }
             } else {
                 balance++;
@@ -106,7 +106,7 @@ WordPosition findParentheses(const std::string &str, char openParen, char closeP
     return pos;
 }
 
-WordPosition getWordPosition(const std::string& str, uint cursor) {
+WordPosition getWordPosition(const std::string& str, unsigned int cursor) {
     if (cursor >= str.size()) {
         return {0, 0};
     }
@@ -125,8 +125,8 @@ WordPosition getWordPosition(const std::string& str, uint cursor) {
         return {0, 0};
     }
     // Find the end of the chunk
-    uint start = cursor;
-    uint end = start;
+    unsigned int start = cursor;
+    unsigned int end = start;
     while (end < str.size() && str[end] != ' ' && (std::isalnum(str[start]) == std::isalnum(str[end]))) {
         end++;
     }
@@ -141,7 +141,7 @@ bool filePathContainsSubstring(const std::filesystem::path& filePath, const std:
 
 bool shouldIgnoreFile(const std::filesystem::path& path) {
     std::vector<std::string> ignoreList = {".git", "node_modules", "build", "dist"};
-    for (uint i = 0; i < ignoreList.size(); i++) {
+    for (unsigned int i = 0; i < ignoreList.size(); i++) {
         if (path.string().find(ignoreList[i]) != std::string::npos) {
             return true;
         }
@@ -205,11 +205,11 @@ void generateFindFileOutput(State* state) {
     }
 }
 
-uint w(State* state) {
+unsigned int w(State* state) {
     bool isSpecial = !isAlphaNumeric(state->data[state->row][state->col]);
     bool isOnSpace = state->data[state->row][state->col] == ' ';
     bool space = false;
-    for (uint i = state->col + 1; i < state->data[state->row].size(); i += 1) {
+    for (unsigned int i = state->col + 1; i < state->data[state->row].size(); i += 1) {
         if (state->data[state->row][i] == ' ') {
             space = true;
         } else if (isOnSpace || isSpecial == isAlphaNumeric(state->data[state->row][i])) {
@@ -221,12 +221,12 @@ uint w(State* state) {
     return state->col;
 }
 
-uint b(State* state) {
+unsigned int b(State* state) {
     bool isSpecial = !isAlphaNumeric(state->data[state->row][state->col]);
     bool isOnSpace = state->data[state->row][state->col] == ' ';
     bool space = false;
-    uint ret = state->col;
-    for (uint i = state->col; i > 0; i -= 1) {
+    unsigned int ret = state->col;
+    for (unsigned int i = state->col; i > 0; i -= 1) {
         if (state->data[state->row][i - 1] == ' ') {
             space = true;
         } else if (isOnSpace || isSpecial == isAlphaNumeric(state->data[state->row][i - 1])) {
@@ -238,7 +238,7 @@ uint b(State* state) {
         }
     }
     bool currentAlpha = isAlphaNumeric(state->data[state->row][ret]);
-    for (uint i = ret; i > 0; i -= 1) {
+    for (unsigned int i = ret; i > 0; i -= 1) {
         if (state->data[state->row][i - 1] == ' ') {
             break;
         } else if (currentAlpha == isAlphaNumeric(state->data[state->row][i - 1])) {
@@ -284,7 +284,7 @@ void centerScreen(State* state) {
 }
 
 void upHalfScreen(State* state) {
-    for (uint i = 0; i < state->maxY / 2; i++) {
+    for (unsigned int i = 0; i < state->maxY / 2; i++) {
         if (state->row > 0) {
             state->row -= 1;
             state->windowPosition -= 1;
@@ -293,7 +293,7 @@ void upHalfScreen(State* state) {
 }
 
 void downHalfScreen(State* state) {
-    for (uint i = 0; i < state->maxY / 2; i++) {
+    for (unsigned int i = 0; i < state->maxY / 2; i++) {
         if (state->row < state->data.size() - 1) {
             state->row += 1;
             state->windowPosition += 1;
@@ -338,13 +338,13 @@ void right(State* state) {
 }
 
 void indent(State* state) {
-    for (uint i = 0; i < state->indent; i++) {
+    for (unsigned int i = 0; i < state->indent; i++) {
         state->data[state->row] = " " + state->data[state->row];
     }
 }
 
 void deindent(State* state) {
-    for (uint i = 0; i < state->indent; i++) {
+    for (unsigned int i = 0; i < state->indent; i++) {
         if (state->data[state->row].substr(0, 1) == " ") {
             state->data[state->row] = state->data[state->row].substr(1);
         }

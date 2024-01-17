@@ -13,19 +13,19 @@ struct grepMatch {
 };
 
 struct diffLine {
-    uint lineNum;
+    unsigned int lineNum;
     bool add; // true for add, false for delete
     std::string line;
 };
 
 struct Position {
-    uint row;
-    uint col;
+    unsigned int row;
+    unsigned int col;
 };
 
 struct WordPosition {
-    uint min;
-    uint max;
+    unsigned int min;
+    unsigned int max;
 };
 
 class State {
@@ -35,20 +35,20 @@ class State {
         std::vector<std::string> previousState;
         std::vector<std::vector<diffLine>> history;
         int historyPosition;
-        uint indent;
-        uint windowPosition;
-        static uint maxX;
-        static uint maxY;
+        unsigned int indent;
+        unsigned int windowPosition;
+        static unsigned int maxX;
+        static unsigned int maxY;
         VisualType visualType;
         struct Position visual;
-        uint row;
-        uint col;
+        unsigned int row;
+        unsigned int col;
         std::string commandLineQuery;
         std::string findFileQuery;
-        uint findFileSelection;
+        unsigned int findFileSelection;
         std::vector<std::filesystem::path> findFileOutput;
         std::string grepQuery;
-        uint grepSelection;
+        unsigned int grepSelection;
         std::vector<grepMatch> grepOutput;
         std::string prevKeys;
         std::string status;

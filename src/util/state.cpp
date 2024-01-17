@@ -6,8 +6,8 @@
 #include "visualType.h"
 #include "state.h"
 
-uint State::maxX = 0;
-uint State::maxY = 0;
+unsigned int State::maxX = 0;
+unsigned int State::maxY = 0;
 
 void State::resetState(const char* filename) {
     this->filename = std::string(filename);
@@ -85,6 +85,6 @@ State::State(const char* filename) {
 }
 
 void State::setMaxYX(int y, int x) {
-    State::maxY = (uint) y;
-    State::maxX = (uint) x;
+    State::maxY = (unsigned int) y;
+    State::maxX = (unsigned int) x;
 }

@@ -12,4 +12,4 @@ void initTerminal();
 void printChar(State* state, size_t i, size_t j);
 void printLine(State* state, int i);
 void printLineNumber(int i, int windowPosition);
-bool isRowColInVisual(State* state, uint i, uint j);
+bool isRowColInVisual(State* state, unsigned int i, unsigned int j);

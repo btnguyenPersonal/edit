@@ -132,12 +132,12 @@ void printLineNumber(int r, int i, bool isCurrentRow) {
     }
 }
 
-bool isRowColInVisual(State* state, uint i, uint j) {
+bool isRowColInVisual(State* state, unsigned int i, unsigned int j) {
     if (state->mode == VISUAL) {
-        uint minR;
-        uint minC;
-        uint maxR;
-        uint maxC;
+        unsigned int minR;
+        unsigned int minC;
+        unsigned int maxR;
+        unsigned int maxC;
         if (state->row < state->visual.row) {
             minR = state->row;
             minC = state->col;
@@ -198,14 +198,14 @@ void printLine(State* state, int row) {
 }
 
 void renderGrepOutput(State* state) {
-    uint index;
+    unsigned int index;
     if ((int) state->grepSelection - ((int) state->maxY / 2) > 0) {
         index = state->grepSelection - state->maxY / 2;
     } else {
         index = 0;
     }
-    uint renderIndex = 1;
-    for (uint i = index; i < state->grepOutput.size() && i < index + state->maxY; i++) {
+    unsigned int renderIndex = 1;
+    for (unsigned int i = index; i < state->grepOutput.size() && i < index + state->maxY; i++) {
         if (i == state->grepSelection) {
             attron(COLOR_PAIR(invertColor(WHITE)));
             mvprintw(renderIndex, 0, "%s:%d %s\n", state->grepOutput[i].path.c_str(), state->grepOutput[i].lineNum, state->grepOutput[i].line.c_str());
@@ -218,14 +218,14 @@ void renderGrepOutput(State* state) {
 }
 
 void renderFindFileOutput(State* state) {
-    uint index;
+    unsigned int index;
     if ((int) state->findFileSelection - ((int) state->maxY / 2) > 0) {
         index = state->findFileSelection - state->maxY / 2;
     } else {
         index = 0;
     }
-    uint renderIndex = 1;
-    for (uint i = index; i < state->findFileOutput.size() && i < index + state->maxY; i++) {
+    unsigned int renderIndex = 1;
+    for (unsigned int i = index; i < state->findFileOutput.size() && i < index + state->maxY; i++) {
         if (i == state->findFileSelection) {
             attron(COLOR_PAIR(invertColor(WHITE)));
             mvprintw(renderIndex, 0, "%s\n", state->findFileOutput[i].c_str());
@@ -249,13 +249,13 @@ void moveCursor(State* state, int cursorPosition) {
     if (cursorPosition != -1) {
         move(0, cursorPosition);
     } else {
-        uint row = state->row + 1;
+        unsigned int row = state->row + 1;
         if (row > state->windowPosition) {
             row -= state->windowPosition;
         } else {
             row = 1;
         }
-        uint col = state->col + LINE_NUM_OFFSET;
+        unsigned int col = state->col + LINE_NUM_OFFSET;
         if (state->col > state->data[state->row].length()) {
             col = state->data[state->row].length() + LINE_NUM_OFFSET;
         }
