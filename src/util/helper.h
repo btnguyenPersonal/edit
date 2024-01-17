@@ -5,7 +5,10 @@
 #include <fstream>
 #include <filesystem>
 #include "state.h"
+#include "visualType.h"
 
+void setPosition(State* state, Position pos);
+void initVisual(State* state, VisualType visualType);
 bool is_number(const std::string& s);
 WordPosition findParentheses(const std::string &str, char openParen, char closeParen, unsigned int cursor, bool includeParen);
 unsigned int getIndent(const std::string& str);

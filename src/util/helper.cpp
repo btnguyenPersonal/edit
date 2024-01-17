@@ -5,6 +5,18 @@
 #include <curses.h>
 #include "state.h"
 #include "helper.h"
+#include "visualType.h"
+
+void setPosition(State* state, Position pos) {
+    state->row = pos.row;
+    state->col = pos.col;
+}
+
+void initVisual(State* state, VisualType visualType) {
+    state->visualType = visualType;
+    state->visual.row = state->row;
+    state->visual.col = state->col;
+}
 
 bool is_number(const std::string& s) {
     std::string::const_iterator it = s.begin();
