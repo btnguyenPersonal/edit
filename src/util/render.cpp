@@ -59,11 +59,12 @@ void initColors() {
 
 int renderStatusBar(State* state) {
     int offset = 0;
+    mvprintw(0, state->maxX - state->filename.length() - 2, "\"%s\"", state->filename.c_str());
     if (state->status.length() > 0) {
         attron(COLOR_PAIR(RED));
         mvprintw(0, 0, "%s ", state->status.c_str());
         attroff(COLOR_PAIR(RED));
-        offset += state->status.length() + 2;
+        offset += state->status.length() + 1;
     }
     if (state->mode == COMMANDLINE) {
         mvprintw(0, offset, ":%s", state->commandLineQuery.c_str());
@@ -81,8 +82,11 @@ int renderStatusBar(State* state) {
         attroff(COLOR_PAIR(YELLOW));
         offset += state->findFileQuery.length() + 2;
         return offset;
+    } else {
+        attron(COLOR_PAIR(GREEN));
+        mvprintw(0, offset, "/%s ", state->searchQuery.c_str());
+        attroff(COLOR_PAIR(GREEN));
     }
-    mvprintw(0, state->maxX - state->filename.length() - 2, "\"%s\"", state->filename.c_str());
     return -1;
 }
 

@@ -10,14 +10,14 @@ unsigned int State::maxX = 0;
 unsigned int State::maxY = 0;
 
 void State::resetState(const char* filename) {
+    // keep search & replaceQuery
+    // keep grep state
+    // keep findFile state
+    // TODO save file state in archive, and see if can retrieve file state from archive
     this->filename = std::string(filename);
     this->data = readFile(filename);
     this->previousState = std::vector<std::string>();
     this->history = std::vector<std::vector<diffLine>>();
-    // keep grep state
-    // this->grepQuery = std::string("");
-    // this->grepSelection = 0;
-    // this->grepOutput = std::vector<grepMatch>();
     this->historyPosition = -1;
     this->windowPosition = 0;
     this->visualType = NORMAL;
@@ -27,10 +27,6 @@ void State::resetState(const char* filename) {
     this->col = 0;
     this->indent = 4;
     this->commandLineQuery = std::string("");
-    // keep findFile state
-    // this->findFileQuery = std::string("");
-    // this->findFileSelection = 0;
-    // this->findFileOutput = std::vector<std::filesystem::path>();
     this->prevKeys = std::string("");
     this->status = std::string("");
     this->mode = SHORTCUTS;
@@ -49,6 +45,8 @@ State::State() {
     this->row = 0;
     this->col = 0;
     this->indent = 4;
+    this->searchQuery = std::string("");
+    this->replaceQuery = std::string("");
     this->commandLineQuery = std::string("");
     this->findFileQuery = std::string("");
     this->findFileSelection = 0;
@@ -74,6 +72,8 @@ State::State(const char* filename) {
     this->row = 0;
     this->col = 0;
     this->indent = 4;
+    this->searchQuery = std::string("");
+    this->replaceQuery = std::string("");
     this->commandLineQuery = std::string("");
     this->findFileQuery = std::string("");
     this->findFileSelection = 0;
