@@ -11,5 +11,5 @@ void renderScreen(State* state);
 void initTerminal();
 void printChar(State* state, size_t i, size_t j);
 void printLine(State* state, int i);
-void printLineNumber(int i, int windowPosition);
+void printLineNumber(int r, int i, bool isCurrentRow, bool recording);
 bool isRowColInVisual(State* state, unsigned int i, unsigned int j);

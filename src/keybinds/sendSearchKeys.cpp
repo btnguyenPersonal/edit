@@ -2,6 +2,7 @@
 #include "../util/state.h"
 #include "../util/helper.h"
 #include "../util/modes.h"
+#include "sendSearchKeys.h"
 
 void sendSearchKeys(State* state, char c) {
     if (c == 27) { // ESC

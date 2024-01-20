@@ -9,6 +9,7 @@
 #include "../util/clipboard.h"
 #include "../util/visualType.h"
 #include "sendVisualKeys.h"
+#include "sendKeys.h"
 #include "sendShortcutKeys.h"
 
 void sendShortcutKeys(State* state, char c) {
@@ -530,6 +531,19 @@ void sendShortcutKeys(State* state, char c) {
             state->row = temp_row;
             state->col = temp_col - 1;
         }
+    } else if (c == ',' && state->recording == false) {
+        // TODO replay
+        for (uint i = 0; i < state->macroCommand.length(); i++) {
+            state->dontRecordKey = true;
+            sendKeys(state, state->macroCommand[i]);
+        }
+        state->dontRecordKey = true;
+    } else if (c == 'q') {
+        if (state->recording == false) {
+            state->macroCommand = "";
+        }
+        state->recording = !state->recording;
+        state->dontRecordKey = true;
     } else if (c == '/') {
         state->searchQuery = std::string("");
         state->mode = SEARCH;

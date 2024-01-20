@@ -14,6 +14,7 @@
 
 void sendKeys(State* state, char c) {
     state->status = std::string("");
+    state->dontRecordKey = false;
     calcWindowBounds();
     if (state->mode == SHORTCUTS) {
         state->previousState = state->data;
@@ -40,7 +41,10 @@ void sendKeys(State* state, char c) {
     if (isWindowPositionInvalid(state)) {
         centerScreen(state);
     }
-    if (state->mode == SHORTCUTS && c != ctrl('r') && c != 'u') {
+    if (state->recording == true && state->dontRecordKey == false) {
+        state->macroCommand += c;
+    }
+    if (state->recording == false && state->mode == SHORTCUTS && c != ctrl('r') && c != 'u') {
         std::vector<diffLine> diff = generateDiff(state->previousState, state->data);
         if (diff.size() != 0) {
             if (state->historyPosition < (int) state->history.size()) {

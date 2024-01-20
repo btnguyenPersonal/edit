@@ -124,11 +124,15 @@ void printChar(int row, int col, char c, bool isInString, bool isInverted) {
     }
 }
 
-void printLineNumber(int r, int i, bool isCurrentRow) {
+void printLineNumber(int r, int i, bool isCurrentRow, bool recording) {
     if (isCurrentRow == true) {
         attron(COLOR_PAIR(WHITE));
         mvprintw(r, 0, "%5d ", i + 1);
         attroff(COLOR_PAIR(WHITE));
+    } else if (recording) {
+        attron(COLOR_PAIR(RED));
+        mvprintw(r, 0, "%5d ", i + 1);
+        attroff(COLOR_PAIR(RED));
     } else {
         attron(COLOR_PAIR(GREY));
         mvprintw(r, 0, "%5d ", i + 1);
@@ -244,7 +248,7 @@ void renderFindFileOutput(State* state) {
 void renderVisibleLines(State* state) {
     // TODO fix maxX as well
     for (int i = state->windowPosition; i < (int) state->data.size() && i < (int) (state->maxY + state->windowPosition) - 1; i++) {
-        printLineNumber(i - state->windowPosition + 1, i, i == (int) state->row);
+        printLineNumber(i - state->windowPosition + 1, i, i == (int) state->row, state->recording);
         printLine(state, i);
     }
 }

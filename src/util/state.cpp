@@ -55,6 +55,11 @@ State::State() {
     this->prevKeys = std::string("");
     this->status = std::string("");
     this->mode = FINDFILE;
+    this->dotCommand = std::string("");
+    this->macroCommand = std::string("");
+    this->playingCommand = false;
+    this->recording = false;
+    this->dontRecordKey = false;
 }
 
 State::State(const char* filename) {
@@ -82,6 +87,11 @@ State::State(const char* filename) {
     this->prevKeys = std::string("");
     this->status = std::string("");
     this->mode = SHORTCUTS;
+    this->dotCommand = std::string("");
+    this->macroCommand = std::string("");
+    this->playingCommand = false;
+    this->recording = false;
+    this->dontRecordKey = false;
 }
 
 void State::setMaxYX(int y, int x) {
