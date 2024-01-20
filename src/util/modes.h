@@ -6,5 +6,6 @@ enum Mode {
     TYPING,
     SHORTCUTS,
     FINDFILE,
-    GREP
+    GREP,
+    SEARCH
 };

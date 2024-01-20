@@ -103,3 +103,5 @@ line 2 | ''
 # grep & findfile working
 todo need harpoon(need to figure out how to store old states, maybe make an archive? maps filename to old state)
 search replace
+
+todo make H character switch between .cpp and .h

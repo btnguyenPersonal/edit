@@ -99,6 +99,30 @@ Position deleteInVisual(State* state) {
 void sendVisualKeys(State* state, char c) {
     if (c == 27) { // ESC
         state->mode = SHORTCUTS;
+    } else if (handleMotion(state, c, "i`")) {
+        if (isMotionCompleted(state)) {
+            setStateFromWordPosition(state, findQuoteBounds(state->data[state->row], '`', state->col, false));
+        }
+    } else if (handleMotion(state, c, "a`")) {
+        if (isMotionCompleted(state)) {
+            setStateFromWordPosition(state, findQuoteBounds(state->data[state->row], '`', state->col, true));
+        }
+    } else if (handleMotion(state, c, "i\"")) {
+        if (isMotionCompleted(state)) {
+            setStateFromWordPosition(state, findQuoteBounds(state->data[state->row], '"', state->col, false));
+        }
+    } else if (handleMotion(state, c, "a\"")) {
+        if (isMotionCompleted(state)) {
+            setStateFromWordPosition(state, findQuoteBounds(state->data[state->row], '"', state->col, true));
+        }
+    } else if (handleMotion(state, c, "i'")) {
+        if (isMotionCompleted(state)) {
+            setStateFromWordPosition(state, findQuoteBounds(state->data[state->row], '\'', state->col, false));
+        }
+    } else if (handleMotion(state, c, "a'")) {
+        if (isMotionCompleted(state)) {
+            setStateFromWordPosition(state, findQuoteBounds(state->data[state->row], '\'', state->col, true));
+        }
     } else if (handleMotion(state, c, "aT")) {
         if (isMotionCompleted(state)) {
             setStateFromWordPosition(state, findParentheses(state->data[state->row], '>', '<', state->col, true));

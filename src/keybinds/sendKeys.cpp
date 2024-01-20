@@ -6,6 +6,7 @@
 #include "sendVisualKeys.h"
 #include "sendFindFileKeys.h"
 #include "sendGrepKeys.h"
+#include "sendSearchKeys.h"
 #include "../util/state.h"
 #include "../util/helper.h"
 #include "../util/history.h"
@@ -27,6 +28,8 @@ void sendKeys(State* state, char c) {
         sendFindFileKeys(state, c);
     } else if (state->mode == GREP) {
         sendGrepKeys(state, c);
+    } else if (state->mode == SEARCH) {
+        sendSearchKeys(state, c);
     }
     if (state->mode == SHORTCUTS && state->filename == "") {
         endwin();
