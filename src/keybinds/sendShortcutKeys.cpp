@@ -445,6 +445,11 @@ void sendShortcutKeys(State* state, char c) {
             setPosition(state, copyInVisual(state));
             state->col = getIndexFirstNonSpace(state);
         }
+    } else if (state->prevKeys == "r") {
+        if (state->col < state->data[state->row].length()) {
+            state->data[state->row] = state->data[state->row].substr(0, state->col) + c + state->data[state->row].substr(state->col + 1);
+        }
+        state->prevKeys = "";
     } else if (state->prevKeys != "") {
         state->prevKeys = "";
     } else if (c == ':') {
@@ -465,6 +470,8 @@ void sendShortcutKeys(State* state, char c) {
             state->row = applyDiff(state, state->history[state->historyPosition + 1], true);
             state->historyPosition++;
         }
+    } else if (c == 'r') {
+        state->prevKeys = "r";
     } else if (c == 'h') {
         left(state);
     } else if (c == 'l') {
