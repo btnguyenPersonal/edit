@@ -59,11 +59,12 @@ void initColors() {
 
 int renderStatusBar(State* state) {
     int offset = 0;
+    mvprintw(0, state->maxX - state->filename.length() - 2, "\"%s\"", state->filename.c_str());
     if (state->status.length() > 0) {
         attron(COLOR_PAIR(RED));
         mvprintw(0, 0, "%s ", state->status.c_str());
         attroff(COLOR_PAIR(RED));
-        offset += state->status.length() + 2;
+        offset += state->status.length() + 1;
     }
     if (state->mode == COMMANDLINE) {
         mvprintw(0, offset, ":%s", state->commandLineQuery.c_str());
@@ -81,8 +82,11 @@ int renderStatusBar(State* state) {
         attroff(COLOR_PAIR(YELLOW));
         offset += state->findFileQuery.length() + 2;
         return offset;
+    } else {
+        attron(COLOR_PAIR(GREEN));
+        mvprintw(0, offset, "/%s ", state->searchQuery.c_str());
+        attroff(COLOR_PAIR(GREEN));
     }
-    mvprintw(0, state->maxX - state->filename.length() - 2, "\"%s\"", state->filename.c_str());
     return -1;
 }
 
@@ -120,11 +124,15 @@ void printChar(int row, int col, char c, bool isInString, bool isInverted) {
     }
 }
 
-void printLineNumber(int r, int i, bool isCurrentRow) {
+void printLineNumber(int r, int i, bool isCurrentRow, bool recording) {
     if (isCurrentRow == true) {
         attron(COLOR_PAIR(WHITE));
         mvprintw(r, 0, "%5d ", i + 1);
         attroff(COLOR_PAIR(WHITE));
+    } else if (recording) {
+        attron(COLOR_PAIR(RED));
+        mvprintw(r, 0, "%5d ", i + 1);
+        attroff(COLOR_PAIR(RED));
     } else {
         attron(COLOR_PAIR(GREY));
         mvprintw(r, 0, "%5d ", i + 1);
@@ -240,7 +248,7 @@ void renderFindFileOutput(State* state) {
 void renderVisibleLines(State* state) {
     // TODO fix maxX as well
     for (int i = state->windowPosition; i < (int) state->data.size() && i < (int) (state->maxY + state->windowPosition) - 1; i++) {
-        printLineNumber(i - state->windowPosition + 1, i, i == (int) state->row);
+        printLineNumber(i - state->windowPosition + 1, i, i == (int) state->row, state->recording);
         printLine(state, i);
     }
 }

@@ -1,5 +1,6 @@
 #include <string>
 #include <vector>
+#include <climits>
 #include <ncurses.h>
 #include "../util/state.h"
 #include "../util/helper.h"
@@ -8,6 +9,7 @@
 #include "../util/clipboard.h"
 #include "../util/visualType.h"
 #include "sendVisualKeys.h"
+#include "sendKeys.h"
 #include "sendShortcutKeys.h"
 
 void sendShortcutKeys(State* state, char c) {
@@ -16,6 +18,54 @@ void sendShortcutKeys(State* state, char c) {
     } else if (handleMotion(state, c, "gg")) {
         if (isMotionCompleted(state)) {
             state->row = 0;
+        }
+    } else if (handleMotion(state, c, "ci`")) {
+        if (isMotionCompleted(state)) {
+            initVisual(state, NORMAL);
+            setStateFromWordPosition(state, findQuoteBounds(state->data[state->row], '`', state->col, false));
+            copyInVisual(state);
+            setPosition(state, changeInVisual(state));
+            state->mode = TYPING;
+        }
+    } else if (handleMotion(state, c, "ca`")) {
+        if (isMotionCompleted(state)) {
+            initVisual(state, NORMAL);
+            setStateFromWordPosition(state, findQuoteBounds(state->data[state->row], '`', state->col, true));
+            copyInVisual(state);
+            setPosition(state, changeInVisual(state));
+            state->mode = TYPING;
+        }
+    } else if (handleMotion(state, c, "ci\"")) {
+        if (isMotionCompleted(state)) {
+            initVisual(state, NORMAL);
+            setStateFromWordPosition(state, findQuoteBounds(state->data[state->row], '"', state->col, false));
+            copyInVisual(state);
+            setPosition(state, changeInVisual(state));
+            state->mode = TYPING;
+        }
+    } else if (handleMotion(state, c, "ca\"")) {
+        if (isMotionCompleted(state)) {
+            initVisual(state, NORMAL);
+            setStateFromWordPosition(state, findQuoteBounds(state->data[state->row], '"', state->col, true));
+            copyInVisual(state);
+            setPosition(state, changeInVisual(state));
+            state->mode = TYPING;
+        }
+    } else if (handleMotion(state, c, "ci'")) {
+        if (isMotionCompleted(state)) {
+            initVisual(state, NORMAL);
+            setStateFromWordPosition(state, findQuoteBounds(state->data[state->row], '\'', state->col, false));
+            copyInVisual(state);
+            setPosition(state, changeInVisual(state));
+            state->mode = TYPING;
+        }
+    } else if (handleMotion(state, c, "ca'")) {
+        if (isMotionCompleted(state)) {
+            initVisual(state, NORMAL);
+            setStateFromWordPosition(state, findQuoteBounds(state->data[state->row], '\'', state->col, true));
+            copyInVisual(state);
+            setPosition(state, changeInVisual(state));
+            state->mode = TYPING;
         }
     } else if (handleMotion(state, c, "caT")) {
         if (isMotionCompleted(state)) {
@@ -131,6 +181,48 @@ void sendShortcutKeys(State* state, char c) {
             state->col = getIndexFirstNonSpace(state);
             state->mode = TYPING;
         }
+    } else if (handleMotion(state, c, "di`")) {
+        if (isMotionCompleted(state)) {
+            initVisual(state, NORMAL);
+            setStateFromWordPosition(state, findQuoteBounds(state->data[state->row], '`', state->col, false));
+            copyInVisual(state);
+            setPosition(state, deleteInVisual(state));
+        }
+    } else if (handleMotion(state, c, "da`")) {
+        if (isMotionCompleted(state)) {
+            initVisual(state, NORMAL);
+            setStateFromWordPosition(state, findQuoteBounds(state->data[state->row], '`', state->col, true));
+            copyInVisual(state);
+            setPosition(state, deleteInVisual(state));
+        }
+    } else if (handleMotion(state, c, "di\"")) {
+        if (isMotionCompleted(state)) {
+            initVisual(state, NORMAL);
+            setStateFromWordPosition(state, findQuoteBounds(state->data[state->row], '"', state->col, false));
+            copyInVisual(state);
+            setPosition(state, deleteInVisual(state));
+        }
+    } else if (handleMotion(state, c, "da\"")) {
+        if (isMotionCompleted(state)) {
+            initVisual(state, NORMAL);
+            setStateFromWordPosition(state, findQuoteBounds(state->data[state->row], '"', state->col, true));
+            copyInVisual(state);
+            setPosition(state, deleteInVisual(state));
+        }
+    } else if (handleMotion(state, c, "di'")) {
+        if (isMotionCompleted(state)) {
+            initVisual(state, NORMAL);
+            setStateFromWordPosition(state, findQuoteBounds(state->data[state->row], '\'', state->col, false));
+            copyInVisual(state);
+            setPosition(state, deleteInVisual(state));
+        }
+    } else if (handleMotion(state, c, "da'")) {
+        if (isMotionCompleted(state)) {
+            initVisual(state, NORMAL);
+            setStateFromWordPosition(state, findQuoteBounds(state->data[state->row], '\'', state->col, true));
+            copyInVisual(state);
+            setPosition(state, deleteInVisual(state));
+        }
     } else if (handleMotion(state, c, "daT")) {
         if (isMotionCompleted(state)) {
             initVisual(state, NORMAL);
@@ -231,19 +323,53 @@ void sendShortcutKeys(State* state, char c) {
             setPosition(state, deleteInVisual(state));
             state->col = getIndexFirstNonSpace(state);
         }
+    } else if (handleMotion(state, c, "yi`")) {
+        if (isMotionCompleted(state)) {
+            initVisual(state, NORMAL);
+            setStateFromWordPosition(state, findQuoteBounds(state->data[state->row], '`', state->col, false));
+            setPosition(state, copyInVisual(state));
+        }
+    } else if (handleMotion(state, c, "ya`")) {
+        if (isMotionCompleted(state)) {
+            initVisual(state, NORMAL);
+            setStateFromWordPosition(state, findQuoteBounds(state->data[state->row], '`', state->col, true));
+            setPosition(state, copyInVisual(state));
+        }
+    } else if (handleMotion(state, c, "yi\"")) {
+        if (isMotionCompleted(state)) {
+            initVisual(state, NORMAL);
+            setStateFromWordPosition(state, findQuoteBounds(state->data[state->row], '"', state->col, false));
+            setPosition(state, copyInVisual(state));
+        }
+    } else if (handleMotion(state, c, "ya\"")) {
+        if (isMotionCompleted(state)) {
+            initVisual(state, NORMAL);
+            setStateFromWordPosition(state, findQuoteBounds(state->data[state->row], '"', state->col, true));
+            setPosition(state, copyInVisual(state));
+        }
+    } else if (handleMotion(state, c, "yi'")) {
+        if (isMotionCompleted(state)) {
+            initVisual(state, NORMAL);
+            setStateFromWordPosition(state, findQuoteBounds(state->data[state->row], '\'', state->col, false));
+            setPosition(state, copyInVisual(state));
+        }
+    } else if (handleMotion(state, c, "ya'")) {
+        if (isMotionCompleted(state)) {
+            initVisual(state, NORMAL);
+            setStateFromWordPosition(state, findQuoteBounds(state->data[state->row], '\'', state->col, true));
+            setPosition(state, copyInVisual(state));
+        }
     } else if (handleMotion(state, c, "yaT")) {
         if (isMotionCompleted(state)) {
             initVisual(state, NORMAL);
             setStateFromWordPosition(state, findParentheses(state->data[state->row], '>', '<', state->col, true));
-            copyInVisual(state);
-            setPosition(state, deleteInVisual(state));
+            setPosition(state, copyInVisual(state));
         }
     } else if (handleMotion(state, c, "yat")) {
         if (isMotionCompleted(state)) {
             initVisual(state, NORMAL);
             setStateFromWordPosition(state, findParentheses(state->data[state->row], '<', '>', state->col, true));
-            copyInVisual(state);
-            setPosition(state, deleteInVisual(state));
+            setPosition(state, copyInVisual(state));
         }
     } else if (handleMotion(state, c, "yad")) {
         if (isMotionCompleted(state)) {
@@ -319,6 +445,11 @@ void sendShortcutKeys(State* state, char c) {
             setPosition(state, copyInVisual(state));
             state->col = getIndexFirstNonSpace(state);
         }
+    } else if (state->prevKeys == "r") {
+        if (state->col < state->data[state->row].length()) {
+            state->data[state->row] = state->data[state->row].substr(0, state->col) + c + state->data[state->row].substr(state->col + 1);
+        }
+        state->prevKeys = "";
     } else if (state->prevKeys != "") {
         state->prevKeys = "";
     } else if (c == ':') {
@@ -339,6 +470,8 @@ void sendShortcutKeys(State* state, char c) {
             state->row = applyDiff(state, state->history[state->historyPosition + 1], true);
             state->historyPosition++;
         }
+    } else if (c == 'r') {
+        state->prevKeys = "r";
     } else if (c == 'h') {
         left(state);
     } else if (c == 'l') {
@@ -396,6 +529,31 @@ void sendShortcutKeys(State* state, char c) {
     } else if (c == 'A') {
         state->col = state->data[state->row].length();
         state->mode = TYPING;
+    } else if (c == 'n') {
+        state->col += 1;
+        uint temp_col = state->col;
+        uint temp_row = state->row;
+        bool result = setSearchResult(state);
+        if (result == false) {
+            state->row = temp_row;
+            state->col = temp_col - 1;
+        }
+    } else if (c == ',' && state->recording == false) {
+        // TODO replay
+        for (uint i = 0; i < state->macroCommand.length(); i++) {
+            state->dontRecordKey = true;
+            sendKeys(state, state->macroCommand[i]);
+        }
+        state->dontRecordKey = true;
+    } else if (c == 'q') {
+        if (state->recording == false) {
+            state->macroCommand = "";
+        }
+        state->recording = !state->recording;
+        state->dontRecordKey = true;
+    } else if (c == '/') {
+        state->searchQuery = std::string("");
+        state->mode = SEARCH;
     } else if (c == '^') {
         state->col = getIndexFirstNonSpace(state);
     } else if (c == '0') {

@@ -7,6 +7,8 @@
 #include "state.h"
 #include "visualType.h"
 
+WordPosition findQuoteBounds(const std::string &str, char quoteChar, unsigned int cursor, bool includeQuote);
+bool setSearchResult(State* state);
 void setPosition(State* state, Position pos);
 void initVisual(State* state, VisualType visualType);
 bool is_number(const std::string& s);

@@ -43,7 +43,14 @@ class State {
         struct Position visual;
         unsigned int row;
         unsigned int col;
+        std::string searchQuery;
+        std::string replaceQuery;
         std::string commandLineQuery;
+        std::string dotCommand;
+        std::string macroCommand;
+        bool playingCommand;
+        bool recording;
+        bool dontRecordKey;
         std::string findFileQuery;
         unsigned int findFileSelection;
         std::vector<std::filesystem::path> findFileOutput;

@@ -1,11 +1,39 @@
 #include <string>
 #include <iterator>
 #include <vector>
+#include <climits>
 #include <fstream>
-#include <curses.h>
+#include <ncurses.h>
+#include <iostream>
 #include "state.h"
 #include "helper.h"
 #include "visualType.h"
+
+bool setSearchResult(State* state) {
+    uint col = state->col;
+    uint row = state->row;
+    bool repeat = false;
+    while (!(repeat == true && row == state->row)) {
+        std::cout << row << std::endl;
+        while (col < state->data[row].length()) {
+            std::cout << state->data[row].substr(col, state->searchQuery.length()) << std::endl;
+            if (state->data[row].substr(col, state->searchQuery.length()) == state->searchQuery) {
+                state->col = col;
+                state->row = row;
+                return true;
+            }
+            col++;
+        }
+        col = 0;
+        if (row < state->data.size()) {
+            row++;
+        } else {
+            repeat = true;
+            row = 0;
+        }
+    }
+    return false;
+}
 
 void setPosition(State* state, Position pos) {
     state->row = pos.row;
@@ -62,8 +90,40 @@ unsigned int getNextLineSameIndent(State* state) {
     return state->row;
 }
 
+WordPosition findQuoteBounds(const std::string &str, char quoteChar, unsigned int cursor, bool includeQuote) {
+    int lastQuoteIndex = -1;
+    for (unsigned int i = 0; i <= cursor; i++) {
+        if (str[i] == quoteChar) {
+            lastQuoteIndex = i;
+        }
+    }
+    unsigned int i;
+    for (i = cursor + 1; i < str.length(); i++) {
+        if (str[i] == quoteChar) {
+            if (lastQuoteIndex != -1 && lastQuoteIndex < (int) cursor) {
+                break;
+            } else {
+                if (lastQuoteIndex == -1) {
+                    lastQuoteIndex = i;
+                } else {
+                    break;
+                }
+            }
+        }
+    }
+    if (i != str.length()) {
+        if (i - lastQuoteIndex == 1 || includeQuote) {
+            return {(unsigned int) lastQuoteIndex, (unsigned int) i};
+        } else {
+            return {(unsigned int) lastQuoteIndex + 1, (unsigned int) i - 1};
+        }
+    } else {
+        return {0, 0};
+    }
+}
+
+
 WordPosition findParentheses(const std::string &str, char openParen, char closeParen, unsigned int cursor, bool includeParen) {
-    WordPosition pos = {0, 0};
     int balance = 0;
     int openParenIndex = -1;
     // look back for openParen
@@ -115,7 +175,7 @@ WordPosition findParentheses(const std::string &str, char openParen, char closeP
             }
         }
     }
-    return pos;
+    return {0, 0};
 }
 
 WordPosition getWordPosition(const std::string& str, unsigned int cursor) {
