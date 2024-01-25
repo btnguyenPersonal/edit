@@ -10,10 +10,47 @@ unsigned int State::maxX = 0;
 unsigned int State::maxY = 0;
 
 void State::resetState(const char* filename) {
-    // keep search & replaceQuery
-    // keep grep state
-    // keep findFile state
-    // TODO save file state in archive, and see if can retrieve file state from archive
+    bool found = false;
+    for (uint i = 0; i < this->archives.size(); i++) {
+        if (this->archives[i].filename == this->filename) {
+            this->archives[i].data = this->data;
+            this->archives[i].previousState = this->previousState;
+            this->archives[i].history = this->history;
+            this->archives[i].historyPosition = this->historyPosition;
+            this->archives[i].windowPosition = this->windowPosition;
+            this->archives[i].row = this->row;
+            this->archives[i].col = this->col;
+            found = true;
+            break;
+        }
+    }
+    if (!found) {
+        this->archives.push_back({
+            this->filename,
+            this->data,
+            this->previousState,
+            this->history,
+            this->historyPosition,
+            this->windowPosition,
+            this->row,
+            this->col,
+        });
+    }
+    for (uint i = 0; i < this->archives.size(); i++) {
+        if (this->archives[i].filename == std::string(filename)) {
+            auto archive = this->archives[i];
+            this->filename = std::string(filename);
+            this->data = archive.data;
+            this->previousState = archive.previousState;
+            this->history = archive.history;
+            this->historyPosition = archive.historyPosition;
+            this->windowPosition = archive.windowPosition;
+            this->row = archive.row;
+            this->col = archive.col;
+            this->mode = SHORTCUTS;
+            return;
+        }
+    }
     this->filename = std::string(filename);
     this->data = readFile(filename);
     this->previousState = std::vector<std::string>();

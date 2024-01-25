@@ -28,8 +28,20 @@ struct WordPosition {
     unsigned int max;
 };
 
+struct Archive {
+    std::string filename;
+    std::vector<std::string> data;
+    std::vector<std::string> previousState;
+    std::vector<std::vector<diffLine>> history;
+    int historyPosition;
+    unsigned int windowPosition;
+    unsigned int row;
+    unsigned int col;
+};
+
 class State {
     public:
+        std::vector<Archive> archives;
         std::vector<std::string> harpoonFiles;
         unsigned int harpoonIndex;
         std::string filename;
