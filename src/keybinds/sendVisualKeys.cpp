@@ -187,6 +187,16 @@ void sendVisualKeys(State* state, char c) {
         state->row = getPrevLineSameIndent(state);
     } else if (c == ']') {
         state->row = getNextLineSameIndent(state);
+    } else if (c == '*') {
+        state->searchQuery = getInVisual(state);
+        state->mode = SHORTCUTS;
+        uint temp_col = state->col;
+        uint temp_row = state->row;
+        bool result = setSearchResult(state);
+        if (result == false) {
+            state->row = temp_row;
+            state->col = temp_col - 1;
+        }
     } else if (c == '#') {
         state->grepQuery = getInVisual(state);
         state->mode = GREP;
