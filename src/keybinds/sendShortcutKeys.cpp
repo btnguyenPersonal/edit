@@ -523,11 +523,14 @@ void sendShortcutKeys(State* state, char c) {
         insertEmptyLine(state);
         state->mode = TYPING;
     } else if (c == 'Y') {
+        fixColOverMax(state);
         copyToClipboard(state->data[state->row].substr(state->col));
     } else if (c == 'D') {
+        fixColOverMax(state);
         copyToClipboard(state->data[state->row].substr(state->col));
         state->data[state->row] = state->data[state->row].substr(0, state->col);
     } else if (c == 'C') {
+        fixColOverMax(state);
         copyToClipboard(state->data[state->row].substr(state->col));
         state->data[state->row] = state->data[state->row].substr(0, state->col);
         state->mode = TYPING;
