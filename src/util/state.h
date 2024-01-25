@@ -30,6 +30,8 @@ struct WordPosition {
 
 class State {
     public:
+        std::vector<std::string> harpoonFiles;
+        unsigned int harpoonIndex;
         std::string filename;
         std::vector<std::string> data;
         std::vector<std::string> previousState;

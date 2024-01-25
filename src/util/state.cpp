@@ -33,6 +33,8 @@ void State::resetState(const char* filename) {
 }
 
 State::State() {
+    this->harpoonFiles = std::vector<std::string>();
+    this->harpoonIndex = 0;
     this->previousState = std::vector<std::string>();
     this->history = std::vector<std::vector<diffLine>>();
     this->grepOutput = std::vector<grepMatch>();
@@ -63,6 +65,8 @@ State::State() {
 }
 
 State::State(const char* filename) {
+    this->harpoonFiles = std::vector<std::string>();
+    this->harpoonIndex = 0;
     this->filename = std::string(filename);
     this->data = readFile(filename);
     this->previousState = std::vector<std::string>();

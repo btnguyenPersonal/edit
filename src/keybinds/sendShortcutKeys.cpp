@@ -1,6 +1,7 @@
 #include <string>
 #include <vector>
 #include <climits>
+#include <algorithm>
 #include <ncurses.h>
 #include "../util/state.h"
 #include "../util/helper.h"
@@ -539,7 +540,7 @@ void sendShortcutKeys(State* state, char c) {
             state->col = temp_col - 1;
         }
     } else if (c == ',' && state->recording == false) {
-        // TODO replay
+        // TODO replay with clipboard
         for (uint i = 0; i < state->macroCommand.length(); i++) {
             state->dontRecordKey = true;
             sendKeys(state, state->macroCommand[i]);
@@ -566,6 +567,26 @@ void sendShortcutKeys(State* state, char c) {
         pasteFromClipboard(state);
     } else if (c == 'p') {
         pasteFromClipboardAfter(state);
+    } else if (c == ctrl('e')) {
+        if (state->harpoonIndex < state->harpoonFiles.size()) {
+            state->harpoonIndex += 1;
+            state->resetState(state->harpoonFiles[state->harpoonIndex].c_str());
+        }
+    } else if (c == ctrl('w')) {
+        if (state->harpoonIndex > 0) {
+            state->harpoonIndex -= 1;
+            state->resetState(state->harpoonFiles[state->harpoonIndex].c_str());
+        }
+    } else if (c == ' ') {
+        for (auto it = state->harpoonFiles.begin(); it != state->harpoonFiles.end(); ) {
+            if (*it == state->filename) {
+                it = state->harpoonFiles.erase(it);
+            } else {
+                it++;
+            }
+        }
+        state->harpoonFiles.push_back(state->filename);
+        state->harpoonIndex = state->harpoonFiles.size() - 1;
     } else if (c == 'G') {
         state->row = state->data.size() - 1;
     } else {

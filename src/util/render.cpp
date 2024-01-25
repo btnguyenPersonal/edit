@@ -84,8 +84,23 @@ int renderStatusBar(State* state) {
         return offset;
     } else {
         attron(COLOR_PAIR(GREEN));
-        mvprintw(0, offset, "/%s ", state->searchQuery.c_str());
+        mvprintw(0, offset, "/%s", state->searchQuery.c_str());
+        offset += state->searchQuery.length() + 1;
         attroff(COLOR_PAIR(GREEN));
+        for (unsigned int i = 0; i < state->harpoonFiles.size(); i++) {
+            if (state->harpoonIndex == i) {
+                attron(COLOR_PAIR(YELLOW));
+            } else {
+                attron(COLOR_PAIR(GREY));
+            }
+            mvprintw(0, offset, " %s", state->harpoonFiles[i].c_str());
+            offset += state->harpoonFiles[i].length() + 1;
+            if (state->harpoonIndex == i) {
+                attroff(COLOR_PAIR(YELLOW));
+            } else {
+                attroff(COLOR_PAIR(GREY));
+            }
+        }
     }
     return -1;
 }
