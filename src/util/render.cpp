@@ -1,3 +1,5 @@
+#include "../global.h"
+
 #include <fstream>
 #include <string>
 #include <filesystem>

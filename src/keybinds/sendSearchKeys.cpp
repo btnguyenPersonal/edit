@@ -1,3 +1,4 @@
+#include "../global.h"
 #include <climits>
 #include "../util/state.h"
 #include "../util/helper.h"

@@ -1,3 +1,4 @@
+#include "../global.h"
 #include <sstream>
 #include <string>
 #include <array>
