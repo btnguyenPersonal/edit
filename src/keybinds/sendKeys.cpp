@@ -45,10 +45,12 @@ void sendKeys(State* state, char c) {
     if (state->recording == true && state->dontRecordKey == false) {
         state->macroCommand += c;
     }
-    if (state->recording == false && state->mode == SHORTCUTS && c != ctrl('r') && c != 'u') {
+    if (state->recording == false && state->mode == SHORTCUTS) {
         std::vector<diffLine> diff = generateDiff(state->previousState, state->data);
         if (diff.size() != 0) {
             saveFile(state->filename, state->data);
+        }
+        if (diff.size() != 0 && c != ctrl('r') && c != 'u') {
             if (state->historyPosition < (int) state->history.size()) {
                 state->history.erase(state->history.begin() + state->historyPosition + 1, state->history.end());
             }

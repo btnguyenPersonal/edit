@@ -40,6 +40,20 @@ std::string getInVisual(State* state) {
 
 Bounds getBounds(State* state) {
     Bounds bounds;
+    if (state->visual.col >= state->data[state->visual.row].length()) {
+        if (state->data[state->visual.row].length() == 0) {
+            state->visual.col = 0;
+        } else {
+            state->visual.col = state->data[state->visual.row].length() - 1;
+        }
+    }
+    if (state->col >= state->data[state->row].length()) {
+        if (state->data[state->row].length() == 0) {
+            state->col = 0;
+        } else {
+            state->col = state->data[state->row].length() - 1;
+        }
+    }
     if (state->row < state->visual.row) {
         bounds.minR = state->row;
         bounds.minC = state->col;
