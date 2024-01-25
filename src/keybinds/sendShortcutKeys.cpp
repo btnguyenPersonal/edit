@@ -542,6 +542,7 @@ void sendShortcutKeys(State* state, char c) {
             state->row = temp_row;
             state->col = temp_col - 1;
         }
+        centerScreen(state);
     } else if (c == ',' && state->recording == false) {
         // TODO replay with clipboard
         for (uint i = 0; i < state->macroCommand.length(); i++) {

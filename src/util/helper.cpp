@@ -31,7 +31,7 @@ bool setSearchResult(State* state) {
         if (row == 0) {
             hasWrapped = true;
         }
-        if (hasWrapped && row == initialRow) {
+        if (hasWrapped && (row > initialRow || row == state->data.size())) {
             break;
         }
     } while (true);
