@@ -579,8 +579,22 @@ void sendShortcutKeys(State* state, char c) {
         pasteFromClipboard(state);
     } else if (c == 'p') {
         pasteFromClipboardAfter(state);
+    } else if (c == ctrl('x')) {
+        if (state->harpoonFiles.size() != 0) {
+            state->harpoonFiles.erase(state->harpoonFiles.begin() + state->harpoonIndex);
+        }
+        if (state->harpoonFiles.size() == 0) {
+            state->harpoonIndex = 0;
+            state->resetState(state->harpoonFiles[state->harpoonIndex].c_str());
+        } else if (state->harpoonIndex >= state->harpoonFiles.size()) {
+            state->harpoonIndex = state->harpoonFiles.size() - 1;
+            state->resetState(state->harpoonFiles[state->harpoonIndex].c_str());
+        }
+    } else if (c == 'X') {
+        state->harpoonIndex = 0;
+        state->harpoonFiles.clear();
     } else if (c == ctrl('e')) {
-        if (state->harpoonIndex < state->harpoonFiles.size()) {
+        if (state->harpoonIndex + 1 < state->harpoonFiles.size()) {
             state->harpoonIndex += 1;
             state->resetState(state->harpoonFiles[state->harpoonIndex].c_str());
         }
