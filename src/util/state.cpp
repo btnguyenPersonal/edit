@@ -11,7 +11,7 @@ unsigned int State::maxY = 0;
 
 void State::resetState(const char* filename) {
     bool found = false;
-    for (uint i = 0; i < this->archives.size(); i++) {
+    for (unsigned int i = 0; i < this->archives.size(); i++) {
         if (this->archives[i].filename == this->filename) {
             this->archives[i].data = this->data;
             this->archives[i].previousState = this->previousState;
@@ -36,7 +36,7 @@ void State::resetState(const char* filename) {
             this->col,
         });
     }
-    for (uint i = 0; i < this->archives.size(); i++) {
+    for (unsigned int i = 0; i < this->archives.size(); i++) {
         if (this->archives[i].filename == std::string(filename)) {
             auto archive = this->archives[i];
             this->filename = std::string(filename);
