@@ -90,7 +90,7 @@ int renderStatusBar(State* state) {
         offset += state->searchQuery.length() + 1;
         attroff(COLOR_PAIR(GREEN));
         for (uint i = 0; i < state->harpoonFiles.size(); i++) {
-            if (state->harpoonIndex == i) {
+            if (state->harpoonFiles[i] == state->filename) {
                 attron(COLOR_PAIR(YELLOW));
             } else {
                 attron(COLOR_PAIR(GREY));
@@ -98,7 +98,7 @@ int renderStatusBar(State* state) {
             auto min_name = minimize_filename(state->harpoonFiles[i]);
             mvprintw(0, offset, " %s", min_name.c_str());
             offset += min_name.length() + 1;
-            if (state->harpoonIndex == i) {
+            if (state->harpoonFiles[i] == state->filename) {
                 attroff(COLOR_PAIR(YELLOW));
             } else {
                 attroff(COLOR_PAIR(GREY));

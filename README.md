@@ -104,4 +104,16 @@ line 2 | ''
 todo need harpoon(need to figure out how to store old states, maybe make an archive? maps filename to old state)
 search replace
 
-todo make H character switch between .cpp and .h
+??? todo make H character switch between .cpp and .h
+
+## TODO
+- search replace highlighting, N
+- J K visual > <
+- commenting, and comment highlighting
+- indenting
+- fileExplorer (current one is trash) actually make it good now
+- gf
+- dt, df,
+- dot command
+- horizontal scrolling
+- if file not found guard against that

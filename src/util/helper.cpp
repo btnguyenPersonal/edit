@@ -11,6 +11,36 @@
 #include "helper.h"
 #include "visualType.h"
 
+bool setSearchResultReverse(State* state) {
+    uint initialCol = state->col;
+    uint initialRow = state->row;
+    int col = static_cast<int>(initialCol);
+    int row = static_cast<int>(initialRow);
+    col -= 1;
+    bool hasWrapped = false;
+    do {
+        while (col >= 0) {
+            if (state->data[row].substr(col, state->searchQuery.length()) == state->searchQuery) {
+                state->col = col;
+                state->row = row;
+                return true;
+            }
+            col--;
+        }
+        if (row == 0) {
+            row = state->data.size() - 1;
+            hasWrapped = true;
+        } else {
+            row--;
+        }
+        col = state->data[row].length() - 1;
+        if (hasWrapped && (row < (int) initialRow || row == 0)) {
+            break;
+        }
+    } while (true);
+    return false;
+}
+
 bool setSearchResult(State* state) {
     uint initialCol = state->col;
     uint initialRow = state->row;

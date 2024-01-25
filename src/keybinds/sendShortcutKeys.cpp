@@ -533,6 +533,9 @@ void sendShortcutKeys(State* state, char c) {
     } else if (c == 'A') {
         state->col = state->data[state->row].length();
         state->mode = TYPING;
+    } else if (c == 'N') {
+        setSearchResultReverse(state);
+        centerScreen(state);
     } else if (c == 'n') {
         state->col += 1;
         uint temp_col = state->col;
