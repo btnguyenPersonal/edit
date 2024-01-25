@@ -1,4 +1,5 @@
 #include "../global.h"
+#include <algorithm>
 #include <string>
 #include <iterator>
 #include <vector>
@@ -207,7 +208,16 @@ WordPosition getWordPosition(const std::string& str, uint cursor) {
 
 bool filePathContainsSubstring(const std::filesystem::path& filePath, const std::string& query) {
     // TODO make fzf
-    return filePath.string().find(query) != std::string::npos;
+    std::string filePathStr = filePath.string();
+    std::string queryLower = query;
+
+    // Convert both strings to lower case for case-insensitive comparison
+    std::transform(filePathStr.begin(), filePathStr.end(), filePathStr.begin(),
+                   [](unsigned char c){ return std::tolower(c); });
+    std::transform(queryLower.begin(), queryLower.end(), queryLower.begin(),
+                   [](unsigned char c){ return std::tolower(c); });
+
+    return filePathStr.find(queryLower) != std::string::npos;
 }
 
 bool shouldIgnoreFile(const std::filesystem::path& path) {

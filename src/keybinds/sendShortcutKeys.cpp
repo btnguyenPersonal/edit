@@ -490,6 +490,7 @@ void sendShortcutKeys(State* state, char c) {
         state->mode = GREP;
     } else if (c == ctrl('p')) {
         state->mode = FINDFILE;
+        generateFindFileOutput(state);
     } else if (c == 'v') {
         state->mode = VISUAL;
         initVisual(state, NORMAL);
@@ -589,14 +590,19 @@ void sendShortcutKeys(State* state, char c) {
             state->resetState(state->harpoonFiles[state->harpoonIndex].c_str());
         }
     } else if (c == ' ') {
+        bool found = false;
         for (auto it = state->harpoonFiles.begin(); it != state->harpoonFiles.end(); ) {
             if (*it == state->filename) {
                 it = state->harpoonFiles.erase(it);
+                found = true;
+                break;
             } else {
                 it++;
             }
         }
-        state->harpoonFiles.push_back(state->filename);
+        if (!found) {
+            state->harpoonFiles.push_back(state->filename);
+        }
         state->harpoonIndex = state->harpoonFiles.size() - 1;
     } else if (c == 'G') {
         state->row = state->data.size() - 1;
