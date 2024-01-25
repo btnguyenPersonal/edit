@@ -9,7 +9,7 @@
 #include "modes.h"
 #include "render.h"
 
-#define _COLOR_BLACK 232
+#define _COLOR_BLACK 16
 #define _COLOR_GREY 242
 #define _COLOR_RED 196
 #define _COLOR_GREEN 46
