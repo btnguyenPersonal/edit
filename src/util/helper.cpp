@@ -10,8 +10,8 @@
 #include "visualType.h"
 
 bool setSearchResult(State* state) {
-    uint col = state->col;
-    uint row = state->row;
+    unsigned int col = state->col;
+    unsigned int row = state->row;
     bool repeat = false;
     while (!(repeat == true && row == state->row)) {
         while (col < state->data[row].length()) {
