@@ -14,9 +14,7 @@ bool setSearchResult(State* state) {
     uint row = state->row;
     bool repeat = false;
     while (!(repeat == true && row == state->row)) {
-        std::cout << row << std::endl;
         while (col < state->data[row].length()) {
-            std::cout << state->data[row].substr(col, state->searchQuery.length()) << std::endl;
             if (state->data[row].substr(col, state->searchQuery.length()) == state->searchQuery) {
                 state->col = col;
                 state->row = row;
