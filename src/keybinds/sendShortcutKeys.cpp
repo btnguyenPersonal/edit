@@ -630,4 +630,3 @@ void sendShortcutKeys(State* state, char c) {
         state->status = std::string(1, c) + " <" + std::to_string((int)c) + ">";
     }
 }
-

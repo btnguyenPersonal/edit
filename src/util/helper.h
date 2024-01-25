@@ -7,6 +7,7 @@
 #include "state.h"
 #include "visualType.h"
 
+void fixColOverMax(State* state);
 WordPosition findQuoteBounds(const std::string &str, char quoteChar, uint cursor, bool includeQuote);
 bool setSearchResult(State* state);
 void setPosition(State* state, Position pos);

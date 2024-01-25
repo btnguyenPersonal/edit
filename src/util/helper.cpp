@@ -500,11 +500,17 @@ void sanityCheckDocumentEmpty(State* state) {
     }
 }
 
+void fixColOverMax(State* state) {
+    if (state->col > state->data[state->row].length()) {
+        state->col = state->data[state->row].length();
+    }
+}
+
 void sanityCheckRowColOutOfBounds(State* state) {
     if (state->row >= state->data.size()) {
         state->row = state->data.size() - 1;
     }
-    if ((state->mode == VISUAL || state->mode == TYPING) && state->col > state->data[state->row].length()) {
-        state->col = state->data[state->row].length();
+    if (state->mode == VISUAL || state->mode == TYPING) {
+        fixColOverMax(state);
     }
 }

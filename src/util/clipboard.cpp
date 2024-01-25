@@ -6,6 +6,7 @@
 #include <vector>
 #include "state.h"
 #include "clipboard.h"
+#include "helper.h"
 
 std::vector<std::string> getFromClipboard() {
     std::string command;
@@ -39,6 +40,7 @@ std::vector<std::string> getFromClipboard() {
 }
 
 void pasteFromClipboard(State* state) {
+    fixColOverMax(state);
     std::vector<std::string> clip = getFromClipboard();
     if (state->data.size() == 0) {
         if (clip.back() == "") {
@@ -75,6 +77,7 @@ void pasteFromClipboard(State* state) {
 }
 
 void pasteFromClipboardAfter(State* state) {
+    fixColOverMax(state);
     std::vector<std::string> clip = getFromClipboard();
     if (clip.back() == "") {
         clip.pop_back();
