@@ -107,14 +107,24 @@ void pasteFromClipboardAfter(State* state) {
     }
 }
 
-void copyToClipboard(std::string s) {
+void copyToClipboard(const std::string& originalString) {
+    std::string escapedString;
+    for (char c : originalString) {
+        if (c == '\"') {
+            escapedString += "\\\"";
+        } else {
+            escapedString += c;
+        }
+    }
+
     std::string command;
     #ifdef __APPLE__
-        command = "echo \"" + s + "\" | pbcopy";
+        command = "echo \"" + escapedString + "\" | pbcopy";
     #elif defined(__linux__)
-        command = "echo \"" + s + "\" | xclip -selection clipboard";
+        command = "echo \"" + escapedString + "\" | xclip -selection clipboard";
     #else
         #error "Platform not supported"
     #endif
+
     std::system(command.c_str());
 }
