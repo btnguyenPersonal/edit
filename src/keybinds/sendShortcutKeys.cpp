@@ -572,7 +572,11 @@ void sendShortcutKeys(State* state, char c) {
     } else if (c == '0') {
         state->col = 0;
     } else if (c == '$') {
-        state->col = state->data[state->row].length();
+        if (state->data[state->row].length() != 0) {
+            state->col = state->data[state->row].length() - 1;
+        } else {
+            state->col = 0;
+        }
     } else if (c == 'z') {
         centerScreen(state);
     } else if (c == 'P') {
