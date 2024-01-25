@@ -1,3 +1,5 @@
+#define uint unsigned int
+
 #include <iostream>
 #include <ncurses.h>
 #include "util/render.h"
