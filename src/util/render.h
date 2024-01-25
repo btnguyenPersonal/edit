@@ -3,6 +3,7 @@
 #include "state.h"
 #include <string>
 
+std::string minimize_filename(const std::string& filename);
 int invertColor(int color);
 void initColors();
 int renderStatusBar(State* state);

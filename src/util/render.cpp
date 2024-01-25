@@ -95,8 +95,9 @@ int renderStatusBar(State* state) {
             } else {
                 attron(COLOR_PAIR(GREY));
             }
-            mvprintw(0, offset, " %s", state->harpoonFiles[i].c_str());
-            offset += state->harpoonFiles[i].length() + 1;
+            auto min_name = minimize_filename(state->harpoonFiles[i]);
+            mvprintw(0, offset, " %s", min_name.c_str());
+            offset += min_name.length() + 1;
             if (state->harpoonIndex == i) {
                 attroff(COLOR_PAIR(YELLOW));
             } else {
@@ -105,6 +106,24 @@ int renderStatusBar(State* state) {
         }
     }
     return -1;
+}
+
+std::string minimize_filename(const std::string& filename) {
+    std::vector<std::string> parts;
+    std::stringstream ss(filename);
+    std::string part;
+    std::string minimized;
+    while (std::getline(ss, part, '/')) {
+        parts.push_back(part);
+    }
+    for (size_t i = 0; i < parts.size() - 1; ++i) {
+        if (!parts[i].empty()) {
+            minimized += parts[i][0];
+            minimized += '/';
+        }
+    }
+    minimized += parts.back();
+    return minimized;
 }
 
 int getColorFromChar(char c) {
