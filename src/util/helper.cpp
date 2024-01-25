@@ -264,12 +264,11 @@ std::vector<std::filesystem::path> findFiles(const std::filesystem::path& dir_pa
         if (shouldIgnoreFile(entry.path())) {
             continue;
         }
-        // TODO change to fzf matching
         if (std::filesystem::is_regular_file(entry) && filePathContainsSubstring(entry.path(), query)) {
-            // TODO change to inserting sorted based on number of runs in fzf match (maybe need to change vector to a struct w/ ranking && path)
             matching_files.push_back(std::filesystem::relative(entry.path(), dir_path));
         }
     }
+    std::sort(matching_files.begin(), matching_files.end());
     return matching_files;
 }
 
