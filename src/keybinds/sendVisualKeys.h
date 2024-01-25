@@ -3,10 +3,10 @@
 #include "../util/state.h"
 
 struct Bounds {
-    unsigned int minR;
-    unsigned int maxR;
-    unsigned int minC;
-    unsigned int maxC;
+    uint minR;
+    uint maxR;
+    uint minC;
+    uint maxC;
 };
 
 void setStateFromWordPosition(State* state, WordPosition pos);

@@ -7,16 +7,16 @@
 #include "state.h"
 #include "visualType.h"
 
-WordPosition findQuoteBounds(const std::string &str, char quoteChar, unsigned int cursor, bool includeQuote);
+WordPosition findQuoteBounds(const std::string &str, char quoteChar, uint cursor, bool includeQuote);
 bool setSearchResult(State* state);
 void setPosition(State* state, Position pos);
 void initVisual(State* state, VisualType visualType);
 bool is_number(const std::string& s);
-WordPosition findParentheses(const std::string &str, char openParen, char closeParen, unsigned int cursor, bool includeParen);
-unsigned int getIndent(const std::string& str);
-unsigned int getNextLineSameIndent(State* state);
-unsigned int getPrevLineSameIndent(State* state);
-WordPosition getWordPosition(const std::string& str, unsigned int cursor);
+WordPosition findParentheses(const std::string &str, char openParen, char closeParen, uint cursor, bool includeParen);
+uint getIndent(const std::string& str);
+uint getNextLineSameIndent(State* state);
+uint getPrevLineSameIndent(State* state);
+WordPosition getWordPosition(const std::string& str, uint cursor);
 std::vector<grepMatch> grepFiles(const std::filesystem::path& dir_path, const std::string& query);
 void generateGrepOutput(State* state);
 bool isAlphaNumeric(char c);
@@ -24,8 +24,8 @@ bool filePathContainsSubstring(const std::filesystem::path& filePath, const std:
 bool shouldIgnoreFile(const std::filesystem::path& path);
 std::vector<std::filesystem::path> findFiles(const std::filesystem::path& dir_path, const std::string& query);
 void generateFindFileOutput(State* state);
-unsigned int w(State* state);
-unsigned int b(State* state);
+uint w(State* state);
+uint b(State* state);
 void insertEmptyLineBelow(State* state);
 void indent(State* state);
 void deindent(State* state);

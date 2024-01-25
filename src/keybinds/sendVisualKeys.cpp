@@ -23,7 +23,7 @@ std::string getInVisual(State* state) {
             clip += state->data[i] + "\n";
         }
     } else if (state->visualType == NORMAL) {
-        unsigned int index = bounds.minC;
+        uint index = bounds.minC;
         for (size_t i = bounds.minR; i < bounds.maxR; i++) {
             while (index < state->data[i].size()) {
                 clip += state->data[i][index];

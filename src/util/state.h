@@ -13,19 +13,19 @@ struct grepMatch {
 };
 
 struct diffLine {
-    unsigned int lineNum;
+    uint lineNum;
     bool add; // true for add, false for delete
     std::string line;
 };
 
 struct Position {
-    unsigned int row;
-    unsigned int col;
+    uint row;
+    uint col;
 };
 
 struct WordPosition {
-    unsigned int min;
-    unsigned int max;
+    uint min;
+    uint max;
 };
 
 struct Archive {
@@ -34,29 +34,29 @@ struct Archive {
     std::vector<std::string> previousState;
     std::vector<std::vector<diffLine>> history;
     int historyPosition;
-    unsigned int windowPosition;
-    unsigned int row;
-    unsigned int col;
+    uint windowPosition;
+    uint row;
+    uint col;
 };
 
 class State {
     public:
         std::vector<Archive> archives;
         std::vector<std::string> harpoonFiles;
-        unsigned int harpoonIndex;
+        uint harpoonIndex;
         std::string filename;
         std::vector<std::string> data;
         std::vector<std::string> previousState;
         std::vector<std::vector<diffLine>> history;
         int historyPosition;
-        unsigned int indent;
-        unsigned int windowPosition;
-        static unsigned int maxX;
-        static unsigned int maxY;
+        uint indent;
+        uint windowPosition;
+        static uint maxX;
+        static uint maxY;
         VisualType visualType;
         struct Position visual;
-        unsigned int row;
-        unsigned int col;
+        uint row;
+        uint col;
         std::string searchQuery;
         std::string replaceQuery;
         std::string commandLineQuery;
@@ -66,10 +66,10 @@ class State {
         bool recording;
         bool dontRecordKey;
         std::string findFileQuery;
-        unsigned int findFileSelection;
+        uint findFileSelection;
         std::vector<std::filesystem::path> findFileOutput;
         std::string grepQuery;
-        unsigned int grepSelection;
+        uint grepSelection;
         std::vector<grepMatch> grepOutput;
         std::string prevKeys;
         std::string status;

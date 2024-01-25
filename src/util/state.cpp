@@ -6,12 +6,12 @@
 #include "visualType.h"
 #include "state.h"
 
-unsigned int State::maxX = 0;
-unsigned int State::maxY = 0;
+uint State::maxX = 0;
+uint State::maxY = 0;
 
 void State::resetState(const char* filename) {
     bool found = false;
-    for (unsigned int i = 0; i < this->archives.size(); i++) {
+    for (uint i = 0; i < this->archives.size(); i++) {
         if (this->archives[i].filename == this->filename) {
             this->archives[i].data = this->data;
             this->archives[i].previousState = this->previousState;
@@ -36,7 +36,7 @@ void State::resetState(const char* filename) {
             this->col,
         });
     }
-    for (unsigned int i = 0; i < this->archives.size(); i++) {
+    for (uint i = 0; i < this->archives.size(); i++) {
         if (this->archives[i].filename == std::string(filename)) {
             auto archive = this->archives[i];
             this->filename = std::string(filename);
@@ -136,6 +136,6 @@ State::State(const char* filename) {
 }
 
 void State::setMaxYX(int y, int x) {
-    State::maxY = (unsigned int) y;
-    State::maxX = (unsigned int) x;
+    State::maxY = (uint) y;
+    State::maxX = (uint) x;
 }

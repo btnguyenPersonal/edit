@@ -43,7 +43,7 @@ void pasteFromClipboard(State* state) {
         if (clip.back() == "") {
             clip.pop_back();
         }
-        for (unsigned int i = 0; i < clip.size(); i++) {
+        for (uint i = 0; i < clip.size(); i++) {
             state->data.push_back(clip[i]);
         }
     } else if (clip.back() == "") {

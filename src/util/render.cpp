@@ -87,7 +87,7 @@ int renderStatusBar(State* state) {
         mvprintw(0, offset, "/%s", state->searchQuery.c_str());
         offset += state->searchQuery.length() + 1;
         attroff(COLOR_PAIR(GREEN));
-        for (unsigned int i = 0; i < state->harpoonFiles.size(); i++) {
+        for (uint i = 0; i < state->harpoonFiles.size(); i++) {
             if (state->harpoonIndex == i) {
                 attron(COLOR_PAIR(YELLOW));
             } else {
@@ -155,12 +155,12 @@ void printLineNumber(int r, int i, bool isCurrentRow, bool recording) {
     }
 }
 
-bool isRowColInVisual(State* state, unsigned int i, unsigned int j) {
+bool isRowColInVisual(State* state, uint i, uint j) {
     if (state->mode == VISUAL) {
-        unsigned int minR;
-        unsigned int minC;
-        unsigned int maxR;
-        unsigned int maxC;
+        uint minR;
+        uint minC;
+        uint maxR;
+        uint maxC;
         if (state->row < state->visual.row) {
             minR = state->row;
             minC = state->col;
@@ -221,14 +221,14 @@ void printLine(State* state, int row) {
 }
 
 void renderGrepOutput(State* state) {
-    unsigned int index;
+    uint index;
     if ((int) state->grepSelection - ((int) state->maxY / 2) > 0) {
         index = state->grepSelection - state->maxY / 2;
     } else {
         index = 0;
     }
-    unsigned int renderIndex = 1;
-    for (unsigned int i = index; i < state->grepOutput.size() && i < index + state->maxY; i++) {
+    uint renderIndex = 1;
+    for (uint i = index; i < state->grepOutput.size() && i < index + state->maxY; i++) {
         if (i == state->grepSelection) {
             attron(COLOR_PAIR(invertColor(WHITE)));
             mvprintw(renderIndex, 0, "%s:%d %s\n", state->grepOutput[i].path.c_str(), state->grepOutput[i].lineNum, state->grepOutput[i].line.c_str());
@@ -241,14 +241,14 @@ void renderGrepOutput(State* state) {
 }
 
 void renderFindFileOutput(State* state) {
-    unsigned int index;
+    uint index;
     if ((int) state->findFileSelection - ((int) state->maxY / 2) > 0) {
         index = state->findFileSelection - state->maxY / 2;
     } else {
         index = 0;
     }
-    unsigned int renderIndex = 1;
-    for (unsigned int i = index; i < state->findFileOutput.size() && i < index + state->maxY; i++) {
+    uint renderIndex = 1;
+    for (uint i = index; i < state->findFileOutput.size() && i < index + state->maxY; i++) {
         if (i == state->findFileSelection) {
             attron(COLOR_PAIR(invertColor(WHITE)));
             mvprintw(renderIndex, 0, "%s\n", state->findFileOutput[i].c_str());
@@ -272,13 +272,13 @@ void moveCursor(State* state, int cursorPosition) {
     if (cursorPosition != -1) {
         move(0, cursorPosition);
     } else {
-        unsigned int row = state->row + 1;
+        uint row = state->row + 1;
         if (row > state->windowPosition) {
             row -= state->windowPosition;
         } else {
             row = 1;
         }
-        unsigned int col = state->col + LINE_NUM_OFFSET;
+        uint col = state->col + LINE_NUM_OFFSET;
         if (state->col > state->data[state->row].length()) {
             col = state->data[state->row].length() + LINE_NUM_OFFSET;
         }

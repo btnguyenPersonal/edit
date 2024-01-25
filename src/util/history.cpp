@@ -4,8 +4,8 @@
 #include "state.h"
 #include "history.h"
 
-unsigned int applyDiff(State* state, const std::vector<diffLine>& diff, bool reverse) {
-    unsigned int min = UINT_MAX;
+uint applyDiff(State* state, const std::vector<diffLine>& diff, bool reverse) {
+    uint min = UINT_MAX;
     if (reverse == false) {
         for (int i = ((int) diff.size()) - 1; i >= 0; i--) {
             if (diff[i].lineNum < min) {
@@ -35,8 +35,8 @@ unsigned int applyDiff(State* state, const std::vector<diffLine>& diff, bool rev
 
 std::vector<diffLine> generateDiff(const std::vector<std::string>& prev, const std::vector<std::string>& curr) {
     std::vector<diffLine> diffs;
-    unsigned int prevIndex = 0;
-    unsigned int currIndex = 0;
+    uint prevIndex = 0;
+    uint currIndex = 0;
 
     // TODO make more efficient for pasting very large amounts of lines
     // pasting 40000 lines is unbearably slow to compute the diff

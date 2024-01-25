@@ -10,8 +10,8 @@
 #include "visualType.h"
 
 bool setSearchResult(State* state) {
-    unsigned int col = state->col;
-    unsigned int row = state->row;
+    uint col = state->col;
+    uint row = state->row;
     bool repeat = false;
     while (!(repeat == true && row == state->row)) {
         while (col < state->data[row].length()) {
@@ -59,8 +59,8 @@ bool isAlphaNumeric(char c) {
     return std::isalnum(c);
 }
 
-unsigned int getIndent(const std::string& str) {
-    for (unsigned int i = 0; i < str.length(); i++) {
+uint getIndent(const std::string& str) {
+    for (uint i = 0; i < str.length(); i++) {
         if (str[i] != ' ') {
             return i;
         }
@@ -68,8 +68,8 @@ unsigned int getIndent(const std::string& str) {
     return 0;
 }
 
-unsigned int getPrevLineSameIndent(State* state) {
-    unsigned int current = getIndent(state->data[state->row]);
+uint getPrevLineSameIndent(State* state) {
+    uint current = getIndent(state->data[state->row]);
     for (int i = (int) state->row - 1; i >= 0; i--) {
         if (current == getIndent(state->data[i])) {
             return i;
@@ -78,9 +78,9 @@ unsigned int getPrevLineSameIndent(State* state) {
     return state->row;
 }
 
-unsigned int getNextLineSameIndent(State* state) {
-    unsigned int current = getIndent(state->data[state->row]);
-    for (unsigned int i = state->row + 1; i < state->data.size(); i++) {
+uint getNextLineSameIndent(State* state) {
+    uint current = getIndent(state->data[state->row]);
+    for (uint i = state->row + 1; i < state->data.size(); i++) {
         if (current == getIndent(state->data[i])) {
             return i;
         }
@@ -88,14 +88,14 @@ unsigned int getNextLineSameIndent(State* state) {
     return state->row;
 }
 
-WordPosition findQuoteBounds(const std::string &str, char quoteChar, unsigned int cursor, bool includeQuote) {
+WordPosition findQuoteBounds(const std::string &str, char quoteChar, uint cursor, bool includeQuote) {
     int lastQuoteIndex = -1;
-    for (unsigned int i = 0; i <= cursor; i++) {
+    for (uint i = 0; i <= cursor; i++) {
         if (str[i] == quoteChar) {
             lastQuoteIndex = i;
         }
     }
-    unsigned int i;
+    uint i;
     for (i = cursor + 1; i < str.length(); i++) {
         if (str[i] == quoteChar) {
             if (lastQuoteIndex != -1 && lastQuoteIndex < (int) cursor) {
@@ -111,9 +111,9 @@ WordPosition findQuoteBounds(const std::string &str, char quoteChar, unsigned in
     }
     if (i != str.length()) {
         if (i - lastQuoteIndex == 1 || includeQuote) {
-            return {(unsigned int) lastQuoteIndex, (unsigned int) i};
+            return {(uint) lastQuoteIndex, (uint) i};
         } else {
-            return {(unsigned int) lastQuoteIndex + 1, (unsigned int) i - 1};
+            return {(uint) lastQuoteIndex + 1, (uint) i - 1};
         }
     } else {
         return {0, 0};
@@ -121,7 +121,7 @@ WordPosition findQuoteBounds(const std::string &str, char quoteChar, unsigned in
 }
 
 
-WordPosition findParentheses(const std::string &str, char openParen, char closeParen, unsigned int cursor, bool includeParen) {
+WordPosition findParentheses(const std::string &str, char openParen, char closeParen, uint cursor, bool includeParen) {
     int balance = 0;
     int openParenIndex = -1;
     // look back for openParen
@@ -164,9 +164,9 @@ WordPosition findParentheses(const std::string &str, char openParen, char closeP
         } else if (str[i] == closeParen) {
             if (balance == 0) {
                 if (i - openParenIndex == 1 || includeParen) {
-                    return {(unsigned int) openParenIndex, (unsigned int) i};
+                    return {(uint) openParenIndex, (uint) i};
                 } else {
-                    return {(unsigned int) openParenIndex + 1, (unsigned int) i - 1};
+                    return {(uint) openParenIndex + 1, (uint) i - 1};
                 }
             } else {
                 balance++;
@@ -176,7 +176,7 @@ WordPosition findParentheses(const std::string &str, char openParen, char closeP
     return {0, 0};
 }
 
-WordPosition getWordPosition(const std::string& str, unsigned int cursor) {
+WordPosition getWordPosition(const std::string& str, uint cursor) {
     if (cursor >= str.size()) {
         return {0, 0};
     }
@@ -195,8 +195,8 @@ WordPosition getWordPosition(const std::string& str, unsigned int cursor) {
         return {0, 0};
     }
     // Find the end of the chunk
-    unsigned int start = cursor;
-    unsigned int end = start;
+    uint start = cursor;
+    uint end = start;
     while (end < str.size() && str[end] != ' ' && (std::isalnum(str[start]) == std::isalnum(str[end]))) {
         end++;
     }
@@ -211,7 +211,7 @@ bool filePathContainsSubstring(const std::filesystem::path& filePath, const std:
 
 bool shouldIgnoreFile(const std::filesystem::path& path) {
     std::vector<std::string> ignoreList = {".git", "node_modules", "build", "dist"};
-    for (unsigned int i = 0; i < ignoreList.size(); i++) {
+    for (uint i = 0; i < ignoreList.size(); i++) {
         if (path.string().find(ignoreList[i]) != std::string::npos) {
             return true;
         }
@@ -271,11 +271,11 @@ void generateFindFileOutput(State* state) {
     state->findFileOutput = findFiles(std::filesystem::current_path(), state->findFileQuery);
 }
 
-unsigned int w(State* state) {
+uint w(State* state) {
     bool isSpecial = !isAlphaNumeric(state->data[state->row][state->col]);
     bool isOnSpace = state->data[state->row][state->col] == ' ';
     bool space = false;
-    for (unsigned int i = state->col + 1; i < state->data[state->row].size(); i += 1) {
+    for (uint i = state->col + 1; i < state->data[state->row].size(); i += 1) {
         if (state->data[state->row][i] == ' ') {
             space = true;
         } else if (isOnSpace || isSpecial == isAlphaNumeric(state->data[state->row][i])) {
@@ -287,12 +287,12 @@ unsigned int w(State* state) {
     return state->col;
 }
 
-unsigned int b(State* state) {
+uint b(State* state) {
     bool isSpecial = !isAlphaNumeric(state->data[state->row][state->col]);
     bool isOnSpace = state->data[state->row][state->col] == ' ';
     bool space = false;
-    unsigned int ret = state->col;
-    for (unsigned int i = state->col; i > 0; i -= 1) {
+    uint ret = state->col;
+    for (uint i = state->col; i > 0; i -= 1) {
         if (state->data[state->row][i - 1] == ' ') {
             space = true;
         } else if (isOnSpace || isSpecial == isAlphaNumeric(state->data[state->row][i - 1])) {
@@ -304,7 +304,7 @@ unsigned int b(State* state) {
         }
     }
     bool currentAlpha = isAlphaNumeric(state->data[state->row][ret]);
-    for (unsigned int i = ret; i > 0; i -= 1) {
+    for (uint i = ret; i > 0; i -= 1) {
         if (state->data[state->row][i - 1] == ' ') {
             break;
         } else if (currentAlpha == isAlphaNumeric(state->data[state->row][i - 1])) {
@@ -350,7 +350,7 @@ void centerScreen(State* state) {
 }
 
 void upHalfScreen(State* state) {
-    for (unsigned int i = 0; i < state->maxY / 2; i++) {
+    for (uint i = 0; i < state->maxY / 2; i++) {
         if (state->row > 0) {
             state->row -= 1;
             state->windowPosition -= 1;
@@ -359,7 +359,7 @@ void upHalfScreen(State* state) {
 }
 
 void downHalfScreen(State* state) {
-    for (unsigned int i = 0; i < state->maxY / 2; i++) {
+    for (uint i = 0; i < state->maxY / 2; i++) {
         if (state->row < state->data.size() - 1) {
             state->row += 1;
             state->windowPosition += 1;
@@ -404,13 +404,13 @@ void right(State* state) {
 }
 
 void indent(State* state) {
-    for (unsigned int i = 0; i < state->indent; i++) {
+    for (uint i = 0; i < state->indent; i++) {
         state->data[state->row] = " " + state->data[state->row];
     }
 }
 
 void deindent(State* state) {
-    for (unsigned int i = 0; i < state->indent; i++) {
+    for (uint i = 0; i < state->indent; i++) {
         if (state->data[state->row].substr(0, 1) == " ") {
             state->data[state->row] = state->data[state->row].substr(1);
         }

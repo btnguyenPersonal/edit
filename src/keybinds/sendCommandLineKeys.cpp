@@ -17,7 +17,7 @@ void evaluateCommandLineQuery(State* state) {
         endwin();
         exit(0);
     } else if (is_number(state->commandLineQuery)) {
-        unsigned int number = stoul(state->commandLineQuery);
+        uint number = stoul(state->commandLineQuery);
         if (number > 0) {
             state->row = number - 1;
         } else {

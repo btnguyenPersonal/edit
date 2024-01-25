@@ -35,7 +35,7 @@ got bones working to start displaying file
 - default arrays or vector?
 - should you always free everything before returning from main?
 - is there a way to find out if any of my imports are not being used?
-- what is good practice for `auto`? what about unsigned int vs int?
+- what is good practice for `auto`? what about uint vs int?
 
 # day 2-3
 - got motions set up, much cleaner than edit1.0
