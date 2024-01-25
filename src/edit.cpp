@@ -10,6 +10,7 @@ int main(int argc, char* argv[]) {
     State* state;
     if (argc < 2) {
         state = new State();
+        generateFindFileOutput(state);
     } else {
         state = new State(argv[1]);
     }

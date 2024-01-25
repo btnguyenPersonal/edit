@@ -268,11 +268,7 @@ void generateGrepOutput(State* state) {
 }
 
 void generateFindFileOutput(State* state) {
-    if (state->findFileQuery == "") {
-        state->findFileOutput.clear();
-    } else {
-        state->findFileOutput = findFiles(std::filesystem::current_path(), state->findFileQuery);
-    }
+    state->findFileOutput = findFiles(std::filesystem::current_path(), state->findFileQuery);
 }
 
 unsigned int w(State* state) {
