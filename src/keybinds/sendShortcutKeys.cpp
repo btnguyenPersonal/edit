@@ -557,6 +557,16 @@ void sendShortcutKeys(State* state, char c) {
         state->mode = SEARCH;
     } else if (c == '^') {
         state->col = getIndexFirstNonSpace(state);
+    } else if (c == 's') {
+        if (state->col < state->data[state->row].length()) {
+            state->data[state->row] = state->data[state->row].substr(0, state->col) + state->data[state->row].substr(state->col + 1);
+            state->mode = TYPING;
+        }
+    } else if (c == 'x') {
+        if (state->col < state->data[state->row].length()) {
+            copyToClipboard(state->data[state->row].substr(state->col, 1));
+            state->data[state->row] = state->data[state->row].substr(0, state->col) + state->data[state->row].substr(state->col + 1);
+        }
     } else if (c == '0') {
         state->col = 0;
     } else if (c == '$') {
