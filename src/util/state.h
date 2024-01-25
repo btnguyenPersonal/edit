@@ -75,7 +75,7 @@ class State {
         std::string status;
         Mode mode;
         State();
-        State(const char* filename);
-        void resetState(const char* filename);
+        State(std::string filename);
+        void resetState(std::string filename);
         static void setMaxYX(int y, int x);
 };

@@ -13,9 +13,11 @@
 
 bool setSearchResult(State* state) {
     uint col = state->col;
+    uint startRow = state->row;
     uint row = state->row;
-    bool repeat = false;
-    while (!(repeat == true && row == state->row)) {
+    bool scannedAll = false;
+
+    do {
         while (col < state->data[row].length()) {
             if (state->data[row].substr(col, state->searchQuery.length()) == state->searchQuery) {
                 state->col = col;
@@ -25,13 +27,15 @@ bool setSearchResult(State* state) {
             col++;
         }
         col = 0;
-        if (row < state->data.size()) {
+        if (row < state->data.size() - 1) {
             row++;
         } else {
-            repeat = true;
+            if (scannedAll) break;
             row = 0;
+            scannedAll = (startRow == 0);
         }
-    }
+    } while (!(scannedAll && row >= startRow));
+
     return false;
 }
 

@@ -31,7 +31,7 @@ void sendGrepKeys(State* state, char c) {
     } else if (c == ctrl('m')) { // ENTER
         std::filesystem::path selectedFile = state->grepOutput[state->grepSelection].path;
         int lineNum = state->grepOutput[state->grepSelection].lineNum;
-        state->resetState(selectedFile.c_str());
+        state->resetState(selectedFile);
         state->row = lineNum - 1;
     } else {
         state->status = std::string(1, c) + " <" + std::to_string((int)c) + ">";

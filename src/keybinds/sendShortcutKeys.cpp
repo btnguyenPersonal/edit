@@ -488,6 +488,7 @@ void sendShortcutKeys(State* state, char c) {
         state->row = getNextLineSameIndent(state);
     } else if (c == ctrl('g')) {
         state->mode = GREP;
+        generateGrepOutput(state);
     } else if (c == ctrl('p')) {
         state->mode = FINDFILE;
         generateFindFileOutput(state);
@@ -589,10 +590,10 @@ void sendShortcutKeys(State* state, char c) {
         }
         if (state->harpoonFiles.size() == 0) {
             state->harpoonIndex = 0;
-            state->resetState(state->harpoonFiles[state->harpoonIndex].c_str());
+            state->resetState(state->harpoonFiles[state->harpoonIndex]);
         } else if (state->harpoonIndex >= state->harpoonFiles.size()) {
             state->harpoonIndex = state->harpoonFiles.size() - 1;
-            state->resetState(state->harpoonFiles[state->harpoonIndex].c_str());
+            state->resetState(state->harpoonFiles[state->harpoonIndex]);
         }
     } else if (c == 'X') {
         state->harpoonIndex = 0;
@@ -600,12 +601,12 @@ void sendShortcutKeys(State* state, char c) {
     } else if (c == ctrl('e')) {
         if (state->harpoonIndex + 1 < state->harpoonFiles.size()) {
             state->harpoonIndex += 1;
-            state->resetState(state->harpoonFiles[state->harpoonIndex].c_str());
+            state->resetState(state->harpoonFiles[state->harpoonIndex]);
         }
     } else if (c == ctrl('w')) {
         if (state->harpoonIndex > 0) {
             state->harpoonIndex -= 1;
-            state->resetState(state->harpoonFiles[state->harpoonIndex].c_str());
+            state->resetState(state->harpoonFiles[state->harpoonIndex]);
         }
     } else if (c == ' ') {
         bool found = false;

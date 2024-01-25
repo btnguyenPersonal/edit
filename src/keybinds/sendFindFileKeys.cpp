@@ -30,7 +30,7 @@ void sendFindFileKeys(State* state, char c) {
         }
     } else if (c == ctrl('m')) { // ENTER
         auto selectedFile = state->findFileOutput[state->findFileSelection].string();
-        state->resetState(selectedFile.c_str());
+        state->resetState(selectedFile);
     }
     if (state->mode == FINDFILE && c != ctrl('p') && c != ctrl('n')) {
         generateFindFileOutput(state);

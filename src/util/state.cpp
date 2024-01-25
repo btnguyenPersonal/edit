@@ -10,7 +10,7 @@
 uint State::maxX = 0;
 uint State::maxY = 0;
 
-void State::resetState(const char* filename) {
+void State::resetState(std::string filename) {
     bool found = false;
     for (uint i = 0; i < this->archives.size(); i++) {
         if (this->archives[i].filename == this->filename) {
@@ -102,11 +102,11 @@ State::State() {
     this->dontRecordKey = false;
 }
 
-State::State(const char* filename) {
+State::State(std::string filename) {
     this->harpoonFiles = std::vector<std::string>();
     this->harpoonIndex = 0;
     this->filename = std::string(filename);
-    this->data = readFile(filename);
+    this->data = readFile(filename.c_str());
     this->previousState = std::vector<std::string>();
     this->history = std::vector<std::vector<diffLine>>();
     this->grepOutput = std::vector<grepMatch>();
