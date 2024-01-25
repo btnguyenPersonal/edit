@@ -12,11 +12,11 @@
 #include "visualType.h"
 
 bool setSearchResult(State* state) {
-    uint col = state->col;
-    uint startRow = state->row;
-    uint row = state->row;
-    bool scannedAll = false;
-
+    uint initialCol = state->col;
+    uint initialRow = state->row;
+    uint col = initialCol;
+    uint row = initialRow;
+    bool hasWrapped = false;
     do {
         while (col < state->data[row].length()) {
             if (state->data[row].substr(col, state->searchQuery.length()) == state->searchQuery) {
@@ -27,15 +27,14 @@ bool setSearchResult(State* state) {
             col++;
         }
         col = 0;
-        if (row < state->data.size() - 1) {
-            row++;
-        } else {
-            if (scannedAll) break;
-            row = 0;
-            scannedAll = (startRow == 0);
+        row = (row + 1) % state->data.size();
+        if (row == 0) {
+            hasWrapped = true;
         }
-    } while (!(scannedAll && row >= startRow));
-
+        if (hasWrapped && row == initialRow) {
+            break;
+        }
+    } while (true);
     return false;
 }
 
