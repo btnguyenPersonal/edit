@@ -143,7 +143,7 @@ int getColorFromChar(char c) {
 void printChar(State* state, int row, int col, char c, bool isInString, bool isInverted, bool isInSearchQuery, uint startOfSearch) {
     int color;
     if (isInSearchQuery == true && isInverted == false && state->searching == true) {
-        if (state->row == (uint) (row - 1) && startOfSearch + state->searchQuery.length() >= state->col && startOfSearch <= state->col) {
+        if (state->row == (uint) row && startOfSearch + state->searchQuery.length() >= state->col && startOfSearch <= state->col) {
             color = invertColor(MAGENTA);
         } else {
             color = invertColor(CYAN);
@@ -158,7 +158,7 @@ void printChar(State* state, int row, int col, char c, bool isInString, bool isI
     } else {
         attron(COLOR_PAIR(invertColor(color)));
     }
-    mvaddch(row, col + LINE_NUM_OFFSET, c);
+    mvaddch(row - state->windowPosition + 1, col + LINE_NUM_OFFSET, c);
     if (isInverted == false) {
         attroff(COLOR_PAIR(color));
     } else {
@@ -219,7 +219,7 @@ bool isRowColInVisual(State* state, uint i, uint j) {
 }
 
 bool isInSearchQuery(State* state, uint row, uint col) {
-    if (state->searchQuery != "" && col + state->searchQuery.length() < state->data[row].length()) {
+    if (state->searchQuery != "" && col + state->searchQuery.length() <= state->data[row].length()) {
         if (state->searchQuery == state->data[row].substr(col, state->searchQuery.length())) {
             return true;
         }
@@ -229,7 +229,7 @@ bool isInSearchQuery(State* state, uint row, uint col) {
 
 void printLine(State* state, int row) {
     if (isRowColInVisual(state, row, 0) == true && state->data[row].length() == 0) {
-        printChar(state, row - state->windowPosition + 1, 0, ' ', false, true, false, 0);
+        printChar(state, row, 0, ' ', false, true, false, 0);
     } else {
         bool isInString = false;
         bool skipNext = false;
@@ -257,7 +257,7 @@ void printLine(State* state, int row) {
             } else {
                 skipNext = false;
             }
-            printChar(state, row - state->windowPosition + 1, col, state->data[row][col], isInString, isRowColInVisual(state, row, col), searchCounter != 0, startOfSearch);
+            printChar(state, row, col, state->data[row][col], isInString, isRowColInVisual(state, row, col), searchCounter != 0, startOfSearch);
             if (searchCounter != 0) {
                 searchCounter -= 1;
             }
