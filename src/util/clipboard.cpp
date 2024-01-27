@@ -113,12 +113,12 @@ void pasteFromClipboardAfter(State* state) {
 void copyToClipboard(const std::string& originalString) {
     std::string escapedString;
     for (char c : originalString) {
-        if (c == '\"') {
-            escapedString += "\\\"";
-        } else if (c == '\\') {
-            escapedString += "\\\\\\\\";
-        } else {
-            escapedString += c;
+        switch (c) {
+            case '\\': escapedString += "\\\\\\\\"; break;
+            case '\"': escapedString += "\\\""; break;
+            case '`':  escapedString += "\\`"; break;
+            case '$':  escapedString += "\\$"; break;
+            default:   escapedString += c; break;
         }
     }
     std::string command;
