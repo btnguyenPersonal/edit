@@ -81,6 +81,7 @@ class State {
         State();
         State(std::string filename);
         void resetState(std::string filename);
+        void pushFileStack(std::string filename);
         void changeFile(std::string filename);
         static void setMaxYX(int y, int x);
 };

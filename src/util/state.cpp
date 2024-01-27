@@ -70,7 +70,7 @@ void State::changeFile(std::string filename) {
     this->mode = SHORTCUTS;
 }
 
-void State::resetState(std::string filename) {
+void State::pushFileStack(std::string filename) {
     for (auto it = this->fileStack.begin(); it != this->fileStack.end(); ) {
         if (*it == filename) {
             it = this->fileStack.erase(it);
@@ -79,6 +79,11 @@ void State::resetState(std::string filename) {
         }
     }
     this->fileStack.push_back(filename);
+}
+
+void State::resetState(std::string filename) {
+    this->pushFileStack(this->filename);
+    this->pushFileStack(filename);
     this->fileStackIndex = this->fileStack.size() - 1;
     if (!std::filesystem::exists(filename.c_str())) {
         this->status = "file not found: " + filename;

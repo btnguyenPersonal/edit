@@ -65,7 +65,7 @@ int renderStatusBar(State* state) {
             if (i == (int) state->fileStackIndex) {
                 attron(COLOR_PAIR(RED));
             }
-            mvprintw(i, state->maxX - state->fileStack[i].length() - 2, "\"%s\"", state->fileStack[i].c_str());
+            mvprintw(state->fileStack.size() - i - 1, state->maxX - state->fileStack[i].length() - 2, "\"%s\"", state->fileStack[i].c_str());
             if (i == (int) state->fileStackIndex) {
                 attroff(COLOR_PAIR(RED));
             }

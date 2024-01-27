@@ -467,13 +467,13 @@ void sendShortcutKeys(State* state, char c) {
             state->row = applyDiff(state, state->history[state->historyPosition], false);
             state->historyPosition--;
         }
-    } else if (c == ctrl('o')) {
+    } else if (c == ctrl('i')) {
         if (state->fileStackIndex + 1 < state->fileStack.size()) {
             state->fileStackIndex += 1;
         }
         state->changeFile(state->fileStack[state->fileStackIndex]);
         state->showFileStack = true;
-    } else if (c == ctrl('i')) {
+    } else if (c == ctrl('o')) {
         if (state->fileStackIndex > 0) {
             state->fileStackIndex -= 1;
         }
