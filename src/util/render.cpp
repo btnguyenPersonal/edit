@@ -240,13 +240,14 @@ void printLine(State* state, int row) {
         bool isInString = false;
         bool skipNext = false;
         uint searchCounter = 0;
+        int renderCol = 0;
         uint startOfSearch;
         char stringType;
         // TODO if in comment put in green
-        for (int col = 0; col < (int) state->data[row].length(); col++) {
+        for (uint col = 0; col < state->data[row].length();) {
             if (searchCounter == 0 && isInSearchQuery(state, row, col)) {
                 searchCounter = state->searchQuery.length();
-                startOfSearch = (uint) col;
+                startOfSearch = col;
             }
             if (skipNext == false) {
                 char current = state->data[row][col];
@@ -263,7 +264,18 @@ void printLine(State* state, int row) {
             } else {
                 skipNext = false;
             }
-            printChar(state, row, col, state->data[row][col], isInString, isRowColInVisual(state, row, col), searchCounter != 0, startOfSearch);
+            if (state->replacing && searchCounter != 0) {
+                for (uint i = 0; i < state->replaceQuery.length(); i++) {
+                    printChar(state, row, renderCol, state->replaceQuery[i], false, false, true, startOfSearch);
+                    renderCol++;
+                }
+                col += state->searchQuery.length();
+                searchCounter = 0;
+            } else {
+                printChar(state, row, renderCol, state->data[row][col], isInString, isRowColInVisual(state, row, col), searchCounter != 0, startOfSearch);
+                renderCol++;
+                col++;
+            }
             if (searchCounter != 0) {
                 searchCounter -= 1;
             }

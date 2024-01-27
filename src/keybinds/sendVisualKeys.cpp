@@ -242,6 +242,7 @@ void sendVisualKeys(State* state, char c) {
         }
         state->row = bounds.minR;
         state->visual.row = bounds.maxR;
+        state->col = getIndexFirstNonSpace(state);
     } else if (c == '>') {
         Bounds bounds = getBounds(state);
         state->row = bounds.minR;
@@ -251,6 +252,7 @@ void sendVisualKeys(State* state, char c) {
         }
         state->row = bounds.minR;
         state->visual.row = bounds.maxR;
+        state->col = getIndexFirstNonSpace(state);
     } else if (c == 'p' || c == 'P') {
         auto pos = deleteInVisual(state);
         state->row = pos.row;

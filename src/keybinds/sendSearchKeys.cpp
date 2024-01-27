@@ -37,6 +37,7 @@ void sendSearchKeys(State* state, char c) {
         if (state->replacing) {
             replaceAll(state, state->searchQuery, state->replaceQuery);
         }
+        state->replaceQuery = std::string("");
         state->replacing = false;
         state->mode = SHORTCUTS;
     }
