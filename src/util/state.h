@@ -47,6 +47,8 @@ class State {
         std::string filename;
         std::vector<std::string> data;
         std::vector<std::string> previousState;
+        std::vector<std::string> fileStack;
+        uint fileStackIndex;
         std::vector<std::vector<diffLine>> history;
         int historyPosition;
         bool searching;
@@ -75,9 +77,11 @@ class State {
         std::vector<grepMatch> grepOutput;
         std::string prevKeys;
         std::string status;
+        bool showFileStack;
         Mode mode;
         State();
         State(std::string filename);
         void resetState(std::string filename);
+        void changeFile(std::string filename);
         static void setMaxYX(int y, int x);
 };

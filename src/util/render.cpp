@@ -59,7 +59,20 @@ void initColors() {
 
 int renderStatusBar(State* state) {
     int offset = 0;
-    mvprintw(0, state->maxX - state->filename.length() - 2, "\"%s\"", state->filename.c_str());
+    if (state->showFileStack == true) {
+        // TODO make work for fileStack > maxY
+        for (int i = (int) (state->fileStack.size() - 1); i >= 0; i--) {
+            if (i == (int) state->fileStackIndex) {
+                attron(COLOR_PAIR(RED));
+            }
+            mvprintw(i, state->maxX - state->fileStack[i].length() - 2, "\"%s\"", state->fileStack[i].c_str());
+            if (i == (int) state->fileStackIndex) {
+                attroff(COLOR_PAIR(RED));
+            }
+        }
+    } else {
+        mvprintw(0, state->maxX - state->filename.length() - 2, "\"%s\"", state->filename.c_str());
+    }
     if (state->status.length() > 0) {
         attron(COLOR_PAIR(RED));
         mvprintw(0, 0, "%s ", state->status.c_str());
@@ -384,3 +397,4 @@ void initTerminal() {
     start_color();
     initColors();
 }
+

@@ -111,16 +111,18 @@ search replace
 - J K 
 - visual > <
 - if file not found guard against that
+- horizontal scrolling
 
 ## TODO
-- horizontal scrolling
 - indenting
 - dot command
 - ctrl o, i really
   - maybe have file stack on right side? might be cool
 - commenting, and comment highlighting
+- \ reload file
 - gf
 - fileExplorer (current one is trash) actually make it good now
 - dt, df,
+- * and # when in normal mode
 - gr -> go to top and find first occ w/ import in front -> go to file at top -> set searchQuery to it -> search for it
 - make windowPosition windowPositionX, row col, etc all Position types like visual
