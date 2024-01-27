@@ -112,10 +112,12 @@ search replace
 - visual > <
 
 ## TODO
-- commenting, and comment highlighting
-- indenting
 - if file not found guard against that
+- indenting
 - dot command
+- ctrl o, i really
+  - maybe have file stack on right side? might be cool
+- commenting, and comment highlighting
 - gf
 - fileExplorer (current one is trash) actually make it good now
 - dt, df,
