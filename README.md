@@ -114,6 +114,7 @@ search replace
 - horizontal scrolling
 
 ## TODO
+- getFromClipbpoard when nothing in clipboard
 - indenting
 - dot command
 - ctrl o, i really
