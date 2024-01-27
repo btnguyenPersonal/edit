@@ -106,9 +106,12 @@ search replace
 
 ??? todo make H character switch between .cpp and .h
 
-## TODO
+## DONE
 - search replace highlighting, N
-- J K visual > <
+- visual > <
+
+## TODO
+- J K 
 - commenting, and comment highlighting
 - indenting
 - fileExplorer (current one is trash) actually make it good now

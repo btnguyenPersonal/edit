@@ -11,6 +11,12 @@
 #include "helper.h"
 #include "visualType.h"
 
+void ltrim(std::string &s) {
+    s.erase(s.begin(), std::find_if(s.begin(), s.end(), [](unsigned char ch) {
+        return !std::isspace(ch);
+    }));
+}
+
 void replaceAll(State* state, std::string query, std::string replace) {
     for (uint i = 0; i < state->data.size(); i++) {
         if (query.empty()) {
