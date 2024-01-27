@@ -29,61 +29,48 @@ void replaceAll(State* state, std::string query, std::string replace) {
         }
     }
 }
-
 bool setSearchResultReverse(State* state) {
-    uint initialCol = state->col;
-    uint initialRow = state->row;
-    int col = static_cast<int>(initialCol);
-    int row = static_cast<int>(initialRow);
-    col -= 1;
-    bool hasWrapped = false;
-    do {
-        while (col >= 0) {
-            if (state->data[row].substr(col, state->searchQuery.length()) == state->searchQuery) {
-                state->col = col;
-                state->row = row;
-                return true;
-            }
-            col--;
-        }
-        if (row == 0) {
-            row = state->data.size() - 1;
-            hasWrapped = true;
-        } else {
-            row--;
-        }
-        col = state->data[row].length() - 1;
-        if (hasWrapped && (row < (int) initialRow || row == 0)) {
-            break;
-        }
-    } while (true);
-    return false;
-}
-
-bool setSearchResult(State* state) {
+    fixColOverMax(state);
     uint initialCol = state->col;
     uint initialRow = state->row;
     uint col = initialCol;
     uint row = initialRow;
-    bool hasWrapped = false;
+    bool isFirst = true;
     do {
-        while (col < state->data[row].length()) {
-            if (state->data[row].substr(col, state->searchQuery.length()) == state->searchQuery) {
-                state->col = col;
-                state->row = row;
-                return true;
-            }
-            col++;
+        std::string line = isFirst ? state->data[row].substr(0, col) : state->data[row];
+        size_t index = line.rfind(state->searchQuery);
+        if (index != std::string::npos) {
+            state->row = row;
+            state->col = static_cast<unsigned int>(index);
+            return true;
         }
-        col = 0;
-        row = (row + 1) % state->data.size();
         if (row == 0) {
-            hasWrapped = true;
+            row = state->data.size() - 1;
+        } else {
+            row--;
         }
-        if (hasWrapped && (row > initialRow || row == state->data.size())) {
-            break;
+        isFirst = false;
+    } while (row != initialRow);
+    return false;
+}
+
+bool setSearchResult(State* state) {
+    fixColOverMax(state);
+    uint initialCol = state->col;
+    uint initialRow = state->row;
+    uint col = initialCol;
+    uint row = initialRow;
+    do {
+        std::string line = state->data[row].substr(col);
+        size_t index = line.find(state->searchQuery);
+        if (index != std::string::npos) {
+            state->row = row;
+            state->col = static_cast<unsigned int>(index) + col;
+            return true;
         }
-    } while (true);
+        row = (row + 1) % state->data.size();
+        col = 0;
+    } while (row != initialRow);
     return false;
 }
 
