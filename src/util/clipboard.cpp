@@ -115,11 +115,12 @@ void copyToClipboard(const std::string& originalString) {
     for (char c : originalString) {
         if (c == '\"') {
             escapedString += "\\\"";
+        } else if (c == '\\') {
+            escapedString += "\\\\\\\\";
         } else {
             escapedString += c;
         }
     }
-
     std::string command;
     #ifdef __APPLE__
         command = "echo \"" + escapedString + "\" | pbcopy";
