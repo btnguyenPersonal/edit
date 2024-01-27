@@ -11,6 +11,24 @@
 #include "helper.h"
 #include "visualType.h"
 
+void moveHarpoonRight(State* state) {
+    if (state->harpoonIndex + 1 < state->harpoonFiles.size()) {
+        std::string temp = state->harpoonFiles[state->harpoonIndex];
+        state->harpoonFiles[state->harpoonIndex] = state->harpoonFiles[state->harpoonIndex + 1];
+        state->harpoonFiles[state->harpoonIndex + 1] = temp;
+        state->harpoonIndex += 1;
+    }
+}
+
+void moveHarpoonLeft(State* state) {
+    if (state->harpoonIndex > 0) {
+        std::string temp = state->harpoonFiles[state->harpoonIndex];
+        state->harpoonFiles[state->harpoonIndex] = state->harpoonFiles[state->harpoonIndex - 1];
+        state->harpoonFiles[state->harpoonIndex - 1] = temp;
+        state->harpoonIndex -= 1;
+    }
+}
+
 void ltrim(std::string &s) {
     s.erase(s.begin(), std::find_if(s.begin(), s.end(), [](unsigned char ch) {
         return !std::isspace(ch);
@@ -29,6 +47,7 @@ void replaceAll(State* state, std::string query, std::string replace) {
         }
     }
 }
+
 bool setSearchResultReverse(State* state) {
     fixColOverMax(state);
     uint initialCol = state->col;
@@ -62,6 +81,7 @@ bool setSearchResultReverse(State* state) {
     return false;
 }
 
+// TODO make this look cleaner
 bool setSearchResult(State* state) {
     fixColOverMax(state);
     uint initialCol = state->col;

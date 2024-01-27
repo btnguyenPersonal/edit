@@ -7,6 +7,8 @@
 #include "state.h"
 #include "visualType.h"
 
+void moveHarpoonLeft(State* state);
+void moveHarpoonRight(State* state);
 bool isWindowPositionHorizontalInvalid(State* state);
 void ltrim(std::string &s);
 void replaceAll(State* state, std::string query, std::string replace);

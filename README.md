@@ -115,9 +115,9 @@ search replace
 - ctrl o, i really
   - maybe have file stack on right side? might be cool
 - \ reload file
+- fix searching crashing everything (remake from scratch prob)
 
 ## TODO
-- fix searching crashing everything (remake from scratch prob)
 - ctrl h ctrl l move around harpoon
 - indenting
 - dot command
