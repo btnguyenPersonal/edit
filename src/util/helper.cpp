@@ -11,6 +11,19 @@
 #include "helper.h"
 #include "visualType.h"
 
+void replaceAll(State* state, std::string query, std::string replace) {
+    for (uint i = 0; i < state->data.size(); i++) {
+        if (query.empty()) {
+            return;
+        }
+        size_t startPos = 0;
+        while ((startPos = state->data[i].find(query, startPos)) != std::string::npos) {
+            state->data[i].replace(startPos, query.length(), replace);
+            startPos += replace.length();
+        }
+    }
+}
+
 bool setSearchResultReverse(State* state) {
     uint initialCol = state->col;
     uint initialRow = state->row;

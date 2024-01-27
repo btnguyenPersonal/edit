@@ -583,6 +583,9 @@ void sendShortcutKeys(State* state, char c) {
             copyToClipboard(state->data[state->row].substr(state->col, 1));
             state->data[state->row] = state->data[state->row].substr(0, state->col) + state->data[state->row].substr(state->col + 1);
         }
+    } else if (c == ctrl('f')) {
+        state->mode = SEARCH;
+        state->replacing = true;
     } else if (c == '0') {
         state->col = 0;
     } else if (c == '$') {

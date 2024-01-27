@@ -89,6 +89,12 @@ int renderStatusBar(State* state) {
         mvprintw(0, offset, "/%s", state->searchQuery.c_str());
         offset += state->searchQuery.length() + 1;
         attroff(COLOR_PAIR(GREEN));
+        if (state->replacing) {
+            attron(COLOR_PAIR(MAGENTA));
+            mvprintw(0, offset, "/%s", state->replaceQuery.c_str());
+            offset += state->replaceQuery.length() + 1;
+            attroff(COLOR_PAIR(MAGENTA));
+        }
         for (uint i = 0; i < state->harpoonFiles.size(); i++) {
             if (state->harpoonFiles[i] == state->filename) {
                 attron(COLOR_PAIR(YELLOW));
