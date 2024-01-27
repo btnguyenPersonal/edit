@@ -116,11 +116,18 @@ search replace
   - maybe have file stack on right side? might be cool
 - \ reload file
 - fix searching crashing everything (remake from scratch prob)
+- ctrl h ctrl l move around harpoon
 
 ## TODO
-- ctrl h ctrl l move around harpoon
 - indenting
+    - real time, never have to worry about breaking everything
+    - will prob require a parser and need to keep a syntax tree in the state
+    - I wonder if we can isolate each line, so only need to update one line of the tree
+    - if that's not possible, just keep references in there, so only have to update all deps
+        - (might be all lines after current line? if is don't bother with references);
+    - how do I handle wrong indenations? thinking putting ghost red text after badly indented line and having red background line number
 - dot command
+- tab complete
 - commenting, and comment highlighting
 - gf
 - fileExplorer (current one is trash) actually make it good now
