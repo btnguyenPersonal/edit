@@ -1,6 +1,7 @@
 #include "../global.h"
 #include <string>
 #include <vector>
+#include <iostream>
 #include "helper.h"
 #include "state.h"
 #include "modes.h"
@@ -11,6 +12,10 @@ uint State::maxX = 0;
 uint State::maxY = 0;
 
 void State::resetState(std::string filename) {
+    if (!std::filesystem::exists(filename.c_str())) {
+        this->status = "file not found: " + filename;
+        return;
+    }
     bool found = false;
     for (uint i = 0; i < this->archives.size(); i++) {
         if (this->archives[i].filename == this->filename) {
@@ -105,6 +110,10 @@ State::State() {
 }
 
 State::State(std::string filename) {
+    if (!std::filesystem::exists(filename.c_str())) {
+        std::cout << "file not found: " << filename << std::endl;
+        exit(1);
+    }
     this->searching = false;
     this->replacing = false;
     this->harpoonFiles = std::vector<std::string>();
