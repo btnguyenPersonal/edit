@@ -164,7 +164,7 @@ void printChar(State* state, int row, int col, char c, bool isInString, bool isI
     } else {
         attron(COLOR_PAIR(invertColor(color)));
     }
-    mvaddch(row - state->windowPosition + 1, col + LINE_NUM_OFFSET, c);
+    mvaddch(row - state->windowPosition.row + 1, col + LINE_NUM_OFFSET, c);
     if (isInverted == false) {
         attroff(COLOR_PAIR(color));
     } else {
@@ -244,7 +244,7 @@ void printLine(State* state, int row) {
         uint startOfSearch;
         char stringType;
         // TODO if in comment put in green
-        for (uint col = 0; col < state->data[row].length();) {
+        for (uint col = 0; col < state->data[row].length() && col < state->windowPosition.col + state->maxX - 1 - LINE_NUM_OFFSET;) {
             if (searchCounter == 0 && isInSearchQuery(state, row, col)) {
                 searchCounter = state->searchQuery.length();
                 startOfSearch = col;
@@ -264,16 +264,20 @@ void printLine(State* state, int row) {
             } else {
                 skipNext = false;
             }
-            if (state->replacing && searchCounter != 0) {
-                for (uint i = 0; i < state->replaceQuery.length(); i++) {
-                    printChar(state, row, renderCol, state->replaceQuery[i], false, false, true, startOfSearch);
+            if (col >= state->windowPosition.col) {
+                if (state->replacing && searchCounter != 0) {
+                    for (uint i = 0; i < state->replaceQuery.length(); i++) {
+                        printChar(state, row, renderCol, state->replaceQuery[i], false, false, true, startOfSearch);
+                        renderCol++;
+                    }
+                    col += state->searchQuery.length();
+                    searchCounter = 0;
+                } else {
+                    printChar(state, row, renderCol, state->data[row][col], isInString, isRowColInVisual(state, row, col), searchCounter != 0, startOfSearch);
                     renderCol++;
+                    col++;
                 }
-                col += state->searchQuery.length();
-                searchCounter = 0;
             } else {
-                printChar(state, row, renderCol, state->data[row][col], isInString, isRowColInVisual(state, row, col), searchCounter != 0, startOfSearch);
-                renderCol++;
                 col++;
             }
             if (searchCounter != 0) {
@@ -324,9 +328,8 @@ void renderFindFileOutput(State* state) {
 }
 
 void renderVisibleLines(State* state) {
-    // TODO fix maxX as well
-    for (int i = state->windowPosition; i < (int) state->data.size() && i < (int) (state->maxY + state->windowPosition) - 1; i++) {
-        printLineNumber(i - state->windowPosition + 1, i, i == (int) state->row, state->recording);
+    for (int i = state->windowPosition.row; i < (int) state->data.size() && i < (int) (state->maxY + state->windowPosition.row) - 1; i++) {
+        printLineNumber(i - state->windowPosition.row + 1, i, i == (int) state->row, state->recording);
         printLine(state, i);
     }
 }
@@ -336,14 +339,21 @@ void moveCursor(State* state, int cursorPosition) {
         move(0, cursorPosition);
     } else {
         uint row = state->row + 1;
-        if (row > state->windowPosition) {
-            row -= state->windowPosition;
+        if (row > state->windowPosition.row) {
+            row -= state->windowPosition.row;
         } else {
             row = 1;
         }
         uint col = state->col + LINE_NUM_OFFSET;
         if (state->col > state->data[state->row].length()) {
             col = state->data[state->row].length() + LINE_NUM_OFFSET;
+            if (state->windowPosition.col > col) {
+                col = LINE_NUM_OFFSET;
+            } else {
+                col -= state->windowPosition.col;
+            }
+        } else if (col > state->windowPosition.col) {
+            col -= state->windowPosition.col;
         }
         move(row, col);
     }

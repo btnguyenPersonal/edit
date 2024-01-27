@@ -400,14 +400,24 @@ std::vector<std::string> readFile(std::string filename) {
 }
 
 bool isWindowPositionInvalid(State* state) {
-    return state->row < state->windowPosition || (int) state->row - (int) state->windowPosition > ((int) state->maxY - 2);
+    if (state->row < state->windowPosition.row || (int) state->row - (int) state->windowPosition.row > ((int) state->maxY - 2)) {
+        return true;
+    } else if (state->col < state->windowPosition.col || (int) state->col - (int) state->windowPosition.col > ((int) state->maxX - 2)) {
+        return true;
+    }
+    return false;
 }
 
 void centerScreen(State* state) {
     if (state->row < state->maxY / 2) {
-        state->windowPosition = 0;
+        state->windowPosition.row = 0;
     } else {
-        state->windowPosition = state->row - state->maxY / 2;
+        state->windowPosition.row = state->row - state->maxY / 2;
+    }
+    if (state->col < state->maxX / 2) {
+        state->windowPosition.col = 0;
+    } else {
+        state->windowPosition.col = state->col - state->maxX / 2;;
     }
 }
 
@@ -415,7 +425,7 @@ void upHalfScreen(State* state) {
     for (uint i = 0; i < state->maxY / 2; i++) {
         if (state->row > 0) {
             state->row -= 1;
-            state->windowPosition -= 1;
+            state->windowPosition.row -= 1;
         }
     }
 }
@@ -424,7 +434,7 @@ void downHalfScreen(State* state) {
     for (uint i = 0; i < state->maxY / 2; i++) {
         if (state->row < state->data.size() - 1) {
             state->row += 1;
-            state->windowPosition += 1;
+            state->windowPosition.row += 1;
         }
     }
 }
@@ -433,8 +443,8 @@ void up(State* state) {
     if (state->row > 0) {
         state->row -= 1;
     }
-    if (state->row < state->windowPosition) {
-        state->windowPosition -= 1;
+    if (state->row < state->windowPosition.row) {
+        state->windowPosition.row -= 1;
     }
 }
 
@@ -442,8 +452,8 @@ void down(State* state) {
     if (state->row < state->data.size() - 1) {
         state->row += 1;
     }
-    if ((int) state->row - (int) state->windowPosition > ((int) state->maxY - 2)) {
-        state->windowPosition += 1;
+    if ((int) state->row - (int) state->windowPosition.row > ((int) state->maxY - 2)) {
+        state->windowPosition.row += 1;
     }
 }
 

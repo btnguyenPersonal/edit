@@ -62,7 +62,8 @@ void State::resetState(std::string filename) {
     this->previousState = std::vector<std::string>();
     this->history = std::vector<std::vector<diffLine>>();
     this->historyPosition = -1;
-    this->windowPosition = 0;
+    this->windowPosition.row = 0;
+    this->windowPosition.col = 0;
     this->visualType = NORMAL;
     this->visual.row = 0;
     this->visual.col = 0;
@@ -85,7 +86,8 @@ State::State() {
     this->grepOutput = std::vector<grepMatch>();
     this->findFileOutput = std::vector<std::filesystem::path>();
     this->historyPosition = -1;
-    this->windowPosition = 0;
+    this->windowPosition.row = 0;
+    this->windowPosition.col = 0;
     this->visualType = NORMAL;
     this->visual.row = 0;
     this->visual.col = 0;
@@ -125,7 +127,8 @@ State::State(std::string filename) {
     this->grepOutput = std::vector<grepMatch>();
     this->findFileOutput = std::vector<std::filesystem::path>();
     this->historyPosition = -1;
-    this->windowPosition = 0;
+    this->windowPosition.row = 0;
+    this->windowPosition.col = 0;
     this->visualType = NORMAL;
     this->visual.row = 0;
     this->visual.col = 0;

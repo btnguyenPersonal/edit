@@ -7,6 +7,7 @@
 #include "state.h"
 #include "visualType.h"
 
+bool isWindowPositionHorizontalInvalid(State* state);
 void ltrim(std::string &s);
 void replaceAll(State* state, std::string query, std::string replace);
 bool setSearchResultReverse(State* state);

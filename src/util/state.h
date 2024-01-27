@@ -34,7 +34,7 @@ struct Archive {
     std::vector<std::string> previousState;
     std::vector<std::vector<diffLine>> history;
     int historyPosition;
-    uint windowPosition;
+    struct Position windowPosition;
     uint row;
     uint col;
 };
@@ -52,7 +52,7 @@ class State {
         bool searching;
         bool replacing;
         uint indent;
-        uint windowPosition;
+        struct Position windowPosition;
         static uint maxX;
         static uint maxY;
         VisualType visualType;

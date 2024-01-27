@@ -110,9 +110,10 @@ search replace
 - search replace highlighting, N
 - J K 
 - visual > <
+- if file not found guard against that
 
 ## TODO
-- if file not found guard against that
+- horizontal scrolling
 - indenting
 - dot command
 - ctrl o, i really
@@ -121,5 +122,5 @@ search replace
 - gf
 - fileExplorer (current one is trash) actually make it good now
 - dt, df,
-- horizontal scrolling
 - gr -> go to top and find first occ w/ import in front -> go to file at top -> set searchQuery to it -> search for it
+- make windowPosition windowPositionX, row col, etc all Position types like visual
