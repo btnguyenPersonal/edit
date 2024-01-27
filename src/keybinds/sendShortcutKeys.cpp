@@ -609,6 +609,7 @@ void sendShortcutKeys(State* state, char c) {
             state->col = 0;
         }
     } else if (c == 'z') {
+        state->windowPosition.col = 0;
         centerScreen(state);
     } else if (c == 'P') {
         pasteFromClipboard(state);

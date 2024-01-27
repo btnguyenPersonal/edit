@@ -31,8 +31,6 @@
 #define CYAN 8
 #define WHITE 9
 
-#define LINE_NUM_OFFSET 6
-
 int invertColor(int color) {
     return color + 9;
 }
@@ -244,7 +242,7 @@ void printLine(State* state, int row) {
         uint startOfSearch;
         char stringType;
         // TODO if in comment put in green
-        for (uint col = 0; col < state->data[row].length() && col < state->windowPosition.col + state->maxX - 1 - LINE_NUM_OFFSET;) {
+        for (uint col = 0; col < state->data[row].length() && col < state->windowPosition.col + state->maxX - LINE_NUM_OFFSET;) {
             if (searchCounter == 0 && isInSearchQuery(state, row, col)) {
                 searchCounter = state->searchQuery.length();
                 startOfSearch = col;

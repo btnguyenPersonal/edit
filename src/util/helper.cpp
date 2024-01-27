@@ -402,7 +402,7 @@ std::vector<std::string> readFile(std::string filename) {
 bool isWindowPositionInvalid(State* state) {
     if (state->row < state->windowPosition.row || (int) state->row - (int) state->windowPosition.row > ((int) state->maxY - 2)) {
         return true;
-    } else if (state->col < state->windowPosition.col || (int) state->col - (int) state->windowPosition.col > ((int) state->maxX - 2)) {
+    } else if (state->col < state->windowPosition.col || (int) state->col - (int) state->windowPosition.col > ((int) state->maxX - LINE_NUM_OFFSET - 1)) {
         return true;
     }
     return false;
@@ -414,10 +414,10 @@ void centerScreen(State* state) {
     } else {
         state->windowPosition.row = state->row - state->maxY / 2;
     }
-    if (state->col < state->maxX / 2) {
-        state->windowPosition.col = 0;
-    } else {
-        state->windowPosition.col = state->col - state->maxX / 2;;
+    if (state->col < state->windowPosition.col) {
+        state->windowPosition.col = state->col;
+    } else if (state->col > state->windowPosition.col + (state->maxX - LINE_NUM_OFFSET - 1)) {
+        state->windowPosition.col = state->col + LINE_NUM_OFFSET + 1 - state->maxX;
     }
 }
 
