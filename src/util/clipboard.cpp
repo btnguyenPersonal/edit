@@ -77,7 +77,7 @@ void pasteFromClipboard(State* state) {
 }
 
 void pasteFromClipboardAfter(State* state) {
-    //fixColOverMax(state);
+    fixColOverMax(state);
     std::vector<std::string> clip = getFromClipboard();
     if (clip.back() == "") {
         clip.pop_back();
@@ -89,7 +89,7 @@ void pasteFromClipboardAfter(State* state) {
 
         // break up current line
         int breakCol = state->col;
-        if (state->col + 1 < state->data[state->row].length()) {
+        if (state->col + 1 <= state->data[state->row].length()) {
             breakCol = state->col + 1;
         }
         state->data[state->row] = current.substr(0, breakCol);
