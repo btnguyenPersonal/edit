@@ -49,6 +49,8 @@ class State {
         std::vector<std::string> previousState;
         std::vector<std::vector<diffLine>> history;
         int historyPosition;
+        bool searching;
+        bool replacing;
         uint indent;
         uint windowPosition;
         static uint maxX;

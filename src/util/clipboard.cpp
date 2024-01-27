@@ -77,7 +77,7 @@ void pasteFromClipboard(State* state) {
 }
 
 void pasteFromClipboardAfter(State* state) {
-    fixColOverMax(state);
+    //fixColOverMax(state);
     std::vector<std::string> clip = getFromClipboard();
     if (clip.back() == "") {
         clip.pop_back();

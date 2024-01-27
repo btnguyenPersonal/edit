@@ -207,6 +207,7 @@ void sendVisualKeys(State* state, char c) {
     } else if (c == ']') {
         state->row = getNextLineSameIndent(state);
     } else if (c == '*') {
+        state->searching = true;
         state->searchQuery = getInVisual(state);
         state->mode = SHORTCUTS;
         uint temp_col = state->col;

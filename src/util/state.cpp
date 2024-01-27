@@ -71,6 +71,8 @@ void State::resetState(std::string filename) {
 }
 
 State::State() {
+    this->searching = false;
+    this->replacing = false;
     this->harpoonFiles = std::vector<std::string>();
     this->harpoonIndex = 0;
     this->previousState = std::vector<std::string>();
@@ -103,6 +105,8 @@ State::State() {
 }
 
 State::State(std::string filename) {
+    this->searching = false;
+    this->replacing = false;
     this->harpoonFiles = std::vector<std::string>();
     this->harpoonIndex = 0;
     this->filename = std::string(filename);

@@ -16,6 +16,7 @@
 void sendKeys(State* state, char c) {
     state->status = std::string("");
     state->dontRecordKey = false;
+    state->searching = state->mode == SEARCH;
     calcWindowBounds();
     if (state->mode == SHORTCUTS) {
         state->previousState = state->data;
