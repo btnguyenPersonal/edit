@@ -108,15 +108,16 @@ search replace
 
 ## DONE
 - search replace highlighting, N
+- J K 
 - visual > <
 
 ## TODO
-- J K 
 - commenting, and comment highlighting
 - indenting
-- fileExplorer (current one is trash) actually make it good now
-- gf
-- dt, df,
-- dot command
-- horizontal scrolling
 - if file not found guard against that
+- dot command
+- gf
+- fileExplorer (current one is trash) actually make it good now
+- dt, df,
+- horizontal scrolling
+- gr -> go to top and find first occ w/ import in front -> go to file at top -> set searchQuery to it -> search for it
