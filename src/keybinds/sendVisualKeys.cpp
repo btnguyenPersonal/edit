@@ -233,6 +233,24 @@ void sendVisualKeys(State* state, char c) {
         state->visualType = NORMAL;
     } else if (c == 'G') {
         state->row = state->data.size() - 1;
+    } else if (c == '<') {
+        Bounds bounds = getBounds(state);
+        state->row = bounds.minR;
+        for (uint i = bounds.minR; i <= bounds.maxR; i++) {
+            deindent(state);
+            state->row += 1;
+        }
+        state->row = bounds.minR;
+        state->visual.row = bounds.maxR;
+    } else if (c == '>') {
+        Bounds bounds = getBounds(state);
+        state->row = bounds.minR;
+        for (uint i = bounds.minR; i <= bounds.maxR; i++) {
+            indent(state);
+            state->row += 1;
+        }
+        state->row = bounds.minR;
+        state->visual.row = bounds.maxR;
     } else if (c == 'p' || c == 'P') {
         auto pos = deleteInVisual(state);
         state->row = pos.row;
