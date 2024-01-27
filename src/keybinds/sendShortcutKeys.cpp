@@ -651,6 +651,8 @@ void sendShortcutKeys(State* state, char c) {
             state->harpoonIndex -= 1;
             state->resetState(state->harpoonFiles[state->harpoonIndex]);
         }
+    } else if (c == '\\') {
+        state->changeFile(state->filename);
     } else if (c == ' ') {
         bool found = false;
         for (auto it = state->harpoonFiles.begin(); it != state->harpoonFiles.end(); ) {

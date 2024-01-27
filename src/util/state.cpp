@@ -15,7 +15,6 @@ void State::changeFile(std::string filename) {
     bool found = false;
     for (uint i = 0; i < this->archives.size(); i++) {
         if (this->archives[i].filename == this->filename) {
-            this->archives[i].data = this->data;
             this->archives[i].previousState = this->previousState;
             this->archives[i].history = this->history;
             this->archives[i].historyPosition = this->historyPosition;
@@ -29,7 +28,6 @@ void State::changeFile(std::string filename) {
     if (!found) {
         this->archives.push_back({
             this->filename,
-            this->data,
             this->previousState,
             this->history,
             this->historyPosition,
@@ -42,7 +40,7 @@ void State::changeFile(std::string filename) {
         if (this->archives[i].filename == std::string(filename)) {
             auto archive = this->archives[i];
             this->filename = std::string(filename);
-            this->data = archive.data;
+            this->data = readFile(filename);
             this->previousState = archive.previousState;
             this->history = archive.history;
             this->historyPosition = archive.historyPosition;

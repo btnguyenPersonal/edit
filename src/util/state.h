@@ -30,7 +30,6 @@ struct WordPosition {
 
 struct Archive {
     std::string filename;
-    std::vector<std::string> data;
     std::vector<std::string> previousState;
     std::vector<std::vector<diffLine>> history;
     int historyPosition;
