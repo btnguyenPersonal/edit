@@ -51,6 +51,14 @@ bool setSearchResultReverse(State* state) {
         }
         isFirst = false;
     } while (row != initialRow);
+    // try last row again
+    std::string line = state->data[row];
+    size_t index = line.rfind(state->searchQuery);
+    if (index != std::string::npos) {
+        state->row = row;
+        state->col = static_cast<unsigned int>(index);
+        return true;
+    }
     return false;
 }
 
@@ -71,6 +79,14 @@ bool setSearchResult(State* state) {
         row = (row + 1) % state->data.size();
         col = 0;
     } while (row != initialRow);
+    // try last row again
+    std::string line = state->data[row];
+    size_t index = line.find(state->searchQuery);
+    if (index != std::string::npos) {
+        state->row = row;
+        state->col = static_cast<unsigned int>(index) + col;
+        return true;
+    }
     return false;
 }
 
