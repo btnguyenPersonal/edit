@@ -29,10 +29,12 @@ void sendGrepKeys(State* state, char c) {
             state->grepSelection -= 1;
         }
     } else if (c == ctrl('m')) { // ENTER
-        std::filesystem::path selectedFile = state->grepOutput[state->grepSelection].path;
-        int lineNum = state->grepOutput[state->grepSelection].lineNum;
-        state->resetState(selectedFile);
-        state->row = lineNum - 1;
+        if (state->grepSelection < state->grepOutput.size()) {
+            std::filesystem::path selectedFile = state->grepOutput[state->grepSelection].path;
+            int lineNum = state->grepOutput[state->grepSelection].lineNum;
+            state->resetState(selectedFile);
+            state->row = lineNum - 1;
+        }
     } else {
         state->status = std::string(1, c) + " <" + std::to_string((int)c) + ">";
     }

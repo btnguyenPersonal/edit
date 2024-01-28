@@ -29,8 +29,10 @@ void sendFindFileKeys(State* state, char c) {
             state->findFileSelection -= 1;
         }
     } else if (c == ctrl('m')) { // ENTER
-        auto selectedFile = state->findFileOutput[state->findFileSelection].string();
-        state->resetState(selectedFile);
+        if (state->findFileSelection < state->findFileOutput.size()) {
+            auto selectedFile = state->findFileOutput[state->findFileSelection].string();
+            state->resetState(selectedFile);
+        }
     }
     if (state->mode == FINDFILE && c != ctrl('p') && c != ctrl('n')) {
         generateFindFileOutput(state);

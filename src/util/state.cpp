@@ -87,7 +87,7 @@ void State::resetState(std::string filename) {
     this->fileStackIndex = this->fileStack.size() - 1;
     if (!std::filesystem::exists(filename.c_str())) {
         this->status = "file not found: " + filename;
-        return;
+        exit(1);
     }
     this->changeFile(filename);
 }
