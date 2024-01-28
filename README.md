@@ -137,3 +137,4 @@ search replace
 - gr -> go to top and find first occ w/ import in front -> go to file at top -> set searchQuery to it -> search for it
 - getFromClipbpoard when nothing in clipboard
 - make row col, etc all Position types like visual
+- { } [ ] and skip whitespace

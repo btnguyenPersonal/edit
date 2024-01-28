@@ -21,13 +21,17 @@ std::vector<std::string> getFromClipboard() {
     std::string result;
     std::array<char, 256> buffer;
     FILE *pipe = popen(command.c_str(), "r");
+
     if (!pipe) throw std::runtime_error("popen() failed!");
 
     while (fgets(buffer.data(), buffer.size(), pipe) != nullptr) {
         result += buffer.data();
     }
 
-    pclose(pipe);
+    int status = pclose(pipe);
+    if (status != 0 || result.empty()) {
+        return {""};
+    }
 
     std::vector<std::string> output;
     std::stringstream ss(result);
