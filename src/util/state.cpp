@@ -67,6 +67,8 @@ void State::changeFile(std::string filename) {
     this->commandLineQuery = std::string("");
     this->prevKeys = std::string("");
     this->status = std::string("");
+    this->motionComplete = false;
+    this->motion = std::string("");
     this->mode = SHORTCUTS;
 }
 
@@ -128,6 +130,8 @@ State::State() {
     this->fileStack = std::vector<std::string>();
     this->showFileStack = false;
     this->fileStackIndex = 0;
+    this->motionComplete = false;
+    this->motion = std::string("");
 }
 
 State::State(std::string filename) : State() {

@@ -528,10 +528,6 @@ void calcWindowBounds() {
     State::setMaxYX(y, x);
 }
 
-bool isMotionCompleted(State* state) {
-    return state->prevKeys == "";
-}
-
 void insertEmptyLineBelow(State* state) {
     state->data.insert(state->data.begin() + state->row + 1, "");
 }
@@ -551,7 +547,8 @@ bool handleMotion(State* state, char c, std::string motion) {
         if (i < motion.length() - 1) {
             state->prevKeys += c;
         } else {
-            state->prevKeys = "";
+            state->motion = state->prevKeys + c;
+            state->motionComplete = true;
         }
         return true;
     } else {

@@ -15,9 +15,11 @@
 
 void sendKeys(State* state, char c) {
     state->status = std::string("");
+    state->status = state->dotCommand;
     state->showFileStack = false;
     state->dontRecordKey = false;
     state->searching = state->mode == SEARCH;
+    state->motionComplete = false;
     calcWindowBounds();
     if (state->mode == SHORTCUTS) {
         state->previousState = state->data;
@@ -53,11 +55,17 @@ void sendKeys(State* state, char c) {
             saveFile(state->filename, state->data);
         }
         if (diff.size() != 0 && c != ctrl('r') && c != 'u') {
+            if (state->dontRecordKey == false) {
+                state->dotCommand = state->motion + c;
+            }
             if (state->historyPosition < (int) state->history.size()) {
                 state->history.erase(state->history.begin() + state->historyPosition + 1, state->history.end());
             }
             state->history.push_back(diff);
             state->historyPosition = (int) state->history.size() - 1;
         }
+    }
+    if (state->motionComplete) {
+        state->prevKeys = "";
     }
 }

@@ -66,6 +66,8 @@ class State {
         std::string dotCommand;
         std::string macroCommand;
         bool playingCommand;
+        bool motionComplete;
+        std::string motion;
         bool recording;
         bool dontRecordKey;
         std::string findFileQuery;

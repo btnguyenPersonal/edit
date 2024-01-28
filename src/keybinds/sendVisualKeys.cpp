@@ -114,76 +114,77 @@ Position deleteInVisual(State* state) {
 void sendVisualKeys(State* state, char c) {
     if (c == 27) { // ESC
         state->mode = SHORTCUTS;
+        return;
     } else if (handleMotion(state, c, "i`")) {
-        if (isMotionCompleted(state)) {
+        if (state->motionComplete) {
             setStateFromWordPosition(state, findQuoteBounds(state->data[state->row], '`', state->col, false));
         }
     } else if (handleMotion(state, c, "a`")) {
-        if (isMotionCompleted(state)) {
+        if (state->motionComplete) {
             setStateFromWordPosition(state, findQuoteBounds(state->data[state->row], '`', state->col, true));
         }
     } else if (handleMotion(state, c, "i\"")) {
-        if (isMotionCompleted(state)) {
+        if (state->motionComplete) {
             setStateFromWordPosition(state, findQuoteBounds(state->data[state->row], '"', state->col, false));
         }
     } else if (handleMotion(state, c, "a\"")) {
-        if (isMotionCompleted(state)) {
+        if (state->motionComplete) {
             setStateFromWordPosition(state, findQuoteBounds(state->data[state->row], '"', state->col, true));
         }
     } else if (handleMotion(state, c, "i'")) {
-        if (isMotionCompleted(state)) {
+        if (state->motionComplete) {
             setStateFromWordPosition(state, findQuoteBounds(state->data[state->row], '\'', state->col, false));
         }
     } else if (handleMotion(state, c, "a'")) {
-        if (isMotionCompleted(state)) {
+        if (state->motionComplete) {
             setStateFromWordPosition(state, findQuoteBounds(state->data[state->row], '\'', state->col, true));
         }
     } else if (handleMotion(state, c, "aT")) {
-        if (isMotionCompleted(state)) {
+        if (state->motionComplete) {
             setStateFromWordPosition(state, findParentheses(state->data[state->row], '>', '<', state->col, true));
         }
     } else if (handleMotion(state, c, "at")) {
-        if (isMotionCompleted(state)) {
+        if (state->motionComplete) {
             setStateFromWordPosition(state, findParentheses(state->data[state->row], '<', '>', state->col, true));
         }
     } else if (handleMotion(state, c, "ad")) {
-        if (isMotionCompleted(state)) {
+        if (state->motionComplete) {
             setStateFromWordPosition(state, findParentheses(state->data[state->row], '[', ']', state->col, true));
         }
     } else if (handleMotion(state, c, "aB")) {
-        if (isMotionCompleted(state)) {
+        if (state->motionComplete) {
             setStateFromWordPosition(state, findParentheses(state->data[state->row], '{', '}', state->col, true));
         }
     } else if (handleMotion(state, c, "ab")) {
-        if (isMotionCompleted(state)) {
+        if (state->motionComplete) {
             setStateFromWordPosition(state, findParentheses(state->data[state->row], '(', ')', state->col, true));
         }
     } else if (handleMotion(state, c, "iT")) {
-        if (isMotionCompleted(state)) {
+        if (state->motionComplete) {
             setStateFromWordPosition(state, findParentheses(state->data[state->row], '>', '<', state->col, false));
         }
     } else if (handleMotion(state, c, "it")) {
-        if (isMotionCompleted(state)) {
+        if (state->motionComplete) {
             setStateFromWordPosition(state, findParentheses(state->data[state->row], '<', '>', state->col, false));
         }
     } else if (handleMotion(state, c, "id")) {
-        if (isMotionCompleted(state)) {
+        if (state->motionComplete) {
             setStateFromWordPosition(state, findParentheses(state->data[state->row], '[', ']', state->col, false));
         }
     } else if (handleMotion(state, c, "iB")) {
-        if (isMotionCompleted(state)) {
+        if (state->motionComplete) {
             setStateFromWordPosition(state, findParentheses(state->data[state->row], '{', '}', state->col, false));
         }
     } else if (handleMotion(state, c, "ib")) {
-        if (isMotionCompleted(state)) {
+        if (state->motionComplete) {
             setStateFromWordPosition(state, findParentheses(state->data[state->row], '(', ')', state->col, false));
         }
     } else if (handleMotion(state, c, "iw")) {
-        if (isMotionCompleted(state)) {
+        if (state->motionComplete) {
             setStateFromWordPosition(state, getWordPosition(state->data[state->row], state->col));
         }
     } else if (handleMotion(state, c, "gg")) {
-        if (isMotionCompleted(state)) {
+        if (state->motionComplete) {
             state->row = 0;
         }
     } else if (c == '^') {
@@ -243,6 +244,8 @@ void sendVisualKeys(State* state, char c) {
         state->row = bounds.minR;
         state->visual.row = bounds.maxR;
         state->col = getIndexFirstNonSpace(state);
+        state->mode = SHORTCUTS;
+        return;
     } else if (c == '>') {
         Bounds bounds = getBounds(state);
         state->row = bounds.minR;
@@ -253,29 +256,35 @@ void sendVisualKeys(State* state, char c) {
         state->row = bounds.minR;
         state->visual.row = bounds.maxR;
         state->col = getIndexFirstNonSpace(state);
+        state->mode = SHORTCUTS;
+        return;
     } else if (c == 'p' || c == 'P') {
         auto pos = deleteInVisual(state);
         state->row = pos.row;
         state->col = pos.col;
         pasteFromClipboard(state);
         state->mode = SHORTCUTS;
+        return;
     } else if (c == 'd') {
         copyInVisual(state);
         auto pos = deleteInVisual(state);
         state->row = pos.row;
         state->col = pos.col;
         state->mode = SHORTCUTS;
+        return;
     } else if (c == 'y') {
         auto pos = copyInVisual(state);
         state->row = pos.row;
         state->col = pos.col;
         state->mode = SHORTCUTS;
+        return;
     } else if (c == 'c') {
         auto pos = changeInVisual(state);
         state->row = pos.row;
         state->col = pos.col;
         state->mode = TYPING;
-    } else {
-        state->status = std::string(1, c) + " <" + std::to_string((int)c) + ">";
+        return;
     }
+    // TODO figure out bottom up motions
+    state->motion += c;
 }
