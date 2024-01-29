@@ -60,6 +60,7 @@ class State {
         struct Position visual;
         uint row;
         uint col;
+        std::string commentSymbol;
         std::string searchQuery;
         std::string replaceQuery;
         std::string commandLineQuery;

@@ -118,8 +118,10 @@ search replace
 - fix searching crashing everything (remake from scratch prob)
 - ctrl h ctrl l move around harpoon
 - getFromClipbpoard when nothing in clipboard
+- dot command
 
 ## TODO
+- tab complete
 - indenting
     - real time, never have to worry about breaking everything
     - will prob require a parser and need to keep a syntax tree in the state
@@ -127,11 +129,11 @@ search replace
     - if that's not possible, just keep references in there, so only have to update all deps
         - (might be all lines after current line? if is don't bother with references);
     - how do I handle wrong indenations? thinking putting ghost red text after badly indented line and having red background line number
-- dot command
-- tab complete
 - commenting, and comment highlighting
 - gf
 - fileExplorer (current one is trash) actually make it good now
+
+## LOW PRIO
 - dt, df,
 - * and # when in normal mode
 - turn off isInString highlighting for md txt files

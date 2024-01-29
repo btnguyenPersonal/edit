@@ -157,9 +157,11 @@ int getColorFromChar(char c) {
     }
 }
 
-void printChar(State* state, int row, int col, char c, bool isInString, bool isInverted, bool isInSearchQuery, uint startOfSearch) {
+void printChar(State* state, int row, int col, char c, bool isInString, bool isInverted, bool isInSearchQuery, uint startOfSearch, bool isComment) {
     int color;
-    if (isInSearchQuery == true && isInverted == false && state->searching == true) {
+    if (isComment) {
+        color = GREEN;
+    } else if (isInSearchQuery == true && isInverted == false && state->searching == true) {
         if (state->row == (uint) row && startOfSearch + state->searchQuery.length() >= state->col && startOfSearch <= state->col) {
             color = invertColor(MAGENTA);
         } else {
@@ -246,15 +248,15 @@ bool isInSearchQuery(State* state, uint row, uint col) {
 
 void printLine(State* state, int row) {
     if (isRowColInVisual(state, row, 0) == true && state->data[row].length() == 0) {
-        printChar(state, row, 0, ' ', false, true, false, 0);
+        printChar(state, row, 0, ' ', false, true, false, 0, false);
     } else {
         bool isInString = false;
         bool skipNext = false;
         uint searchCounter = 0;
         int renderCol = 0;
         uint startOfSearch;
+        bool isComment = false;
         char stringType;
-        // TODO if in comment put in green
         for (uint col = 0; col < state->data[row].length() && col < state->windowPosition.col + state->maxX - LINE_NUM_OFFSET;) {
             if (searchCounter == 0 && isInSearchQuery(state, row, col)) {
                 searchCounter = state->searchQuery.length();
@@ -275,16 +277,19 @@ void printLine(State* state, int row) {
             } else {
                 skipNext = false;
             }
+            if (!isInString && state->data[row].substr(col, state->commentSymbol.length()) == state->commentSymbol && state->commentSymbol != "") {
+                isComment = true;
+            }
             if (col >= state->windowPosition.col) {
                 if (state->replacing && searchCounter != 0) {
                     for (uint i = 0; i < state->replaceQuery.length(); i++) {
-                        printChar(state, row, renderCol, state->replaceQuery[i], false, false, true, startOfSearch);
+                        printChar(state, row, renderCol, state->replaceQuery[i], false, false, true, startOfSearch, false);
                         renderCol++;
                     }
                     col += state->searchQuery.length();
                     searchCounter = 0;
                 } else {
-                    printChar(state, row, renderCol, state->data[row][col], isInString, isRowColInVisual(state, row, col), searchCounter != 0, startOfSearch);
+                    printChar(state, row, renderCol, state->data[row][col], isInString, isRowColInVisual(state, row, col), searchCounter != 0, startOfSearch, isComment);
                     renderCol++;
                     col++;
                 }
