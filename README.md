@@ -119,8 +119,10 @@ search replace
 - ctrl h ctrl l move around harpoon
 - getFromClipbpoard when nothing in clipboard
 - dot command
+- comment highlighting
 
 ## TODO
+- commenting
 - tab complete
 - indenting
     - real time, never have to worry about breaking everything
@@ -129,11 +131,12 @@ search replace
     - if that's not possible, just keep references in there, so only have to update all deps
         - (might be all lines after current line? if is don't bother with references);
     - how do I handle wrong indenations? thinking putting ghost red text after badly indented line and having red background line number
-- commenting, and comment highlighting
 - gf
 - fileExplorer (current one is trash) actually make it good now
 
 ## LOW PRIO
+- ctrl d - print console.log equivalent at start of line w/ line number (eg 0144 to make it easy to read)
+- ctrl a x increment decrement
 - dt, df,
 - * and # when in normal mode
 - turn off isInString highlighting for md txt files
