@@ -17,6 +17,12 @@
 void sendShortcutKeys(State* state, char c) {
     if (c == 27) { // ESC
         state->prevKeys = "";
+    } else if (handleMotion(state, c, "gt")) {
+        if (state->motionComplete) {
+            for (uint i = 0; i < state->data.size(); i++) {
+                rtrim(state->data[i]);
+            }
+        }
     } else if (handleMotion(state, c, "gg")) {
         if (state->motionComplete) {
             state->row = 0;
@@ -447,7 +453,7 @@ void sendShortcutKeys(State* state, char c) {
             setPosition(state, copyInVisual(state));
             state->col = getIndexFirstNonSpace(state);
         }
-    } else if (state->motion == "r") {
+    } else if (state->prevKeys == "r") {
         if (state->col < state->data[state->row].length()) {
             state->data[state->row] = state->data[state->row].substr(0, state->col) + c + state->data[state->row].substr(state->col + 1);
         }

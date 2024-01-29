@@ -11,6 +11,7 @@ void moveHarpoonLeft(State* state);
 void moveHarpoonRight(State* state);
 bool isWindowPositionHorizontalInvalid(State* state);
 void ltrim(std::string &s);
+void rtrim(std::string &s);
 void replaceAll(State* state, std::string query, std::string replace);
 bool setSearchResultReverse(State* state);
 void fixColOverMax(State* state);
