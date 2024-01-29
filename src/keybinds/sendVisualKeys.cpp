@@ -79,7 +79,15 @@ Position changeInVisual(State* state) {
         state->data.erase(state->data.begin() + bounds.minR, state->data.begin() + bounds.maxR);
         state->data[bounds.minR] = std::string("");
     } else if (state->visualType == NORMAL) {
-        state->data[bounds.minR] = state->data[bounds.minR].substr(0, bounds.minC) + state->data[bounds.maxR].substr(bounds.maxC + 1);
+        std::string firstPart = "";
+        std::string secondPart = "";
+        if (bounds.minC <= state->data[bounds.minR].length()) {
+            firstPart = state->data[bounds.minR].substr(0, bounds.minC);
+        }
+        if (bounds.maxC < state->data[bounds.maxR].length()) {
+            secondPart = state->data[bounds.maxR].substr(bounds.maxC + 1);
+        }
+        state->data[bounds.minR] = firstPart + secondPart;
         state->data.erase(state->data.begin() + bounds.minR + 1, state->data.begin() + bounds.maxR + 1);
     }
     Position pos = Position();
@@ -102,7 +110,15 @@ Position deleteInVisual(State* state) {
     if (state->visualType == LINE) {
         state->data.erase(state->data.begin() + bounds.minR, state->data.begin() + bounds.maxR + 1);
     } else if (state->visualType == NORMAL) {
-        state->data[bounds.minR] = state->data[bounds.minR].substr(0, bounds.minC) + state->data[bounds.maxR].substr(bounds.maxC + 1);
+        std::string firstPart = "";
+        std::string secondPart = "";
+        if (bounds.minC <= state->data[bounds.minR].length()) {
+            firstPart = state->data[bounds.minR].substr(0, bounds.minC);
+        }
+        if (bounds.maxC < state->data[bounds.maxR].length()) {
+            secondPart = state->data[bounds.maxR].substr(bounds.maxC + 1);
+        }
+        state->data[bounds.minR] = firstPart + secondPart;
         state->data.erase(state->data.begin() + bounds.minR + 1, state->data.begin() + bounds.maxR + 1);
     }
     Position pos = Position();

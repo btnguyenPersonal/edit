@@ -691,7 +691,5 @@ void sendShortcutKeys(State* state, char c) {
         state->harpoonIndex = state->harpoonFiles.size() - 1;
     } else if (c == 'G') {
         state->row = state->data.size() - 1;
-    } else {
-        state->status = std::string(1, c) + " <" + std::to_string((int)c) + ">";
     }
 }

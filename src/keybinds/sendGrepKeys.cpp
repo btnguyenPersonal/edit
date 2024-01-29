@@ -35,8 +35,6 @@ void sendGrepKeys(State* state, char c) {
             state->resetState(selectedFile);
             state->row = lineNum - 1;
         }
-    } else {
-        state->status = std::string(1, c) + " <" + std::to_string((int)c) + ">";
     }
     if (state->mode == GREP && c != ctrl('p') && c != ctrl('n')) {
         generateGrepOutput(state);
