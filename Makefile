@@ -37,7 +37,7 @@ $(BUILD_DIR)/%.o: $(SRC_DIR)/%.cpp
 	$(CC) -c $< -o $@ $(CFLAGS)
 
 install:
-	make all && sudo cp build/e /usr/bin
+	make all && sudo cp build/e /usr/local/bin
 
 clean:
 	rm -rf $(BUILD_DIR)
