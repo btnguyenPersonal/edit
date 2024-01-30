@@ -376,7 +376,7 @@ void moveCursor(State* state, int cursorPosition) {
 }
 
 void renderScreen(State* state) {
-    clear();
+    erase();
     if (state->mode == FINDFILE) {
         renderFindFileOutput(state);
     } else if (state->mode == GREP) {
@@ -386,7 +386,8 @@ void renderScreen(State* state) {
     }
     int cursorPosition = renderStatusBar(state);
     moveCursor(state, cursorPosition);
-    refresh();
+    wnoutrefresh(stdscr);
+    doupdate();
 }
 
 void initTerminal() {
