@@ -120,9 +120,11 @@ search replace
 - getFromClipbpoard when nothing in clipboard
 - dot command
 - comment highlighting
+- ignorelist actually work
 
 ## TODO
-- ignorelist actually work
+- start ctrl p with all highlighted
+- cursor for ctrl p ctrl g
 - commenting
 - tab complete
 - indenting
