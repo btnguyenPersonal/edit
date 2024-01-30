@@ -122,6 +122,7 @@ search replace
 - comment highlighting
 
 ## TODO
+- ignorelist actually work
 - commenting
 - tab complete
 - indenting
