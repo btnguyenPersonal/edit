@@ -12,6 +12,7 @@
 #include "../util/visualType.h"
 #include "../util/indent.h"
 #include "../util/comment.h"
+#include "../util/insertLoggingCode.h"
 #include "sendVisualKeys.h"
 #include "sendKeys.h"
 #include "sendShortcutKeys.h"
@@ -503,9 +504,9 @@ void sendShortcutKeys(State* state, char c) {
         left(state);
     } else if (c == 'l') {
         right(state);
-    } else if (c == 'k') {
+    } else if (c == 'k' || c == ctrl('k')) {
         up(state);
-    } else if (c == 'j') {
+    } else if (c == 'j' || c == ctrl('j')) {
         down(state);
     } else if (c == '[') {
         state->row = getPrevLineSameIndent(state);
@@ -517,9 +518,6 @@ void sendShortcutKeys(State* state, char c) {
     } else if (c == ctrl('p')) {
         state->mode = FINDFILE;
         state->selectAll = true;
-    } else if (c == ctrl('y')) {
-        state->mode = FINDFILE;
-        generateFindFileOutput(state);
     } else if (c == 'v') {
         state->mode = VISUAL;
         initVisual(state, NORMAL);
@@ -679,6 +677,10 @@ void sendShortcutKeys(State* state, char c) {
     } else if (c == '=') {
         indentLine(state);
         state->col = getIndexFirstNonSpace(state);
+    } else if (c == 'Q') {
+        removeAllLoggingCode(state);
+    } else if (c == ctrl('q')) {
+        toggleLoggingCode(state);
     } else if (c == ctrl('e')) {
         if (state->harpoonIndex + 1 < state->harpoonFiles.size()) {
             state->harpoonIndex += 1;

@@ -7,6 +7,8 @@
 #include "state.h"
 #include "visualType.h"
 
+std::string getCommentSymbol(std::string filename);
+std::string getExtension(std::string filename);
 void moveHarpoonLeft(State* state);
 void moveHarpoonRight(State* state);
 bool isWindowPositionHorizontalInvalid(State* state);

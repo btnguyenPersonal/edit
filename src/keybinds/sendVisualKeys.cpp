@@ -9,6 +9,7 @@
 #include "../util/indent.h"
 #include "../util/comment.h"
 #include "../util/bounds.h"
+#include "../util/insertLoggingCode.h"
 #include "sendVisualKeys.h"
 
 void setStateFromWordPosition(State* state, WordPosition pos) {
@@ -321,6 +322,14 @@ void sendVisualKeys(State* state, char c) {
         state->col = pos.col;
         state->mode = SHORTCUTS;
         return;
+    } else if (c == ctrl('q')) {
+        Bounds bounds = getBounds(state);
+        for (state->row = bounds.minR; state->row <= bounds.maxR; state->row++) {
+            insertLoggingCode(state);
+        }
+        state->row = bounds.minR;
+        state->col = getIndexFirstNonSpace(state);
+        state->mode = SHORTCUTS;
     } else if (c == 'e') {
         Bounds bounds = getBounds(state);
         toggleCommentLines(state, bounds);

@@ -14,6 +14,7 @@ SOURCES = $(SRC_DIR)/edit.cpp \
           $(UTIL_DIR)/history.cpp \
           $(UTIL_DIR)/indent.cpp \
           $(UTIL_DIR)/comment.cpp \
+          $(UTIL_DIR)/insertLoggingCode.cpp \
           $(KEYBINDS_DIR)/sendKeys.cpp \
           $(KEYBINDS_DIR)/sendVisualKeys.cpp \
           $(KEYBINDS_DIR)/sendFindFileKeys.cpp \
