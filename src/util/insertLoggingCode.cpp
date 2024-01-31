@@ -22,7 +22,7 @@ void toggleLoggingCode(State* state) {
 }
 
 void removeAllLoggingCode(State* state) {
-    for (uint i = 0; i < state->data.size(); i++) {
+    for (unsigned int i = 0; i < state->data.size(); i++) {
         std::string current = state->data[i];
         std::string loggingCode = getLoggingCode(state, i);
         if (current.substr(0, loggingCode.length()) == loggingCode) {
@@ -31,7 +31,7 @@ void removeAllLoggingCode(State* state) {
     }
 }
 
-std::string getLoggingCode(State* state, uint row) {
+std::string getLoggingCode(State* state, unsigned int row) {
     std::string extension = getExtension(state->filename);
     std::string rowStr = std::to_string(row + 1);
     rowStr = std::string(4 - rowStr.length(), '0') + rowStr;

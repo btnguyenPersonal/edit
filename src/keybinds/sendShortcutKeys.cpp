@@ -1,4 +1,3 @@
-#include "../global.h"
 #include <string>
 #include <vector>
 #include <climits>
@@ -26,7 +25,7 @@ void sendShortcutKeys(State* state, char c) {
         }
     } else if (handleMotion(state, c, "gt")) {
         if (state->motionComplete) {
-            for (uint i = 0; i < state->data.size(); i++) {
+            for (unsigned int i = 0; i < state->data.size(); i++) {
                 rtrim(state->data[i]);
             }
         }
@@ -578,8 +577,8 @@ void sendShortcutKeys(State* state, char c) {
     } else if (c == 'n') {
         state->searching = true;
         state->col += 1;
-        uint temp_col = state->col;
-        uint temp_row = state->row;
+        unsigned int temp_col = state->col;
+        unsigned int temp_row = state->row;
         bool result = setSearchResult(state);
         if (result == false) {
             state->row = temp_row;
@@ -587,14 +586,14 @@ void sendShortcutKeys(State* state, char c) {
         }
         centerScreen(state);
     } else if (c == '.') {
-        for (uint i = 0; i < state->dotCommand.length(); i++) {
+        for (unsigned int i = 0; i < state->dotCommand.length(); i++) {
             state->dontRecordKey = true;
             sendKeys(state, state->dotCommand[i]);
         }
         state->dontRecordKey = true;
     } else if (c == ',' && state->recording == false) {
         // TODO replay with clipboard
-        for (uint i = 0; i < state->macroCommand.length(); i++) {
+        for (unsigned int i = 0; i < state->macroCommand.length(); i++) {
             state->dontRecordKey = true;
             sendKeys(state, state->macroCommand[i]);
         }

@@ -1,4 +1,3 @@
-#include "../global.h"
 #include <string>
 #include <vector>
 #include <ncurses.h>
@@ -28,7 +27,7 @@ std::string getInVisual(State* state) {
             clip += state->data[i] + "\n";
         }
     } else if (state->visualType == NORMAL) {
-        uint index = bounds.minC;
+        unsigned int index = bounds.minC;
         for (size_t i = bounds.minR; i < bounds.maxR; i++) {
             while (index < state->data[i].size()) {
                 clip += state->data[i][index];
@@ -243,8 +242,8 @@ void sendVisualKeys(State* state, char c) {
         state->searching = true;
         state->searchQuery = getInVisual(state);
         state->mode = SHORTCUTS;
-        uint temp_col = state->col;
-        uint temp_row = state->row;
+        unsigned int temp_col = state->col;
+        unsigned int temp_row = state->row;
         bool result = setSearchResult(state);
         if (result == false) {
             state->row = temp_row;
@@ -269,7 +268,7 @@ void sendVisualKeys(State* state, char c) {
     } else if (c == '=') {
         Bounds bounds = getBounds(state);
         state->row = bounds.minR;
-        for (uint i = bounds.minR; i <= bounds.maxR; i++) {
+        for (unsigned int i = bounds.minR; i <= bounds.maxR; i++) {
             indentLine(state);
             state->row += 1;
         }
@@ -281,7 +280,7 @@ void sendVisualKeys(State* state, char c) {
     } else if (c == '<') {
         Bounds bounds = getBounds(state);
         state->row = bounds.minR;
-        for (uint i = bounds.minR; i <= bounds.maxR; i++) {
+        for (unsigned int i = bounds.minR; i <= bounds.maxR; i++) {
             deindent(state);
             state->row += 1;
         }
@@ -293,7 +292,7 @@ void sendVisualKeys(State* state, char c) {
     } else if (c == '>') {
         Bounds bounds = getBounds(state);
         state->row = bounds.minR;
-        for (uint i = bounds.minR; i <= bounds.maxR; i++) {
+        for (unsigned int i = bounds.minR; i <= bounds.maxR; i++) {
             indent(state);
             state->row += 1;
         }

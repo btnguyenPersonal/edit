@@ -5,6 +5,7 @@
 #include <filesystem>
 #include "modes.h"
 #include "visualType.h"
+#include "../global.h"
 
 struct grepMatch {
     std::filesystem::path path;
@@ -13,19 +14,19 @@ struct grepMatch {
 };
 
 struct diffLine {
-    uint lineNum;
+    unsigned int lineNum;
     bool add; // true for add, false for delete
     std::string line;
 };
 
 struct Position {
-    uint row;
-    uint col;
+    unsigned int row;
+    unsigned int col;
 };
 
 struct WordPosition {
-    uint min;
-    uint max;
+    unsigned int min;
+    unsigned int max;
 };
 
 struct Archive {
@@ -34,32 +35,32 @@ struct Archive {
     std::vector<std::vector<diffLine>> history;
     int historyPosition;
     struct Position windowPosition;
-    uint row;
-    uint col;
+    unsigned int row;
+    unsigned int col;
 };
 
 class State {
     public:
         std::vector<Archive> archives;
         std::vector<std::string> harpoonFiles;
-        uint harpoonIndex;
+        unsigned int harpoonIndex;
         std::string filename;
         std::vector<std::string> data;
         std::vector<std::string> previousState;
         std::vector<std::string> fileStack;
-        uint fileStackIndex;
+        unsigned int fileStackIndex;
         std::vector<std::vector<diffLine>> history;
         int historyPosition;
         bool searching;
         bool replacing;
-        uint indent;
+        unsigned int indent;
         struct Position windowPosition;
-        static uint maxX;
-        static uint maxY;
+        static unsigned int maxX;
+        static unsigned int maxY;
         VisualType visualType;
         struct Position visual;
-        uint row;
-        uint col;
+        unsigned int row;
+        unsigned int col;
         std::string commentSymbol;
         std::string searchQuery;
         std::string replaceQuery;
@@ -72,10 +73,10 @@ class State {
         bool recording;
         bool dontRecordKey;
         std::string findFileQuery;
-        uint findFileSelection;
+        unsigned int findFileSelection;
         std::vector<std::filesystem::path> findFileOutput;
         std::string grepQuery;
-        uint grepSelection;
+        unsigned int grepSelection;
         std::vector<grepMatch> grepOutput;
         std::string prevKeys;
         std::string status;

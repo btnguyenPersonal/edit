@@ -5,7 +5,7 @@
 
 int getNumLeadingSpaces(std::string s) {
     int numSpaces = 0;
-    for (uint i = 0; i < s.length(); i++) {
+    for (unsigned int i = 0; i < s.length(); i++) {
         if (s[i] == ' ') {
             numSpaces++;
         } else {
@@ -15,7 +15,7 @@ int getNumLeadingSpaces(std::string s) {
     return numSpaces;
 }
 
-std::string getPrevLine(State* state, uint row) {
+std::string getPrevLine(State* state, unsigned int row) {
     for (int i = row - 1; i >= 0; i--) {
         if (state->data[i] != "") {
             return state->data[i];
@@ -24,7 +24,7 @@ std::string getPrevLine(State* state, uint row) {
     return "";
 }
 
-int getIndentLevel(State* state, uint row) {
+int getIndentLevel(State* state, unsigned int row) {
     // TODO add html
     std::string prevLine = getPrevLine(state, row);
     rtrim(prevLine);
@@ -32,7 +32,7 @@ int getIndentLevel(State* state, uint row) {
     ltrim(currLine);
     int indentLevel = getNumLeadingSpaces(prevLine);
 
-    for (uint i = 0; i < prevLine.length(); i++) {
+    for (unsigned int i = 0; i < prevLine.length(); i++) {
         if (prevLine.substr(i, state->commentSymbol.length()) == state->commentSymbol) {
             break;
         } else if (prevLine[i] == '(' || prevLine[i] == '{' || prevLine[i] == '[') {
@@ -42,7 +42,7 @@ int getIndentLevel(State* state, uint row) {
         }
     }
 
-    for (uint i = 0; i < currLine.length(); i++) {
+    for (unsigned int i = 0; i < currLine.length(); i++) {
         if (currLine.substr(i, state->commentSymbol.length()) == state->commentSymbol) {
             break;
         } else if (currLine[i] == ')' || currLine[i] == '}' || currLine[i] == ']') {

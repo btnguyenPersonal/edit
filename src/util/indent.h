@@ -3,8 +3,9 @@
 #include <vector>
 #include <string>
 #include "state.h"
+#include "../global.h"
 
 int getNumLeadingSpaces(std::string s);
-std::string getPrevLine(State* state, uint row);
-int getIndentLevel(State* state, uint row);
+std::string getPrevLine(State* state, unsigned int row);
+int getIndentLevel(State* state, unsigned int row);
 void indentLine(State* state);

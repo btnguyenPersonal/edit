@@ -1,4 +1,3 @@
-#include "../global.h"
 #include <string>
 #include <vector>
 #include <iostream>
@@ -9,12 +8,12 @@
 #include "state.h"
 #include <ncurses.h>
 
-uint State::maxX = 0;
-uint State::maxY = 0;
+unsigned int State::maxX = 0;
+unsigned int State::maxY = 0;
 
 void State::changeFile(std::string filename) {
     bool found = false;
-    for (uint i = 0; i < this->archives.size(); i++) {
+    for (unsigned int i = 0; i < this->archives.size(); i++) {
         if (this->archives[i].filename == this->filename) {
             this->archives[i].previousState = this->previousState;
             this->archives[i].history = this->history;
@@ -37,7 +36,7 @@ void State::changeFile(std::string filename) {
             this->col,
         });
     }
-    for (uint i = 0; i < this->archives.size(); i++) {
+    for (unsigned int i = 0; i < this->archives.size(); i++) {
         if (this->archives[i].filename == std::string(filename)) {
             auto archive = this->archives[i];
             this->filename = std::string(filename);
@@ -154,6 +153,6 @@ State::State(std::string filename) : State() {
 }
 
 void State::setMaxYX(int y, int x) {
-    State::maxY = (uint) y;
-    State::maxX = (uint) x;
+    State::maxY = (unsigned int) y;
+    State::maxX = (unsigned int) x;
 }

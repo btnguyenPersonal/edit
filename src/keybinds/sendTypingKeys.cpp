@@ -1,4 +1,3 @@
-#include "../global.h"
 #include <string>
 #include <vector>
 #include "../util/helper.h"

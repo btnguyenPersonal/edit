@@ -1,8 +1,10 @@
 #pragma once
 
+#include "../global.h"
+
 struct Bounds {
-    uint minR;
-    uint maxR;
-    uint minC;
-    uint maxC;
+    unsigned int minR;
+    unsigned int maxR;
+    unsigned int minC;
+    unsigned int maxC;
 };

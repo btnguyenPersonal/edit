@@ -1,4 +1,3 @@
-#include "../global.h"
 #include <ncurses.h>
 #include "sendKeys.h"
 #include "sendShortcutKeys.h"

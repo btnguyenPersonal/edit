@@ -11,7 +11,7 @@ void toggleComment(State* state) {
     toggleCommentHelper(state, state->row, -1);
 }
 
-void toggleCommentHelper(State* state, uint row, int commentIndex) {
+void toggleCommentHelper(State* state, unsigned int row, int commentIndex) {
     std::string line = state->data[row];
     if (commentIndex == -1) {
         int i = getNumLeadingSpaces(line);
@@ -45,11 +45,11 @@ void toggleCommentLines(State* state, Bounds bounds) {
             break;
         }
     }
-    uint minIndentLevel = -1;
+    unsigned int minIndentLevel = -1;
     if (foundNonComment) {
         minIndentLevel = UINT_MAX;
         for (size_t i = bounds.minR; i <= bounds.maxR; i++) {
-            uint indent = getIndentLevel(state, i);
+            unsigned int indent = getIndentLevel(state, i);
             if (indent < minIndentLevel) {
                 minIndentLevel = indent;
             }
@@ -71,7 +71,7 @@ void unCommentBlock(State* state) {
             }
         }
     }
-    for (uint i = state->row; i < state->data.size(); i++) {
+    for (unsigned int i = state->row; i < state->data.size(); i++) {
         if (!foundComment) {
             if (isComment(state, state->data[i])) {
                 foundComment = true;
