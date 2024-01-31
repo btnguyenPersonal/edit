@@ -344,8 +344,9 @@ std::vector<std::filesystem::path> findFiles(const std::filesystem::path& dir_pa
             it.disable_recursion_pending();
             continue;
         }
-        if (std::filesystem::is_regular_file(it->path()) && filePathContainsSubstring(it->path(), query)) {
-            matching_files.push_back(std::filesystem::relative(it->path(), dir_path));
+        auto relativePath = std::filesystem::relative(it->path(), dir_path);
+        if (std::filesystem::is_regular_file(it->path()) && filePathContainsSubstring(relativePath, query)) {
+            matching_files.push_back(relativePath);
         }
     }
     std::sort(matching_files.begin(), matching_files.end());
