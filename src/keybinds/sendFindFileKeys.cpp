@@ -8,16 +8,31 @@
 
 void sendFindFileKeys(State* state, char c) {
     if (c == 27) { // ESC
+        state->selectAll = false;
         state->mode = SHORTCUTS;
     } else if (' ' <= c && c <= '~') {
+        if (state->selectAll == true) {
+            state->findFileQuery = std::string("");
+            state->findFileSelection = 0;
+            state->selectAll = false;
+        }
         state->findFileQuery += c;
         state->findFileSelection = 0;
     } else if (c == 127) { // BACKSPACE
-        state->findFileQuery = state->findFileQuery.substr(0, state->findFileQuery.length() - 1);
-        state->findFileSelection = 0;
+        if (state->selectAll == true) {
+            state->findFileQuery = "";
+            state->findFileSelection = 0;
+            state->selectAll = false;
+        } else {
+            state->findFileQuery = state->findFileQuery.substr(0, state->findFileQuery.length() - 1);
+            state->findFileSelection = 0;
+        }
+    } else if (c == ctrl('a')) {
+        state->selectAll = true;
     } else if (c == ctrl('g')) {
         state->mode = GREP;
     } else if (c == ctrl('l')) {
+        state->selectAll = false;
         state->findFileQuery = std::string("");
         state->findFileSelection = 0;
     } else if (c == ctrl('n')) {
@@ -30,6 +45,7 @@ void sendFindFileKeys(State* state, char c) {
         }
     } else if (c == ctrl('m')) { // ENTER
         if (state->findFileSelection < state->findFileOutput.size()) {
+            state->selectAll = false;
             auto selectedFile = state->findFileOutput[state->findFileSelection].string();
             state->resetState(selectedFile);
         }

@@ -90,9 +90,17 @@ int renderStatusBar(State* state) {
         offset += state->grepQuery.length() + 2;
         return offset;
     } else if (state->mode == FINDFILE) {
-        attron(COLOR_PAIR(YELLOW));
+        if (state->selectAll) {
+            attron(COLOR_PAIR(invertColor(YELLOW)));
+        } else {
+            attron(COLOR_PAIR(YELLOW));
+        }
         mvprintw(0, offset, "> %s", state->findFileQuery.c_str());
-        attroff(COLOR_PAIR(YELLOW));
+        if (state->selectAll) {
+            attroff(COLOR_PAIR(invertColor(YELLOW)));
+        } else {
+            attroff(COLOR_PAIR(YELLOW));
+        }
         offset += state->findFileQuery.length() + 2;
         return offset;
     } else {

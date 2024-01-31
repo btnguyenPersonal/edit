@@ -510,8 +510,7 @@ void sendShortcutKeys(State* state, char c) {
         generateGrepOutput(state);
     } else if (c == ctrl('p')) {
         state->mode = FINDFILE;
-        state->findFileQuery = std::string("");
-        generateFindFileOutput(state);
+        state->selectAll = true;
     } else if (c == ctrl('y')) {
         state->mode = FINDFILE;
         generateFindFileOutput(state);

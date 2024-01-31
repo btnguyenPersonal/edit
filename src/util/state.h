@@ -79,6 +79,7 @@ class State {
         std::vector<grepMatch> grepOutput;
         std::string prevKeys;
         std::string status;
+        bool selectAll;
         bool showFileStack;
         Mode mode;
         State();

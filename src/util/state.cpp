@@ -126,6 +126,7 @@ void State::changeFile(std::string filename) {
     this->col = 0;
     this->indent = 4;
     this->commandLineQuery = std::string("");
+    this->selectAll = false;
     this->prevKeys = std::string("");
     this->status = std::string("");
     this->motionComplete = false;
@@ -187,6 +188,7 @@ State::State() {
     this->macroCommand = std::string("");
     this->playingCommand = false;
     this->recording = false;
+    this->selectAll = false;
     this->dontRecordKey = false;
     this->fileStack = std::vector<std::string>();
     this->showFileStack = false;
