@@ -37,6 +37,9 @@ $(EXECUTABLE): $(OBJECTS)
 $(BUILD_DIR)/%.o: $(SRC_DIR)/%.cpp
 	$(CC) -c $< -o $@ $(CFLAGS)
 
+test:
+	make all && build/e longtest.md
+
 install:
 	make all && sudo cp build/e /usr/local/bin
 

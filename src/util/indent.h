@@ -4,4 +4,7 @@
 #include <string>
 #include "state.h"
 
-uint getNumLeadingSpaces(State* state, uint row);
+int getNumLeadingSpaces(std::string s);
+void indentLine(State* state);
+std::string getPrevLine(State* state);
+uint getIndentLevel(State* state);

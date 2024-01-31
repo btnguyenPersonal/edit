@@ -4,6 +4,7 @@
 #include "../util/helper.h"
 #include "../util/state.h"
 #include "../util/modes.h"
+#include "../util/indent.h"
 #include "sendTypingKeys.h"
 
 void sendTypingKeys(State* state, char c) {
@@ -11,7 +12,6 @@ void sendTypingKeys(State* state, char c) {
         left(state);
         state->mode = SHORTCUTS;
     } else if (c == 127) { // BACKSPACE
-        // TODO make delete new lines
         if (state->col > 0) {
             std::string current = state->data[state->row];
             state->data[state->row] = current.substr(0, state->col - 1) + current.substr(state->col);
@@ -20,6 +20,10 @@ void sendTypingKeys(State* state, char c) {
     } else if (' ' <= c && c <= '~') {
         std::string current = state->data[state->row];
         state->data[state->row] = current.substr(0, state->col) + c + current.substr(state->col);
+        if ((int) state->col == getIndexFirstNonSpace(state)) {
+            indentLine(state);
+            state->col = getIndexFirstNonSpace(state);
+        }
         state->col += 1;
     } else if (c == ctrl('m')) { // ENTER
         std::string current = state->data[state->row];

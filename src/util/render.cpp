@@ -180,13 +180,17 @@ void printChar(State* state, int row, int col, char c, bool isInString, bool isI
     } else {
         color = getColorFromChar(c);
     }
-    if (isInverted == false) {
+    if (c == '\t') {
+        attron(COLOR_PAIR(invertColor(RED)));
+    } else if (isInverted == false) {
         attron(COLOR_PAIR(color));
     } else {
         attron(COLOR_PAIR(invertColor(color)));
     }
     mvaddch(row - state->windowPosition.row + 1, col + LINE_NUM_OFFSET, c);
-    if (isInverted == false) {
+    if (c == '\t') {
+        attroff(COLOR_PAIR(invertColor(RED)));
+    } else if (isInverted == false) {
         attroff(COLOR_PAIR(color));
     } else {
         attroff(COLOR_PAIR(invertColor(color)));

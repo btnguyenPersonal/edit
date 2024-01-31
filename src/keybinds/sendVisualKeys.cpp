@@ -6,6 +6,7 @@
 #include "../util/helper.h"
 #include "../util/modes.h"
 #include "../util/clipboard.h"
+#include "../util/indent.h"
 #include "sendVisualKeys.h"
 
 void setStateFromWordPosition(State* state, WordPosition pos) {
@@ -250,6 +251,18 @@ void sendVisualKeys(State* state, char c) {
         state->visualType = NORMAL;
     } else if (c == 'G') {
         state->row = state->data.size() - 1;
+    } else if (c == '=') {
+        Bounds bounds = getBounds(state);
+        state->row = bounds.minR;
+        for (uint i = bounds.minR; i <= bounds.maxR; i++) {
+            indentLine(state);
+            state->row += 1;
+        }
+        state->row = bounds.minR;
+        state->visual.row = bounds.maxR;
+        state->col = getIndexFirstNonSpace(state);
+        state->mode = SHORTCUTS;
+        return;
     } else if (c == '<') {
         Bounds bounds = getBounds(state);
         state->row = bounds.minR;

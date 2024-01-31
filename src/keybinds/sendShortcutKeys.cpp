@@ -669,7 +669,8 @@ void sendShortcutKeys(State* state, char c) {
         state->harpoonIndex = 0;
         state->harpoonFiles.clear();
     } else if (c == '=') {
-        state->status = std::to_string(getNumLeadingSpaces(state, state->row));
+        indentLine(state);
+        state->col = getIndexFirstNonSpace(state);
     } else if (c == ctrl('e')) {
         if (state->harpoonIndex + 1 < state->harpoonFiles.size()) {
             state->harpoonIndex += 1;
