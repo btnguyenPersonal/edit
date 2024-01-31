@@ -1,13 +1,7 @@
 #pragma once
 
 #include "../util/state.h"
-
-struct Bounds {
-    uint minR;
-    uint maxR;
-    uint minC;
-    uint maxC;
-};
+#include "../util/bounds.h"
 
 void setStateFromWordPosition(State* state, WordPosition pos);
 Bounds getBounds(State* state);

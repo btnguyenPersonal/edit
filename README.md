@@ -129,12 +129,13 @@ search replace
         - (might be all lines after current line? if is don't bother with references);
     - how do I handle wrong indenations? thinking putting ghost red text after badly indented line and having red background line number
 - start ctrl p with all highlighted
+- gf
+- commenting
 
 ## TODO
+- ip ap motions
 - cursor for ctrl p ctrl g
-- commenting
 - tab complete
-- gf
 - indent w/ html
 - ctrl p only filter based on relative path instead of absolute
 - fileExplorer (current one is trash) actually make it good now
@@ -148,3 +149,4 @@ search replace
 - gr -> go to top and find first occ w/ import in front -> go to file at top -> set searchQuery to it -> search for it
 - make row col, etc all Position types like visual
 - { } [ ] and skip whitespace
+- figure out sendShortcutKeys not repeat a bunch of visual shortcuts

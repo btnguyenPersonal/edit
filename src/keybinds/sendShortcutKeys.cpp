@@ -11,6 +11,7 @@
 #include "../util/clipboard.h"
 #include "../util/visualType.h"
 #include "../util/indent.h"
+#include "../util/comment.h"
 #include "sendVisualKeys.h"
 #include "sendKeys.h"
 #include "sendShortcutKeys.h"
@@ -18,6 +19,10 @@
 void sendShortcutKeys(State* state, char c) {
     if (c == 27) { // ESC
         state->prevKeys = "";
+    } else if (handleMotion(state, c, "ge")) {
+        if (state->motionComplete) {
+            unCommentBlock(state);
+        }
     } else if (handleMotion(state, c, "gt")) {
         if (state->motionComplete) {
             for (uint i = 0; i < state->data.size(); i++) {
@@ -668,6 +673,9 @@ void sendShortcutKeys(State* state, char c) {
     } else if (c == 'X') {
         state->harpoonIndex = 0;
         state->harpoonFiles.clear();
+    } else if (c == 'e') {
+        toggleComment(state);
+        state->col = getIndexFirstNonSpace(state);
     } else if (c == '=') {
         indentLine(state);
         state->col = getIndexFirstNonSpace(state);
@@ -702,3 +710,4 @@ void sendShortcutKeys(State* state, char c) {
         state->row = state->data.size() - 1;
     }
 }
+

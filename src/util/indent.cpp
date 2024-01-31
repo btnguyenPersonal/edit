@@ -15,8 +15,8 @@ int getNumLeadingSpaces(std::string s) {
     return numSpaces;
 }
 
-std::string getPrevLine(State* state) {
-    for (int i = state->row - 1; i >= 0; i--) {
+std::string getPrevLine(State* state, uint row) {
+    for (int i = row - 1; i >= 0; i--) {
         if (state->data[i] != "") {
             return state->data[i];
         }
@@ -24,13 +24,12 @@ std::string getPrevLine(State* state) {
     return "";
 }
 
-void indentLine(State* state) {
+int getIndentLevel(State* state, uint row) {
     // TODO add html
-    ltrim(state->data[state->row]);
-
-    std::string prevLine = getPrevLine(state);
+    std::string prevLine = getPrevLine(state, row);
     rtrim(prevLine);
-    std::string currLine = state->data[state->row];
+    std::string currLine = state->data[row];
+    ltrim(currLine);
     int indentLevel = getNumLeadingSpaces(prevLine);
 
     for (uint i = 0; i < prevLine.length(); i++) {
@@ -53,6 +52,12 @@ void indentLine(State* state) {
         }
     }
 
+    return indentLevel;
+}
+
+void indentLine(State* state) {
+    ltrim(state->data[state->row]);
+    int indentLevel = getIndentLevel(state, state->row);
     for (int i = 0; i < indentLevel; i++) {
         state->data[state->row] = ' ' + state->data[state->row];
     }
