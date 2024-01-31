@@ -131,17 +131,17 @@ search replace
 - start ctrl p with all highlighted
 - gf
 - commenting
+- ctrl d - print console.log equivalent at start of line w/ line number (eg 0144 to make it easy to read)
+- ctrl p only filter based on relative path instead of absolute
 
 ## TODO
-- ip ap motions
-- cursor for ctrl p ctrl g
 - tab complete
 - indent w/ html
-- ctrl p only filter based on relative path instead of absolute
-- fileExplorer (current one is trash) actually make it good now
 
 ## LOW PRIO
-- ctrl d - print console.log equivalent at start of line w/ line number (eg 0144 to make it easy to read)
+- ip ap motions
+- cursor for ctrl p ctrl g
+- fileExplorer (current one is trash) actually make it good now
 - ctrl a x increment decrement
 - dt, df,
 - * and # when in normal mode
