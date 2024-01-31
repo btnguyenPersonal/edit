@@ -167,14 +167,14 @@ int getColorFromChar(char c) {
 
 void printChar(State* state, int row, int col, char c, bool isInString, bool isInverted, bool isInSearchQuery, uint startOfSearch, bool isComment) {
     int color;
-    if (isComment) {
-        color = GREEN;
-    } else if (isInSearchQuery == true && isInverted == false && state->searching == true) {
+    if (isInSearchQuery == true && isInverted == false && state->searching == true) {
         if (state->row == (uint) row && startOfSearch + state->searchQuery.length() >= state->col && startOfSearch <= state->col) {
             color = invertColor(MAGENTA);
         } else {
             color = invertColor(CYAN);
         }
+    } else if (isComment) {
+        color = GREEN;
     } else if (isInString == true) {
         color = CYAN;
     } else {
