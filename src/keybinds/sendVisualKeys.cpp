@@ -200,6 +200,18 @@ void sendVisualKeys(State* state, char c) {
         if (state->motionComplete) {
             setStateFromWordPosition(state, getWordPosition(state->data[state->row], state->col));
         }
+    } else if (handleMotion(state, c, "gf")) {
+        if (state->motionComplete) {
+            try {
+                if (state->visualType == NORMAL) {
+                    std::filesystem::path filePath(state->filename);
+                    std::filesystem::path dir = filePath.parent_path();
+                    std::filesystem::path newFilePath = std::filesystem::canonical(dir / getInVisual(state));
+                    state->resetState(newFilePath.string());
+                }
+            } catch (const std::filesystem::filesystem_error& e) {
+            }
+        }
     } else if (handleMotion(state, c, "gg")) {
         if (state->motionComplete) {
             state->row = 0;
@@ -314,6 +326,6 @@ void sendVisualKeys(State* state, char c) {
         state->mode = TYPING;
         return;
     }
-    // TODO figure out bottom up motions
+    // TODO figure out repeatable bottom up motions
     state->motion += c;
 }

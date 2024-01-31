@@ -121,12 +121,6 @@ search replace
 - dot command
 - comment highlighting
 - ignorelist actually work
-
-## TODO
-- start ctrl p with all highlighted
-- cursor for ctrl p ctrl g
-- commenting
-- tab complete
 - indenting
     - real time, never have to worry about breaking everything
     - will prob require a parser and need to keep a syntax tree in the state
@@ -134,7 +128,15 @@ search replace
     - if that's not possible, just keep references in there, so only have to update all deps
         - (might be all lines after current line? if is don't bother with references);
     - how do I handle wrong indenations? thinking putting ghost red text after badly indented line and having red background line number
+- start ctrl p with all highlighted
+
+## TODO
+- cursor for ctrl p ctrl g
+- commenting
+- tab complete
 - gf
+- indent w/ html
+- ctrl p only filter based on relative path instead of absolute
 - fileExplorer (current one is trash) actually make it good now
 
 ## LOW PRIO
