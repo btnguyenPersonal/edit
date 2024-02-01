@@ -708,6 +708,7 @@ void sendShortcutKeys(State* state, char c) {
             } else {
                 state->status = "file not found";
                 state->harpoonFiles.erase(state->harpoonFiles.begin() + state->harpoonIndex - 1);
+                state->harpoonIndex -= 1;
             }
         }
     } else if (c == '\\') {
