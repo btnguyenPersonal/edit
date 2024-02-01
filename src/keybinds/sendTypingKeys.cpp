@@ -24,6 +24,9 @@ void sendTypingKeys(State* state, char c) {
             state->col = getIndexFirstNonSpace(state);
         }
         state->col += 1;
+    } else if (c == ctrl('t')) {
+        std::string current = state->data[state->row];
+        state->data[state->row] = current.substr(0, state->col) + '\t' + current.substr(state->col);
     } else if (c == ctrl('m')) { // ENTER
         std::string current = state->data[state->row];
         state->data[state->row] = current.substr(0, state->col);

@@ -138,6 +138,8 @@ search replace
 ## TODO
 - tab complete
 - indent w/ html
+- render non-alphanumeric chars
+- fix indent for commented lines at end
 
 ## LOW PRIO
 - ip ap motions

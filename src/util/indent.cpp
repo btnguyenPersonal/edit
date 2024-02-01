@@ -27,6 +27,7 @@ std::string getPrevLine(State* state, unsigned int row) {
 int getIndentLevel(State* state, unsigned int row) {
     // TODO add html
     std::string prevLine = getPrevLine(state, row);
+    // TODO trim comments from string before rtrim
     rtrim(prevLine);
     std::string currLine = state->data[row];
     ltrim(currLine);
