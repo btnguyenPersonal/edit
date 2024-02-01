@@ -210,9 +210,10 @@ void sendVisualKeys(State* state, char c) {
                     if (state->visualType == NORMAL) {
                         std::filesystem::path filePath(state->filename);
                         std::filesystem::path dir = filePath.parent_path();
-                        std::filesystem::path newFilePath = std::filesystem::canonical(dir / (getInVisual(state) + extensions[i]));
-                        if (std::filesystem::exists(newFilePath.string().c_str())) {
-                            state->resetState(newFilePath.string());
+                        auto newFilePath = dir / (getInVisual(state) + extensions[i]);
+                        if (std::filesystem::exists(newFilePath.c_str())) {
+                            auto fixedPath = std::filesystem::canonical(newFilePath);
+                            state->resetState(fixedPath.string());
                             break;
                         }
                     }
