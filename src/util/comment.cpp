@@ -45,13 +45,13 @@ void toggleCommentLines(State* state, Bounds bounds) {
             break;
         }
     }
-    unsigned int minIndentLevel = -1;
+    int minIndentLevel = -1;
     if (foundNonComment) {
-        minIndentLevel = UINT_MAX;
+        minIndentLevel = INT_MAX;
         for (size_t i = bounds.minR; i <= bounds.maxR; i++) {
             unsigned int indent = getIndentLevel(state, i);
-            if (indent < minIndentLevel) {
-                minIndentLevel = indent;
+            if ((int) indent < minIndentLevel) {
+                minIndentLevel = (int) indent;
             }
         }
     }
