@@ -1,5 +1,6 @@
 CC = g++
 CFLAGS = -Wall -lncurses
+DEPFLAGS = -MMD -MP
 
 SRC_DIR = src
 KEYBINDS_DIR = $(SRC_DIR)/keybinds
@@ -26,6 +27,8 @@ SOURCES = $(SRC_DIR)/edit.cpp \
 
 OBJECTS = $(SOURCES:$(SRC_DIR)/%.cpp=$(BUILD_DIR)/%.o)
 
+DEPS = $(OBJECTS:.o=.d)
+
 EXECUTABLE = $(BUILD_DIR)/e
 
 all: $(BUILD_DIR) $(EXECUTABLE)
@@ -37,7 +40,7 @@ $(EXECUTABLE): $(OBJECTS)
 	$(CC) $^ -o $@ $(CFLAGS)
 
 $(BUILD_DIR)/%.o: $(SRC_DIR)/%.cpp
-	$(CC) -c $< -o $@ $(CFLAGS)
+	$(CC) -c $< -o $@ $(CFLAGS) $(DEPFLAGS)
 
 test:
 	make all && build/e longtest.md
@@ -47,5 +50,7 @@ install:
 
 clean:
 	rm -rf $(BUILD_DIR)
+
+-include $(DEPS)
 
 .PHONY: all clean
