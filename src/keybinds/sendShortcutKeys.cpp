@@ -489,14 +489,24 @@ void sendShortcutKeys(State* state, char c) {
         if (state->fileStackIndex + 1 < state->fileStack.size()) {
             state->fileStackIndex += 1;
         }
-        state->changeFile(state->fileStack[state->fileStackIndex]);
-        state->showFileStack = true;
+        if (std::filesystem::exists(state->fileStack[state->fileStackIndex].c_str())) {
+            state->changeFile(state->fileStack[state->fileStackIndex]);
+            state->showFileStack = true;
+        } else {
+            state->status = "file not found";
+            state->fileStack.erase(state->fileStack.begin() + state->fileStackIndex);
+        }
     } else if (c == ctrl('o')) {
         if (state->fileStackIndex > 0) {
             state->fileStackIndex -= 1;
         }
-        state->changeFile(state->fileStack[state->fileStackIndex]);
-        state->showFileStack = true;
+        if (std::filesystem::exists(state->fileStack[state->fileStackIndex].c_str())) {
+            state->changeFile(state->fileStack[state->fileStackIndex]);
+            state->showFileStack = true;
+        } else {
+            state->status = "file not found";
+            state->fileStack.erase(state->fileStack.begin() + state->fileStackIndex);
+        }
     } else if (c == 'r') {
         state->prevKeys = "r";
     } else if (c == 'h') {
@@ -682,13 +692,23 @@ void sendShortcutKeys(State* state, char c) {
         toggleLoggingCode(state);
     } else if (c == ctrl('e')) {
         if (state->harpoonIndex + 1 < state->harpoonFiles.size()) {
-            state->harpoonIndex += 1;
-            state->resetState(state->harpoonFiles[state->harpoonIndex]);
+            if (std::filesystem::exists(state->harpoonFiles[state->harpoonIndex + 1].c_str())) {
+                state->harpoonIndex += 1;
+                state->resetState(state->harpoonFiles[state->harpoonIndex]);
+            } else {
+                state->status = "file not found";
+                state->harpoonFiles.erase(state->harpoonFiles.begin() + state->harpoonIndex + 1);
+            }
         }
     } else if (c == ctrl('w')) {
         if (state->harpoonIndex > 0) {
-            state->harpoonIndex -= 1;
-            state->resetState(state->harpoonFiles[state->harpoonIndex]);
+            if (std::filesystem::exists(state->harpoonFiles[state->harpoonIndex - 1].c_str())) {
+                state->harpoonIndex -= 1;
+                state->resetState(state->harpoonFiles[state->harpoonIndex]);
+            } else {
+                state->status = "file not found";
+                state->harpoonFiles.erase(state->harpoonFiles.begin() + state->harpoonIndex - 1);
+            }
         }
     } else if (c == '\\') {
         state->changeFile(state->filename);
