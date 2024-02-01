@@ -204,14 +204,20 @@ void sendVisualKeys(State* state, char c) {
         }
     } else if (handleMotion(state, c, "gf")) {
         if (state->motionComplete) {
-            try {
-                if (state->visualType == NORMAL) {
-                    std::filesystem::path filePath(state->filename);
-                    std::filesystem::path dir = filePath.parent_path();
-                    std::filesystem::path newFilePath = std::filesystem::canonical(dir / getInVisual(state));
-                    state->resetState(newFilePath.string());
+            std::vector<std::string> extensions = {"", ".js", ".jsx", ".ts", ".tsx"};
+            for (unsigned int i = 0; i < extensions.size(); i++) {
+                try {
+                    if (state->visualType == NORMAL) {
+                        std::filesystem::path filePath(state->filename);
+                        std::filesystem::path dir = filePath.parent_path();
+                        std::filesystem::path newFilePath = std::filesystem::canonical(dir / (getInVisual(state) + extensions[i]));
+                        if (std::filesystem::exists(newFilePath)) {
+                            state->resetState(newFilePath.string());
+                            break;
+                        }
+                    }
+                } catch (const std::filesystem::filesystem_error& e) {
                 }
-            } catch (const std::filesystem::filesystem_error& e) {
             }
         }
     } else if (handleMotion(state, c, "gg")) {
@@ -230,6 +236,10 @@ void sendVisualKeys(State* state, char c) {
         }
     } else if (c == 'b') {
         state->col = b(state);
+    } else if (c == ctrl('u')) {
+        upHalfScreen(state);
+    } else if (c == ctrl('d')) {
+        downHalfScreen(state);
     } else if (c == 'w') {
         state->col = w(state);
     } else if (c == 'h') {

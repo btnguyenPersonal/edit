@@ -133,6 +133,7 @@ search replace
 - commenting
 - ctrl d - print console.log equivalent at start of line w/ line number (eg 0144 to make it easy to read)
 - ctrl p only filter based on relative path instead of absolute
+- gf work for js
 
 ## TODO
 - tab complete
@@ -143,6 +144,7 @@ search replace
 - cursor for ctrl p ctrl g
 - fileExplorer (current one is trash) actually make it good now
 - ctrl a x increment decrement
+- J K
 - dt, df,
 - * and # when in normal mode
 - turn off isInString highlighting for md txt files
