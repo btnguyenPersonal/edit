@@ -83,3 +83,4 @@ std::vector<diffLine> generateDiff(const std::vector<std::string>& prev, const s
 
     return diffs;
 }
+

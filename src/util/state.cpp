@@ -57,7 +57,7 @@ void State::changeFile(std::string filename) {
     this->commentSymbol = getCommentSymbol(filename);
     this->previousState = std::vector<std::string>();
     this->history = std::vector<std::vector<diffLine>>();
-    this->historyPosition = -1;
+    this->historyPosition = -2;
     this->windowPosition.row = 0;
     this->windowPosition.col = 0;
     this->visualType = NORMAL;

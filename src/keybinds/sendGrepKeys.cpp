@@ -39,3 +39,4 @@ void sendGrepKeys(State* state, char c) {
         generateGrepOutput(state);
     }
 }
+

@@ -90,3 +90,4 @@ class State {
         void changeFile(std::string filename);
         static void setMaxYX(int y, int x);
 };
+

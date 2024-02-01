@@ -47,7 +47,9 @@ void sendKeys(State* state, char c) {
     if (state->recording == true && state->dontRecordKey == false) {
         state->macroCommand += c;
     }
-    if (state->recording == false && state->mode == SHORTCUTS) {
+    if (state->historyPosition == -2) {
+        state->historyPosition = -1;
+    } else if (state->recording == false && state->mode == SHORTCUTS) {
         std::vector<diffLine> diff = generateDiff(state->previousState, state->data);
         if (diff.size() != 0) {
             saveFile(state->filename, state->data);
