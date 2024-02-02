@@ -134,9 +134,10 @@ search replace
 - ctrl d - print console.log equivalent at start of line w/ line number (eg 0144 to make it easy to read)
 - ctrl p only filter based on relative path instead of absolute
 - gf work for js
+- tab complete
 
 ## TODO
-- tab complete
+- clean up printChar
 - indent w/ html
 - render non-alphanumeric chars
 - fix indent for commented lines at end
