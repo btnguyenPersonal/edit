@@ -6,6 +6,7 @@
 #include <fstream>
 #include <ncurses.h>
 #include <iostream>
+#include <map>
 #include "state.h"
 #include "helper.h"
 #include "visualType.h"
@@ -100,6 +101,55 @@ void ltrim(std::string &s) {
     s.erase(s.begin(), std::find_if(s.begin(), s.end(), [](unsigned char ch) {
         return !std::isspace(ch);
     }));
+}
+
+std::string getCurrentWord(State* state) {
+    std::string currentWord = "";
+    for (int i = (int) state->col - 1; i >= 0; i--) {
+        if (std::isalnum(state->data[state->row][i])) {
+            currentWord = state->data[state->row][i] + currentWord;
+        } else {
+            break;
+        }
+    }
+    return currentWord;
+}
+
+std::string autocomplete(State* state, std::string query) {
+    if (query == "") {
+        return "";
+    }
+    std::map<std::string, int> wordCounts;
+    for (std::string line : state->data) {
+        line += ' ';
+        std::string word = "";
+        for (uint i = 0; i < line.length(); i++) {
+            if (std::isalnum(line[i])) {
+                word += line[i];
+            } else {
+                if (word.substr(0, query.length()) == query) {
+                    ++wordCounts[word];
+                }
+                word = "";
+            }
+        }
+        if (word.substr(0, query.length()) == query) {
+            ++wordCounts[word];
+        }
+    }
+    std::string mostCommonWord = "";
+    int maxCount = 0;
+    for (const auto& pair : wordCounts) {
+        if (pair.second > maxCount && pair.first != query) {
+            mostCommonWord = pair.first;
+            maxCount = pair.second;
+        }
+    }
+    if (!mostCommonWord.empty()) {
+        return mostCommonWord.substr(query.length());
+    } else {
+        return "";
+    }
 }
 
 void replaceAll(State* state, std::string query, std::string replace) {

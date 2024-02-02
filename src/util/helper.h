@@ -8,6 +8,8 @@
 #include "visualType.h"
 #include "../global.h"
 
+std::string getCurrentWord(State* state);
+std::string autocomplete(State* state, std::string query);
 std::string getCommentSymbol(std::string filename);
 std::string getExtension(std::string filename);
 void moveHarpoonLeft(State* state);

@@ -8,6 +8,7 @@
 #include "state.h"
 #include "modes.h"
 #include "render.h"
+#include "helper.h"
 #include "insertLoggingCode.h"
 
 #define _COLOR_BLACK 16
@@ -164,9 +165,11 @@ int getColorFromChar(char c) {
     }
 }
 
-void printChar(State* state, int row, int col, char c, bool isInString, bool isInverted, bool isInSearchQuery, unsigned int startOfSearch, bool isComment) {
+void printChar(State* state, int row, int col, char c, bool isInString, bool isInverted, bool isInSearchQuery, unsigned int startOfSearch, bool isComment, bool isAutoComplete) {
     int color;
-    if (isInSearchQuery == true && isInverted == false && state->searching == true) {
+    if (isAutoComplete) {
+        color = GREY;
+    } else if (isInSearchQuery == true && isInverted == false && state->searching == true) {
         if (state->row == (unsigned int) row && startOfSearch + state->searchQuery.length() >= state->col && startOfSearch <= state->col) {
             color = invertColor(MAGENTA);
         } else {
@@ -259,7 +262,7 @@ bool isInSearchQuery(State* state, unsigned int row, unsigned int col) {
 
 void printLine(State* state, int row) {
     if (isRowColInVisual(state, row, 0) == true && state->data[row].length() == 0) {
-        printChar(state, row, 0, ' ', false, true, false, 0, false);
+        printChar(state, row, 0, ' ', false, true, false, 0, false, false);
     } else {
         bool isInString = false;
         bool skipNext = false;
@@ -278,6 +281,7 @@ void printLine(State* state, int row) {
             col += loggingCode.length();
         }
         while (col < state->data[row].length() && col < state->windowPosition.col + state->maxX - LINE_NUM_OFFSET) {
+            renderCol = renderAutoComplete(state, row, col, renderCol);
             if (searchCounter == 0 && isInSearchQuery(state, row, col)) {
                 searchCounter = state->searchQuery.length();
                 startOfSearch = col;
@@ -303,13 +307,13 @@ void printLine(State* state, int row) {
             if (col >= state->windowPosition.col) {
                 if (state->replacing && searchCounter != 0) {
                     for (unsigned int i = 0; i < state->replaceQuery.length(); i++) {
-                        printChar(state, row, renderCol, state->replaceQuery[i], false, false, true, startOfSearch, false);
+                        printChar(state, row, renderCol, state->replaceQuery[i], false, false, true, startOfSearch, false, false);
                         renderCol++;
                     }
                     col += state->searchQuery.length();
                     searchCounter = 0;
                 } else {
-                    printChar(state, row, renderCol, state->data[row][col], isInString, isRowColInVisual(state, row, col), searchCounter != 0, startOfSearch, isComment);
+                    printChar(state, row, renderCol, state->data[row][col], isInString, isRowColInVisual(state, row, col), searchCounter != 0, startOfSearch, isComment, false);
                     renderCol++;
                     col++;
                 }
@@ -320,7 +324,19 @@ void printLine(State* state, int row) {
                 searchCounter -= 1;
             }
         }
+        renderCol = renderAutoComplete(state, row, col, renderCol);
     }
+}
+
+uint renderAutoComplete(State* state, int row, uint col, uint renderCol) {
+    if (state->mode == TYPING && row == (int) state->row && col == state->col) {
+        std::string completion = autocomplete(state, getCurrentWord(state));
+        for (uint i = 0; i < completion.length(); i++) {
+            printChar(state, row, col + i, completion[i], false, false, false, 0, false, true);
+        }
+        return renderCol + completion.length();
+    }
+    return renderCol;
 }
 
 void renderGrepOutput(State* state) {

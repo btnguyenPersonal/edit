@@ -27,6 +27,11 @@ void sendTypingKeys(State* state, char c) {
     } else if (c == ctrl('t')) {
         std::string current = state->data[state->row];
         state->data[state->row] = current.substr(0, state->col) + '\t' + current.substr(state->col);
+    } else if (c == ctrl('i')) { // TAB
+        std::string completion = autocomplete(state, getCurrentWord(state));
+        std::string current = state->data[state->row];
+        state->data[state->row] = current.substr(0, state->col) + completion + current.substr(state->col);
+        state->col += completion.length();
     } else if (c == ctrl('m')) { // ENTER
         std::string current = state->data[state->row];
         state->data[state->row] = current.substr(0, state->col);
