@@ -146,6 +146,9 @@ search replace
 - mulit-cursor mode
 - ctrl w when typing
 - git blame mode (copy hash to clipboard)
+- git precommit hook disable u i n t
+- global search replace
+- current line search replace w/ regex
 
 ## LOW PRIO
 - fix handle motion not clearing motion if first one (and make everything a motion even single ones);

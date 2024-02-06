@@ -328,10 +328,10 @@ void printLine(State* state, int row) {
     }
 }
 
-uint renderAutoComplete(State* state, int row, uint col, uint renderCol) {
+unsigned int renderAutoComplete(State* state, int row, unsigned int col, unsigned int renderCol) {
     if (state->mode == TYPING && row == (int) state->row && col == state->col) {
         std::string completion = autocomplete(state, getCurrentWord(state));
-        for (uint i = 0; i < completion.length(); i++) {
+        for (unsigned int i = 0; i < completion.length(); i++) {
             printChar(state, row, col + i, completion[i], false, false, false, 0, false, true);
         }
         return renderCol + completion.length();

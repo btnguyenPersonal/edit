@@ -123,7 +123,7 @@ std::string autocomplete(State* state, std::string query) {
     for (std::string line : state->data) {
         line += ' ';
         std::string word = "";
-        for (uint i = 0; i < line.length(); i++) {
+        for (unsigned int i = 0; i < line.length(); i++) {
             if (std::isalnum(line[i])) {
                 word += line[i];
             } else {
