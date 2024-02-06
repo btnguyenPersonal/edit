@@ -143,6 +143,9 @@ search replace
 - dt, df,
 - ip ap motions
 - render non-alphanumeric chars
+- mulit-cursor mode
+- ctrl w when typing
+- git blame mode (copy hash to clipboard)
 
 ## LOW PRIO
 - fix handle motion not clearing motion if first one (and make everything a motion even single ones);
