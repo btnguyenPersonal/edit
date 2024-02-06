@@ -138,17 +138,20 @@ search replace
 
 ## TODO
 - clean up printChar
+- make getch() int, and have enums for characters
 - indent w/ html
+- dt, df,
+- ip ap motions
 - render non-alphanumeric chars
-- fix indent for commented lines at end
 
 ## LOW PRIO
-- ip ap motions
+- fix handle motion not clearing motion if first one (and make everything a motion even single ones);
+- fix indent for commented lines at end
+- fix indent for dealing with spaces
 - cursor for ctrl p ctrl g
 - fileExplorer (current one is trash) actually make it good now
 - ctrl a x increment decrement
 - J K
-- dt, df,
 - * and # when in normal mode
 - turn off isInString highlighting for md txt files
 - gr -> go to top and find first occ w/ import in front -> go to file at top -> set searchQuery to it -> search for it
