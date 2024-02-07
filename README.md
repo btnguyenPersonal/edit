@@ -136,19 +136,21 @@ search replace
 - gf work for js
 - tab complete
 - git precommit hook disable u i n t
+- global search replace
+- current line search replace w/ regex
 
 ## TODO
 - clean up printChar
 - make getch() int, and have enums for characters
 - indent w/ html
-- dt, df,
+- dt, df, t, f, T, F
 - ip ap motions
 - render non-alphanumeric chars
 - mulit-cursor mode
 - ctrl w when typing
+- make all use handleMotion
 - git blame mode (copy hash to clipboard)
-- global search replace
-- current line search replace w/ regex
+- ctrl w if at end also redirect to current
 
 ## LOW PRIO
 - fix handle motion not clearing motion if first one (and make everything a motion even single ones);

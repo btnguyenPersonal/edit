@@ -648,6 +648,8 @@ void sendShortcutKeys(State* state, char c) {
         moveHarpoonLeft(state);
     } else if (c == ctrl('l')) {
         moveHarpoonRight(state);
+    } else if (c == ctrl('y')) {
+        state->mode = BLAME;
     } else if (c == ctrl('f')) {
         state->mode = SEARCH;
         state->replacing = true;

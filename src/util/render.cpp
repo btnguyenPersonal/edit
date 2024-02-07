@@ -189,7 +189,7 @@ void printChar(State* state, int row, int col, char c, bool isInString, bool isI
     } else {
         attron(COLOR_PAIR(invertColor(color)));
     }
-    mvaddch(row - state->windowPosition.row + 1, col + LINE_NUM_OFFSET, c);
+    mvaddch(row - state->windowPosition.row + 1, col + getLineNumberOffset(state), c);
     if (c == '\t') {
         attroff(COLOR_PAIR(invertColor(RED)));
     } else if (isInverted == false) {
@@ -275,12 +275,12 @@ void printLine(State* state, int row) {
         std::string loggingCode = getLoggingCode(state, row);
         if (state->data[row].substr(0, loggingCode.length()) == loggingCode) {
             attron(COLOR_PAIR(invertColor(BLUE)));
-            mvprintw(row - state->windowPosition.row + 1, col + LINE_NUM_OFFSET, "%s", loggingCode.c_str());
+            mvprintw(row - state->windowPosition.row + 1, col + getLineNumberOffset(state), "%s", loggingCode.c_str());
             attroff(COLOR_PAIR(invertColor(BLUE)));
             renderCol += loggingCode.length();
             col += loggingCode.length();
         }
-        while (col < state->data[row].length() && col < state->windowPosition.col + state->maxX - LINE_NUM_OFFSET) {
+        while (col < state->data[row].length() && col < state->windowPosition.col + state->maxX - getLineNumberOffset(state)) {
             renderCol = renderAutoComplete(state, row, col, renderCol);
             if (searchCounter == 0 && isInSearchQuery(state, row, col)) {
                 searchCounter = state->searchQuery.length();
@@ -396,11 +396,11 @@ void moveCursor(State* state, int cursorPosition) {
         } else {
             row = 1;
         }
-        unsigned int col = state->col + LINE_NUM_OFFSET;
+        unsigned int col = state->col + getLineNumberOffset(state);
         if (state->col > state->data[state->row].length()) {
-            col = state->data[state->row].length() + LINE_NUM_OFFSET;
+            col = state->data[state->row].length() + getLineNumberOffset(state);
             if (state->windowPosition.col > col) {
-                col = LINE_NUM_OFFSET;
+                col = getLineNumberOffset(state);
             } else {
                 col -= state->windowPosition.col;
             }

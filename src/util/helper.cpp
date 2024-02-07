@@ -63,6 +63,13 @@ std::string getCommentSymbol(std::string filename) {
     }
 }
 
+unsigned int getLineNumberOffset(State* state) {
+    if (state->mode == BLAME) {
+        return 6 + 20;
+    }
+    return 6;
+}
+
 std::string getExtension(std::string filename) {
     if (filename == "") {
         return "";
@@ -566,7 +573,7 @@ std::vector<std::string> readFile(std::string filename) {
 bool isWindowPositionInvalid(State* state) {
     if (state->row < state->windowPosition.row || (int) state->row - (int) state->windowPosition.row > ((int) state->maxY - 2)) {
         return true;
-    } else if (state->col < state->windowPosition.col || (int) state->col - (int) state->windowPosition.col > ((int) state->maxX - LINE_NUM_OFFSET - 1)) {
+    } else if (state->col < state->windowPosition.col || (int) state->col - (int) state->windowPosition.col > ((int) state->maxX - (int) getLineNumberOffset(state) - 1)) {
         return true;
     }
     return false;
@@ -580,8 +587,8 @@ void centerScreen(State* state) {
     }
     if (state->col < state->windowPosition.col) {
         state->windowPosition.col = state->col;
-    } else if (state->col > state->windowPosition.col + (state->maxX - LINE_NUM_OFFSET - 1)) {
-        state->windowPosition.col = state->col + LINE_NUM_OFFSET + 1 - state->maxX;
+    } else if (state->col > state->windowPosition.col + (state->maxX - getLineNumberOffset(state) - 1)) {
+        state->windowPosition.col = state->col + getLineNumberOffset(state) + 1 - state->maxX;
     }
 }
 

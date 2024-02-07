@@ -3,7 +3,6 @@
 #include <string>
 #include <vector>
 #include "state.h"
-#include "../global.h"
 
 void toggleLoggingCode(State* state);
 void insertLoggingCode(State* state);

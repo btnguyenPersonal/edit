@@ -5,7 +5,6 @@
 #include <filesystem>
 #include "modes.h"
 #include "visualType.h"
-#include "../global.h"
 
 struct grepMatch {
     std::filesystem::path path;

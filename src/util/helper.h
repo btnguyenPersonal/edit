@@ -6,8 +6,8 @@
 #include <filesystem>
 #include "state.h"
 #include "visualType.h"
-#include "../global.h"
 
+unsigned int getLineNumberOffset(State* state);
 void replaceAllGlobally(State* state, std::string query, std::string replace);
 void replaceCurrentLine(State* state, std::string query, std::string replace);
 std::string getCurrentWord(State* state);

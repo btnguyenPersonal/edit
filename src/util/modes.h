@@ -7,5 +7,6 @@ enum Mode {
     SHORTCUTS,
     FINDFILE,
     GREP,
+    BLAME,
     SEARCH
 };

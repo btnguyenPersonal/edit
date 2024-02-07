@@ -1,7 +1,6 @@
 #pragma once
 
 #include "state.h"
-#include "../global.h"
 #include <string>
 
 std::string minimize_filename(const std::string& filename);

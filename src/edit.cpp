@@ -1,4 +1,3 @@
-#include "global.h"
 #include <iostream>
 #include <ncurses.h>
 #include "util/render.h"
