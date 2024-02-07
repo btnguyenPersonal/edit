@@ -6,6 +6,9 @@
 #include <fstream>
 #include <ncurses.h>
 #include <iostream>
+#include <cstdio>
+#include <memory>
+#include <stdexcept>
 #include <map>
 #include "state.h"
 #include "helper.h"
@@ -63,9 +66,52 @@ std::string getCommentSymbol(std::string filename) {
     }
 }
 
+std::string getGitHash(State* state) {
+    std::stringstream command;
+    command << "git blame -l -L " << state->row + 1 << ",+1 " << state->filename << " | awk '{print $1}'";
+    std::unique_ptr<FILE, decltype(&pclose)> pipe(popen(command.str().c_str(), "r"), pclose);
+    if (!pipe) throw std::runtime_error("popen() failed!");
+    std::string output, line;
+    char buffer[128];
+    while (fgets(buffer, sizeof(buffer), pipe.get()) != NULL) {
+        output += buffer;
+    }
+    std::stringstream ss(output);
+    std::getline(ss, line);
+    return line;
+}
+
+std::vector<std::string> getGitBlame(const std::string& filename) {
+    std::vector<std::string> blameLines;
+    try {
+        std::string command = "git --no-pager blame ./" + filename + " --date=short 2>/dev/null | awk '{print $1, $2, $3, $4, \")\"}'";
+        std::unique_ptr<FILE, decltype(&pclose)> pipe(popen(command.c_str(), "r"), pclose);
+        if (!pipe) {
+            throw std::runtime_error("popen() failed!");
+        }
+        std::stringstream ss;
+        char* line = nullptr;
+        size_t len = 0;
+        ssize_t read;
+        while ((read = getline(&line, &len, pipe.get())) != -1) {
+            ss << line;
+        }
+        free(line);
+        std::string str;
+        while (std::getline(ss, str)) {
+            if (!str.empty()) {
+                blameLines.push_back(str);
+            }
+        }
+    } catch (const std::exception& e) {
+    }
+    blameLines.push_back("");
+    return blameLines;
+}
+
 unsigned int getLineNumberOffset(State* state) {
     if (state->mode == BLAME) {
-        return 6 + 20;
+        return 6 + 65;
     }
     return 6;
 }

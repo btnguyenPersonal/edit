@@ -7,6 +7,8 @@
 #include "state.h"
 #include "visualType.h"
 
+std::string getGitHash(State* state);
+std::vector<std::string> getGitBlame(const std::string& filename);
 unsigned int getLineNumberOffset(State* state);
 void replaceAllGlobally(State* state, std::string query, std::string replace);
 void replaceCurrentLine(State* state, std::string query, std::string replace);

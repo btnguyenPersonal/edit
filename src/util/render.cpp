@@ -199,7 +199,7 @@ void printChar(State* state, int row, int col, char c, bool isInString, bool isI
     }
 }
 
-void printLineNumber(int r, int i, bool isCurrentRow, bool recording) {
+void printLineNumber(State* state, int r, int i, bool isCurrentRow, bool recording, std::string blame) {
     if (isCurrentRow == true) {
         attron(COLOR_PAIR(WHITE));
         mvprintw(r, 0, "%5d ", i + 1);
@@ -212,6 +212,15 @@ void printLineNumber(int r, int i, bool isCurrentRow, bool recording) {
         attron(COLOR_PAIR(GREY));
         mvprintw(r, 0, "%5d ", i + 1);
         attroff(COLOR_PAIR(GREY));
+    }
+    if (state->mode == BLAME) {
+        if (i == (int) state->row) {
+            attron(COLOR_PAIR(invertColor(WHITE)));
+        }
+        mvprintw(r, 6, "%-65s", blame.substr(0, 65).c_str());
+        if (i == (int) state->row) {
+            attroff(COLOR_PAIR(invertColor(WHITE)));
+        }
     }
 }
 
@@ -380,8 +389,25 @@ void renderFindFileOutput(State* state) {
 }
 
 void renderVisibleLines(State* state) {
+    std::vector<std::string> blame;
+    bool blameError = false;
+    if (state->mode == BLAME) {
+        try {
+            blame = getGitBlame(state->filename);
+        } catch (const std::exception& e) {
+            state->status = "git blame error";
+            blameError = true;
+        }
+    }
     for (int i = state->windowPosition.row; i < (int) state->data.size() && i < (int) (state->maxY + state->windowPosition.row) - 1; i++) {
-        printLineNumber(i - state->windowPosition.row + 1, i, i == (int) state->row, state->recording);
+        printLineNumber(
+            state,
+            i - state->windowPosition.row + 1,
+            i,
+            i == (int) state->row,
+            state->recording,
+            state->mode == BLAME && !blameError && blame.size() >= state->data.size() && i < (int) state->data.size() ? blame[i] : ""
+        );
         printLine(state, i);
     }
 }
@@ -439,4 +465,3 @@ void initTerminal() {
     start_color();
     initColors();
 }
-
