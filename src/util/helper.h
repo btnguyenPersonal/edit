@@ -8,6 +8,8 @@
 #include "visualType.h"
 #include "../global.h"
 
+void replaceAllGlobally(State* state, std::string query, std::string replace);
+void replaceCurrentLine(State* state, std::string query, std::string replace);
 std::string getCurrentWord(State* state);
 std::string autocomplete(State* state, std::string query);
 std::string getCommentSymbol(std::string filename);

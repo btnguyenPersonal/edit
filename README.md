@@ -135,6 +135,7 @@ search replace
 - ctrl p only filter based on relative path instead of absolute
 - gf work for js
 - tab complete
+- git precommit hook disable u i n t
 
 ## TODO
 - clean up printChar
@@ -146,7 +147,6 @@ search replace
 - mulit-cursor mode
 - ctrl w when typing
 - git blame mode (copy hash to clipboard)
-- git precommit hook disable u i n t
 - global search replace
 - current line search replace w/ regex
 

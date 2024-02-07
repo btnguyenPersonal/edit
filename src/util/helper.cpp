@@ -152,6 +152,27 @@ std::string autocomplete(State* state, std::string query) {
     }
 }
 
+void replaceCurrentLine(State* state, std::string query, std::string replace) {
+    if (query.empty()) {
+        return;
+    }
+    size_t startPos = 0;
+    while ((startPos = state->data[state->row].find(query, startPos)) != std::string::npos) {
+        state->data[state->row].replace(startPos, query.length(), replace);
+        startPos += replace.length();
+    }
+}
+
+void replaceAllGlobally(State* state, std::string query, std::string replace) {
+    try {
+        std::string command = ("git ls-files | xargs -I {} sed -i'' \"s/" + query + '/' + replace + "/g\" \"{}\"");
+        system(command.c_str());
+        state->changeFile(state->filename);
+    } catch (const std::exception& e) {
+        state->status = "command failed";
+    }
+}
+
 void replaceAll(State* state, std::string query, std::string replace) {
     for (unsigned int i = 0; i < state->data.size(); i++) {
         if (query.empty()) {

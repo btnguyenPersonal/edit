@@ -1,5 +1,6 @@
 #include <string>
 #include <vector>
+#include <sstream>
 #include <ncurses.h>
 #include "../util/state.h"
 #include "../util/helper.h"
@@ -16,6 +17,24 @@ void evaluateCommandLineQuery(State* state) {
         saveFile(state->filename, state->data);
         endwin();
         exit(0);
+    } else if (state->commandLineQuery.substr(0, 1) == "s") {
+        std::istringstream iss(state->commandLineQuery);
+        std::string s, first, second, g;
+        if (std::getline(iss, s, '/') && std::getline(iss, first, '/') && std::getline(iss, second, '/')) {
+            replaceCurrentLine(state, first, second);
+        }
+    } else if (state->commandLineQuery.substr(0, 2) == "gs") {
+        std::istringstream iss(state->commandLineQuery);
+        std::string s, first, second, g;
+        if (std::getline(iss, s, '/') && std::getline(iss, first, '/') && std::getline(iss, second, '/')) {
+            replaceAllGlobally(state, first, second);
+        }
+    } else if (state->commandLineQuery.substr(0, 2) == "%s") {
+        std::istringstream iss(state->commandLineQuery);
+        std::string s, first, second, g;
+        if (std::getline(iss, s, '/') && std::getline(iss, first, '/') && std::getline(iss, second, '/')) {
+            replaceAll(state, first, second);
+        }
     } else if (is_number(state->commandLineQuery)) {
         unsigned int number = stoul(state->commandLineQuery);
         if (number > 0) {
