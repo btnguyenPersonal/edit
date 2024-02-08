@@ -59,7 +59,7 @@ void sendKeys(State* state, char c) {
         }
         if (diff.size() != 0 && c != ctrl('r') && c != 'u') {
             if (state->dontRecordKey == false) {
-                state->dotCommand = state->motion + c;
+                state->dotCommand = state->motion;
             }
             if (state->historyPosition < (int) state->history.size()) {
                 state->history.erase(state->history.begin() + state->historyPosition + 1, state->history.end());
