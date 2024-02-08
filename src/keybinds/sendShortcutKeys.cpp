@@ -517,6 +517,10 @@ void sendShortcutKeys(State* state, char c) {
         up(state);
     } else if (c == 'j' || c == ctrl('j')) {
         down(state);
+    } else if (c == '{') {
+        state->row = getPrevEmptyLine(state);
+    } else if (c == '}') {
+        state->row = getNextEmptyLine(state);
     } else if (c == '[') {
         state->row = getPrevLineSameIndent(state);
     } else if (c == ']') {
@@ -702,6 +706,10 @@ void sendShortcutKeys(State* state, char c) {
                 state->status = "file not found";
                 state->harpoonFiles.erase(state->harpoonFiles.begin() + state->harpoonIndex + 1);
             }
+        } else {
+            if (std::filesystem::exists(state->harpoonFiles[state->harpoonIndex].c_str())) {
+                state->resetState(state->harpoonFiles[state->harpoonIndex]);
+            }
         }
     } else if (c == ctrl('w')) {
         if (state->harpoonIndex > 0) {
@@ -712,6 +720,10 @@ void sendShortcutKeys(State* state, char c) {
                 state->status = "file not found";
                 state->harpoonFiles.erase(state->harpoonFiles.begin() + state->harpoonIndex - 1);
                 state->harpoonIndex -= 1;
+            }
+        } else {
+            if (std::filesystem::exists(state->harpoonFiles[state->harpoonIndex].c_str())) {
+                state->resetState(state->harpoonFiles[state->harpoonIndex]);
             }
         }
     } else if (c == '\\') {

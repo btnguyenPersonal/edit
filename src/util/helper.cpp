@@ -336,10 +336,34 @@ unsigned int getIndent(const std::string& str) {
     return 0;
 }
 
+unsigned int getPrevEmptyLine(State* state) {
+    bool hitNonEmpty = false;
+    for (int i = (int) state->row; i >= 0; i--) {
+        if (state->data[i] != "") {
+            hitNonEmpty = true;
+        } else if (hitNonEmpty && state->data[i] == "") {
+            return i;
+        }
+    }
+    return state->row;
+}
+
+unsigned int getNextEmptyLine(State* state) {
+    bool hitNonEmpty = false;
+    for (unsigned int i = state->row; i < state->data.size(); i++) {
+        if (state->data[i] != "") {
+            hitNonEmpty = true;
+        } else if (hitNonEmpty && state->data[i] == "") {
+            return i;
+        }
+    }
+    return state->row;
+}
+
 unsigned int getPrevLineSameIndent(State* state) {
     unsigned int current = getIndent(state->data[state->row]);
     for (int i = (int) state->row - 1; i >= 0; i--) {
-        if (current == getIndent(state->data[i])) {
+        if (current == getIndent(state->data[i]) && state->data[i] != "") {
             return i;
         }
     }
@@ -349,7 +373,7 @@ unsigned int getPrevLineSameIndent(State* state) {
 unsigned int getNextLineSameIndent(State* state) {
     unsigned int current = getIndent(state->data[state->row]);
     for (unsigned int i = state->row + 1; i < state->data.size(); i++) {
-        if (current == getIndent(state->data[i])) {
+        if (current == getIndent(state->data[i]) && state->data[i] != "") {
             return i;
         }
     }

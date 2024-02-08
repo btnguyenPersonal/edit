@@ -138,19 +138,20 @@ search replace
 - git precommit hook disable u i n t
 - global search replace
 - current line search replace w/ regex
+- git blame mode (copy hash to clipboard)
+- ctrl w if at end also redirect to current
 
 ## TODO
 - clean up printChar
 - make getch() int, and have enums for characters
 - indent w/ html
+- indent w/ blank lines
 - dt, df, t, f, T, F
 - ip ap motions
 - render non-alphanumeric chars
 - mulit-cursor mode
 - ctrl w when typing
 - make all use handleMotion
-- git blame mode (copy hash to clipboard)
-- ctrl w if at end also redirect to current
 
 ## LOW PRIO
 - fix handle motion not clearing motion if first one (and make everything a motion even single ones);
@@ -159,7 +160,7 @@ search replace
 - cursor for ctrl p ctrl g
 - fileExplorer (current one is trash) actually make it good now
 - ctrl a x increment decrement
-- J K
+- J K (only base indent off of first line
 - * and # when in normal mode
 - turn off isInString highlighting for md txt files
 - gr -> go to top and find first occ w/ import in front -> go to file at top -> set searchQuery to it -> search for it

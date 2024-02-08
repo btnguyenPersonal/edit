@@ -7,6 +7,8 @@
 #include "state.h"
 #include "visualType.h"
 
+unsigned int getPrevEmptyLine(State* state);
+unsigned int getNextEmptyLine(State* state);
 std::string getGitHash(State* state);
 std::vector<std::string> getGitBlame(const std::string& filename);
 unsigned int getLineNumberOffset(State* state);
