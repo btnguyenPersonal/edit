@@ -140,6 +140,8 @@ search replace
 - current line search replace w/ regex
 - git blame mode (copy hash to clipboard)
 - ctrl w if at end also redirect to current
+- { } [ ] and skip whitespace
+- * and # when in normal mode
 
 ## TODO
 - clean up printChar
@@ -161,9 +163,7 @@ search replace
 - fileExplorer (current one is trash) actually make it good now
 - ctrl a x increment decrement
 - J K (only base indent off of first line
-- * and # when in normal mode
 - turn off isInString highlighting for md txt files
 - gr -> go to top and find first occ w/ import in front -> go to file at top -> set searchQuery to it -> search for it
 - make row col, etc all Position types like visual
-- { } [ ] and skip whitespace
 - figure out sendShortcutKeys not repeat a bunch of visual shortcuts

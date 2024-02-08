@@ -525,6 +525,26 @@ void sendShortcutKeys(State* state, char c) {
         state->row = getPrevLineSameIndent(state);
     } else if (c == ']') {
         state->row = getNextLineSameIndent(state);
+    } else if (c == '#') {
+        initVisual(state, NORMAL);
+        setStateFromWordPosition(state, getWordPosition(state->data[state->row], state->col));
+        state->grepQuery = getInVisual(state);
+        state->mode = GREP;
+        generateGrepOutput(state);
+    } else if (c == '*') {
+        initVisual(state, NORMAL);
+        setStateFromWordPosition(state, getWordPosition(state->data[state->row], state->col));
+        state->searchQuery = getInVisual(state);
+        state->searching = true;
+        state->col += 1;
+        unsigned int temp_col = state->col;
+        unsigned int temp_row = state->row;
+        bool result = setSearchResult(state);
+        if (result == false) {
+            state->row = temp_row;
+            state->col = temp_col - 1;
+        }
+        centerScreen(state);
     } else if (c == ctrl('g')) {
         state->mode = GREP;
         generateGrepOutput(state);
