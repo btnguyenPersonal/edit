@@ -156,6 +156,7 @@ search replace
 - put handleMotion at top, and only look at state->motion
 - clean up handleMotion
 - make all use handleMotion
+- check for 256 colors, and if not go back to default colors (IFDEF something)
 
 ## LOW PRIO
 - fix handle motion not clearing motion if first one (and make everything a motion even single ones);
