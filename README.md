@@ -142,17 +142,19 @@ search replace
 - ctrl w if at end also redirect to current
 - { } [ ] and skip whitespace
 - * and # when in normal mode
+- dt, df, t, f, T, F
 
 ## TODO
 - clean up printChar
 - make getch() int, and have enums for characters
 - indent w/ html
 - indent w/ blank lines
-- dt, df, t, f, T, F
 - ip ap motions
 - render non-alphanumeric chars
 - mulit-cursor mode
 - ctrl w when typing
+- put handleMotion at top, and only look at state->motion
+- clean up handleMotion
 - make all use handleMotion
 
 ## LOW PRIO
