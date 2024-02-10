@@ -7,6 +7,8 @@
 #include "state.h"
 #include "visualType.h"
 
+unsigned int findNextChar(State* state, char c);
+unsigned int toNextChar(State* state, char c);
 unsigned int getPrevEmptyLine(State* state);
 unsigned int getNextEmptyLine(State* state);
 std::string getGitHash(State* state);

@@ -66,6 +66,27 @@ std::string getCommentSymbol(std::string filename) {
     }
 }
 
+unsigned int findNextChar(State* state, char c) {
+    for (unsigned int i = state->col; i < state->data[state->row].length(); i++) {
+        if (state->data[state->row][i] == c) {
+            return i;
+        }
+    }
+    return state->col;
+}
+
+unsigned int toNextChar(State* state, char c) {
+    unsigned int index = state->col;
+    for (unsigned int i = state->col; i < state->data[state->row].length(); i++) {
+        if (state->data[state->row][i] == c) {
+            return index;
+        } else {
+            index = i;
+        }
+    }
+    return state->col;
+}
+
 std::string getGitHash(State* state) {
     std::stringstream command;
     command << "git blame -l -L " << state->row + 1 << ",+1 " << state->filename << " | awk '{print $1}'";

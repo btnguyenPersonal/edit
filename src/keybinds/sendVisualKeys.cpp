@@ -134,6 +134,14 @@ void sendVisualKeys(State* state, char c) {
     if (c == 27) { // ESC
         state->mode = SHORTCUTS;
         return;
+    } else if (state->prevKeys == "t") {
+        state->col = toNextChar(state, c);
+        state->motion = "";
+        state->prevKeys = "";
+    } else if (state->prevKeys == "f") {
+        state->col = findNextChar(state, c);
+        state->motion = "";
+        state->prevKeys = "";
     } else if (handleMotion(state, c, "i`")) {
         if (state->motionComplete) {
             setStateFromWordPosition(state, findQuoteBounds(state->data[state->row], '`', state->col, false));
@@ -236,6 +244,10 @@ void sendVisualKeys(State* state, char c) {
         } else {
             state->col = 0;
         }
+    } else if (c == 'f') {
+        state->prevKeys = "f";
+    } else if (c == 't') {
+        state->prevKeys = "t";
     } else if (c == 'b') {
         state->col = b(state);
     } else if (c == ctrl('u')) {

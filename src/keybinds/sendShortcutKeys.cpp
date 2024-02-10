@@ -19,6 +19,20 @@
 void sendShortcutKeys(State* state, char c) {
     if (c == 27) { // ESC
         state->prevKeys = "";
+    } else if (state->prevKeys == "t") {
+        state->col = toNextChar(state, c);
+        state->motion = "";
+        state->prevKeys = "";
+    } else if (state->prevKeys == "f") {
+        state->col = findNextChar(state, c);
+        state->motion = "";
+        state->prevKeys = "";
+    } else if (state->prevKeys == "r") {
+        if (state->col < state->data[state->row].length()) {
+            state->data[state->row] = state->data[state->row].substr(0, state->col) + c + state->data[state->row].substr(state->col + 1);
+        }
+        state->motion = "";
+        state->prevKeys = "";
     } else if (handleMotion(state, c, "ge")) {
         if (state->motionComplete) {
             unCommentBlock(state);
@@ -33,6 +47,22 @@ void sendShortcutKeys(State* state, char c) {
         if (state->motionComplete) {
             state->row = 0;
         }
+    } else if (handleMotion(state, c, "ct")) {
+    } else if (state->motion == "ct") {
+        state->motionComplete = true;
+        state->motion += c;
+        initVisual(state, NORMAL);
+        state->col = toNextChar(state, c);
+        setPosition(state, changeInVisual(state));
+        state->mode = TYPING;
+    } else if (handleMotion(state, c, "cf")) {
+    } else if (state->motion == "cf") {
+        state->motionComplete = true;
+        state->motion += c;
+        initVisual(state, NORMAL);
+        state->col = findNextChar(state, c);
+        setPosition(state, changeInVisual(state));
+        state->mode = TYPING;
     } else if (handleMotion(state, c, "ci`")) {
         if (state->motionComplete) {
             initVisual(state, NORMAL);
@@ -195,6 +225,22 @@ void sendShortcutKeys(State* state, char c) {
             state->col = getIndexFirstNonSpace(state);
             state->mode = TYPING;
         }
+    } else if (handleMotion(state, c, "dt")) {
+    } else if (state->motion == "dt") {
+        state->dotCommand = state->motion + c;
+        state->motionComplete = true;
+        state->motion = "";
+        initVisual(state, NORMAL);
+        state->col = toNextChar(state, c);
+        setPosition(state, deleteInVisual(state));
+    } else if (handleMotion(state, c, "df")) {
+    } else if (state->motion == "df") {
+        state->dotCommand = state->motion + c;
+        state->motionComplete = true;
+        state->motion = "";
+        initVisual(state, NORMAL);
+        state->col = findNextChar(state, c);
+        setPosition(state, deleteInVisual(state));
     } else if (handleMotion(state, c, "di`")) {
         if (state->motionComplete) {
             initVisual(state, NORMAL);
@@ -337,6 +383,20 @@ void sendShortcutKeys(State* state, char c) {
             setPosition(state, deleteInVisual(state));
             state->col = getIndexFirstNonSpace(state);
         }
+    } else if (handleMotion(state, c, "yt")) {
+    } else if (state->motion == "yt") {
+        state->motionComplete = true;
+        state->motion = "";
+        initVisual(state, NORMAL);
+        state->col = toNextChar(state, c);
+        setPosition(state, copyInVisual(state));
+    } else if (handleMotion(state, c, "yf")) {
+    } else if (state->motion == "yf") {
+        state->motionComplete = true;
+        state->motion = "";
+        initVisual(state, NORMAL);
+        state->col = findNextChar(state, c);
+        setPosition(state, copyInVisual(state));
     } else if (handleMotion(state, c, "yi`")) {
         if (state->motionComplete) {
             initVisual(state, NORMAL);
@@ -459,12 +519,6 @@ void sendShortcutKeys(State* state, char c) {
             setPosition(state, copyInVisual(state));
             state->col = getIndexFirstNonSpace(state);
         }
-    } else if (state->prevKeys == "r") {
-        if (state->col < state->data[state->row].length()) {
-            state->data[state->row] = state->data[state->row].substr(0, state->col) + c + state->data[state->row].substr(state->col + 1);
-        }
-        state->motion = "";
-        state->prevKeys = "";
     } else if (state->prevKeys != "") {
         state->prevKeys = "";
     } else if (c == ':') {
@@ -509,6 +563,10 @@ void sendShortcutKeys(State* state, char c) {
         }
     } else if (c == 'r') {
         state->prevKeys = "r";
+    } else if (c == 'f') {
+        state->prevKeys = "f";
+    } else if (c == 't') {
+        state->prevKeys = "t";
     } else if (c == 'h') {
         left(state);
     } else if (c == 'l') {
