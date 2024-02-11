@@ -64,7 +64,6 @@ void upHalfScreen(State* state);
 char ctrl(char c);
 void calcWindowBounds();
 int getIndexFirstNonSpace(State* state);
-bool handleMotion(State* state, char c, std::string motion);
 void sanityCheckRowColOutOfBounds(State* state);
 void sanityCheckDocumentEmpty(State* state);
 int minimum(int a, int b);

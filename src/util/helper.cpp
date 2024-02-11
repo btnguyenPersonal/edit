@@ -781,26 +781,6 @@ void insertEmptyLine(State* state) {
     state->data.insert(state->data.begin() + state->row, "");
 }
 
-bool handleMotion(State* state, char c, std::string motion) {
-    size_t i;
-    for (i = 0; i < state->prevKeys.length(); i++) {
-        if (state->prevKeys[i] != motion[i]) {
-            return false;
-        }
-    }
-    if (motion[i] == c) {
-        if (i < motion.length() - 1) {
-            state->prevKeys += c;
-        } else {
-            state->motion = state->prevKeys + c;
-            state->motionComplete = true;
-        }
-        return true;
-    } else {
-        return false;
-    }
-}
-
 int maximum(int a, int b) {
     if (a > b) {
         return a;
