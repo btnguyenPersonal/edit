@@ -39,5 +39,7 @@ void sendTypingKeys(State* state, char c) {
         state->row += 1;
         state->col = 0;
     }
-    state->motion += c;
+    if (!state->dontRecordKey) {
+        state->motion += c;
+    }
 }

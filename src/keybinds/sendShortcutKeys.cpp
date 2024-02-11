@@ -19,508 +19,61 @@
 void sendShortcutKeys(State* state, char c) {
     if (c == 27) { // ESC
         state->prevKeys = "";
+        state->motion = "";
+        return;
     } else if (state->prevKeys == "t") {
         state->col = toNextChar(state, c);
-        state->motion = "";
         state->prevKeys = "";
+        return;
     } else if (state->prevKeys == "f") {
         state->col = findNextChar(state, c);
-        state->motion = "";
         state->prevKeys = "";
+        return;
+    } else if (state->prevKeys.length() == 2) {
+        char command1 = state->prevKeys[1];
+        char command2 = state->prevKeys[0];
+        state->prevKeys = "";
+        state->motion = "";
+        sendKeys(state, 'v');
+        sendKeys(state, command1);
+        sendKeys(state, c);
+        sendKeys(state, command2);
+        state->motion = "";
+        return;
+    } else if (state->prevKeys == "y" || state->prevKeys == "d" || state->prevKeys == "c") {
+        if (c == 'i' || c == 'a' || c == 'f' || c == 't') {
+            state->prevKeys += c;
+        } else {
+            char command = state->prevKeys[0];
+            state->prevKeys = "";
+            state->motion = "";
+            sendKeys(state, 'V');
+            if (c != command) {
+                sendKeys(state, c);
+            }
+            sendKeys(state, command);
+            state->motion = "";
+            return;
+        }
     } else if (state->prevKeys == "r") {
+        state->motion = "r";
         if (state->col < state->data[state->row].length()) {
             state->data[state->row] = state->data[state->row].substr(0, state->col) + c + state->data[state->row].substr(state->col + 1);
         }
-        state->motion = "";
         state->prevKeys = "";
-    } else if (handleMotion(state, c, "ge")) {
-        if (state->motionComplete) {
-            unCommentBlock(state);
-        }
-    } else if (handleMotion(state, c, "gt")) {
-        if (state->motionComplete) {
-            for (unsigned int i = 0; i < state->data.size(); i++) {
-                rtrim(state->data[i]);
-            }
-        }
-    } else if (handleMotion(state, c, "gg")) {
-        if (state->motionComplete) {
-            state->row = 0;
-        }
-    } else if (handleMotion(state, c, "ct")) {
-    } else if (state->motion == "ct") {
-        state->motionComplete = true;
-        state->motion += c;
-        initVisual(state, NORMAL);
-        state->col = toNextChar(state, c);
-        setPosition(state, changeInVisual(state));
-        state->mode = TYPING;
-    } else if (handleMotion(state, c, "cf")) {
-    } else if (state->motion == "cf") {
-        state->motionComplete = true;
-        state->motion += c;
-        initVisual(state, NORMAL);
-        state->col = findNextChar(state, c);
-        setPosition(state, changeInVisual(state));
-        state->mode = TYPING;
-    } else if (handleMotion(state, c, "ci`")) {
-        if (state->motionComplete) {
-            initVisual(state, NORMAL);
-            setStateFromWordPosition(state, findQuoteBounds(state->data[state->row], '`', state->col, false));
-            copyInVisual(state);
-            setPosition(state, changeInVisual(state));
-            state->mode = TYPING;
-        }
-    } else if (handleMotion(state, c, "ca`")) {
-        if (state->motionComplete) {
-            initVisual(state, NORMAL);
-            setStateFromWordPosition(state, findQuoteBounds(state->data[state->row], '`', state->col, true));
-            copyInVisual(state);
-            setPosition(state, changeInVisual(state));
-            state->mode = TYPING;
-        }
-    } else if (handleMotion(state, c, "ci\"")) {
-        if (state->motionComplete) {
-            initVisual(state, NORMAL);
-            setStateFromWordPosition(state, findQuoteBounds(state->data[state->row], '"', state->col, false));
-            copyInVisual(state);
-            setPosition(state, changeInVisual(state));
-            state->mode = TYPING;
-        }
-    } else if (handleMotion(state, c, "ca\"")) {
-        if (state->motionComplete) {
-            initVisual(state, NORMAL);
-            setStateFromWordPosition(state, findQuoteBounds(state->data[state->row], '"', state->col, true));
-            copyInVisual(state);
-            setPosition(state, changeInVisual(state));
-            state->mode = TYPING;
-        }
-    } else if (handleMotion(state, c, "ci'")) {
-        if (state->motionComplete) {
-            initVisual(state, NORMAL);
-            setStateFromWordPosition(state, findQuoteBounds(state->data[state->row], '\'', state->col, false));
-            copyInVisual(state);
-            setPosition(state, changeInVisual(state));
-            state->mode = TYPING;
-        }
-    } else if (handleMotion(state, c, "ca'")) {
-        if (state->motionComplete) {
-            initVisual(state, NORMAL);
-            setStateFromWordPosition(state, findQuoteBounds(state->data[state->row], '\'', state->col, true));
-            copyInVisual(state);
-            setPosition(state, changeInVisual(state));
-            state->mode = TYPING;
-        }
-    } else if (handleMotion(state, c, "caT")) {
-        if (state->motionComplete) {
-            initVisual(state, NORMAL);
-            setStateFromWordPosition(state, findParentheses(state->data[state->row], '>', '<', state->col, true));
-            copyInVisual(state);
-            setPosition(state, changeInVisual(state));
-            state->mode = TYPING;
-        }
-    } else if (handleMotion(state, c, "cat")) {
-        if (state->motionComplete) {
-            initVisual(state, NORMAL);
-            setStateFromWordPosition(state, findParentheses(state->data[state->row], '<', '>', state->col, true));
-            copyInVisual(state);
-            setPosition(state, changeInVisual(state));
-            state->mode = TYPING;
-        }
-    } else if (handleMotion(state, c, "cad")) {
-        if (state->motionComplete) {
-            initVisual(state, NORMAL);
-            setStateFromWordPosition(state, findParentheses(state->data[state->row], '[', ']', state->col, true));
-            copyInVisual(state);
-            setPosition(state, changeInVisual(state));
-            state->mode = TYPING;
-        }
-    } else if (handleMotion(state, c, "caB")) {
-        if (state->motionComplete) {
-            initVisual(state, NORMAL);
-            setStateFromWordPosition(state, findParentheses(state->data[state->row], '{', '}', state->col, true));
-            copyInVisual(state);
-            setPosition(state, changeInVisual(state));
-            state->mode = TYPING;
-        }
-    } else if (handleMotion(state, c, "cab")) {
-        if (state->motionComplete) {
-            initVisual(state, NORMAL);
-            setStateFromWordPosition(state, findParentheses(state->data[state->row], '(', ')', state->col, true));
-            copyInVisual(state);
-            setPosition(state, changeInVisual(state));
-            state->mode = TYPING;
-        }
-    } else if (handleMotion(state, c, "ciT")) {
-        if (state->motionComplete) {
-            initVisual(state, NORMAL);
-            setStateFromWordPosition(state, findParentheses(state->data[state->row], '>', '<', state->col, false));
-            copyInVisual(state);
-            setPosition(state, changeInVisual(state));
-            state->mode = TYPING;
-        }
-    } else if (handleMotion(state, c, "cit")) {
-        if (state->motionComplete) {
-            initVisual(state, NORMAL);
-            setStateFromWordPosition(state, findParentheses(state->data[state->row], '<', '>', state->col, false));
-            copyInVisual(state);
-            setPosition(state, changeInVisual(state));
-            state->mode = TYPING;
-        }
-    } else if (handleMotion(state, c, "cid")) {
-        if (state->motionComplete) {
-            initVisual(state, NORMAL);
-            setStateFromWordPosition(state, findParentheses(state->data[state->row], '[', ']', state->col, false));
-            copyInVisual(state);
-            setPosition(state, changeInVisual(state));
-            state->mode = TYPING;
-        }
-    } else if (handleMotion(state, c, "ciB")) {
-        if (state->motionComplete) {
-            initVisual(state, NORMAL);
-            setStateFromWordPosition(state, findParentheses(state->data[state->row], '{', '}', state->col, false));
-            copyInVisual(state);
-            setPosition(state, changeInVisual(state));
-            state->mode = TYPING;
-        }
-    } else if (handleMotion(state, c, "cib")) {
-        if (state->motionComplete) {
-            initVisual(state, NORMAL);
-            setStateFromWordPosition(state, findParentheses(state->data[state->row], '(', ')', state->col, false));
-            copyInVisual(state);
-            setPosition(state, changeInVisual(state));
-            state->mode = TYPING;
-        }
-    } else if (handleMotion(state, c, "ciw")) {
-        if (state->motionComplete) {
-            initVisual(state, NORMAL);
-            setStateFromWordPosition(state, getWordPosition(state->data[state->row], state->col));
-            copyInVisual(state);
-            setPosition(state, changeInVisual(state));
-            state->mode = TYPING;
-        }
-    } else if (handleMotion(state, c, "cc")) {
-        if (state->motionComplete) {
-            initVisual(state, LINE);
-            copyInVisual(state);
-            changeInVisual(state);
-            state->col = getIndexFirstNonSpace(state);
-            state->mode = TYPING;
-        }
-    } else if (handleMotion(state, c, "ck")) {
-        if (state->motionComplete) {
-            initVisual(state, LINE);
-            up(state);
-            copyInVisual(state);
-            setPosition(state, changeInVisual(state));
-            state->col = getIndexFirstNonSpace(state);
-            state->mode = TYPING;
-        }
-    } else if (handleMotion(state, c, "cj")) {
-        if (state->motionComplete) {
-            initVisual(state, LINE);
-            down(state);
-            copyInVisual(state);
-            setPosition(state, changeInVisual(state));
-            state->col = getIndexFirstNonSpace(state);
-            state->mode = TYPING;
-        }
-    } else if (handleMotion(state, c, "dt")) {
-    } else if (state->motion == "dt") {
-        state->dotCommand = state->motion + c;
-        state->motionComplete = true;
-        state->motion = "";
-        initVisual(state, NORMAL);
-        state->col = toNextChar(state, c);
-        setPosition(state, deleteInVisual(state));
-    } else if (handleMotion(state, c, "df")) {
-    } else if (state->motion == "df") {
-        state->dotCommand = state->motion + c;
-        state->motionComplete = true;
-        state->motion = "";
-        initVisual(state, NORMAL);
-        state->col = findNextChar(state, c);
-        setPosition(state, deleteInVisual(state));
-    } else if (handleMotion(state, c, "di`")) {
-        if (state->motionComplete) {
-            initVisual(state, NORMAL);
-            setStateFromWordPosition(state, findQuoteBounds(state->data[state->row], '`', state->col, false));
-            copyInVisual(state);
-            setPosition(state, deleteInVisual(state));
-        }
-    } else if (handleMotion(state, c, "da`")) {
-        if (state->motionComplete) {
-            initVisual(state, NORMAL);
-            setStateFromWordPosition(state, findQuoteBounds(state->data[state->row], '`', state->col, true));
-            copyInVisual(state);
-            setPosition(state, deleteInVisual(state));
-        }
-    } else if (handleMotion(state, c, "di\"")) {
-        if (state->motionComplete) {
-            initVisual(state, NORMAL);
-            setStateFromWordPosition(state, findQuoteBounds(state->data[state->row], '"', state->col, false));
-            copyInVisual(state);
-            setPosition(state, deleteInVisual(state));
-        }
-    } else if (handleMotion(state, c, "da\"")) {
-        if (state->motionComplete) {
-            initVisual(state, NORMAL);
-            setStateFromWordPosition(state, findQuoteBounds(state->data[state->row], '"', state->col, true));
-            copyInVisual(state);
-            setPosition(state, deleteInVisual(state));
-        }
-    } else if (handleMotion(state, c, "di'")) {
-        if (state->motionComplete) {
-            initVisual(state, NORMAL);
-            setStateFromWordPosition(state, findQuoteBounds(state->data[state->row], '\'', state->col, false));
-            copyInVisual(state);
-            setPosition(state, deleteInVisual(state));
-        }
-    } else if (handleMotion(state, c, "da'")) {
-        if (state->motionComplete) {
-            initVisual(state, NORMAL);
-            setStateFromWordPosition(state, findQuoteBounds(state->data[state->row], '\'', state->col, true));
-            copyInVisual(state);
-            setPosition(state, deleteInVisual(state));
-        }
-    } else if (handleMotion(state, c, "daT")) {
-        if (state->motionComplete) {
-            initVisual(state, NORMAL);
-            setStateFromWordPosition(state, findParentheses(state->data[state->row], '>', '<', state->col, true));
-            copyInVisual(state);
-            setPosition(state, deleteInVisual(state));
-        }
-    } else if (handleMotion(state, c, "dat")) {
-        if (state->motionComplete) {
-            initVisual(state, NORMAL);
-            setStateFromWordPosition(state, findParentheses(state->data[state->row], '<', '>', state->col, true));
-            copyInVisual(state);
-            setPosition(state, deleteInVisual(state));
-        }
-    } else if (handleMotion(state, c, "dad")) {
-        if (state->motionComplete) {
-            initVisual(state, NORMAL);
-            setStateFromWordPosition(state, findParentheses(state->data[state->row], '[', ']', state->col, true));
-            copyInVisual(state);
-            setPosition(state, deleteInVisual(state));
-        }
-    } else if (handleMotion(state, c, "daB")) {
-        if (state->motionComplete) {
-            initVisual(state, NORMAL);
-            setStateFromWordPosition(state, findParentheses(state->data[state->row], '{', '}', state->col, true));
-            copyInVisual(state);
-            setPosition(state, deleteInVisual(state));
-        }
-    } else if (handleMotion(state, c, "dab")) {
-        if (state->motionComplete) {
-            initVisual(state, NORMAL);
-            setStateFromWordPosition(state, findParentheses(state->data[state->row], '(', ')', state->col, true));
-            copyInVisual(state);
-            setPosition(state, deleteInVisual(state));
-        }
-    } else if (handleMotion(state, c, "diT")) {
-        if (state->motionComplete) {
-            initVisual(state, NORMAL);
-            setStateFromWordPosition(state, findParentheses(state->data[state->row], '>', '<', state->col, false));
-            copyInVisual(state);
-            setPosition(state, deleteInVisual(state));
-        }
-    } else if (handleMotion(state, c, "dit")) {
-        if (state->motionComplete) {
-            initVisual(state, NORMAL);
-            setStateFromWordPosition(state, findParentheses(state->data[state->row], '<', '>', state->col, false));
-            copyInVisual(state);
-            setPosition(state, deleteInVisual(state));
-        }
-    } else if (handleMotion(state, c, "did")) {
-        if (state->motionComplete) {
-            initVisual(state, NORMAL);
-            setStateFromWordPosition(state, findParentheses(state->data[state->row], '[', ']', state->col, false));
-            copyInVisual(state);
-            setPosition(state, deleteInVisual(state));
-        }
-    } else if (handleMotion(state, c, "diB")) {
-        if (state->motionComplete) {
-            initVisual(state, NORMAL);
-            setStateFromWordPosition(state, findParentheses(state->data[state->row], '{', '}', state->col, false));
-            copyInVisual(state);
-            setPosition(state, deleteInVisual(state));
-        }
-    } else if (handleMotion(state, c, "dib")) {
-        if (state->motionComplete) {
-            initVisual(state, NORMAL);
-            setStateFromWordPosition(state, findParentheses(state->data[state->row], '(', ')', state->col, false));
-            copyInVisual(state);
-            setPosition(state, deleteInVisual(state));
-        }
-    } else if (handleMotion(state, c, "diw")) {
-        if (state->motionComplete) {
-            initVisual(state, NORMAL);
-            setStateFromWordPosition(state, getWordPosition(state->data[state->row], state->col));
-            copyInVisual(state);
-            setPosition(state, deleteInVisual(state));
-        }
-    } else if (handleMotion(state, c, "dd")) {
-        if (state->motionComplete) {
-            initVisual(state, LINE);
-            copyInVisual(state);
-            deleteInVisual(state);
-            state->col = getIndexFirstNonSpace(state);
-        }
-    } else if (handleMotion(state, c, "dk")) {
-        if (state->motionComplete) {
-            initVisual(state, LINE);
-            up(state);
-            copyInVisual(state);
-            setPosition(state, deleteInVisual(state));
-            state->col = getIndexFirstNonSpace(state);
-        }
-    } else if (handleMotion(state, c, "dj")) {
-        if (state->motionComplete) {
-            initVisual(state, LINE);
-            down(state);
-            copyInVisual(state);
-            setPosition(state, deleteInVisual(state));
-            state->col = getIndexFirstNonSpace(state);
-        }
-    } else if (handleMotion(state, c, "yt")) {
-    } else if (state->motion == "yt") {
-        state->motionComplete = true;
-        state->motion = "";
-        initVisual(state, NORMAL);
-        state->col = toNextChar(state, c);
-        setPosition(state, copyInVisual(state));
-    } else if (handleMotion(state, c, "yf")) {
-    } else if (state->motion == "yf") {
-        state->motionComplete = true;
-        state->motion = "";
-        initVisual(state, NORMAL);
-        state->col = findNextChar(state, c);
-        setPosition(state, copyInVisual(state));
-    } else if (handleMotion(state, c, "yi`")) {
-        if (state->motionComplete) {
-            initVisual(state, NORMAL);
-            setStateFromWordPosition(state, findQuoteBounds(state->data[state->row], '`', state->col, false));
-            setPosition(state, copyInVisual(state));
-        }
-    } else if (handleMotion(state, c, "ya`")) {
-        if (state->motionComplete) {
-            initVisual(state, NORMAL);
-            setStateFromWordPosition(state, findQuoteBounds(state->data[state->row], '`', state->col, true));
-            setPosition(state, copyInVisual(state));
-        }
-    } else if (handleMotion(state, c, "yi\"")) {
-        if (state->motionComplete) {
-            initVisual(state, NORMAL);
-            setStateFromWordPosition(state, findQuoteBounds(state->data[state->row], '"', state->col, false));
-            setPosition(state, copyInVisual(state));
-        }
-    } else if (handleMotion(state, c, "ya\"")) {
-        if (state->motionComplete) {
-            initVisual(state, NORMAL);
-            setStateFromWordPosition(state, findQuoteBounds(state->data[state->row], '"', state->col, true));
-            setPosition(state, copyInVisual(state));
-        }
-    } else if (handleMotion(state, c, "yi'")) {
-        if (state->motionComplete) {
-            initVisual(state, NORMAL);
-            setStateFromWordPosition(state, findQuoteBounds(state->data[state->row], '\'', state->col, false));
-            setPosition(state, copyInVisual(state));
-        }
-    } else if (handleMotion(state, c, "ya'")) {
-        if (state->motionComplete) {
-            initVisual(state, NORMAL);
-            setStateFromWordPosition(state, findQuoteBounds(state->data[state->row], '\'', state->col, true));
-            setPosition(state, copyInVisual(state));
-        }
-    } else if (handleMotion(state, c, "yaT")) {
-        if (state->motionComplete) {
-            initVisual(state, NORMAL);
-            setStateFromWordPosition(state, findParentheses(state->data[state->row], '>', '<', state->col, true));
-            setPosition(state, copyInVisual(state));
-        }
-    } else if (handleMotion(state, c, "yat")) {
-        if (state->motionComplete) {
-            initVisual(state, NORMAL);
-            setStateFromWordPosition(state, findParentheses(state->data[state->row], '<', '>', state->col, true));
-            setPosition(state, copyInVisual(state));
-        }
-    } else if (handleMotion(state, c, "yad")) {
-        if (state->motionComplete) {
-            initVisual(state, NORMAL);
-            setStateFromWordPosition(state, findParentheses(state->data[state->row], '[', ']', state->col, true));
-            setPosition(state, copyInVisual(state));
-        }
-    } else if (handleMotion(state, c, "yaB")) {
-        if (state->motionComplete) {
-            initVisual(state, NORMAL);
-            setStateFromWordPosition(state, findParentheses(state->data[state->row], '{', '}', state->col, true));
-            setPosition(state, copyInVisual(state));
-        }
-    } else if (handleMotion(state, c, "yab")) {
-        if (state->motionComplete) {
-            initVisual(state, NORMAL);
-            setStateFromWordPosition(state, findParentheses(state->data[state->row], '(', ')', state->col, true));
-            setPosition(state, copyInVisual(state));
-        }
-    } else if (handleMotion(state, c, "yiT")) {
-        if (state->motionComplete) {
-            initVisual(state, NORMAL);
-            setStateFromWordPosition(state, findParentheses(state->data[state->row], '>', '<', state->col, false));
-            setPosition(state, copyInVisual(state));
-        }
-    } else if (handleMotion(state, c, "yit")) {
-        if (state->motionComplete) {
-            initVisual(state, NORMAL);
-            setStateFromWordPosition(state, findParentheses(state->data[state->row], '<', '>', state->col, false));
-            setPosition(state, copyInVisual(state));
-        }
-    } else if (handleMotion(state, c, "yid")) {
-        if (state->motionComplete) {
-            initVisual(state, NORMAL);
-            setStateFromWordPosition(state, findParentheses(state->data[state->row], '[', ']', state->col, false));
-            setPosition(state, copyInVisual(state));
-        }
-    } else if (handleMotion(state, c, "yiB")) {
-        if (state->motionComplete) {
-            initVisual(state, NORMAL);
-            setStateFromWordPosition(state, findParentheses(state->data[state->row], '{', '}', state->col, false));
-            setPosition(state, copyInVisual(state));
-        }
-    } else if (handleMotion(state, c, "yib")) {
-        if (state->motionComplete) {
-            initVisual(state, NORMAL);
-            setStateFromWordPosition(state, findParentheses(state->data[state->row], '(', ')', state->col, false));
-            setPosition(state, copyInVisual(state));
-        }
-    } else if (handleMotion(state, c, "yiw")) {
-        if (state->motionComplete) {
-            initVisual(state, NORMAL);
-            setStateFromWordPosition(state, getWordPosition(state->data[state->row], state->col));
-            setPosition(state, copyInVisual(state));
-        }
-    } else if (handleMotion(state, c, "yy")) {
-        if (state->motionComplete) {
-            initVisual(state, LINE);
-            copyInVisual(state);
-            state->col = getIndexFirstNonSpace(state);
-        }
-    } else if (handleMotion(state, c, "yk")) {
-        if (state->motionComplete) {
-            initVisual(state, LINE);
-            up(state);
-            setPosition(state, copyInVisual(state));
-            state->col = getIndexFirstNonSpace(state);
-        }
-    } else if (handleMotion(state, c, "yj")) {
-        if (state->motionComplete) {
-            initVisual(state, LINE);
-            down(state);
-            setPosition(state, copyInVisual(state));
-            state->col = getIndexFirstNonSpace(state);
-        }
-    } else if (state->prevKeys != "") {
+    } else if (state->prevKeys + c == "ge") {
+        unCommentBlock(state);
         state->prevKeys = "";
+        return;
+    } else if (state->prevKeys + c == "gt") {
+        for (unsigned int i = 0; i < state->data.size(); i++) {
+            rtrim(state->data[i]);
+        }
+        state->prevKeys = "";
+    } else if (state->prevKeys + c == "gg") {
+        state->row = 0;
+        state->prevKeys = "";
+        return;
     } else if (c == ':') {
         state->mode = COMMANDLINE;
     } else if (c == '<') {
@@ -561,34 +114,40 @@ void sendShortcutKeys(State* state, char c) {
             state->status = "file not found";
             state->fileStack.erase(state->fileStack.begin() + state->fileStackIndex);
         }
-    } else if (c == 'r') {
-        state->prevKeys = "r";
-    } else if (c == 'f') {
-        state->prevKeys = "f";
-    } else if (c == 't') {
-        state->prevKeys = "t";
+    } else if (state->prevKeys == "" && (c == 'r' || c == 'g' || c == 'c' || c == 'd' || c == 'y' || c == 'f' || c == 't')) {
+        state->prevKeys = c;
+        return;
     } else if (c == 'h') {
         left(state);
+        return;
     } else if (c == 'l') {
         right(state);
+        return;
     } else if (c == 'k' || c == ctrl('k')) {
         up(state);
+        return;
     } else if (c == 'j' || c == ctrl('j')) {
         down(state);
+        return;
     } else if (c == '{') {
         state->row = getPrevEmptyLine(state);
+        return;
     } else if (c == '}') {
         state->row = getNextEmptyLine(state);
+        return;
     } else if (c == '[') {
         state->row = getPrevLineSameIndent(state);
+        return;
     } else if (c == ']') {
         state->row = getNextLineSameIndent(state);
+        return;
     } else if (c == '#') {
         initVisual(state, NORMAL);
         setStateFromWordPosition(state, getWordPosition(state->data[state->row], state->col));
         state->grepQuery = getInVisual(state);
         state->mode = GREP;
         generateGrepOutput(state);
+        return;
     } else if (c == '*') {
         initVisual(state, NORMAL);
         setStateFromWordPosition(state, getWordPosition(state->data[state->row], state->col));
@@ -603,47 +162,49 @@ void sendShortcutKeys(State* state, char c) {
             state->col = temp_col - 1;
         }
         centerScreen(state);
+        return;
     } else if (c == ctrl('g')) {
         state->mode = GREP;
         generateGrepOutput(state);
+        return;
     } else if (c == ctrl('p')) {
         state->mode = FINDFILE;
         state->selectAll = true;
+        return;
     } else if (c == 'v') {
         state->mode = VISUAL;
         initVisual(state, NORMAL);
-        state->motion = "v";
     } else if (c == 'V') {
         state->mode = VISUAL;
         initVisual(state, LINE);
-        state->motion = "V";
     } else if (c == 'b') {
         state->col = b(state);
+        return;
     } else if (c == 'w') {
         state->col = w(state);
+        return;
     } else if (c == 'i') {
         state->mode = TYPING;
-        state->motion = "i";
     } else if (c == 'a') {
         right(state);
         state->mode = TYPING;
-        state->motion = "a";
     } else if (c == ctrl('u')) {
         upHalfScreen(state);
+        return;
     } else if (c == ctrl('d')) {
         downHalfScreen(state);
+        return;
     } else if (c == 'o') {
         insertEmptyLineBelow(state);
         down(state);
         state->mode = TYPING;
-        state->motion = "o";
     } else if (c == 'O') {
         insertEmptyLine(state);
         state->mode = TYPING;
-        state->motion = "O";
     } else if (c == 'Y') {
         fixColOverMax(state);
         copyToClipboard(state->data[state->row].substr(state->col));
+        return;
     } else if (c == 'D') {
         fixColOverMax(state);
         copyToClipboard(state->data[state->row].substr(state->col));
@@ -653,19 +214,17 @@ void sendShortcutKeys(State* state, char c) {
         copyToClipboard(state->data[state->row].substr(state->col));
         state->data[state->row] = state->data[state->row].substr(0, state->col);
         state->mode = TYPING;
-        state->motion = "C";
     } else if (c == 'I') {
         state->col = getIndexFirstNonSpace(state);
         state->mode = TYPING;
-        state->motion = "I";
     } else if (c == 'A') {
         state->col = state->data[state->row].length();
         state->mode = TYPING;
-        state->motion = "A";
     } else if (c == 'N') {
         state->searching = true;
         setSearchResultReverse(state);
         centerScreen(state);
+        return;
     } else if (c == 'n') {
         state->searching = true;
         state->col += 1;
@@ -677,6 +236,7 @@ void sendShortcutKeys(State* state, char c) {
             state->col = temp_col - 1;
         }
         centerScreen(state);
+        return;
     } else if (c == '.') {
         for (unsigned int i = 0; i < state->dotCommand.length(); i++) {
             state->dontRecordKey = true;
@@ -684,7 +244,6 @@ void sendShortcutKeys(State* state, char c) {
         }
         state->dontRecordKey = true;
     } else if (c == ',' && state->recording == false) {
-        // TODO replay with clipboard
         for (unsigned int i = 0; i < state->macroCommand.length(); i++) {
             state->dontRecordKey = true;
             sendKeys(state, state->macroCommand[i]);
@@ -696,6 +255,7 @@ void sendShortcutKeys(State* state, char c) {
         }
         state->recording = !state->recording;
         state->dontRecordKey = true;
+        return;
     } else if (c == 'K') {
         state->col = state->data[state->row].length();
         if (state->row + 1 < state->data.size()) {
@@ -713,13 +273,14 @@ void sendShortcutKeys(State* state, char c) {
     } else if (c == '/') {
         state->searchQuery = std::string("");
         state->mode = SEARCH;
+        return;
     } else if (c == '^') {
         state->col = getIndexFirstNonSpace(state);
+        return;
     } else if (c == 's') {
         if (state->col < state->data[state->row].length()) {
             state->data[state->row] = state->data[state->row].substr(0, state->col) + state->data[state->row].substr(state->col + 1);
             state->mode = TYPING;
-            state->motion = "s";
         }
     } else if (c == 'x') {
         if (state->col < state->data[state->row].length()) {
@@ -728,26 +289,33 @@ void sendShortcutKeys(State* state, char c) {
         }
     } else if (c == ctrl('h')) {
         moveHarpoonLeft(state);
+        return;
     } else if (c == ctrl('l')) {
         moveHarpoonRight(state);
+        return;
     } else if (c == ctrl('y')) {
         state->col = 0;
         state->mode = BLAME;
+        return;
     } else if (c == ctrl('f')) {
         state->mode = SEARCH;
         state->replacing = true;
+        return;
     } else if (c == '0') {
         state->col = 0;
+        return;
     } else if (c == '$') {
         if (state->data[state->row].length() != 0) {
             state->col = state->data[state->row].length() - 1;
         } else {
             state->col = 0;
         }
+        return;
     } else if (c == 'z') {
         fixColOverMax(state);
         state->windowPosition.col = 0;
         centerScreen(state);
+        return;
     } else if (c == 'P') {
         pasteFromClipboard(state);
     } else if (c == 'p') {
@@ -762,9 +330,11 @@ void sendShortcutKeys(State* state, char c) {
             state->harpoonIndex = state->harpoonFiles.size() - 1;
         }
         state->resetState(state->harpoonFiles[state->harpoonIndex]);
+        return;
     } else if (c == 'X') {
         state->harpoonIndex = 0;
         state->harpoonFiles.clear();
+        return;
     } else if (c == 'e') {
         toggleComment(state);
         state->col = getIndexFirstNonSpace(state);
@@ -789,6 +359,7 @@ void sendShortcutKeys(State* state, char c) {
                 state->resetState(state->harpoonFiles[state->harpoonIndex]);
             }
         }
+        return;
     } else if (c == ctrl('w')) {
         if (state->harpoonIndex > 0) {
             if (std::filesystem::exists(state->harpoonFiles[state->harpoonIndex - 1].c_str())) {
@@ -804,6 +375,7 @@ void sendShortcutKeys(State* state, char c) {
                 state->resetState(state->harpoonFiles[state->harpoonIndex]);
             }
         }
+        return;
     } else if (c == '\\') {
         state->changeFile(state->filename);
     } else if (c == ' ') {
@@ -821,8 +393,12 @@ void sendShortcutKeys(State* state, char c) {
             state->harpoonFiles.push_back(state->filename);
         }
         state->harpoonIndex = state->harpoonFiles.size() - 1;
+        return;
     } else if (c == 'G') {
         state->row = state->data.size() - 1;
+        return;
+    }
+    if (!state->dontRecordKey) {
+        state->motion += c;
     }
 }
-
