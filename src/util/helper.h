@@ -40,7 +40,6 @@ unsigned int getPrevLineSameIndent(State* state);
 WordPosition getWordPosition(const std::string& str, unsigned int cursor);
 std::vector<grepMatch> grepFiles(const std::filesystem::path& dir_path, const std::string& query);
 void generateGrepOutput(State* state);
-bool isAlphaNumeric(char c);
 bool filePathContainsSubstring(const std::filesystem::path& filePath, const std::string& query);
 bool shouldIgnoreFile(const std::filesystem::path& path);
 std::vector<std::filesystem::path> findFiles(const std::filesystem::path& dir_path, const std::string& query);
