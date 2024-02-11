@@ -19,6 +19,30 @@ void setStateFromWordPosition(State* state, WordPosition pos) {
     }
 }
 
+void surroundParagraph(State* state, bool includeLastLine) {
+    auto start = state->row;
+    for (int i = (int) start; i >= 0; i--) {
+        if (state->data[i] == "") {
+            break;
+        } else {
+            start = i;
+        }
+    }
+    state->visual.row = start;
+    auto end = state->row;
+    for (unsigned int i = state->row; i < state->data.size(); i++) {
+        if (state->data[i] == "") {
+            if (includeLastLine) {
+                end = i;
+            }
+            break;
+        } else {
+            end = i;
+        }
+    }
+    state->row = end;
+}
+
 std::string getInVisual(State* state) {
     Bounds bounds = getBounds(state);
     std::string clip = "";
@@ -190,6 +214,14 @@ void sendVisualKeys(State* state, char c) {
         state->prevKeys = "";
     } else if (state->prevKeys + c == "iw") {
         setStateFromWordPosition(state, getWordPosition(state->data[state->row], state->col));
+        state->prevKeys = "";
+    } else if (state->prevKeys + c == "ip") {
+        state->visualType = LINE;
+        surroundParagraph(state, false);
+        state->prevKeys = "";
+    } else if (state->prevKeys + c == "ap") {
+        state->visualType = LINE;
+        surroundParagraph(state, true);
         state->prevKeys = "";
     } else if (state->prevKeys + c == "gf") {
         std::vector<std::string> extensions = {"", ".js", ".jsx", ".ts", ".tsx"};
