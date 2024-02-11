@@ -19,6 +19,8 @@
 void sendShortcutKeys(State* state, char c) {
     if (c == 27) { // ESC
         state->prevKeys = "";
+        state->motion = "";
+        return;
     } else if (state->prevKeys == "t") {
         state->col = toNextChar(state, c);
         state->prevKeys = "";
