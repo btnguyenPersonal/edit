@@ -343,11 +343,6 @@ char ctrl(char c) {
     return c - 'a' + 1;
 }
 
-bool isAlphaNumeric(char c) {
-    // TODO replace all instances w/ std call
-    return std::isalnum(c);
-}
-
 unsigned int getIndent(const std::string& str) {
     for (unsigned int i = 0; i < str.length(); i++) {
         if (str[i] != ' ') {
@@ -602,15 +597,15 @@ void generateFindFileOutput(State* state) {
 }
 
 unsigned int w(State* state) {
-    bool isSpecial = !isAlphaNumeric(state->data[state->row][state->col]);
+    bool isSpecial = !std::isalnum(state->data[state->row][state->col]);
     bool isOnSpace = state->data[state->row][state->col] == ' ';
     bool space = false;
     for (unsigned int i = state->col + 1; i < state->data[state->row].size(); i += 1) {
         if (state->data[state->row][i] == ' ') {
             space = true;
-        } else if (isOnSpace || isSpecial == isAlphaNumeric(state->data[state->row][i])) {
+        } else if (isOnSpace || isSpecial == std::isalnum(state->data[state->row][i])) {
             return i;
-        } else if ((isOnSpace || space) && !isSpecial == isAlphaNumeric(state->data[state->row][i])) {
+        } else if ((isOnSpace || space) && !isSpecial == std::isalnum(state->data[state->row][i])) {
             return i;
         }
     }
@@ -618,26 +613,26 @@ unsigned int w(State* state) {
 }
 
 unsigned int b(State* state) {
-    bool isSpecial = !isAlphaNumeric(state->data[state->row][state->col]);
+    bool isSpecial = !std::isalnum(state->data[state->row][state->col]);
     bool isOnSpace = state->data[state->row][state->col] == ' ';
     bool space = false;
     unsigned int ret = state->col;
     for (unsigned int i = state->col; i > 0; i -= 1) {
         if (state->data[state->row][i - 1] == ' ') {
             space = true;
-        } else if (isOnSpace || isSpecial == isAlphaNumeric(state->data[state->row][i - 1])) {
+        } else if (isOnSpace || isSpecial == std::isalnum(state->data[state->row][i - 1])) {
             ret = i - 1;
             break;
-        } else if ((isOnSpace || space) && !isSpecial == isAlphaNumeric(state->data[state->row][i - 1])) {
+        } else if ((isOnSpace || space) && !isSpecial == std::isalnum(state->data[state->row][i - 1])) {
             ret = i;
             break;
         }
     }
-    bool currentAlpha = isAlphaNumeric(state->data[state->row][ret]);
+    bool currentAlpha = std::isalnum(state->data[state->row][ret]);
     for (unsigned int i = ret; i > 0; i -= 1) {
         if (state->data[state->row][i - 1] == ' ') {
             break;
-        } else if (currentAlpha == isAlphaNumeric(state->data[state->row][i - 1])) {
+        } else if (currentAlpha == std::isalnum(state->data[state->row][i - 1])) {
             ret = i - 1;
         } else {
             break;

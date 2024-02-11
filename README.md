@@ -143,13 +143,13 @@ search replace
 - { } [ ] and skip whitespace
 - * and # when in normal mode
 - dt, df, t, f, T, F
+- ip ap motions
 
 ## TODO
 - clean up printChar
 - make getch() int, and have enums for characters
 - indent w/ html
 - indent w/ blank lines
-- ip ap motions
 - render non-alphanumeric chars
 - mulit-cursor mode
 - ctrl w when typing
