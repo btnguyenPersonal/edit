@@ -22,9 +22,11 @@ void sendShortcutKeys(State* state, char c) {
     } else if (state->prevKeys == "t") {
         state->col = toNextChar(state, c);
         state->prevKeys = "";
+        return;
     } else if (state->prevKeys == "f") {
         state->col = findNextChar(state, c);
         state->prevKeys = "";
+        return;
     } else if (state->prevKeys.length() == 2) {
         char command1 = state->prevKeys[1];
         char command2 = state->prevKeys[0];
@@ -52,6 +54,7 @@ void sendShortcutKeys(State* state, char c) {
             return;
         }
     } else if (state->prevKeys == "r") {
+        state->motion = "r";
         if (state->col < state->data[state->row].length()) {
             state->data[state->row] = state->data[state->row].substr(0, state->col) + c + state->data[state->row].substr(state->col + 1);
         }
@@ -59,6 +62,7 @@ void sendShortcutKeys(State* state, char c) {
     } else if (state->prevKeys + c == "ge") {
         unCommentBlock(state);
         state->prevKeys = "";
+        return;
     } else if (state->prevKeys + c == "gt") {
         for (unsigned int i = 0; i < state->data.size(); i++) {
             rtrim(state->data[i]);
@@ -67,6 +71,7 @@ void sendShortcutKeys(State* state, char c) {
     } else if (state->prevKeys + c == "gg") {
         state->row = 0;
         state->prevKeys = "";
+        return;
     } else if (c == ':') {
         state->mode = COMMANDLINE;
     } else if (c == '<') {
@@ -108,8 +113,8 @@ void sendShortcutKeys(State* state, char c) {
             state->fileStack.erase(state->fileStack.begin() + state->fileStackIndex);
         }
     } else if (state->prevKeys == "" && (c == 'r' || c == 'g' || c == 'c' || c == 'd' || c == 'y' || c == 'f' || c == 't')) {
-        state->motion = "";
         state->prevKeys = c;
+        return;
     } else if (c == 'h') {
         left(state);
         return;
