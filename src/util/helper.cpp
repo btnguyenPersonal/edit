@@ -597,15 +597,13 @@ void generateFindFileOutput(State* state) {
 }
 
 unsigned int w(State* state) {
-    bool isSpecial = !std::isalnum(state->data[state->row][state->col]);
-    bool isOnSpace = state->data[state->row][state->col] == ' ';
-    bool space = false;
+    bool space = state->data[state->row][state->col] == ' ';
     for (unsigned int i = state->col + 1; i < state->data[state->row].size(); i += 1) {
         if (state->data[state->row][i] == ' ') {
             space = true;
-        } else if (isOnSpace || isSpecial == std::isalnum(state->data[state->row][i])) {
+        } else if (space && state->data[state->row][i] != ' ') {
             return i;
-        } else if ((isOnSpace || space) && !isSpecial == std::isalnum(state->data[state->row][i])) {
+        } else if (std::isalnum(state->data[state->row][state->col]) != std::isalnum(state->data[state->row][i])) {
             return i;
         }
     }
@@ -613,32 +611,19 @@ unsigned int w(State* state) {
 }
 
 unsigned int b(State* state) {
-    bool isSpecial = !std::isalnum(state->data[state->row][state->col]);
-    bool isOnSpace = state->data[state->row][state->col] == ' ';
-    bool space = false;
-    unsigned int ret = state->col;
-    for (unsigned int i = state->col; i > 0; i -= 1) {
-        if (state->data[state->row][i - 1] == ' ') {
-            space = true;
-        } else if (isOnSpace || isSpecial == std::isalnum(state->data[state->row][i - 1])) {
-            ret = i - 1;
-            break;
-        } else if ((isOnSpace || space) && !isSpecial == std::isalnum(state->data[state->row][i - 1])) {
-            ret = i;
-            break;
+    if (state->col == 0 || state->data[state->row].empty()) return 0;
+    int i = state->col - 1;
+    while (i >= 0 && state->data[state->row][i] == ' ') i--;
+    if (i < 0) return 0;
+    bool isAlnum = std::isalnum(state->data[state->row][i]) ? 1 : 0;
+    for (i -= 1; i >= 0; i--) {
+        if (state->data[state->row][i] == ' ') {
+            return i + 1;
+        } else if ((std::isalnum(state->data[state->row][i]) ? 1 : 0) != isAlnum) {
+            return i + 1;
         }
     }
-    bool currentAlpha = std::isalnum(state->data[state->row][ret]);
-    for (unsigned int i = ret; i > 0; i -= 1) {
-        if (state->data[state->row][i - 1] == ' ') {
-            break;
-        } else if (currentAlpha == std::isalnum(state->data[state->row][i - 1])) {
-            ret = i - 1;
-        } else {
-            break;
-        }
-    }
-    return ret;
+    return 0;
 }
 
 void saveFile(std::string filename, std::vector<std::string> data) {
