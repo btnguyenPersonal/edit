@@ -14,7 +14,7 @@
 #include "../util/modes.h"
 
 void sendKeys(State* state, char c) {
-    state->status = std::string("");
+    state->status = std::string("FUCK CHIEFS");
     state->showFileStack = false;
     state->dontRecordKey = false;
     state->searching = state->mode == SEARCH;
