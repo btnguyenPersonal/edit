@@ -66,6 +66,10 @@ std::string getCommentSymbol(std::string filename) {
     }
 }
 
+bool isAlphanumeric(char c) {
+    return std::isalnum(c) ? 1 : 0;
+}
+
 unsigned int findNextChar(State* state, char c) {
     for (unsigned int i = state->col; i < state->data[state->row].length(); i++) {
         if (state->data[state->row][i] == c) {
@@ -180,7 +184,7 @@ void ltrim(std::string &s) {
 std::string getCurrentWord(State* state) {
     std::string currentWord = "";
     for (int i = (int) state->col - 1; i >= 0; i--) {
-        if (std::isalnum(state->data[state->row][i])) {
+        if (isAlphanumeric(state->data[state->row][i])) {
             currentWord = state->data[state->row][i] + currentWord;
         } else {
             break;
@@ -198,7 +202,7 @@ std::string autocomplete(State* state, std::string query) {
         line += ' ';
         std::string word = "";
         for (unsigned int i = 0; i < line.length(); i++) {
-            if (std::isalnum(line[i])) {
+            if (isAlphanumeric(line[i])) {
                 word += line[i];
             } else {
                 if (word.substr(0, query.length()) == query) {
@@ -489,7 +493,7 @@ WordPosition getWordPosition(const std::string& str, unsigned int cursor) {
         return {0, 0};
     }
     // Move cursor to the start of the current chunk
-    while (cursor > 0 && str[cursor - 1] != ' ' && str[cursor] != ' ' && (std::isalnum(str[cursor]) == std::isalnum(str[cursor - 1]))) {
+    while (cursor > 0 && str[cursor - 1] != ' ' && str[cursor] != ' ' && (isAlphanumeric(str[cursor]) == isAlphanumeric(str[cursor - 1]))) {
         cursor--;
     }
     // If cursor is on a space, move to the next chunk
@@ -505,7 +509,7 @@ WordPosition getWordPosition(const std::string& str, unsigned int cursor) {
     // Find the end of the chunk
     unsigned int start = cursor;
     unsigned int end = start;
-    while (end < str.size() && str[end] != ' ' && (std::isalnum(str[start]) == std::isalnum(str[end]))) {
+    while (end < str.size() && str[end] != ' ' && (isAlphanumeric(str[start]) == isAlphanumeric(str[end]))) {
         end++;
     }
 
@@ -603,7 +607,7 @@ unsigned int w(State* state) {
             space = true;
         } else if (space && state->data[state->row][i] != ' ') {
             return i;
-        } else if (std::isalnum(state->data[state->row][state->col]) != std::isalnum(state->data[state->row][i])) {
+        } else if (isAlphanumeric(state->data[state->row][state->col]) != isAlphanumeric(state->data[state->row][i])) {
             return i;
         }
     }
@@ -615,11 +619,11 @@ unsigned int b(State* state) {
     int i = state->col - 1;
     while (i >= 0 && state->data[state->row][i] == ' ') i--;
     if (i < 0) return 0;
-    bool isAlnum = std::isalnum(state->data[state->row][i]) ? 1 : 0;
+    bool isAlnum = isAlphanumeric(state->data[state->row][i]);
     for (i -= 1; i >= 0; i--) {
         if (state->data[state->row][i] == ' ') {
             return i + 1;
-        } else if ((std::isalnum(state->data[state->row][i]) ? 1 : 0) != isAlnum) {
+        } else if ((isAlphanumeric(state->data[state->row][i])) != isAlnum) {
             return i + 1;
         }
     }
