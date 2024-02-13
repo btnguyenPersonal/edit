@@ -73,11 +73,6 @@ int renderStatusBar(State* state) {
     } else {
         mvprintw(0, state->maxX - state->filename.length() - 2, "\"%s\"", state->filename.c_str());
     }
-    std::string bruh = "FUCK CHIEFS";
-    attron(COLOR_PAIR(RED));
-    mvprintw(0, offset, "%s ", bruh.c_str());
-    attroff(COLOR_PAIR(RED));
-    offset += bruh.length() + 1;
     if (state->status.length() > 0) {
         attron(COLOR_PAIR(RED));
         mvprintw(0, offset, "%s ", state->status.c_str());
