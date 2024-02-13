@@ -38,7 +38,6 @@ void sendShortcutKeys(State* state, char c) {
         sendKeys(state, command1);
         sendKeys(state, c);
         sendKeys(state, command2);
-        state->motion = "";
         return;
     } else if (state->prevKeys == "y" || state->prevKeys == "d" || state->prevKeys == "c") {
         if (c == 'i' || c == 'a' || c == 'f' || c == 't') {
@@ -52,7 +51,6 @@ void sendShortcutKeys(State* state, char c) {
                 sendKeys(state, c);
             }
             sendKeys(state, command);
-            state->motion = "";
             return;
         }
     } else if (state->prevKeys == "r") {
