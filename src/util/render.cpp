@@ -165,16 +165,18 @@ int getColorFromChar(char c) {
     }
 }
 
-void printChar(State* state, int row, int col, char c, bool isInString, bool isInverted, bool isInSearchQuery, unsigned int startOfSearch, bool isComment, bool isAutoComplete) {
+int getSearchColor(State* state, int row, unsigned int startOfSearch) {
+    if (state->row == (unsigned int) row && startOfSearch + state->searchQuery.length() >= state->col && startOfSearch <= state->col) {
+        return invertColor(MAGENTA);
+    } else {
+        return invertColor(CYAN);
+    }
+}
+
+int getColor(State* state, int row, char c, bool isInString, bool isInverted, bool isInSearchQuery, unsigned int startOfSearch, bool isComment) {
     int color;
-    if (isAutoComplete) {
-        color = GREY;
-    } else if (isInSearchQuery == true && isInverted == false && state->searching == true) {
-        if (state->row == (unsigned int) row && startOfSearch + state->searchQuery.length() >= state->col && startOfSearch <= state->col) {
-            color = invertColor(MAGENTA);
-        } else {
-            color = invertColor(CYAN);
-        }
+    if (isInSearchQuery == true && isInverted == false && state->searching == true) {
+        color = getSearchColor(state, row, startOfSearch);
     } else if (isComment) {
         color = GREEN;
     } else if (isInString == true) {
@@ -183,20 +185,18 @@ void printChar(State* state, int row, int col, char c, bool isInString, bool isI
         color = getColorFromChar(c);
     }
     if (c == '\t') {
-        attron(COLOR_PAIR(invertColor(RED)));
+        return invertColor(RED);
     } else if (isInverted == false) {
-        attron(COLOR_PAIR(color));
+        return color;
     } else {
-        attron(COLOR_PAIR(invertColor(color)));
+        return invertColor(color);
     }
+}
+
+void printChar(State* state, int row, int col, char c, int color) {
+    attron(COLOR_PAIR(color));
     mvaddch(row - state->windowPosition.row + 1, col + getLineNumberOffset(state), c);
-    if (c == '\t') {
-        attroff(COLOR_PAIR(invertColor(RED)));
-    } else if (isInverted == false) {
-        attroff(COLOR_PAIR(color));
-    } else {
-        attroff(COLOR_PAIR(invertColor(color)));
-    }
+    attroff(COLOR_PAIR(color));
 }
 
 void printLineNumber(State* state, int r, int i, bool isCurrentRow, bool recording, std::string blame) {
@@ -271,7 +271,7 @@ bool isInSearchQuery(State* state, unsigned int row, unsigned int col) {
 
 void printLine(State* state, int row) {
     if (isRowColInVisual(state, row, 0) == true && state->data[row].length() == 0) {
-        printChar(state, row, 0, ' ', false, true, false, 0, false, false);
+        printChar(state, row, 0, ' ', WHITE);
     } else {
         bool isInString = false;
         bool skipNext = false;
@@ -316,13 +316,14 @@ void printLine(State* state, int row) {
             if (col >= state->windowPosition.col) {
                 if (state->replacing && searchCounter != 0) {
                     for (unsigned int i = 0; i < state->replaceQuery.length(); i++) {
-                        printChar(state, row, renderCol, state->replaceQuery[i], false, false, true, startOfSearch, false, false);
+                        printChar(state, row, renderCol, state->replaceQuery[i], getSearchColor(state, row, startOfSearch));
                         renderCol++;
                     }
                     col += state->searchQuery.length();
                     searchCounter = 0;
                 } else {
-                    printChar(state, row, renderCol, state->data[row][col], isInString, isRowColInVisual(state, row, col), searchCounter != 0, startOfSearch, isComment, false);
+                    int color = getColor(state, row, state->data[row][col], isInString, isRowColInVisual(state, row, col), searchCounter != 0, startOfSearch, isComment);
+                    printChar(state, row, renderCol, state->data[row][col], color);
                     renderCol++;
                     col++;
                 }
@@ -341,7 +342,7 @@ unsigned int renderAutoComplete(State* state, int row, unsigned int col, unsigne
     if (state->mode == TYPING && row == (int) state->row && col == state->col) {
         std::string completion = autocomplete(state, getCurrentWord(state));
         for (unsigned int i = 0; i < completion.length(); i++) {
-            printChar(state, row, col + i, completion[i], false, false, false, 0, false, true);
+            printChar(state, row, col + i, completion[i], GREY);
         }
         return renderCol + completion.length();
     }
@@ -465,3 +466,5 @@ void initTerminal() {
     start_color();
     initColors();
 }
+
+

@@ -20,7 +20,6 @@ void sendKeys(State* state, char c) {
     state->searching = state->mode == SEARCH;
     calcWindowBounds();
     if (state->mode == SHORTCUTS) {
-        state->previousState = state->data;
         sendShortcutKeys(state, c);
     } else if (state->mode == TYPING) {
         sendTypingKeys(state, c);
@@ -57,6 +56,7 @@ void sendKeys(State* state, char c) {
             saveFile(state->filename, state->data);
         }
         if (diff.size() != 0 && c != ctrl('r') && c != 'u') {
+            state->previousState = state->data;
             if (state->dontRecordKey == false && state->motion != "") {
                 state->dotCommand = state->motion;
                 state->motion = "";
