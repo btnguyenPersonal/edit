@@ -7,6 +7,23 @@
 #include "helper.h"
 #include "comment.h"
 
+std::string trimComment(State* state, std::string line) {
+    std::string outputLine = line;
+    bool foundNonSpace = false;
+    for (size_t i = 0; i < line.length(); i++) {
+        if (line.substr(i, state->commentSymbol.length()) == state->commentSymbol) {
+            if (foundNonSpace == true) {
+                outputLine = line.substr(0, i);
+            }
+            break;
+        } else if (line[i] != ' ') {
+            foundNonSpace = true;
+        }
+    }
+    rtrim(outputLine);
+    return outputLine;
+}
+
 void toggleComment(State* state) {
     toggleCommentHelper(state, state->row, -1);
 }

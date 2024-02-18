@@ -2,6 +2,7 @@
 #include <string>
 #include "indent.h"
 #include "helper.h"
+#include "comment.h"
 
 int getNumLeadingSpaces(std::string s) {
     int numSpaces = 0;
@@ -28,7 +29,7 @@ int getIndentLevel(State* state, unsigned int row) {
     // TODO add html
     std::string prevLine = getPrevLine(state, row);
     // TODO trim comments from string before rtrim
-    rtrim(prevLine);
+    prevLine = trimComment(state, prevLine);
     std::string currLine = state->data[row];
     ltrim(currLine);
     int indentLevel = getNumLeadingSpaces(prevLine);
