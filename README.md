@@ -144,30 +144,29 @@ search replace
 - * and # when in normal mode
 - dt, df, t, f, T, F
 - ip ap motions
-
-## TODO
-- clean up printChar
-- make getch() int, and have enums for characters
-- indent w/ html
-- indent w/ blank lines
-- render non-alphanumeric chars
-- mulit-cursor mode
-- ctrl w when typing
 - put handleMotion at top, and only look at state->motion
 - clean up handleMotion
 - make all use handleMotion
+- clean up printChar
+- render non-alphanumeric chars
+- fix handle motion not clearing motion if first one (and make everything a motion even single ones);
+- figure out sendShortcutKeys not repeat a bunch of visual shortcuts
+
+## TODO
+- make getch() int, and have enums for characters
+- indent w/ html
+- indent w/ blank lines
+- mulit-cursor mode
+- ctrl w when typing
 - check for 256 colors, and if not go back to default colors (IFDEF something)
+- J K (only base indent off of first line)
 
 ## LOW PRIO
-- fix handle motion not clearing motion if first one (and make everything a motion even single ones);
 - fix indent for commented lines at end
 - fix indent for dealing with spaces
 - cursor for ctrl p ctrl g
 - fileExplorer (current one is trash) actually make it good now
 - ctrl a x increment decrement
-- J K (only base indent off of first line
 - turn off isInString highlighting for md txt files
 - gr -> go to top and find first occ w/ import in front -> go to file at top -> set searchQuery to it -> search for it
 - make row col, etc all Position types like visual
-- figure out sendShortcutKeys not repeat a bunch of visual shortcuts
-
