@@ -531,13 +531,13 @@ bool filePathContainsSubstring(const std::filesystem::path& filePath, const std:
 }
 
 bool shouldIgnoreFile(const std::filesystem::path& path) {
-    std::vector<std::string> ignoreList = {".git", "node_modules", "build", "dist", "cdk.out", ".next", "tmp"};
-    std::vector<std::string> allowList = {"[...nextauth]"};
+    std::vector<std::string> allowList = {"[...nextauth]", ".github"};
     for (unsigned int i = 0; i < allowList.size(); i++) {
         if (path.string().find(allowList[i]) != std::string::npos) {
             return false;
         }
     }
+    std::vector<std::string> ignoreList = {".git", "node_modules", "build", "dist", "cdk.out", ".next", "tmp"};
     for (unsigned int i = 0; i < ignoreList.size(); i++) {
         if (path.string().find(ignoreList[i]) != std::string::npos) {
             return true;

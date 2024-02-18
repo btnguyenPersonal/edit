@@ -162,6 +162,7 @@ search replace
 - J K (only base indent off of first line)
 
 ## LOW PRIO
+- handle wide characters
 - fix indent for commented lines at end
 - fix indent for dealing with spaces
 - cursor for ctrl p ctrl g
