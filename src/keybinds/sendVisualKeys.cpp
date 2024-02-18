@@ -43,6 +43,16 @@ void surroundParagraph(State* state, bool includeLastLine) {
     state->row = end;
 }
 
+bool isValidMoveableChunk(State* state, Bounds bounds) {
+    int start = getNumLeadingSpaces(state->data[bounds.minR]);
+    for (unsigned int i = bounds.minR + 1; i <= bounds.maxR; i++) {
+        if (getNumLeadingSpaces(state->data[i]) < start) {
+            return false;
+        }
+    }
+    return true;
+}
+
 std::string getInVisual(State* state) {
     Bounds bounds = getBounds(state);
     std::string clip = "";
@@ -294,6 +304,36 @@ void sendVisualKeys(State* state, char c) {
         generateGrepOutput(state);
     } else if (c == 'l') {
         right(state);
+    } else if (c == 'K') {
+        Bounds bounds = getBounds(state);
+        if (bounds.minR > 0) {
+            if (isValidMoveableChunk(state, bounds)) {
+                auto temp = state->data[bounds.minR - 1];
+                state->data.erase(state->data.begin() + bounds.minR - 1);
+                state->data.insert(state->data.begin() + bounds.maxR, temp);
+                state->row = bounds.minR - 1;
+                state->visual.row = bounds.maxR - 1;
+                indentRange(state);
+                state->col = getIndexFirstNonSpace(state);
+            } else {
+                state->status = "not a valid moveable chunk";
+            }
+        }
+    } else if (c == 'J') {
+        Bounds bounds = getBounds(state);
+        if (bounds.maxR + 1 < state->data.size()) {
+            if (isValidMoveableChunk(state, bounds)) {
+                auto temp = state->data[bounds.maxR + 1];
+                state->data.erase(state->data.begin() + bounds.maxR + 1);
+                state->data.insert(state->data.begin() + bounds.minR, temp);
+                state->row = bounds.minR + 1;
+                state->visual.row = bounds.maxR + 1;
+                indentRange(state);
+                state->col = getIndexFirstNonSpace(state);
+            } else {
+                state->status = "not a valid moveable chunk";
+            }
+        }
     } else if (c == 'k') {
         up(state);
     } else if (c == 'j') {
