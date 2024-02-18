@@ -52,12 +52,13 @@ void State::changeFile(std::string filename) {
             return;
         }
     }
+    auto data = readFile(filename);
     this->filename = std::string(filename);
-    this->data = readFile(filename);
+    this->data = data;
+    this->previousState = data;
     this->commentSymbol = getCommentSymbol(filename);
-    this->previousState = std::vector<std::string>();
     this->history = std::vector<std::vector<diffLine>>();
-    this->historyPosition = -2;
+    this->historyPosition = -1;
     this->windowPosition.row = 0;
     this->windowPosition.col = 0;
     this->visualType = NORMAL;
@@ -101,6 +102,7 @@ State::State() {
     this->replacing = false;
     this->harpoonFiles = std::vector<std::string>();
     this->harpoonIndex = 0;
+    this->data = std::vector<std::string>();
     this->previousState = std::vector<std::string>();
     this->history = std::vector<std::vector<diffLine>>();
     this->grepOutput = std::vector<grepMatch>();
@@ -142,8 +144,10 @@ State::State(std::string filename) : State() {
         std::cout << "file not found: " << filename << std::endl;
         exit(1);
     }
+    auto data = readFile(filename.c_str());
     this->filename = std::string(filename);
-    this->data = readFile(filename.c_str());
+    this->data = data;
+    this->previousState = data;
     this->commentSymbol = getCommentSymbol(filename);
     this->mode = SHORTCUTS;
     this->fileStack = {filename};

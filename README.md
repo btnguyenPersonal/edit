@@ -170,3 +170,4 @@ search replace
 - gr -> go to top and find first occ w/ import in front -> go to file at top -> set searchQuery to it -> search for it
 - make row col, etc all Position types like visual
 - figure out sendShortcutKeys not repeat a bunch of visual shortcuts
+

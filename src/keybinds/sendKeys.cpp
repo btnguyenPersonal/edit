@@ -39,33 +39,33 @@ void sendKeys(State* state, char c) {
     if (state->mode == SHORTCUTS && state->filename == "") {
         endwin();
         exit(0);
-    }
-    sanityCheckDocumentEmpty(state);
-    sanityCheckRowColOutOfBounds(state);
-    if (isWindowPositionInvalid(state)) {
-        centerScreen(state);
-    }
-    if (state->recording == true && state->dontRecordKey == false) {
-        state->macroCommand += c;
-    }
-    if (state->historyPosition == -2) {
-        state->historyPosition = -1;
-    } else if (state->recording == false && state->mode == SHORTCUTS) {
-        std::vector<diffLine> diff = generateDiff(state->previousState, state->data);
-        if (diff.size() != 0) {
-            saveFile(state->filename, state->data);
+    } else if (state->filename != "") {
+        sanityCheckDocumentEmpty(state);
+        sanityCheckRowColOutOfBounds(state);
+        if (isWindowPositionInvalid(state)) {
+            centerScreen(state);
         }
-        if (diff.size() != 0 && c != ctrl('r') && c != 'u') {
-            state->previousState = state->data;
-            if (state->dontRecordKey == false && state->motion != "") {
-                state->dotCommand = state->motion;
-                state->motion = "";
+        if (state->recording == true && state->dontRecordKey == false) {
+            state->macroCommand += c;
+        }
+        if (state->recording == false && state->mode == SHORTCUTS) {
+            std::vector<diffLine> diff = generateDiff(state->previousState, state->data);
+            if (diff.size() != 0) {
+                saveFile(state->filename, state->data);
+                state->previousState = state->data;
+                if (c != ctrl('r') && c != 'u') {
+                    if (state->dontRecordKey == false && state->motion != "") {
+                        state->dotCommand = state->motion;
+                        state->motion = "";
+                    }
+                    if (state->historyPosition < (int) state->history.size()) {
+                        state->history.erase(state->history.begin() + state->historyPosition + 1, state->history.end());
+                    }
+                    state->history.push_back(diff);
+                    state->historyPosition = (int) state->history.size() - 1;
+                }
             }
-            if (state->historyPosition < (int) state->history.size()) {
-                state->history.erase(state->history.begin() + state->historyPosition + 1, state->history.end());
-            }
-            state->history.push_back(diff);
-            state->historyPosition = (int) state->history.size() - 1;
         }
     }
+    state->status = std::to_string(state->historyPosition);
 }
