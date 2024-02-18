@@ -194,9 +194,15 @@ int getColor(State* state, int row, char c, bool isInString, bool isInverted, bo
 }
 
 void printChar(State* state, int row, int col, char c, int color) {
-    attron(COLOR_PAIR(color));
-    mvaddch(row - state->windowPosition.row + 1, col + getLineNumberOffset(state), c);
-    attroff(COLOR_PAIR(color));
+    if (' ' <= c && c <= '~') {
+        attron(COLOR_PAIR(color));
+        mvaddch(row - state->windowPosition.row + 1, col + getLineNumberOffset(state), c);
+        attroff(COLOR_PAIR(color));
+    } else {
+        attron(COLOR_PAIR(invertColor(MAGENTA)));
+        mvaddch(row - state->windowPosition.row + 1, col + getLineNumberOffset(state), ' ');
+        attroff(COLOR_PAIR(invertColor(MAGENTA)));
+    }
 }
 
 void printLineNumber(State* state, int r, int i, bool isCurrentRow, bool recording, std::string blame) {
@@ -466,5 +472,3 @@ void initTerminal() {
     start_color();
     initColors();
 }
-
-
