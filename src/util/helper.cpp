@@ -537,7 +537,7 @@ bool shouldIgnoreFile(const std::filesystem::path& path) {
             return false;
         }
     }
-    std::vector<std::string> ignoreList = {".git", "node_modules", "build", "dist", "cdk.out", ".next", "tmp"};
+    std::vector<std::string> ignoreList = {".git", "node_modules", "build", "dist", "cdk.out", ".next", "tmp", "coverage"};
     for (unsigned int i = 0; i < ignoreList.size(); i++) {
         if (path.string().find(ignoreList[i]) != std::string::npos) {
             return true;

@@ -162,6 +162,7 @@ search replace
 - mulit-cursor mode
 - ctrl w when typing
 - check for 256 colors, and if not go back to default colors (IFDEF something)
+- check that isnt a folder when opening file state
 
 ## LOW PRIO
 - handle wide characters
