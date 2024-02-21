@@ -60,9 +60,9 @@ std::string getCommentSymbol(std::string filename) {
     } else if (extension == "lua") {
         return "--";
     } else if (extension == "json") {
-        return ""; // JSON does not support comments
+        return "//";
     } else {
-        return ""; // Default case for unknown extensions
+        return "#";
     }
 }
 
@@ -521,7 +521,6 @@ bool filePathContainsSubstring(const std::filesystem::path& filePath, const std:
     std::string filePathStr = filePath.string();
     std::string queryLower = query;
 
-    // Convert both strings to lower case for case-insensitive comparison
     std::transform(filePathStr.begin(), filePathStr.end(), filePathStr.begin(),
                    [](unsigned char c){ return std::tolower(c); });
     std::transform(queryLower.begin(), queryLower.end(), queryLower.begin(),

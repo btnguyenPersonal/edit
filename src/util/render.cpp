@@ -179,7 +179,7 @@ int getColor(State* state, int row, char c, bool isInString, bool isInverted, bo
         color = getSearchColor(state, row, startOfSearch);
     } else if (isComment) {
         color = GREEN;
-    } else if (isInString == true) {
+    } else if (isInString == true && getExtension(state->filename) != "md" && getExtension(state->filename) != "txt") {
         color = CYAN;
     } else {
         color = getColorFromChar(c);
