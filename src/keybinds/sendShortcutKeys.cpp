@@ -35,6 +35,52 @@ void sendShortcutKeys(State* state, char c) {
             state->data[state->row] = state->data[state->row].substr(0, state->col) + c + state->data[state->row].substr(state->col + 1);
         }
         state->prevKeys = "";
+    } else if ((state->prevKeys[0] == 'y' || state->prevKeys[0] == 'd' || state->prevKeys[0] == 'c') && state->prevKeys.length() == 2) {
+            unsigned int tempRow = state->row;
+            unsigned int tempCol = state->col;
+            char command0 = state->prevKeys[0];
+            char command1 = state->prevKeys[1];
+            state->prevKeys = "";
+            state->motion = "";
+            bool success = true;
+            initVisual(state, NORMAL);
+            sendVisualKeys(state, command1);
+            success = sendVisualKeys(state, c);
+            if (success) {
+                sendVisualKeys(state, command0);
+            } else {
+                state->prevKeys = "";
+                state->motion = "";
+                state->row = tempRow;
+                state->col = tempCol;
+                state->mode = SHORTCUTS;
+            }
+            return;
+    } else if (state->prevKeys == "y" || state->prevKeys == "d" || state->prevKeys == "c") {
+        if (c == 'i' || c == 'a' || c == 'f' || c == 't') {
+            state->prevKeys += c;
+        } else {
+            unsigned int tempRow = state->row;
+            unsigned int tempCol = state->col;
+            char command = state->prevKeys[0];
+            state->prevKeys = "";
+            state->motion = "";
+            bool success = true;
+            initVisual(state, LINE);
+            if (c != command) {
+                success = sendVisualKeys(state, c);
+            }
+            if (success) {
+                sendVisualKeys(state, command);
+            } else {
+                state->prevKeys = "";
+                state->motion = "";
+                state->row = tempRow;
+                state->col = tempCol;
+                state->mode = SHORTCUTS;
+            }
+            return;
+        }
     } else if (state->prevKeys + c == "ge") {
         unCommentBlock(state);
         state->prevKeys = "";

@@ -40,7 +40,7 @@ std::string getLoggingCode(State* state, unsigned int row) {
         || extension == "ts"
         || extension == "tsx"
     ) {
-        return "console.log('line', " + rowStr + ");";
+        return "console.log('line', '" + rowStr + "');";
     } else if (extension == "cpp") {
         return "std::cout << \"line\" << " + rowStr + " << std::endl;";
     } else {

@@ -71,7 +71,7 @@ int renderStatusBar(State* state) {
             }
         }
     } else {
-        mvprintw(0, state->maxX - state->filename.length() - 2, "\"%s\"", state->filename.c_str());
+        mvprintw(0, state->maxX - (state->filename.length() + state->prevKeys.length() + 3), "%s \"%s\"", state->prevKeys.c_str(), state->filename.c_str());
     }
     if (state->status.length() > 0) {
         attron(COLOR_PAIR(RED));

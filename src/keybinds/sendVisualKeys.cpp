@@ -164,7 +164,7 @@ Position deleteInVisual(State* state) {
     return pos;
 }
 
-void sendVisualKeys(State* state, char c) {
+bool sendVisualKeys(State* state, char c) {
     if (c == 27) { // ESC
         state->prevKeys = "";
         state->motion = "";
@@ -429,8 +429,11 @@ void sendVisualKeys(State* state, char c) {
         state->row = pos.row;
         state->col = pos.col;
         state->mode = TYPING;
+    } else {
+        return false;
     }
     if (!state->dontRecordKey) {
         state->motion += c;
     }
+    return true;
 }

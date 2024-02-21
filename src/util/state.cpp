@@ -76,14 +76,16 @@ void State::changeFile(std::string filename) {
 }
 
 void State::pushFileStack(std::string filename) {
-    for (auto it = this->fileStack.begin(); it != this->fileStack.end(); ) {
-        if (*it == filename) {
-            it = this->fileStack.erase(it);
-        } else {
-            ++it;
+    if (filename != "") {
+        for (auto it = this->fileStack.begin(); it != this->fileStack.end(); ) {
+            if (*it == filename) {
+                it = this->fileStack.erase(it);
+            } else {
+                ++it;
+            }
         }
+        this->fileStack.push_back(filename);
     }
-    this->fileStack.push_back(filename);
 }
 
 void State::resetState(std::string filename) {

@@ -54,7 +54,7 @@ void sendKeys(State* state, char c) {
                 saveFile(state->filename, state->data);
                 state->previousState = state->data;
                 if (c != ctrl('r') && c != 'u') {
-                    if (state->dontRecordKey == false && state->motion != "") {
+                    if (state->dontRecordKey == false && state->motion != "" && state->prevKeys == "") {
                         state->dotCommand = state->motion;
                         state->motion = "";
                     }
