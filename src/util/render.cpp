@@ -184,9 +184,7 @@ int getColor(State* state, int row, char c, bool isInString, bool isInverted, bo
     } else {
         color = getColorFromChar(c);
     }
-    if (c == '\t') {
-        return invertColor(RED);
-    } else if (isInverted == false) {
+    if (isInverted == false) {
         return color;
     } else {
         return invertColor(color);
@@ -198,6 +196,10 @@ void printChar(State* state, int row, int col, char c, int color) {
         attron(COLOR_PAIR(color));
         mvaddch(row - state->windowPosition.row + 1, col + getLineNumberOffset(state), c);
         attroff(COLOR_PAIR(color));
+    } else if (c == '\t') {
+        attron(COLOR_PAIR(invertColor(RED)));
+        mvaddch(row - state->windowPosition.row + 1, col + getLineNumberOffset(state), ' ');
+        attroff(COLOR_PAIR(invertColor(RED)));
     } else {
         attron(COLOR_PAIR(invertColor(MAGENTA)));
         mvaddch(row - state->windowPosition.row + 1, col + getLineNumberOffset(state), ' ');
@@ -277,7 +279,7 @@ bool isInSearchQuery(State* state, unsigned int row, unsigned int col) {
 
 void printLine(State* state, int row) {
     if (isRowColInVisual(state, row, 0) == true && state->data[row].length() == 0) {
-        printChar(state, row, 0, ' ', WHITE);
+        printChar(state, row, 0, ' ', invertColor(WHITE));
     } else {
         bool isInString = false;
         bool skipNext = false;

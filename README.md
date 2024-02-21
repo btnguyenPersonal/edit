@@ -151,20 +151,20 @@ search replace
 - render non-alphanumeric chars
 - fix handle motion not clearing motion if first one (and make everything a motion even single ones);
 - figure out sendShortcutKeys not repeat a bunch of visual shortcuts
+- fix indent for commented lines at end
+- fix indent for dealing with spaces
+- indent w/ blank lines
+- J K (only base indent off of first line)
 
 ## TODO
 - make getch() int, and have enums for characters
 - indent w/ html
-- indent w/ blank lines
 - mulit-cursor mode
 - ctrl w when typing
 - check for 256 colors, and if not go back to default colors (IFDEF something)
-- J K (only base indent off of first line)
 
 ## LOW PRIO
 - handle wide characters
-- fix indent for commented lines at end
-- fix indent for dealing with spaces
 - cursor for ctrl p ctrl g
 - fileExplorer (current one is trash) actually make it good now
 - ctrl a x increment decrement

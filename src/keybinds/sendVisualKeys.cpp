@@ -167,6 +167,7 @@ Position deleteInVisual(State* state) {
 void sendVisualKeys(State* state, char c) {
     if (c == 27) { // ESC
         state->prevKeys = "";
+        state->motion = "";
         state->mode = SHORTCUTS;
     } else if (state->prevKeys == "t") {
         state->col = toNextChar(state, c);
@@ -251,8 +252,12 @@ void sendVisualKeys(State* state, char c) {
             } catch (const std::filesystem::filesystem_error& e) {
             }
         }
+        state->prevKeys = "";
     } else if (state->prevKeys + c == "gg") {
         state->row = 0;
+        state->prevKeys = "";
+    } else if (state->prevKeys != "") {
+        state->prevKeys = "";
     } else if (c == 'g' || c == 'i' || c == 'a') {
         state->prevKeys += c;
     } else if (c == '^') {

@@ -29,30 +29,6 @@ void sendShortcutKeys(State* state, char c) {
         state->col = findNextChar(state, c);
         state->prevKeys = "";
         return;
-    } else if (state->prevKeys.length() == 2) {
-        char command1 = state->prevKeys[1];
-        char command2 = state->prevKeys[0];
-        state->prevKeys = "";
-        state->motion = "";
-        sendKeys(state, 'v');
-        sendKeys(state, command1);
-        sendKeys(state, c);
-        sendKeys(state, command2);
-        return;
-    } else if (state->prevKeys == "y" || state->prevKeys == "d" || state->prevKeys == "c") {
-        if (c == 'i' || c == 'a' || c == 'f' || c == 't') {
-            state->prevKeys += c;
-        } else {
-            char command = state->prevKeys[0];
-            state->prevKeys = "";
-            state->motion = "";
-            sendKeys(state, 'V');
-            if (c != command) {
-                sendKeys(state, c);
-            }
-            sendKeys(state, command);
-            return;
-        }
     } else if (state->prevKeys == "r") {
         state->motion = "r";
         if (state->col < state->data[state->row].length()) {
@@ -62,6 +38,7 @@ void sendShortcutKeys(State* state, char c) {
     } else if (state->prevKeys + c == "ge") {
         unCommentBlock(state);
         state->prevKeys = "";
+        state->motion = "ge";
         return;
     } else if (state->prevKeys + c == "gt") {
         for (unsigned int i = 0; i < state->data.size(); i++) {
@@ -72,6 +49,8 @@ void sendShortcutKeys(State* state, char c) {
         state->row = 0;
         state->prevKeys = "";
         return;
+    } else if (state->prevKeys != "") {
+        state->prevKeys = "";
     } else if (c == ':') {
         state->mode = COMMANDLINE;
     } else if (c == '<') {
@@ -112,7 +91,7 @@ void sendShortcutKeys(State* state, char c) {
             state->status = "file not found";
             state->fileStack.erase(state->fileStack.begin() + state->fileStackIndex);
         }
-    } else if (state->prevKeys == "" && (c == 'r' || c == 'g' || c == 'c' || c == 'd' || c == 'y' || c == 'f' || c == 't')) {
+    } else if (c == 'r' || c == 'g' || c == 'c' || c == 'd' || c == 'y' || c == 'f' || c == 't') {
         state->prevKeys = c;
         return;
     } else if (c == 'h') {
