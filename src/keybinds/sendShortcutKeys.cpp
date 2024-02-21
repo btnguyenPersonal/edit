@@ -41,7 +41,7 @@ void sendShortcutKeys(State* state, char c) {
             char command0 = state->prevKeys[0];
             char command1 = state->prevKeys[1];
             state->prevKeys = "";
-            state->motion = "";
+            state->motion = "v";
             bool success = true;
             initVisual(state, NORMAL);
             sendVisualKeys(state, command1);
@@ -64,7 +64,7 @@ void sendShortcutKeys(State* state, char c) {
             unsigned int tempCol = state->col;
             char command = state->prevKeys[0];
             state->prevKeys = "";
-            state->motion = "";
+            state->motion = "V";
             bool success = true;
             initVisual(state, LINE);
             if (c != command) {
