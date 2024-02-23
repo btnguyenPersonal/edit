@@ -77,6 +77,7 @@ class State {
         unsigned int grepSelection;
         std::vector<grepMatch> grepOutput;
         std::string prevKeys;
+        std::string lastLoggingVar;
         std::string status;
         bool selectAll;
         bool showFileStack;

@@ -81,6 +81,11 @@ void sendShortcutKeys(State* state, char c) {
             }
             return;
         }
+    } else if (state->prevKeys + c == "gq") {
+        toggleLoggingCode(state, state->lastLoggingVar);
+        state->prevKeys = "";
+        state->motion = "gq";
+        return;
     } else if (state->prevKeys + c == "ge") {
         unCommentBlock(state);
         state->prevKeys = "";

@@ -137,6 +137,7 @@ State::State() {
     this->fileStack = std::vector<std::string>();
     this->showFileStack = false;
     this->fileStackIndex = 0;
+    this->lastLoggingVar = std::string("");
     this->motion = std::string("");
 }
 
