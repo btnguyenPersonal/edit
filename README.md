@@ -157,14 +157,15 @@ search replace
 - J K (only base indent off of first line)
 
 ## TODO
+- if no diff happens, but should update dot command, doesn't happen
 - make getch() int, and have enums for characters
 - indent w/ html
 - mulit-cursor mode
-- ctrl w when typing
-- check for 256 colors, and if not go back to default colors (IFDEF something)
 - check that isnt a folder when opening file state
 
 ## LOW PRIO
+- ctrl w when typing
+- check for 256 colors, and if not go back to default colors (IFDEF something)
 - handle wide characters
 - cursor for ctrl p ctrl g
 - fileExplorer (current one is trash) actually make it good now
