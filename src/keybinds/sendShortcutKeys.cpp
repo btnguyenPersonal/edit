@@ -99,6 +99,7 @@ void sendShortcutKeys(State* state, char c) {
         state->prevKeys = "";
     } else if (c == ':') {
         state->mode = COMMANDLINE;
+        return;
     } else if (c == '<') {
         deindent(state);
         state->col = getIndexFirstNonSpace(state);
@@ -110,11 +111,13 @@ void sendShortcutKeys(State* state, char c) {
             state->row = applyDiff(state, state->history[state->historyPosition], false);
             state->historyPosition--;
         }
+        return;
     } else if (c == ctrl('r')) {
         if (state->historyPosition < ((int) state->history.size()) - 1) {
             state->row = applyDiff(state, state->history[state->historyPosition + 1], true);
             state->historyPosition++;
         }
+        return;
     } else if (c == ctrl('i')) {
         if (state->fileStackIndex + 1 < state->fileStack.size()) {
             state->fileStackIndex += 1;
@@ -126,6 +129,7 @@ void sendShortcutKeys(State* state, char c) {
             state->status = "file not found";
             state->fileStack.erase(state->fileStack.begin() + state->fileStackIndex);
         }
+        return;
     } else if (c == ctrl('o')) {
         if (state->fileStackIndex > 0) {
             state->fileStackIndex -= 1;
@@ -137,6 +141,7 @@ void sendShortcutKeys(State* state, char c) {
             state->status = "file not found";
             state->fileStack.erase(state->fileStack.begin() + state->fileStackIndex);
         }
+        return;
     } else if (c == 'r' || c == 'g' || c == 'c' || c == 'd' || c == 'y' || c == 'f' || c == 't') {
         state->prevKeys = c;
         return;
