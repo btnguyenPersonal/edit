@@ -289,14 +289,6 @@ void printLine(State* state, int row) {
         bool isComment = false;
         char stringType;
         unsigned int col = 0;
-        std::string loggingCode = getLoggingCode(state, row);
-        if (state->data[row].substr(0, loggingCode.length()) == loggingCode) {
-            attron(COLOR_PAIR(invertColor(BLUE)));
-            mvprintw(row - state->windowPosition.row + 1, col + getLineNumberOffset(state), "%s", loggingCode.c_str());
-            attroff(COLOR_PAIR(invertColor(BLUE)));
-            renderCol += loggingCode.length();
-            col += loggingCode.length();
-        }
         while (col < state->data[row].length() && col < state->windowPosition.col + state->maxX - getLineNumberOffset(state)) {
             renderCol = renderAutoComplete(state, row, col, renderCol);
             if (searchCounter == 0 && isInSearchQuery(state, row, col)) {

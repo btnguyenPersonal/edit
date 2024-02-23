@@ -372,7 +372,10 @@ void sendShortcutKeys(State* state, char c) {
     } else if (c == 'Q') {
         removeAllLoggingCode(state);
     } else if (c == ctrl('q')) {
-        toggleLoggingCode(state);
+        initVisual(state, NORMAL);
+        setStateFromWordPosition(state, getWordPosition(state->data[state->row], state->col));
+        toggleLoggingCode(state, getInVisual(state));
+        state->mode = SHORTCUTS;
     } else if (c == ctrl('e')) {
         if (state->harpoonIndex + 1 < state->harpoonFiles.size()) {
             if (std::filesystem::exists(state->harpoonFiles[state->harpoonIndex + 1].c_str())) {

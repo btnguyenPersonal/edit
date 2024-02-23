@@ -260,8 +260,12 @@ bool sendVisualKeys(State* state, char c) {
         state->prevKeys = "";
     } else if (c == 'g' || c == 'i' || c == 'a') {
         state->prevKeys += c;
+    } else if (c == ctrl('q')) {
+        toggleLoggingCode(state, getInVisual(state));
+        state->mode = SHORTCUTS;
     } else if (c == '^') {
         state->col = getIndexFirstNonSpace(state);
+        state->mode = SHORTCUTS;
     } else if (c == '0') {
         state->col = 0;
     } else if (c == '$') {
@@ -403,14 +407,6 @@ bool sendVisualKeys(State* state, char c) {
         auto pos = copyInVisual(state);
         state->row = pos.row;
         state->col = pos.col;
-        state->mode = SHORTCUTS;
-    } else if (c == ctrl('q')) {
-        Bounds bounds = getBounds(state);
-        for (state->row = bounds.minR; state->row <= bounds.maxR; state->row++) {
-            insertLoggingCode(state);
-        }
-        state->row = bounds.minR;
-        state->col = getIndexFirstNonSpace(state);
         state->mode = SHORTCUTS;
     } else if (c == 'e') {
         Bounds bounds = getBounds(state);

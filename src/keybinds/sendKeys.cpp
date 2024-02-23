@@ -67,5 +67,4 @@ void sendKeys(State* state, char c) {
             }
         }
     }
-    state->status=state->dotCommand;
 }
