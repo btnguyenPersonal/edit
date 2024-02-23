@@ -54,10 +54,6 @@ void sendKeys(State* state, char c) {
                 saveFile(state->filename, state->data);
                 state->previousState = state->data;
                 if (c != ctrl('r') && c != 'u') {
-                    if (state->dontRecordKey == false && state->motion != "" && state->prevKeys == "") {
-                        state->dotCommand = state->motion;
-                        state->motion = "";
-                    }
                     if (state->historyPosition < (int) state->history.size()) {
                         state->history.erase(state->history.begin() + state->historyPosition + 1, state->history.end());
                     }
@@ -65,6 +61,11 @@ void sendKeys(State* state, char c) {
                     state->historyPosition = (int) state->history.size() - 1;
                 }
             }
+        }
+        if (state->mode == SHORTCUTS && state->dontRecordKey == false && state->motion != "" && state->prevKeys == "") {
+            state->dotCommand = state->motion;
+            state->status = state->motion;
+            state->motion = "";
         }
     }
 }
