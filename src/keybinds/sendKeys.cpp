@@ -14,7 +14,7 @@
 #include "../util/modes.h"
 
 void sendKeys(State* state, char c) {
-    // state->status = std::string("");
+    state->status = std::string("");
     state->showFileStack = false;
     state->dontRecordKey = false;
     state->searching = state->mode == SEARCH;
@@ -64,7 +64,6 @@ void sendKeys(State* state, char c) {
         }
         if (state->mode == SHORTCUTS && state->dontRecordKey == false && state->motion != "" && state->prevKeys == "") {
             state->dotCommand = state->motion;
-            state->status = state->motion;
             state->motion = "";
         }
     }
