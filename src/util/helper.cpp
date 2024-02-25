@@ -14,6 +14,27 @@
 #include "helper.h"
 #include "visualType.h"
 
+void recordAction(State* state) {
+    auto now = std::chrono::steady_clock::now();
+    state->actionTimestamps.push_back(now);
+    while (!state->actionTimestamps.empty() && now - state->actionTimestamps.front() > std::chrono::seconds(60)) {
+        state->actionTimestamps.pop_front();
+    }
+}
+
+int calculateAPM(State* state) {
+    if (state->actionTimestamps.empty()) {
+        return 0;
+    }
+    auto now = std::chrono::steady_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::seconds>(now - state->actionTimestamps.front());
+    double minutes = duration.count() / 60.0;
+    if (minutes == 0.0) {
+        minutes = 1.0 / 60.0;
+    }
+    return static_cast<int>(state->actionTimestamps.size() / minutes);
+}
+
 std::string getCommentSymbol(std::string filename) {
     std::string extension = getExtension(filename);
     if (extension == "js"

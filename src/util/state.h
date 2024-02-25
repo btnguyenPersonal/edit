@@ -5,6 +5,8 @@
 #include <filesystem>
 #include "modes.h"
 #include "visualType.h"
+#include <chrono>
+#include <deque>
 
 struct grepMatch {
     std::filesystem::path path;
@@ -40,6 +42,7 @@ struct Archive {
 
 class State {
     public:
+        std::deque<std::chrono::steady_clock::time_point> actionTimestamps;
         std::vector<Archive> archives;
         std::vector<std::string> harpoonFiles;
         unsigned int harpoonIndex;

@@ -19,6 +19,7 @@ int main(int argc, char* argv[]) {
     renderScreen(state);
     while (true) {
         c = getchar();
+        recordAction(state);
         sendKeys(state, c);
         renderScreen(state);
     }

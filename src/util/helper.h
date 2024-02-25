@@ -7,6 +7,9 @@
 #include "state.h"
 #include "visualType.h"
 
+
+void recordAction(State* state);
+int calculateAPM(State* state);
 unsigned int findNextChar(State* state, char c);
 unsigned int toNextChar(State* state, char c);
 unsigned int getPrevEmptyLine(State* state);
