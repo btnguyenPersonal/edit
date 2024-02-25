@@ -155,6 +155,7 @@ search replace
 - fix indent for dealing with spaces
 - indent w/ blank lines
 - J K (only base indent off of first line)
+- turn off isInString highlighting for md txt files
 
 ## TODO
 - if no diff happens, but should update dot command, doesn't happen
@@ -166,10 +167,9 @@ search replace
 ## LOW PRIO
 - ctrl w when typing
 - check for 256 colors, and if not go back to default colors (IFDEF something)
-- handle wide characters
+- handle wide characters fully
 - cursor for ctrl p ctrl g
 - fileExplorer (current one is trash) actually make it good now
 - ctrl a x increment decrement
-- turn off isInString highlighting for md txt files
 - gr -> go to top and find first occ w/ import in front -> go to file at top -> set searchQuery to it -> search for it
 - make row col, etc all Position types like visual

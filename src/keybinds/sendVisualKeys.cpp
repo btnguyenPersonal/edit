@@ -242,7 +242,7 @@ bool sendVisualKeys(State* state, char c) {
                     std::filesystem::path filePath(state->filename);
                     std::filesystem::path dir = filePath.parent_path();
                     auto newFilePath = dir / (getInVisual(state) + extensions[i]);
-                    if (std::filesystem::exists(newFilePath.c_str())) {
+                    if (std::filesystem::is_regular_file(newFilePath.c_str())) {
                         auto baseDir = std::filesystem::current_path();
                         auto relativePath = std::filesystem::relative(newFilePath, baseDir);
                         state->resetState(relativePath.string());

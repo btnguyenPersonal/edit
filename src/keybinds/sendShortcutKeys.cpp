@@ -127,7 +127,7 @@ void sendShortcutKeys(State* state, char c) {
         if (state->fileStackIndex + 1 < state->fileStack.size()) {
             state->fileStackIndex += 1;
         }
-        if (std::filesystem::exists(state->fileStack[state->fileStackIndex].c_str())) {
+        if (std::filesystem::is_regular_file(state->fileStack[state->fileStackIndex].c_str())) {
             state->changeFile(state->fileStack[state->fileStackIndex]);
             state->showFileStack = true;
         } else {
@@ -139,7 +139,7 @@ void sendShortcutKeys(State* state, char c) {
         if (state->fileStackIndex > 0) {
             state->fileStackIndex -= 1;
         }
-        if (std::filesystem::exists(state->fileStack[state->fileStackIndex].c_str())) {
+        if (std::filesystem::is_regular_file(state->fileStack[state->fileStackIndex].c_str())) {
             state->changeFile(state->fileStack[state->fileStackIndex]);
             state->showFileStack = true;
         } else {
@@ -383,7 +383,7 @@ void sendShortcutKeys(State* state, char c) {
         state->mode = SHORTCUTS;
     } else if (c == ctrl('e')) {
         if (state->harpoonIndex + 1 < state->harpoonFiles.size()) {
-            if (std::filesystem::exists(state->harpoonFiles[state->harpoonIndex + 1].c_str())) {
+            if (std::filesystem::is_regular_file(state->harpoonFiles[state->harpoonIndex + 1].c_str())) {
                 state->harpoonIndex += 1;
                 state->resetState(state->harpoonFiles[state->harpoonIndex]);
             } else {
@@ -391,14 +391,14 @@ void sendShortcutKeys(State* state, char c) {
                 state->harpoonFiles.erase(state->harpoonFiles.begin() + state->harpoonIndex + 1);
             }
         } else {
-            if (std::filesystem::exists(state->harpoonFiles[state->harpoonIndex].c_str())) {
+            if (std::filesystem::is_regular_file(state->harpoonFiles[state->harpoonIndex].c_str())) {
                 state->resetState(state->harpoonFiles[state->harpoonIndex]);
             }
         }
         return;
     } else if (c == ctrl('w')) {
         if (state->harpoonIndex > 0) {
-            if (std::filesystem::exists(state->harpoonFiles[state->harpoonIndex - 1].c_str())) {
+            if (std::filesystem::is_regular_file(state->harpoonFiles[state->harpoonIndex - 1].c_str())) {
                 state->harpoonIndex -= 1;
                 state->resetState(state->harpoonFiles[state->harpoonIndex]);
             } else {
@@ -407,7 +407,7 @@ void sendShortcutKeys(State* state, char c) {
                 state->harpoonIndex -= 1;
             }
         } else {
-            if (std::filesystem::exists(state->harpoonFiles[state->harpoonIndex].c_str())) {
+            if (std::filesystem::is_regular_file(state->harpoonFiles[state->harpoonIndex].c_str())) {
                 state->resetState(state->harpoonFiles[state->harpoonIndex]);
             }
         }

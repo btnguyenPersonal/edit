@@ -92,7 +92,7 @@ void State::resetState(std::string filename) {
     this->pushFileStack(this->filename);
     this->pushFileStack(filename);
     this->fileStackIndex = this->fileStack.size() - 1;
-    if (!std::filesystem::exists(filename.c_str())) {
+    if (!std::filesystem::is_regular_file(filename.c_str())) {
         this->status = "file not found: " + filename;
         exit(1);
     }
@@ -142,7 +142,7 @@ State::State() {
 }
 
 State::State(std::string filename) : State() {
-    if (!std::filesystem::exists(filename.c_str())) {
+    if (!std::filesystem::is_regular_file(filename.c_str())) {
         endwin();
         std::cout << "file not found: " << filename << std::endl;
         exit(1);
