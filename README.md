@@ -159,13 +159,13 @@ search replace
 - check that isnt a folder when opening file state
 - if no diff happens, but should update dot command, doesn't happen
 - check for 256 colors, and if not go back to default colors (IFDEF something)
+- ctrl w when typing
 
 ## TODO
 - indent w/ html
 - mulit-cursor mode
 
 ## LOW PRIO
-- ctrl w when typing
 - handle wide characters fully
 - cursor for ctrl p ctrl g
 - fileExplorer (current one is trash) actually make it good now

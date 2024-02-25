@@ -16,6 +16,11 @@ void sendTypingKeys(State* state, char c) {
             state->data[state->row] = current.substr(0, state->col - 1) + current.substr(state->col);
             state->col -= 1;
         }
+    } else if (c == ctrl('w')) {
+        std::string current = state->data[state->row];
+        unsigned int index = b(state);
+        state->data[state->row] = current.substr(0, index) + current.substr(state->col);
+        state->col = index;
     } else if (' ' <= c && c <= '~') {
         std::string current = state->data[state->row];
         state->data[state->row] = current.substr(0, state->col) + c + current.substr(state->col);
