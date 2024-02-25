@@ -162,12 +162,12 @@ search replace
 - ctrl w when typing
 
 ## TODO
-- indent w/ html
 - mulit-cursor mode
+- indent w/ html
+- cursor for ctrl p ctrl g (can't do without arrow keys)
 
 ## LOW PRIO
-- handle wide characters fully
-- cursor for ctrl p ctrl g
+- handle render wide characters fully
 - fileExplorer (current one is trash) actually make it good now
 - ctrl a x increment decrement
 - gr -> go to top and find first occ w/ import in front -> go to file at top -> set searchQuery to it -> search for it

@@ -263,6 +263,9 @@ bool sendVisualKeys(State* state, char c) {
     } else if (c == ctrl('q')) {
         toggleLoggingCode(state, getInVisual(state));
         state->mode = SHORTCUTS;
+    } else if (c == ':') {
+        state->commandLineQuery = "s/" + getInVisual(state) + "/";
+        state->mode = COMMANDLINE;
     } else if (c == '^') {
         state->col = getIndexFirstNonSpace(state);
         state->mode = SHORTCUTS;

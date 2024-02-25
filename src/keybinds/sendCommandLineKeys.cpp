@@ -51,6 +51,14 @@ void sendCommandLineKeys(State* state, char c) {
         state->mode = SHORTCUTS;
     } else if (' ' <= c && c <= '~') {
         state->commandLineQuery += c;
+    } else if (c == ctrl('g')) { // BACKSPACE
+        if (state->commandLineQuery.length() > 0) {
+            if (state->commandLineQuery[0] == 'g') {
+                state->commandLineQuery = state->commandLineQuery.substr(1);
+            } else {
+                state->commandLineQuery = 'g' + state->commandLineQuery;
+            }
+        }
     } else if (c == 127) { // BACKSPACE
         state->commandLineQuery = state->commandLineQuery.substr(0, state->commandLineQuery.length() - 1);
     } else if (c == 13) { // ENTER
