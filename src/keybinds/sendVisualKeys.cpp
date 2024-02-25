@@ -235,10 +235,10 @@ bool sendVisualKeys(State* state, char c) {
         surroundParagraph(state, true);
         state->prevKeys = "";
     } else if (state->prevKeys + c == "gf") {
-        std::vector<std::string> extensions = {"", ".js", ".jsx", ".ts", ".tsx"};
-        for (unsigned int i = 0; i < extensions.size(); i++) {
-            try {
-                if (state->visualType == NORMAL) {
+        if (state->visualType == NORMAL) {
+            std::vector<std::string> extensions = {"", ".js", ".jsx", ".ts", ".tsx"};
+            for (unsigned int i = 0; i < extensions.size(); i++) {
+                try {
                     std::filesystem::path filePath(state->filename);
                     std::filesystem::path dir = filePath.parent_path();
                     auto newFilePath = dir / (getInVisual(state) + extensions[i]);
@@ -248,8 +248,8 @@ bool sendVisualKeys(State* state, char c) {
                         state->resetState(relativePath.string());
                         break;
                     }
+                } catch (const std::filesystem::filesystem_error& e) {
                 }
-            } catch (const std::filesystem::filesystem_error& e) {
             }
         }
         state->prevKeys = "";
