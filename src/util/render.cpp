@@ -466,5 +466,10 @@ void initTerminal() {
         exit(1);
     }
     start_color();
+    if (COLORS < 256) {
+        endwin();
+        std::cout << "Your terminal does not support 256 colors" << std::endl;
+        exit(1);
+    }
     initColors();
 }

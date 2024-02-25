@@ -158,6 +158,7 @@ search replace
 - turn off isInString highlighting for md txt files
 - check that isnt a folder when opening file state
 - if no diff happens, but should update dot command, doesn't happen
+- check for 256 colors, and if not go back to default colors (IFDEF something)
 
 ## TODO
 - indent w/ html
@@ -165,11 +166,10 @@ search replace
 
 ## LOW PRIO
 - ctrl w when typing
-- check for 256 colors, and if not go back to default colors (IFDEF something)
 - handle wide characters fully
 - cursor for ctrl p ctrl g
 - fileExplorer (current one is trash) actually make it good now
 - ctrl a x increment decrement
 - gr -> go to top and find first occ w/ import in front -> go to file at top -> set searchQuery to it -> search for it
 - make row col, etc all Position types like visual
-- make getch() int, and have enums for characters (this one is cancer to deal with, makes esc so bad to deal with)
+- make getch() int, and have enums for characters (this one is cancer to deal with, makes esc so laggy)
