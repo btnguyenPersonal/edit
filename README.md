@@ -156,13 +156,12 @@ search replace
 - indent w/ blank lines
 - J K (only base indent off of first line)
 - turn off isInString highlighting for md txt files
+- check that isnt a folder when opening file state
+- if no diff happens, but should update dot command, doesn't happen
 
 ## TODO
-- if no diff happens, but should update dot command, doesn't happen
-- make getch() int, and have enums for characters
 - indent w/ html
 - mulit-cursor mode
-- check that isnt a folder when opening file state
 
 ## LOW PRIO
 - ctrl w when typing
@@ -173,3 +172,4 @@ search replace
 - ctrl a x increment decrement
 - gr -> go to top and find first occ w/ import in front -> go to file at top -> set searchQuery to it -> search for it
 - make row col, etc all Position types like visual
+- make getch() int, and have enums for characters (this one is cancer to deal with, makes esc so bad to deal with)
