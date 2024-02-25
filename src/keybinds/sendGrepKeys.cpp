@@ -3,6 +3,7 @@
 #include "../util/state.h"
 #include "../util/helper.h"
 #include "../util/modes.h"
+#include "../util/clipboard.h"
 #include "sendGrepKeys.h"
 
 void sendGrepKeys(State* state, char c) {
@@ -26,6 +27,20 @@ void sendGrepKeys(State* state, char c) {
     } else if (c == ctrl('p')) {
         if (state->grepSelection > 0) {
             state->grepSelection -= 1;
+        }
+    } else if (c == ctrl('r')) {
+        if (state->grepSelection < state->grepOutput.size()) {
+            std::filesystem::path selectedFile = state->grepOutput[state->grepSelection].path.string();
+            std::filesystem::path currentDir = ((std::filesystem::path) state->filename).parent_path();
+            std::filesystem::path relativePath = std::filesystem::relative(selectedFile, currentDir);
+            copyToClipboard(relativePath.string());
+            state->mode = SHORTCUTS;
+        }
+    } else if (c == ctrl('y')) {
+        if (state->grepSelection < state->grepOutput.size()) {
+            std::filesystem::path selectedFile = state->grepOutput[state->grepSelection].path.string();
+            copyToClipboard(selectedFile);
+            state->mode = SHORTCUTS;
         }
     } else if (c == ctrl('m')) { // ENTER
         if (state->grepSelection < state->grepOutput.size()) {

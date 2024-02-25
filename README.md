@@ -160,15 +160,16 @@ search replace
 - if no diff happens, but should update dot command, doesn't happen
 - check for 256 colors, and if not go back to default colors (IFDEF something)
 - ctrl w when typing
+- kinda working cursor for ctrl p ctrl g (made global search replace easier to get to)
+- find file copy relative path && absolute path
 
-## TODO
-- mulit-cursor mode
+ ## TODO
+- multi-cursor mode
 - indent w/ html
-- cursor for ctrl p ctrl g (can't do without arrow keys)
 
 ## LOW PRIO
 - handle render wide characters fully
-- fileExplorer (current one is trash) actually make it good now
+- fileExplorer (current one is trash and i never use it) actually make it good now
 - ctrl a x increment decrement
 - gr -> go to top and find first occ w/ import in front -> go to file at top -> set searchQuery to it -> search for it
 - make row col, etc all Position types like visual

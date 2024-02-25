@@ -3,6 +3,7 @@
 #include "../util/state.h"
 #include "../util/helper.h"
 #include "../util/modes.h"
+#include "../util/clipboard.h"
 #include "sendFindFileKeys.h"
 
 void sendFindFileKeys(State* state, char c) {
@@ -27,7 +28,7 @@ void sendFindFileKeys(State* state, char c) {
             state->findFileSelection = 0;
         }
     } else if (c == ctrl('a')) {
-        state->selectAll = true;
+        state->selectAll = !state->selectAll;
     } else if (c == ctrl('g')) {
         state->mode = GREP;
     } else if (c == ctrl('l')) {
@@ -41,6 +42,22 @@ void sendFindFileKeys(State* state, char c) {
     } else if (c == ctrl('p')) {
         if (state->findFileSelection > 0) {
             state->findFileSelection -= 1;
+        }
+    } else if (c == ctrl('r')) {
+        if (state->findFileSelection < state->findFileOutput.size()) {
+            state->selectAll = false;
+            auto selectedFile = state->findFileOutput[state->findFileSelection].string();
+            std::filesystem::path currentDir = ((std::filesystem::path) state->filename).parent_path();
+            std::filesystem::path relativePath = std::filesystem::relative(selectedFile, currentDir);
+            copyToClipboard(relativePath.string());
+            state->mode = SHORTCUTS;
+        }
+    } else if (c == ctrl('y')) {
+        if (state->findFileSelection < state->findFileOutput.size()) {
+            state->selectAll = false;
+            auto selectedFile = state->findFileOutput[state->findFileSelection].string();
+            copyToClipboard(selectedFile);
+            state->mode = SHORTCUTS;
         }
     } else if (c == ctrl('m')) { // ENTER
         if (state->findFileSelection < state->findFileOutput.size()) {
