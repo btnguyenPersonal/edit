@@ -166,6 +166,9 @@ search replace
 
  ## TODO
 - indent w/ html
+    - might need to scan entire file to see if in html
+    - based on previous line and current line
+    - will have to go character by character and make a parser to see if all the closing/opening tags match up
 - fileExplorer (current one is trash and i never use it) actually make it good now
 - ctrl a s increment decrement
 
