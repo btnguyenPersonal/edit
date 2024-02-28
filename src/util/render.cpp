@@ -347,8 +347,8 @@ unsigned int renderAutoComplete(State* state, int row, unsigned int col, unsigne
     if (
         (state->mode == TYPING && row == (int) state->row && col == state->col)
         || (state->mode == MULTICURSOR && col == state->col && (
-            (state->visual.row <= row && row <= state->row)
-            || (state->row <= row && row <= state->visual.row)
+            ((int) state->visual.row <= row && row <= (int) state->row)
+            || ((int) state->row <= row && row <= (int) state->visual.row)
         ))
     ) {
         std::string completion = autocomplete(state, getCurrentWord(state));
