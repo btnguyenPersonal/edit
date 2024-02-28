@@ -4,36 +4,24 @@
 #include "insertLoggingCode.h"
 #include "helper.h"
 
-void insertLoggingCode(State* state) {
-    std::string current = state->data[state->row];
-    std::string loggingCode = getLoggingCode(state, state->row, "");
-    if (current.substr(0, loggingCode.length()) != loggingCode) {
-        state->data[state->row] = loggingCode + current;
-    }
-}
-
 void toggleLoggingCode(State* state, std::string variableName) {
     state->lastLoggingVar = variableName;
     std::string current = state->data[state->row];
     std::string loggingCode = getLoggingCode(state, state->row, variableName);
-    if (current.substr(0, loggingCode.length()) == loggingCode) {
-        state->data[state->row] = current.substr(loggingCode.length());
-        if (state->col > loggingCode.length()) {
-            state->col -= loggingCode.length();
-        } else {
-            state->col = 0;
-        }
+    if (state->row + 1 < state->data.size() && state->data[state->row + 1] == loggingCode) {
+        state->data.erase(state->data.begin() + state->row + 1);
     } else {
-        state->data[state->row] = loggingCode + current;
-        state->col += loggingCode.length();
+        state->data.insert(state->data.begin() + state->row + 1, loggingCode);
     }
 }
 
 void removeAllLoggingCode(State* state) {
-    for (unsigned int i = 0; i < state->data.size(); i++) {
-        std::string pattern = "console\\.log\\('" + std::to_string(i + 1) + "', .+?\\);";
+    for (int i = state->data.size() - 1; i >= 0; i--) {
+        std::string pattern = "^console\\.log\\('[0-9]+', .+?\\);$";
         std::regex logPattern(pattern);
-        state->data[i] = std::regex_replace(state->data[i], logPattern, "");
+        if (std::regex_search(state->data[i], logPattern)) {
+            state->data.erase(state->data.begin() + i);
+        }
     }
 }
 

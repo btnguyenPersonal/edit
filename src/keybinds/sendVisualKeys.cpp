@@ -338,7 +338,7 @@ bool sendVisualKeys(State* state, char c) {
         generateGrepOutput(state);
     } else if (c == 'l') {
         right(state);
-    } else if (c == ctrl('k')) {
+    } else if (c == 'K') {
         Bounds bounds = getBounds(state);
         if (bounds.minR > 0) {
             if (isValidMoveableChunk(state, bounds)) {
@@ -353,7 +353,7 @@ bool sendVisualKeys(State* state, char c) {
                 state->status = "not a valid moveable chunk";
             }
         }
-    } else if (c == ctrl('j')) {
+    } else if (c == 'J') {
         Bounds bounds = getBounds(state);
         if (bounds.maxR + 1 < state->data.size()) {
             if (isValidMoveableChunk(state, bounds)) {

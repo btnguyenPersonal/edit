@@ -164,15 +164,16 @@ search replace
 - find file copy relative path && absolute path
 - multi-cursor mode
 
- ## TODO
+## TODO
+- make ctrl q put below line instead of on current line
+
+## LOW PRIO
 - indent w/ html
     - might need to scan entire file to see if in html
     - based on previous line and current line
     - will have to go character by character and make a parser to see if all the closing/opening tags match up
 - fileExplorer (current one is trash and i never use it) actually make it good now
 - ctrl a s increment decrement
-
-## LOW PRIO
 - gr
     -> somehow go to the definition of the var/function, may have to use lsp somehow
     -> go to top and find first occ w/ import in front -> go to file at top -> set searchQuery to it -> search for it
