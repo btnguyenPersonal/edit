@@ -81,10 +81,10 @@ void sendShortcutKeys(State* state, char c) {
             }
             return;
         }
-    } else if (state->prevKeys + c == "gq") {
+    } else if (state->prevKeys + c == "gm") {
         toggleLoggingCode(state, state->lastLoggingVar);
         state->prevKeys = "";
-        state->motion = "gq";
+        state->motion = "gm";
         return;
     } else if (state->prevKeys + c == "ge") {
         unCommentBlock(state);
@@ -379,7 +379,7 @@ void sendShortcutKeys(State* state, char c) {
         state->col = getIndexFirstNonSpace(state);
     } else if (c == 'Q') {
         removeAllLoggingCode(state);
-    } else if (c == ctrl('q')) {
+    } else if (c == 'm') {
         initVisual(state, NORMAL);
         setStateFromWordPosition(state, getWordPosition(state->data[state->row], state->col));
         toggleLoggingCode(state, getInVisual(state));

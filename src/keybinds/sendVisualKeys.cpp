@@ -277,7 +277,7 @@ bool sendVisualKeys(State* state, char c) {
         state->prevKeys = "";
     } else if (c == 'g' || c == 'i' || c == 'a') {
         state->prevKeys += c;
-    } else if (c == ctrl('q')) {
+    } else if (c == 'm') {
         toggleLoggingCode(state, getInVisual(state));
         state->mode = SHORTCUTS;
     } else if (c == ':') {
