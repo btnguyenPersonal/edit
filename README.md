@@ -162,15 +162,17 @@ search replace
 - ctrl w when typing
 - kinda working cursor for ctrl p ctrl g (made global search replace easier to get to)
 - find file copy relative path && absolute path
+- multi-cursor mode
 
  ## TODO
-- multi-cursor mode
 - indent w/ html
+- fileExplorer (current one is trash and i never use it) actually make it good now
+- ctrl a s increment decrement
 
 ## LOW PRIO
-- handle render wide characters fully
-- fileExplorer (current one is trash and i never use it) actually make it good now
-- ctrl a x increment decrement
-- gr -> go to top and find first occ w/ import in front -> go to file at top -> set searchQuery to it -> search for it
+- gr
+    -> somehow go to the definition of the var/function, may have to use lsp somehow
+    -> go to top and find first occ w/ import in front -> go to file at top -> set searchQuery to it -> search for it
 - make row col, etc all Position types like visual
+- handle render wide characters fully
 - make getch() int, and have enums for characters (this one is cancer to deal with, makes esc so laggy)
