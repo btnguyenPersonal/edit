@@ -80,12 +80,14 @@ void surroundParagraph(State* state, bool includeLastLine) {
 
 bool isValidMoveableChunk(State* state, Bounds bounds) {
     int start = getNumLeadingSpaces(state->data[bounds.minR]);
+    int current;
     for (unsigned int i = bounds.minR + 1; i <= bounds.maxR; i++) {
-        if (getNumLeadingSpaces(state->data[i]) < start) {
+        current = getNumLeadingSpaces(state->data[i]);
+        if (current < start) {
             return false;
         }
     }
-    return true;
+    return current == start;
 }
 
 std::string getInVisual(State* state) {
@@ -285,7 +287,6 @@ bool sendVisualKeys(State* state, char c) {
         state->mode = COMMANDLINE;
     } else if (c == '^') {
         state->col = getIndexFirstNonSpace(state);
-        state->mode = SHORTCUTS;
     } else if (c == '0') {
         state->col = 0;
     } else if (c == '$') {
@@ -339,7 +340,7 @@ bool sendVisualKeys(State* state, char c) {
         generateGrepOutput(state);
     } else if (c == 'l') {
         right(state);
-    } else if (c == 'K') {
+    } else if (c == ctrl('k')) {
         Bounds bounds = getBounds(state);
         if (bounds.minR > 0) {
             if (isValidMoveableChunk(state, bounds)) {
@@ -354,7 +355,7 @@ bool sendVisualKeys(State* state, char c) {
                 state->status = "not a valid moveable chunk";
             }
         }
-    } else if (c == 'J') {
+    } else if (c == ctrl('j')) {
         Bounds bounds = getBounds(state);
         if (bounds.maxR + 1 < state->data.size()) {
             if (isValidMoveableChunk(state, bounds)) {

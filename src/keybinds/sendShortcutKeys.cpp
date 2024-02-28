@@ -156,10 +156,10 @@ void sendShortcutKeys(State* state, char c) {
     } else if (c == 'l') {
         right(state);
         return;
-    } else if (c == 'k' || c == ctrl('k')) {
+    } else if (c == 'k') {
         up(state);
         return;
-    } else if (c == 'j' || c == ctrl('j')) {
+    } else if (c == 'j') {
         down(state);
         return;
     } else if (c == '{') {

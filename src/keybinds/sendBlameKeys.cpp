@@ -9,9 +9,9 @@
 void sendBlameKeys(State* state, char c) {
     if (c == 27) { // ESC
         state->mode = SHORTCUTS;
-    } else if (c == 'k' || c == ctrl('k')) {
+    } else if (c == 'k') {
         up(state);
-    } else if (c == 'j' || c == ctrl('j')) {
+    } else if (c == 'j') {
         down(state);
     } else if (c == '[') {
         state->row = getPrevLineSameIndent(state);
