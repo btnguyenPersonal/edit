@@ -817,7 +817,7 @@ void sanityCheckRowColOutOfBounds(State* state) {
     if (state->row >= state->data.size()) {
         state->row = state->data.size() - 1;
     }
-    if (state->mode == VISUAL || state->mode == TYPING) {
+    if (state->mode == TYPING) {
         fixColOverMax(state);
     }
 }

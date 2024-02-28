@@ -254,6 +254,10 @@ bool isRowColInVisual(State* state, unsigned int i, unsigned int j) {
             if (minR <= i && i <= maxR) {
                 return true;
             }
+        } else if (state->visualType == BLOCK) {
+            if (minR <= i && i <= maxR) {
+                return (minC <= j && j <= maxC) || (maxC <= j && j <= minC);
+            }
         } else if (state->visualType == NORMAL) {
             if (minR < i && i < maxR) {
                 return true;

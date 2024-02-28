@@ -115,6 +115,8 @@ Position changeInVisual(State* state) {
     if (state->visualType == LINE) {
         state->data.erase(state->data.begin() + bounds.minR, state->data.begin() + bounds.maxR);
         state->data[bounds.minR] = std::string("");
+    } else if (state->visualType == BLOCK) {
+        deleteInVisual(state);
     } else if (state->visualType == NORMAL) {
         std::string firstPart = "";
         std::string secondPart = "";
@@ -144,8 +146,20 @@ Position copyInVisual(State* state) {
 
 Position deleteInVisual(State* state) {
     Bounds bounds = getBounds(state);
+    Position pos = Position();
+    pos.row = bounds.minR;
+    pos.col = bounds.minC;
     if (state->visualType == LINE) {
         state->data.erase(state->data.begin() + bounds.minR, state->data.begin() + bounds.maxR + 1);
+    } else if (state->visualType == BLOCK) {
+        unsigned int min = std::min(bounds.minC, bounds.maxC);
+        unsigned int max = std::max(bounds.minC, bounds.maxC);
+        for (unsigned int i = bounds.minR; i <= bounds.maxR; i++) {
+            std::string firstPart = state->data[i].substr(0, min);
+            std::string secondPart = state->data[i].substr(max + 1);
+            state->data[i] = firstPart + secondPart;
+        }
+        pos.col = min;
     } else if (state->visualType == NORMAL) {
         std::string firstPart = "";
         std::string secondPart = "";
@@ -158,9 +172,6 @@ Position deleteInVisual(State* state) {
         state->data[bounds.minR] = firstPart + secondPart;
         state->data.erase(state->data.begin() + bounds.minR + 1, state->data.begin() + bounds.maxR + 1);
     }
-    Position pos = Position();
-    pos.row = bounds.minR;
-    pos.col = bounds.minC;
     return pos;
 }
 
@@ -291,6 +302,10 @@ bool sendVisualKeys(State* state, char c) {
         state->col = w(state);
     } else if (c == 'h') {
         left(state);
+    } else if (c == 'I' && state->visualType == BLOCK) {
+        // TODO
+    } else if (c == 'A' && state->visualType == BLOCK) {
+        // TODO
     } else if (c == '[') {
         state->row = getPrevLineSameIndent(state);
     } else if (c == ']') {
