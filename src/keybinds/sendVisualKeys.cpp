@@ -80,14 +80,12 @@ void surroundParagraph(State* state, bool includeLastLine) {
 
 bool isValidMoveableChunk(State* state, Bounds bounds) {
     int start = getNumLeadingSpaces(state->data[bounds.minR]);
-    int current;
     for (unsigned int i = bounds.minR + 1; i <= bounds.maxR; i++) {
-        current = getNumLeadingSpaces(state->data[i]);
-        if (current < start) {
+        if (getNumLeadingSpaces(state->data[i]) < start) {
             return false;
         }
     }
-    return current == start;
+    return true;
 }
 
 std::string getInVisual(State* state) {
