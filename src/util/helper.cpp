@@ -1,5 +1,6 @@
 #include <algorithm>
 #include <string>
+#include <future>
 #include <iterator>
 #include <vector>
 #include <climits>
@@ -566,30 +567,42 @@ bool shouldIgnoreFile(const std::filesystem::path& path) {
     return false;
 }
 
-std::vector<grepMatch> grepFiles(const std::filesystem::path& dir_path, const std::string& query) {
+std::vector<grepMatch> grepFile(const std::filesystem::path& file_path, const std::string& query, const std::filesystem::path& dir_path) {
     std::vector<grepMatch> matches;
+    std::ifstream file(file_path);
+    std::string line;
+    int lineNumber = 0;
+    while (std::getline(file, line)) {
+        lineNumber++;
+        if (line.find(query) != std::string::npos) {
+            grepMatch match;
+            match.path = std::filesystem::relative(file_path, dir_path);
+            match.lineNum = lineNumber;
+            match.line = line;
+            matches.push_back(match);
+        }
+    }
+    return matches;
+}
+
+std::vector<grepMatch> grepFiles(const std::filesystem::path& dir_path, const std::string& query) {
+    std::vector<std::future<std::vector<grepMatch>>> futures;
     for (auto it = std::filesystem::recursive_directory_iterator(dir_path); it != std::filesystem::recursive_directory_iterator(); ++it) {
         if (shouldIgnoreFile(it->path())) {
             it.disable_recursion_pending();
             continue;
         }
         if (std::filesystem::is_regular_file(it->path())) {
-            std::ifstream file(it->path());
-            std::string line;
-            int lineNumber = 0;
-            while (std::getline(file, line)) {
-                lineNumber++;
-                if (line.find(query) != std::string::npos) {
-                    grepMatch match = grepMatch();
-                    match.path = std::filesystem::relative(it->path(), dir_path);
-                    match.lineNum = lineNumber;
-                    match.line = line;
-                    matches.push_back(match);
-                }
-            }
+            futures.push_back(std::async(std::launch::async, grepFile, it->path(), query, dir_path));
         }
     }
-    return matches;
+    std::vector<grepMatch> allMatches;
+    for (auto& future : futures) {
+        auto matches = future.get();
+        allMatches.insert(allMatches.end(), matches.begin(), matches.end());
+    }
+
+    return allMatches;
 }
 
 std::vector<std::filesystem::path> findFiles(const std::filesystem::path& dir_path, const std::string& query) {
