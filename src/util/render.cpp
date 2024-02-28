@@ -254,6 +254,10 @@ bool isRowColInVisual(State* state, unsigned int i, unsigned int j) {
             if (minR <= i && i <= maxR) {
                 return true;
             }
+        } else if (state->visualType == BLOCK) {
+            if (minR <= i && i <= maxR) {
+                return (minC <= j && j <= maxC) || (maxC <= j && j <= minC);
+            }
         } else if (state->visualType == NORMAL) {
             if (minR < i && i < maxR) {
                 return true;
@@ -340,7 +344,13 @@ void printLine(State* state, int row) {
 }
 
 unsigned int renderAutoComplete(State* state, int row, unsigned int col, unsigned int renderCol) {
-    if (state->mode == TYPING && row == (int) state->row && col == state->col) {
+    if (
+        (state->mode == TYPING && row == (int) state->row && col == state->col)
+        || (state->mode == MULTICURSOR && col == state->col && (
+            (state->visual.row <= row && row <= state->row)
+            || (state->row <= row && row <= state->visual.row)
+        ))
+    ) {
         std::string completion = autocomplete(state, getCurrentWord(state));
         if (state->data[row].substr(col, completion.length()) != completion) {
             for (unsigned int i = 0; i < completion.length(); i++) {

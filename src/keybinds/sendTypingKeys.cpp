@@ -32,6 +32,7 @@ void sendTypingKeys(State* state, char c) {
     } else if (c == ctrl('t')) {
         std::string current = state->data[state->row];
         state->data[state->row] = current.substr(0, state->col) + '\t' + current.substr(state->col);
+        state->col += 1;
     } else if (c == ctrl('i')) { // TAB
         std::string completion = autocomplete(state, getCurrentWord(state));
         std::string current = state->data[state->row];

@@ -204,6 +204,9 @@ void sendShortcutKeys(State* state, char c) {
         state->mode = FINDFILE;
         state->selectAll = true;
         return;
+    } else if (c == ctrl('v')) {
+        state->mode = VISUAL;
+        initVisual(state, BLOCK);
     } else if (c == 'v') {
         state->mode = VISUAL;
         initVisual(state, NORMAL);

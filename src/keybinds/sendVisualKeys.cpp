@@ -11,6 +11,41 @@
 #include "../util/insertLoggingCode.h"
 #include "sendVisualKeys.h"
 
+Bounds getBounds(State* state) {
+    Bounds bounds;
+    if (state->visual.col >= state->data[state->visual.row].length()) {
+        if (state->data[state->visual.row].length() == 0) {
+            state->visual.col = 0;
+        } else {
+            state->visual.col = state->data[state->visual.row].length() - 1;
+        }
+    }
+    if (state->col >= state->data[state->row].length()) {
+        if (state->data[state->row].length() == 0) {
+            state->col = 0;
+        } else {
+            state->col = state->data[state->row].length() - 1;
+        }
+    }
+    if (state->row < state->visual.row) {
+        bounds.minR = state->row;
+        bounds.minC = state->col;
+        bounds.maxR = state->visual.row;
+        bounds.maxC = state->visual.col;
+    } else if (state->row > state->visual.row) {
+        bounds.minR = state->visual.row;
+        bounds.minC = state->visual.col;
+        bounds.maxR = state->row;
+        bounds.maxC = state->col;
+    } else {
+        bounds.minR = state->visual.row;
+        bounds.maxR = state->row;
+        bounds.minC = std::min(state->col, state->visual.col);
+        bounds.maxC = std::max(state->col, state->visual.col);
+    }
+    return bounds;
+}
+
 void setStateFromWordPosition(State* state, WordPosition pos) {
     if (pos.min != 0 || pos.max != 0) {
         state->visual.col = pos.min;
@@ -56,7 +91,13 @@ bool isValidMoveableChunk(State* state, Bounds bounds) {
 std::string getInVisual(State* state) {
     Bounds bounds = getBounds(state);
     std::string clip = "";
-    if (state->visualType == LINE) {
+    if (state->visualType == BLOCK) {
+        unsigned int min = std::min(bounds.minC, bounds.maxC);
+        unsigned int max = std::max(bounds.minC, bounds.maxC);
+        for (unsigned int i = bounds.minR; i <= bounds.maxR; i++) {
+            clip += state->data[i].substr(min, max + 1 - min) + "\n";
+        }
+    } else if (state->visualType == LINE) {
         for (size_t i = bounds.minR; i <= bounds.maxR; i++) {
             clip += state->data[i] + "\n";
         }
@@ -75,46 +116,13 @@ std::string getInVisual(State* state) {
     return clip;
 }
 
-Bounds getBounds(State* state) {
-    Bounds bounds;
-    if (state->visual.col >= state->data[state->visual.row].length()) {
-        if (state->data[state->visual.row].length() == 0) {
-            state->visual.col = 0;
-        } else {
-            state->visual.col = state->data[state->visual.row].length() - 1;
-        }
-    }
-    if (state->col >= state->data[state->row].length()) {
-        if (state->data[state->row].length() == 0) {
-            state->col = 0;
-        } else {
-            state->col = state->data[state->row].length() - 1;
-        }
-    }
-    if (state->row < state->visual.row) {
-        bounds.minR = state->row;
-        bounds.minC = state->col;
-        bounds.maxR = state->visual.row;
-        bounds.maxC = state->visual.col;
-    } else if (state->row > state->visual.row) {
-        bounds.minR = state->visual.row;
-        bounds.minC = state->visual.col;
-        bounds.maxR = state->row;
-        bounds.maxC = state->col;
-    } else {
-        bounds.minR = state->visual.row;
-        bounds.maxR = state->row;
-        bounds.minC = std::min(state->col, state->visual.col);
-        bounds.maxC = std::max(state->col, state->visual.col);
-    }
-    return bounds;
-}
-
 Position changeInVisual(State* state) {
     Bounds bounds = getBounds(state);
     if (state->visualType == LINE) {
         state->data.erase(state->data.begin() + bounds.minR, state->data.begin() + bounds.maxR);
         state->data[bounds.minR] = std::string("");
+    } else if (state->visualType == BLOCK) {
+        deleteInVisual(state);
     } else if (state->visualType == NORMAL) {
         std::string firstPart = "";
         std::string secondPart = "";
@@ -144,8 +152,20 @@ Position copyInVisual(State* state) {
 
 Position deleteInVisual(State* state) {
     Bounds bounds = getBounds(state);
+    Position pos = Position();
+    pos.row = bounds.minR;
+    pos.col = bounds.minC;
     if (state->visualType == LINE) {
         state->data.erase(state->data.begin() + bounds.minR, state->data.begin() + bounds.maxR + 1);
+    } else if (state->visualType == BLOCK) {
+        unsigned int min = std::min(bounds.minC, bounds.maxC);
+        unsigned int max = std::max(bounds.minC, bounds.maxC);
+        for (unsigned int i = bounds.minR; i <= bounds.maxR; i++) {
+            std::string firstPart = state->data[i].substr(0, min);
+            std::string secondPart = state->data[i].substr(max + 1);
+            state->data[i] = firstPart + secondPart;
+        }
+        pos.col = min;
     } else if (state->visualType == NORMAL) {
         std::string firstPart = "";
         std::string secondPart = "";
@@ -158,9 +178,6 @@ Position deleteInVisual(State* state) {
         state->data[bounds.minR] = firstPart + secondPart;
         state->data.erase(state->data.begin() + bounds.minR + 1, state->data.begin() + bounds.maxR + 1);
     }
-    Position pos = Position();
-    pos.row = bounds.minR;
-    pos.col = bounds.minC;
     return pos;
 }
 
@@ -291,6 +308,12 @@ bool sendVisualKeys(State* state, char c) {
         state->col = w(state);
     } else if (c == 'h') {
         left(state);
+    } else if (c == 'I' && state->visualType == BLOCK) {
+        state->col = std::min(state->col, state->visual.col);
+        state->mode = MULTICURSOR;
+    } else if (c == 'A' && state->visualType == BLOCK) {
+        state->col = std::max(state->col, state->visual.col);
+        state->mode = MULTICURSOR;
     } else if (c == '[') {
         state->row = getPrevLineSameIndent(state);
     } else if (c == ']') {
@@ -425,9 +448,13 @@ bool sendVisualKeys(State* state, char c) {
     } else if (c == 'c') {
         copyInVisual(state);
         auto pos = changeInVisual(state);
-        state->row = pos.row;
-        state->col = pos.col;
-        state->mode = TYPING;
+        if (state->visualType == BLOCK) {
+            state->mode = MULTICURSOR;
+        } else {
+            state->row = pos.row;
+            state->col = pos.col;
+            state->mode = TYPING;
+        }
     } else {
         return false;
     }

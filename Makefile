@@ -24,6 +24,7 @@ SOURCES = $(SRC_DIR)/edit.cpp \
           $(KEYBINDS_DIR)/sendGrepKeys.cpp \
           $(KEYBINDS_DIR)/sendCommandLineKeys.cpp \
           $(KEYBINDS_DIR)/sendShortcutKeys.cpp \
+          $(KEYBINDS_DIR)/sendMultiCursorKeys.cpp \
           $(KEYBINDS_DIR)/sendTypingKeys.cpp
 
 OBJECTS = $(SOURCES:$(SRC_DIR)/%.cpp=$(BUILD_DIR)/%.o)
