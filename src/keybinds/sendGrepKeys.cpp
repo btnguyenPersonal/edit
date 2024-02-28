@@ -62,7 +62,7 @@ void sendGrepKeys(State* state, char c) {
             state->row = lineNum - 1;
         }
     }
-    if (state->mode == GREP && c != ctrl('p') && c != ctrl('n')) {
+    if (state->mode == GREP && c != ctrl('u') && c != ctrl('d') && c != ctrl('p') && c != ctrl('n')) {
         generateGrepOutput(state);
     }
 }

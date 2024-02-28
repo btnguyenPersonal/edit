@@ -78,7 +78,7 @@ void sendFindFileKeys(State* state, char c) {
             state->resetState(selectedFile);
         }
     }
-    if (state->mode == FINDFILE && c != ctrl('p') && c != ctrl('n')) {
+    if (state->mode == FINDFILE && c != ctrl('u') && c != ctrl('d') && c != ctrl('p') && c != ctrl('n')) {
         generateFindFileOutput(state);
     }
 }
