@@ -1,10 +1,5 @@
-<<<<<<< Updated upstream
-CC = g++
-CFLAGS = -Wall -lncurses
-=======
 CC = g++-13
 CFLAGS = -Wall -lncurses -pthread
->>>>>>> Stashed changes
 DEPFLAGS = -MMD -MP
 
 SRC_DIR = src
