@@ -8,5 +8,6 @@ enum Mode {
     FINDFILE,
     GREP,
     BLAME,
+    MULTICURSOR,
     SEARCH
 };

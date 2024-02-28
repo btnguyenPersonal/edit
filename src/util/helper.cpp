@@ -821,4 +821,3 @@ void sanityCheckRowColOutOfBounds(State* state) {
         fixColOverMax(state);
     }
 }
-

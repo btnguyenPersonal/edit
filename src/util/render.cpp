@@ -344,7 +344,13 @@ void printLine(State* state, int row) {
 }
 
 unsigned int renderAutoComplete(State* state, int row, unsigned int col, unsigned int renderCol) {
-    if (state->mode == TYPING && row == (int) state->row && col == state->col) {
+    if (
+        (state->mode == TYPING && row == (int) state->row && col == state->col)
+        || (state->mode == MULTICURSOR && col == state->col && (
+            (state->visual.row <= row && row <= state->row)
+            || (state->row <= row && row <= state->visual.row)
+        ))
+    ) {
         std::string completion = autocomplete(state, getCurrentWord(state));
         if (state->data[row].substr(col, completion.length()) != completion) {
             for (unsigned int i = 0; i < completion.length(); i++) {
