@@ -35,6 +35,18 @@ void sendFindFileKeys(State* state, char c) {
         state->selectAll = false;
         state->findFileQuery = std::string("");
         state->findFileSelection = 0;
+    } else if (c == ctrl('d')) {
+        for (unsigned int i = 0; i < state->maxY; i++) {
+            if (state->findFileSelection + 1 < state->findFileOutput.size()) {
+                state->findFileSelection += 1;
+            }
+        }
+    } else if (c == ctrl('u')) {
+        for (unsigned int i = 0; i < state->maxY; i++) {
+            if (state->findFileSelection > 0) {
+                state->findFileSelection -= 1;
+            }
+        }
     } else if (c == ctrl('n')) {
         if (state->findFileSelection + 1 < state->findFileOutput.size()) {
             state->findFileSelection += 1;

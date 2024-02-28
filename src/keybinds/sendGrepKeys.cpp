@@ -20,6 +20,18 @@ void sendGrepKeys(State* state, char c) {
     } else if (c == ctrl('l')) {
         state->grepQuery = std::string("");
         state->grepSelection = 0;
+    } else if (c == ctrl('d')) {
+        for (unsigned int i = 0; i < state->maxY; i++) {
+            if (state->grepSelection + 1 < state->grepOutput.size()) {
+                state->grepSelection += 1;
+            }
+        }
+    } else if (c == ctrl('u')) {
+        for (unsigned int i = 0; i < state->maxY; i++) {
+            if (state->grepSelection > 0) {
+                state->grepSelection -= 1;
+            }
+        }
     } else if (c == ctrl('n')) {
         if (state->grepSelection + 1 < state->grepOutput.size()) {
             state->grepSelection += 1;
