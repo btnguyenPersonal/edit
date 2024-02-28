@@ -56,6 +56,14 @@ int getIndentLevel(State* state, unsigned int row) {
     return indentLevel;
 }
 
+void indentLine(State* state, unsigned int row) {
+    ltrim(state->data[row]);
+    int indentLevel = getIndentLevel(state, row);
+    for (int i = 0; i < indentLevel; i++) {
+        state->data[row] = ' ' + state->data[row];
+    }
+}
+
 void indentLine(State* state) {
     ltrim(state->data[state->row]);
     int indentLevel = getIndentLevel(state, state->row);
