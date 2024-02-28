@@ -445,6 +445,13 @@ bool sendVisualKeys(State* state, char c) {
         state->row = pos.row;
         state->col = pos.col;
         state->mode = TYPING;
+    } else if (c == 'o') {
+        auto tempRow = state->row;
+        auto tempCol = state->col;
+        state->row = state->visual.row;
+        state->col = state->visual.col;
+        state->visual.row = tempRow;
+        state->visual.col = tempCol;
     } else if (c == 'c') {
         copyInVisual(state);
         auto pos = changeInVisual(state);
