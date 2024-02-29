@@ -568,7 +568,7 @@ bool shouldIgnoreFile(const std::filesystem::path& path) {
 }
 
 std::vector<grepMatch> grepFile(const std::filesystem::path& file_path, const std::string& query, const std::filesystem::path& dir_path) {
-    auto relativePath = std::filesystem::relative(file_path, dir_path);
+    auto relativePath = file_path.lexically_relative(dir_path);
     std::vector<grepMatch> matches;
     std::ifstream file(file_path);
     std::string line;
@@ -613,9 +613,11 @@ std::vector<std::filesystem::path> findFiles(const std::filesystem::path& dir_pa
             it.disable_recursion_pending();
             continue;
         }
-        auto relativePath = std::filesystem::relative(it->path(), dir_path);
-        if (std::filesystem::is_regular_file(it->path()) && filePathContainsSubstring(relativePath, query)) {
-            matching_files.push_back(relativePath);
+        if (std::filesystem::is_regular_file(it->path())) {
+            auto relativePath = it->path().lexically_relative(dir_path);
+            if (filePathContainsSubstring(relativePath, query)) {
+                matching_files.push_back(relativePath);
+            }
         }
     }
     std::sort(matching_files.begin(), matching_files.end());
