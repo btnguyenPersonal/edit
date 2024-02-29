@@ -568,6 +568,7 @@ bool shouldIgnoreFile(const std::filesystem::path& path) {
 }
 
 std::vector<grepMatch> grepFile(const std::filesystem::path& file_path, const std::string& query, const std::filesystem::path& dir_path) {
+    auto relativePath = std::filesystem::relative(file_path, dir_path);
     std::vector<grepMatch> matches;
     std::ifstream file(file_path);
     std::string line;
@@ -576,7 +577,7 @@ std::vector<grepMatch> grepFile(const std::filesystem::path& file_path, const st
         lineNumber++;
         if (line.find(query) != std::string::npos) {
             grepMatch match;
-            match.path = std::filesystem::relative(file_path, dir_path);
+            match.path = relativePath;
             match.lineNum = lineNumber;
             match.line = line;
             matches.push_back(match);
