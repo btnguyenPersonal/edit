@@ -177,6 +177,11 @@ search replace
 - gr
     -> somehow go to the definition of the var/function, may have to use lsp somehow
     -> go to top and find first occ w/ import in front -> go to file at top -> set searchQuery to it -> search for it
+- speed up grepFiles
+    - use boyer-moore algorithm
+        - https://en.wikipedia.org/wiki/Boyer%E2%80%93Moore_string-search_algorithm
+    - figure out why fs::relative takes so damn long
+        - should figure out a function to just cut off the parents/string at the point where we don't want, but every time i did it, it got slower
 - make row col, etc all Position types like visual
 - handle render wide characters fully
 - make getch() int, and have enums for characters (this one is cancer to deal with, makes esc so laggy)
