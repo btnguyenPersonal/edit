@@ -42,6 +42,7 @@ std::vector<diffLine> generateDiff(const std::vector<std::string>& prev, const s
     // pasting 40000 lines is unbearably slow to compute the diff
     // https://blog.jcoglan.com/2017/02/12/the-myers-diff-algorithm-part-1/
     // https://news.ycombinator.com/item?id=21383393
+    // https://chat.openai.com/share/997e8f1f-55cf-472f-a4da-5a4db11f92ed
     while (prevIndex < prev.size() && currIndex < curr.size()) {
         if (prev[prevIndex] == curr[currIndex]) {
             // Lines are the same, move to next line in both vectors
