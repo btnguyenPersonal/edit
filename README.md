@@ -163,16 +163,18 @@ search replace
 - kinda working cursor for ctrl p ctrl g (made global search replace easier to get to)
 - find file copy relative path && absolute path
 - multi-cursor mode
+- make ctrl q put below line instead of on current line
+- made findfile fzf
+- figure out why sometimes the indent doesn't work with empty lines
 
 ## TODO
-- make ctrl q put below line instead of on current line
+- research adding lsp??
 
 ## LOW PRIO
 - indent w/ html
     - might need to scan entire file to see if in html
     - based on previous line and current line
     - will have to go character by character and make a parser to see if all the closing/opening tags match up
-- fileExplorer (current one is trash and i never use it) actually make it good now
 - ctrl a s increment decrement
 - gr
     -> somehow go to the definition of the var/function, may have to use lsp somehow
@@ -185,3 +187,4 @@ search replace
 - make row col, etc all Position types like visual
 - handle render wide characters fully
 - make getch() int, and have enums for characters (this one is cancer to deal with, makes esc so laggy)
+- fileExplorer (current one is trash and i never use it) actually make it good now

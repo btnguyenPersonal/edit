@@ -58,17 +58,21 @@ int getIndentLevel(State* state, unsigned int row) {
 
 void indentLine(State* state, unsigned int row) {
     ltrim(state->data[row]);
-    int indentLevel = getIndentLevel(state, row);
-    for (int i = 0; i < indentLevel; i++) {
-        state->data[row] = ' ' + state->data[row];
+    if (state->data[row].length() != 0) {
+        int indentLevel = getIndentLevel(state, row);
+        for (int i = 0; i < indentLevel; i++) {
+            state->data[row] = ' ' + state->data[row];
+        }
     }
 }
 
 void indentLine(State* state) {
     ltrim(state->data[state->row]);
-    int indentLevel = getIndentLevel(state, state->row);
-    for (int i = 0; i < indentLevel; i++) {
-        state->data[state->row] = ' ' + state->data[state->row];
+    if (state->data[state->row].length() != 0) {
+        int indentLevel = getIndentLevel(state, state->row);
+        for (int i = 0; i < indentLevel; i++) {
+            state->data[state->row] = ' ' + state->data[state->row];
+        }
     }
 }
 

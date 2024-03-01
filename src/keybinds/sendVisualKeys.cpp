@@ -380,10 +380,8 @@ bool sendVisualKeys(State* state, char c) {
         state->row = state->data.size() - 1;
     } else if (c == '=') {
         Bounds bounds = getBounds(state);
-        state->row = bounds.minR;
-        for (unsigned int i = bounds.minR; i <= bounds.maxR; i++) {
-            indentLine(state);
-            state->row += 1;
+        for (int i = bounds.minR; i <= (int) bounds.maxR; i++) {
+            indentLine(state, i);
         }
         state->row = bounds.minR;
         state->visual.row = bounds.maxR;
