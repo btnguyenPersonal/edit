@@ -21,10 +21,25 @@ void toggleLoggingCode(State* state, std::string variableName) {
     indentLine(state, state->row + 1);
 }
 
+std::regex getRemoveLoggingRegex(State* state) {
+    std::string extension = getExtension(state->filename);
+    std::string pattern = "";
+    if (extension == "js"
+        || extension == "jsx"
+        || extension == "ts"
+        || extension == "tsx"
+    ) {
+        pattern = "console\\.log\\('[0-9]+', .+?\\);";
+    } else if (extension == "cpp") {
+        pattern = "std::cout << [0-9]+ << .+? << std::endl;";
+    }
+    std::regex logPattern(pattern);
+    return logPattern;
+}
+
 void removeAllLoggingCode(State* state) {
     for (int i = state->data.size() - 1; i >= 0; i--) {
-        std::string pattern = "console\\.log\\('[0-9]+', .+?\\);";
-        std::regex logPattern(pattern);
+        std::regex logPattern = getRemoveLoggingRegex(state);
         if (std::regex_search(state->data[i], logPattern)) {
             state->data.erase(state->data.begin() + i);
         }
