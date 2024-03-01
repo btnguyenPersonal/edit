@@ -89,7 +89,7 @@ std::string getCommentSymbol(std::string filename) {
 }
 
 bool isAlphanumeric(char c) {
-    return std::isalnum(c) ? 1 : 0;
+    return std::isalnum(c) || c == '_' ? 1 : 0;
 }
 
 unsigned int findNextChar(State* state, char c) {

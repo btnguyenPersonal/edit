@@ -184,7 +184,7 @@ search replace
                     <Row />
                 )}
             </div>
-    - based on previous line and current line
+    - based on previous line and current line?
     - will have to go character by character and make a parser to see if all the closing/opening tags match up
 - research adding lsp??
 
