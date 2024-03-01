@@ -44,6 +44,9 @@ $(EXECUTABLE): $(OBJECTS)
 $(BUILD_DIR)/%.o: $(SRC_DIR)/%.cpp
 	$(CC) -c $< -o $@ $(CFLAGS) $(DEPFLAGS)
 
+format:
+	find . -iname *.cpp -o -iname *.h | xargs clang-format -i
+
 test:
 	make all && build/e longtest.md
 
