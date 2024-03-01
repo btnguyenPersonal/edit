@@ -168,13 +168,27 @@ search replace
 - figure out why sometimes the indent doesn't work with empty lines
 
 ## TODO
+- indent w/ html
+    - might need to scan entire file to see if in html
+        - could i treat middle of tag as non-html?:
+            <div
+                classname="one"
+                id="two"
+                label="three"
+            >
+        - could i treat middle of jsx as non-html?
+            <div>
+                {true ? (
+                    <Table />
+                ) : (
+                    <Row />
+                )}
+            </div>
+    - based on previous line and current line
+    - will have to go character by character and make a parser to see if all the closing/opening tags match up
 - research adding lsp??
 
 ## LOW PRIO
-- indent w/ html
-    - might need to scan entire file to see if in html
-    - based on previous line and current line
-    - will have to go character by character and make a parser to see if all the closing/opening tags match up
 - ctrl a s increment decrement
 - gr
     -> somehow go to the definition of the var/function, may have to use lsp somehow
