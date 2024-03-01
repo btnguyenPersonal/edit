@@ -80,6 +80,8 @@ void toggleCommentLines(State* state, Bounds bounds) {
 void unCommentBlock(State* state) {
     bool foundComment = false;
     Bounds bounds;
+    bounds.minC = 0;
+    bounds.maxC = 0;
     if (isComment(state, state->data[state->row])) {
         for (int i = (int) state->row; i >= 0; i--) {
             if (!isComment(state, state->data[i])) {
