@@ -114,7 +114,7 @@ void pasteFromClipboardAfter(State* state) {
     }
 }
 
-void copyToClipboard(const std::string& originalString) {
+int copyToClipboard(const std::string& originalString) {
     std::string escapedString;
     for (char c : originalString) {
         switch (c) {
@@ -144,5 +144,5 @@ void copyToClipboard(const std::string& originalString) {
 #error "Platform not supported"
 #endif
 
-    std::system(command.c_str());
+    return std::system(command.c_str());
 }

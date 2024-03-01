@@ -231,8 +231,11 @@ void replaceCurrentLine(State* state, std::string query, std::string replace) {
 
 void replaceAllGlobally(State* state, std::string query, std::string replace) {
     try {
-        std::string command = ("git ls-files | xargs -I {} sed -i'' \"s/" + query + '/' + replace + "/g\" \"{}\"");
-        system(command.c_str());
+        std::string command = ("git ls-files | xargs -I {} sed -i'' \"s/" + query + '/' + replace + "/g\" \"{}\" 2>/dev/null");
+        int returnValue = std::system(command.c_str());
+        if (returnValue != 0) {
+            throw std::exception();
+        }
         state->changeFile(state->filename);
     } catch (const std::exception& e) {
         state->status = "command failed";

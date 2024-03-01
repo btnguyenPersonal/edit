@@ -1,5 +1,5 @@
 CC = g++-13
-CFLAGS = -Wall -lncurses -pthread
+CFLAGS = -Wall -lncurses -pthread -O2
 DEPFLAGS = -MMD -MP
 
 SRC_DIR = src

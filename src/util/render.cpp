@@ -289,7 +289,7 @@ void printLine(State* state, int row) {
         bool skipNext = false;
         unsigned int searchCounter = 0;
         int renderCol = 0;
-        unsigned int startOfSearch;
+        unsigned int startOfSearch = 0;
         bool isComment = false;
         char stringType;
         unsigned int col = 0;
