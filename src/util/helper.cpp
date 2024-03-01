@@ -539,16 +539,24 @@ WordPosition getWordPosition(const std::string& str, unsigned int cursor) {
 }
 
 bool filePathContainsSubstring(const std::filesystem::path& filePath, const std::string& query) {
-    // TODO make fzf
     std::string filePathStr = filePath.string();
     std::string queryLower = query;
 
-    std::transform(filePathStr.begin(), filePathStr.end(), filePathStr.begin(),
-                   [](unsigned char c){ return std::tolower(c); });
-    std::transform(queryLower.begin(), queryLower.end(), queryLower.begin(),
-                   [](unsigned char c){ return std::tolower(c); });
+    std::transform(filePathStr.begin(), filePathStr.end(), filePathStr.begin(), [](unsigned char c){ return std::tolower(c); });
+    std::transform(queryLower.begin(), queryLower.end(), queryLower.begin(), [](unsigned char c){ return std::tolower(c); });
 
-    return filePathStr.find(queryLower) != std::string::npos;
+    unsigned int filePathIndex = 0;
+    unsigned int queryIndex = 0;
+    while (queryIndex < queryLower.length() && filePathIndex < filePathStr.length()) {
+        if (filePathStr[filePathIndex] == queryLower[queryIndex]) {
+            filePathIndex++;
+            queryIndex++;
+        } else {
+            filePathIndex++;
+        }
+    }
+
+    return queryIndex == queryLower.length();
 }
 
 bool shouldIgnoreFile(const std::filesystem::path& path) {
