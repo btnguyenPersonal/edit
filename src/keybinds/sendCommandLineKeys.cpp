@@ -51,7 +51,7 @@ void sendCommandLineKeys(State* state, char c) {
         state->mode = SHORTCUTS;
     } else if (' ' <= c && c <= '~') {
         state->commandLineQuery += c;
-    } else if (c == ctrl('g')) { // BACKSPACE
+    } else if (c == ctrl('g')) {
         if (state->commandLineQuery.length() > 0) {
             if (state->commandLineQuery[0] == 'g') {
                 state->commandLineQuery = state->commandLineQuery.substr(1);
