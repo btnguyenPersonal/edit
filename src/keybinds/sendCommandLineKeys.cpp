@@ -1,11 +1,11 @@
-#include <string>
-#include <vector>
-#include <sstream>
-#include <ncurses.h>
-#include "../util/state.h"
+#include "sendCommandLineKeys.h"
 #include "../util/helper.h"
 #include "../util/modes.h"
-#include "sendCommandLineKeys.h"
+#include "../util/state.h"
+#include <ncurses.h>
+#include <sstream>
+#include <string>
+#include <vector>
 
 void evaluateCommandLineQuery(State* state) {
     if (state->commandLineQuery == "q") {

@@ -1,11 +1,11 @@
-#include <vector>
-#include <string>
-#include <climits>
-#include "state.h"
-#include "bounds.h"
-#include "indent.h"
-#include "helper.h"
 #include "comment.h"
+#include "bounds.h"
+#include "helper.h"
+#include "indent.h"
+#include "state.h"
+#include <climits>
+#include <string>
+#include <vector>
 
 std::string trimComment(State* state, std::string line) {
     std::string outputLine = line;
@@ -24,9 +24,7 @@ std::string trimComment(State* state, std::string line) {
     return outputLine;
 }
 
-void toggleComment(State* state) {
-    toggleCommentHelper(state, state->row, -1);
-}
+void toggleComment(State* state) { toggleCommentHelper(state, state->row, -1); }
 
 void toggleCommentHelper(State* state, unsigned int row, int commentIndex) {
     std::string line = state->data[row];
@@ -67,8 +65,8 @@ void toggleCommentLines(State* state, Bounds bounds) {
         minIndentLevel = INT_MAX;
         for (size_t i = bounds.minR; i <= bounds.maxR; i++) {
             unsigned int indent = getIndentLevel(state, i);
-            if ((int) indent < minIndentLevel) {
-                minIndentLevel = (int) indent;
+            if ((int)indent < minIndentLevel) {
+                minIndentLevel = (int)indent;
             }
         }
     }
@@ -83,7 +81,7 @@ void unCommentBlock(State* state) {
     bounds.minC = 0;
     bounds.maxC = 0;
     if (isComment(state, state->data[state->row])) {
-        for (int i = (int) state->row; i >= 0; i--) {
+        for (int i = (int)state->row; i >= 0; i--) {
             if (!isComment(state, state->data[i])) {
                 state->row = i;
                 break;

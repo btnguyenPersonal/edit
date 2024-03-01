@@ -1,10 +1,10 @@
-#include <iostream>
-#include <cstring>
-#include <ncurses.h>
+#include "keybinds/sendKeys.h"
+#include "util/helper.h"
 #include "util/render.h"
 #include "util/state.h"
-#include "util/helper.h"
-#include "keybinds/sendKeys.h"
+#include <cstring>
+#include <iostream>
+#include <ncurses.h>
 
 int main(int argc, char* argv[]) {
     char c;

@@ -1,10 +1,10 @@
-#include <string>
-#include <vector>
-#include "../util/state.h"
+#include "sendBlameKeys.h"
+#include "../util/clipboard.h"
 #include "../util/helper.h"
 #include "../util/modes.h"
-#include "../util/clipboard.h"
-#include "sendBlameKeys.h"
+#include "../util/state.h"
+#include <string>
+#include <vector>
 
 void sendBlameKeys(State* state, char c) {
     if (c == 27) { // ESC

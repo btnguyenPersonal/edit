@@ -1,27 +1,28 @@
-#include <sstream>
-#include <string>
-#include <array>
-#include <iterator>
-#include <vector>
-#include "state.h"
 #include "clipboard.h"
 #include "helper.h"
+#include "state.h"
+#include <array>
+#include <iterator>
+#include <sstream>
+#include <string>
+#include <vector>
 
 std::vector<std::string> getFromClipboard() {
     std::string command;
-    #ifdef __APPLE__
-        command = "pbpaste";
-    #elif defined(__linux__)
-        command = "xclip -selection clipboard -o";
-    #else
-        #error "Platform not supported"
-    #endif
+#ifdef __APPLE__
+    command = "pbpaste";
+#elif defined(__linux__)
+    command = "xclip -selection clipboard -o";
+#else
+#error "Platform not supported"
+#endif
 
     std::string result;
     std::array<char, 256> buffer;
-    FILE *pipe = popen(command.c_str(), "r");
+    FILE* pipe = popen(command.c_str(), "r");
 
-    if (!pipe) throw std::runtime_error("popen() failed!");
+    if (!pipe)
+        throw std::runtime_error("popen() failed!");
 
     while (fgets(buffer.data(), buffer.size(), pipe) != nullptr) {
         result += buffer.data();
@@ -54,7 +55,7 @@ void pasteFromClipboard(State* state) {
         }
     } else if (clip.back() == "") {
         clip.pop_back();
-        for (int i = 0; i < (int) clip.size(); i++) {
+        for (int i = 0; i < (int)clip.size(); i++) {
             state->data.insert(state->data.begin() + i + state->row, clip[i]);
         }
     } else if (clip.size() > 0) {
@@ -68,7 +69,7 @@ void pasteFromClipboard(State* state) {
         int lastRow = state->row;
 
         // insert other lines of clip
-        for (int i = 1; i < (int) clip.size(); i++) {
+        for (int i = 1; i < (int)clip.size(); i++) {
             int r = i + state->row;
             state->data.insert(state->data.begin() + r, clip[i]);
             lastRow = r;
@@ -84,7 +85,7 @@ void pasteFromClipboardAfter(State* state) {
     std::vector<std::string> clip = getFromClipboard();
     if (clip.back() == "") {
         clip.pop_back();
-        for (int i = 0; i < (int) clip.size(); i++) {
+        for (int i = 0; i < (int)clip.size(); i++) {
             state->data.insert(state->data.begin() + i + state->row + 1, clip[i]);
         }
     } else if (clip.size() > 0) {
@@ -102,7 +103,7 @@ void pasteFromClipboardAfter(State* state) {
         int lastRow = state->row;
 
         // insert other lines of clip
-        for (int i = 1; i < (int) clip.size(); i++) {
+        for (int i = 1; i < (int)clip.size(); i++) {
             int r = i + state->row;
             state->data.insert(state->data.begin() + r, clip[i]);
             lastRow = r;
@@ -117,21 +118,31 @@ void copyToClipboard(const std::string& originalString) {
     std::string escapedString;
     for (char c : originalString) {
         switch (c) {
-            case '\\': escapedString += "\\\\\\\\"; break;
-            case '\"': escapedString += "\\\""; break;
-            case '`':  escapedString += "\\`"; break;
-            case '$':  escapedString += "\\$"; break;
-            default:   escapedString += c; break;
+        case '\\':
+            escapedString += "\\\\\\\\";
+            break;
+        case '\"':
+            escapedString += "\\\"";
+            break;
+        case '`':
+            escapedString += "\\`";
+            break;
+        case '$':
+            escapedString += "\\$";
+            break;
+        default:
+            escapedString += c;
+            break;
         }
     }
     std::string command;
-    #ifdef __APPLE__
-        command = "echo \"" + escapedString + "\" | pbcopy";
-    #elif defined(__linux__)
-        command = "echo \"" + escapedString + "\" | xclip -selection clipboard";
-    #else
-        #error "Platform not supported"
-    #endif
+#ifdef __APPLE__
+    command = "echo \"" + escapedString + "\" | pbcopy";
+#elif defined(__linux__)
+    command = "echo \"" + escapedString + "\" | xclip -selection clipboard";
+#else
+#error "Platform not supported"
+#endif
 
     std::system(command.c_str());
 }

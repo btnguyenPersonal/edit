@@ -1,12 +1,12 @@
+#include "state.h"
+#include "helper.h"
+#include "modes.h"
+#include "state.h"
+#include "visualType.h"
+#include <iostream>
+#include <ncurses.h>
 #include <string>
 #include <vector>
-#include <iostream>
-#include "helper.h"
-#include "state.h"
-#include "modes.h"
-#include "visualType.h"
-#include "state.h"
-#include <ncurses.h>
 
 unsigned int State::maxX = 0;
 unsigned int State::maxY = 0;
@@ -77,7 +77,7 @@ void State::changeFile(std::string filename) {
 
 void State::pushFileStack(std::string filename) {
     if (filename != "") {
-        for (auto it = this->fileStack.begin(); it != this->fileStack.end(); ) {
+        for (auto it = this->fileStack.begin(); it != this->fileStack.end();) {
             if (*it == filename) {
                 it = this->fileStack.erase(it);
             } else {
@@ -158,6 +158,6 @@ State::State(std::string filename) : State() {
 }
 
 void State::setMaxYX(int y, int x) {
-    State::maxY = (unsigned int) y;
-    State::maxX = (unsigned int) x;
+    State::maxY = (unsigned int)y;
+    State::maxX = (unsigned int)x;
 }

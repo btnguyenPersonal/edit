@@ -1,10 +1,10 @@
+#include "sendTypingKeys.h"
+#include "../util/helper.h"
+#include "../util/indent.h"
+#include "../util/modes.h"
+#include "../util/state.h"
 #include <string>
 #include <vector>
-#include "../util/helper.h"
-#include "../util/state.h"
-#include "../util/modes.h"
-#include "../util/indent.h"
-#include "sendTypingKeys.h"
 
 void sendTypingKeys(State* state, char c) {
     if (c == 27) { // ESC
@@ -24,7 +24,7 @@ void sendTypingKeys(State* state, char c) {
     } else if (' ' <= c && c <= '~') {
         std::string current = state->data[state->row];
         state->data[state->row] = current.substr(0, state->col) + c + current.substr(state->col);
-        if ((int) state->col == getIndexFirstNonSpace(state)) {
+        if ((int)state->col == getIndexFirstNonSpace(state)) {
             indentLine(state);
             state->col = getIndexFirstNonSpace(state);
         }

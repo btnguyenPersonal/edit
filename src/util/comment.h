@@ -1,9 +1,9 @@
 #pragma once
 
-#include <vector>
-#include <string>
-#include "state.h"
 #include "bounds.h"
+#include "state.h"
+#include <string>
+#include <vector>
 
 void toggleComment(State* state);
 void toggleCommentHelper(State* state, unsigned int row, int commentIndex);

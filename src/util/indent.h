@@ -1,8 +1,8 @@
 #pragma once
 
-#include <vector>
-#include <string>
 #include "state.h"
+#include <string>
+#include <vector>
 
 int getNumLeadingSpaces(std::string s);
 std::string getPrevLine(State* state, unsigned int row);

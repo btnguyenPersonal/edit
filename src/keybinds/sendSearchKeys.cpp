@@ -1,8 +1,8 @@
-#include <climits>
-#include "../util/state.h"
+#include "sendSearchKeys.h"
 #include "../util/helper.h"
 #include "../util/modes.h"
-#include "sendSearchKeys.h"
+#include "../util/state.h"
+#include <climits>
 
 void sendSearchKeys(State* state, char c) {
     if (c == 27) { // ESC

@@ -1,13 +1,13 @@
-#include <vector>
-#include <string>
-#include <climits>
-#include "state.h"
 #include "history.h"
+#include "state.h"
+#include <climits>
+#include <string>
+#include <vector>
 
 unsigned int applyDiff(State* state, const std::vector<diffLine>& diff, bool reverse) {
     unsigned int min = UINT_MAX;
     if (reverse == false) {
-        for (int i = ((int) diff.size()) - 1; i >= 0; i--) {
+        for (int i = ((int)diff.size()) - 1; i >= 0; i--) {
             if (diff[i].lineNum < min) {
                 min = diff[i].lineNum;
             }
@@ -18,7 +18,7 @@ unsigned int applyDiff(State* state, const std::vector<diffLine>& diff, bool rev
             }
         }
     } else if (reverse == true) {
-        for (int i = 0; i < ((int) diff.size()); i++) {
+        for (int i = 0; i < ((int)diff.size()); i++) {
             if (diff[i].lineNum < min) {
                 min = diff[i].lineNum;
             }
@@ -62,7 +62,7 @@ std::vector<diffLine> generateDiff(const std::vector<std::string>& prev, const s
                     diffs.push_back({currIndex, true, curr[currIndex]});
                     currIndex++;
                 }
-            // else if prev isn't found, delete that line
+                // else if prev isn't found, delete that line
             } else {
                 diffs.push_back({currIndex, false, prev[prevIndex]});
                 prevIndex++;
@@ -84,4 +84,3 @@ std::vector<diffLine> generateDiff(const std::vector<std::string>& prev, const s
 
     return diffs;
 }
-

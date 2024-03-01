@@ -1,19 +1,19 @@
-#include <algorithm>
-#include <string>
-#include <future>
-#include <iterator>
-#include <vector>
-#include <climits>
-#include <fstream>
-#include <ncurses.h>
-#include <iostream>
-#include <cstdio>
-#include <memory>
-#include <stdexcept>
-#include <map>
-#include "state.h"
 #include "helper.h"
+#include "state.h"
 #include "visualType.h"
+#include <algorithm>
+#include <climits>
+#include <cstdio>
+#include <fstream>
+#include <future>
+#include <iostream>
+#include <iterator>
+#include <map>
+#include <memory>
+#include <ncurses.h>
+#include <stdexcept>
+#include <string>
+#include <vector>
 
 void recordAction(State* state) {
     auto now = std::chrono::steady_clock::now();
@@ -38,42 +38,13 @@ int calculateAPM(State* state) {
 
 std::string getCommentSymbol(std::string filename) {
     std::string extension = getExtension(filename);
-    if (extension == "js"
-        || extension == "jsx"
-        || extension == "ts"
-        || extension == "tsx"
-        || extension == "cpp"
-        || extension == "hpp"
-        || extension == "c"
-        || extension == "h"
-        || extension == "java"
-        || extension == "cs"
-        || extension == "go"
-        || extension == "php"
-        || extension == "rs"
-        || extension == "css"
-        || extension == "scss"
-        || extension == "vb"
-        || extension == "lua"
-    ) {
+    if (extension == "js" || extension == "jsx" || extension == "ts" || extension == "tsx" || extension == "cpp" || extension == "hpp" || extension == "c" || extension == "h" ||
+        extension == "java" || extension == "cs" || extension == "go" || extension == "php" || extension == "rs" || extension == "css" || extension == "scss" ||
+        extension == "vb" || extension == "lua") {
         return "//";
-    } else if (
-        extension == "py"
-        || extension == "sh"
-        || extension == "bash"
-        || extension == "rb"
-        || extension == "pl"
-        || extension == "pm"
-        || extension == "r"
-        || extension == "yaml"
-        || extension == "yml"
-        || extension == "bashrc"
-        || extension == "zshrc"
-        || extension == "Makefile"
-        || extension == "md"
-        || extension == "gitignore"
-        || extension == "env"
-    ) {
+    } else if (extension == "py" || extension == "sh" || extension == "bash" || extension == "rb" || extension == "pl" || extension == "pm" || extension == "r" ||
+               extension == "yaml" || extension == "yml" || extension == "bashrc" || extension == "zshrc" || extension == "Makefile" || extension == "md" ||
+               extension == "gitignore" || extension == "env") {
         return "#";
     } else if (extension == "html" || extension == "xml" || extension == "xhtml" || extension == "svg") {
         return "<!--";
@@ -88,9 +59,7 @@ std::string getCommentSymbol(std::string filename) {
     }
 }
 
-bool isAlphanumeric(char c) {
-    return std::isalnum(c) || c == '_' ? 1 : 0;
-}
+bool isAlphanumeric(char c) { return std::isalnum(c) || c == '_' ? 1 : 0; }
 
 unsigned int findNextChar(State* state, char c) {
     for (unsigned int i = state->col; i < state->data[state->row].length(); i++) {
@@ -117,7 +86,8 @@ std::string getGitHash(State* state) {
     std::stringstream command;
     command << "git blame -l -L " << state->row + 1 << ",+1 " << state->filename << " | awk '{print $1}'";
     std::unique_ptr<FILE, decltype(&pclose)> pipe(popen(command.str().c_str(), "r"), pclose);
-    if (!pipe) throw std::runtime_error("popen() failed!");
+    if (!pipe)
+        throw std::runtime_error("popen() failed!");
     std::string output, line;
     char buffer[128];
     while (fgets(buffer, sizeof(buffer), pipe.get()) != NULL) {
@@ -191,21 +161,17 @@ void moveHarpoonLeft(State* state) {
     }
 }
 
-void rtrim(std::string &s) {
-    s.erase(std::find_if(s.rbegin(), s.rend(), [](unsigned char ch) {
-        return !std::isspace(ch);
-    }).base(), s.end());
+void rtrim(std::string& s) {
+    s.erase(std::find_if(s.rbegin(), s.rend(), [](unsigned char ch) { return !std::isspace(ch); }).base(), s.end());
 }
 
-void ltrim(std::string &s) {
-    s.erase(s.begin(), std::find_if(s.begin(), s.end(), [](unsigned char ch) {
-        return !std::isspace(ch);
-    }));
+void ltrim(std::string& s) {
+    s.erase(s.begin(), std::find_if(s.begin(), s.end(), [](unsigned char ch) { return !std::isspace(ch); }));
 }
 
 std::string getCurrentWord(State* state) {
     std::string currentWord = "";
-    for (int i = (int) state->col - 1; i >= 0; i--) {
+    for (int i = (int)state->col - 1; i >= 0; i--) {
         if (isAlphanumeric(state->data[state->row][i])) {
             currentWord = state->data[state->row][i] + currentWord;
         } else {
@@ -361,13 +327,12 @@ void initVisual(State* state, VisualType visualType) {
 
 bool is_number(const std::string& s) {
     std::string::const_iterator it = s.begin();
-    while (it != s.end() && std::isdigit(*it)) ++it;
+    while (it != s.end() && std::isdigit(*it))
+        ++it;
     return !s.empty() && it == s.end();
 }
 
-char ctrl(char c) {
-    return c - 'a' + 1;
-}
+char ctrl(char c) { return c - 'a' + 1; }
 
 unsigned int getIndent(const std::string& str) {
     for (unsigned int i = 0; i < str.length(); i++) {
@@ -380,7 +345,7 @@ unsigned int getIndent(const std::string& str) {
 
 unsigned int getPrevEmptyLine(State* state) {
     bool hitNonEmpty = false;
-    for (int i = (int) state->row; i >= 0; i--) {
+    for (int i = (int)state->row; i >= 0; i--) {
         if (state->data[i] != "") {
             hitNonEmpty = true;
         } else if (hitNonEmpty && state->data[i] == "") {
@@ -404,7 +369,7 @@ unsigned int getNextEmptyLine(State* state) {
 
 unsigned int getPrevLineSameIndent(State* state) {
     unsigned int current = getIndent(state->data[state->row]);
-    for (int i = (int) state->row - 1; i >= 0; i--) {
+    for (int i = (int)state->row - 1; i >= 0; i--) {
         if (current == getIndent(state->data[i]) && state->data[i] != "") {
             return i;
         }
@@ -422,7 +387,7 @@ unsigned int getNextLineSameIndent(State* state) {
     return state->row;
 }
 
-WordPosition findQuoteBounds(const std::string &str, char quoteChar, unsigned int cursor, bool includeQuote) {
+WordPosition findQuoteBounds(const std::string& str, char quoteChar, unsigned int cursor, bool includeQuote) {
     int lastQuoteIndex = -1;
     for (unsigned int i = 0; i <= cursor; i++) {
         if (str[i] == quoteChar) {
@@ -432,7 +397,7 @@ WordPosition findQuoteBounds(const std::string &str, char quoteChar, unsigned in
     unsigned int i;
     for (i = cursor + 1; i < str.length(); i++) {
         if (str[i] == quoteChar) {
-            if (lastQuoteIndex != -1 && lastQuoteIndex < (int) cursor) {
+            if (lastQuoteIndex != -1 && lastQuoteIndex < (int)cursor) {
                 break;
             } else {
                 if (lastQuoteIndex == -1) {
@@ -445,17 +410,16 @@ WordPosition findQuoteBounds(const std::string &str, char quoteChar, unsigned in
     }
     if (i != str.length()) {
         if (i - lastQuoteIndex == 1 || includeQuote) {
-            return {(unsigned int) lastQuoteIndex, (unsigned int) i};
+            return {(unsigned int)lastQuoteIndex, (unsigned int)i};
         } else {
-            return {(unsigned int) lastQuoteIndex + 1, (unsigned int) i - 1};
+            return {(unsigned int)lastQuoteIndex + 1, (unsigned int)i - 1};
         }
     } else {
         return {0, 0};
     }
 }
 
-
-WordPosition findParentheses(const std::string &str, char openParen, char closeParen, unsigned int cursor, bool includeParen) {
+WordPosition findParentheses(const std::string& str, char openParen, char closeParen, unsigned int cursor, bool includeParen) {
     int balance = 0;
     int openParenIndex = -1;
     // look back for openParen
@@ -474,7 +438,7 @@ WordPosition findParentheses(const std::string &str, char openParen, char closeP
     balance = 0;
     // if haven't found yet look forward for openParen
     if (openParenIndex == -1) {
-        for (int i = cursor; i < (int) str.length(); i++) {
+        for (int i = cursor; i < (int)str.length(); i++) {
             if (str[i] == openParen) {
                 if (balance == 0) {
                     openParenIndex = i;
@@ -490,17 +454,17 @@ WordPosition findParentheses(const std::string &str, char openParen, char closeP
     balance = 0;
     // if haven't found return {0,0}
     if (openParenIndex == -1) {
-        return {0,0};
+        return {0, 0};
     }
-    for (int i = openParenIndex + 1; i < (int) str.length(); i++) {
+    for (int i = openParenIndex + 1; i < (int)str.length(); i++) {
         if (str[i] == openParen) {
             balance--;
         } else if (str[i] == closeParen) {
             if (balance == 0) {
                 if (i - openParenIndex == 1 || includeParen) {
-                    return {(unsigned int) openParenIndex, (unsigned int) i};
+                    return {(unsigned int)openParenIndex, (unsigned int)i};
                 } else {
-                    return {(unsigned int) openParenIndex + 1, (unsigned int) i - 1};
+                    return {(unsigned int)openParenIndex + 1, (unsigned int)i - 1};
                 }
             } else {
                 balance++;
@@ -542,8 +506,8 @@ bool filePathContainsSubstring(const std::filesystem::path& filePath, const std:
     std::string filePathStr = filePath.string();
     std::string queryLower = query;
 
-    std::transform(filePathStr.begin(), filePathStr.end(), filePathStr.begin(), [](unsigned char c){ return std::tolower(c); });
-    std::transform(queryLower.begin(), queryLower.end(), queryLower.begin(), [](unsigned char c){ return std::tolower(c); });
+    std::transform(filePathStr.begin(), filePathStr.end(), filePathStr.begin(), [](unsigned char c) { return std::tolower(c); });
+    std::transform(queryLower.begin(), queryLower.end(), queryLower.begin(), [](unsigned char c) { return std::tolower(c); });
 
     unsigned int filePathIndex = 0;
     unsigned int queryIndex = 0;
@@ -640,9 +604,7 @@ void generateGrepOutput(State* state) {
     }
 }
 
-void generateFindFileOutput(State* state) {
-    state->findFileOutput = findFiles(std::filesystem::current_path(), state->findFileQuery);
-}
+void generateFindFileOutput(State* state) { state->findFileOutput = findFiles(std::filesystem::current_path(), state->findFileQuery); }
 
 unsigned int w(State* state) {
     bool space = state->data[state->row][state->col] == ' ';
@@ -659,10 +621,13 @@ unsigned int w(State* state) {
 }
 
 unsigned int b(State* state) {
-    if (state->col == 0 || state->data[state->row].empty()) return 0;
+    if (state->col == 0 || state->data[state->row].empty())
+        return 0;
     int i = state->col - 1;
-    while (i >= 0 && state->data[state->row][i] == ' ') i--;
-    if (i < 0) return 0;
+    while (i >= 0 && state->data[state->row][i] == ' ')
+        i--;
+    if (i < 0)
+        return 0;
     bool isAlnum = isAlphanumeric(state->data[state->row][i]);
     for (i -= 1; i >= 0; i--) {
         if (state->data[state->row][i] == ' ') {
@@ -696,9 +661,9 @@ std::vector<std::string> readFile(std::string filename) {
 }
 
 bool isWindowPositionInvalid(State* state) {
-    if (state->row < state->windowPosition.row || (int) state->row - (int) state->windowPosition.row > ((int) state->maxY - 2)) {
+    if (state->row < state->windowPosition.row || (int)state->row - (int)state->windowPosition.row > ((int)state->maxY - 2)) {
         return true;
-    } else if (state->col < state->windowPosition.col || (int) state->col - (int) state->windowPosition.col > ((int) state->maxX - (int) getLineNumberOffset(state) - 1)) {
+    } else if (state->col < state->windowPosition.col || (int)state->col - (int)state->windowPosition.col > ((int)state->maxX - (int)getLineNumberOffset(state) - 1)) {
         return true;
     }
     return false;
@@ -748,7 +713,7 @@ void down(State* state) {
     if (state->row < state->data.size() - 1) {
         state->row += 1;
     }
-    if ((int) state->row - (int) state->windowPosition.row > ((int) state->maxY - 2)) {
+    if ((int)state->row - (int)state->windowPosition.row > ((int)state->maxY - 2)) {
         state->windowPosition.row += 1;
     }
 }
@@ -787,7 +752,7 @@ void deindent(State* state) {
 
 int getIndexFirstNonSpace(State* state) {
     int i;
-    for (i = 0; i < (int) state->data[state->row].length(); i++) {
+    for (i = 0; i < (int)state->data[state->row].length(); i++) {
         if (state->data[state->row][i] != ' ') {
             return i;
         }
@@ -801,13 +766,9 @@ void calcWindowBounds() {
     State::setMaxYX(y, x);
 }
 
-void insertEmptyLineBelow(State* state) {
-    state->data.insert(state->data.begin() + state->row + 1, "");
-}
+void insertEmptyLineBelow(State* state) { state->data.insert(state->data.begin() + state->row + 1, ""); }
 
-void insertEmptyLine(State* state) {
-    state->data.insert(state->data.begin() + state->row, "");
-}
+void insertEmptyLine(State* state) { state->data.insert(state->data.begin() + state->row, ""); }
 
 int maximum(int a, int b) {
     if (a > b) {

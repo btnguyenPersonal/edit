@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../util/state.h"
 #include "../util/bounds.h"
+#include "../util/state.h"
 
 Bounds getBounds(State* state);
 void setStateFromWordPosition(State* state, WordPosition pos);

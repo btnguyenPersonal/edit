@@ -1,10 +1,10 @@
-#include <string>
-#include <vector>
-#include "../util/state.h"
+#include "sendFindFileKeys.h"
+#include "../util/clipboard.h"
 #include "../util/helper.h"
 #include "../util/modes.h"
-#include "../util/clipboard.h"
-#include "sendFindFileKeys.h"
+#include "../util/state.h"
+#include <string>
+#include <vector>
 
 void sendFindFileKeys(State* state, char c) {
     if (c == 27) { // ESC
@@ -59,7 +59,7 @@ void sendFindFileKeys(State* state, char c) {
         if (state->findFileSelection < state->findFileOutput.size()) {
             state->selectAll = false;
             auto selectedFile = state->findFileOutput[state->findFileSelection].string();
-            std::filesystem::path currentDir = ((std::filesystem::path) state->filename).parent_path();
+            std::filesystem::path currentDir = ((std::filesystem::path)state->filename).parent_path();
             std::filesystem::path relativePath = std::filesystem::relative(selectedFile, currentDir);
             copyToClipboard(relativePath.string());
             state->mode = SHORTCUTS;

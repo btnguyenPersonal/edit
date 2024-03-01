@@ -1,20 +1,20 @@
-#include <string>
-#include <vector>
-#include <climits>
-#include <algorithm>
-#include <ncurses.h>
-#include "../util/state.h"
+#include "sendShortcutKeys.h"
+#include "../util/clipboard.h"
+#include "../util/comment.h"
 #include "../util/helper.h"
 #include "../util/history.h"
-#include "../util/modes.h"
-#include "../util/clipboard.h"
-#include "../util/visualType.h"
 #include "../util/indent.h"
-#include "../util/comment.h"
 #include "../util/insertLoggingCode.h"
-#include "sendVisualKeys.h"
+#include "../util/modes.h"
+#include "../util/state.h"
+#include "../util/visualType.h"
 #include "sendKeys.h"
-#include "sendShortcutKeys.h"
+#include "sendVisualKeys.h"
+#include <algorithm>
+#include <climits>
+#include <ncurses.h>
+#include <string>
+#include <vector>
 
 void sendShortcutKeys(State* state, char c) {
     if (c == 27) { // ESC
@@ -36,26 +36,26 @@ void sendShortcutKeys(State* state, char c) {
         }
         state->prevKeys = "";
     } else if ((state->prevKeys[0] == 'y' || state->prevKeys[0] == 'd' || state->prevKeys[0] == 'c') && state->prevKeys.length() == 2) {
-            unsigned int tempRow = state->row;
-            unsigned int tempCol = state->col;
-            char command0 = state->prevKeys[0];
-            char command1 = state->prevKeys[1];
+        unsigned int tempRow = state->row;
+        unsigned int tempCol = state->col;
+        char command0 = state->prevKeys[0];
+        char command1 = state->prevKeys[1];
+        state->prevKeys = "";
+        state->motion = "v";
+        bool success = true;
+        initVisual(state, NORMAL);
+        sendVisualKeys(state, command1);
+        success = sendVisualKeys(state, c);
+        if (success) {
+            sendVisualKeys(state, command0);
+        } else {
             state->prevKeys = "";
-            state->motion = "v";
-            bool success = true;
-            initVisual(state, NORMAL);
-            sendVisualKeys(state, command1);
-            success = sendVisualKeys(state, c);
-            if (success) {
-                sendVisualKeys(state, command0);
-            } else {
-                state->prevKeys = "";
-                state->motion = "";
-                state->row = tempRow;
-                state->col = tempCol;
-                state->mode = SHORTCUTS;
-            }
-            return;
+            state->motion = "";
+            state->row = tempRow;
+            state->col = tempCol;
+            state->mode = SHORTCUTS;
+        }
+        return;
     } else if (state->prevKeys == "y" || state->prevKeys == "d" || state->prevKeys == "c") {
         if (c == 'i' || c == 'a' || c == 'f' || c == 't') {
             state->prevKeys += c;
@@ -118,7 +118,7 @@ void sendShortcutKeys(State* state, char c) {
         }
         return;
     } else if (c == ctrl('r')) {
-        if (state->historyPosition < ((int) state->history.size()) - 1) {
+        if (state->historyPosition < ((int)state->history.size()) - 1) {
             state->row = applyDiff(state, state->history[state->historyPosition + 1], true);
             state->historyPosition++;
         }
@@ -419,7 +419,7 @@ void sendShortcutKeys(State* state, char c) {
         state->changeFile(state->filename);
     } else if (c == ' ') {
         bool found = false;
-        for (auto it = state->harpoonFiles.begin(); it != state->harpoonFiles.end(); ) {
+        for (auto it = state->harpoonFiles.begin(); it != state->harpoonFiles.end();) {
             if (*it == state->filename) {
                 it = state->harpoonFiles.erase(it);
                 found = true;

@@ -1,3 +1,18 @@
 BasedOnStyle: LLVM
 IndentWidth: 4
-ColumnLimit: 140
+AccessModifierOffset: -4
+ColumnLimit: 180
+PointerAlignment: Left
+BreakBeforeBinaryOperators: None
+BinPackParameters: true
+BinPackArguments: true
+PenaltyBreakBeforeFirstCallParameter: 1000
+PenaltyBreakAssignment: 1000
+PenaltyBreakString: 1000
+PenaltyBreakFirstLessLess: 1000
+BraceWrapping:
+  AfterEnum: true
+  AfterStruct: true
+  AfterClass: true
+  AfterFunction: true
+  AfterControlStatement: Always

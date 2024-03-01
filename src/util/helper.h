@@ -1,11 +1,11 @@
 #pragma once
 
-#include <string>
-#include <vector>
-#include <fstream>
-#include <filesystem>
 #include "state.h"
 #include "visualType.h"
+#include <filesystem>
+#include <fstream>
+#include <string>
+#include <vector>
 
 void recordAction(State* state);
 int calculateAPM(State* state);
@@ -25,17 +25,17 @@ std::string getExtension(std::string filename);
 void moveHarpoonLeft(State* state);
 void moveHarpoonRight(State* state);
 bool isWindowPositionHorizontalInvalid(State* state);
-void ltrim(std::string &s);
-void rtrim(std::string &s);
+void ltrim(std::string& s);
+void rtrim(std::string& s);
 void replaceAll(State* state, std::string query, std::string replace);
 bool setSearchResultReverse(State* state);
 void fixColOverMax(State* state);
-WordPosition findQuoteBounds(const std::string &str, char quoteChar, unsigned int cursor, bool includeQuote);
+WordPosition findQuoteBounds(const std::string& str, char quoteChar, unsigned int cursor, bool includeQuote);
 bool setSearchResult(State* state);
 void setPosition(State* state, Position pos);
 void initVisual(State* state, VisualType visualType);
 bool is_number(const std::string& s);
-WordPosition findParentheses(const std::string &str, char openParen, char closeParen, unsigned int cursor, bool includeParen);
+WordPosition findParentheses(const std::string& str, char openParen, char closeParen, unsigned int cursor, bool includeParen);
 unsigned int getIndent(const std::string& str);
 unsigned int getNextLineSameIndent(State* state);
 unsigned int getPrevLineSameIndent(State* state);

@@ -1,8 +1,8 @@
-#include <vector>
-#include <string>
 #include "indent.h"
-#include "helper.h"
 #include "comment.h"
+#include "helper.h"
+#include <string>
+#include <vector>
 
 int getNumLeadingSpaces(std::string s) {
     int numSpaces = 0;
@@ -79,13 +79,13 @@ void indentLine(State* state) {
 void indentRange(State* state) {
     int indentDifference = getIndentLevel(state, state->row) - getNumLeadingSpaces(state->data[state->row]);
     if (indentDifference > 0) {
-        for (int i = state->row; i <= (int) state->visual.row; i++) {
+        for (int i = state->row; i <= (int)state->visual.row; i++) {
             for (int j = 0; j < indentDifference; j++) {
                 state->data[i] = ' ' + state->data[i];
             }
         }
     } else if (indentDifference < 0) {
-        for (int i = state->row; i <= (int) state->visual.row; i++) {
+        for (int i = state->row; i <= (int)state->visual.row; i++) {
             state->data[i] = state->data[i].substr(-1 * indentDifference);
         }
     }

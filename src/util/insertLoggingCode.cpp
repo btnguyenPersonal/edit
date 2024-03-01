@@ -1,9 +1,9 @@
+#include "insertLoggingCode.h"
+#include "helper.h"
+#include "indent.h"
+#include <regex>
 #include <string>
 #include <vector>
-#include <regex>
-#include "insertLoggingCode.h"
-#include "indent.h"
-#include "helper.h"
 
 void toggleLoggingCode(State* state, std::string variableName) {
     state->lastLoggingVar = variableName;
@@ -24,11 +24,7 @@ void toggleLoggingCode(State* state, std::string variableName) {
 std::regex getRemoveLoggingRegex(State* state) {
     std::string extension = getExtension(state->filename);
     std::string pattern = "";
-    if (extension == "js"
-        || extension == "jsx"
-        || extension == "ts"
-        || extension == "tsx"
-    ) {
+    if (extension == "js" || extension == "jsx" || extension == "ts" || extension == "tsx") {
         pattern = "console\\.log\\('[0-9]+', .+?\\);";
     } else if (extension == "cpp") {
         pattern = "std::cout << [0-9]+ << .+? << std::endl;";
@@ -49,11 +45,7 @@ void removeAllLoggingCode(State* state) {
 std::string getLoggingCode(State* state, unsigned int row, std::string variableName) {
     std::string extension = getExtension(state->filename);
     std::string rowStr = std::to_string(row + 1);
-    if (extension == "js"
-        || extension == "jsx"
-        || extension == "ts"
-        || extension == "tsx"
-    ) {
+    if (extension == "js" || extension == "jsx" || extension == "ts" || extension == "tsx") {
         return "console.log('" + rowStr + "', " + "'" + variableName + "', " + variableName + ");";
     } else if (extension == "cpp") {
         return "std::cout << " + rowStr + " << " + variableName + " << std::endl;";

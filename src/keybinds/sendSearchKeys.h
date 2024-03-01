@@ -1,6 +1,6 @@
-#pragma once 
+#pragma once
 
-#include "../util/state.h"
 #include "../util/helper.h"
+#include "../util/state.h"
 
 void sendSearchKeys(State* state, char c);

@@ -1,18 +1,18 @@
-#include <ncurses.h>
 #include "sendKeys.h"
-#include "sendShortcutKeys.h"
-#include "sendTypingKeys.h"
-#include "sendCommandLineKeys.h"
-#include "sendVisualKeys.h"
-#include "sendFindFileKeys.h"
-#include "sendGrepKeys.h"
-#include "sendSearchKeys.h"
-#include "sendBlameKeys.h"
-#include "sendMultiCursorKeys.h"
-#include "../util/state.h"
 #include "../util/helper.h"
 #include "../util/history.h"
 #include "../util/modes.h"
+#include "../util/state.h"
+#include "sendBlameKeys.h"
+#include "sendCommandLineKeys.h"
+#include "sendFindFileKeys.h"
+#include "sendGrepKeys.h"
+#include "sendMultiCursorKeys.h"
+#include "sendSearchKeys.h"
+#include "sendShortcutKeys.h"
+#include "sendTypingKeys.h"
+#include "sendVisualKeys.h"
+#include <ncurses.h>
 
 void sendKeys(State* state, char c) {
     state->status = std::string("");
@@ -57,11 +57,11 @@ void sendKeys(State* state, char c) {
                 saveFile(state->filename, state->data);
                 state->previousState = state->data;
                 if (c != ctrl('r') && c != 'u') {
-                    if (state->historyPosition < (int) state->history.size()) {
+                    if (state->historyPosition < (int)state->history.size()) {
                         state->history.erase(state->history.begin() + state->historyPosition + 1, state->history.end());
                     }
                     state->history.push_back(diff);
-                    state->historyPosition = (int) state->history.size() - 1;
+                    state->historyPosition = (int)state->history.size() - 1;
                 }
             }
         }

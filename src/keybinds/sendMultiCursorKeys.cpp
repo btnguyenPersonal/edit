@@ -1,11 +1,11 @@
+#include "sendMultiCursorKeys.h"
+#include "../util/bounds.h"
+#include "../util/helper.h"
+#include "../util/modes.h"
+#include "../util/state.h"
+#include "sendVisualKeys.h"
 #include <string>
 #include <vector>
-#include "../util/helper.h"
-#include "../util/state.h"
-#include "../util/modes.h"
-#include "../util/bounds.h"
-#include "sendMultiCursorKeys.h"
-#include "sendVisualKeys.h"
 
 void sendMultiCursorKeys(State* state, char c) {
     Bounds bounds = getBounds(state);

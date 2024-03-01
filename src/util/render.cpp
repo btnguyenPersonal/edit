@@ -1,15 +1,15 @@
+#include <filesystem>
 #include <fstream>
 #include <string>
-#include <filesystem>
 #include <vector>
 
-#include <ncurses.h>
-#include <iostream>
-#include "state.h"
-#include "modes.h"
-#include "render.h"
 #include "helper.h"
 #include "insertLoggingCode.h"
+#include "modes.h"
+#include "render.h"
+#include "state.h"
+#include <iostream>
+#include <ncurses.h>
 
 #define _COLOR_BLACK 16
 #define _COLOR_GREY 242
@@ -31,9 +31,7 @@
 #define CYAN 8
 #define WHITE 9
 
-int invertColor(int color) {
-    return color + 9;
-}
+int invertColor(int color) { return color + 9; }
 
 void initColors() {
     init_pair(BLACK, _COLOR_BLACK, _COLOR_BLACK);
@@ -61,18 +59,19 @@ int renderStatusBar(State* state) {
     int offset = 0;
     if (state->showFileStack == true) {
         // TODO make work for fileStack > maxY
-        for (int i = (int) (state->fileStack.size() - 1); i >= 0; i--) {
-            if (i == (int) state->fileStackIndex) {
+        for (int i = (int)(state->fileStack.size() - 1); i >= 0; i--) {
+            if (i == (int)state->fileStackIndex) {
                 attron(COLOR_PAIR(RED));
             }
             mvprintw(state->fileStack.size() - i - 1, state->maxX - state->fileStack[i].length() - 2, "\"%s\"", state->fileStack[i].c_str());
-            if (i == (int) state->fileStackIndex) {
+            if (i == (int)state->fileStackIndex) {
                 attroff(COLOR_PAIR(RED));
             }
         }
     } else {
         auto apm = std::to_string(calculateAPM(state));
-        mvprintw(0, state->maxX - (apm.length() + state->filename.length() + state->prevKeys.length() + 4), "%s %s \"%s\"", state->prevKeys.c_str(), apm.c_str(), state->filename.c_str());
+        mvprintw(0, state->maxX - (apm.length() + state->filename.length() + state->prevKeys.length() + 4), "%s %s \"%s\"", state->prevKeys.c_str(), apm.c_str(),
+                 state->filename.c_str());
     }
     if (state->status.length() > 0) {
         attron(COLOR_PAIR(RED));
@@ -167,7 +166,7 @@ int getColorFromChar(char c) {
 }
 
 int getSearchColor(State* state, int row, unsigned int startOfSearch) {
-    if (state->row == (unsigned int) row && startOfSearch + state->searchQuery.length() >= state->col && startOfSearch <= state->col) {
+    if (state->row == (unsigned int)row && startOfSearch + state->searchQuery.length() >= state->col && startOfSearch <= state->col) {
         return invertColor(MAGENTA);
     } else {
         return invertColor(CYAN);
@@ -223,11 +222,11 @@ void printLineNumber(State* state, int r, int i, bool isCurrentRow, bool recordi
         attroff(COLOR_PAIR(GREY));
     }
     if (state->mode == BLAME) {
-        if (i == (int) state->row) {
+        if (i == (int)state->row) {
             attron(COLOR_PAIR(invertColor(WHITE)));
         }
         mvprintw(r, 6, "%-65s", blame.substr(0, 65).c_str());
-        if (i == (int) state->row) {
+        if (i == (int)state->row) {
             attroff(COLOR_PAIR(invertColor(WHITE)));
         }
     }
@@ -344,13 +343,9 @@ void printLine(State* state, int row) {
 }
 
 unsigned int renderAutoComplete(State* state, int row, unsigned int col, unsigned int renderCol) {
-    if (
-        (state->mode == TYPING && row == (int) state->row && col == state->col)
-        || (state->mode == MULTICURSOR && col == state->col && (
-            ((int) state->visual.row <= row && row <= (int) state->row)
-            || ((int) state->row <= row && row <= (int) state->visual.row)
-        ))
-    ) {
+    if ((state->mode == TYPING && row == (int)state->row && col == state->col) ||
+        (state->mode == MULTICURSOR && col == state->col &&
+         (((int)state->visual.row <= row && row <= (int)state->row) || ((int)state->row <= row && row <= (int)state->visual.row)))) {
         std::string completion = autocomplete(state, getCurrentWord(state));
         if (state->data[row].substr(col, completion.length()) != completion) {
             for (unsigned int i = 0; i < completion.length(); i++) {
@@ -364,7 +359,7 @@ unsigned int renderAutoComplete(State* state, int row, unsigned int col, unsigne
 
 void renderGrepOutput(State* state) {
     unsigned int index;
-    if ((int) state->grepSelection - ((int) state->maxY / 2) > 0) {
+    if ((int)state->grepSelection - ((int)state->maxY / 2) > 0) {
         index = state->grepSelection - state->maxY / 2;
     } else {
         index = 0;
@@ -384,7 +379,7 @@ void renderGrepOutput(State* state) {
 
 void renderFindFileOutput(State* state) {
     unsigned int index;
-    if ((int) state->findFileSelection - ((int) state->maxY / 2) > 0) {
+    if ((int)state->findFileSelection - ((int)state->maxY / 2) > 0) {
         index = state->findFileSelection - state->maxY / 2;
     } else {
         index = 0;
@@ -413,15 +408,9 @@ void renderVisibleLines(State* state) {
             blameError = true;
         }
     }
-    for (int i = state->windowPosition.row; i < (int) state->data.size() && i < (int) (state->maxY + state->windowPosition.row) - 1; i++) {
-        printLineNumber(
-            state,
-            i - state->windowPosition.row + 1,
-            i,
-            i == (int) state->row,
-            state->recording,
-            state->mode == BLAME && !blameError && blame.size() >= state->data.size() && i < (int) state->data.size() ? blame[i] : ""
-        );
+    for (int i = state->windowPosition.row; i < (int)state->data.size() && i < (int)(state->maxY + state->windowPosition.row) - 1; i++) {
+        printLineNumber(state, i - state->windowPosition.row + 1, i, i == (int)state->row, state->recording,
+                        state->mode == BLAME && !blameError && blame.size() >= state->data.size() && i < (int)state->data.size() ? blame[i] : "");
         printLine(state, i);
     }
 }

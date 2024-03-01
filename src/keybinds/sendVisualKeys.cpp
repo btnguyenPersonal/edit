@@ -1,15 +1,15 @@
+#include "sendVisualKeys.h"
+#include "../util/bounds.h"
+#include "../util/clipboard.h"
+#include "../util/comment.h"
+#include "../util/helper.h"
+#include "../util/indent.h"
+#include "../util/insertLoggingCode.h"
+#include "../util/modes.h"
+#include "../util/state.h"
+#include <ncurses.h>
 #include <string>
 #include <vector>
-#include <ncurses.h>
-#include "../util/state.h"
-#include "../util/helper.h"
-#include "../util/modes.h"
-#include "../util/clipboard.h"
-#include "../util/indent.h"
-#include "../util/comment.h"
-#include "../util/bounds.h"
-#include "../util/insertLoggingCode.h"
-#include "sendVisualKeys.h"
 
 Bounds getBounds(State* state) {
     Bounds bounds;
@@ -56,7 +56,7 @@ void setStateFromWordPosition(State* state, WordPosition pos) {
 
 void surroundParagraph(State* state, bool includeLastLine) {
     auto start = state->row;
-    for (int i = (int) start; i >= 0; i--) {
+    for (int i = (int)start; i >= 0; i--) {
         if (state->data[i] == "") {
             break;
         } else {
@@ -380,7 +380,7 @@ bool sendVisualKeys(State* state, char c) {
         state->row = state->data.size() - 1;
     } else if (c == '=') {
         Bounds bounds = getBounds(state);
-        for (int i = bounds.minR; i <= (int) bounds.maxR; i++) {
+        for (int i = bounds.minR; i <= (int)bounds.maxR; i++) {
             indentLine(state, i);
         }
         state->row = bounds.minR;
