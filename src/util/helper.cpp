@@ -548,11 +548,7 @@ std::vector<grepMatch> grepFile(const std::filesystem::path& file_path, const st
     while (std::getline(file, line)) {
         lineNumber++;
         if (line.find(query) != std::string::npos) {
-            grepMatch match;
-            match.path = relativePath;
-            match.lineNum = lineNumber;
-            match.line = line;
-            matches.push_back(match);
+            matches.emplace_back(relativePath, lineNumber, line);
         }
     }
     return matches;

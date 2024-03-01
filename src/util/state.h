@@ -12,6 +12,8 @@ struct grepMatch {
     std::filesystem::path path;
     int lineNum;
     std::string line;
+
+    grepMatch(const std::filesystem::path& p, int num, const std::string& l) : path(p), lineNum(num), line(l) {}
 };
 
 struct diffLine {
