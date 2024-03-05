@@ -25,13 +25,80 @@ std::string getPrevLine(State* state, unsigned int row) {
     return "";
 }
 
+bool hasHTML(std::string line) {
+    if (line.empty()) return false;
+    return line.front() == '<' || line.back() == '>' || line.front() == '>' || line.back() == '<';
+}
+
+enum TagType {
+    EMPTY,
+    OPEN,
+    CLOSE,
+};
+
 int getIndentLevel(State* state, unsigned int row) {
-    // TODO add html
     std::string prevLine = getPrevLine(state, row);
     prevLine = trimComment(state, prevLine);
     std::string currLine = state->data[row];
     ltrim(currLine);
     int indentLevel = getNumLeadingSpaces(prevLine);
+
+    if (hasHTML(prevLine)) {
+        int tagType = EMPTY;
+        int tagStack = 0;
+        for (unsigned int i = 0; i < prevLine.length(); i++) {
+            if (tagType == EMPTY && prevLine[i] == '<') {
+                if (i + 1 < prevLine.length() && prevLine[i + 1] == '/') {
+                    tagType = CLOSE;
+                    tagStack--;
+                } else {
+                    tagType = OPEN;
+                    tagStack++;
+                }
+            } else if (prevLine[i] == '>') {
+                if (i > 0 && prevLine[i - 1] == '=') {
+                    continue;
+                } else if (tagType == EMPTY) {
+                    tagType = CLOSE;
+                } else {
+                    if (i - 1 >= 0 && prevLine[i - 1] == '/') {
+                        tagStack--;
+                    }
+                    tagType = EMPTY;
+                }
+            }
+        }
+        if (tagType == OPEN || tagStack > 0) {
+            indentLevel += state->indent;
+        }
+    }
+
+    if (hasHTML(currLine)) {
+        int tagType = EMPTY;
+        int tagStack = 0;
+        for (unsigned int i = 0; i < currLine.length(); i++) {
+            if (tagType == EMPTY && currLine[i] == '<') {
+                if (i + 1 < currLine.length() && currLine[i + 1] == '/') {
+                    tagType = CLOSE;
+                    tagStack--;
+                } else {
+                    tagType = OPEN;
+                    tagStack++;
+                }
+            } else if (currLine[i] == '>') {
+                if (i > 0 && currLine[i - 1] == '=') {
+                    continue;
+                } else if (tagType == EMPTY) {
+                    tagType = CLOSE;
+                } else {
+                    tagType = EMPTY;
+                }
+            }
+        }
+        if (tagType == CLOSE || tagStack < 0) {
+            indentLevel -= state->indent;
+        }
+    }
 
     for (unsigned int i = 0; i < prevLine.length(); i++) {
         if (prevLine.substr(i, state->commentSymbol.length()) == state->commentSymbol) {

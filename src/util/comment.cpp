@@ -38,8 +38,10 @@ void toggleCommentHelper(State* state, unsigned int row, int commentIndex) {
             return;
         }
     }
-    int spaces = commentIndex != -1 ? commentIndex : getNumLeadingSpaces(line);
-    state->data[row] = line.substr(0, spaces) + state->commentSymbol + ' ' + line.substr(spaces);
+    if (line.length() != 0) {
+        int spaces = commentIndex != -1 ? commentIndex : getNumLeadingSpaces(line);
+        state->data[row] = line.substr(0, spaces) + state->commentSymbol + ' ' + line.substr(spaces);
+    }
 }
 
 bool isCommentWithSpace(State* state, std::string line) {
@@ -64,9 +66,9 @@ void toggleCommentLines(State* state, Bounds bounds) {
     if (foundNonComment) {
         minIndentLevel = INT_MAX;
         for (size_t i = bounds.minR; i <= bounds.maxR; i++) {
-            unsigned int indent = getIndentLevel(state, i);
-            if ((int)indent < minIndentLevel) {
-                minIndentLevel = (int)indent;
+            int indent = getNumLeadingSpaces(state->data[i]);
+            if (indent < minIndentLevel) {
+                minIndentLevel = indent;
             }
         }
     }
