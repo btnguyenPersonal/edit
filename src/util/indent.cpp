@@ -25,9 +25,19 @@ std::string getPrevLine(State* state, unsigned int row) {
     return "";
 }
 
+std::string trim(const std::string& str) {
+    size_t first = str.find_first_not_of(' ');
+    if (std::string::npos == first) {
+        return str;
+    }
+    size_t last = str.find_last_not_of(' ');
+    return str.substr(first, (last - first + 1));
+}
+
 bool hasHTML(std::string line) {
-    if (line.empty()) return false;
-    return line.front() == '<' || line.back() == '>' || line.front() == '>' || line.back() == '<';
+    auto trimmed = trim(line);
+    if (trimmed.empty()) return false;
+    return trimmed.front() == '<' || trimmed.back() == '>' || trimmed.front() == '>' || trimmed.back() == '<';
 }
 
 enum TagType {
