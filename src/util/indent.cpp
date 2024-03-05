@@ -56,7 +56,9 @@ int getIndentLevel(State* state, unsigned int row) {
                     tagStack++;
                 }
             } else if (prevLine[i] == '>') {
-                if (tagType == EMPTY) {
+                if (i > 0 && prevLine[i - 1] == '=') {
+                    continue;
+                } else if (tagType == EMPTY) {
                     tagType = CLOSE;
                 } else {
                     if (i - 1 >= 0 && prevLine[i - 1] == '/') {
@@ -84,7 +86,9 @@ int getIndentLevel(State* state, unsigned int row) {
                     tagStack++;
                 }
             } else if (currLine[i] == '>') {
-                if (tagType == EMPTY) {
+                if (i > 0 && currLine[i - 1] == '=') {
+                    continue;
+                } else if (tagType == EMPTY) {
                     tagType = CLOSE;
                 } else {
                     tagType = EMPTY;
