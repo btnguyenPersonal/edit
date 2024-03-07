@@ -11,6 +11,8 @@
 #include <string>
 #include <vector>
 
+#include <regex>
+
 Bounds getBounds(State* state) {
     Bounds bounds;
     if (state->visual.col >= state->data[state->visual.row].length()) {

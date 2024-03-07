@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 
-int copyToClipboard(const std::string& originalString);
-std::vector<std::string> getFromClipboard();
+void copyToClipboard(const std::string& originalString);
+std::string getFromClipboard();
 void pasteFromClipboard(State* state);
 void pasteFromClipboardAfter(State* state);

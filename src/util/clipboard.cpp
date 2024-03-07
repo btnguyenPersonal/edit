@@ -7,7 +7,7 @@
 #include <string>
 #include <vector>
 
-std::vector<std::string> getFromClipboard() {
+std::string getFromClipboard() {
     std::string command;
 #ifdef __APPLE__
     command = "pbpaste";
@@ -32,29 +32,23 @@ std::vector<std::string> getFromClipboard() {
     if (status != 0 || result.empty()) {
         return {""};
     }
-
-    std::vector<std::string> output;
-    std::stringstream ss(result);
-    std::string line;
-    while (std::getline(ss, line)) {
-        output.push_back(line);
-    }
-
-    return output;
+    return result;
 }
 
 void pasteFromClipboard(State* state) {
     fixColOverMax(state);
-    std::vector<std::string> clip = getFromClipboard();
+    std::string result = getFromClipboard();
+    std::vector<std::string> clip;
+    std::stringstream ss(result);
+    std::string line;
+    while (std::getline(ss, line)) {
+        clip.push_back(line);
+    }
     if (state->data.size() == 0) {
-        if (clip.back() == "") {
-            clip.pop_back();
-        }
         for (unsigned int i = 0; i < clip.size(); i++) {
             state->data.push_back(clip[i]);
         }
-    } else if (clip.back() == "") {
-        clip.pop_back();
+    } else if (!result.empty() && result.back() == '\n') {
         for (int i = 0; i < (int)clip.size(); i++) {
             state->data.insert(state->data.begin() + i + state->row, clip[i]);
         }
@@ -82,9 +76,14 @@ void pasteFromClipboard(State* state) {
 
 void pasteFromClipboardAfter(State* state) {
     fixColOverMax(state);
-    std::vector<std::string> clip = getFromClipboard();
-    if (clip.back() == "") {
-        clip.pop_back();
+    std::string result = getFromClipboard();
+    std::vector<std::string> clip;
+    std::stringstream ss(result);
+    std::string line;
+    while (std::getline(ss, line)) {
+        clip.push_back(line);
+    }
+    if (!result.empty() && result.back() == '\n') {
         for (int i = 0; i < (int)clip.size(); i++) {
             state->data.insert(state->data.begin() + i + state->row + 1, clip[i]);
         }
@@ -114,35 +113,16 @@ void pasteFromClipboardAfter(State* state) {
     }
 }
 
-int copyToClipboard(const std::string& originalString) {
-    std::string escapedString;
-    for (char c : originalString) {
-        switch (c) {
-        case '\\':
-            escapedString += "\\\\\\\\";
-            break;
-        case '\"':
-            escapedString += "\\\"";
-            break;
-        case '`':
-            escapedString += "\\`";
-            break;
-        case '$':
-            escapedString += "\\$";
-            break;
-        default:
-            escapedString += c;
-            break;
-        }
-    }
-    std::string command;
+void copyToClipboard(const std::string& clip) {
 #ifdef __APPLE__
-    command = "echo \"" + escapedString + "\" | pbcopy";
+    FILE* pipe = popen("pbcopy", "w");
 #elif defined(__linux__)
-    command = "echo \"" + escapedString + "\" | xclip -selection clipboard";
+    FILE* pipe = popen("xclip -selection clipboard", "w");
 #else
-#error "Platform not supported"
-#endif
-
-    return std::system(command.c_str());
+#error "OS not supported"
+#endif 
+    if (pipe != nullptr) {
+        fwrite(clip.c_str(), sizeof(char), clip.size(), pipe);
+        pclose(pipe);
+    }
 }
