@@ -7,7 +7,7 @@
 #include <string>
 #include <vector>
 
-std::vector<std::string> getFromClipboard() {
+std::string getFromClipboard() {
     std::string command;
 #ifdef __APPLE__
     command = "pbpaste";
@@ -32,27 +32,25 @@ std::vector<std::string> getFromClipboard() {
     if (status != 0 || result.empty()) {
         return {""};
     }
-
-    std::vector<std::string> output;
-    std::stringstream ss(result);
-    std::string line;
-    while (std::getline(ss, line)) {
-        output.push_back(line);
-    }
-
-    return output;
+    return result;
 }
 
 void pasteFromClipboard(State* state) {
     fixColOverMax(state);
-    std::vector<std::string> clip = getFromClipboard();
-    state->status += std::to_string(clip.size()) + " ";
-    for (size_t i = 0; i < clip.size(); i++) {
-        state->status += clip[i] + "\\n";
+    std::string result = getFromClipboard();
+    std::vector<std::string> clip;
+    std::stringstream ss(result);
+    std::string line;
+    while (std::getline(ss, line)) {
+        clip.push_back(line);
     }
     if (state->data.size() == 0) {
         for (unsigned int i = 0; i < clip.size(); i++) {
             state->data.push_back(clip[i]);
+        }
+    } else if (!result.empty() && result.back() == '\n') {
+        for (int i = 0; i < (int)clip.size(); i++) {
+            state->data.insert(state->data.begin() + i + state->row, clip[i]);
         }
     } else if (clip.size() > 0) {
         std::string current = state->data[state->row];
@@ -78,12 +76,18 @@ void pasteFromClipboard(State* state) {
 
 void pasteFromClipboardAfter(State* state) {
     fixColOverMax(state);
-    std::vector<std::string> clip = getFromClipboard();
-    state->status += std::to_string(clip.size()) + " ";
-    for (size_t i = 0; i < clip.size(); i++) {
-        state->status += clip[i] + "\\n";
+    std::string result = getFromClipboard();
+    std::vector<std::string> clip;
+    std::stringstream ss(result);
+    std::string line;
+    while (std::getline(ss, line)) {
+        clip.push_back(line);
     }
-    if (clip.size() > 0) {
+    if (!result.empty() && result.back() == '\n') {
+        for (int i = 0; i < (int)clip.size(); i++) {
+            state->data.insert(state->data.begin() + i + state->row + 1, clip[i]);
+        }
+    } else if (clip.size() > 0) {
         std::string current = state->data[state->row];
 
         // break up current line

@@ -146,7 +146,6 @@ Position changeInVisual(State* state) {
 Position copyInVisual(State* state) {
     Bounds bounds = getBounds(state);
     copyToClipboard(getInVisual(state));
-    state->status = std::regex_replace(getInVisual(state), std::regex("\n" ), "\\n");
     Position pos = Position();
     pos.row = bounds.minR;
     pos.col = bounds.minC;
