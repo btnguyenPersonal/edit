@@ -505,6 +505,35 @@ WordPosition getWordPosition(const std::string& str, unsigned int cursor) {
     return {start, end - 1};
 }
 
+int maxConsecutiveMatch(const std::filesystem::path& filePath, const std::string& query) {
+    std::string filePathStr = filePath.string();
+    std::transform(filePathStr.begin(), filePathStr.end(), filePathStr.begin(),
+                   [](unsigned char c) { return std::tolower(c); });
+    std::string queryLower = query;
+    std::transform(queryLower.begin(), queryLower.end(), queryLower.begin(),
+                   [](unsigned char c) { return std::tolower(c); });
+    int maxLength = 0;
+    int currentLength = 0;
+    for (size_t i = 0, j = 0; i < filePathStr.size();) {
+        if (filePathStr[i] == queryLower[j]) {
+            currentLength++;
+            i++;
+            j++;
+            if (j == queryLower.size()) {
+                maxLength = std::max(maxLength, currentLength);
+                currentLength = 0;
+                j = 0;
+            }
+        } else {
+            i = i - currentLength;
+            j = 0;
+            currentLength = 0;
+            i++;
+        }
+    }
+    return maxLength;
+}
+
 bool filePathContainsSubstring(const std::filesystem::path& filePath, const std::string& query) {
     std::string filePathStr = filePath.string();
     std::string queryLower = query;
@@ -591,7 +620,14 @@ std::vector<std::filesystem::path> findFiles(const std::filesystem::path& dir_pa
             }
         }
     }
-    std::sort(matching_files.begin(), matching_files.end());
+    std::sort(matching_files.begin(), matching_files.end(), [&](const std::filesystem::path& a, const std::filesystem::path& b) {
+        int matchA = maxConsecutiveMatch(a, query);
+        int matchB = maxConsecutiveMatch(b, query);
+        if (matchA == matchB) {
+            return a.string() < b.string(); // Alphabetical order if matches are equal
+        }
+        return matchA > matchB; // Descending order of matches
+    });
     return matching_files;
 }
 
