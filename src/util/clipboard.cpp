@@ -46,17 +46,13 @@ std::vector<std::string> getFromClipboard() {
 void pasteFromClipboard(State* state) {
     fixColOverMax(state);
     std::vector<std::string> clip = getFromClipboard();
+    state->status += std::to_string(clip.size()) + " ";
+    for (size_t i = 0; i < clip.size(); i++) {
+        state->status += clip[i] + "\\n";
+    }
     if (state->data.size() == 0) {
-        if (clip.back() == "") {
-            clip.pop_back();
-        }
         for (unsigned int i = 0; i < clip.size(); i++) {
             state->data.push_back(clip[i]);
-        }
-    } else if (clip.back() == "") {
-        clip.pop_back();
-        for (int i = 0; i < (int)clip.size(); i++) {
-            state->data.insert(state->data.begin() + i + state->row, clip[i]);
         }
     } else if (clip.size() > 0) {
         std::string current = state->data[state->row];
@@ -83,12 +79,11 @@ void pasteFromClipboard(State* state) {
 void pasteFromClipboardAfter(State* state) {
     fixColOverMax(state);
     std::vector<std::string> clip = getFromClipboard();
-    if (clip.back() == "") {
-        clip.pop_back();
-        for (int i = 0; i < (int)clip.size(); i++) {
-            state->data.insert(state->data.begin() + i + state->row + 1, clip[i]);
-        }
-    } else if (clip.size() > 0) {
+    state->status += std::to_string(clip.size()) + " ";
+    for (size_t i = 0; i < clip.size(); i++) {
+        state->status += clip[i] + "\\n";
+    }
+    if (clip.size() > 0) {
         std::string current = state->data[state->row];
 
         // break up current line
@@ -135,14 +130,16 @@ int copyToClipboard(const std::string& originalString) {
             break;
         }
     }
-    std::string command;
 #ifdef __APPLE__
-    command = "echo \"" + escapedString + "\" | pbcopy";
+    FILE* pipe = popen("pbcopy", "w");
 #elif defined(__linux__)
-    command = "echo \"" + escapedString + "\" | xclip -selection clipboard";
+    FILE* pipe = popen("xclip -selection clipboard", "w");
 #else
-#error "Platform not supported"
-#endif
-
-    return std::system(command.c_str());
+#error "OS not supported"
+#endif 
+    if (pipe != nullptr) {
+        fwrite(escapedString.c_str(), sizeof(char), escapedString.size(), pipe);
+        pclose(pipe);
+    }
+    return 1;
 }
