@@ -34,11 +34,15 @@ std::string trim(const std::string& str) {
     return str.substr(first, (last - first + 1));
 }
 
-bool hasHTML(std::string line) {
-    auto trimmed = trim(line);
-    if (trimmed.empty())
-        return false;
-    return trimmed.front() == '<' || trimmed.back() == '>' || trimmed.front() == '>' || trimmed.back() == '<';
+bool hasHTML(std::string line, std::string extension) {
+    if (extension == "js" || extension == "jsx" || extension == "ts" || extension == "tsx" || extension == "html") {
+        auto trimmed = trim(line);
+        if (trimmed.empty()) {
+            return false;
+        }
+        return trimmed.front() == '<' || trimmed.back() == '>' || trimmed.front() == '>' || trimmed.back() == '<';
+    }
+    return false;
 }
 
 enum TagType {
@@ -54,7 +58,7 @@ int getIndentLevel(State* state, unsigned int row) {
     ltrim(currLine);
     int indentLevel = getNumLeadingSpaces(prevLine);
 
-    if (hasHTML(prevLine)) {
+    if (hasHTML(prevLine, getExtension(state->filename))) {
         int tagType = EMPTY;
         int tagStack = 0;
         for (unsigned int i = 0; i < prevLine.length(); i++) {
@@ -84,7 +88,7 @@ int getIndentLevel(State* state, unsigned int row) {
         }
     }
 
-    if (hasHTML(currLine)) {
+    if (hasHTML(currLine, getExtension(state->filename))) {
         int tagType = EMPTY;
         int tagStack = 0;
         for (unsigned int i = 0; i < currLine.length(); i++) {

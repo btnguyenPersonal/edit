@@ -113,27 +113,7 @@ void pasteFromClipboardAfter(State* state) {
     }
 }
 
-int copyToClipboard(const std::string& originalString) {
-    std::string escapedString;
-    for (char c : originalString) {
-        switch (c) {
-        case '\\':
-            escapedString += "\\\\\\\\";
-            break;
-        case '\"':
-            escapedString += "\\\"";
-            break;
-        case '`':
-            escapedString += "\\`";
-            break;
-        case '$':
-            escapedString += "\\$";
-            break;
-        default:
-            escapedString += c;
-            break;
-        }
-    }
+void copyToClipboard(const std::string& clip) {
 #ifdef __APPLE__
     FILE* pipe = popen("pbcopy", "w");
 #elif defined(__linux__)
@@ -142,8 +122,7 @@ int copyToClipboard(const std::string& originalString) {
 #error "OS not supported"
 #endif 
     if (pipe != nullptr) {
-        fwrite(escapedString.c_str(), sizeof(char), escapedString.size(), pipe);
+        fwrite(clip.c_str(), sizeof(char), clip.size(), pipe);
         pclose(pipe);
     }
-    return 1;
 }
