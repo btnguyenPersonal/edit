@@ -36,7 +36,8 @@ std::string trim(const std::string& str) {
 
 bool hasHTML(std::string line) {
     auto trimmed = trim(line);
-    if (trimmed.empty()) return false;
+    if (trimmed.empty())
+        return false;
     return trimmed.front() == '<' || trimmed.back() == '>' || trimmed.front() == '>' || trimmed.back() == '<';
 }
 

@@ -434,7 +434,7 @@ WordPosition findParentheses(const std::string& str, char openParen, char closeP
             } else {
                 balance--;
             }
-        } else if (str[i] == closeParen && i != (int) cursor) {
+        } else if (str[i] == closeParen && i != (int)cursor) {
             balance++;
         }
     }
@@ -507,11 +507,9 @@ WordPosition getWordPosition(const std::string& str, unsigned int cursor) {
 
 int maxConsecutiveMatch(const std::filesystem::path& filePath, const std::string& query) {
     std::string filePathStr = filePath.string();
-    std::transform(filePathStr.begin(), filePathStr.end(), filePathStr.begin(),
-                   [](unsigned char c) { return std::tolower(c); });
+    std::transform(filePathStr.begin(), filePathStr.end(), filePathStr.begin(), [](unsigned char c) { return std::tolower(c); });
     std::string queryLower = query;
-    std::transform(queryLower.begin(), queryLower.end(), queryLower.begin(),
-                   [](unsigned char c) { return std::tolower(c); });
+    std::transform(queryLower.begin(), queryLower.end(), queryLower.begin(), [](unsigned char c) { return std::tolower(c); });
     int maxLength = 0;
     int currentLength = 0;
     for (size_t i = 0, j = 0; i < filePathStr.size();) {
