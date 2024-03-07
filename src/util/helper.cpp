@@ -434,7 +434,7 @@ WordPosition findParentheses(const std::string& str, char openParen, char closeP
             } else {
                 balance--;
             }
-        } else if (str[i] == closeParen) {
+        } else if (str[i] == closeParen && i != (int) cursor) {
             balance++;
         }
     }
