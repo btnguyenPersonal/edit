@@ -178,6 +178,7 @@ void sendShortcutKeys(State* state, char c) {
         initVisual(state, NORMAL);
         setStateFromWordPosition(state, getWordPosition(state->data[state->row], state->col));
         state->grepQuery = getInVisual(state);
+        state->grepSelection = 0;
         state->mode = GREP;
         generateGrepOutput(state);
         return;
