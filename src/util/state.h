@@ -32,6 +32,11 @@ struct WordPosition {
     unsigned int max;
 };
 
+struct Mark {
+    std::string filename;
+    unsigned int mark;
+};
+
 struct Archive {
     std::string filename;
     std::vector<std::string> previousState;
@@ -58,6 +63,7 @@ public:
     bool searching;
     bool replacing;
     unsigned int indent;
+    Mark mark;
     struct Position windowPosition;
     static unsigned int maxX;
     static unsigned int maxY;

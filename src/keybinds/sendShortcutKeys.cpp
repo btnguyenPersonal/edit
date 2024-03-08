@@ -257,6 +257,26 @@ void sendShortcutKeys(State* state, char c) {
     } else if (c == 'A') {
         state->col = state->data[state->row].length();
         state->mode = TYPING;
+    } else if (c == '\'') {
+        if (state->mark.filename != "") {
+            state->resetState(state->mark.filename);
+            state->row = state->mark.mark;
+        }
+    } else if (c == '"') {
+        state->mark = {state->filename, state->row};
+    } else if (c == '@') {
+        state->searching = true;
+        state->searchQuery = state->grepQuery;
+        state->col += 1;
+        unsigned int temp_col = state->col;
+        unsigned int temp_row = state->row;
+        bool result = setSearchResult(state);
+        if (result == false) {
+            state->row = temp_row;
+            state->col = temp_col - 1;
+        }
+        centerScreen(state);
+        return;
     } else if (c == 'N') {
         state->searching = true;
         setSearchResultReverse(state);

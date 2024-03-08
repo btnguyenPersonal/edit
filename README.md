@@ -166,8 +166,6 @@ search replace
 - make ctrl q put below line instead of on current line
 - made findfile fzf
 - figure out why sometimes the indent doesn't work with empty lines
-
-## TODO
 - indent w/ html
     - might need to scan entire file to see if in html
         - could i treat middle of tag as non-html?:
@@ -186,7 +184,13 @@ search replace
             </div>
     - based on previous line and current line?
     - will have to go character by character and make a parser to see if all the closing/opening tags match up
-- research adding lsp??
+- @ to get grepQuery to searchQuery
+- global mark, go back to file and line
+
+## TODO
+- :! executes all current file in bash and replaces with output
+- read from stdinput when just have dash
+- better arg handling
 
 ## LOW PRIO
 - ctrl a s increment decrement
@@ -198,7 +202,7 @@ search replace
         - https://en.wikipedia.org/wiki/Boyer%E2%80%93Moore_string-search_algorithm
     - figure out why fs::relative takes so damn long
         - should figure out a function to just cut off the parents/string at the point where we don't want, but every time i did it, it got slower
-- make row col, etc all Position types like visual
 - handle render wide characters fully
 - make getch() int, and have enums for characters (this one is cancer to deal with, makes esc so laggy)
 - fileExplorer (current one is trash and i never use it) actually make it good now
+- research adding lsp??
