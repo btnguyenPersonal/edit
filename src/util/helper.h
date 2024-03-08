@@ -7,6 +7,7 @@
 #include <string>
 #include <vector>
 
+bool isAllLowercase(const std::string& str);
 void recordAction(State* state);
 int calculateAPM(State* state);
 unsigned int findNextChar(State* state, char c);
