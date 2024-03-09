@@ -9,13 +9,24 @@
 int main(int argc, char* argv[]) {
     char c;
     State* state;
-    if (argc >= 2 && strcmp(argv[1], "-c") == 0) {
-        if (argc == 2) {
-            std::cerr << "Usage: editor -c '<sequence_of_letters>'\n";
-            return 1;
+    int commandFlag = 0;
+    std::string filename;
+    for (int i = 1; i < argc; ++i) {
+        if (strcmp(argv[i], "-c") == 0) {
+            commandFlag = i;
+            break;
+        } else {
+            filename = argv[i];
         }
+    }
+    if (!filename.empty()) {
+        state = new State(filename);
+    } else {
         state = new State();
-        for (int i = 2; i < argc; ++i) {
+        generateFindFileOutput(state);
+    }
+    if (commandFlag != 0) {
+        for (int i = commandFlag + 1; i < argc; ++i) {
             const std::string& sequence = argv[i];
             char ch;
             for (size_t j = 0; j < sequence.size(); ++j) {
@@ -29,13 +40,7 @@ int main(int argc, char* argv[]) {
                 sendKeys(state, ch);
             }
         }
-        endwin();
         return 0;
-    } else if (argc > 1) {
-        state = new State(argv[1]);
-    } else {
-        state = new State();
-        generateFindFileOutput(state);
     }
     initTerminal();
     calcWindowBounds();
