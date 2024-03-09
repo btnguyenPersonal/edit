@@ -96,6 +96,11 @@ void sendShortcutKeys(State* state, char c) {
             rtrim(state->data[i]);
         }
         state->prevKeys = "";
+    } else if (state->prevKeys + c == "gy") {
+        state->status = state->filename;
+        copyToClipboard(state->filename);
+        state->prevKeys = "";
+        return;
     } else if (state->prevKeys + c == "gg") {
         state->row = 0;
         state->prevKeys = "";
