@@ -186,11 +186,12 @@ search replace
     - will have to go character by character and make a parser to see if all the closing/opening tags match up
 - @ to get grepQuery to searchQuery
 - global mark, go back to file and line
+- better arg handling
 
 ## TODO
 - :! executes all current file in bash and replaces with output
 - read from stdinput when just have dash
-- better arg handling
+- better error handling for block visual
 
 ## LOW PRIO
 - ctrl a s increment decrement

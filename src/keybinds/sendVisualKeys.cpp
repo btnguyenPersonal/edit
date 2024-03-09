@@ -88,9 +88,26 @@ bool isValidMoveableChunk(State* state, Bounds bounds) {
     return true;
 }
 
+bool visualBlockValid(State* state) {
+    if (state->visualType != BLOCK) {
+        return false;
+    }
+    Bounds bounds = getBounds(state);
+    for (unsigned int i = bounds.minR; i <= bounds.maxR; i++) {
+        if (bounds.maxC >= state->data[i].length()) {
+            return false;
+        }
+    }
+    return true;
+}
+
 std::string getInVisual(State* state) {
     Bounds bounds = getBounds(state);
     std::string clip = "";
+    if(!visualBlockValid(state)) {
+        state->status = "visual block not valid";
+        return clip;
+    }
     if (state->visualType == BLOCK) {
         unsigned int min = std::min(bounds.minC, bounds.maxC);
         unsigned int max = std::max(bounds.minC, bounds.maxC);
@@ -121,6 +138,10 @@ Position changeInVisual(State* state) {
     Position pos = Position();
     pos.row = bounds.minR;
     pos.col = bounds.minC;
+    if(!visualBlockValid(state)) {
+        state->status = "visual block not valid";
+        return pos;
+    }
     if (state->visualType == LINE) {
         state->data.erase(state->data.begin() + bounds.minR, state->data.begin() + bounds.maxR);
         state->data[bounds.minR] = std::string("");
@@ -145,10 +166,14 @@ Position changeInVisual(State* state) {
 
 Position copyInVisual(State* state) {
     Bounds bounds = getBounds(state);
-    copyToClipboard(getInVisual(state));
     Position pos = Position();
     pos.row = bounds.minR;
     pos.col = bounds.minC;
+    if(!visualBlockValid(state)) {
+        state->status = "visual block not valid";
+        return pos;
+    }
+    copyToClipboard(getInVisual(state));
     return pos;
 }
 
@@ -157,6 +182,10 @@ Position deleteInVisual(State* state) {
     Position pos = Position();
     pos.row = bounds.minR;
     pos.col = bounds.minC;
+    if(!visualBlockValid(state)) {
+        state->status = "visual block not valid";
+        return pos;
+    }
     if (state->visualType == LINE) {
         state->data.erase(state->data.begin() + bounds.minR, state->data.begin() + bounds.maxR + 1);
     } else if (state->visualType == BLOCK) {
@@ -280,11 +309,15 @@ bool sendVisualKeys(State* state, char c) {
     } else if (c == 'g' || c == 'i' || c == 'a') {
         state->prevKeys += c;
     } else if (c == 'm') {
-        toggleLoggingCode(state, getInVisual(state));
+        if (state->visualType == NORMAL) {
+            toggleLoggingCode(state, getInVisual(state));
+        }
         state->mode = SHORTCUTS;
     } else if (c == ':') {
-        state->commandLineQuery = "s/" + getInVisual(state) + "/";
-        state->mode = COMMANDLINE;
+        if (state->visualType == NORMAL) {
+            state->commandLineQuery = "s/" + getInVisual(state) + "/";
+            state->mode = COMMANDLINE;
+        }
     } else if (c == '^') {
         state->col = getIndexFirstNonSpace(state);
     } else if (c == '0') {
@@ -324,15 +357,17 @@ bool sendVisualKeys(State* state, char c) {
     } else if (c == '}') {
         state->row = getNextEmptyLine(state);
     } else if (c == '*') {
-        state->searching = true;
-        state->searchQuery = getInVisual(state);
-        state->mode = SHORTCUTS;
-        unsigned int temp_col = state->col;
-        unsigned int temp_row = state->row;
-        bool result = setSearchResult(state);
-        if (result == false) {
-            state->row = temp_row;
-            state->col = temp_col - 1;
+        if (state->visualType == NORMAL) {
+            state->searching = true;
+            state->searchQuery = getInVisual(state);
+            state->mode = SHORTCUTS;
+            unsigned int temp_col = state->col;
+            unsigned int temp_row = state->row;
+            bool result = setSearchResult(state);
+            if (result == false) {
+                state->row = temp_row;
+                state->col = temp_col - 1;
+            }
         }
     } else if (c == '#') {
         state->grepQuery = getInVisual(state);
