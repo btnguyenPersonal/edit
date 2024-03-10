@@ -53,8 +53,8 @@ int main(int argc, char* argv[]) {
             std::cout << "not started" << std::endl;
         }
     }
-    // sendLSPInitRequest(state);
-    // readLSPResponse(state);
+    sendLSPInitRequest(state);
+    readLSPResponse(state);
     // initTerminal(state);
     // calcWindowBounds();
     // renderScreen(state);
