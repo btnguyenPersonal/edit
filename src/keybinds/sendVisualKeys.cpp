@@ -89,9 +89,6 @@ bool isValidMoveableChunk(State* state, Bounds bounds) {
 }
 
 bool visualBlockValid(State* state) {
-    if (state->visualType != BLOCK) {
-        return false;
-    }
     Bounds bounds = getBounds(state);
     for (unsigned int i = bounds.minR; i <= bounds.maxR; i++) {
         if (bounds.maxC >= state->data[i].length()) {
@@ -104,7 +101,7 @@ bool visualBlockValid(State* state) {
 std::string getInVisual(State* state) {
     Bounds bounds = getBounds(state);
     std::string clip = "";
-    if(!visualBlockValid(state)) {
+    if(state->visualType == BLOCK && !visualBlockValid(state)) {
         state->status = "visual block not valid";
         return clip;
     }
@@ -138,7 +135,7 @@ Position changeInVisual(State* state) {
     Position pos = Position();
     pos.row = bounds.minR;
     pos.col = bounds.minC;
-    if(!visualBlockValid(state)) {
+    if(state->visualType == BLOCK && !visualBlockValid(state)) {
         state->status = "visual block not valid";
         return pos;
     }
@@ -169,7 +166,7 @@ Position copyInVisual(State* state) {
     Position pos = Position();
     pos.row = bounds.minR;
     pos.col = bounds.minC;
-    if(!visualBlockValid(state)) {
+    if(state->visualType == BLOCK && !visualBlockValid(state)) {
         state->status = "visual block not valid";
         return pos;
     }
@@ -182,7 +179,7 @@ Position deleteInVisual(State* state) {
     Position pos = Position();
     pos.row = bounds.minR;
     pos.col = bounds.minC;
-    if(!visualBlockValid(state)) {
+    if(state->visualType == BLOCK && !visualBlockValid(state)) {
         state->status = "visual block not valid";
         return pos;
     }
