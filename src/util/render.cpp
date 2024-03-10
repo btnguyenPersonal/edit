@@ -455,21 +455,19 @@ void renderScreen(State* state) {
     doupdate();
 }
 
-void initTerminal() {
+void initTerminal(State* state) {
     initscr();
     raw();
     keypad(stdscr, true);
     noecho();
     if (has_colors() == false) {
-        endwin();
         std::cout << "Your terminal does not support color" << std::endl;
-        exit(1);
+        quit(state);
     }
     start_color();
     if (COLORS < 256) {
-        endwin();
         std::cout << "Your terminal does not support 256 colors" << std::endl;
-        exit(1);
+        quit(state);
     }
     initColors();
 }

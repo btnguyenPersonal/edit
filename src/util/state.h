@@ -92,6 +92,7 @@ public:
     std::string status;
     bool selectAll;
     bool showFileStack;
+    FILE* lspProcess;
     Mode mode;
     State();
     State(std::string filename);

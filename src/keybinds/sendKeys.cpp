@@ -40,8 +40,7 @@ void sendKeys(State* state, char c) {
         sendMultiCursorKeys(state, c);
     }
     if (state->mode == SHORTCUTS && state->filename == "") {
-        endwin();
-        exit(0);
+        quit(state);
     } else if (state->filename != "") {
         sanityCheckDocumentEmpty(state);
         sanityCheckRowColOutOfBounds(state);

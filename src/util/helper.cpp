@@ -15,6 +15,14 @@
 #include <string>
 #include <vector>
 
+void quit(State* state) {
+    if (state->lspProcess) {
+        pclose(state->lspProcess);
+    }
+    endwin();
+    exit(0);
+}
+
 std::string safeSubstring(const std::string& str, std::size_t pos) {
     if (pos >= str.size()) {
         return "";

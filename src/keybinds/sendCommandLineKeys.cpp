@@ -9,14 +9,12 @@
 
 void evaluateCommandLineQuery(State* state) {
     if (state->commandLineQuery == "q") {
-        endwin();
-        exit(0);
+        quit(state);
     } else if (state->commandLineQuery == "w") {
         saveFile(state->filename, state->data);
     } else if (state->commandLineQuery == "wq" || state->commandLineQuery == "x") {
         saveFile(state->filename, state->data);
-        endwin();
-        exit(0);
+        quit(state);
     } else if (state->commandLineQuery.substr(0, 1) == "s") {
         std::istringstream iss(state->commandLineQuery);
         std::string s, first, second, g;

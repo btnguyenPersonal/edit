@@ -2,6 +2,7 @@
 #include "util/helper.h"
 #include "util/render.h"
 #include "util/state.h"
+#include "util/lsp.h"
 #include <cstring>
 #include <iostream>
 #include <ncurses.h>
@@ -42,7 +43,12 @@ int main(int argc, char* argv[]) {
         }
         return 0;
     }
-    initTerminal();
+    if (!isLanguageServerInstalled()) {
+        state->status = "typescript-language-server is not defined";
+    } else {
+        state->lspProcess = startLanguageServer();
+    }
+    initTerminal(state);
     calcWindowBounds();
     renderScreen(state);
     while (true) {

@@ -89,14 +89,14 @@ void State::pushFileStack(std::string filename) {
 }
 
 void State::resetState(std::string filename) {
-    this->pushFileStack(this->filename);
-    this->pushFileStack(filename);
-    this->fileStackIndex = this->fileStack.size() - 1;
     if (!std::filesystem::is_regular_file(filename.c_str())) {
         this->status = "file not found: " + filename;
-        exit(1);
+    } else {
+        this->pushFileStack(this->filename);
+        this->pushFileStack(filename);
+        this->fileStackIndex = this->fileStack.size() - 1;
+        this->changeFile(filename);
     }
-    this->changeFile(filename);
 }
 
 State::State() {
@@ -120,6 +120,7 @@ State::State() {
     this->col = 0;
     this->indent = 4;
     this->searchQuery = std::string("");
+    this->lspProcess = nullptr;
     this->replaceQuery = std::string("");
     this->commandLineQuery = std::string("");
     this->findFileQuery = std::string("");
@@ -143,11 +144,11 @@ State::State() {
 }
 
 State::State(std::string filename) : State() {
+    endwin();
     if (!std::filesystem::is_regular_file(filename.c_str())) {
-        endwin();
         std::cout << "file not found: " << filename << std::endl;
-        exit(1);
     }
+    exit(1);
     auto data = readFile(filename.c_str());
     this->filename = std::string(filename);
     this->data = data;

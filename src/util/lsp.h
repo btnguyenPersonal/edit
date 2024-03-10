@@ -1,0 +1,2 @@
+bool isLanguageServerInstalled();
+FILE* startLanguageServer();
