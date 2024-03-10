@@ -7,6 +7,7 @@
 #include <string>
 #include <vector>
 
+std::string safeSubstring(const std::string& str, std::size_t pos);
 bool isAllLowercase(const std::string& str);
 void recordAction(State* state);
 int calculateAPM(State* state);

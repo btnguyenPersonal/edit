@@ -15,6 +15,13 @@
 #include <string>
 #include <vector>
 
+std::string safeSubstring(const std::string& str, std::size_t pos) {
+    if (pos >= str.size()) {
+        return "";
+    }
+    return str.substr(pos);
+}
+
 void recordAction(State* state) {
     auto now = std::chrono::steady_clock::now();
     state->actionTimestamps.push_back(now);
