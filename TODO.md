@@ -79,11 +79,11 @@
 - @ to get grepQuery to searchQuery
 - global mark, go back to file and line
 - better arg handling
+- better error handling for block visual
 
 ## TODO
 - :! executes all current file in bash and replaces with output
 - read from stdinput when just have dash
-- better error handling for block visual
 
 ## LOW PRIO
 - ctrl a s increment decrement
