@@ -147,8 +147,8 @@ State::State(std::string filename) : State() {
     endwin();
     if (!std::filesystem::is_regular_file(filename.c_str())) {
         std::cout << "file not found: " << filename << std::endl;
+        exit(1);
     }
-    exit(1);
     auto data = readFile(filename.c_str());
     this->filename = std::string(filename);
     this->data = data;

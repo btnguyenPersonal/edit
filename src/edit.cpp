@@ -47,16 +47,23 @@ int main(int argc, char* argv[]) {
         state->status = "typescript-language-server is not defined";
     } else {
         state->lspProcess = startLanguageServer();
+        if (state->lspProcess) {
+            std::cout << "started" << std::endl;
+        } else {
+            std::cout << "not started" << std::endl;
+        }
     }
-    initTerminal(state);
-    calcWindowBounds();
-    renderScreen(state);
-    while (true) {
-        c = getchar();
-        recordAction(state);
-        sendKeys(state, c);
-        renderScreen(state);
-    }
+    // sendLSPInitRequest(state);
+    // readLSPResponse(state);
+    // initTerminal(state);
+    // calcWindowBounds();
+    // renderScreen(state);
+    // while (true) {
+    //     c = getchar();
+    //     recordAction(state);
+    //     sendKeys(state, c);
+    //     renderScreen(state);
+    // }
     endwin();
     return 0;
 }
