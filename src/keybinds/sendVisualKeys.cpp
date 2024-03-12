@@ -101,15 +101,11 @@ bool visualBlockValid(State* state) {
 std::string getInVisual(State* state) {
     Bounds bounds = getBounds(state);
     std::string clip = "";
-    if(state->visualType == BLOCK && !visualBlockValid(state)) {
-        state->status = "visual block not valid";
-        return clip;
-    }
     if (state->visualType == BLOCK) {
         unsigned int min = std::min(bounds.minC, bounds.maxC);
         unsigned int max = std::max(bounds.minC, bounds.maxC);
         for (unsigned int i = bounds.minR; i <= bounds.maxR; i++) {
-            clip += state->data[i].substr(min, max + 1 - min) + "\n";
+            clip += safeSubstring(state->data[i], min, max + 1 - min) + "\n";
         }
     } else if (state->visualType == LINE) {
         for (size_t i = bounds.minR; i <= bounds.maxR; i++) {
@@ -125,7 +121,7 @@ std::string getInVisual(State* state) {
             index = 0;
             clip += '\n';
         }
-        clip += state->data[bounds.maxR].substr(index, bounds.maxC - index + 1);
+        clip += safeSubstring(state->data[bounds.maxR], index, bounds.maxC - index + 1);
     }
     return clip;
 }
@@ -135,10 +131,6 @@ Position changeInVisual(State* state) {
     Position pos = Position();
     pos.row = bounds.minR;
     pos.col = bounds.minC;
-    if(state->visualType == BLOCK && !visualBlockValid(state)) {
-        state->status = "visual block not valid";
-        return pos;
-    }
     if (state->visualType == LINE) {
         state->data.erase(state->data.begin() + bounds.minR, state->data.begin() + bounds.maxR);
         state->data[bounds.minR] = std::string("");
@@ -166,10 +158,6 @@ Position copyInVisual(State* state) {
     Position pos = Position();
     pos.row = bounds.minR;
     pos.col = bounds.minC;
-    if(state->visualType == BLOCK && !visualBlockValid(state)) {
-        state->status = "visual block not valid";
-        return pos;
-    }
     copyToClipboard(getInVisual(state));
     return pos;
 }
@@ -179,18 +167,14 @@ Position deleteInVisual(State* state) {
     Position pos = Position();
     pos.row = bounds.minR;
     pos.col = bounds.minC;
-    if(state->visualType == BLOCK && !visualBlockValid(state)) {
-        state->status = "visual block not valid";
-        return pos;
-    }
     if (state->visualType == LINE) {
         state->data.erase(state->data.begin() + bounds.minR, state->data.begin() + bounds.maxR + 1);
     } else if (state->visualType == BLOCK) {
         unsigned int min = std::min(bounds.minC, bounds.maxC);
         unsigned int max = std::max(bounds.minC, bounds.maxC);
         for (unsigned int i = bounds.minR; i <= bounds.maxR; i++) {
-            std::string firstPart = state->data[i].substr(0, min);
-            std::string secondPart = state->data[i].substr(max + 1);
+            std::string firstPart = safeSubstring(state->data[i], 0, min);
+            std::string secondPart = safeSubstring(state->data[i], max + 1);
             state->data[i] = firstPart + secondPart;
         }
         pos.col = min;
@@ -491,7 +475,11 @@ bool sendVisualKeys(State* state, char c) {
         } else {
             state->mode = TYPING;
         }
-        state->row = pos.row;
+        if (state->row != pos.row) {
+            auto temp = state->row;
+            state->row = pos.row;
+            state->visual.row = temp;
+        }
         state->col = pos.col;
     } else {
         return false;

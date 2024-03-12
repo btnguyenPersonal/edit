@@ -342,12 +342,20 @@ void printLine(State* state, int row) {
     }
 }
 
+bool isRowInVisual(State* state, int row) {
+    return ((int)state->visual.row <= row && row <= (int)state->row)
+        || ((int)state->row <= row && row <= (int)state->visual.row);
+}
+
 unsigned int renderAutoComplete(State* state, int row, unsigned int col, unsigned int renderCol) {
-    if ((state->mode == TYPING && row == (int)state->row && col == state->col) ||
-        (state->mode == MULTICURSOR && col == state->col &&
-         (((int)state->visual.row <= row && row <= (int)state->row) || ((int)state->row <= row && row <= (int)state->visual.row)))) {
+    if (
+        (state->mode == TYPING || state->mode == MULTICURSOR)
+        && row == (int)state->row
+        && col == state->col
+        && isRowInVisual(state, row)
+    ) {
         std::string completion = autocomplete(state, getCurrentWord(state));
-        if (state->data[row].substr(col, completion.length()) != completion) {
+        if (state->mode == MULTICURSOR || state->data[row].substr(col, completion.length()) != completion) {
             for (unsigned int i = 0; i < completion.length(); i++) {
                 printChar(state, row, col + i, completion[i], GREY);
             }

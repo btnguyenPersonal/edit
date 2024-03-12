@@ -15,6 +15,13 @@
 #include <string>
 #include <vector>
 
+std::string safeSubstring(const std::string& str, std::size_t pos, std::size_t len) {
+    if (pos >= str.size()) {
+        return "";
+    }
+    return str.substr(pos, len);
+}
+
 std::string safeSubstring(const std::string& str, std::size_t pos) {
     if (pos >= str.size()) {
         return "";
