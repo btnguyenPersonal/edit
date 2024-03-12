@@ -8,7 +8,7 @@
 #include <vector>
 
 void sendMultiCursorKeys(State* state, char c) {
-    Bounds bounds = getBounds(state);
+    Bounds bounds = getBoundsNoVisualCheck(state);
     if (c == 27) { // ESC
         left(state);
         state->mode = SHORTCUTS;

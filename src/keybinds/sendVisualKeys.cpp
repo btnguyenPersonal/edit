@@ -11,6 +11,27 @@
 #include <string>
 #include <vector>
 
+Bounds getBoundsNoVisualCheck(State* state) {
+    Bounds bounds;
+    if (state->row < state->visual.row) {
+        bounds.minR = state->row;
+        bounds.minC = state->col;
+        bounds.maxR = state->visual.row;
+        bounds.maxC = state->visual.col;
+    } else if (state->row > state->visual.row) {
+        bounds.minR = state->visual.row;
+        bounds.minC = state->visual.col;
+        bounds.maxR = state->row;
+        bounds.maxC = state->col;
+    } else {
+        bounds.minR = state->visual.row;
+        bounds.maxR = state->row;
+        bounds.minC = std::min(state->col, state->visual.col);
+        bounds.maxC = std::max(state->col, state->visual.col);
+    }
+    return bounds;
+}
+
 Bounds getBounds(State* state) {
     Bounds bounds;
     if (state->visual.col >= state->data[state->visual.row].length()) {
