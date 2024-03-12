@@ -349,13 +349,13 @@ bool isRowInVisual(State* state, int row) {
 
 unsigned int renderAutoComplete(State* state, int row, unsigned int col, unsigned int renderCol) {
     if (
-        (state->mode == TYPING || state->mode == MULTICURSOR)
+        (state->mode == TYPING)
         && row == (int)state->row
         && col == state->col
         && isRowInVisual(state, row)
     ) {
         std::string completion = autocomplete(state, getCurrentWord(state));
-        if (state->mode == MULTICURSOR || state->data[row].substr(col, completion.length()) != completion) {
+        if (state->data[row].substr(col, completion.length()) != completion) {
             for (unsigned int i = 0; i < completion.length(); i++) {
                 printChar(state, row, col + i, completion[i], GREY);
             }
