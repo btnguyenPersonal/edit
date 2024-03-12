@@ -349,7 +349,7 @@ bool isRowInVisual(State* state, int row) {
 
 unsigned int renderAutoComplete(State* state, int row, unsigned int col, unsigned int renderCol) {
     if (
-        (state->mode == TYPING)
+        (state->mode == TYPING || state->mode == MULTICURSOR)
         && row == (int)state->row
         && col == state->col
         && isRowInVisual(state, row)

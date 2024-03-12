@@ -348,7 +348,7 @@ bool sendVisualKeys(State* state, char c) {
         state->col = std::min(state->col, state->visual.col);
         state->mode = MULTICURSOR;
     } else if (c == 'A' && state->visualType == BLOCK) {
-        state->col = std::max(state->col, state->visual.col);
+        state->col = std::max(state->col, state->visual.col) + 1;
         state->mode = MULTICURSOR;
     } else if (c == '[') {
         state->row = getPrevLineSameIndent(state);

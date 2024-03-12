@@ -32,6 +32,13 @@ void sendMultiCursorKeys(State* state, char c) {
             state->data[i] = current.substr(0, state->col) + '\t' + safeSubstring(current, state->col);
         }
         state->col += 1;
+    } else if (c == ctrl('i')) { // TAB
+        std::string completion = autocomplete(state, getCurrentWord(state));
+        for (unsigned int i = bounds.minR; i <= bounds.maxR; i++) {
+            std::string current = state->data[i];
+            state->data[i] = current.substr(0, state->col) + completion + safeSubstring(current, state->col);
+        }
+        state->col += completion.length();
     }
     if (!state->dontRecordKey) {
         state->motion += c;
