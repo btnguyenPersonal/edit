@@ -5,6 +5,9 @@
 #include <algorithm>
 #include <vector>
 
+#include <ncurses.h>
+#include <iostream>
+
 // unsigned int applyDiff2(State* state, const std::vector<diffLine>& diff, bool reverse) {
 //     unsigned int min = UINT_MAX;
 //     if (reverse == false) {
@@ -98,16 +101,24 @@ std::vector<diffLine> backtrack(const std::vector<std::vector<int>>& trace,
         }
         if (x > prev_x && x != 0) {
             // x decreased but y didn't, indicating a deletion
-            diff.insert(diff.begin(), diffLine{static_cast<unsigned int>(x), false, a[x - 1]});
+            diff.insert(diff.begin(), diffLine{static_cast<unsigned int>(x - 1), false, a[x - 1]});
         } else if (y > prev_y && y != 0) {
             // y decreased but x didn't, indicating an insertion
-            diff.insert(diff.begin(), diffLine{static_cast<unsigned int>(y), true, b[y - 1]});
+            diff.insert(diff.begin(), diffLine{static_cast<unsigned int>(y - 1), true, b[y - 1]});
         }
 
         // Update x and y for the next iteration of the loop
         x = prev_x;
         y = prev_y;
     }
+    // if (diff.size() != 0) {
+    //     endwin();
+    //     for (const auto& dl : diff) {
+    //         std::cout << (dl.add ? "+" : "-") << " " << dl.lineNum << " " << dl.line << std::endl;
+    //     }
+    //     std::cout << '\n' << std::endl;
+    //     exit(1);
+    // }
 
     return diff;
 }

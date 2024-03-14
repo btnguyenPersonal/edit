@@ -118,13 +118,13 @@ void sendShortcutKeys(State* state, char c) {
         state->col = getIndexFirstNonSpace(state);
     } else if (c == 'u') {
         if (state->historyPosition >= 0) {
-            state->row = applyDiff(state, state->history[state->historyPosition], false);
+            state->row = applyDiff(state, state->history[state->historyPosition], true);
             state->historyPosition--;
         }
         return;
     } else if (c == ctrl('r')) {
         if (state->historyPosition < ((int)state->history.size()) - 1) {
-            state->row = applyDiff(state, state->history[state->historyPosition + 1], true);
+            state->row = applyDiff(state, state->history[state->historyPosition + 1], false);
             state->historyPosition++;
         }
         return;
