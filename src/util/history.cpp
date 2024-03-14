@@ -5,9 +5,6 @@
 #include <algorithm>
 #include <vector>
 
-#include <ncurses.h>
-#include <iostream>
-
 unsigned int applyDiff(State* state, std::vector<diffLine> diff, bool reverse) {
     std::sort(diff.begin(), diff.end(), [reverse](const diffLine& a, const diffLine& b) {
         if (b.add == a.add) {
@@ -89,14 +86,6 @@ std::vector<diffLine> backtrack(const std::vector<std::vector<int>>& trace,
         x = prev_x;
         y = prev_y;
     }
-    // if (diff.size() != 0) {
-    //     endwin();
-    //     for (const auto& dl : diff) {
-    //         std::cout << (dl.add ? "+" : "-") << " " << dl.lineNum << " " << dl.line << std::endl;
-    //     }
-    //     std::cout << '\n' << std::endl;
-    //     exit(1);
-    // }
 
     return diff;
 }
