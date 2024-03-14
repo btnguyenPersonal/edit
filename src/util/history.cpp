@@ -2,34 +2,67 @@
 #include "state.h"
 #include <climits>
 #include <string>
+#include <algorithm>
 #include <vector>
 
-unsigned int applyDiff(State* state, const std::vector<diffLine>& diff, bool reverse) {
-    unsigned int min = UINT_MAX;
-    if (reverse == false) {
-        for (int i = ((int)diff.size()) - 1; i >= 0; i--) {
-            if (diff[i].lineNum < min) {
-                min = diff[i].lineNum;
-            }
-            if (diff[i].add == true) {
-                state->data.erase(state->data.begin() + diff[i].lineNum);
-            } else {
-                state->data.insert(state->data.begin() + diff[i].lineNum, diff[i].line);
-            }
+// unsigned int applyDiff2(State* state, const std::vector<diffLine>& diff, bool reverse) {
+//     unsigned int min = UINT_MAX;
+//     if (reverse == false) {
+//         for (int i = ((int)diff.size()) - 1; i >= 0; i--) {
+//             if (diff[i].lineNum < min) {
+//                 min = diff[i].lineNum;
+//             }
+//             if (diff[i].add == true) {
+//                 state->data.erase(state->data.begin() + diff[i].lineNum);
+//             } else {
+//                 state->data.insert(state->data.begin() + diff[i].lineNum, diff[i].line);
+//             }
+//         }
+//     } else if (reverse == true) {
+//         for (int i = 0; i < ((int)diff.size()); i++) {
+//             if (diff[i].lineNum < min) {
+//                 min = diff[i].lineNum;
+//             }
+//             if (diff[i].add == true) {
+//                 state->data.insert(state->data.begin() + diff[i].lineNum, diff[i].line);
+//             } else {
+//                 state->data.erase(state->data.begin() + diff[i].lineNum);
+//             }
+//         }
+//     }
+//     // TODO check min isn't UINT_MAX?? maybe don't need
+//     return min;
+// }
+
+unsigned int applyDiff(State* state, std::vector<diffLine> diff, bool reverse) {
+    std::sort(diff.begin(), diff.end(), [reverse](const diffLine& a, const diffLine& b) {
+        if (b.add == a.add) {
+            return a.lineNum < b.lineNum;
         }
-    } else if (reverse == true) {
-        for (int i = 0; i < ((int)diff.size()); i++) {
-            if (diff[i].lineNum < min) {
-                min = diff[i].lineNum;
+        return reverse ? b.add < a.add : a.add < b.add;
+    });
+    int offsetNeg = 0;
+    unsigned int min = UINT_MAX;
+    for (const auto& dl : diff) {
+        if ((!reverse && dl.add) || (reverse && !dl.add)) {
+            if (dl.lineNum < min) {
+                min = dl.lineNum;
             }
-            if (diff[i].add == true) {
-                state->data.insert(state->data.begin() + diff[i].lineNum, diff[i].line);
+            if (dl.lineNum < state->data.size()) {
+                state->data.insert(state->data.begin() + dl.lineNum, dl.line);
             } else {
-                state->data.erase(state->data.begin() + diff[i].lineNum);
+                state->data.push_back(dl.line);
             }
+        } else {
+            if (dl.lineNum + offsetNeg < min) {
+                min = dl.lineNum + offsetNeg;
+            }
+            if ((int) dl.lineNum + offsetNeg < static_cast<int>(state->data.size())) {
+                state->data.erase(state->data.begin() + dl.lineNum + offsetNeg);
+            }
+            offsetNeg--;
         }
     }
-    // TODO check min isn't UINT_MAX?? maybe don't need
     return min;
 }
 
