@@ -27,7 +27,7 @@ std::regex getRemoveLoggingRegex(State* state) {
     if (extension == "js" || extension == "jsx" || extension == "ts" || extension == "tsx") {
         pattern = "console\\.log\\('[0-9]+', .+?\\);";
     } else if (extension == "cpp") {
-        pattern = "std::cout << [0-9]+ << .+? << std::endl;";
+        pattern = "std::cout << \"[0-9]+ .+? << std::endl;";
     }
     std::regex logPattern(pattern);
     return logPattern;
@@ -48,7 +48,7 @@ std::string getLoggingCode(State* state, unsigned int row, std::string variableN
     if (extension == "js" || extension == "jsx" || extension == "ts" || extension == "tsx") {
         return "console.log('" + rowStr + "', " + "'" + variableName + "', " + variableName + ");";
     } else if (extension == "cpp") {
-        return "std::cout << " + rowStr + " << " + variableName + " << std::endl;";
+        return "std::cout << \"" + rowStr + " " + variableName + "\" << " + variableName + " << std::endl;";
     } else {
         return "";
     }
