@@ -48,7 +48,7 @@ std::string getLoggingCode(State* state, unsigned int row, std::string variableN
     if (extension == "js" || extension == "jsx" || extension == "ts" || extension == "tsx") {
         return "console.log('" + rowStr + "', " + "'" + variableName + "', " + variableName + ");";
     } else if (extension == "cpp") {
-        return "std::cout << \"" + rowStr + " " + variableName + "\" << " + variableName + " << std::endl;";
+        return "std::cout << \"" + rowStr + " " + variableName + " \" << " + variableName + " << std::endl;";
     } else {
         return "";
     }
