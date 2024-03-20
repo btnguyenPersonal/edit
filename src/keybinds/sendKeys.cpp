@@ -65,9 +65,5 @@ void sendKeys(State* state, char c) {
                 }
             }
         }
-        if (state->mode == SHORTCUTS && state->dontRecordKey == false && state->motion != "" && state->prevKeys == "") {
-            state->dotCommand = state->motion;
-            state->motion = "";
-        }
     }
 }

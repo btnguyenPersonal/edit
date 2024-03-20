@@ -8,10 +8,16 @@
 #include <vector>
 
 void sendMultiCursorKeys(State* state, char c) {
+    if (!state->dontRecordKey) {
+        state->motion += c;
+    }
     Bounds bounds = getBoundsNoVisualCheck(state);
     if (c == 27) { // ESC
         left(state);
         state->mode = SHORTCUTS;
+        state->dotCommand = state->motion;
+        state->motion = "";
+        return;
     } else if (c == 127) { // BACKSPACE
         if (state->col > 0) {
             for (unsigned int i = bounds.minR; i <= bounds.maxR; i++) {
@@ -39,8 +45,5 @@ void sendMultiCursorKeys(State* state, char c) {
             state->data[i] = current.substr(0, state->col) + completion + safeSubstring(current, state->col);
         }
         state->col += completion.length();
-    }
-    if (!state->dontRecordKey) {
-        state->motion += c;
     }
 }
