@@ -7,6 +7,23 @@
 #include <string>
 #include <vector>
 
+std::string trimLeadingComment(State* state, std::string line) {
+    std::string outputLine = line;
+    for (size_t i = 0; i < line.length(); i++) {
+        if (line[i] != ' ') {
+            if (line.substr(i, state->commentSymbol.length()) == state->commentSymbol) {
+                if (line.substr(i, state->commentSymbol.length() + 1) == state->commentSymbol + " ") {
+                    outputLine = line.substr(0, i) + line.substr(i + 2);
+                } else {
+                    outputLine = line.substr(0, i) + line.substr(i + 1);
+                }
+                break;
+            }
+        }
+    }
+    return outputLine;
+}
+
 std::string trimComment(State* state, std::string line) {
     std::string outputLine = line;
     bool foundNonSpace = false;

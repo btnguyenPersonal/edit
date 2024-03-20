@@ -1,6 +1,7 @@
 #include "helper.h"
 #include "state.h"
 #include "visualType.h"
+#include "comment.h"
 #include <algorithm>
 #include <climits>
 #include <cstdio>
@@ -385,9 +386,9 @@ unsigned int getNextEmptyLine(State* state) {
 }
 
 unsigned int getPrevLineSameIndent(State* state) {
-    unsigned int current = getIndent(state->data[state->row]);
+    unsigned int current = getIndent(trimLeadingComment(state, state->data[state->row]));
     for (int i = (int)state->row - 1; i >= 0; i--) {
-        if (current == getIndent(state->data[i]) && state->data[i] != "") {
+        if (current == getIndent(trimLeadingComment(state, state->data[i])) && state->data[i] != "") {
             return i;
         }
     }
@@ -395,9 +396,10 @@ unsigned int getPrevLineSameIndent(State* state) {
 }
 
 unsigned int getNextLineSameIndent(State* state) {
-    unsigned int current = getIndent(state->data[state->row]);
+    unsigned int current = getIndent(trimLeadingComment(state, state->data[state->row]));
     for (unsigned int i = state->row + 1; i < state->data.size(); i++) {
-        if (current == getIndent(state->data[i]) && state->data[i] != "") {
+        state->status = trimLeadingComment(state, state->data[i]);
+        if (current == getIndent(trimLeadingComment(state, state->data[i])) && state->data[i] != "") {
             return i;
         }
     }

@@ -84,6 +84,8 @@
 ## TODO
 - :! executes all current file in bash and replaces with output
 - read from stdinput when just have dash
+- fix visual paste when mixing LINE and NORMAL (eg. pasting line when in normal and pasting normal when in line)
+- fix [] for commented lines
 
 ## LOW PRIO
 - ctrl a s increment decrement
