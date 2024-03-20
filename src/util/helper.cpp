@@ -398,7 +398,6 @@ unsigned int getPrevLineSameIndent(State* state) {
 unsigned int getNextLineSameIndent(State* state) {
     unsigned int current = getIndent(trimLeadingComment(state, state->data[state->row]));
     for (unsigned int i = state->row + 1; i < state->data.size(); i++) {
-        state->status = trimLeadingComment(state, state->data[i]);
         if (current == getIndent(trimLeadingComment(state, state->data[i])) && state->data[i] != "") {
             return i;
         }
