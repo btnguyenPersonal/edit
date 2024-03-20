@@ -586,6 +586,7 @@ bool shouldIgnoreFile(const std::filesystem::path& path) {
     std::vector<std::string> allowList = {
         "[...nextauth]",
         ".github",
+        ".gitconfig"
         ".gitignore"
     };
     for (unsigned int i = 0; i < allowList.size(); i++) {
