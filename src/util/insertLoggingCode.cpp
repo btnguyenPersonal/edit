@@ -9,6 +9,9 @@ void toggleLoggingCode(State* state, std::string variableName) {
     state->lastLoggingVar = variableName;
     std::string current = state->data[state->row];
     std::string loggingCode = getLoggingCode(state, state->row, variableName);
+    if (loggingCode == "") {
+        return;
+    }
     if (state->row + 1 < state->data.size()) {
         auto nextLine = state->data[state->row + 1];
         ltrim(nextLine);

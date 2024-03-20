@@ -7,9 +7,15 @@
 #include <vector>
 
 void sendTypingKeys(State* state, char c) {
+    if (!state->dontRecordKey) {
+        state->motion += c;
+    }
     if (c == 27) { // ESC
         left(state);
         state->mode = SHORTCUTS;
+        state->dotCommand = state->motion;
+        state->motion = "";
+        return;
     } else if (c == 127) { // BACKSPACE
         if (state->col > 0) {
             std::string current = state->data[state->row];
@@ -44,8 +50,5 @@ void sendTypingKeys(State* state, char c) {
         state->data.insert(state->data.begin() + state->row + 1, current.substr(state->col));
         state->row += 1;
         state->col = 0;
-    }
-    if (!state->dontRecordKey) {
-        state->motion += c;
     }
 }
