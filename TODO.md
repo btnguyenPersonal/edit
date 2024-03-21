@@ -81,14 +81,14 @@
 - better arg handling
 - better error handling for block visual
 - fix [] for commented lines
+- fix visual paste when mixing LINE and NORMAL (eg. pasting line when in normal and pasting normal when in line)
 
 ## TODO
-- :! executes all current file in bash and replaces with output
-- read from stdinput when just have dash
-- fix visual paste when mixing LINE and NORMAL (eg. pasting line when in normal and pasting normal when in line)
 - ctrl a ctrl x w/ g
 
 ## LOW PRIO
+- :! executes all current file in bash and replaces with output
+- read from stdinput when just have dash
 - ctrl a s increment decrement
 - gr
     -> somehow go to the definition of the var/function, may have to use lsp somehow
