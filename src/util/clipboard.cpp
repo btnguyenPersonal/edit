@@ -1,6 +1,8 @@
 #include "clipboard.h"
 #include "helper.h"
 #include "state.h"
+#include "indent.h"
+#include "../keybinds/sendVisualKeys.h"
 #include <array>
 #include <iterator>
 #include <sstream>
@@ -33,6 +35,58 @@ std::string getFromClipboard() {
         return {""};
     }
     return result;
+}
+
+void pasteFromClipboardVisual(State* state) {
+    std::string result = getFromClipboard();
+    std::vector<std::string> clip;
+    std::stringstream ss(result);
+    std::string line;
+    while (std::getline(ss, line)) {
+        clip.push_back(line);
+    }
+    bool isClipLine = !result.empty() && result.back() == '\n';
+    if (state->visualType == LINE && !isClipLine) {
+        auto pos = deleteInVisual(state);
+        state->row = pos.row;
+        state->col = pos.col;
+        insertEmptyLine(state);
+    } else if (state->visualType == NORMAL && isClipLine) {
+        auto pos = changeInVisual(state);
+        state->row = pos.row;
+        state->col = pos.col;
+        std::string current = state->data[state->row];
+        state->data[state->row] = current.substr(0, state->col);
+        state->data.insert(state->data.begin() + state->row + 1, current.substr(state->col));
+        state->row += 1;
+        state->col = 0;
+        indentLine(state);
+    } else {
+        auto pos = deleteInVisual(state);
+        state->row = pos.row;
+        state->col = pos.col;
+    }
+    fixColOverMax(state);
+    if (state->data.size() == 0) {
+        for (unsigned int i = 0; i < clip.size(); i++) {
+            state->data.push_back(clip[i]);
+        }
+    } else if (!result.empty() && result.back() == '\n') {
+        for (int i = 0; i < (int)clip.size(); i++) {
+            state->data.insert(state->data.begin() + i + state->row, clip[i]);
+        }
+    } else if (clip.size() > 0) {
+        std::string current = state->data[state->row];
+        state->data[state->row] = current.substr(0, state->col);
+        state->data[state->row] += clip[0];
+        int lastRow = state->row;
+        for (int i = 1; i < (int)clip.size(); i++) {
+            int r = i + state->row;
+            state->data.insert(state->data.begin() + r, clip[i]);
+            lastRow = r;
+        }
+        state->data[lastRow] += safeSubstring(current, state->col);
+    }
 }
 
 void pasteFromClipboard(State* state) {

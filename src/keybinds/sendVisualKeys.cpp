@@ -461,10 +461,7 @@ bool sendVisualKeys(State* state, char c) {
         state->mode = SHORTCUTS;
         logDotCommand(state);
     } else if (c == 'p' || c == 'P') {
-        auto pos = deleteInVisual(state);
-        state->row = pos.row;
-        state->col = pos.col;
-        pasteFromClipboard(state);
+        pasteFromClipboardVisual(state);
         state->mode = SHORTCUTS;
         logDotCommand(state);
     } else if (c == 'x') {
