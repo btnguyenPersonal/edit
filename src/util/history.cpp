@@ -126,14 +126,11 @@ std::vector<diffLine> generateDiff(const std::vector<std::string>& a, const std:
             if (x >= n && y >= m) {
                 // Save this state for backtracking
                 trace.push_back(v);
-                // Exit the loops early
-                goto end_loops;
+                return backtrack(trace, a, b, max);
             }
         }
         trace.push_back(v); // Save the state after each edit distance
     }
-    end_loops:;
-
     // Backtrack from the saved states to find the diff
     return backtrack(trace, a, b, max);
 }

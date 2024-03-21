@@ -54,22 +54,14 @@ void pasteFromClipboard(State* state) {
         }
     } else if (clip.size() > 0) {
         std::string current = state->data[state->row];
-
-        // break up current line
         state->data[state->row] = current.substr(0, state->col);
-
-        // insert first line of clip
         state->data[state->row] += clip[0];
         int lastRow = state->row;
-
-        // insert other lines of clip
         for (int i = 1; i < (int)clip.size(); i++) {
             int r = i + state->row;
             state->data.insert(state->data.begin() + r, clip[i]);
             lastRow = r;
         }
-
-        // insert last part of broken line
         state->data[lastRow] += current.substr(state->col);
     }
 }
@@ -89,26 +81,18 @@ void pasteFromClipboardAfter(State* state) {
         }
     } else if (clip.size() > 0) {
         std::string current = state->data[state->row];
-
-        // break up current line
         int breakCol = state->col;
         if (state->col + 1 <= state->data[state->row].length()) {
             breakCol = state->col + 1;
         }
         state->data[state->row] = current.substr(0, breakCol);
-
-        // insert first line of clip
         state->data[state->row] += clip[0];
         int lastRow = state->row;
-
-        // insert other lines of clip
         for (int i = 1; i < (int)clip.size(); i++) {
             int r = i + state->row;
             state->data.insert(state->data.begin() + r, clip[i]);
             lastRow = r;
         }
-
-        // insert last part of broken line
         state->data[lastRow] += current.substr(breakCol);
     }
 }
