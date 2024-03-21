@@ -682,6 +682,13 @@ void generateGrepOutput(State* state) {
     } else {
         state->grepOutput = grepFiles(std::filesystem::current_path(), state->grepQuery);
     }
+    if (state->grepSelection >= state->grepOutput.size()) {
+        if (state->grepOutput.size() > 0) {
+            state->grepSelection = state->grepOutput.size() - 1;
+        } else {
+            state->grepSelection = 0;
+        }
+    }
 }
 
 void generateFindFileOutput(State* state) { state->findFileOutput = findFiles(std::filesystem::current_path(), state->findFileQuery); }
