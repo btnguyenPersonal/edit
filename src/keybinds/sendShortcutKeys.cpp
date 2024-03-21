@@ -52,6 +52,7 @@ void sendShortcutKeys(State* state, char c) {
             state->col = tempCol;
             state->mode = SHORTCUTS;
         }
+        return;
     } else if (state->prevKeys == "y" || state->prevKeys == "d" || state->prevKeys == "c") {
         if (c == 'i' || c == 'a' || c == 'f' || c == 't') {
             state->prevKeys += c;
@@ -76,6 +77,7 @@ void sendShortcutKeys(State* state, char c) {
                 state->mode = SHORTCUTS;
             }
         }
+        return;
     } else if (state->prevKeys + c == "gm") {
         toggleLoggingCode(state, state->lastLoggingVar);
         state->prevKeys = "";
