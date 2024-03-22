@@ -20,30 +20,72 @@ bool isOpenParen(char c) {
     return c == '(' || c == '{' || c == '[';
 }
 
-bool getCorrespondingParen(char c) {
+bool isCloseParen(char c) {
+    return c == ')' || c == '}' || c == ']';
+}
+
+char getCorrespondingParen(char c) {
     if (c == '(') {
         return ')';
     } else if (c == '{') {
         return '}';
     } else if (c == '[') {
+        return ']';
+    } else if (c == ')') {
+        return '(';
+    } else if (c == '}') {
+        return '{';
+    } else if (c == ']') {
         return '[';
     }
     return ')';
 }
 
 Position matchIt(State* state) {
-    char openParen = state->data[state->row][state->col];
-    if (!isOpenParen(openParen)) {
-        auto closeParen = getCorrespondingParen(openParen);
+    char firstParen = state->data[state->row][state->col];
+    int stack = 0;
+    if (isOpenParen(firstParen)) {
+        char secondParen = getCorrespondingParen(firstParen);
+        unsigned int col = state->col;
         for (unsigned int row = state->row; row < state->data.size(); row++) {
-            for (unsigned int col = state->col; col < state->data[row].size(); col++) {
-                // TODO maintain parenthesis stack
-                // if () {
-                // }
+            while (col < state->data[row].size()) {
+                if (state->data[row][col] == secondParen) {
+                    if (stack == 1) {
+                        return {row, col};
+                    } else {
+                        stack--;
+                    }
+                } else if (state->data[row][col] == firstParen) {
+                    stack++;
+                }
+                col++;
             }
+            col = 0;
+        }
+    } else if (isCloseParen(firstParen)) {
+        char secondParen = getCorrespondingParen(firstParen);
+        int col = (int)state->col;
+        bool first = true;
+        for (int row = (int)state->row; row >= 0; row--) {
+            if (!first) {
+                col = state->data[row].length() > 0 ? state->data[row].length() - 1 : 0;
+            }
+            while (col >= 0) {
+                if (state->data[row][col] == secondParen) {
+                    if (stack == 1) {
+                        return {(unsigned int)row, (unsigned int)col};
+                    } else {
+                        stack--;
+                    }
+                } else if (state->data[row][col] == firstParen) {
+                    stack++;
+                }
+                col--;
+            }
+            first = false;
         }
     }
-    return {0, 0};
+    return {state->row, state->col};
 }
 
 std::string safeSubstring(const std::string& str, std::size_t pos, std::size_t len) {

@@ -493,6 +493,10 @@ bool sendVisualKeys(State* state, char c) {
         state->col = getIndexFirstNonSpace(state);
         state->mode = SHORTCUTS;
         logDotCommand(state);
+    } else if (c == '%') {
+        auto pos = matchIt(state);
+        state->row = pos.row;
+        state->col = pos.col;
     } else if (c == '<') {
         Bounds bounds = getBounds(state);
         state->row = bounds.minR;
