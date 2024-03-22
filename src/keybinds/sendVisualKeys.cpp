@@ -327,6 +327,14 @@ bool sendVisualKeys(State* state, char c) {
             iterations++;
         }
         state->prevKeys = "";
+    } else if (state->prevKeys + c == "gr") {
+        if (state->visualType == NORMAL) {
+            state->mode = SHORTCUTS;
+            state->searchQuery = getInVisual(state);
+            state->searching = true;
+            searchFromTop(state);
+        }
+        state->prevKeys = "";
     } else if (state->prevKeys + c == "gf") {
         if (state->visualType == NORMAL) {
             std::vector<std::string> extensions = {"", ".js", ".jsx", ".ts", ".tsx"};

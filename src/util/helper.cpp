@@ -362,7 +362,7 @@ bool searchFromTop(State* state) {
         size_t index = state->data[i].find(state->searchQuery);
         if (index != std::string::npos) {
             state->row = i;
-            state->col = static_cast<unsigned int>(index) + i;
+            state->col = static_cast<unsigned int>(index);
             return true;
         }
     }
