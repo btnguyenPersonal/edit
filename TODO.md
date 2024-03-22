@@ -82,14 +82,15 @@
 - better error handling for block visual
 - fix [] for commented lines
 - fix visual paste when mixing LINE and NORMAL (eg. pasting line when in normal and pasting normal when in line)
+- ctrl a ctrl s w/ g
+- ctrl a s increment decrement
 
 ## TODO
-- ctrl a ctrl x w/ g
+- sorting lines
 
 ## LOW PRIO
 - :! executes all current file in bash and replaces with output
 - read from stdinput when just have dash
-- ctrl a s increment decrement
 - gr
     -> somehow go to the definition of the var/function, may have to use lsp somehow
     -> go to top and find first occ w/ import in front -> go to file at top -> set searchQuery to it -> search for it
