@@ -10,6 +10,7 @@
 #include <ncurses.h>
 #include <string>
 #include <vector>
+#include <algorithm>
 
 Bounds getBoundsNoVisualCheck(State* state) {
     Bounds bounds;
@@ -65,6 +66,20 @@ Bounds getBounds(State* state) {
         bounds.maxC = std::max(state->col, state->visual.col);
     }
     return bounds;
+}
+
+void sortLines(State* state) {
+    Bounds bounds = getBounds(state);
+    std::vector<std::string> lines;
+    for (unsigned int i = bounds.minR; i <= bounds.maxR; i++) {
+        lines.push_back(state->data[i]);
+    }
+    std::sort(lines.begin(), lines.end());
+    int index = 0;
+    for (unsigned int i = bounds.minR; i <= bounds.maxR; i++) {
+        state->data[i] = lines[index];
+        index++;
+    }
 }
 
 void setStateFromWordPosition(State* state, WordPosition pos) {
@@ -369,6 +384,9 @@ bool sendVisualKeys(State* state, char c) {
         } else {
             state->col = 0;
         }
+    } else if (c == '_') {
+        sortLines(state);
+        state->mode = SHORTCUTS;
     } else if (c == 'f') {
         state->prevKeys = "f";
     } else if (c == 't') {
