@@ -38,6 +38,60 @@ void recordAction(State* state) {
     }
 }
 
+void decrementNumber(State* state, unsigned int row, unsigned int col) {
+    std::string number;
+    int startPos = col;
+    if (std::isdigit(state->data[row][col])) {
+        number += state->data[row][col];
+        for (int i = (int)col - 1; i >= 0; i--) {
+            if (std::isdigit(state->data[row][i])) {
+                number = state->data[row][i] + number;
+                startPos = i;
+            } else {
+                break;
+            }
+        }
+        for (unsigned int i = col + 1; i < state->data[row].length(); i++) {
+            if (std::isdigit(state->data[row][i])) {
+                number += state->data[row][i];
+            } else {
+                break;
+            }
+        }
+        int temp = stoi(number);
+        if (temp > 0) {
+            temp--;
+        }
+        state->data[row] = state->data[row].substr(0, startPos) + std::to_string(temp) + safeSubstring(state->data[row], startPos + number.length());
+    }
+}
+
+void incrementNumber(State* state, unsigned int row, unsigned int col) {
+    std::string number;
+    int startPos = col;
+    if (std::isdigit(state->data[row][col])) {
+        number += state->data[row][col];
+        for (int i = (int)col - 1; i >= 0; i--) {
+            if (std::isdigit(state->data[row][i])) {
+                number = state->data[row][i] + number;
+                startPos = i;
+            } else {
+                break;
+            }
+        }
+        for (unsigned int i = col + 1; i < state->data[row].length(); i++) {
+            if (std::isdigit(state->data[row][i])) {
+                number += state->data[row][i];
+            } else {
+                break;
+            }
+        }
+        int temp = stoi(number);
+        temp++;
+        state->data[row] = state->data[row].substr(0, startPos) + std::to_string(temp) + safeSubstring(state->data[row], startPos + number.length());
+    }
+}
+
 int calculateAPM(State* state) {
     if (state->actionTimestamps.empty()) {
         return 0;

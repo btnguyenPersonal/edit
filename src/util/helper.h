@@ -7,6 +7,8 @@
 #include <string>
 #include <vector>
 
+void decrementNumber(State* state, unsigned int row, unsigned int col);
+void incrementNumber(State* state, unsigned int row, unsigned int col);
 std::string safeSubstring(const std::string& str, std::size_t pos, std::size_t len);
 std::string safeSubstring(const std::string& str, std::size_t pos);
 bool isAllLowercase(const std::string& str);

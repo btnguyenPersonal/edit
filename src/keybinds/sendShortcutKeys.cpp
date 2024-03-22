@@ -307,6 +307,10 @@ void sendShortcutKeys(State* state, char c) {
         state->mode = SEARCH;
     } else if (c == '^') {
         state->col = getIndexFirstNonSpace(state);
+    } else if (c == ctrl('s')) {
+        decrementNumber(state, state->row, state->col);
+    } else if (c == ctrl('a')) {
+        incrementNumber(state, state->row, state->col);
     } else if (c == 's') {
         if (state->col < state->data[state->row].length()) {
             state->data[state->row] = state->data[state->row].substr(0, state->col) + state->data[state->row].substr(state->col + 1);

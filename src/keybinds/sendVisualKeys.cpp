@@ -292,6 +292,26 @@ bool sendVisualKeys(State* state, char c) {
         state->visualType = LINE;
         surroundParagraph(state, true);
         state->prevKeys = "";
+    } else if (state->visualType == BLOCK && state->prevKeys == "g" && c == ctrl('s')) {
+        Bounds bounds = getBounds(state);
+        int iterations = 1;
+        for (unsigned int i = bounds.minR; i <= bounds.maxR; i++) {
+            for (int j = 0; j < iterations; j++) {
+                decrementNumber(state, i, state->col);
+            }
+            iterations++;
+        }
+        state->prevKeys = "";
+    } else if (state->visualType == BLOCK && state->prevKeys == "g" && c == ctrl('a')) {
+        Bounds bounds = getBounds(state);
+        int iterations = 1;
+        for (unsigned int i = bounds.minR; i <= bounds.maxR; i++) {
+            for (int j = 0; j < iterations; j++) {
+                incrementNumber(state, i, state->col);
+            }
+            iterations++;
+        }
+        state->prevKeys = "";
     } else if (state->prevKeys + c == "gf") {
         if (state->visualType == NORMAL) {
             std::vector<std::string> extensions = {"", ".js", ".jsx", ".ts", ".tsx"};
@@ -310,6 +330,7 @@ bool sendVisualKeys(State* state, char c) {
                 }
             }
         }
+        state->prevKeys = "";
     } else if (state->prevKeys + c == "gg") {
         state->row = 0;
         state->prevKeys = "";
@@ -317,6 +338,16 @@ bool sendVisualKeys(State* state, char c) {
         state->prevKeys = "";
     } else if (c == 'g' || c == 'i' || c == 'a') {
         state->prevKeys += c;
+    } else if (state->visualType == BLOCK && c == ctrl('s')) {
+        Bounds bounds = getBounds(state);
+        for (unsigned int i = bounds.minR; i <= bounds.maxR; i++) {
+            decrementNumber(state, i, state->col);
+        }
+    } else if (state->visualType == BLOCK && c == ctrl('a')) {
+        Bounds bounds = getBounds(state);
+        for (unsigned int i = bounds.minR; i <= bounds.maxR; i++) {
+            incrementNumber(state, i, state->col);
+        }
     } else if (c == 'm') {
         if (state->visualType == NORMAL) {
             toggleLoggingCode(state, getInVisual(state));
