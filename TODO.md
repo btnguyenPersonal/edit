@@ -89,9 +89,9 @@
     -> maybe just finding the topmost reference will be okay
     -> somehow go to the definition of the var/function, may have to use lsp somehow
     -> go to top and find first occ w/ import in front -> go to file at top -> set searchQuery to it -> search for it
+- add %
 
 ## TODO
-- add %
 - have cib ciB work for multi-line brackets
 - ci' parse entire line to get actual strings instead of just between '
 
