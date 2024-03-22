@@ -7,6 +7,7 @@
 #include <string>
 #include <vector>
 
+Position matchIt(State* state);
 bool searchFromTop(State* state);
 void decrementNumber(State* state, unsigned int row, unsigned int col);
 void incrementNumber(State* state, unsigned int row, unsigned int col);

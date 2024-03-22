@@ -16,6 +16,36 @@
 #include <string>
 #include <vector>
 
+bool isOpenParen(char c) {
+    return c == '(' || c == '{' || c == '[';
+}
+
+bool getCorrespondingParen(char c) {
+    if (c == '(') {
+        return ')';
+    } else if (c == '{') {
+        return '}';
+    } else if (c == '[') {
+        return '[';
+    }
+    return ')';
+}
+
+Position matchIt(State* state) {
+    char openParen = state->data[state->row][state->col];
+    if (!isOpenParen(openParen)) {
+        auto closeParen = getCorrespondingParen(openParen);
+        for (unsigned int row = state->row; row < state->data.size(); row++) {
+            for (unsigned int col = state->col; col < state->data[row].size(); col++) {
+                // TODO maintain parenthesis stack
+                // if () {
+                // }
+            }
+        }
+    }
+    return {0, 0};
+}
+
 std::string safeSubstring(const std::string& str, std::size_t pos, std::size_t len) {
     if (pos >= str.size()) {
         return "";

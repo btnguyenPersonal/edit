@@ -414,6 +414,10 @@ void sendShortcutKeys(State* state, char c) {
                 state->resetState(state->harpoonFiles[state->harpoonIndex]);
             }
         }
+    } else if (c == '%') {
+        auto pos = matchIt(state);
+        state->row = pos.row;
+        state->col = pos.col;
     } else if (c == '\\') {
         state->changeFile(state->filename);
     } else if (!state->recording && c == ' ') {
