@@ -82,6 +82,13 @@ void sendShortcutKeys(State* state, char c) {
         toggleLoggingCode(state, state->lastLoggingVar);
         state->prevKeys = "";
         state->dotCommand = "gm";
+    } else if (state->prevKeys + c == "gr") {
+        initVisual(state, NORMAL);
+        setStateFromWordPosition(state, getWordPosition(state->data[state->row], state->col));
+        state->searchQuery = getInVisual(state);
+        state->searching = true;
+        searchFromTop(state);
+        state->prevKeys = "";
     } else if (state->prevKeys + c == "ge") {
         unCommentBlock(state);
         state->prevKeys = "";
