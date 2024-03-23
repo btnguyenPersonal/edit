@@ -101,6 +101,7 @@ void State::resetState(std::string filename) {
 
 State::State() {
     this->mark = {"", 0};
+    this->matching = {0, 0};
     this->searching = false;
     this->replacing = false;
     this->harpoonFiles = std::vector<std::string>();

@@ -327,6 +327,9 @@ void printLine(State* state, int row) {
                     searchCounter = 0;
                 } else {
                     int color = getColor(state, row, state->data[row][col], isInString, isRowColInVisual(state, row, col), searchCounter != 0, startOfSearch, isComment);
+                    if (state->matching.row == (unsigned int)row && state->matching.col == col && (state->matching.row != state->row || state->matching.col != state->col)) {
+                        color = invertColor(GREY);
+                    }
                     printChar(state, row, renderCol, state->data[row][col], color);
                     renderCol++;
                     col++;

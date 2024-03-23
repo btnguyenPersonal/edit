@@ -90,6 +90,7 @@
     -> somehow go to the definition of the var/function, may have to use lsp somehow
     -> go to top and find first occ w/ import in front -> go to file at top -> set searchQuery to it -> search for it
 - add %
+- auto show matching parenthesis
 
 ## TODO
 - have cib ciB work for multi-line brackets

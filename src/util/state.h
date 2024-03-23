@@ -49,6 +49,7 @@ struct Archive {
 
 class State {
 public:
+    Position matching;
     std::deque<std::chrono::steady_clock::time_point> actionTimestamps;
     std::vector<Archive> archives;
     std::vector<std::string> harpoonFiles;
