@@ -65,6 +65,6 @@ void sendKeys(State* state, char c) {
                 }
             }
         }
+        state->matching = matchIt(state);
     }
-    state->matching = matchIt(state);
 }
