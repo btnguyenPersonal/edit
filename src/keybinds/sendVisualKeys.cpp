@@ -12,43 +12,8 @@
 #include <vector>
 #include <algorithm>
 
-Bounds getBoundsNoVisualCheck(State* state) {
-    Bounds bounds;
-    if (state->row < state->visual.row) {
-        bounds.minR = state->row;
-        bounds.minC = state->col;
-        bounds.maxR = state->visual.row;
-        bounds.maxC = state->visual.col;
-    } else if (state->row > state->visual.row) {
-        bounds.minR = state->visual.row;
-        bounds.minC = state->visual.col;
-        bounds.maxR = state->row;
-        bounds.maxC = state->col;
-    } else {
-        bounds.minR = state->visual.row;
-        bounds.maxR = state->row;
-        bounds.minC = std::min(state->col, state->visual.col);
-        bounds.maxC = std::max(state->col, state->visual.col);
-    }
-    return bounds;
-}
-
 Bounds getBounds(State* state) {
     Bounds bounds;
-    if (state->visual.col >= state->data[state->visual.row].length()) {
-        if (state->data[state->visual.row].length() == 0) {
-            state->visual.col = 0;
-        } else {
-            state->visual.col = state->data[state->visual.row].length() - 1;
-        }
-    }
-    if (state->col >= state->data[state->row].length()) {
-        if (state->data[state->row].length() == 0) {
-            state->col = 0;
-        } else {
-            state->col = state->data[state->row].length() - 1;
-        }
-    }
     if (state->row < state->visual.row) {
         bounds.minR = state->row;
         bounds.minC = state->col;
@@ -226,10 +191,10 @@ Position changeInVisual(State* state) {
         std::string firstPart = "";
         std::string secondPart = "";
         if (bounds.minC <= state->data[bounds.minR].length()) {
-            firstPart = state->data[bounds.minR].substr(0, bounds.minC);
+            firstPart = safeSubstring(state->data[bounds.minR], 0, bounds.minC);
         }
         if (bounds.maxC < state->data[bounds.maxR].length()) {
-            secondPart = state->data[bounds.maxR].substr(bounds.maxC + 1);
+            secondPart = safeSubstring(state->data[bounds.maxR], bounds.maxC + 1);
         }
         state->data[bounds.minR] = firstPart + secondPart;
         state->data.erase(state->data.begin() + bounds.minR + 1, state->data.begin() + bounds.maxR + 1);
@@ -266,10 +231,10 @@ Position deleteInVisual(State* state) {
         std::string firstPart = "";
         std::string secondPart = "";
         if (bounds.minC <= state->data[bounds.minR].length()) {
-            firstPart = state->data[bounds.minR].substr(0, bounds.minC);
+            firstPart = safeSubstring(state->data[bounds.minR], 0, bounds.minC);
         }
         if (bounds.maxC < state->data[bounds.maxR].length()) {
-            secondPart = state->data[bounds.maxR].substr(bounds.maxC + 1);
+            secondPart = safeSubstring(state->data[bounds.maxR], bounds.maxC + 1);
         }
         state->data[bounds.minR] = firstPart + secondPart;
         state->data.erase(state->data.begin() + bounds.minR + 1, state->data.begin() + bounds.maxR + 1);

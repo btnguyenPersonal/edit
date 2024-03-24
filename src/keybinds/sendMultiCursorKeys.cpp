@@ -11,7 +11,7 @@ void sendMultiCursorKeys(State* state, char c) {
     if (!state->dontRecordKey) {
         state->motion += c;
     }
-    Bounds bounds = getBoundsNoVisualCheck(state);
+    Bounds bounds = getBounds(state);
     if (c == 27) { // ESC
         left(state);
         state->mode = SHORTCUTS;
