@@ -1,8 +1,8 @@
 #include "clipboard.h"
-#include "helper.h"
-#include "state.h"
-#include "indent.h"
 #include "../keybinds/sendVisualKeys.h"
+#include "helper.h"
+#include "indent.h"
+#include "state.h"
 #include <array>
 #include <iterator>
 #include <sstream>
@@ -158,7 +158,7 @@ void copyToClipboard(const std::string& clip) {
     FILE* pipe = popen("xclip -selection clipboard", "w");
 #else
 #error "OS not supported"
-#endif 
+#endif
     if (pipe != nullptr) {
         fwrite(clip.c_str(), sizeof(char), clip.size(), pipe);
         pclose(pipe);

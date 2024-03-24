@@ -1,8 +1,8 @@
 #include "history.h"
 #include "state.h"
+#include <algorithm>
 #include <climits>
 #include <string>
-#include <algorithm>
 #include <vector>
 
 unsigned int applyDiff(State* state, std::vector<diffLine> diff, bool reverse) {
@@ -28,7 +28,7 @@ unsigned int applyDiff(State* state, std::vector<diffLine> diff, bool reverse) {
             if (dl.lineNum + offsetNeg < min) {
                 min = dl.lineNum + offsetNeg;
             }
-            if ((int) dl.lineNum + offsetNeg < static_cast<int>(state->data.size())) {
+            if ((int)dl.lineNum + offsetNeg < static_cast<int>(state->data.size())) {
                 state->data.erase(state->data.begin() + dl.lineNum + offsetNeg);
             }
             offsetNeg--;
@@ -37,10 +37,7 @@ unsigned int applyDiff(State* state, std::vector<diffLine> diff, bool reverse) {
     return min;
 }
 
-std::vector<diffLine> backtrack(const std::vector<std::vector<int>>& trace,
-                                const std::vector<std::string>& a,
-                                const std::vector<std::string>& b,
-                                int max) {
+std::vector<diffLine> backtrack(const std::vector<std::vector<int>>& trace, const std::vector<std::string>& a, const std::vector<std::string>& b, int max) {
     std::vector<diffLine> diff;
     // Initialize x and y at the bottom-right of the graph
     int x = a.size();
@@ -116,7 +113,8 @@ std::vector<diffLine> generateDiff(const std::vector<std::string>& a, const std:
 
             // Follow diagonals (unchanged lines) as far as possible
             while (x < n && y < m && a[x] == b[y]) {
-                x++; y++;
+                x++;
+                y++;
             }
 
             // Update the current state in the DP table

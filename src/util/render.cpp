@@ -185,7 +185,6 @@ bool isMergeConflict(const std::string& str) {
     return false;
 }
 
-
 int getColor(State* state, int row, char c, bool isInString, bool isInverted, bool isInSearchQuery, unsigned int startOfSearch, bool isComment) {
     int color;
     if (isInSearchQuery == true && isInverted == false && state->searching == true) {
@@ -360,18 +359,10 @@ void printLine(State* state, int row) {
     }
 }
 
-bool isRowInVisual(State* state, int row) {
-    return ((int)state->visual.row <= row && row <= (int)state->row)
-        || ((int)state->row <= row && row <= (int)state->visual.row);
-}
+bool isRowInVisual(State* state, int row) { return ((int)state->visual.row <= row && row <= (int)state->row) || ((int)state->row <= row && row <= (int)state->visual.row); }
 
 unsigned int renderAutoComplete(State* state, int row, unsigned int col, unsigned int renderCol) {
-    if (
-        (state->mode == TYPING || state->mode == MULTICURSOR)
-        && row == (int)state->row
-        && col == state->col
-        && isRowInVisual(state, row)
-    ) {
+    if ((state->mode == TYPING || state->mode == MULTICURSOR) && row == (int)state->row && col == state->col && isRowInVisual(state, row)) {
         std::string completion = autocomplete(state, getCurrentWord(state));
         if (state->data[row].substr(col, completion.length()) != completion) {
             for (unsigned int i = 0; i < completion.length(); i++) {

@@ -7,10 +7,10 @@
 #include "../util/insertLoggingCode.h"
 #include "../util/modes.h"
 #include "../util/state.h"
+#include <algorithm>
 #include <ncurses.h>
 #include <string>
 #include <vector>
-#include <algorithm>
 
 Bounds getBounds(State* state) {
     Bounds bounds;
