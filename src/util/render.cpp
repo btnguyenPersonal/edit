@@ -173,10 +173,25 @@ int getSearchColor(State* state, int row, unsigned int startOfSearch) {
     }
 }
 
+bool isMergeConflict(const std::string& str) {
+    const std::vector<std::string> markers = {"<<<<<<<", "=======", ">>>>>>>", "|||||||"};
+    for (const auto& marker : markers) {
+        if (str.length() >= marker.length()) {
+            if (str.substr(0, marker.length()) == marker) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+
 int getColor(State* state, int row, char c, bool isInString, bool isInverted, bool isInSearchQuery, unsigned int startOfSearch, bool isComment) {
     int color;
     if (isInSearchQuery == true && isInverted == false && state->searching == true) {
         color = getSearchColor(state, row, startOfSearch);
+    } else if (isMergeConflict(state->data[row])) {
+        color = RED;
     } else if (isComment) {
         color = GREEN;
     } else if (isInString == true && getExtension(state->filename) != "md" && getExtension(state->filename) != "txt") {

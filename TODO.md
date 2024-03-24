@@ -92,6 +92,7 @@
 - add %
 - auto show matching parenthesis
 - gu gU
+- conflict markers
 
 ## TODO
 - have cib ciB work for multi-line brackets
