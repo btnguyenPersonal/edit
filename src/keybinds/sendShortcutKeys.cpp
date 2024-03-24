@@ -39,11 +39,10 @@ void sendShortcutKeys(State* state, char c) {
         char command1 = state->prevKeys[1];
         state->prevKeys = "";
         state->motion = "v";
-        bool success = true;
         initVisual(state, NORMAL);
         sendVisualKeys(state, command1);
-        success = sendVisualKeys(state, c);
-        if (success) {
+        sendVisualKeys(state, c);
+        if (state->row != state->visual.row || state->col != state->visual.col) {
             sendVisualKeys(state, command0);
         } else {
             state->prevKeys = "";
