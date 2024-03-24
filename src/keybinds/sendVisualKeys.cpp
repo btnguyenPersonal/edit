@@ -68,6 +68,54 @@ Bounds getBounds(State* state) {
     return bounds;
 }
 
+void changeCaseVisual(State* state, bool upper) {
+    Bounds bounds = getBounds(state);
+    if (state->visualType == NORMAL) {
+        unsigned int col = bounds.minC;
+        for (unsigned int row = bounds.minR; row < bounds.maxR; row++) {
+            while (col < state->data[row].size()) {
+                if (upper) {
+                    state->data[row][col] = std::toupper(state->data[row][col]);
+                } else {
+                    state->data[row][col] = std::tolower(state->data[row][col]);
+                }
+                col++;
+            }
+            col = 0;
+        }
+        while (col <= bounds.maxC) {
+            if (upper) {
+                state->data[bounds.maxR][col] = std::toupper(state->data[bounds.maxR][col]);
+            } else {
+                state->data[bounds.maxR][col] = std::tolower(state->data[bounds.maxR][col]);
+            }
+            col++;
+        }
+    } else if (state->visualType == BLOCK) {
+        unsigned int min = std::min(bounds.minC, bounds.maxC);
+        unsigned int max = std::max(bounds.minC, bounds.maxC);
+        for (unsigned int row = bounds.minR; row <= bounds.maxR; row++) {
+            for (unsigned int col = min; col <= max; col++) {
+                if (upper) {
+                    state->data[row][col] = std::toupper(state->data[row][col]);
+                } else {
+                    state->data[row][col] = std::tolower(state->data[row][col]);
+                }
+            }
+        }
+    } else if (state->visualType == LINE) {
+        for (unsigned int row = bounds.minR; row <= bounds.maxR; row++) {
+            for (unsigned int col = 0; col < state->data[row].size(); col++) {
+                if (upper) {
+                    state->data[row][col] = std::toupper(state->data[row][col]);
+                } else {
+                    state->data[row][col] = std::tolower(state->data[row][col]);
+                }
+            }
+        }
+    }
+}
+
 void sortLines(State* state) {
     Bounds bounds = getBounds(state);
     std::vector<std::string> lines;
@@ -354,6 +402,14 @@ bool sendVisualKeys(State* state, char c) {
             }
         }
         state->prevKeys = "";
+    } else if (state->prevKeys + c == "gU") {
+        changeCaseVisual(state, true);
+        state->prevKeys = "";
+        state->mode = SHORTCUTS;
+    } else if (state->prevKeys + c == "gu") {
+        changeCaseVisual(state, false);
+        state->prevKeys = "";
+        state->mode = SHORTCUTS;
     } else if (state->prevKeys + c == "gg") {
         state->row = 0;
         state->prevKeys = "";
