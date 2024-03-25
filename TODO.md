@@ -97,6 +97,7 @@
 ## TODO
 - have cib ciB work for multi-line brackets
 - ci' parse entire line to get actual strings instead of just between '
+- ciw dot command not working correctly end string
 
 ## LOW PRIO
 - :! executes all current file in bash and replaces with output
