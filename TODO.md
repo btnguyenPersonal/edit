@@ -93,6 +93,7 @@
 - auto show matching parenthesis
 - gu gU
 - conflict markers
+- search current line after grep
 
 ## TODO
 - have cib ciB work for multi-line brackets
@@ -109,6 +110,7 @@
 - do something with 1-9 (maybe repeat everything? n times)
 - ctrl v paste into grepQuery or findFile
 - backup file (some way to debug??)
+- true jumplist
 
 ## LOW PRIO
 - :! executes all current file in bash and replaces with output
