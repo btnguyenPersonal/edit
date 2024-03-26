@@ -100,8 +100,12 @@
 - ciw dot command not working correctly end string
 - when not in typing restrict to have cursor not pass last character
 - visual replace one char
-- add git gutter
+- add git gutter maybe () can jump to next/prev git changes
 - visual block join
+- run current search replace in visual
+- backspace work for re-joining lines
+- make apm counter change color based on how on fire i am
+- one other thing that I know i should fix, just can't remember atm
 
 ## LOW PRIO
 - :! executes all current file in bash and replaces with output
