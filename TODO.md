@@ -106,6 +106,7 @@
 - backspace work for re-joining lines
 - make apm counter change color based on how on fire i am
 - one other thing that I know i should fix, just can't remember atm
+- do something with 1-9 (maybe repeat everything? n times)
 
 ## LOW PRIO
 - :! executes all current file in bash and replaces with output
