@@ -403,7 +403,7 @@ bool setSearchResultReverse(State* state) {
 
 bool searchFromTop(State* state) {
     for (unsigned int i = 0; i < state->data.size(); i++) {
-        size_t index = state->data[i].find(state->searchQuery);
+        size_t index = state->data[i].rfind(state->searchQuery);
         if (index != std::string::npos) {
             state->row = i;
             state->col = static_cast<unsigned int>(index);
