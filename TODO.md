@@ -100,6 +100,8 @@
 - ciw dot command not working correctly end string
 - when not in typing restrict to have cursor not pass last character
 - visual replace one char
+- add git gutter
+- visual block join
 
 ## LOW PRIO
 - :! executes all current file in bash and replaces with output

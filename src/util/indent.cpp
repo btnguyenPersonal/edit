@@ -86,6 +86,16 @@ int getIndentLevel(State* state, unsigned int row) {
         if (tagType == OPEN || tagStack > 0) {
             indentLevel += state->indent;
         }
+    } else {
+        for (unsigned int i = 0; i < prevLine.length(); i++) {
+            if (prevLine.substr(i, state->commentSymbol.length()) == state->commentSymbol) {
+                break;
+            } else if (prevLine[i] == '(' || prevLine[i] == '{' || prevLine[i] == '[') {
+                if (i + 1 == prevLine.length()) {
+                    indentLevel += state->indent;
+                }
+            }
+        }
     }
 
     if (hasHTML(currLine, getExtension(state->filename))) {
@@ -113,24 +123,14 @@ int getIndentLevel(State* state, unsigned int row) {
         if (tagType == CLOSE || tagStack < 0) {
             indentLevel -= state->indent;
         }
-    }
-
-    for (unsigned int i = 0; i < prevLine.length(); i++) {
-        if (prevLine.substr(i, state->commentSymbol.length()) == state->commentSymbol) {
-            break;
-        } else if (prevLine[i] == '(' || prevLine[i] == '{' || prevLine[i] == '[') {
-            if (i + 1 == prevLine.length()) {
-                indentLevel += state->indent;
-            }
-        }
-    }
-
-    for (unsigned int i = 0; i < currLine.length(); i++) {
-        if (currLine.substr(i, state->commentSymbol.length()) == state->commentSymbol) {
-            break;
-        } else if (currLine[i] == ')' || currLine[i] == '}' || currLine[i] == ']') {
-            if (i == 0) {
-                indentLevel -= state->indent;
+    } else {
+        for (unsigned int i = 0; i < currLine.length(); i++) {
+            if (currLine.substr(i, state->commentSymbol.length()) == state->commentSymbol) {
+                break;
+            } else if (currLine[i] == ')' || currLine[i] == '}' || currLine[i] == ']') {
+                if (i == 0) {
+                    indentLevel -= state->indent;
+                }
             }
         }
     }
