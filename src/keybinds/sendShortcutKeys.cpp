@@ -245,7 +245,7 @@ void sendShortcutKeys(State* state, char c) {
             state->resetState(state->mark.filename);
             state->row = state->mark.mark;
         }
-    } else if (c == '"') {
+    } else if (c == ';') {
         state->mark = {state->filename, state->row};
     } else if (c == '@') {
         state->searching = true;

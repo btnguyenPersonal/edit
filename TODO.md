@@ -98,6 +98,8 @@
 - have cib ciB work for multi-line brackets
 - ci' parse entire line to get actual strings instead of just between '
 - ciw dot command not working correctly end string
+- when not in typing restrict to have cursor not pass last character
+- visual replace one char
 
 ## LOW PRIO
 - :! executes all current file in bash and replaces with output
