@@ -324,9 +324,7 @@ bool sendVisualKeys(State* state, char c) {
         Bounds bounds = getBounds(state);
         int iterations = 1;
         for (unsigned int i = bounds.minR; i <= bounds.maxR; i++) {
-            for (int j = 0; j < iterations; j++) {
-                decrementNumber(state, i, state->col);
-            }
+            getAndAddNumber(state, i, state->col, -1 * iterations);
             iterations++;
         }
         state->prevKeys = "";
@@ -334,9 +332,7 @@ bool sendVisualKeys(State* state, char c) {
         Bounds bounds = getBounds(state);
         int iterations = 1;
         for (unsigned int i = bounds.minR; i <= bounds.maxR; i++) {
-            for (int j = 0; j < iterations; j++) {
-                incrementNumber(state, i, state->col);
-            }
+            getAndAddNumber(state, i, state->col, iterations);
             iterations++;
         }
         state->prevKeys = "";
@@ -385,12 +381,12 @@ bool sendVisualKeys(State* state, char c) {
     } else if (state->visualType == BLOCK && c == ctrl('s')) {
         Bounds bounds = getBounds(state);
         for (unsigned int i = bounds.minR; i <= bounds.maxR; i++) {
-            decrementNumber(state, i, state->col);
+            getAndAddNumber(state, i, state->col, -1);
         }
     } else if (state->visualType == BLOCK && c == ctrl('a')) {
         Bounds bounds = getBounds(state);
         for (unsigned int i = bounds.minR; i <= bounds.maxR; i++) {
-            incrementNumber(state, i, state->col);
+            getAndAddNumber(state, i, state->col, 1);
         }
     } else if (c == 'm') {
         if (state->visualType == NORMAL) {
