@@ -33,6 +33,38 @@ Bounds getBounds(State* state) {
     return bounds;
 }
 
+void replaceAllWithChar(State* state, char c) {
+    Bounds bounds = getBounds(state);
+    if (state->visualType == NORMAL) {
+        unsigned int col = bounds.minC;
+        for (unsigned int row = bounds.minR; row < bounds.maxR; row++) {
+            while (col < state->data[row].size()) {
+                state->data[row][col] = c;
+                col++;
+            }
+            col = 0;
+        }
+        while (col <= bounds.maxC) {
+            state->data[bounds.maxR][col] = c;
+            col++;
+        }
+    } else if (state->visualType == BLOCK) {
+        unsigned int min = std::min(bounds.minC, bounds.maxC);
+        unsigned int max = std::max(bounds.minC, bounds.maxC);
+        for (unsigned int row = bounds.minR; row <= bounds.maxR; row++) {
+            for (unsigned int col = min; col <= max; col++) {
+                state->data[row][col] = c;
+            }
+        }
+    } else if (state->visualType == LINE) {
+        for (unsigned int row = bounds.minR; row <= bounds.maxR; row++) {
+            for (unsigned int col = 0; col < state->data[row].size(); col++) {
+                state->data[row][col] = c;
+            }
+        }
+    }
+}
+
 void changeCaseVisual(State* state, bool upper) {
     Bounds bounds = getBounds(state);
     if (state->visualType == NORMAL) {
@@ -367,6 +399,10 @@ bool sendVisualKeys(State* state, char c) {
         changeCaseVisual(state, true);
         state->prevKeys = "";
         state->mode = SHORTCUTS;
+    } else if (state->prevKeys == "r") {
+        replaceAllWithChar(state, c);
+        state->prevKeys = "";
+        state->mode = SHORTCUTS;
     } else if (state->prevKeys + c == "gu") {
         changeCaseVisual(state, false);
         state->prevKeys = "";
@@ -376,7 +412,7 @@ bool sendVisualKeys(State* state, char c) {
         state->prevKeys = "";
     } else if (state->prevKeys != "") {
         state->prevKeys = "";
-    } else if (c == 'g' || c == 'i' || c == 'a') {
+    } else if (c == 'g' || c == 'i' || c == 'a' || c == 'r') {
         state->prevKeys += c;
     } else if (state->visualType == BLOCK && c == ctrl('s')) {
         Bounds bounds = getBounds(state);
