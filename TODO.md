@@ -96,6 +96,7 @@
 - search current line after grep
 - backspace work for re-joining lines
 - make apm counter change color based on how on fast it is
+- ctrl v paste into grepQuery or findFile
 
 ## TODO
 - have cib ciB work for multi-line brackets
@@ -108,7 +109,6 @@
 - run current search replace in visual
 - one other thing that I know i should fix, just can't remember atm
 - do something with 1-9 (maybe repeat everything? n times)
-- ctrl v paste into grepQuery or findFile
 - backup file (some way to debug??)
 - true jumplist
 

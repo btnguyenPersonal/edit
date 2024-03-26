@@ -71,6 +71,8 @@ void sendFindFileKeys(State* state, char c) {
             copyToClipboard(selectedFile);
             state->mode = SHORTCUTS;
         }
+    } else if (c == ctrl('v')) {
+        state->findFileQuery += getFromClipboard();
     } else if (c == ctrl('m')) { // ENTER
         if (state->findFileSelection < state->findFileOutput.size()) {
             state->selectAll = false;
