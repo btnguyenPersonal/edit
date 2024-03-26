@@ -107,6 +107,7 @@
 - make apm counter change color based on how on fire i am
 - one other thing that I know i should fix, just can't remember atm
 - do something with 1-9 (maybe repeat everything? n times)
+- ctrl v paste into grepQuery or findFile
 
 ## LOW PRIO
 - :! executes all current file in bash and replaces with output
