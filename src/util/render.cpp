@@ -224,17 +224,21 @@ void printChar(State* state, int row, int col, char c, int color) {
 void printLineNumber(State* state, int r, int i, bool isCurrentRow, bool recording, std::string blame) {
     if (isCurrentRow == true) {
         attron(COLOR_PAIR(WHITE));
-        mvprintw(r, 0, "%5d ", i + 1);
+        mvprintw(r, 0, "%5d", i + 1);
         attroff(COLOR_PAIR(WHITE));
     } else if (recording) {
         attron(COLOR_PAIR(RED));
-        mvprintw(r, 0, "%5d ", i + 1);
+        mvprintw(r, 0, "%5d", i + 1);
         attroff(COLOR_PAIR(RED));
     } else {
         attron(COLOR_PAIR(GREY));
-        mvprintw(r, 0, "%5d ", i + 1);
+        mvprintw(r, 0, "%5d", i + 1);
         attroff(COLOR_PAIR(GREY));
     }
+    char spacingChar = (int)state->mark.mark + 1 == r && state->mark.filename != "" ? '>' : ' ';
+    attron(COLOR_PAIR(BLUE));
+    mvprintw(r, 5, "%c", spacingChar);
+    attroff(COLOR_PAIR(BLUE));
     if (state->mode == BLAME) {
         if (i == (int)state->row) {
             attron(COLOR_PAIR(invertColor(WHITE)));
