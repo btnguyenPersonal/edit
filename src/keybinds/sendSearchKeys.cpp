@@ -1,8 +1,8 @@
 #include "sendSearchKeys.h"
+#include "../util/clipboard.h"
 #include "../util/helper.h"
 #include "../util/modes.h"
 #include "../util/state.h"
-#include "../util/clipboard.h"
 #include <climits>
 
 void sendSearchKeys(State* state, char c) {
