@@ -7,6 +7,7 @@
 #include <string>
 #include <vector>
 
+bool setSearchResultCurrentLine(State* state, std::string query);
 Position matchIt(State* state);
 bool searchFromTop(State* state);
 void getAndAddNumber(State* state, unsigned int row, unsigned int col, int num);

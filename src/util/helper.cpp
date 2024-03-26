@@ -413,6 +413,16 @@ bool searchFromTop(State* state) {
     return false;
 }
 
+bool setSearchResultCurrentLine(State* state, std::string query) {
+    std::string line = state->data[state->row];
+    size_t index = line.find(query);
+    if (index != std::string::npos) {
+        state->col = static_cast<unsigned int>(index);
+        return true;
+    }
+    return false;
+}
+
 // TODO make this look cleaner
 bool setSearchResult(State* state) {
     fixColOverMax(state);

@@ -60,6 +60,7 @@ void sendGrepKeys(State* state, char c) {
             int lineNum = state->grepOutput[state->grepSelection].lineNum;
             state->resetState(selectedFile);
             state->row = lineNum - 1;
+            setSearchResultCurrentLine(state, state->grepQuery);
         }
     }
     if (state->mode == GREP && c != ctrl('u') && c != ctrl('d') && c != ctrl('p') && c != ctrl('n')) {
