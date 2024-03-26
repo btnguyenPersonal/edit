@@ -2,6 +2,7 @@
 #include "../util/helper.h"
 #include "../util/modes.h"
 #include "../util/state.h"
+#include "../util/clipboard.h"
 #include <climits>
 
 void sendSearchKeys(State* state, char c) {
@@ -31,6 +32,12 @@ void sendSearchKeys(State* state, char c) {
             state->replaceQuery = std::string("");
         } else {
             state->searchQuery = std::string("");
+        }
+    } else if (c == ctrl('v')) {
+        if (state->replacing) {
+            state->replaceQuery += getFromClipboard();
+        } else {
+            state->searchQuery += getFromClipboard();
         }
     } else if (c == ctrl('m')) { // ENTER
         if (state->replacing) {

@@ -54,6 +54,8 @@ void sendGrepKeys(State* state, char c) {
             copyToClipboard(selectedFile);
             state->mode = SHORTCUTS;
         }
+    } else if (c == ctrl('v')) {
+        state->grepQuery += getFromClipboard();
     } else if (c == ctrl('m')) { // ENTER
         if (state->grepSelection < state->grepOutput.size()) {
             std::filesystem::path selectedFile = state->grepOutput[state->grepSelection].path;
