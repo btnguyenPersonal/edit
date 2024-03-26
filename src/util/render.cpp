@@ -69,9 +69,36 @@ int renderStatusBar(State* state) {
             }
         }
     } else {
-        auto apm = std::to_string(calculateAPM(state));
-        mvprintw(0, state->maxX - (apm.length() + state->filename.length() + state->prevKeys.length() + 4), "%s %s \"%s\"", state->prevKeys.c_str(), apm.c_str(),
-                 state->filename.c_str());
+        auto apm = calculateAPM(state);
+        auto stringAPM = std::to_string(apm);
+        mvprintw(
+            0,
+            state->maxX - (stringAPM.length() + state->filename.length() + state->prevKeys.length() + 4),
+            "%s ",
+            state->prevKeys.c_str()
+        );
+        if (apm > 300) {
+            attron(COLOR_PAIR(RED));
+        } else if (apm > 200) {
+            attron(COLOR_PAIR(YELLOW));
+        }
+        mvprintw(
+            0,
+            state->maxX - (stringAPM.length() + state->filename.length() + 3),
+            "%s ",
+            stringAPM.c_str()
+        );
+        if (apm > 300) {
+            attroff(COLOR_PAIR(RED));
+        } else if (apm > 200) {
+            attroff(COLOR_PAIR(YELLOW));
+        }
+        mvprintw(
+            0,
+            state->maxX - (state->filename.length() + 2),
+            "\"%s\"",
+            state->filename.c_str()
+        );
     }
     if (state->status.length() > 0) {
         attron(COLOR_PAIR(RED));

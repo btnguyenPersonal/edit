@@ -94,6 +94,8 @@
 - gu gU
 - conflict markers
 - search current line after grep
+- backspace work for re-joining lines
+- make apm counter change color based on how on fast it is
 
 ## TODO
 - have cib ciB work for multi-line brackets
@@ -104,8 +106,6 @@
 - add git gutter maybe () can jump to next/prev git changes
 - visual block join
 - run current search replace in visual
-- backspace work for re-joining lines
-- make apm counter change color based on how on fire i am
 - one other thing that I know i should fix, just can't remember atm
 - do something with 1-9 (maybe repeat everything? n times)
 - ctrl v paste into grepQuery or findFile
