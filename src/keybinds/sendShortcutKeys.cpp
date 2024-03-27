@@ -79,6 +79,8 @@ void sendShortcutKeys(State* state, char c) {
         return;
     } else if (state->prevKeys + c == "gq") {
         toggleLoggingCode(state, "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$", false);
+        down(state);
+        down(state);
         state->prevKeys = "";
         state->dotCommand = "gq";
     } else if (state->prevKeys + c == "gm") {
