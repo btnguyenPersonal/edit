@@ -159,16 +159,27 @@ void indentLine(State* state) {
 }
 
 void indentRange(State* state) {
-    int indentDifference = getIndentLevel(state, state->row) - getNumLeadingSpaces(state->data[state->row]);
+    unsigned int firstNonEmptyRow = state->row;
+    for (int i = state->row; i <= (int)state->visual.row; i++) {
+        if (state->data[i] != "") {
+            firstNonEmptyRow = i;
+            break;
+        }
+    }
+    int indentDifference = getIndentLevel(state, state->row) - getNumLeadingSpaces(state->data[firstNonEmptyRow]);
     if (indentDifference > 0) {
         for (int i = state->row; i <= (int)state->visual.row; i++) {
-            for (int j = 0; j < indentDifference; j++) {
-                state->data[i] = ' ' + state->data[i];
+            if (state->data[i] != "") {
+                for (int j = 0; j < indentDifference; j++) {
+                    state->data[i] = ' ' + state->data[i];
+                }
             }
         }
     } else if (indentDifference < 0) {
         for (int i = state->row; i <= (int)state->visual.row; i++) {
-            state->data[i] = state->data[i].substr(-1 * indentDifference);
+            if (state->data[i] != "") {
+                state->data[i] = state->data[i].substr(-1 * indentDifference);
+            }
         }
     }
 }

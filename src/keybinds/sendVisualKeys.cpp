@@ -162,7 +162,7 @@ void surroundParagraph(State* state, bool includeLastLine) {
 bool isValidMoveableChunk(State* state, Bounds bounds) {
     int start = getNumLeadingSpaces(state->data[bounds.minR]);
     for (unsigned int i = bounds.minR + 1; i <= bounds.maxR; i++) {
-        if (getNumLeadingSpaces(state->data[i]) < start) {
+        if (getNumLeadingSpaces(state->data[i]) < start && state->data[i] != "") {
             return false;
         }
     }
