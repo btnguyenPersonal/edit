@@ -97,17 +97,16 @@
 - backspace work for re-joining lines
 - make apm counter change color based on how on fast it is
 - ctrl v paste into grepQuery or findFile
+- visual replace one char
 
 ## TODO
 - have cib ciB work for multi-line brackets
 - ci' parse entire line to get actual strings instead of just between '
 - ciw dot command not working correctly end string
 - when not in typing restrict to have cursor not pass last character
-- visual replace one char
 - add git gutter maybe () can jump to next/prev git changes
 - visual block join
 - run current search replace in visual
-- one other thing that I know i should fix, just can't remember atm
 - do something with 1-9 (maybe repeat everything? n times)
 - backup file (some way to debug??)
 - true jumplist
