@@ -77,8 +77,12 @@ void sendShortcutKeys(State* state, char c) {
             }
         }
         return;
+    } else if (state->prevKeys + c == "gq") {
+        toggleLoggingCode(state, "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$", false);
+        state->prevKeys = "";
+        state->dotCommand = "gq";
     } else if (state->prevKeys + c == "gm") {
-        toggleLoggingCode(state, state->lastLoggingVar);
+        toggleLoggingCode(state, state->lastLoggingVar, true);
         state->prevKeys = "";
         state->dotCommand = "gm";
     } else if (state->prevKeys + c == "gr") {
@@ -385,7 +389,7 @@ void sendShortcutKeys(State* state, char c) {
     } else if (c == 'm') {
         initVisual(state, NORMAL);
         setStateFromWordPosition(state, getWordPosition(state->data[state->row], state->col));
-        toggleLoggingCode(state, getInVisual(state));
+        toggleLoggingCode(state, getInVisual(state), true);
         state->mode = SHORTCUTS;
         state->dotCommand = c;
     } else if (!state->recording && c == ctrl('e')) {

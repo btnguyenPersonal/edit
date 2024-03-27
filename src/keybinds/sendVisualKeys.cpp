@@ -426,7 +426,7 @@ bool sendVisualKeys(State* state, char c) {
         }
     } else if (c == 'm') {
         if (state->visualType == NORMAL) {
-            toggleLoggingCode(state, getInVisual(state));
+            toggleLoggingCode(state, getInVisual(state), true);
         }
         state->mode = SHORTCUTS;
         logDotCommand(state);

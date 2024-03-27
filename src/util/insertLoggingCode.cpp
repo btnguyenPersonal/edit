@@ -5,10 +5,10 @@
 #include <string>
 #include <vector>
 
-void toggleLoggingCode(State* state, std::string variableName) {
+void toggleLoggingCode(State* state, std::string variableName, bool showValue) {
     state->lastLoggingVar = variableName;
     std::string current = state->data[state->row];
-    std::string loggingCode = getLoggingCode(state, state->row, variableName);
+    std::string loggingCode = getLoggingCode(state, state->row, variableName, showValue);
     if (loggingCode == "") {
         return;
     }
@@ -45,13 +45,23 @@ void removeAllLoggingCode(State* state) {
     }
 }
 
-std::string getLoggingCode(State* state, unsigned int row, std::string variableName) {
+std::string getLoggingCode(State* state, unsigned int row, std::string variableName, bool showValue) {
     std::string extension = getExtension(state->filename);
     std::string rowStr = std::to_string(row + 1);
     if (extension == "js" || extension == "jsx" || extension == "ts" || extension == "tsx") {
-        return "console.log('" + rowStr + "', " + "'" + variableName + "', " + variableName + ");";
+        std::string s = "console.log('" + rowStr + "', " + "'" + variableName + "'";
+        if (showValue) {
+            s += ", " + variableName;
+        }
+        s += ");";
+        return s;
     } else if (extension == "cpp") {
-        return "std::cout << \"" + rowStr + " " + variableName + " \" << " + variableName + " << std::endl;";
+        std::string s = "std::cout << \"" + rowStr + " " + variableName + "\"";
+        if (showValue) {
+            s += " << " + variableName;
+        }
+        s += " << std::endl;";
+        return s;
     } else {
         return "";
     }
