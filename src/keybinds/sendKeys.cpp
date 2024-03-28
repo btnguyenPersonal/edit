@@ -79,6 +79,5 @@ void sendKeys(State* state, char c) {
                 state->jumplist.index = state->jumplist.list.size() - 1;
             }
         }
-        state->status = std::to_string(state->jumplist.index);
     }
 }
