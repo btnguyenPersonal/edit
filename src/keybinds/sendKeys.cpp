@@ -66,5 +66,18 @@ void sendKeys(State* state, char c) {
             }
         }
         state->matching = matchIt(state);
+        if (state->mode == SHORTCUTS && c != '8' && c != '9') {
+            if (state->jumplist.list.size() > 0) {
+                auto pos = state->jumplist.list.back();
+                if (pos.row != state->row || pos.col != state->col) {
+                    state->jumplist.list.erase(state->jumplist.list.begin() + state->jumplist.index + 1, state->jumplist.list.end());
+                    state->jumplist.list.push_back({state->row, state->col});
+                    state->jumplist.index = state->jumplist.list.size() - 1;
+                }
+            } else {
+                state->jumplist.list.push_back({state->row, state->col});
+                state->jumplist.index = state->jumplist.list.size() - 1;
+            }
+        }
     }
 }

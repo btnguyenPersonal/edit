@@ -65,8 +65,11 @@ void sendShortcutKeys(State* state, char c) {
             initVisual(state, NORMAL);
             if (c != command) {
                 success = sendVisualKeys(state, c);
-            }
-            if (state->row != state->visual.row) {
+                if (state->row != state->visual.row) {
+                    state->visualType = LINE;
+                    state->motion = "V" + safeSubstring(state->motion, 1);
+                }
+            } else {
                 state->visualType = LINE;
                 state->motion = "V" + safeSubstring(state->motion, 1);
             }
@@ -450,6 +453,18 @@ void sendShortcutKeys(State* state, char c) {
         state->harpoonIndex = state->harpoonFiles.size() - 1;
     } else if (c == 'G') {
         state->row = state->data.size() - 1;
+    } else if (c == '9') {
+        if (state->jumplist.index > 0) {
+            state->jumplist.index--;
+            state->row = state->jumplist.list[state->jumplist.index].row;
+            state->col = state->jumplist.list[state->jumplist.index].col;
+        }
+    } else if (c == '8') {
+        if (state->jumplist.index + 1 < state->jumplist.list.size()) {
+            state->jumplist.index++;
+            state->row = state->jumplist.list[state->jumplist.index].row;
+            state->col = state->jumplist.list[state->jumplist.index].col;
+        }
     }
     if (state->mode != SHORTCUTS) {
         state->motion = c;
