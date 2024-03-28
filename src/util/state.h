@@ -45,11 +45,13 @@ struct Archive {
     struct Position windowPosition;
     unsigned int row;
     unsigned int col;
+    std::vector<Position> jumplist;
 };
 
 class State {
 public:
     Position matching;
+    std::vector<Position> jumplist;
     std::deque<std::chrono::steady_clock::time_point> actionTimestamps;
     std::vector<Archive> archives;
     std::vector<std::string> harpoonFiles;

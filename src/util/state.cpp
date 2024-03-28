@@ -21,6 +21,7 @@ void State::changeFile(std::string filename) {
             this->archives[i].windowPosition = this->windowPosition;
             this->archives[i].row = this->row;
             this->archives[i].col = this->col;
+            this->archives[i].jumplist = this->jumplist;
             found = true;
             break;
         }
@@ -34,6 +35,7 @@ void State::changeFile(std::string filename) {
             this->windowPosition,
             this->row,
             this->col,
+            this->jumplist,
         });
     }
     for (unsigned int i = 0; i < this->archives.size(); i++) {
@@ -48,6 +50,7 @@ void State::changeFile(std::string filename) {
             this->windowPosition = archive.windowPosition;
             this->row = archive.row;
             this->col = archive.col;
+            this->jumplist = archive.jumplist;
             this->mode = SHORTCUTS;
             return;
         }
@@ -104,6 +107,7 @@ State::State() {
     this->matching = {0, 0};
     this->searching = false;
     this->replacing = false;
+    this->jumplist = std::vector<Position>();
     this->harpoonFiles = std::vector<std::string>();
     this->harpoonIndex = 0;
     this->data = std::vector<std::string>();
