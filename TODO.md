@@ -99,16 +99,16 @@
 - ctrl v paste into grepQuery or findFile
 - visual replace one char
 - visual block join
+- true jumplist
+- run current search replace in visual
+- do something with 1-9 (maybe repeat everything? n times)
 
 ## TODO
 - have cib ciB work for multi-line brackets
 - ci' parse entire line to get actual strings instead of just between '
 - ciw dot command not working correctly end string
 - when not in typing restrict to have cursor not pass last character
-- run current search replace in visual
-- do something with 1-9 (maybe repeat everything? n times)
 - backup file (some way to debug??)
-- true jumplist
 
 ## LOW PRIO
 - :! executes all current file in bash and replaces with output
