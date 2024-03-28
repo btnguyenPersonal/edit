@@ -432,7 +432,7 @@ bool sendVisualKeys(State* state, char c) {
         logDotCommand(state);
     } else if (c == ':') {
         if (state->visualType == NORMAL) {
-            state->commandLineQuery = "s/" + getInVisual(state) + "/";
+            state->commandLineQuery = "gs/" + getInVisual(state) + "/";
             state->mode = COMMANDLINE;
         }
     } else if (c == '^') {

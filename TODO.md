@@ -98,14 +98,13 @@
 - make apm counter change color based on how on fast it is
 - ctrl v paste into grepQuery or findFile
 - visual replace one char
+- visual block join
 
 ## TODO
 - have cib ciB work for multi-line brackets
 - ci' parse entire line to get actual strings instead of just between '
 - ciw dot command not working correctly end string
 - when not in typing restrict to have cursor not pass last character
-- add git gutter maybe () can jump to next/prev git changes
-- visual block join
 - run current search replace in visual
 - do something with 1-9 (maybe repeat everything? n times)
 - backup file (some way to debug??)
@@ -113,6 +112,7 @@
 
 ## LOW PRIO
 - :! executes all current file in bash and replaces with output
+- add git gutter maybe () can jump to next/prev git changes
 - read from stdinput when just have dash
 - handle render wide characters fully
 - speed up grepFiles

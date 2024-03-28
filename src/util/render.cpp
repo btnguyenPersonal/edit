@@ -247,7 +247,7 @@ void printLineNumber(State* state, int r, int i, bool isCurrentRow, bool recordi
         mvprintw(r, 0, "%5d", i + 1);
         attroff(COLOR_PAIR(GREY));
     }
-    char spacingChar = (int)state->mark.mark == i && state->mark.filename == state->filename ? '>' : ' ';
+    char spacingChar = (int)state->mark.mark == i && state->mark.filename == state->filename ? '|' : ' ';
     attron(COLOR_PAIR(YELLOW));
     mvprintw(r, 5, "%c", spacingChar);
     attroff(COLOR_PAIR(YELLOW));
