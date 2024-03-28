@@ -107,7 +107,7 @@ State::State() {
     this->matching = {0, 0};
     this->searching = false;
     this->replacing = false;
-    this->jumplist = std::vector<Position>();
+    this->jumplist = {0, std::vector<Position>()};
     this->harpoonFiles = std::vector<std::string>();
     this->harpoonIndex = 0;
     this->data = std::vector<std::string>();
