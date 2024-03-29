@@ -62,6 +62,8 @@ void sendCommandLineKeys(State* state, char c) {
         }
     } else if (c == 127) { // BACKSPACE
         state->commandLineQuery = state->commandLineQuery.substr(0, state->commandLineQuery.length() - 1);
+    } else if (c == ctrl('l')) {
+        state->commandLineQuery = "";
     } else if (c == ctrl('v')) {
         state->commandLineQuery += getFromClipboard();
     } else if (c == 13) { // ENTER
