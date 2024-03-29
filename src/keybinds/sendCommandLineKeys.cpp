@@ -33,9 +33,12 @@ void evaluateCommandLineQuery(State* state) {
     } else if (state->commandLineQuery.substr(0, 2) == "%s") {
         std::istringstream iss(state->commandLineQuery);
         std::string s, first, second, g;
-        if (std::getline(iss, s, '/') && std::getline(iss, first, '/') && std::getline(iss, second, '/')) {
-            replaceAll(state, first, second);
-        }
+        do {
+            if (std::getline(iss, s, '/') && std::getline(iss, first, '/') && std::getline(iss, second, '/')) {
+                replaceAll(state, first, second);
+            }
+            std::getline(iss, s, ';');
+        } while (!iss.eof());
     } else if (is_number(state->commandLineQuery)) {
         unsigned int number = stoul(state->commandLineQuery);
         if (number > 0) {
