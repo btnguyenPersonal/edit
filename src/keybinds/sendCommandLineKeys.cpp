@@ -2,6 +2,7 @@
 #include "../util/helper.h"
 #include "../util/modes.h"
 #include "../util/state.h"
+#include "../util/clipboard.h"
 #include <ncurses.h>
 #include <sstream>
 #include <string>
@@ -61,6 +62,8 @@ void sendCommandLineKeys(State* state, char c) {
         }
     } else if (c == 127) { // BACKSPACE
         state->commandLineQuery = state->commandLineQuery.substr(0, state->commandLineQuery.length() - 1);
+    } else if (c == ctrl('v')) {
+        state->commandLineQuery += getFromClipboard();
     } else if (c == 13) { // ENTER
         evaluateCommandLineQuery(state);
         state->commandLineQuery = std::string("");
