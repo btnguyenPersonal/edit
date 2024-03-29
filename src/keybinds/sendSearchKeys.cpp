@@ -47,5 +47,6 @@ void sendSearchKeys(State* state, char c) {
         state->replacing = false;
         state->mode = SHORTCUTS;
     }
-    setSearchResult(state);
+    bool result = setSearchResult(state);
+    state->searchFail = !result;
 }

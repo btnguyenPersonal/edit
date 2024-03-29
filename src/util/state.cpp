@@ -74,6 +74,7 @@ void State::changeFile(std::string filename) {
     this->selectAll = false;
     this->prevKeys = std::string("");
     this->status = std::string("");
+    this->searchFail = false;
     this->motion = std::string("");
     this->mode = SHORTCUTS;
 }
@@ -133,6 +134,7 @@ State::State() {
     this->grepSelection = 0;
     this->prevKeys = std::string("");
     this->status = std::string("");
+    this->searchFail = false;
     this->mode = FINDFILE;
     this->dotCommand = std::string("");
     this->macroCommand = std::string("");

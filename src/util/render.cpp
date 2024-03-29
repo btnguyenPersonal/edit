@@ -116,10 +116,18 @@ int renderStatusBar(State* state) {
         }
         return offset;
     } else {
-        attron(COLOR_PAIR(GREEN));
+        if (state->searchFail) {
+            attron(COLOR_PAIR(RED));
+        } else {
+            attron(COLOR_PAIR(GREEN));
+        }
         mvprintw(0, offset, "/%s", state->searchQuery.c_str());
         offset += state->searchQuery.length() + 1;
-        attroff(COLOR_PAIR(GREEN));
+        if (state->searchFail) {
+            attroff(COLOR_PAIR(RED));
+        } else {
+            attroff(COLOR_PAIR(GREEN));
+        }
         if (state->replacing) {
             attron(COLOR_PAIR(MAGENTA));
             mvprintw(0, offset, "/%s", state->replaceQuery.c_str());

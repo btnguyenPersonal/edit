@@ -56,6 +56,7 @@ struct Archive {
 class State {
 public:
     Position matching;
+    bool searchFail;
     Jumplist jumplist;
     std::deque<std::chrono::steady_clock::time_point> actionTimestamps;
     std::vector<Archive> archives;

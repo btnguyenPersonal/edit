@@ -272,13 +272,17 @@ void sendShortcutKeys(State* state, char c) {
         unsigned int temp_row = state->row;
         bool result = setSearchResult(state);
         if (result == false) {
+            state->searchFail = true;
             state->row = temp_row;
             state->col = temp_col - 1;
         }
         centerScreen(state);
     } else if (c == 'N') {
         state->searching = true;
-        setSearchResultReverse(state);
+        bool result = setSearchResultReverse(state);
+        if (result == false) {
+            state->searchFail = true;
+        }
         centerScreen(state);
     } else if (c == 'n') {
         state->searching = true;
@@ -287,6 +291,7 @@ void sendShortcutKeys(State* state, char c) {
         unsigned int temp_row = state->row;
         bool result = setSearchResult(state);
         if (result == false) {
+            state->searchFail = true;
             state->row = temp_row;
             state->col = temp_col - 1;
         }

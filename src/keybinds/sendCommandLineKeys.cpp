@@ -1,8 +1,8 @@
 #include "sendCommandLineKeys.h"
+#include "../util/clipboard.h"
 #include "../util/helper.h"
 #include "../util/modes.h"
 #include "../util/state.h"
-#include "../util/clipboard.h"
 #include <ncurses.h>
 #include <sstream>
 #include <string>

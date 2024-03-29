@@ -16,6 +16,7 @@
 
 void sendKeys(State* state, char c) {
     state->status = std::string("");
+    state->searchFail = false;
     state->showFileStack = false;
     state->dontRecordKey = false;
     state->searching = state->mode == SEARCH;

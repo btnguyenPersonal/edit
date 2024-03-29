@@ -111,9 +111,9 @@
 - backup file (some way to debug??)
 
 ## LOW PRIO
-- :! executes all current file in bash and replaces with output
-- add git gutter maybe () can jump to next/prev git changes
+- ! executes all current file in bash and replaces with output
 - read from stdinput when just have dash
+- add git gutter maybe () can jump to next/prev git changes
 - handle render wide characters fully
 - speed up grepFiles
     - use boyer-moore algorithm
