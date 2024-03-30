@@ -15,7 +15,17 @@ void sendTypingKeys(State* state, char c) {
         state->mode = SHORTCUTS;
         state->dotCommand = state->motion;
         state->motion = "";
+        state->prevKeys = "";
         return;
+    } else if (state->prevKeys == "v") {
+        state->prevKeys = "";
+        std::string current = state->data[state->row];
+        state->data[state->row] = current.substr(0, state->col) + c + current.substr(state->col);
+        if ((int)state->col == getIndexFirstNonSpace(state)) {
+            indentLine(state);
+            state->col = getIndexFirstNonSpace(state);
+        }
+        state->col += 1;
     } else if (c == 127) { // BACKSPACE
         if (state->col > 0) {
             std::string current = state->data[state->row];
@@ -44,6 +54,8 @@ void sendTypingKeys(State* state, char c) {
         std::string current = state->data[state->row];
         state->data[state->row] = current.substr(0, state->col) + '\t' + current.substr(state->col);
         state->col += 1;
+    } else if (c == ctrl('v')) {
+        state->prevKeys = 'v';
     } else if (c == ctrl('i')) { // TAB
         std::string completion = autocomplete(state, getCurrentWord(state));
         std::string current = state->data[state->row];
