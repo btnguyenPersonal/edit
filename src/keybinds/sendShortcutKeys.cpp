@@ -387,7 +387,9 @@ void sendShortcutKeys(State* state, char c) {
         } else if (state->harpoonIndex >= state->harpoonFiles.size()) {
             state->harpoonIndex = state->harpoonFiles.size() - 1;
         }
-        state->resetState(state->harpoonFiles[state->harpoonIndex]);
+        if (state->harpoonFiles.size() > 1) {
+            state->resetState(state->harpoonFiles[state->harpoonIndex]);
+        }
     } else if (!state->recording && c == 'X') {
         state->harpoonIndex = 0;
         state->harpoonFiles.clear();
