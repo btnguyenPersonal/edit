@@ -28,7 +28,9 @@ void evaluateCommandLineQuery(State* state) {
         std::istringstream iss(state->commandLineQuery);
         std::string s, first, second, g;
         if (std::getline(iss, s, '/') && std::getline(iss, first, '/') && std::getline(iss, second, '/')) {
-            replaceAllGlobally(state, first, second);
+            if (!state->dontSave) {
+                replaceAllGlobally(state, first, second);
+            }
         }
     } else if (state->commandLineQuery.substr(0, 2) == "%s") {
         std::istringstream iss(state->commandLineQuery);
