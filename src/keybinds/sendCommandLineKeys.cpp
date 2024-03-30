@@ -13,9 +13,9 @@ void evaluateCommandLineQuery(State* state) {
         endwin();
         exit(0);
     } else if (state->commandLineQuery == "w") {
-        saveFile(state->filename, state->data);
+        saveFile(state);
     } else if (state->commandLineQuery == "wq" || state->commandLineQuery == "x") {
-        saveFile(state->filename, state->data);
+        saveFile(state);
         endwin();
         exit(0);
     } else if (state->commandLineQuery.substr(0, 1) == "s") {

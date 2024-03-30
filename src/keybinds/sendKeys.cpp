@@ -55,7 +55,7 @@ void sendKeys(State* state, char c) {
         if (state->recording == false && state->mode == SHORTCUTS) {
             std::vector<diffLine> diff = generateDiff(state->previousState, state->data);
             if (diff.size() != 0) {
-                saveFile(state->filename, state->data);
+                saveFile(state);
                 state->previousState = state->data;
                 if (c != ctrl('r') && c != 'u') {
                     if (state->historyPosition < (int)state->history.size()) {

@@ -99,6 +99,7 @@ public:
     std::string prevKeys;
     std::string lastLoggingVar;
     std::string status;
+    bool dontSave;
     bool selectAll;
     bool showFileStack;
     Mode mode;

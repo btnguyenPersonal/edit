@@ -832,13 +832,15 @@ unsigned int b(State* state) {
     return 0;
 }
 
-void saveFile(std::string filename, std::vector<std::string> data) {
-    std::ofstream file(filename);
-    if (!data.empty()) {
-        for (size_t i = 0; i < data.size() - 1; ++i) {
-            file << data[i] << "\n";
+void saveFile(State* state) {
+    if (!state->dontSave) {
+        std::ofstream file(state->filename);
+        if (!state->data.empty()) {
+            for (size_t i = 0; i < state->data.size() - 1; ++i) {
+                file << state->data[i] << "\n";
+            }
+            file << state->data.back();
         }
-        file << data.back();
     }
 }
 

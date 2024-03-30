@@ -60,7 +60,7 @@ void indent(State* state);
 void deindent(State* state);
 void insertEmptyLine(State* state);
 std::vector<std::string> readFile(std::string filename);
-void saveFile(std::string filename, std::vector<std::string> data);
+void saveFile(State* state);
 bool isWindowPositionInvalid(State* state);
 void centerScreen(State* state);
 void up(State* state);

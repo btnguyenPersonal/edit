@@ -26,6 +26,7 @@ int main(int argc, char* argv[]) {
         generateFindFileOutput(state);
     }
     if (commandFlag != 0) {
+        state->dontSave = true;
         for (int i = commandFlag + 1; i < argc; ++i) {
             const std::string& sequence = argv[i];
             char ch;
