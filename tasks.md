@@ -109,6 +109,7 @@
 - ciw dot command not working correctly end string
 - when not in typing restrict to have cursor not pass last character
 - backup file (some way to debug??)
+- add fuzzing
 
 ## LOW PRIO
 - ! executes all current file in bash and replaces with output
