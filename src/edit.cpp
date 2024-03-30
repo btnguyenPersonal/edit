@@ -29,16 +29,8 @@ int main(int argc, char* argv[]) {
         state->dontSave = true;
         for (int i = commandFlag + 1; i < argc; ++i) {
             const std::string& sequence = argv[i];
-            char ch;
             for (size_t j = 0; j < sequence.size(); ++j) {
-                if (sequence[j] == '<' && j + 2 < sequence.size() && sequence[j + 1] == 'c' && sequence[j + 2] == '-') {
-                    char control_char = sequence[j + 3];
-                    ch = ctrl(control_char);
-                    j += 4;
-                } else {
-                    ch = sequence[j];
-                }
-                sendKeys(state, ch);
+                sendKeys(state, sequence[j]);
             }
         }
         return 0;
