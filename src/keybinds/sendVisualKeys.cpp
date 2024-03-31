@@ -484,11 +484,7 @@ bool sendVisualKeys(State* state, char c) {
             logDotCommand(state);
             unsigned int temp_col = state->col;
             unsigned int temp_row = state->row;
-            bool result = setSearchResult(state);
-            if (result == false) {
-                state->row = temp_row;
-                state->col = temp_col - 1;
-            }
+            setSearchResult(state);
         }
     } else if (c == '#') {
         state->grepQuery = getInVisual(state);
