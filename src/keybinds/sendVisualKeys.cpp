@@ -44,7 +44,7 @@ void replaceAllWithChar(State* state, char c) {
             }
             col = 0;
         }
-        while (col <= bounds.maxC) {
+        while (col <= bounds.maxC && col < state->data[bounds.maxR].size()) {
             state->data[bounds.maxR][col] = c;
             col++;
         }
@@ -53,7 +53,9 @@ void replaceAllWithChar(State* state, char c) {
         unsigned int max = std::max(bounds.minC, bounds.maxC);
         for (unsigned int row = bounds.minR; row <= bounds.maxR; row++) {
             for (unsigned int col = min; col <= max; col++) {
-                state->data[row][col] = c;
+                if (col < state->data[row].size()) {
+                    state->data[row][col] = c;
+                }
             }
         }
     } else if (state->visualType == LINE) {

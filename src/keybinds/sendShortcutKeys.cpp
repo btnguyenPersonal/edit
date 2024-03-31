@@ -28,7 +28,7 @@ void sendShortcutKeys(State* state, char c) {
         state->prevKeys = "";
     } else if (state->prevKeys == "r") {
         if (state->col < state->data[state->row].length()) {
-            state->data[state->row] = state->data[state->row].substr(0, state->col) + c + state->data[state->row].substr(state->col + 1);
+            state->data[state->row] = safeSubstring(state->data[state->row], 0, state->col) + c + safeSubstring(state->data[state->row], state->col + 1);
         }
         state->dotCommand = "r" + c;
         state->prevKeys = "";
