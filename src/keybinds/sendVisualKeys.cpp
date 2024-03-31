@@ -648,6 +648,19 @@ bool sendVisualKeys(State* state, char c) {
             state->visual.row = temp;
         }
         state->col = pos.col;
+    } else if (c == '9') {
+        if (state->jumplist.index > 0) {
+            state->jumplist.index--;
+            state->row = state->jumplist.list[state->jumplist.index].row;
+            state->col = state->jumplist.list[state->jumplist.index].col;
+        }
+    } else if (c == '8') {
+        if (state->jumplist.index + 1 < state->jumplist.list.size()) {
+            state->jumplist.index++;
+            state->row = state->jumplist.list[state->jumplist.index].row;
+            state->col = state->jumplist.list[state->jumplist.index].col;
+        }
+    }
     } else {
         return false;
     }
