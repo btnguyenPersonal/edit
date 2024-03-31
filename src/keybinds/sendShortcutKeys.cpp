@@ -351,9 +351,13 @@ void sendShortcutKeys(State* state, char c) {
         }
         state->dotCommand = c;
     } else if (!state->recording && c == ctrl('h')) {
-        moveHarpoonLeft(state);
+        if (state->harpoonFiles.size() > 0) {
+            moveHarpoonLeft(state);
+        }
     } else if (!state->recording && c == ctrl('l')) {
-        moveHarpoonRight(state);
+        if (state->harpoonFiles.size() > 0) {
+            moveHarpoonRight(state);
+        }
     } else if (c == ctrl('y')) {
         state->col = 0;
         state->mode = BLAME;

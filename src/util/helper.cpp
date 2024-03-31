@@ -126,13 +126,17 @@ void getAndAddNumber(State* state, unsigned int row, unsigned int col, int num) 
                 break;
             }
         }
-        int temp = stoi(number);
-        if (temp + num < 0) {
-            temp = 0;
-        } else {
-            temp += num;
+        try {
+            long long temp = std::stoll(number);
+            if (temp + num < 0) {
+                temp = 0;
+            } else {
+                temp += num;
+            }
+            state->data[row] = state->data[row].substr(0, startPos) + std::to_string(temp) + safeSubstring(state->data[row], startPos + number.length());
+        } catch (const std::exception& e) {
+            state->status = "number too large";
         }
-        state->data[row] = state->data[row].substr(0, startPos) + std::to_string(temp) + safeSubstring(state->data[row], startPos + number.length());
     }
 }
 
