@@ -379,16 +379,16 @@ void sendShortcutKeys(State* state, char c) {
         pasteFromClipboardAfter(state);
         state->dotCommand = c;
     } else if (!state->recording && c == ctrl('x')) {
-        if (state->harpoonFiles.size() != 0) {
+        if (state->harpoonFiles.size() > 0) {
             state->harpoonFiles.erase(state->harpoonFiles.begin() + state->harpoonIndex);
-        }
-        if (state->harpoonFiles.size() == 0) {
-            state->harpoonIndex = 0;
-        } else if (state->harpoonIndex >= state->harpoonFiles.size()) {
-            state->harpoonIndex = state->harpoonFiles.size() - 1;
-        }
-        if (state->harpoonFiles.size() > 1) {
-            state->resetState(state->harpoonFiles[state->harpoonIndex]);
+            if (state->harpoonFiles.size() == 0) {
+                state->harpoonIndex = 0;
+            } else if (state->harpoonIndex >= state->harpoonFiles.size()) {
+                state->harpoonIndex = state->harpoonFiles.size() - 1;
+            }
+            if (state->harpoonFiles.size() > 0) {
+                state->resetState(state->harpoonFiles[state->harpoonIndex]);
+            }
         }
     } else if (!state->recording && c == 'X') {
         state->harpoonIndex = 0;
@@ -409,32 +409,36 @@ void sendShortcutKeys(State* state, char c) {
         state->mode = SHORTCUTS;
         state->dotCommand = c;
     } else if (!state->recording && c == ctrl('e')) {
-        if (state->harpoonIndex + 1 < state->harpoonFiles.size()) {
-            if (std::filesystem::is_regular_file(state->harpoonFiles[state->harpoonIndex + 1].c_str())) {
-                state->harpoonIndex += 1;
-                state->resetState(state->harpoonFiles[state->harpoonIndex]);
+        if (state->harpoonFiles.size() > 0) {
+            if (state->harpoonIndex + 1 < state->harpoonFiles.size()) {
+                if (std::filesystem::is_regular_file(state->harpoonFiles[state->harpoonIndex + 1].c_str())) {
+                    state->harpoonIndex += 1;
+                    state->resetState(state->harpoonFiles[state->harpoonIndex]);
+                } else {
+                    state->status = "file not found";
+                    state->harpoonFiles.erase(state->harpoonFiles.begin() + state->harpoonIndex + 1);
+                }
             } else {
-                state->status = "file not found";
-                state->harpoonFiles.erase(state->harpoonFiles.begin() + state->harpoonIndex + 1);
-            }
-        } else if (state->harpoonFiles.size() > 1) {
-            if (std::filesystem::is_regular_file(state->harpoonFiles[state->harpoonIndex].c_str())) {
-                state->resetState(state->harpoonFiles[state->harpoonIndex]);
+                if (std::filesystem::is_regular_file(state->harpoonFiles[state->harpoonIndex].c_str())) {
+                    state->resetState(state->harpoonFiles[state->harpoonIndex]);
+                }
             }
         }
     } else if (!state->recording && c == ctrl('w')) {
-        if (state->harpoonIndex > 0) {
-            if (std::filesystem::is_regular_file(state->harpoonFiles[state->harpoonIndex - 1].c_str())) {
-                state->harpoonIndex -= 1;
-                state->resetState(state->harpoonFiles[state->harpoonIndex]);
+        if (state->harpoonFiles.size() > 0) {
+            if (state->harpoonIndex > 0) {
+                if (std::filesystem::is_regular_file(state->harpoonFiles[state->harpoonIndex - 1].c_str())) {
+                    state->harpoonIndex -= 1;
+                    state->resetState(state->harpoonFiles[state->harpoonIndex]);
+                } else {
+                    state->status = "file not found";
+                    state->harpoonFiles.erase(state->harpoonFiles.begin() + state->harpoonIndex - 1);
+                    state->harpoonIndex -= 1;
+                }
             } else {
-                state->status = "file not found";
-                state->harpoonFiles.erase(state->harpoonFiles.begin() + state->harpoonIndex - 1);
-                state->harpoonIndex -= 1;
-            }
-        } else if (state->harpoonFiles.size() > 1) {
-            if (std::filesystem::is_regular_file(state->harpoonFiles[state->harpoonIndex].c_str())) {
-                state->resetState(state->harpoonFiles[state->harpoonIndex]);
+                if (std::filesystem::is_regular_file(state->harpoonFiles[state->harpoonIndex].c_str())) {
+                    state->resetState(state->harpoonFiles[state->harpoonIndex]);
+                }
             }
         }
     } else if (c == '%') {

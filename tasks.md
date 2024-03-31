@@ -110,6 +110,7 @@
 - when not in typing restrict to have cursor not pass last character
 - backup file (some way to debug??)
 - add fuzzing
+- add multi-line searches
 
 ## LOW PRIO
 - ! executes all current file in bash and replaces with output
