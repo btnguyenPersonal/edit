@@ -121,8 +121,19 @@ int renderStatusBar(State* state) {
         } else {
             attron(COLOR_PAIR(GREEN));
         }
-        mvprintw(0, offset, "/%s", state->searchQuery.c_str());
-        offset += state->searchQuery.length() + 1;
+        std::string displayQuery = state->searchQuery;
+        for (size_t i = 0; i < displayQuery.length(); ++i) {
+            if (displayQuery[i] == '\n') {
+                displayQuery.replace(i, 1, "\\n");
+                i++;
+            }
+        }
+        if (displayQuery.length() > 60) {
+            displayQuery = safeSubstring(displayQuery, 0, 60);
+            displayQuery += "...";
+        }
+        mvprintw(0, offset, "/%s", displayQuery.c_str());
+        offset += displayQuery.length() + 1;
         if (state->searchFail) {
             attroff(COLOR_PAIR(RED));
         } else {
