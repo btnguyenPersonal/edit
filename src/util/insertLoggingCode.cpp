@@ -24,7 +24,7 @@ void toggleLoggingCode(State* state, std::string variableName, bool showValue) {
     indentLine(state, state->row + 1);
 }
 
-std::regex getRemoveLoggingRegex(State* state) {
+std::string getRemoveLoggingPattern(State* state) {
     std::string extension = getExtension(state->filename);
     std::string pattern = "";
     if (extension == "js" || extension == "jsx" || extension == "ts" || extension == "tsx") {
@@ -32,15 +32,16 @@ std::regex getRemoveLoggingRegex(State* state) {
     } else if (extension == "cpp") {
         pattern = "std::cout << \"[0-9]+ .+? << std::endl;";
     }
-    std::regex logPattern(pattern);
-    return logPattern;
+    return pattern;
 }
 
 void removeAllLoggingCode(State* state) {
-    for (int i = state->data.size() - 1; i >= 0; i--) {
-        std::regex logPattern = getRemoveLoggingRegex(state);
-        if (std::regex_search(state->data[i], logPattern)) {
-            state->data.erase(state->data.begin() + i);
+    std::string logPattern = getRemoveLoggingPattern(state);
+    if (logPattern != "") {
+        for (int i = state->data.size() - 1; i >= 0; i--) {
+            if (std::regex_search(state->data[i], std::regex(logPattern))) {
+                state->data.erase(state->data.begin() + i);
+            }
         }
     }
 }
