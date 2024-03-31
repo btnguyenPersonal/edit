@@ -482,8 +482,6 @@ bool sendVisualKeys(State* state, char c) {
             state->searchQuery = getInVisual(state);
             state->mode = SHORTCUTS;
             logDotCommand(state);
-            unsigned int temp_col = state->col;
-            unsigned int temp_row = state->row;
             setSearchResult(state);
         }
     } else if (c == '#') {
