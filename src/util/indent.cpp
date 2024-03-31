@@ -178,7 +178,9 @@ void indentRange(State* state) {
     } else if (indentDifference < 0) {
         for (int i = state->row; i <= (int)state->visual.row; i++) {
             if (state->data[i] != "") {
-                state->data[i] = state->data[i].substr(-1 * indentDifference);
+                for (int j = 0; j < indentDifference; j++) {
+                    state->data[i] = safeSubstring(state->data[i], 1);
+                }
             }
         }
     }
