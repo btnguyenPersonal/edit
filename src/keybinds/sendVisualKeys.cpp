@@ -660,7 +660,6 @@ bool sendVisualKeys(State* state, char c) {
             state->row = state->jumplist.list[state->jumplist.index].row;
             state->col = state->jumplist.list[state->jumplist.index].col;
         }
-    }
     } else {
         return false;
     }
