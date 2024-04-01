@@ -1,0 +1,1141 @@
+==56304== Memcheck, a memory error detector
+==56304== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==56304== Using Valgrind-3.18.1-42b08ed5bd-20211015 and LibVEX; rerun with -h for copyright info
+==56304== Command: ./build/e
+==56304== Parent PID: 56283
+==56304== 
+--56304-- 
+--56304-- Valgrind options:
+--56304--    --leak-check=full
+--56304--    --show-leak-kinds=all
+--56304--    --track-origins=yes
+--56304--    --verbose
+--56304--    --log-file=valgrind-out.txt
+--56304-- Contents of /proc/version:
+--56304--   Linux version 5.15.0-100-generic (buildd@lcy02-amd64-116) (gcc (Ubuntu 11.4.0-1ubuntu1~22.04) 11.4.0, GNU ld (GNU Binutils for Ubuntu) 2.38) #110-Ubuntu SMP Wed Feb 7 13:27:48 UTC 2024
+--56304-- 
+--56304-- Arch and hwcaps: AMD64, LittleEndian, amd64-cx16-lzcnt-rdtscp-sse3-ssse3-avx-avx2-bmi-f16c-rdrand-rdseed
+--56304-- Page sizes: currently 4096, max supported 4096
+--56304-- Valgrind library directory: /usr/libexec/valgrind
+--56304-- Reading syms from /home/minty/git/edit/build/e
+--56304-- Reading syms from /usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
+--56304--   Considering /usr/lib/debug/.build-id/15/921ea631d9f36502d20459c43e5c85b7d6ab76.debug ..
+--56304--   .. build-id is valid
+--56304-- Reading syms from /usr/libexec/valgrind/memcheck-amd64-linux
+--56304--    object doesn't have a symbol table
+--56304--    object doesn't have a dynamic symbol table
+--56304-- Scheduler: using generic scheduler lock implementation.
+--56304-- Reading suppressions file: /usr/libexec/valgrind/default.supp
+==56304== embedded gdbserver: reading from /tmp/vgdb-pipe-from-vgdb-to-56304-by-minty-on-???
+==56304== embedded gdbserver: writing to   /tmp/vgdb-pipe-to-vgdb-from-56304-by-minty-on-???
+==56304== embedded gdbserver: shared mem   /tmp/vgdb-pipe-shared-mem-vgdb-56304-by-minty-on-???
+==56304== 
+==56304== TO CONTROL THIS PROCESS USING vgdb (which you probably
+==56304== don't want to do, unless you know exactly what you're doing,
+==56304== or are doing some strange experiment):
+==56304==   /usr/bin/vgdb --pid=56304 ...command...
+==56304== 
+==56304== TO DEBUG THIS PROCESS USING GDB: start GDB like this
+==56304==   /path/to/gdb ./build/e
+==56304== and then give GDB the following command
+==56304==   target remote | /usr/bin/vgdb --pid=56304
+==56304== --pid is optional if only one valgrind process is running
+==56304== 
+--56304-- REDIR: 0x402aa40 (ld-linux-x86-64.so.2:strlen) redirected to 0x580bcec2 (???)
+--56304-- REDIR: 0x402a810 (ld-linux-x86-64.so.2:index) redirected to 0x580bcedc (???)
+--56304-- Reading syms from /usr/libexec/valgrind/vgpreload_core-amd64-linux.so
+--56304--    object doesn't have a symbol table
+--56304-- Reading syms from /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so
+--56304--    object doesn't have a symbol table
+==56304== WARNING: new redirection conflicts with existing -- ignoring it
+--56304--     old: 0x0402aa40 (strlen              ) R-> (0000.0) 0x580bcec2 ???
+--56304--     new: 0x0402aa40 (strlen              ) R-> (2007.0) 0x0484ee30 strlen
+--56304-- REDIR: 0x4027220 (ld-linux-x86-64.so.2:strcmp) redirected to 0x484fcd0 (strcmp)
+--56304-- REDIR: 0x402afa0 (ld-linux-x86-64.so.2:mempcpy) redirected to 0x4853840 (mempcpy)
+--56304-- Reading syms from /usr/lib/x86_64-linux-gnu/libncurses.so.6.3
+--56304--    object doesn't have a symbol table
+--56304-- Reading syms from /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3
+--56304--    object doesn't have a symbol table
+--56304-- Reading syms from /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.32
+--56304--    object doesn't have a symbol table
+--56304-- Reading syms from /usr/lib/x86_64-linux-gnu/libgcc_s.so.1
+--56304--    object doesn't have a symbol table
+--56304-- Reading syms from /usr/lib/x86_64-linux-gnu/libc.so.6
+--56304--   Considering /usr/lib/debug/.build-id/c2/89da5071a3399de893d2af81d6a30c62646e1e.debug ..
+--56304--   .. build-id is valid
+==56304== WARNING: new redirection conflicts with existing -- ignoring it
+--56304--     old: 0x04c04c60 (memalign            ) R-> (1011.0) 0x0484e080 memalign
+--56304--     new: 0x04c04c60 (memalign            ) R-> (1017.0) 0x0484e050 aligned_alloc
+==56304== WARNING: new redirection conflicts with existing -- ignoring it
+--56304--     old: 0x04c04c60 (memalign            ) R-> (1011.0) 0x0484e080 memalign
+--56304--     new: 0x04c04c60 (memalign            ) R-> (1017.0) 0x0484e020 aligned_alloc
+==56304== WARNING: new redirection conflicts with existing -- ignoring it
+--56304--     old: 0x04c04c60 (memalign            ) R-> (1011.0) 0x0484e080 memalign
+--56304--     new: 0x04c04c60 (memalign            ) R-> (1017.0) 0x0484e050 aligned_alloc
+==56304== WARNING: new redirection conflicts with existing -- ignoring it
+--56304--     old: 0x04c04c60 (memalign            ) R-> (1011.0) 0x0484e080 memalign
+--56304--     new: 0x04c04c60 (memalign            ) R-> (1017.0) 0x0484e020 aligned_alloc
+--56304-- Reading syms from /usr/lib/x86_64-linux-gnu/libm.so.6
+--56304--   Considering /usr/lib/debug/.build-id/a8/8ef0199bd5e742ebd0c359edf5cb2be0ec08b5.debug ..
+--56304--   .. build-id is valid
+--56304-- REDIR: 0x4c07720 (libc.so.6:strnlen) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--56304-- REDIR: 0x4c079e0 (libc.so.6:strpbrk) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--56304-- REDIR: 0x4c072e0 (libc.so.6:strcmp) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--56304-- REDIR: 0x4c25cd0 (libc.so.6:wcsnlen) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--56304-- REDIR: 0x4c086d0 (libc.so.6:memset) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--56304-- REDIR: 0x4c24540 (libc.so.6:wcslen) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--56304-- REDIR: 0x4c08c10 (libc.so.6:memcpy@@GLIBC_2.14) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--56304-- REDIR: 0x4c24370 (libc.so.6:wcschr) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--56304-- REDIR: 0x4c07260 (libc.so.6:index) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--56304-- REDIR: 0x4c07960 (libc.so.6:rindex) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--56304-- REDIR: 0x4c085a0 (libc.so.6:memmove) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+==56304== Preferring higher priority redirection:
+--56304--     old: 0x04cff7c0 (__memcpy_avx_unalign) R-> (2018.0) 0x04850f90 __memcpy_avx_unaligned_erms
+--56304--     new: 0x04cff7c0 (__memcpy_avx_unalign) R-> (2018.1) 0x04852880 memmove
+--56304-- REDIR: 0x4c243f0 (libc.so.6:wcscmp) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--56304-- REDIR: 0x4c089e0 (libc.so.6:stpncpy) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--56304-- REDIR: 0x4c249b0 (libc.so.6:wmemchr) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--56304-- REDIR: 0x4c07830 (libc.so.6:strncmp) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--56304-- REDIR: 0x4c08a70 (libc.so.6:strcasecmp) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--56304-- REDIR: 0x4c07420 (libc.so.6:strcspn) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--56304-- REDIR: 0x4c24470 (libc.so.6:wcscpy) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--56304-- REDIR: 0x4c071d0 (libc.so.6:strcat) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--56304-- REDIR: 0x4c08b60 (libc.so.6:strncasecmp_l) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--56304-- REDIR: 0x4c08480 (libc.so.6:bcmp) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--56304-- REDIR: 0x4c10570 (libc.so.6:memrchr) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--56304-- REDIR: 0x4c0a010 (libc.so.6:strchrnul) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--56304-- REDIR: 0x4c07390 (libc.so.6:strcpy) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--56304-- REDIR: 0x4c08b10 (libc.so.6:strcasecmp_l) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--56304-- REDIR: 0x4c076a0 (libc.so.6:strlen) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--56304-- REDIR: 0x4c078d0 (libc.so.6:strncpy) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--56304-- REDIR: 0x4c08950 (libc.so.6:stpcpy) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--56304-- REDIR: 0x4c083f0 (libc.so.6:memchr) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--56304-- REDIR: 0x4c07b00 (libc.so.6:strspn) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--56304-- REDIR: 0x4c087d0 (libc.so.6:mempcpy) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--56304-- REDIR: 0x4c08ac0 (libc.so.6:strncasecmp) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--56304-- REDIR: 0x4c09f80 (libc.so.6:rawmemchr) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--56304-- REDIR: 0x4c077a0 (libc.so.6:strncat) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--56304-- REDIR: 0x4c93280 (libc.so.6:__memcpy_chk) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--56304-- REDIR: 0x4c08310 (libc.so.6:strstr) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--56304-- REDIR: 0x4cfc610 (libc.so.6:__strrchr_avx2) redirected to 0x484e810 (rindex)
+--56304-- REDIR: 0x4cfc7e0 (libc.so.6:__strlen_avx2) redirected to 0x484ed10 (strlen)
+--56304-- REDIR: 0x4cf8a80 (libc.so.6:__memcmp_avx2_movbe) redirected to 0x4852010 (bcmp)
+--56304-- REDIR: 0x4cf7d80 (libc.so.6:__strncmp_avx2) redirected to 0x484f3e0 (strncmp)
+--56304-- REDIR: 0x4c040a0 (libc.so.6:malloc) redirected to 0x4848820 (malloc)
+--56304-- REDIR: 0x4983500 (libstdc++.so.6:operator new(unsigned long)) redirected to 0x4848fa0 (operator new(unsigned long))
+--56304-- REDIR: 0x4c04740 (libc.so.6:realloc) redirected to 0x484dc50 (realloc)
+--56304-- REDIR: 0x4cff7c0 (libc.so.6:__memcpy_avx_unaligned_erms) redirected to 0x4852880 (memmove)
+--56304-- REDIR: 0x4cf82c0 (libc.so.6:__memchr_avx2) redirected to 0x484fd50 (memchr)
+--56304-- REDIR: 0x4c043e0 (libc.so.6:free) redirected to 0x484b210 (free)
+--56304-- REDIR: 0x4981760 (libstdc++.so.6:operator delete(void*)) redirected to 0x484b840 (operator delete(void*))
+--56304-- REDIR: 0x4981770 (libstdc++.so.6:operator delete(void*, unsigned long)) redirected to 0x484bb00 (operator delete(void*, unsigned long))
+--56304-- REDIR: 0x4c05520 (libc.so.6:calloc) redirected to 0x484d9d0 (calloc)
+--56304-- REDIR: 0x4cfc400 (libc.so.6:__strchrnul_avx2) redirected to 0x4853330 (strchrnul)
+--56304-- REDIR: 0x4cfc960 (libc.so.6:__strnlen_avx2) redirected to 0x484ecb0 (strnlen)
+--56304-- REDIR: 0x4cfc180 (libc.so.6:__strchr_avx2) redirected to 0x484e9f0 (index)
+--56304-- REDIR: 0x4cfdcb0 (libc.so.6:__strcpy_avx2) redirected to 0x484ee60 (strcpy)
+--56304-- REDIR: 0x4cf7940 (libc.so.6:__strcmp_avx2) redirected to 0x484fbd0 (strcmp)
+--56304-- REDIR: 0x4c07fc0 (libc.so.6:__GI_strstr) redirected to 0x4853ae0 (__strstr_sse2)
+--56304-- REDIR: 0x4cff790 (libc.so.6:__memcpy_chk_avx_unaligned_erms) redirected to 0x4853940 (__memcpy_chk)
+--56304-- REDIR: 0x4cfff80 (libc.so.6:__memset_avx2_unaligned_erms) redirected to 0x4852770 (memset)
+--56304-- REDIR: 0x4cfe040 (libc.so.6:__strncpy_avx2) redirected to 0x484efe0 (strncpy)
+--56304-- REDIR: 0x4c23180 (libc.so.6:__strstr_sse2_unaligned) redirected to 0x4853a50 (strstr)
+--56304-- REDIR: 0x4cff780 (libc.so.6:__mempcpy_avx_unaligned_erms) redirected to 0x4853440 (mempcpy)
+--56304-- REDIR: 0x4983560 (libstdc++.so.6:operator new[](unsigned long)) redirected to 0x484a280 (operator new[](unsigned long))
+--56304-- REDIR: 0x4981790 (libstdc++.so.6:operator delete[](void*)) redirected to 0x484ca20 (operator delete[](void*))
+==56304== 
+==56304== HEAP SUMMARY:
+==56304==     in use at exit: 256,403 bytes in 654 blocks
+==56304==   total heap usage: 46,543 allocs, 45,889 frees, 4,720,760 bytes allocated
+==56304== 
+==56304== Searching for pointers to 654 not-freed blocks
+==56304== Checked 502,224 bytes
+==56304== 
+==56304== 4 bytes in 1 blocks are still reachable in loss record 1 of 105
+==56304==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56304==    by 0x48808E2: newterm_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4881B4C: newterm (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4881BDF: initscr (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x12426C: initTerminal() (in /home/minty/git/edit/build/e)
+==56304==    by 0x1132AB: main (in /home/minty/git/edit/build/e)
+==56304== 
+==56304== 9 bytes in 1 blocks are still reachable in loss record 2 of 105
+==56304==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56304==    by 0x4C0758E: strdup (strdup.c:42)
+==56304==    by 0x48ADD54: ??? (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x48B1098: _nc_tiparm (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x4881238: newterm_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4881B4C: newterm (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4881BDF: initscr (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x12426C: initTerminal() (in /home/minty/git/edit/build/e)
+==56304==    by 0x1132AB: main (in /home/minty/git/edit/build/e)
+==56304== 
+==56304== 9 bytes in 1 blocks are still reachable in loss record 3 of 105
+==56304==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56304==    by 0x4C0758E: strdup (strdup.c:42)
+==56304==    by 0x48ADD54: ??? (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x48B1098: _nc_tiparm (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x488126D: newterm_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4881B4C: newterm (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4881BDF: initscr (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x12426C: initTerminal() (in /home/minty/git/edit/build/e)
+==56304==    by 0x1132AB: main (in /home/minty/git/edit/build/e)
+==56304== 
+==56304== 9 bytes in 1 blocks are still reachable in loss record 4 of 105
+==56304==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56304==    by 0x4C0758E: strdup (strdup.c:42)
+==56304==    by 0x48ADD54: ??? (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x48B1098: _nc_tiparm (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x48812A2: newterm_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4881B4C: newterm (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4881BDF: initscr (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x12426C: initTerminal() (in /home/minty/git/edit/build/e)
+==56304==    by 0x1132AB: main (in /home/minty/git/edit/build/e)
+==56304== 
+==56304== 9 bytes in 1 blocks are still reachable in loss record 5 of 105
+==56304==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56304==    by 0x4C0758E: strdup (strdup.c:42)
+==56304==    by 0x48ADD54: ??? (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x48B1098: _nc_tiparm (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x48812D7: newterm_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4881B4C: newterm (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4881BDF: initscr (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x12426C: initTerminal() (in /home/minty/git/edit/build/e)
+==56304==    by 0x1132AB: main (in /home/minty/git/edit/build/e)
+==56304== 
+==56304== 9 bytes in 1 blocks are still reachable in loss record 6 of 105
+==56304==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56304==    by 0x4C0758E: strdup (strdup.c:42)
+==56304==    by 0x48ADD54: ??? (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x48B1098: _nc_tiparm (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x4881469: newterm_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4881B4C: newterm (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4881BDF: initscr (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x12426C: initTerminal() (in /home/minty/git/edit/build/e)
+==56304==    by 0x1132AB: main (in /home/minty/git/edit/build/e)
+==56304== 
+==56304== 9 bytes in 1 blocks are still reachable in loss record 7 of 105
+==56304==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56304==    by 0x4C0758E: strdup (strdup.c:42)
+==56304==    by 0x48ADD54: ??? (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x48B1098: _nc_tiparm (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x48814B2: newterm_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4881B4C: newterm (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4881BDF: initscr (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x12426C: initTerminal() (in /home/minty/git/edit/build/e)
+==56304==    by 0x1132AB: main (in /home/minty/git/edit/build/e)
+==56304== 
+==56304== 11 bytes in 1 blocks are still reachable in loss record 8 of 105
+==56304==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56304==    by 0x4C0758E: strdup (strdup.c:42)
+==56304==    by 0x48ADD54: ??? (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x48B1098: _nc_tiparm (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x4881309: newterm_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4881B4C: newterm (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4881BDF: initscr (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x12426C: initTerminal() (in /home/minty/git/edit/build/e)
+==56304==    by 0x1132AB: main (in /home/minty/git/edit/build/e)
+==56304== 
+==56304== 11 bytes in 1 blocks are still reachable in loss record 9 of 105
+==56304==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56304==    by 0x4C0758E: strdup (strdup.c:42)
+==56304==    by 0x48ADD54: ??? (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x48B1098: _nc_tiparm (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x488133E: newterm_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4881B4C: newterm (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4881BDF: initscr (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x12426C: initTerminal() (in /home/minty/git/edit/build/e)
+==56304==    by 0x1132AB: main (in /home/minty/git/edit/build/e)
+==56304== 
+==56304== 12 bytes in 1 blocks are still reachable in loss record 10 of 105
+==56304==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56304==    by 0x4C0758E: strdup (strdup.c:42)
+==56304==    by 0x48A9377: ??? (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x48ABBF8: _nc_first_db (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x48B5696: _nc_read_entry2 (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x48B5711: ??? (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x48B5866: _nc_setupterm (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x488083D: newterm_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4881B4C: newterm (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4881BDF: initscr (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x12426C: initTerminal() (in /home/minty/git/edit/build/e)
+==56304==    by 0x1132AB: main (in /home/minty/git/edit/build/e)
+==56304== 
+==56304== 14 bytes in 1 blocks are still reachable in loss record 11 of 105
+==56304==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56304==    by 0x4C0758E: strdup (strdup.c:42)
+==56304==    by 0x48B58AE: _nc_setupterm (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x488083D: newterm_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4881B4C: newterm (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4881BDF: initscr (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x12426C: initTerminal() (in /home/minty/git/edit/build/e)
+==56304==    by 0x1132AB: main (in /home/minty/git/edit/build/e)
+==56304== 
+==56304== 17 bytes in 1 blocks are still reachable in loss record 12 of 105
+==56304==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56304==    by 0x4C0758E: strdup (strdup.c:42)
+==56304==    by 0x48ADD54: ??? (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x48B1098: _nc_tiparm (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x4881203: newterm_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4881B4C: newterm (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4881BDF: initscr (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x12426C: initTerminal() (in /home/minty/git/edit/build/e)
+==56304==    by 0x1132AB: main (in /home/minty/git/edit/build/e)
+==56304== 
+==56304== 17 bytes in 1 blocks are still reachable in loss record 13 of 105
+==56304==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56304==    by 0x4C0758E: strdup (strdup.c:42)
+==56304==    by 0x48ADD54: ??? (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x48B1098: _nc_tiparm (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x487EFF0: ??? (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x48816B0: newterm_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4881B4C: newterm (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4881BDF: initscr (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x12426C: initTerminal() (in /home/minty/git/edit/build/e)
+==56304==    by 0x1132AB: main (in /home/minty/git/edit/build/e)
+==56304== 
+==56304== 24 bytes in 1 blocks are still reachable in loss record 14 of 105
+==56304==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56304==    by 0x48AB624: _nc_home_terminfo (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x48ABBE2: _nc_first_db (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x48B5696: _nc_read_entry2 (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x48B5711: ??? (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x48B5866: _nc_setupterm (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x488083D: newterm_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4881B4C: newterm (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4881BDF: initscr (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x12426C: initTerminal() (in /home/minty/git/edit/build/e)
+==56304==    by 0x1132AB: main (in /home/minty/git/edit/build/e)
+==56304== 
+==56304== 24 bytes in 1 blocks are still reachable in loss record 15 of 105
+==56304==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56304==    by 0x4C7EF34: tsearch (tsearch.c:337)
+==56304==    by 0x48ADD6E: ??? (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x48B1098: _nc_tiparm (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x4881203: newterm_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4881B4C: newterm (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4881BDF: initscr (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x12426C: initTerminal() (in /home/minty/git/edit/build/e)
+==56304==    by 0x1132AB: main (in /home/minty/git/edit/build/e)
+==56304== 
+==56304== 24 bytes in 1 blocks are still reachable in loss record 16 of 105
+==56304==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56304==    by 0x4C7EF9E: tsearch (tsearch.c:337)
+==56304==    by 0x48ADD6E: ??? (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x48B1098: _nc_tiparm (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x4881238: newterm_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4881B4C: newterm (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4881BDF: initscr (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x12426C: initTerminal() (in /home/minty/git/edit/build/e)
+==56304==    by 0x1132AB: main (in /home/minty/git/edit/build/e)
+==56304== 
+==56304== 24 bytes in 1 blocks are still reachable in loss record 17 of 105
+==56304==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56304==    by 0x4C7EF9E: tsearch (tsearch.c:337)
+==56304==    by 0x48ADD6E: ??? (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x48B1098: _nc_tiparm (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x488126D: newterm_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4881B4C: newterm (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4881BDF: initscr (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x12426C: initTerminal() (in /home/minty/git/edit/build/e)
+==56304==    by 0x1132AB: main (in /home/minty/git/edit/build/e)
+==56304== 
+==56304== 24 bytes in 1 blocks are still reachable in loss record 18 of 105
+==56304==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56304==    by 0x4C7EF9E: tsearch (tsearch.c:337)
+==56304==    by 0x48ADD6E: ??? (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x48B1098: _nc_tiparm (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x48812A2: newterm_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4881B4C: newterm (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4881BDF: initscr (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x12426C: initTerminal() (in /home/minty/git/edit/build/e)
+==56304==    by 0x1132AB: main (in /home/minty/git/edit/build/e)
+==56304== 
+==56304== 24 bytes in 1 blocks are still reachable in loss record 19 of 105
+==56304==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56304==    by 0x4C7EF9E: tsearch (tsearch.c:337)
+==56304==    by 0x48ADD6E: ??? (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x48B1098: _nc_tiparm (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x48812D7: newterm_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4881B4C: newterm (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4881BDF: initscr (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x12426C: initTerminal() (in /home/minty/git/edit/build/e)
+==56304==    by 0x1132AB: main (in /home/minty/git/edit/build/e)
+==56304== 
+==56304== 24 bytes in 1 blocks are still reachable in loss record 20 of 105
+==56304==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56304==    by 0x4C7EF9E: tsearch (tsearch.c:337)
+==56304==    by 0x48ADD6E: ??? (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x48B1098: _nc_tiparm (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x4881309: newterm_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4881B4C: newterm (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4881BDF: initscr (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x12426C: initTerminal() (in /home/minty/git/edit/build/e)
+==56304==    by 0x1132AB: main (in /home/minty/git/edit/build/e)
+==56304== 
+==56304== 24 bytes in 1 blocks are still reachable in loss record 21 of 105
+==56304==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56304==    by 0x4C7EF9E: tsearch (tsearch.c:337)
+==56304==    by 0x48ADD6E: ??? (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x48B1098: _nc_tiparm (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x488133E: newterm_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4881B4C: newterm (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4881BDF: initscr (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x12426C: initTerminal() (in /home/minty/git/edit/build/e)
+==56304==    by 0x1132AB: main (in /home/minty/git/edit/build/e)
+==56304== 
+==56304== 24 bytes in 1 blocks are still reachable in loss record 22 of 105
+==56304==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56304==    by 0x4C7EF9E: tsearch (tsearch.c:337)
+==56304==    by 0x48ADD6E: ??? (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x48B1098: _nc_tiparm (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x4881469: newterm_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4881B4C: newterm (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4881BDF: initscr (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x12426C: initTerminal() (in /home/minty/git/edit/build/e)
+==56304==    by 0x1132AB: main (in /home/minty/git/edit/build/e)
+==56304== 
+==56304== 24 bytes in 1 blocks are still reachable in loss record 23 of 105
+==56304==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56304==    by 0x4C7EF9E: tsearch (tsearch.c:337)
+==56304==    by 0x48ADD6E: ??? (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x48B1098: _nc_tiparm (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x48814B2: newterm_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4881B4C: newterm (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4881BDF: initscr (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x12426C: initTerminal() (in /home/minty/git/edit/build/e)
+==56304==    by 0x1132AB: main (in /home/minty/git/edit/build/e)
+==56304== 
+==56304== 24 bytes in 1 blocks are still reachable in loss record 24 of 105
+==56304==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56304==    by 0x4C7EF9E: tsearch (tsearch.c:337)
+==56304==    by 0x48ADD6E: ??? (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x48B1098: _nc_tiparm (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x487EFF0: ??? (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x48816B0: newterm_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4881B4C: newterm (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4881BDF: initscr (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x12426C: initTerminal() (in /home/minty/git/edit/build/e)
+==56304==    by 0x1132AB: main (in /home/minty/git/edit/build/e)
+==56304== 
+==56304== 24 bytes in 1 blocks are still reachable in loss record 25 of 105
+==56304==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56304==    by 0x48A99C9: _nc_add_to_try (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x48B6212: _nc_keypad (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x124282: initTerminal() (in /home/minty/git/edit/build/e)
+==56304==    by 0x1132AB: main (in /home/minty/git/edit/build/e)
+==56304== 
+==56304== 24 bytes in 1 blocks are possibly lost in loss record 26 of 105
+==56304==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56304==    by 0x4C7EF9E: tsearch (tsearch.c:337)
+==56304==    by 0x48ADD6E: ??? (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x48B1098: _nc_tiparm (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x487A628: ??? (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x487DE6D: ??? (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4890895: doupdate_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x1132B8: main (in /home/minty/git/edit/build/e)
+==56304== 
+==56304== 24 bytes in 1 blocks are possibly lost in loss record 27 of 105
+==56304==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56304==    by 0x4C7EF9E: tsearch (tsearch.c:337)
+==56304==    by 0x48ADD6E: ??? (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x48B1098: _nc_tiparm (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x487A5A8: ??? (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4890895: doupdate_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x1132B8: main (in /home/minty/git/edit/build/e)
+==56304== 
+==56304== 31 bytes in 1 blocks are still reachable in loss record 28 of 105
+==56304==    at 0x4849013: operator new(unsigned long) (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56304==    by 0x113579: void std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_construct<char*>(char*, char*, std::forward_iterator_tag) [clone .isra.0] (in /home/minty/git/edit/build/e)
+==56304==    by 0x120C16: void std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >::_M_realloc_insert<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&>(__gnu_cxx::__normal_iterator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >*, std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > > >, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) (in /home/minty/git/edit/build/e)
+==56304==    by 0x1298F0: State::resetState(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) (in /home/minty/git/edit/build/e)
+==56304==    by 0x153FB9: sendFindFileKeys(State*, char) (in /home/minty/git/edit/build/e)
+==56304==    by 0x14B374: sendKeys(State*, char) (in /home/minty/git/edit/build/e)
+==56304==    by 0x1132E5: main (in /home/minty/git/edit/build/e)
+==56304== 
+==56304== 31 bytes in 1 blocks are still reachable in loss record 29 of 105
+==56304==    at 0x4849013: operator new(unsigned long) (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56304==    by 0x1264D9: void std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_construct<char*>(char*, char*, std::forward_iterator_tag) [clone .isra.0] (in /home/minty/git/edit/build/e)
+==56304==    by 0x128C09: State::changeFile(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) (in /home/minty/git/edit/build/e)
+==56304==    by 0x1299B6: State::resetState(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) (in /home/minty/git/edit/build/e)
+==56304==    by 0x153FB9: sendFindFileKeys(State*, char) (in /home/minty/git/edit/build/e)
+==56304==    by 0x14B374: sendKeys(State*, char) (in /home/minty/git/edit/build/e)
+==56304==    by 0x1132E5: main (in /home/minty/git/edit/build/e)
+==56304== 
+==56304== 32 bytes in 1 blocks are still reachable in loss record 30 of 105
+==56304==    at 0x4849013: operator new(unsigned long) (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56304==    by 0x120CB7: void std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >::_M_realloc_insert<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&>(__gnu_cxx::__normal_iterator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >*, std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > > >, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) (in /home/minty/git/edit/build/e)
+==56304==    by 0x1298F0: State::resetState(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) (in /home/minty/git/edit/build/e)
+==56304==    by 0x153FB9: sendFindFileKeys(State*, char) (in /home/minty/git/edit/build/e)
+==56304==    by 0x14B374: sendKeys(State*, char) (in /home/minty/git/edit/build/e)
+==56304==    by 0x1132E5: main (in /home/minty/git/edit/build/e)
+==56304== 
+==56304== 43 bytes in 1 blocks are still reachable in loss record 31 of 105
+==56304==    at 0x4849013: operator new(unsigned long) (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56304==    by 0x113579: void std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_construct<char*>(char*, char*, std::forward_iterator_tag) [clone .isra.0] (in /home/minty/git/edit/build/e)
+==56304==    by 0x120C16: void std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >::_M_realloc_insert<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&>(__gnu_cxx::__normal_iterator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >*, std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > > >, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) (in /home/minty/git/edit/build/e)
+==56304==    by 0x12E247: std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >::insert(__gnu_cxx::__normal_iterator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const*, std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > > >, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) (in /home/minty/git/edit/build/e)
+==56304==    by 0x12CB48: pasteFromClipboardAfter(State*) (in /home/minty/git/edit/build/e)
+==56304==    by 0x15A18D: sendShortcutKeys(State*, char) (in /home/minty/git/edit/build/e)
+==56304==    by 0x14B364: sendKeys(State*, char) (in /home/minty/git/edit/build/e)
+==56304==    by 0x1132E5: main (in /home/minty/git/edit/build/e)
+==56304== 
+==56304== 44 bytes in 2 blocks are still reachable in loss record 32 of 105
+==56304==    at 0x4849013: operator new(unsigned long) (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56304==    by 0x4A67A74: ??? (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.32)
+==56304==    by 0x4A67BA4: std::filesystem::__cxx11::path::_List::_List(std::filesystem::__cxx11::path::_List const&) (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.32)
+==56304==    by 0x120FDF: void std::vector<std::filesystem::__cxx11::path, std::allocator<std::filesystem::__cxx11::path> >::_M_realloc_insert<std::filesystem::__cxx11::path const&>(__gnu_cxx::__normal_iterator<std::filesystem::__cxx11::path*, std::vector<std::filesystem::__cxx11::path, std::allocator<std::filesystem::__cxx11::path> > >, std::filesystem::__cxx11::path const&) (in /home/minty/git/edit/build/e)
+==56304==    by 0x11DE4D: findFiles(std::filesystem::__cxx11::path const&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) (in /home/minty/git/edit/build/e)
+==56304==    by 0x11DF1F: generateFindFileOutput(State*) (in /home/minty/git/edit/build/e)
+==56304==    by 0x1131FC: main (in /home/minty/git/edit/build/e)
+==56304== 
+==56304== 46 bytes in 1 blocks are still reachable in loss record 33 of 105
+==56304==    at 0x484DCD3: realloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56304==    by 0x48AA6CC: _nc_doalloc (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x48B516F: _nc_read_termtype (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x48B552A: ??? (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x48B7C40: ??? (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x48B56BB: _nc_read_entry2 (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x48B5711: ??? (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x48B5866: _nc_setupterm (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x488083D: newterm_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4881B4C: newterm (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4881BDF: initscr (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x12426C: initTerminal() (in /home/minty/git/edit/build/e)
+==56304== 
+==56304== 46 bytes in 1 blocks are still reachable in loss record 34 of 105
+==56304==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56304==    by 0x48A9FDE: ??? (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x48B587D: _nc_setupterm (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x488083D: newterm_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4881B4C: newterm (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4881BDF: initscr (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x12426C: initTerminal() (in /home/minty/git/edit/build/e)
+==56304==    by 0x1132AB: main (in /home/minty/git/edit/build/e)
+==56304== 
+==56304== 48 bytes in 1 blocks are still reachable in loss record 35 of 105
+==56304==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56304==    by 0x48AB833: _nc_first_db (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x48B5696: _nc_read_entry2 (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x48B5711: ??? (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x48B5866: _nc_setupterm (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x488083D: newterm_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4881B4C: newterm (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4881BDF: initscr (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x12426C: initTerminal() (in /home/minty/git/edit/build/e)
+==56304==    by 0x1132AB: main (in /home/minty/git/edit/build/e)
+==56304== 
+==56304== 48 bytes in 1 blocks are still reachable in loss record 36 of 105
+==56304==    at 0x4849013: operator new(unsigned long) (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56304==    by 0x14C0BE: void std::vector<std::vector<diffLine, std::allocator<diffLine> >, std::allocator<std::vector<diffLine, std::allocator<diffLine> > > >::_M_realloc_insert<std::vector<diffLine, std::allocator<diffLine> > const&>(__gnu_cxx::__normal_iterator<std::vector<diffLine, std::allocator<diffLine> >*, std::vector<std::vector<diffLine, std::allocator<diffLine> >, std::allocator<std::vector<diffLine, std::allocator<diffLine> > > > >, std::vector<diffLine, std::allocator<diffLine> > const&) (in /home/minty/git/edit/build/e)
+==56304==    by 0x14B84F: sendKeys(State*, char) (in /home/minty/git/edit/build/e)
+==56304==    by 0x1132E5: main (in /home/minty/git/edit/build/e)
+==56304== 
+==56304== 63 bytes in 1 blocks are possibly lost in loss record 37 of 105
+==56304==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56304==    by 0x4C0758E: strdup (strdup.c:42)
+==56304==    by 0x48ADD54: ??? (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x48B1098: _nc_tiparm (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x487A628: ??? (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x487DE6D: ??? (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4890895: doupdate_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x1132B8: main (in /home/minty/git/edit/build/e)
+==56304== 
+==56304== 64 bytes in 1 blocks are still reachable in loss record 38 of 105
+==56304==    at 0x4849013: operator new(unsigned long) (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56304==    by 0x126732: State::State() (in /home/minty/git/edit/build/e)
+==56304==    by 0x1131F4: main (in /home/minty/git/edit/build/e)
+==56304== 
+==56304== 64 bytes in 1 blocks are possibly lost in loss record 39 of 105
+==56304==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56304==    by 0x4C0758E: strdup (strdup.c:42)
+==56304==    by 0x48ADD54: ??? (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x48B1098: _nc_tiparm (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x487A5A8: ??? (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4890895: doupdate_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x1132B8: main (in /home/minty/git/edit/build/e)
+==56304== 
+==56304== 70 bytes in 1 blocks are still reachable in loss record 40 of 105
+==56304==    at 0x484DCD3: realloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56304==    by 0x48AA6CC: _nc_doalloc (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x48B1731: _nc_tiparm (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x4881203: newterm_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4881B4C: newterm (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4881BDF: initscr (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x12426C: initTerminal() (in /home/minty/git/edit/build/e)
+==56304==    by 0x1132AB: main (in /home/minty/git/edit/build/e)
+==56304== 
+==56304== 80 bytes in 1 blocks are still reachable in loss record 41 of 105
+==56304==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56304==    by 0x48AA04B: ??? (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x48B587D: _nc_setupterm (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x488083D: newterm_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4881B4C: newterm (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4881BDF: initscr (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x12426C: initTerminal() (in /home/minty/git/edit/build/e)
+==56304==    by 0x1132AB: main (in /home/minty/git/edit/build/e)
+==56304== 
+==56304== 80 bytes in 2 blocks are still reachable in loss record 42 of 105
+==56304==    at 0x4849013: operator new(unsigned long) (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56304==    by 0x14BDAE: std::vector<diffLine, std::allocator<diffLine> >::vector(std::vector<diffLine, std::allocator<diffLine> > const&) (in /home/minty/git/edit/build/e)
+==56304==    by 0x14BFE4: void std::vector<std::vector<diffLine, std::allocator<diffLine> >, std::allocator<std::vector<diffLine, std::allocator<diffLine> > > >::_M_realloc_insert<std::vector<diffLine, std::allocator<diffLine> > const&>(__gnu_cxx::__normal_iterator<std::vector<diffLine, std::allocator<diffLine> >*, std::vector<std::vector<diffLine, std::allocator<diffLine> >, std::allocator<std::vector<diffLine, std::allocator<diffLine> > > > >, std::vector<diffLine, std::allocator<diffLine> > const&) (in /home/minty/git/edit/build/e)
+==56304==    by 0x14B84F: sendKeys(State*, char) (in /home/minty/git/edit/build/e)
+==56304==    by 0x1132E5: main (in /home/minty/git/edit/build/e)
+==56304== 
+==56304== 82 bytes in 1 blocks are still reachable in loss record 43 of 105
+==56304==    at 0x484DCD3: realloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56304==    by 0x48AA6CC: _nc_doalloc (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x48AD95B: _nc_tparm_analyze (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x48ADC62: ??? (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x48B1098: _nc_tiparm (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x487A628: ??? (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x487DE6D: ??? (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4890895: doupdate_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x1132B8: main (in /home/minty/git/edit/build/e)
+==56304== 
+==56304== 86 bytes in 2 blocks are still reachable in loss record 44 of 105
+==56304==    at 0x4849013: operator new(unsigned long) (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56304==    by 0x14BE46: std::vector<diffLine, std::allocator<diffLine> >::vector(std::vector<diffLine, std::allocator<diffLine> > const&) (in /home/minty/git/edit/build/e)
+==56304==    by 0x14BFE4: void std::vector<std::vector<diffLine, std::allocator<diffLine> >, std::allocator<std::vector<diffLine, std::allocator<diffLine> > > >::_M_realloc_insert<std::vector<diffLine, std::allocator<diffLine> > const&>(__gnu_cxx::__normal_iterator<std::vector<diffLine, std::allocator<diffLine> >*, std::vector<std::vector<diffLine, std::allocator<diffLine> >, std::allocator<std::vector<diffLine, std::allocator<diffLine> > > > >, std::vector<diffLine, std::allocator<diffLine> > const&) (in /home/minty/git/edit/build/e)
+==56304==    by 0x14B84F: sendKeys(State*, char) (in /home/minty/git/edit/build/e)
+==56304==    by 0x1132E5: main (in /home/minty/git/edit/build/e)
+==56304== 
+==56304== 93 bytes in 1 blocks are still reachable in loss record 45 of 105
+==56304==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56304==    by 0x48AB79A: _nc_first_db (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x48B5696: _nc_read_entry2 (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x48B5711: ??? (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x48B5866: _nc_setupterm (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x488083D: newterm_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4881B4C: newterm (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4881BDF: initscr (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x12426C: initTerminal() (in /home/minty/git/edit/build/e)
+==56304==    by 0x1132AB: main (in /home/minty/git/edit/build/e)
+==56304== 
+==56304== 97 bytes in 3 blocks are still reachable in loss record 46 of 105
+==56304==    at 0x4849013: operator new(unsigned long) (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56304==    by 0x4A256D4: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::reserve(unsigned long) (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.32)
+==56304==    by 0x133375: indentLine(State*, unsigned int) (in /home/minty/git/edit/build/e)
+==56304==    by 0x15238E: sendVisualKeys(State*, char) (in /home/minty/git/edit/build/e)
+==56304==    by 0x14B32C: sendKeys(State*, char) (in /home/minty/git/edit/build/e)
+==56304==    by 0x1132E5: main (in /home/minty/git/edit/build/e)
+==56304== 
+==56304== 104 bytes in 1 blocks are still reachable in loss record 47 of 105
+==56304==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56304==    by 0x487A6D5: ??? (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x487F2A7: newwin_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4880D1F: newterm_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4881B4C: newterm (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4881BDF: initscr (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x12426C: initTerminal() (in /home/minty/git/edit/build/e)
+==56304==    by 0x1132AB: main (in /home/minty/git/edit/build/e)
+==56304== 
+==56304== 104 bytes in 1 blocks are still reachable in loss record 48 of 105
+==56304==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56304==    by 0x487A6D5: ??? (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x487F2A7: newwin_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4880D44: newterm_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4881B4C: newterm (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4881BDF: initscr (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x12426C: initTerminal() (in /home/minty/git/edit/build/e)
+==56304==    by 0x1132AB: main (in /home/minty/git/edit/build/e)
+==56304== 
+==56304== 104 bytes in 1 blocks are still reachable in loss record 49 of 105
+==56304==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56304==    by 0x487A6D5: ??? (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x487F2A7: newwin_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4880ED3: newterm_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4881B4C: newterm (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4881BDF: initscr (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x12426C: initTerminal() (in /home/minty/git/edit/build/e)
+==56304==    by 0x1132AB: main (in /home/minty/git/edit/build/e)
+==56304== 
+==56304== 121 bytes in 5 blocks are still reachable in loss record 50 of 105
+==56304==    at 0x4849013: operator new(unsigned long) (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56304==    by 0x113579: void std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_construct<char*>(char*, char*, std::forward_iterator_tag) [clone .isra.0] (in /home/minty/git/edit/build/e)
+==56304==    by 0x120FD2: void std::vector<std::filesystem::__cxx11::path, std::allocator<std::filesystem::__cxx11::path> >::_M_realloc_insert<std::filesystem::__cxx11::path const&>(__gnu_cxx::__normal_iterator<std::filesystem::__cxx11::path*, std::vector<std::filesystem::__cxx11::path, std::allocator<std::filesystem::__cxx11::path> > >, std::filesystem::__cxx11::path const&) (in /home/minty/git/edit/build/e)
+==56304==    by 0x11DE4D: findFiles(std::filesystem::__cxx11::path const&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) (in /home/minty/git/edit/build/e)
+==56304==    by 0x11DF1F: generateFindFileOutput(State*) (in /home/minty/git/edit/build/e)
+==56304==    by 0x1131FC: main (in /home/minty/git/edit/build/e)
+==56304== 
+==56304== 128 bytes in 1 blocks are still reachable in loss record 51 of 105
+==56304==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56304==    by 0x48808AF: newterm_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4881B4C: newterm (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4881BDF: initscr (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x12426C: initTerminal() (in /home/minty/git/edit/build/e)
+==56304==    by 0x1132AB: main (in /home/minty/git/edit/build/e)
+==56304== 
+==56304== 136 bytes in 1 blocks are still reachable in loss record 52 of 105
+==56304==    at 0x4849013: operator new(unsigned long) (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56304==    by 0x12A86C: void std::vector<Archive, std::allocator<Archive> >::_M_realloc_insert<Archive>(__gnu_cxx::__normal_iterator<Archive*, std::vector<Archive, std::allocator<Archive> > >, Archive&&) (in /home/minty/git/edit/build/e)
+==56304==    by 0x1293E7: State::changeFile(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) (in /home/minty/git/edit/build/e)
+==56304==    by 0x1299B6: State::resetState(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) (in /home/minty/git/edit/build/e)
+==56304==    by 0x153FB9: sendFindFileKeys(State*, char) (in /home/minty/git/edit/build/e)
+==56304==    by 0x14B374: sendKeys(State*, char) (in /home/minty/git/edit/build/e)
+==56304==    by 0x1132E5: main (in /home/minty/git/edit/build/e)
+==56304== 
+==56304== 160 bytes in 1 blocks are still reachable in loss record 53 of 105
+==56304==    at 0x484DCD3: realloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56304==    by 0x48AA6CC: _nc_doalloc (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x48B5197: _nc_read_termtype (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x48B552A: ??? (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x48B7C40: ??? (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x48B56BB: _nc_read_entry2 (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x48B5711: ??? (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x48B5866: _nc_setupterm (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x488083D: newterm_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4881B4C: newterm (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4881BDF: initscr (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x12426C: initTerminal() (in /home/minty/git/edit/build/e)
+==56304== 
+==56304== 168 bytes in 1 blocks are still reachable in loss record 54 of 105
+==56304==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56304==    by 0x48ADCCD: ??? (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x48B1098: _nc_tiparm (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x4881203: newterm_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4881B4C: newterm (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4881BDF: initscr (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x12426C: initTerminal() (in /home/minty/git/edit/build/e)
+==56304==    by 0x1132AB: main (in /home/minty/git/edit/build/e)
+==56304== 
+==56304== 168 bytes in 1 blocks are still reachable in loss record 55 of 105
+==56304==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56304==    by 0x48ADCCD: ??? (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x48B1098: _nc_tiparm (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x4881238: newterm_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4881B4C: newterm (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4881BDF: initscr (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x12426C: initTerminal() (in /home/minty/git/edit/build/e)
+==56304==    by 0x1132AB: main (in /home/minty/git/edit/build/e)
+==56304== 
+==56304== 168 bytes in 1 blocks are still reachable in loss record 56 of 105
+==56304==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56304==    by 0x48ADCCD: ??? (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x48B1098: _nc_tiparm (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x488126D: newterm_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4881B4C: newterm (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4881BDF: initscr (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x12426C: initTerminal() (in /home/minty/git/edit/build/e)
+==56304==    by 0x1132AB: main (in /home/minty/git/edit/build/e)
+==56304== 
+==56304== 168 bytes in 1 blocks are still reachable in loss record 57 of 105
+==56304==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56304==    by 0x48ADCCD: ??? (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x48B1098: _nc_tiparm (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x48812A2: newterm_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4881B4C: newterm (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4881BDF: initscr (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x12426C: initTerminal() (in /home/minty/git/edit/build/e)
+==56304==    by 0x1132AB: main (in /home/minty/git/edit/build/e)
+==56304== 
+==56304== 168 bytes in 1 blocks are still reachable in loss record 58 of 105
+==56304==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56304==    by 0x48ADCCD: ??? (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x48B1098: _nc_tiparm (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x48812D7: newterm_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4881B4C: newterm (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4881BDF: initscr (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x12426C: initTerminal() (in /home/minty/git/edit/build/e)
+==56304==    by 0x1132AB: main (in /home/minty/git/edit/build/e)
+==56304== 
+==56304== 168 bytes in 1 blocks are still reachable in loss record 59 of 105
+==56304==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56304==    by 0x48ADCCD: ??? (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x48B1098: _nc_tiparm (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x4881309: newterm_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4881B4C: newterm (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4881BDF: initscr (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x12426C: initTerminal() (in /home/minty/git/edit/build/e)
+==56304==    by 0x1132AB: main (in /home/minty/git/edit/build/e)
+==56304== 
+==56304== 168 bytes in 1 blocks are still reachable in loss record 60 of 105
+==56304==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56304==    by 0x48ADCCD: ??? (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x48B1098: _nc_tiparm (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x488133E: newterm_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4881B4C: newterm (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4881BDF: initscr (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x12426C: initTerminal() (in /home/minty/git/edit/build/e)
+==56304==    by 0x1132AB: main (in /home/minty/git/edit/build/e)
+==56304== 
+==56304== 168 bytes in 1 blocks are still reachable in loss record 61 of 105
+==56304==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56304==    by 0x48ADCCD: ??? (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x48B1098: _nc_tiparm (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x4881469: newterm_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4881B4C: newterm (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4881BDF: initscr (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x12426C: initTerminal() (in /home/minty/git/edit/build/e)
+==56304==    by 0x1132AB: main (in /home/minty/git/edit/build/e)
+==56304== 
+==56304== 168 bytes in 1 blocks are still reachable in loss record 62 of 105
+==56304==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56304==    by 0x48ADCCD: ??? (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x48B1098: _nc_tiparm (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x48814B2: newterm_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4881B4C: newterm (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4881BDF: initscr (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x12426C: initTerminal() (in /home/minty/git/edit/build/e)
+==56304==    by 0x1132AB: main (in /home/minty/git/edit/build/e)
+==56304== 
+==56304== 168 bytes in 1 blocks are still reachable in loss record 63 of 105
+==56304==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56304==    by 0x48ADCCD: ??? (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x48B1098: _nc_tiparm (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x487EFF0: ??? (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x48816B0: newterm_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4881B4C: newterm (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4881BDF: initscr (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x12426C: initTerminal() (in /home/minty/git/edit/build/e)
+==56304==    by 0x1132AB: main (in /home/minty/git/edit/build/e)
+==56304== 
+==56304== 168 bytes in 1 blocks are possibly lost in loss record 64 of 105
+==56304==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56304==    by 0x48ADCCD: ??? (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x48B1098: _nc_tiparm (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x487A628: ??? (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x487DE6D: ??? (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4890895: doupdate_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x1132B8: main (in /home/minty/git/edit/build/e)
+==56304== 
+==56304== 168 bytes in 1 blocks are possibly lost in loss record 65 of 105
+==56304==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56304==    by 0x48ADCCD: ??? (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x48B1098: _nc_tiparm (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x487A5A8: ??? (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4890895: doupdate_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x1132B8: main (in /home/minty/git/edit/build/e)
+==56304== 
+==56304== 240 bytes in 1 blocks are still reachable in loss record 66 of 105
+==56304==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56304==    by 0x4890EAF: doupdate_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x1132ED: main (in /home/minty/git/edit/build/e)
+==56304== 
+==56304== 256 bytes in 1 blocks are still reachable in loss record 67 of 105
+==56304==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56304==    by 0x487A90B: ??? (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x487CE71: start_color_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x124295: initTerminal() (in /home/minty/git/edit/build/e)
+==56304==    by 0x1132AB: main (in /home/minty/git/edit/build/e)
+==56304== 
+==56304== 256 bytes in 1 blocks are still reachable in loss record 68 of 105
+==56304==    at 0x4849013: operator new(unsigned long) (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56304==    by 0x14BC95: void std::vector<Position, std::allocator<Position> >::_M_realloc_insert<Position>(__gnu_cxx::__normal_iterator<Position*, std::vector<Position, std::allocator<Position> > >, Position&&) (in /home/minty/git/edit/build/e)
+==56304==    by 0x14B6FC: sendKeys(State*, char) (in /home/minty/git/edit/build/e)
+==56304==    by 0x1132E5: main (in /home/minty/git/edit/build/e)
+==56304== 
+==56304== 313 bytes in 16 blocks are still reachable in loss record 69 of 105
+==56304==    at 0x4849013: operator new(unsigned long) (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56304==    by 0x4A67A74: ??? (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.32)
+==56304==    by 0x4A67BA4: std::filesystem::__cxx11::path::_List::_List(std::filesystem::__cxx11::path::_List const&) (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.32)
+==56304==    by 0x11DDDE: findFiles(std::filesystem::__cxx11::path const&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) (in /home/minty/git/edit/build/e)
+==56304==    by 0x11DF1F: generateFindFileOutput(State*) (in /home/minty/git/edit/build/e)
+==56304==    by 0x1131FC: main (in /home/minty/git/edit/build/e)
+==56304== 
+==56304== 442 bytes in 8 blocks are still reachable in loss record 70 of 105
+==56304==    at 0x4849013: operator new(unsigned long) (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56304==    by 0x4A24F9E: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_assign(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.32)
+==56304==    by 0x14B4B2: sendKeys(State*, char) (in /home/minty/git/edit/build/e)
+==56304==    by 0x1132E5: main (in /home/minty/git/edit/build/e)
+==56304== 
+==56304== 480 bytes in 1 blocks are still reachable in loss record 71 of 105
+==56304==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56304==    by 0x48911F7: doupdate_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x1132ED: main (in /home/minty/git/edit/build/e)
+==56304== 
+==56304== 480 bytes in 1 blocks are still reachable in loss record 72 of 105
+==56304==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56304==    by 0x4891075: doupdate_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x1132ED: main (in /home/minty/git/edit/build/e)
+==56304== 
+==56304== 504 bytes in 21 blocks are still reachable in loss record 73 of 105
+==56304==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56304==    by 0x48A9919: _nc_add_to_try (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x48B6308: _nc_keypad (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x124282: initTerminal() (in /home/minty/git/edit/build/e)
+==56304==    by 0x1132AB: main (in /home/minty/git/edit/build/e)
+==56304== 
+==56304== 512 bytes in 1 blocks are still reachable in loss record 74 of 105
+==56304==    at 0x4849013: operator new(unsigned long) (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56304==    by 0x126754: State::State() (in /home/minty/git/edit/build/e)
+==56304==    by 0x1131F4: main (in /home/minty/git/edit/build/e)
+==56304== 
+==56304== 512 bytes in 1 blocks are still reachable in loss record 75 of 105
+==56304==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56304==    by 0x488088D: newterm_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4881B4C: newterm (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4881BDF: initscr (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x12426C: initTerminal() (in /home/minty/git/edit/build/e)
+==56304==    by 0x1132AB: main (in /home/minty/git/edit/build/e)
+==56304== 
+==56304== 536 bytes in 1 blocks are still reachable in loss record 76 of 105
+==56304==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56304==    by 0x48B537E: _nc_read_termtype (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x48B552A: ??? (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x48B7C40: ??? (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x48B56BB: _nc_read_entry2 (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x48B5711: ??? (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x48B5866: _nc_setupterm (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x488083D: newterm_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4881B4C: newterm (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4881BDF: initscr (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x12426C: initTerminal() (in /home/minty/git/edit/build/e)
+==56304==    by 0x1132AB: main (in /home/minty/git/edit/build/e)
+==56304== 
+==56304== 536 bytes in 1 blocks are still reachable in loss record 77 of 105
+==56304==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56304==    by 0x48AA119: ??? (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x48B587D: _nc_setupterm (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x488083D: newterm_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4881B4C: newterm (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4881BDF: initscr (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x12426C: initTerminal() (in /home/minty/git/edit/build/e)
+==56304==    by 0x1132AB: main (in /home/minty/git/edit/build/e)
+==56304== 
+==56304== 664 bytes in 5 blocks are still reachable in loss record 78 of 105
+==56304==    at 0x4849013: operator new(unsigned long) (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56304==    by 0x4A679DA: ??? (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.32)
+==56304==    by 0x4A67BA4: std::filesystem::__cxx11::path::_List::_List(std::filesystem::__cxx11::path::_List const&) (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.32)
+==56304==    by 0x120FDF: void std::vector<std::filesystem::__cxx11::path, std::allocator<std::filesystem::__cxx11::path> >::_M_realloc_insert<std::filesystem::__cxx11::path const&>(__gnu_cxx::__normal_iterator<std::filesystem::__cxx11::path*, std::vector<std::filesystem::__cxx11::path, std::allocator<std::filesystem::__cxx11::path> > >, std::filesystem::__cxx11::path const&) (in /home/minty/git/edit/build/e)
+==56304==    by 0x11DE4D: findFiles(std::filesystem::__cxx11::path const&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) (in /home/minty/git/edit/build/e)
+==56304==    by 0x11DF1F: generateFindFileOutput(State*) (in /home/minty/git/edit/build/e)
+==56304==    by 0x1131FC: main (in /home/minty/git/edit/build/e)
+==56304== 
+==56304== 680 bytes in 20 blocks are still reachable in loss record 79 of 105
+==56304==    at 0x4849013: operator new(unsigned long) (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56304==    by 0x14B8F0: sendKeys(State*, char) (in /home/minty/git/edit/build/e)
+==56304==    by 0x1132E5: main (in /home/minty/git/edit/build/e)
+==56304== 
+==56304== 760 bytes in 1 blocks are still reachable in loss record 80 of 105
+==56304==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56304==    by 0x48B5819: _nc_setupterm (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x488083D: newterm_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4881B4C: newterm (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4881BDF: initscr (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x12426C: initTerminal() (in /home/minty/git/edit/build/e)
+==56304==    by 0x1132AB: main (in /home/minty/git/edit/build/e)
+==56304== 
+==56304== 767 bytes in 24 blocks are still reachable in loss record 81 of 105
+==56304==    at 0x4849013: operator new(unsigned long) (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56304==    by 0x12ACAA: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >* std::__do_uninit_copy<__gnu_cxx::__normal_iterator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const*, std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > > >, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >*>(__gnu_cxx::__normal_iterator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const*, std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > > >, __gnu_cxx::__normal_iterator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const*, std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > > >, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >*) (in /home/minty/git/edit/build/e)
+==56304==    by 0x127652: std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >::operator=(std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > > const&) [clone .isra.0] (in /home/minty/git/edit/build/e)
+==56304==    by 0x128CB0: State::changeFile(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) (in /home/minty/git/edit/build/e)
+==56304==    by 0x1299B6: State::resetState(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) (in /home/minty/git/edit/build/e)
+==56304==    by 0x153FB9: sendFindFileKeys(State*, char) (in /home/minty/git/edit/build/e)
+==56304==    by 0x14B374: sendKeys(State*, char) (in /home/minty/git/edit/build/e)
+==56304==    by 0x1132E5: main (in /home/minty/git/edit/build/e)
+==56304== 
+==56304== 801 bytes in 1 blocks are still reachable in loss record 82 of 105
+==56304==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56304==    by 0x48B5287: _nc_read_termtype (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x48B552A: ??? (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x48B7C40: ??? (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x48B56BB: _nc_read_entry2 (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x48B5711: ??? (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x48B5866: _nc_setupterm (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x488083D: newterm_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4881B4C: newterm (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4881BDF: initscr (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x12426C: initTerminal() (in /home/minty/git/edit/build/e)
+==56304==    by 0x1132AB: main (in /home/minty/git/edit/build/e)
+==56304== 
+==56304== 880 bytes in 1 blocks are still reachable in loss record 83 of 105
+==56304==    at 0x4849013: operator new(unsigned long) (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56304==    by 0x1131E9: main (in /home/minty/git/edit/build/e)
+==56304== 
+==56304== 951 bytes in 37 blocks are still reachable in loss record 84 of 105
+==56304==    at 0x4849013: operator new(unsigned long) (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56304==    by 0x11DE6C: findFiles(std::filesystem::__cxx11::path const&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) (in /home/minty/git/edit/build/e)
+==56304==    by 0x11DF1F: generateFindFileOutput(State*) (in /home/minty/git/edit/build/e)
+==56304==    by 0x1131FC: main (in /home/minty/git/edit/build/e)
+==56304== 
+==56304== 960 bytes in 1 blocks are still reachable in loss record 85 of 105
+==56304==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56304==    by 0x487A6F3: ??? (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x487F2A7: newwin_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4880D1F: newterm_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4881B4C: newterm (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4881BDF: initscr (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x12426C: initTerminal() (in /home/minty/git/edit/build/e)
+==56304==    by 0x1132AB: main (in /home/minty/git/edit/build/e)
+==56304== 
+==56304== 960 bytes in 1 blocks are still reachable in loss record 86 of 105
+==56304==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56304==    by 0x487A6F3: ??? (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x487F2A7: newwin_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4880D44: newterm_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4881B4C: newterm (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4881BDF: initscr (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x12426C: initTerminal() (in /home/minty/git/edit/build/e)
+==56304==    by 0x1132AB: main (in /home/minty/git/edit/build/e)
+==56304== 
+==56304== 960 bytes in 1 blocks are still reachable in loss record 87 of 105
+==56304==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56304==    by 0x487A6F3: ??? (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x487F2A7: newwin_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4880ED3: newterm_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4881B4C: newterm (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4881BDF: initscr (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x12426C: initTerminal() (in /home/minty/git/edit/build/e)
+==56304==    by 0x1132AB: main (in /home/minty/git/edit/build/e)
+==56304== 
+==56304== 1,024 bytes in 1 blocks are still reachable in loss record 88 of 105
+==56304==    at 0x4849013: operator new(unsigned long) (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56304==    by 0x14B878: sendKeys(State*, char) (in /home/minty/git/edit/build/e)
+==56304==    by 0x1132E5: main (in /home/minty/git/edit/build/e)
+==56304== 
+==56304== 1,200 bytes in 50 blocks are still reachable in loss record 89 of 105
+==56304==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56304==    by 0x48A9976: _nc_add_to_try (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x48B6308: _nc_keypad (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x124282: initTerminal() (in /home/minty/git/edit/build/e)
+==56304==    by 0x1132AB: main (in /home/minty/git/edit/build/e)
+==56304== 
+==56304== 1,329 bytes in 1 blocks are still reachable in loss record 90 of 105
+==56304==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56304==    by 0x48B4ACD: _nc_read_termtype (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x48B552A: ??? (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x48B7C40: ??? (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x48B56BB: _nc_read_entry2 (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x48B5711: ??? (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x48B5866: _nc_setupterm (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x488083D: newterm_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4881B4C: newterm (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4881BDF: initscr (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x12426C: initTerminal() (in /home/minty/git/edit/build/e)
+==56304==    by 0x1132AB: main (in /home/minty/git/edit/build/e)
+==56304== 
+==56304== 1,624 bytes in 1 blocks are still reachable in loss record 91 of 105
+==56304==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56304==    by 0x48ACACE: new_prescr (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x4881B3B: newterm (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4881BDF: initscr (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x12426C: initTerminal() (in /home/minty/git/edit/build/e)
+==56304==    by 0x1132AB: main (in /home/minty/git/edit/build/e)
+==56304== 
+==56304== 1,704 bytes in 71 blocks are still reachable in loss record 92 of 105
+==56304==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56304==    by 0x48A9919: _nc_add_to_try (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x48B6212: _nc_keypad (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x124282: initTerminal() (in /home/minty/git/edit/build/e)
+==56304==    by 0x1132AB: main (in /home/minty/git/edit/build/e)
+==56304== 
+==56304== 1,984 bytes in 1 blocks are still reachable in loss record 93 of 105
+==56304==    at 0x4849013: operator new(unsigned long) (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56304==    by 0x120CB7: void std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >::_M_realloc_insert<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&>(__gnu_cxx::__normal_iterator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >*, std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > > >, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) (in /home/minty/git/edit/build/e)
+==56304==    by 0x12E247: std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >::insert(__gnu_cxx::__normal_iterator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const*, std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > > >, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) (in /home/minty/git/edit/build/e)
+==56304==    by 0x12CB48: pasteFromClipboardAfter(State*) (in /home/minty/git/edit/build/e)
+==56304==    by 0x15A18D: sendShortcutKeys(State*, char) (in /home/minty/git/edit/build/e)
+==56304==    by 0x14B364: sendKeys(State*, char) (in /home/minty/git/edit/build/e)
+==56304==    by 0x1132E5: main (in /home/minty/git/edit/build/e)
+==56304== 
+==56304== 2,040 bytes in 85 blocks are still reachable in loss record 94 of 105
+==56304==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56304==    by 0x48A9976: _nc_add_to_try (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x48B6212: _nc_keypad (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x124282: initTerminal() (in /home/minty/git/edit/build/e)
+==56304==    by 0x1132AB: main (in /home/minty/git/edit/build/e)
+==56304== 
+==56304== 2,560 bytes in 1 blocks are still reachable in loss record 95 of 105
+==56304==    at 0x4849013: operator new(unsigned long) (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56304==    by 0x1210F3: void std::vector<std::filesystem::__cxx11::path, std::allocator<std::filesystem::__cxx11::path> >::_M_realloc_insert<std::filesystem::__cxx11::path const&>(__gnu_cxx::__normal_iterator<std::filesystem::__cxx11::path*, std::vector<std::filesystem::__cxx11::path, std::allocator<std::filesystem::__cxx11::path> > >, std::filesystem::__cxx11::path const&) (in /home/minty/git/edit/build/e)
+==56304==    by 0x11DE4D: findFiles(std::filesystem::__cxx11::path const&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) (in /home/minty/git/edit/build/e)
+==56304==    by 0x11DF1F: generateFindFileOutput(State*) (in /home/minty/git/edit/build/e)
+==56304==    by 0x1131FC: main (in /home/minty/git/edit/build/e)
+==56304== 
+==56304== 2,928 bytes in 1 blocks are still reachable in loss record 96 of 105
+==56304==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56304==    by 0x4890F03: doupdate_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x1132ED: main (in /home/minty/git/edit/build/e)
+==56304== 
+==56304== 3,824 bytes in 1 blocks are still reachable in loss record 97 of 105
+==56304==    at 0x484DCD3: realloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56304==    by 0x48AA6CC: _nc_doalloc (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x48B51B5: _nc_read_termtype (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x48B552A: ??? (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x48B7C40: ??? (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x48B56BB: _nc_read_entry2 (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x48B5711: ??? (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x48B5866: _nc_setupterm (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x488083D: newterm_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4881B4C: newterm (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4881BDF: initscr (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x12426C: initTerminal() (in /home/minty/git/edit/build/e)
+==56304== 
+==56304== 3,824 bytes in 1 blocks are still reachable in loss record 98 of 105
+==56304==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56304==    by 0x48A9FFF: ??? (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x48B587D: _nc_setupterm (in /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3)
+==56304==    by 0x488083D: newterm_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4881B4C: newterm (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4881BDF: initscr (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x12426C: initTerminal() (in /home/minty/git/edit/build/e)
+==56304==    by 0x1132AB: main (in /home/minty/git/edit/build/e)
+==56304== 
+==56304== 5,576 bytes in 37 blocks are still reachable in loss record 99 of 105
+==56304==    at 0x4849013: operator new(unsigned long) (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56304==    by 0x4A679DA: ??? (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.32)
+==56304==    by 0x4A67BA4: std::filesystem::__cxx11::path::_List::_List(std::filesystem::__cxx11::path::_List const&) (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.32)
+==56304==    by 0x11DDDE: findFiles(std::filesystem::__cxx11::path const&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) (in /home/minty/git/edit/build/e)
+==56304==    by 0x11DF1F: generateFindFileOutput(State*) (in /home/minty/git/edit/build/e)
+==56304==    by 0x1131FC: main (in /home/minty/git/edit/build/e)
+==56304== 
+==56304== 7,168 bytes in 1 blocks are still reachable in loss record 100 of 105
+==56304==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56304==    by 0x487CEAB: start_color_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x124295: initTerminal() (in /home/minty/git/edit/build/e)
+==56304==    by 0x1132AB: main (in /home/minty/git/edit/build/e)
+==56304== 
+==56304== 14,401 bytes in 1 blocks are still reachable in loss record 101 of 105
+==56304==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56304==    by 0x488A9A1: ??? (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4884894: vw_printw (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4884B0D: mvprintw (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x124163: renderFindFileOutput(State*) (in /home/minty/git/edit/build/e)
+==56304==    by 0x1263A4: renderScreen(State*) (in /home/minty/git/edit/build/e)
+==56304==    by 0x1132B8: main (in /home/minty/git/edit/build/e)
+==56304== 
+==56304== 15,190 bytes in 1 blocks are still reachable in loss record 102 of 105
+==56304==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56304==    by 0x4880A1A: newterm_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4881B4C: newterm (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4881BDF: initscr (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x12426C: initTerminal() (in /home/minty/git/edit/build/e)
+==56304==    by 0x1132AB: main (in /home/minty/git/edit/build/e)
+==56304== 
+==56304== 57,360 bytes in 60 blocks are still reachable in loss record 103 of 105
+==56304==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56304==    by 0x487F2DC: newwin_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4880D1F: newterm_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4881B4C: newterm (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4881BDF: initscr (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x12426C: initTerminal() (in /home/minty/git/edit/build/e)
+==56304==    by 0x1132AB: main (in /home/minty/git/edit/build/e)
+==56304== 
+==56304== 57,360 bytes in 60 blocks are still reachable in loss record 104 of 105
+==56304==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56304==    by 0x487F2DC: newwin_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4880D44: newterm_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4881B4C: newterm (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4881BDF: initscr (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x12426C: initTerminal() (in /home/minty/git/edit/build/e)
+==56304==    by 0x1132AB: main (in /home/minty/git/edit/build/e)
+==56304== 
+==56304== 57,360 bytes in 60 blocks are still reachable in loss record 105 of 105
+==56304==    at 0x484DA83: calloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==56304==    by 0x487F2DC: newwin_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4880ED3: newterm_sp (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4881B4C: newterm (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x4881BDF: initscr (in /usr/lib/x86_64-linux-gnu/libncurses.so.6.3)
+==56304==    by 0x12426C: initTerminal() (in /home/minty/git/edit/build/e)
+==56304==    by 0x1132AB: main (in /home/minty/git/edit/build/e)
+==56304== 
+==56304== LEAK SUMMARY:
+==56304==    definitely lost: 0 bytes in 0 blocks
+==56304==    indirectly lost: 0 bytes in 0 blocks
+==56304==      possibly lost: 511 bytes in 6 blocks
+==56304==    still reachable: 255,892 bytes in 648 blocks
+==56304==         suppressed: 0 bytes in 0 blocks
+==56304== 
+==56304== ERROR SUMMARY: 6 errors from 6 contexts (suppressed: 0 from 0)

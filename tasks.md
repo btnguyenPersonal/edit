@@ -105,6 +105,7 @@
 - add fuzzing
 
 ## TODO
+- lots of valgrind errors?? need to figure out what's going on there
 - figure out how to go down to assembly and view it
 - have cib ciB work for multi-line brackets
 - ci' parse entire line to get actual strings instead of just between '
