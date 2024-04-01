@@ -112,6 +112,10 @@
 - when not in typing restrict to have cursor not pass last character
 - backup file (some way to debug??)
 - add multi-line searches
+- clean up all the render code, sooo trash
+- need to fix the crap with onlyMotions, other shit (maybe separate out motions into it's own thing?)
+    - have isMotion() can't be too broken?
+    - maybe just having maps of keycombos and function pointers is the correct call??
 
 ## LOW PRIO
 - ! executes all current file in bash and replaces with output
