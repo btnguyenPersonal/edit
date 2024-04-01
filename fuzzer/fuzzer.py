@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import itertools
 import subprocess
 import threading
@@ -54,7 +56,7 @@ def run_test(input_string):
         print(f"Tested: {readable_string(input_string)}, Failed with error: {e}")
 
 def fuzzer(charset, string_length):
-    for i in range(100000):
+    for i in range(99999):
         input_string = ''.join(random.choice(charset) for _ in range(string_length))
         threading.Thread(target=run_test, args=(input_string,)).start()
 
