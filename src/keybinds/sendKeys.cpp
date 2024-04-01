@@ -26,7 +26,7 @@ void sendKeys(State* state, char c) {
     } else if (state->mode == TYPING) {
         sendTypingKeys(state, c);
     } else if (state->mode == VISUAL) {
-        sendVisualKeys(state, c);
+        sendVisualKeys(state, c, false);
     } else if (state->mode == COMMANDLINE) {
         sendCommandLineKeys(state, c);
     } else if (state->mode == FINDFILE) {

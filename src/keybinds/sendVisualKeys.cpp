@@ -282,7 +282,7 @@ void logDotCommand(State* state) {
     state->motion = "";
 }
 
-bool sendVisualKeys(State* state, char c) {
+bool sendVisualKeys(State* state, char c, bool onlyMotions) {
     if (!state->dontRecordKey) {
         state->motion += c;
     }
@@ -354,7 +354,7 @@ bool sendVisualKeys(State* state, char c) {
         state->visualType = LINE;
         surroundParagraph(state, true);
         state->prevKeys = "";
-    } else if (state->visualType == BLOCK && state->prevKeys == "g" && c == ctrl('s')) {
+    } else if (!onlyMotions && state->visualType == BLOCK && state->prevKeys == "g" && c == ctrl('s')) {
         Bounds bounds = getBounds(state);
         int iterations = 1;
         for (unsigned int i = bounds.minR; i <= bounds.maxR; i++) {
@@ -362,7 +362,7 @@ bool sendVisualKeys(State* state, char c) {
             iterations++;
         }
         state->prevKeys = "";
-    } else if (state->visualType == BLOCK && state->prevKeys == "g" && c == ctrl('a')) {
+    } else if (!onlyMotions && state->visualType == BLOCK && state->prevKeys == "g" && c == ctrl('a')) {
         Bounds bounds = getBounds(state);
         int iterations = 1;
         for (unsigned int i = bounds.minR; i <= bounds.maxR; i++) {
@@ -370,7 +370,7 @@ bool sendVisualKeys(State* state, char c) {
             iterations++;
         }
         state->prevKeys = "";
-    } else if (state->prevKeys + c == "gr") {
+    } else if (!onlyMotions && state->prevKeys + c == "gr") {
         if (state->visualType == NORMAL) {
             state->mode = SHORTCUTS;
             state->searchQuery = getInVisual(state);
@@ -378,7 +378,7 @@ bool sendVisualKeys(State* state, char c) {
             searchFromTop(state);
         }
         state->prevKeys = "";
-    } else if (state->prevKeys + c == "gf") {
+    } else if (!onlyMotions && state->prevKeys + c == "gf") {
         if (state->visualType == NORMAL) {
             std::vector<std::string> extensions = {"", ".js", ".jsx", ".ts", ".tsx"};
             for (unsigned int i = 0; i < extensions.size(); i++) {
@@ -397,15 +397,15 @@ bool sendVisualKeys(State* state, char c) {
             }
         }
         state->prevKeys = "";
-    } else if (state->prevKeys + c == "gU") {
+    } else if (!onlyMotions && state->prevKeys + c == "gU") {
         changeCaseVisual(state, true);
         state->prevKeys = "";
         state->mode = SHORTCUTS;
-    } else if (state->prevKeys == "r") {
+    } else if (!onlyMotions && state->prevKeys == "r") {
         replaceAllWithChar(state, c);
         state->prevKeys = "";
         state->mode = SHORTCUTS;
-    } else if (state->prevKeys + c == "gu") {
+    } else if (!onlyMotions && state->prevKeys + c == "gu") {
         changeCaseVisual(state, false);
         state->prevKeys = "";
         state->mode = SHORTCUTS;
@@ -416,23 +416,23 @@ bool sendVisualKeys(State* state, char c) {
         state->prevKeys = "";
     } else if (c == 'g' || c == 'i' || c == 'a' || c == 'r') {
         state->prevKeys += c;
-    } else if (state->visualType == BLOCK && c == ctrl('s')) {
+    } else if (!onlyMotions && state->visualType == BLOCK && c == ctrl('s')) {
         Bounds bounds = getBounds(state);
         for (unsigned int i = bounds.minR; i <= bounds.maxR; i++) {
             getAndAddNumber(state, i, state->col, -1);
         }
-    } else if (state->visualType == BLOCK && c == ctrl('a')) {
+    } else if (!onlyMotions && state->visualType == BLOCK && c == ctrl('a')) {
         Bounds bounds = getBounds(state);
         for (unsigned int i = bounds.minR; i <= bounds.maxR; i++) {
             getAndAddNumber(state, i, state->col, 1);
         }
-    } else if (c == 'm') {
+    } else if (!onlyMotions && c == 'm') {
         if (state->visualType == NORMAL) {
             toggleLoggingCode(state, getInVisual(state), true);
         }
         state->mode = SHORTCUTS;
         logDotCommand(state);
-    } else if (c == ':') {
+    } else if (!onlyMotions && c == ':') {
         if (state->visualType == NORMAL) {
             state->commandLineQuery = "gs/" + getInVisual(state) + "/";
             state->mode = COMMANDLINE;
@@ -447,7 +447,7 @@ bool sendVisualKeys(State* state, char c) {
         } else {
             state->col = 0;
         }
-    } else if (c == '_') {
+    } else if (!onlyMotions && c == '_') {
         sortLines(state);
         state->mode = SHORTCUTS;
     } else if (c == 'f') {
@@ -478,7 +478,7 @@ bool sendVisualKeys(State* state, char c) {
         state->row = getPrevEmptyLine(state);
     } else if (c == '}') {
         state->row = getNextEmptyLine(state);
-    } else if (c == '*') {
+    } else if (!onlyMotions && c == '*') {
         if (state->visualType == NORMAL) {
             state->searching = true;
             state->searchQuery = getInVisual(state);
@@ -486,13 +486,13 @@ bool sendVisualKeys(State* state, char c) {
             logDotCommand(state);
             setSearchResult(state);
         }
-    } else if (c == '#') {
+    } else if (!onlyMotions && c == '#') {
         state->grepQuery = getInVisual(state);
         state->mode = GREP;
         generateGrepOutput(state);
     } else if (c == 'l') {
         right(state);
-    } else if (c == ctrl('k')) {
+    } else if (!onlyMotions && c == ctrl('k')) {
         Bounds bounds = getBounds(state);
         for (unsigned int i = bounds.minR; i < bounds.maxR; i++) {
             state->col = state->data[bounds.minR].length();
@@ -504,7 +504,7 @@ bool sendVisualKeys(State* state, char c) {
         }
         state->row = bounds.minR;
         state->mode = SHORTCUTS;
-    } else if (c == ctrl('j')) {
+    } else if (!onlyMotions && c == ctrl('j')) {
         Bounds bounds = getBounds(state);
         for (unsigned int i = bounds.minR; i < bounds.maxR; i++) {
             state->col = state->data[bounds.minR].length();
@@ -516,7 +516,7 @@ bool sendVisualKeys(State* state, char c) {
         }
         state->row = bounds.minR;
         state->mode = SHORTCUTS;
-    } else if (c == 'K') {
+    } else if (!onlyMotions && c == 'K') {
         Bounds bounds = getBounds(state);
         if (bounds.minR > 0) {
             if (isValidMoveableChunk(state, bounds)) {
@@ -531,7 +531,7 @@ bool sendVisualKeys(State* state, char c) {
                 state->status = "not a valid moveable chunk";
             }
         }
-    } else if (c == 'J') {
+    } else if (!onlyMotions && c == 'J') {
         Bounds bounds = getBounds(state);
         if (bounds.maxR + 1 < state->data.size()) {
             if (isValidMoveableChunk(state, bounds)) {
@@ -550,13 +550,13 @@ bool sendVisualKeys(State* state, char c) {
         up(state);
     } else if (c == 'j') {
         down(state);
-    } else if (c == 'V') {
+    } else if (!onlyMotions && c == 'V') {
         state->visualType = LINE;
-    } else if (c == 'v') {
+    } else if (!onlyMotions && c == 'v') {
         state->visualType = NORMAL;
     } else if (c == 'G') {
         state->row = state->data.size() - 1;
-    } else if (c == '=') {
+    } else if (!onlyMotions && c == '=') {
         Bounds bounds = getBounds(state);
         for (int i = bounds.minR; i <= (int)bounds.maxR; i++) {
             indentLine(state, i);
@@ -570,7 +570,7 @@ bool sendVisualKeys(State* state, char c) {
         auto pos = matchIt(state);
         state->row = pos.row;
         state->col = pos.col;
-    } else if (c == '<') {
+    } else if (!onlyMotions && c == '<') {
         Bounds bounds = getBounds(state);
         state->row = bounds.minR;
         for (unsigned int i = bounds.minR; i <= bounds.maxR; i++) {
@@ -582,7 +582,7 @@ bool sendVisualKeys(State* state, char c) {
         state->col = getIndexFirstNonSpace(state);
         state->mode = SHORTCUTS;
         logDotCommand(state);
-    } else if (c == '>') {
+    } else if (!onlyMotions && c == '>') {
         Bounds bounds = getBounds(state);
         state->row = bounds.minR;
         for (unsigned int i = bounds.minR; i <= bounds.maxR; i++) {
@@ -594,37 +594,37 @@ bool sendVisualKeys(State* state, char c) {
         state->col = getIndexFirstNonSpace(state);
         state->mode = SHORTCUTS;
         logDotCommand(state);
-    } else if (c == 'p' || c == 'P') {
+    } else if (!onlyMotions && (c == 'p' || c == 'P')) {
         pasteFromClipboardVisual(state);
         state->mode = SHORTCUTS;
         logDotCommand(state);
-    } else if (c == 'x') {
+    } else if (!onlyMotions && c == 'x') {
         auto pos = deleteInVisual(state);
         state->row = pos.row;
         state->col = pos.col;
         state->mode = SHORTCUTS;
         logDotCommand(state);
-    } else if (c == 'd') {
+    } else if (!onlyMotions && c == 'd') {
         copyInVisual(state);
         auto pos = deleteInVisual(state);
         state->row = pos.row;
         state->col = pos.col;
         state->mode = SHORTCUTS;
         logDotCommand(state);
-    } else if (c == 'y') {
+    } else if (!onlyMotions && c == 'y') {
         auto pos = copyInVisual(state);
         state->row = pos.row;
         state->col = pos.col;
         state->mode = SHORTCUTS;
         logDotCommand(state);
-    } else if (c == 'e') {
+    } else if (!onlyMotions && c == 'e') {
         Bounds bounds = getBounds(state);
         toggleCommentLines(state, bounds);
         state->row = bounds.minR;
         state->col = getIndexFirstNonSpace(state);
         state->mode = SHORTCUTS;
         logDotCommand(state);
-    } else if (c == 's') {
+    } else if (!onlyMotions && c == 's') {
         auto pos = changeInVisual(state);
         state->row = pos.row;
         state->col = pos.col;
@@ -636,7 +636,7 @@ bool sendVisualKeys(State* state, char c) {
         state->col = state->visual.col;
         state->visual.row = tempRow;
         state->visual.col = tempCol;
-    } else if (c == 'c') {
+    } else if (!onlyMotions && c == 'c') {
         copyInVisual(state);
         auto pos = changeInVisual(state);
         if (state->visualType == BLOCK) {

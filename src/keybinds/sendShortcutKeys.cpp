@@ -40,10 +40,10 @@ void sendShortcutKeys(State* state, char c) {
         state->prevKeys = "";
         state->motion = "v";
         initVisual(state, NORMAL);
-        sendVisualKeys(state, command1);
-        sendVisualKeys(state, c);
+        sendVisualKeys(state, command1, true);
+        sendVisualKeys(state, c, true);
         if (state->row != state->visual.row || state->col != state->visual.col) {
-            sendVisualKeys(state, command0);
+            sendVisualKeys(state, command0, false);
         } else {
             state->prevKeys = "";
             state->motion = "";
@@ -64,7 +64,7 @@ void sendShortcutKeys(State* state, char c) {
             bool success = true;
             initVisual(state, NORMAL);
             if (c != command) {
-                success = sendVisualKeys(state, c);
+                success = sendVisualKeys(state, c, true);
                 if (state->row != state->visual.row) {
                     state->visualType = LINE;
                     state->motion = "V" + safeSubstring(state->motion, 1);
@@ -74,7 +74,7 @@ void sendShortcutKeys(State* state, char c) {
                 state->motion = "V" + safeSubstring(state->motion, 1);
             }
             if (success) {
-                sendVisualKeys(state, command);
+                sendVisualKeys(state, command, false);
             } else {
                 state->prevKeys = "";
                 state->motion = "";

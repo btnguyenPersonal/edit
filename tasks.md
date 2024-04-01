@@ -102,14 +102,15 @@
 - true jumplist
 - run current search replace in visual
 - do something with 1-9 (maybe repeat everything? n times)
+- add fuzzing
 
 ## TODO
+- figure out how to go down to assembly and view it
 - have cib ciB work for multi-line brackets
 - ci' parse entire line to get actual strings instead of just between '
 - ciw dot command not working correctly end string
 - when not in typing restrict to have cursor not pass last character
 - backup file (some way to debug??)
-- add fuzzing
 - add multi-line searches
 
 ## LOW PRIO
