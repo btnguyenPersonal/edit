@@ -203,8 +203,10 @@ std::string getGitHash(State* state) {
     std::stringstream command;
     command << "git blame -l -L " << state->row + 1 << ",+1 " << state->filename << " | awk '{print $1}'";
     std::unique_ptr<FILE, decltype(&pclose)> pipe(popen(command.str().c_str(), "r"), pclose);
-    if (!pipe)
-        throw std::runtime_error("popen() failed!");
+    if (!pipe) {
+        state->status = "popen() failed!";
+        return "";
+    }
     std::string output, line;
     char buffer[128];
     while (fgets(buffer, sizeof(buffer), pipe.get()) != NULL) {
