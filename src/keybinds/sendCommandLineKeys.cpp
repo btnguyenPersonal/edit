@@ -13,8 +13,10 @@ void evaluateCommandLineQuery(State* state) {
         endwin();
         exit(0);
     } else if (state->commandLineQuery == "w") {
+        trimTrailingWhitespace(state);
         saveFile(state);
     } else if (state->commandLineQuery == "wq" || state->commandLineQuery == "x") {
+        trimTrailingWhitespace(state);
         saveFile(state);
         endwin();
         exit(0);

@@ -280,6 +280,12 @@ void moveHarpoonLeft(State* state) {
     }
 }
 
+void trimTrailingWhitespace(State* state) {
+    for (unsigned int i = 0; i < state->data.size(); i++) {
+        rtrim(state->data[i]);
+    }
+}
+
 void rtrim(std::string& s) {
     s.erase(std::find_if(s.rbegin(), s.rend(), [](unsigned char ch) { return !std::isspace(ch); }).base(), s.end());
 }

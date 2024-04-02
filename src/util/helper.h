@@ -61,6 +61,7 @@ void deindent(State* state);
 void insertEmptyLine(State* state);
 std::vector<std::string> readFile(const std::string& filename);
 void saveFile(State* state);
+void trimTrailingWhitespace(State* state);
 bool isWindowPositionInvalid(State* state);
 void centerScreen(State* state);
 void up(State* state);

@@ -106,9 +106,7 @@ void sendShortcutKeys(State* state, char c) {
         state->prevKeys = "";
         state->dotCommand = "ge";
     } else if (state->prevKeys + c == "gt") {
-        for (unsigned int i = 0; i < state->data.size(); i++) {
-            rtrim(state->data[i]);
-        }
+        trimTrailingWhitespace(state);
         state->prevKeys = "";
     } else if (state->prevKeys + c == "gy") {
         state->status = state->filename;
