@@ -12,4 +12,3 @@ def run_test(input_string):
 if __name__ == "__main__":
     run_test('4JnzJ@Y(	vpNh0USZVD}!(3>L5')
     # run_test('gg')
-    

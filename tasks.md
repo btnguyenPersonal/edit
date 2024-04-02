@@ -1,6 +1,6 @@
 ## DONE
 - search replace highlighting, N
-- J K 
+- J K
 - visual > <
 - if file not found guard against that
 - horizontal scrolling
