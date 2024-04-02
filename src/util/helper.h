@@ -7,7 +7,7 @@
 #include <string>
 #include <vector>
 
-bool setSearchResultCurrentLine(State* state, std::string query);
+bool setSearchResultCurrentLine(State* state, const std::string& query);
 Position matchIt(State* state);
 bool searchFromTop(State* state);
 void getAndAddNumber(State* state, unsigned int row, unsigned int col, int num);
@@ -23,18 +23,18 @@ unsigned int getNextEmptyLine(State* state);
 std::string getGitHash(State* state);
 std::vector<std::string> getGitBlame(const std::string& filename);
 unsigned int getLineNumberOffset(State* state);
-void replaceAllGlobally(State* state, std::string query, std::string replace);
-void replaceCurrentLine(State* state, std::string query, std::string replace);
+void replaceAllGlobally(State* state, const std::string& query, const std::string& replace);
+void replaceCurrentLine(State* state, const std::string& query, const std::string& replace);
 std::string getCurrentWord(State* state);
-std::string autocomplete(State* state, std::string query);
-std::string getCommentSymbol(std::string filename);
-std::string getExtension(std::string filename);
+std::string autocomplete(State* state, const std::string& query);
+std::string getCommentSymbol(const std::string& filename);
+std::string getExtension(const std::string& filename);
 void moveHarpoonLeft(State* state);
 void moveHarpoonRight(State* state);
 bool isWindowPositionHorizontalInvalid(State* state);
 void ltrim(std::string& s);
 void rtrim(std::string& s);
-void replaceAll(State* state, std::string query, std::string replace);
+void replaceAll(State* state, const std::string& query, const std::string& replace);
 bool setSearchResultReverse(State* state);
 void fixColOverMax(State* state);
 WordPosition findQuoteBounds(const std::string& str, char quoteChar, unsigned int cursor, bool includeQuote);
@@ -59,7 +59,7 @@ void insertEmptyLineBelow(State* state);
 void indent(State* state);
 void deindent(State* state);
 void insertEmptyLine(State* state);
-std::vector<std::string> readFile(std::string filename);
+std::vector<std::string> readFile(const std::string& filename);
 void saveFile(State* state);
 bool isWindowPositionInvalid(State* state);
 void centerScreen(State* state);

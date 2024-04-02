@@ -153,7 +153,7 @@ int calculateAPM(State* state) {
     return static_cast<int>(state->actionTimestamps.size() / minutes);
 }
 
-std::string getCommentSymbol(std::string filename) {
+std::string getCommentSymbol(const std::string& filename) {
     std::string extension = getExtension(filename);
     if (extension == "js" || extension == "jsx" || extension == "ts" || extension == "tsx" || extension == "cpp" || extension == "hpp" || extension == "c" || extension == "h" ||
         extension == "java" || extension == "cs" || extension == "go" || extension == "php" || extension == "rs" || extension == "css" || extension == "scss" ||
@@ -250,7 +250,7 @@ unsigned int getLineNumberOffset(State* state) {
     return 6;
 }
 
-std::string getExtension(std::string filename) {
+std::string getExtension(const std::string& filename) {
     if (filename == "") {
         return "";
     }
@@ -298,7 +298,7 @@ std::string getCurrentWord(State* state) {
     return currentWord;
 }
 
-std::string autocomplete(State* state, std::string query) {
+std::string autocomplete(State* state, const std::string& query) {
     if (query == "") {
         return "";
     }
@@ -335,7 +335,7 @@ std::string autocomplete(State* state, std::string query) {
     }
 }
 
-void replaceCurrentLine(State* state, std::string query, std::string replace) {
+void replaceCurrentLine(State* state, const std::string& query, const std::string& replace) {
     if (query.empty()) {
         return;
     }
@@ -346,7 +346,7 @@ void replaceCurrentLine(State* state, std::string query, std::string replace) {
     }
 }
 
-void replaceAllGlobally(State* state, std::string query, std::string replace) {
+void replaceAllGlobally(State* state, const std::string& query, const std::string& replace) {
     try {
         std::string command = ("git ls-files | xargs -I {} sed -i'' \"s/" + query + '/' + replace + "/g\" \"{}\" 2>/dev/null");
         int returnValue = std::system(command.c_str());
@@ -359,7 +359,7 @@ void replaceAllGlobally(State* state, std::string query, std::string replace) {
     }
 }
 
-void replaceAll(State* state, std::string query, std::string replace) {
+void replaceAll(State* state, const std::string& query, const std::string& replace) {
     for (unsigned int i = 0; i < state->data.size(); i++) {
         if (query.empty()) {
             return;
@@ -417,7 +417,7 @@ bool searchFromTop(State* state) {
     return false;
 }
 
-bool setSearchResultCurrentLine(State* state, std::string query) {
+bool setSearchResultCurrentLine(State* state, const std::string& query) {
     std::string line = state->data[state->row];
     size_t index = line.find(query);
     if (index != std::string::npos) {
@@ -848,7 +848,7 @@ void saveFile(State* state) {
     }
 }
 
-std::vector<std::string> readFile(std::string filename) {
+std::vector<std::string> readFile(const std::string& filename) {
     std::ifstream file(filename);
     std::string str;
     std::vector<std::string> file_contents;
