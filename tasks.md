@@ -105,6 +105,9 @@
 - add fuzzing
 
 ## TODO
+- add mouse clicks
+- add mouse drag
+- add mouse scroll
 - lots of valgrind errors?? need to figure out what's going on there
 - figure out how to go down to assembly and view it
 - have cib ciB work for multi-line brackets
@@ -113,8 +116,9 @@
 - when not in typing restrict to have cursor not pass last character
 - backup file (some way to debug??)
 - add multi-line searches
-- clean up all the render code, sooo trash
-- need to fix the crap with onlyMotions, other shit (maybe separate out motions into it's own thing?)
+- clean up all the render code, sooo trash and complicated
+- make helper function for printing w/ color w/o having to turn on and off manually duping logic before and after print
+- need to fix the crap with onlyMotions, every motion should work all the same and not have jank logic (maybe separate out motions into it's own thing?)
     - have isMotion() can't be too broken?
     - maybe just having maps of keycombos and function pointers is the correct call??
 
