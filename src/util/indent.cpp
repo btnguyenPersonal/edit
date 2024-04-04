@@ -176,11 +176,12 @@ void indentRange(State* state) {
             }
         }
     } else if (indentDifference < 0) {
-        state->status = std::to_string(indentDifference);
         for (int i = state->row; i <= (int)state->visual.row; i++) {
             if (state->data[i] != "") {
                 for (int j = 0; j < -1 * indentDifference; j++) {
-                    state->data[i] = safeSubstring(state->data[i], 1);
+                    if (state->data[i].length() > 0 && state->data[i][0] == ' ') {
+                        state->data[i] = safeSubstring(state->data[i], 1);
+                    }
                 }
             }
         }
