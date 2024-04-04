@@ -48,7 +48,7 @@ format:
 	find . -iname *.cpp -o -iname *.h | xargs clang-format -i
 
 test:
-	make all && build/e longtest.md
+	make all && build/e longtest.js
 
 install:
 	make all && sudo cp build/e /usr/local/bin

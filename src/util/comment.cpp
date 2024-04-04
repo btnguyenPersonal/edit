@@ -84,7 +84,7 @@ void toggleCommentLines(State* state, Bounds bounds) {
         minIndentLevel = INT_MAX;
         for (size_t i = bounds.minR; i <= bounds.maxR; i++) {
             int indent = getNumLeadingSpaces(state->data[i]);
-            if (indent < minIndentLevel) {
+            if (indent < minIndentLevel && state->data[i] != "") {
                 minIndentLevel = indent;
             }
         }
