@@ -13,7 +13,7 @@ void sendGrepKeys(State* state, int c) {
     } else if (' ' <= c && c <= '~') {
         state->grepQuery += c;
         state->grepSelection = 0;
-    } else if (c == 127) { // BACKSPACE
+    } else if (c == KEY_BACKSPACE) {
         state->grepQuery = state->grepQuery.substr(0, state->grepQuery.length() - 1);
         state->grepSelection = 0;
     } else if (c == ctrl('g')) {

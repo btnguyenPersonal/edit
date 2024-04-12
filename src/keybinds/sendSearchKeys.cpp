@@ -18,7 +18,7 @@ void sendSearchKeys(State* state, int c) {
         } else {
             state->searchQuery += c;
         }
-    } else if (c == 127) { // BACKSPACE
+    } else if (c == KEY_BACKSPACE) {
         if (state->replacing) {
             state->replaceQuery = state->replaceQuery.substr(0, state->replaceQuery.length() - 1);
         } else {

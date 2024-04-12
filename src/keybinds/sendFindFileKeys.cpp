@@ -19,7 +19,7 @@ void sendFindFileKeys(State* state, int c) {
         }
         state->findFileQuery += c;
         state->findFileSelection = 0;
-    } else if (c == 127) { // BACKSPACE
+    } else if (c == KEY_BACKSPACE) {
         if (state->selectAll == true) {
             state->findFileQuery = "";
             state->findFileSelection = 0;

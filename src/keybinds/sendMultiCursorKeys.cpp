@@ -6,6 +6,7 @@
 #include "sendVisualKeys.h"
 #include <string>
 #include <vector>
+#include <ncurses.h>
 
 void sendMultiCursorKeys(State* state, int c) {
     if (!state->dontRecordKey) {
@@ -18,7 +19,7 @@ void sendMultiCursorKeys(State* state, int c) {
         state->dotCommand = state->motion;
         state->motion = "";
         return;
-    } else if (c == 127) { // BACKSPACE
+    } else if (c == KEY_BACKSPACE) {
         if (state->col > 0) {
             for (unsigned int i = bounds.minR; i <= bounds.maxR; i++) {
                 std::string current = state->data[i];

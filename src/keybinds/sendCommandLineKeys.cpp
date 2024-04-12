@@ -67,7 +67,7 @@ void sendCommandLineKeys(State* state, int c) {
                 state->commandLineQuery = 'g' + state->commandLineQuery;
             }
         }
-    } else if (c == 127) { // BACKSPACE
+    } else if (c == KEY_BACKSPACE) {
         state->commandLineQuery = state->commandLineQuery.substr(0, state->commandLineQuery.length() - 1);
     } else if (c == ctrl('l')) {
         state->commandLineQuery = "";
