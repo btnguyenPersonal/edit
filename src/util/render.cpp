@@ -510,6 +510,7 @@ void renderScreen(State* state) {
 void initTerminal() {
     initscr();
     raw();
+    keypad(stdscr, true);
     noecho();
     if (has_colors() == false) {
         endwin();
