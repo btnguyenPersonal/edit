@@ -105,6 +105,9 @@
 - add fuzzing
 
 ## TODO
+- make getch() int, and have enums for characters (this one is cancer to deal with, makes esc so laggy)
+
+## LOW PRIO
 - add mouse clicks
 - add mouse drag
 - add mouse scroll
@@ -122,8 +125,6 @@
 - need to fix the crap with onlyMotions, every motion should work all the same and not have jank logic (maybe separate out motions into it's own thing?)
     - have isMotion() can't be too broken?
     - maybe just having maps of keycombos and function pointers is the correct call??
-
-## LOW PRIO
 - ! executes all current file in bash and replaces with output
 - read from stdinput when just have dash
 - add git gutter maybe () can jump to next/prev git changes
@@ -133,6 +134,5 @@
         - https://en.wikipedia.org/wiki/Boyer%E2%80%93Moore_string-search_algorithm
     - figure out why fs::relative takes so damn long
         - should figure out a function to just cut off the parents/string at the point where we don't want, but every time i did it, it got slower
-- make getch() int, and have enums for characters (this one is cancer to deal with, makes esc so laggy)
 - research adding lsp??
 - fileExplorer (current one is trash and i never use it) actually make it good now
