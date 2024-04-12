@@ -39,10 +39,13 @@ int main(int argc, char* argv[]) {
     calcWindowBounds();
     renderScreen(state);
     while (true) {
-        c = getchar();
-        recordAction(state);
-        sendKeys(state, c);
-        renderScreen(state);
+        int key = getch();
+        if (key != ERR) {
+            c = (char)key;
+            recordAction(state);
+            sendKeys(state, c);
+            renderScreen(state);
+        }
     }
     endwin();
     return 0;
