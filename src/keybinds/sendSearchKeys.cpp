@@ -40,7 +40,7 @@ void sendSearchKeys(State* state, int c) {
         } else {
             state->searchQuery += getFromClipboard();
         }
-    } else if (c == 10) { // ENTER
+    } else if (c == '\n') {
         if (state->replacing) {
             replaceAll(state, state->searchQuery, state->replaceQuery);
         }

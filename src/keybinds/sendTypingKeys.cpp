@@ -62,7 +62,7 @@ void sendTypingKeys(State* state, int c) {
         std::string current = state->data[state->row];
         state->data[state->row] = current.substr(0, state->col) + completion + current.substr(state->col);
         state->col += completion.length();
-    } else if (c == 10) { // ENTER
+    } else if (c == '\n') {
         std::string current = state->data[state->row];
         state->data[state->row] = current.substr(0, state->col);
         state->data.insert(state->data.begin() + state->row + 1, current.substr(state->col));

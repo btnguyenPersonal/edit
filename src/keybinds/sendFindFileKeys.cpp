@@ -74,7 +74,7 @@ void sendFindFileKeys(State* state, int c) {
         }
     } else if (c == ctrl('v')) {
         state->findFileQuery += getFromClipboard();
-    } else if (c == 10) { // ENTER
+    } else if (c == '\n') {
         if (state->findFileSelection < state->findFileOutput.size()) {
             state->selectAll = false;
             auto selectedFile = state->findFileOutput[state->findFileSelection].string();

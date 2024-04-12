@@ -57,7 +57,7 @@ void sendGrepKeys(State* state, int c) {
         }
     } else if (c == ctrl('v')) {
         state->grepQuery += getFromClipboard();
-    } else if (c == 10) { // ENTER
+    } else if (c == '\n') {
         if (state->grepSelection < state->grepOutput.size()) {
             std::filesystem::path selectedFile = state->grepOutput[state->grepSelection].path;
             int lineNum = state->grepOutput[state->grepSelection].lineNum;
