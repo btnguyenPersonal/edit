@@ -165,13 +165,13 @@ void sendShortcutKeys(State* state, int c) {
         }
     } else if (c == 'r' || c == 'g' || c == 'c' || c == 'd' || c == 'y' || c == 'f' || c == 't') {
         state->prevKeys = c;
-    } else if (c == 'h') {
+    } else if (c == 'h' || c == KEY_LEFT) {
         left(state);
-    } else if (c == 'l') {
+    } else if (c == 'l' || c == KEY_RIGHT) {
         right(state);
-    } else if (c == 'k') {
+    } else if (c == 'k' || c == KEY_UP) {
         up(state);
-    } else if (c == 'j') {
+    } else if (c == 'j' || c == KEY_DOWN) {
         down(state);
     } else if (c == '{') {
         state->row = getPrevEmptyLine(state);

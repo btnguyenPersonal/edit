@@ -68,5 +68,13 @@ void sendTypingKeys(State* state, int c) {
         state->data.insert(state->data.begin() + state->row + 1, current.substr(state->col));
         state->row += 1;
         state->col = 0;
+    } else if (c == KEY_LEFT) {
+        left(state);
+    } else if (c == KEY_RIGHT) {
+        right(state);
+    } else if (c == KEY_UP) {
+        up(state);
+    } else if (c == KEY_DOWN) {
+        down(state);
     }
 }
