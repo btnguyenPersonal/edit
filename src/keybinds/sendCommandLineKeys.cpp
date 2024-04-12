@@ -53,7 +53,7 @@ void evaluateCommandLineQuery(State* state) {
     }
 }
 
-void sendCommandLineKeys(State* state, char c) {
+void sendCommandLineKeys(State* state, int c) {
     if (c == 27) { // ESC
         state->commandLineQuery = std::string("");
         state->mode = SHORTCUTS;

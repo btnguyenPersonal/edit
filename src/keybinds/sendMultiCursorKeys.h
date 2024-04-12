@@ -2,4 +2,4 @@
 
 #include "../util/state.h"
 
-void sendMultiCursorKeys(State* state, char c);
+void sendMultiCursorKeys(State* state, int c);

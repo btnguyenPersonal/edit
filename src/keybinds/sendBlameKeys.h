@@ -2,4 +2,4 @@
 
 #include "../util/state.h"
 
-void sendBlameKeys(State* state, char c);
+void sendBlameKeys(State* state, int c);

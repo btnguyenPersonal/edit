@@ -7,7 +7,7 @@
 #include <vector>
 #include <ncurses.h>
 
-void sendFindFileKeys(State* state, char c) {
+void sendFindFileKeys(State* state, int c) {
     if (c == 27) { // ESC
         state->selectAll = false;
         state->mode = SHORTCUTS;

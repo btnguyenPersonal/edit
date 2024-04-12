@@ -16,7 +16,7 @@
 #include <string>
 #include <vector>
 
-void sendShortcutKeys(State* state, char c) {
+void sendShortcutKeys(State* state, int c) {
     if (c == 27) { // ESC
         state->prevKeys = "";
         state->motion = "";
@@ -27,8 +27,8 @@ void sendShortcutKeys(State* state, char c) {
         state->col = findNextChar(state, c);
         state->prevKeys = "";
     } else if (state->prevKeys == "r") {
-        if (state->col < state->data[state->row].length()) {
-            state->data[state->row] = safeSubstring(state->data[state->row], 0, state->col) + c + safeSubstring(state->data[state->row], state->col + 1);
+        if (state->col < state->data[state->row].length() && ' ' <= c && c <= '~') {
+            state->data[state->row] = safeSubstring(state->data[state->row], 0, state->col) + (char)c + safeSubstring(state->data[state->row], state->col + 1);
         }
         state->dotCommand = "r" + c;
         state->prevKeys = "";
@@ -84,35 +84,35 @@ void sendShortcutKeys(State* state, char c) {
             }
         }
         return;
-    } else if (state->prevKeys + c == "gq") {
+    } else if (state->prevKeys == "g" && c == 'q') {
         toggleLoggingCode(state, "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$", false);
         down(state);
         down(state);
         state->prevKeys = "";
         state->dotCommand = "gq";
-    } else if (state->prevKeys + c == "gm") {
+    } else if (state->prevKeys == "g" && c == 'm') {
         toggleLoggingCode(state, state->lastLoggingVar, true);
         state->prevKeys = "";
         state->dotCommand = "gm";
-    } else if (state->prevKeys + c == "gr") {
+    } else if (state->prevKeys == "g" && c == 'r') {
         initVisual(state, NORMAL);
         setStateFromWordPosition(state, getWordPosition(state->data[state->row], state->col));
         state->searchQuery = getInVisual(state);
         state->searching = true;
         searchFromTop(state);
         state->prevKeys = "";
-    } else if (state->prevKeys + c == "ge") {
+    } else if (state->prevKeys == "g" && c == 'e') {
         unCommentBlock(state);
         state->prevKeys = "";
         state->dotCommand = "ge";
-    } else if (state->prevKeys + c == "gt") {
+    } else if (state->prevKeys == "g" && c == 't') {
         trimTrailingWhitespace(state);
         state->prevKeys = "";
-    } else if (state->prevKeys + c == "gy") {
+    } else if (state->prevKeys == "g" && c == 'y') {
         state->status = state->filename;
         copyToClipboard(state->filename);
         state->prevKeys = "";
-    } else if (state->prevKeys + c == "gg") {
+    } else if (state->prevKeys == "g" && c == 'g') {
         state->row = 0;
         state->prevKeys = "";
     } else if (state->prevKeys != "") {

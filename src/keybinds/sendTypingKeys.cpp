@@ -7,7 +7,7 @@
 #include <vector>
 #include <ncurses.h>
 
-void sendTypingKeys(State* state, char c) {
+void sendTypingKeys(State* state, int c) {
     if (!state->dontRecordKey) {
         state->motion += c;
     }
@@ -21,7 +21,7 @@ void sendTypingKeys(State* state, char c) {
     } else if (state->prevKeys == "v") {
         state->prevKeys = "";
         std::string current = state->data[state->row];
-        state->data[state->row] = current.substr(0, state->col) + c + current.substr(state->col);
+        state->data[state->row] = current.substr(0, state->col) + (char)c + current.substr(state->col);
         if ((int)state->col == getIndexFirstNonSpace(state)) {
             indentLine(state);
             state->col = getIndexFirstNonSpace(state);
@@ -45,7 +45,7 @@ void sendTypingKeys(State* state, char c) {
         state->col = index;
     } else if (' ' <= c && c <= '~') {
         std::string current = state->data[state->row];
-        state->data[state->row] = current.substr(0, state->col) + c + current.substr(state->col);
+        state->data[state->row] = current.substr(0, state->col) + (char)c + current.substr(state->col);
         if ((int)state->col == getIndexFirstNonSpace(state)) {
             indentLine(state);
             state->col = getIndexFirstNonSpace(state);

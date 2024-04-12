@@ -7,7 +7,7 @@
 #include <ncurses.h>
 
 int main(int argc, char* argv[]) {
-    char c;
+    int c;
     State* state;
     int commandFlag = 0;
     std::string filename;
@@ -39,10 +39,10 @@ int main(int argc, char* argv[]) {
     calcWindowBounds();
     renderScreen(state);
     while (true) {
-        int key = getch();
-        if (key != ERR) {
+        c = getch();
+        if (c != ERR) {
             recordAction(state);
-            sendKeys(state, key);
+            sendKeys(state, c);
             renderScreen(state);
         }
     }

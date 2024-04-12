@@ -2,4 +2,4 @@
 
 #include "../util/state.h"
 
-void sendShortcutKeys(State* state, char c);
+void sendShortcutKeys(State* state, int c);

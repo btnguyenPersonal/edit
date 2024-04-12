@@ -7,7 +7,7 @@
 #include <vector>
 #include <ncurses.h>
 
-void sendGrepKeys(State* state, char c) {
+void sendGrepKeys(State* state, int c) {
     if (c == 27) { // ESC
         state->mode = SHORTCUTS;
     } else if (' ' <= c && c <= '~') {

@@ -1,13 +1,6 @@
-
-
-
-    a;lsdkjfa
-    a;sldkfja;lsdkfjal;sdkfj;laskdjfa;sdf
-    asdjflaksdjf;asdf
+function tryhard() {
     return(
-
-
-            asdl;kfjaskld;f
+        <Brain
             brains
             brains
         />

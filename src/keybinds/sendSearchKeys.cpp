@@ -6,7 +6,7 @@
 #include <climits>
 #include <ncurses.h>
 
-void sendSearchKeys(State* state, char c) {
+void sendSearchKeys(State* state, int c) {
     if (c == 27) { // ESC
         state->searchQuery = std::string("");
         state->replaceQuery = std::string("");
