@@ -73,7 +73,7 @@ void sendCommandLineKeys(State* state, char c) {
         state->commandLineQuery = "";
     } else if (c == ctrl('v')) {
         state->commandLineQuery += getFromClipboard();
-    } else if (c == 13) { // ENTER
+    } else if (c == 10) { // ENTER
         evaluateCommandLineQuery(state);
         state->commandLineQuery = std::string("");
         state->mode = SHORTCUTS;

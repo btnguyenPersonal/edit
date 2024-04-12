@@ -5,6 +5,7 @@
 #include "../util/state.h"
 #include <string>
 #include <vector>
+#include <ncurses.h>
 
 void sendFindFileKeys(State* state, char c) {
     if (c == 27) { // ESC
@@ -73,7 +74,7 @@ void sendFindFileKeys(State* state, char c) {
         }
     } else if (c == ctrl('v')) {
         state->findFileQuery += getFromClipboard();
-    } else if (c == ctrl('m')) { // ENTER
+    } else if (c == 10) { // ENTER
         if (state->findFileSelection < state->findFileOutput.size()) {
             state->selectAll = false;
             auto selectedFile = state->findFileOutput[state->findFileSelection].string();

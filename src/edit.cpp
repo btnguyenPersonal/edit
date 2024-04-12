@@ -41,7 +41,7 @@ int main(int argc, char* argv[]) {
     while (true) {
         int key = getch();
         if (key != ERR) {
-            c = (char)key;
+            c = static_cast<char>(key);
             recordAction(state);
             sendKeys(state, c);
             renderScreen(state);

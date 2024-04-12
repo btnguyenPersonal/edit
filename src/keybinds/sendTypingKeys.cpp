@@ -5,6 +5,7 @@
 #include "../util/state.h"
 #include <string>
 #include <vector>
+#include <ncurses.h>
 
 void sendTypingKeys(State* state, char c) {
     if (!state->dontRecordKey) {
@@ -61,7 +62,7 @@ void sendTypingKeys(State* state, char c) {
         std::string current = state->data[state->row];
         state->data[state->row] = current.substr(0, state->col) + completion + current.substr(state->col);
         state->col += completion.length();
-    } else if (c == ctrl('m')) { // ENTER
+    } else if (c == 10) { // ENTER
         std::string current = state->data[state->row];
         state->data[state->row] = current.substr(0, state->col);
         state->data.insert(state->data.begin() + state->row + 1, current.substr(state->col));

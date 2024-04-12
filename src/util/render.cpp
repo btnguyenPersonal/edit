@@ -510,7 +510,6 @@ void renderScreen(State* state) {
 void initTerminal() {
     initscr();
     raw();
-    nodelay(stdscr, true);
     noecho();
     if (has_colors() == false) {
         endwin();

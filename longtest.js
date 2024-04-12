@@ -1,8 +1,11 @@
-function sendShortcutKeys(State* state, char c) {
-    let bruh;
 
+
+
+    a;lsdkjfa;lsdkfj
     return(
-        <Brainsodkfjasldfk
+
+
+            asdl;kfjaskld;f
             brains
             brains
         />

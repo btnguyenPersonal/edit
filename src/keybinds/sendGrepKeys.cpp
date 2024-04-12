@@ -5,6 +5,7 @@
 #include "../util/state.h"
 #include <string>
 #include <vector>
+#include <ncurses.h>
 
 void sendGrepKeys(State* state, char c) {
     if (c == 27) { // ESC
@@ -56,7 +57,7 @@ void sendGrepKeys(State* state, char c) {
         }
     } else if (c == ctrl('v')) {
         state->grepQuery += getFromClipboard();
-    } else if (c == ctrl('m')) { // ENTER
+    } else if (c == 10) { // ENTER
         if (state->grepSelection < state->grepOutput.size()) {
             std::filesystem::path selectedFile = state->grepOutput[state->grepSelection].path;
             int lineNum = state->grepOutput[state->grepSelection].lineNum;

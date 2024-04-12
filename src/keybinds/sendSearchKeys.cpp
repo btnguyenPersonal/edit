@@ -4,6 +4,7 @@
 #include "../util/modes.h"
 #include "../util/state.h"
 #include <climits>
+#include <ncurses.h>
 
 void sendSearchKeys(State* state, char c) {
     if (c == 27) { // ESC
@@ -39,7 +40,7 @@ void sendSearchKeys(State* state, char c) {
         } else {
             state->searchQuery += getFromClipboard();
         }
-    } else if (c == ctrl('m')) { // ENTER
+    } else if (c == 10) { // ENTER
         if (state->replacing) {
             replaceAll(state, state->searchQuery, state->replaceQuery);
         }
