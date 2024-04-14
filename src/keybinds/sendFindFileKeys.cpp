@@ -5,8 +5,9 @@
 #include "../util/state.h"
 #include <string>
 #include <vector>
+#include <ncurses.h>
 
-void sendFindFileKeys(State* state, char c) {
+void sendFindFileKeys(State* state, int c) {
     if (c == 27) { // ESC
         state->selectAll = false;
         state->mode = SHORTCUTS;
@@ -18,7 +19,7 @@ void sendFindFileKeys(State* state, char c) {
         }
         state->findFileQuery += c;
         state->findFileSelection = 0;
-    } else if (c == 127) { // BACKSPACE
+    } else if (c == KEY_BACKSPACE || c == 127) {
         if (state->selectAll == true) {
             state->findFileQuery = "";
             state->findFileSelection = 0;
@@ -73,7 +74,7 @@ void sendFindFileKeys(State* state, char c) {
         }
     } else if (c == ctrl('v')) {
         state->findFileQuery += getFromClipboard();
-    } else if (c == ctrl('m')) { // ENTER
+    } else if (c == '\n') {
         if (state->findFileSelection < state->findFileOutput.size()) {
             state->selectAll = false;
             auto selectedFile = state->findFileOutput[state->findFileSelection].string();

@@ -6,4 +6,4 @@
 #include <string>
 #include <vector>
 
-void sendGrepKeys(State* state, char c);
+void sendGrepKeys(State* state, int c);

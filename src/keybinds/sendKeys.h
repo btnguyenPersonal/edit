@@ -2,4 +2,4 @@
 
 #include "../util/state.h"
 
-void sendKeys(State* state, char c);
+void sendKeys(State* state, int c);

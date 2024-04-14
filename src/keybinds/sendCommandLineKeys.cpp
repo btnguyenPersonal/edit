@@ -53,7 +53,7 @@ void evaluateCommandLineQuery(State* state) {
     }
 }
 
-void sendCommandLineKeys(State* state, char c) {
+void sendCommandLineKeys(State* state, int c) {
     if (c == 27) { // ESC
         state->commandLineQuery = std::string("");
         state->mode = SHORTCUTS;
@@ -67,13 +67,13 @@ void sendCommandLineKeys(State* state, char c) {
                 state->commandLineQuery = 'g' + state->commandLineQuery;
             }
         }
-    } else if (c == 127) { // BACKSPACE
+    } else if (c == KEY_BACKSPACE || c == 127) {
         state->commandLineQuery = state->commandLineQuery.substr(0, state->commandLineQuery.length() - 1);
     } else if (c == ctrl('l')) {
         state->commandLineQuery = "";
     } else if (c == ctrl('v')) {
         state->commandLineQuery += getFromClipboard();
-    } else if (c == 13) { // ENTER
+    } else if (c == '\n') {
         evaluateCommandLineQuery(state);
         state->commandLineQuery = std::string("");
         state->mode = SHORTCUTS;

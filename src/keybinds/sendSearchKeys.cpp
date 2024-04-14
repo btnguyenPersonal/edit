@@ -4,8 +4,9 @@
 #include "../util/modes.h"
 #include "../util/state.h"
 #include <climits>
+#include <ncurses.h>
 
-void sendSearchKeys(State* state, char c) {
+void sendSearchKeys(State* state, int c) {
     if (c == 27) { // ESC
         state->searchQuery = std::string("");
         state->replaceQuery = std::string("");
@@ -17,7 +18,7 @@ void sendSearchKeys(State* state, char c) {
         } else {
             state->searchQuery += c;
         }
-    } else if (c == 127) { // BACKSPACE
+    } else if (c == KEY_BACKSPACE || c == 127) {
         if (state->replacing) {
             state->replaceQuery = state->replaceQuery.substr(0, state->replaceQuery.length() - 1);
         } else {
@@ -39,7 +40,7 @@ void sendSearchKeys(State* state, char c) {
         } else {
             state->searchQuery += getFromClipboard();
         }
-    } else if (c == ctrl('m')) { // ENTER
+    } else if (c == '\n') {
         if (state->replacing) {
             replaceAll(state, state->searchQuery, state->replaceQuery);
         }

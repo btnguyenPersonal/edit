@@ -14,7 +14,7 @@
 #include "sendVisualKeys.h"
 #include <ncurses.h>
 
-void sendKeys(State* state, char c) {
+void sendKeys(State* state, int c) {
     state->status = std::string("");
     state->searchFail = false;
     state->showFileStack = false;

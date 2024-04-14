@@ -33,7 +33,7 @@ Bounds getBounds(State* state) {
     return bounds;
 }
 
-void replaceAllWithChar(State* state, char c) {
+void replaceAllWithChar(State* state, int c) {
     Bounds bounds = getBounds(state);
     if (state->visualType == NORMAL) {
         unsigned int col = bounds.minC;
@@ -295,62 +295,62 @@ bool sendVisualKeys(State* state, char c, bool onlyMotions) {
     } else if (state->prevKeys == "f") {
         state->col = findNextChar(state, c);
         state->prevKeys = "";
-    } else if (state->prevKeys + c == "i`") {
+    } else if (state->prevKeys == "i" && c == '`') {
         setStateFromWordPosition(state, findQuoteBounds(state->data[state->row], '`', state->col, false));
         state->prevKeys = "";
-    } else if (state->prevKeys + c == "a`") {
+    } else if (state->prevKeys == "a" && c == '`') {
         setStateFromWordPosition(state, findQuoteBounds(state->data[state->row], '`', state->col, true));
         state->prevKeys = "";
-    } else if (state->prevKeys + c == "i\"") {
+    } else if (state->prevKeys == "i" && c == '"' ) {
         setStateFromWordPosition(state, findQuoteBounds(state->data[state->row], '"', state->col, false));
         state->prevKeys = "";
-    } else if (state->prevKeys + c == "a\"") {
+    } else if (state->prevKeys == "a" && c == '"' ) {
         setStateFromWordPosition(state, findQuoteBounds(state->data[state->row], '"', state->col, true));
         state->prevKeys = "";
-    } else if (state->prevKeys + c == "i'") {
+    } else if (state->prevKeys == "i" && c == '\'') {
         setStateFromWordPosition(state, findQuoteBounds(state->data[state->row], '\'', state->col, false));
         state->prevKeys = "";
-    } else if (state->prevKeys + c == "a'") {
+    } else if (state->prevKeys == "a" && c == '\'') {
         setStateFromWordPosition(state, findQuoteBounds(state->data[state->row], '\'', state->col, true));
         state->prevKeys = "";
-    } else if (state->prevKeys + c == "at") {
+    } else if (state->prevKeys == "a" && c == 't') {
         setStateFromWordPosition(state, findParentheses(state->data[state->row], '>', '<', state->col, true));
         state->prevKeys = "";
-    } else if (state->prevKeys + c == "aT") {
+    } else if (state->prevKeys == "a" && c == 'T') {
         setStateFromWordPosition(state, findParentheses(state->data[state->row], '<', '>', state->col, true));
         state->prevKeys = "";
-    } else if (state->prevKeys + c == "ad") {
+    } else if (state->prevKeys == "a" && c == 'd') {
         setStateFromWordPosition(state, findParentheses(state->data[state->row], '[', ']', state->col, true));
         state->prevKeys = "";
-    } else if (state->prevKeys + c == "aB") {
+    } else if (state->prevKeys == "a" && c == 'B') {
         setStateFromWordPosition(state, findParentheses(state->data[state->row], '{', '}', state->col, true));
         state->prevKeys = "";
-    } else if (state->prevKeys + c == "ab") {
+    } else if (state->prevKeys == "a" && c == 'b') {
         setStateFromWordPosition(state, findParentheses(state->data[state->row], '(', ')', state->col, true));
         state->prevKeys = "";
-    } else if (state->prevKeys + c == "it") {
+    } else if (state->prevKeys == "i" && c == 't') {
         setStateFromWordPosition(state, findParentheses(state->data[state->row], '>', '<', state->col, false));
         state->prevKeys = "";
-    } else if (state->prevKeys + c == "iT") {
+    } else if (state->prevKeys == "i" && c == 'T') {
         setStateFromWordPosition(state, findParentheses(state->data[state->row], '<', '>', state->col, false));
         state->prevKeys = "";
-    } else if (state->prevKeys + c == "id") {
+    } else if (state->prevKeys == "i" && c == 'd') {
         setStateFromWordPosition(state, findParentheses(state->data[state->row], '[', ']', state->col, false));
         state->prevKeys = "";
-    } else if (state->prevKeys + c == "iB") {
+    } else if (state->prevKeys == "i" && c == 'B') {
         setStateFromWordPosition(state, findParentheses(state->data[state->row], '{', '}', state->col, false));
         state->prevKeys = "";
-    } else if (state->prevKeys + c == "ib") {
+    } else if (state->prevKeys == "i" && c == 'b') {
         setStateFromWordPosition(state, findParentheses(state->data[state->row], '(', ')', state->col, false));
         state->prevKeys = "";
-    } else if (state->prevKeys + c == "iw") {
+    } else if (state->prevKeys == "i" && c == 'w') {
         setStateFromWordPosition(state, getWordPosition(state->data[state->row], state->col));
         state->prevKeys = "";
-    } else if (state->prevKeys + c == "ip") {
+    } else if (state->prevKeys == "i" && c == 'p') {
         state->visualType = LINE;
         surroundParagraph(state, false);
         state->prevKeys = "";
-    } else if (state->prevKeys + c == "ap") {
+    } else if (state->prevKeys == "a" && c == 'p') {
         state->visualType = LINE;
         surroundParagraph(state, true);
         state->prevKeys = "";
@@ -370,7 +370,7 @@ bool sendVisualKeys(State* state, char c, bool onlyMotions) {
             iterations++;
         }
         state->prevKeys = "";
-    } else if (!onlyMotions && state->prevKeys + c == "gr") {
+    } else if (!onlyMotions && state->prevKeys == "g" && c == 'r') {
         if (state->visualType == NORMAL) {
             state->mode = SHORTCUTS;
             state->searchQuery = getInVisual(state);
@@ -378,7 +378,7 @@ bool sendVisualKeys(State* state, char c, bool onlyMotions) {
             searchFromTop(state);
         }
         state->prevKeys = "";
-    } else if (!onlyMotions && state->prevKeys + c == "gf") {
+    } else if (!onlyMotions && state->prevKeys == "g" && c == 'f') {
         if (state->visualType == NORMAL) {
             std::vector<std::string> extensions = {"", ".js", ".jsx", ".ts", ".tsx"};
             for (unsigned int i = 0; i < extensions.size(); i++) {
@@ -397,7 +397,7 @@ bool sendVisualKeys(State* state, char c, bool onlyMotions) {
             }
         }
         state->prevKeys = "";
-    } else if (!onlyMotions && state->prevKeys + c == "gU") {
+    } else if (!onlyMotions && state->prevKeys == "g" && c == 'U') {
         changeCaseVisual(state, true);
         state->prevKeys = "";
         state->mode = SHORTCUTS;
@@ -405,11 +405,11 @@ bool sendVisualKeys(State* state, char c, bool onlyMotions) {
         replaceAllWithChar(state, c);
         state->prevKeys = "";
         state->mode = SHORTCUTS;
-    } else if (!onlyMotions && state->prevKeys + c == "gu") {
+    } else if (!onlyMotions && state->prevKeys == "g" && c == 'u') {
         changeCaseVisual(state, false);
         state->prevKeys = "";
         state->mode = SHORTCUTS;
-    } else if (state->prevKeys + c == "gg") {
+    } else if (state->prevKeys == "g" && c == 'g') {
         state->row = 0;
         state->prevKeys = "";
     } else if (state->prevKeys != "") {

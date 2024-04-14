@@ -5,14 +5,15 @@
 #include "../util/state.h"
 #include <string>
 #include <vector>
+#include <ncurses.h>
 
-void sendGrepKeys(State* state, char c) {
+void sendGrepKeys(State* state, int c) {
     if (c == 27) { // ESC
         state->mode = SHORTCUTS;
     } else if (' ' <= c && c <= '~') {
         state->grepQuery += c;
         state->grepSelection = 0;
-    } else if (c == 127) { // BACKSPACE
+    } else if (c == KEY_BACKSPACE || c == 127) {
         state->grepQuery = state->grepQuery.substr(0, state->grepQuery.length() - 1);
         state->grepSelection = 0;
     } else if (c == ctrl('g')) {
@@ -56,7 +57,7 @@ void sendGrepKeys(State* state, char c) {
         }
     } else if (c == ctrl('v')) {
         state->grepQuery += getFromClipboard();
-    } else if (c == ctrl('m')) { // ENTER
+    } else if (c == '\n') {
         if (state->grepSelection < state->grepOutput.size()) {
             std::filesystem::path selectedFile = state->grepOutput[state->grepSelection].path;
             int lineNum = state->grepOutput[state->grepSelection].lineNum;

@@ -1,11 +1,8 @@
-function sendShortcutKeys(State* state, char c) {
-    let bruh;
-    return (
+funfcasdfasdtfion tryhard() {
+    return(asdf
         <Brain
-            brains
-            brains
-            brains
-            brains
+            a;sdlfjas;dlkfasdfbrasdasdasdffains
+            brainsasdffadsff
         />
     );
 }

@@ -3,4 +3,4 @@
 #include "../util/helper.h"
 #include "../util/state.h"
 
-void sendSearchKeys(State* state, char c);
+void sendSearchKeys(State* state, int c);
