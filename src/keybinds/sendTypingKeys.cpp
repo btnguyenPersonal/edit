@@ -27,7 +27,7 @@ void sendTypingKeys(State* state, int c) {
             state->col = getIndexFirstNonSpace(state);
         }
         state->col += 1;
-    } else if (c == KEY_BACKSPACE) {
+    } else if (c == KEY_BACKSPACE || c == 127) {
         if (state->col > 0) {
             std::string current = state->data[state->row];
             state->data[state->row] = current.substr(0, state->col - 1) + current.substr(state->col);
