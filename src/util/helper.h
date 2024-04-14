@@ -71,6 +71,7 @@ void right(State* state);
 void downHalfScreen(State* state);
 void upHalfScreen(State* state);
 char ctrl(char c);
+char unctrl(char c);
 void calcWindowBounds();
 int getIndexFirstNonSpace(State* state);
 void sanityCheckRowColOutOfBounds(State* state);

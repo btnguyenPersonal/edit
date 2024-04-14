@@ -484,6 +484,8 @@ bool is_number(const std::string& s) {
 
 char ctrl(char c) { return c - 'a' + 1; }
 
+char unctrl(char c) { return c + 'a' - 1; }
+
 unsigned int getIndent(const std::string& str) {
     for (unsigned int i = 0; i < str.length(); i++) {
         if (str[i] != ' ') {

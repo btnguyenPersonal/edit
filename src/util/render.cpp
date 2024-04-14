@@ -225,6 +225,10 @@ void printChar(State* state, int row, int col, char c, int color) {
         attron(COLOR_PAIR(invertColor(RED)));
         mvaddch(row - state->windowPosition.row + 1, col + getLineNumberOffset(state), ' ');
         attroff(COLOR_PAIR(invertColor(RED)));
+    } else if (' ' <= unctrl(c) && unctrl(c) <= '~') {
+        attron(COLOR_PAIR(invertColor(MAGENTA)));
+        mvaddch(row - state->windowPosition.row + 1, col + getLineNumberOffset(state), unctrl(c));
+        attroff(COLOR_PAIR(invertColor(MAGENTA)));
     } else {
         attron(COLOR_PAIR(invertColor(MAGENTA)));
         mvaddch(row - state->windowPosition.row + 1, col + getLineNumberOffset(state), ' ');
