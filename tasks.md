@@ -103,11 +103,11 @@
 - run current search replace in visual
 - do something with 1-9 (maybe repeat everything? n times)
 - add fuzzing
-
-## TODO
 - make getch() int, and have enums for characters
     - this one is cancer to deal with, makes esc so laggy
     - export ESCDELAY=0 ????? fixes everything
+
+## TODO
 - add cursors that are movable for findfile, grep, etc as structs, and change all the state->grep crap to state->grep.query
 
 ## LOW PRIO
