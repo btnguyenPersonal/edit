@@ -15,8 +15,7 @@
 #include <ncurses.h>
 
 void sendKeys(State* state, int c) {
-    // state->status = std::string("");
-    state->status = std::to_string(c);
+    state->status = std::string("");
     state->searchFail = false;
     state->showFileStack = false;
     state->dontRecordKey = false;
