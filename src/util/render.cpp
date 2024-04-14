@@ -216,26 +216,6 @@ bool isMergeConflict(const std::string& str) {
     return false;
 }
 
-int getColor(State* state, int row, char c, bool isInString, bool isInverted, bool isInSearchQuery, unsigned int startOfSearch, bool isComment) {
-    int color;
-    if (isInSearchQuery == true && isInverted == false && state->searching == true) {
-        color = getSearchColor(state, row, startOfSearch);
-    } else if (isMergeConflict(state->data[row])) {
-        color = RED;
-    } else if (isComment) {
-        color = GREEN;
-    } else if (isInString == true && getExtension(state->filename) != "md" && getExtension(state->filename) != "txt") {
-        color = CYAN;
-    } else {
-        color = getColorFromChar(c);
-    }
-    if (isInverted == false) {
-        return color;
-    } else {
-        return invertColor(color);
-    }
-}
-
 void printChar(State* state, int row, int col, char c, int color) {
     if (' ' <= c && c <= '~') {
         attron(COLOR_PAIR(color));
@@ -375,9 +355,22 @@ void printLine(State* state, int row) {
                     col += state->searchQuery.length();
                     searchCounter = 0;
                 } else {
-                    int color = getColor(state, row, state->data[row][col], isInString, isRowColInVisual(state, row, col), searchCounter != 0, startOfSearch, isComment);
-                    if (state->matching.row == (unsigned int)row && state->matching.col == col && (state->matching.row != state->row || state->matching.col != state->col)) {
+                    int color;
+                    if (searchCounter != 0 && state->searching == true) {
+                        color = getSearchColor(state, row, startOfSearch);
+                    } else if (isMergeConflict(state->data[row])) {
+                        color = RED;
+                    } else if (isComment) {
+                        color = GREEN;
+                    } else if (isInString == true && getExtension(state->filename) != "md" && getExtension(state->filename) != "txt") {
+                        color = CYAN;
+                    } else if (state->matching.row == (unsigned int)row && state->matching.col == col && (state->matching.row != state->row || state->matching.col != state->col)) {
                         color = invertColor(GREY);
+                    } else {
+                        color = getColorFromChar(state->data[row][col]);
+                    }
+                    if (isRowColInVisual(state, row, col)) {
+                        color = invertColor(color);
                     }
                     printChar(state, row, renderCol, state->data[row][col], color);
                     renderCol++;
