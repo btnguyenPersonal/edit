@@ -51,7 +51,7 @@ test:
 	make all && build/e longtest.js
 
 install:
-	make all && sudo cp build/e /usr/local/bin
+	make all && sudo mv build/e /usr/local/bin
 
 clean:
 	rm -rf $(BUILD_DIR)
