@@ -7,6 +7,12 @@
 #include <vector>
 #include <ncurses.h>
 
+void insertNewline(State* state) {
+    std::string current = state->data[state->row];
+    state->data[state->row] = current.substr(0, state->col);
+    state->data.insert(state->data.begin() + state->row + 1, current.substr(state->col));
+}
+
 void sendTypingKeys(State* state, int c) {
     if (!state->dontRecordKey) {
         state->motion += c;
@@ -20,13 +26,23 @@ void sendTypingKeys(State* state, int c) {
         return;
     } else if (state->prevKeys == "v") {
         state->prevKeys = "";
-        std::string current = state->data[state->row];
-        state->data[state->row] = current.substr(0, state->col) + (char)c + current.substr(state->col);
-        if ((int)state->col == getIndexFirstNonSpace(state)) {
-            indentLine(state);
-            state->col = getIndexFirstNonSpace(state);
+        if (c == '\n') {
+            insertNewline(state);
+            state->row += 1;
+            state->col = 0;
+        } else {
+            std::string current = state->data[state->row];
+            state->data[state->row] = current.substr(0, state->col) + (char)c + current.substr(state->col);
+            if ((int)state->col == getIndexFirstNonSpace(state)) {
+                indentLine(state);
+                state->col = getIndexFirstNonSpace(state);
+            }
+            state->col += 1;
         }
-        state->col += 1;
+    } else if (c == '\n') {
+        insertNewline(state);
+        state->row += 1;
+        state->col = 0;
     } else if (c == KEY_BACKSPACE || c == 127) {
         if (state->col > 0) {
             std::string current = state->data[state->row];
@@ -62,12 +78,6 @@ void sendTypingKeys(State* state, int c) {
         std::string current = state->data[state->row];
         state->data[state->row] = current.substr(0, state->col) + completion + current.substr(state->col);
         state->col += completion.length();
-    } else if (c == '\n') {
-        std::string current = state->data[state->row];
-        state->data[state->row] = current.substr(0, state->col);
-        state->data.insert(state->data.begin() + state->row + 1, current.substr(state->col));
-        state->row += 1;
-        state->col = 0;
     } else if (c == KEY_LEFT) {
         left(state);
     } else if (c == KEY_RIGHT) {
