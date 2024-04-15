@@ -53,6 +53,12 @@ struct Archive {
     Jumplist jumplist;
 };
 
+struct Query {
+    std::string query;
+    unsigned int cursor;
+    unsigned int selection;
+};
+
 class State {
 public:
     Position matching;
@@ -81,20 +87,18 @@ public:
     unsigned int row;
     unsigned int col;
     std::string commentSymbol;
-    std::string searchQuery;
-    std::string replaceQuery;
-    std::string commandLineQuery;
+    Query search;
+    Query replace;
+    Query commandLine;
     std::string dotCommand;
     std::string macroCommand;
     bool playingCommand;
     std::string motion;
     bool recording;
     bool dontRecordKey;
-    std::string findFileQuery;
-    unsigned int findFileSelection;
+    Query findFile;
     std::vector<std::filesystem::path> findFileOutput;
-    std::string grepQuery;
-    unsigned int grepSelection;
+    Query grep;
     std::vector<grepMatch> grepOutput;
     std::string prevKeys;
     std::string lastLoggingVar;

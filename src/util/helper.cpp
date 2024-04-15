@@ -389,7 +389,7 @@ bool setSearchResultReverse(State* state) {
     bool isFirst = true;
     do {
         std::string line = isFirst ? state->data[row].substr(0, col) : state->data[row];
-        size_t index = line.rfind(state->searchQuery);
+        size_t index = line.rfind(state->search.query);
         if (index != std::string::npos) {
             state->row = row;
             state->col = static_cast<unsigned int>(index);
@@ -404,7 +404,7 @@ bool setSearchResultReverse(State* state) {
     } while (row != initialRow);
     // try last row again
     std::string line = state->data[row];
-    size_t index = line.rfind(state->searchQuery);
+    size_t index = line.rfind(state->search.query);
     if (index != std::string::npos) {
         state->row = row;
         state->col = static_cast<unsigned int>(index);
@@ -415,7 +415,7 @@ bool setSearchResultReverse(State* state) {
 
 bool searchFromTop(State* state) {
     for (unsigned int i = 0; i < state->data.size(); i++) {
-        size_t index = state->data[i].rfind(state->searchQuery);
+        size_t index = state->data[i].rfind(state->search.query);
         if (index != std::string::npos) {
             state->row = i;
             state->col = static_cast<unsigned int>(index);
@@ -444,7 +444,7 @@ bool setSearchResult(State* state) {
     unsigned int row = initialRow;
     do {
         std::string line = state->data[row].substr(col);
-        size_t index = line.find(state->searchQuery);
+        size_t index = line.find(state->search.query);
         if (index != std::string::npos) {
             state->row = row;
             state->col = static_cast<unsigned int>(index) + col;
@@ -455,7 +455,7 @@ bool setSearchResult(State* state) {
     } while (row != initialRow);
     // try last row again
     std::string line = state->data[row];
-    size_t index = line.find(state->searchQuery);
+    size_t index = line.find(state->search.query);
     if (index != std::string::npos) {
         state->row = row;
         state->col = static_cast<unsigned int>(index) + col;
@@ -813,21 +813,21 @@ std::vector<std::filesystem::path> findFiles(const std::filesystem::path& dir_pa
 }
 
 void generateGrepOutput(State* state) {
-    if (state->grepQuery == "") {
+    if (state->grep.query == "") {
         state->grepOutput.clear();
     } else {
-        state->grepOutput = grepFiles(std::filesystem::current_path(), state->grepQuery);
+        state->grepOutput = grepFiles(std::filesystem::current_path(), state->grep.query);
     }
-    if (state->grepSelection >= state->grepOutput.size()) {
+    if (state->grep.selection >= state->grepOutput.size()) {
         if (state->grepOutput.size() > 0) {
-            state->grepSelection = state->grepOutput.size() - 1;
+            state->grep.selection = state->grepOutput.size() - 1;
         } else {
-            state->grepSelection = 0;
+            state->grep.selection = 0;
         }
     }
 }
 
-void generateFindFileOutput(State* state) { state->findFileOutput = findFiles(std::filesystem::current_path(), state->findFileQuery); }
+void generateFindFileOutput(State* state) { state->findFileOutput = findFiles(std::filesystem::current_path(), state->findFile.query); }
 
 unsigned int w(State* state) {
     bool space = state->data[state->row][state->col] == ' ';

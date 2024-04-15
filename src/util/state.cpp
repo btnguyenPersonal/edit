@@ -70,7 +70,7 @@ void State::changeFile(std::string filename) {
     this->row = 0;
     this->col = 0;
     this->indent = 4;
-    this->commandLineQuery = std::string("");
+    this->commandLine.query = std::string("");
     this->selectAll = false;
     this->prevKeys = std::string("");
     this->status = std::string("");
@@ -126,13 +126,11 @@ State::State() {
     this->row = 0;
     this->col = 0;
     this->indent = 4;
-    this->searchQuery = std::string("");
-    this->replaceQuery = std::string("");
-    this->commandLineQuery = std::string("");
-    this->findFileQuery = std::string("");
-    this->findFileSelection = 0;
-    this->grepQuery = std::string("");
-    this->grepSelection = 0;
+    this->search = {std::string(""), 0, 0};
+    this->replace = {std::string(""), 0, 0};
+    this->commandLine = {std::string(""), 0, 0};
+    this->findFile = {std::string(""), 0, 0};
+    this->grep = {std::string(""), 0, 0};
     this->prevKeys = std::string("");
     this->status = std::string("");
     this->searchFail = false;

@@ -7,6 +7,7 @@
 #include "../util/insertLoggingCode.h"
 #include "../util/modes.h"
 #include "../util/state.h"
+#include "../util/query.h"
 #include <algorithm>
 #include <ncurses.h>
 #include <string>
@@ -373,7 +374,7 @@ bool sendVisualKeys(State* state, char c, bool onlyMotions) {
     } else if (!onlyMotions && state->prevKeys == "g" && c == 'r') {
         if (state->visualType == NORMAL) {
             state->mode = SHORTCUTS;
-            state->searchQuery = getInVisual(state);
+            state->search.query = getInVisual(state);
             state->searching = true;
             searchFromTop(state);
         }
@@ -434,7 +435,7 @@ bool sendVisualKeys(State* state, char c, bool onlyMotions) {
         logDotCommand(state);
     } else if (!onlyMotions && c == ':') {
         if (state->visualType == NORMAL) {
-            state->commandLineQuery = "gs/" + getInVisual(state) + "/";
+            state->commandLine.query = "gs/" + getInVisual(state) + "/";
             state->mode = COMMANDLINE;
         }
     } else if (c == '^') {
@@ -481,13 +482,13 @@ bool sendVisualKeys(State* state, char c, bool onlyMotions) {
     } else if (!onlyMotions && c == '*') {
         if (state->visualType == NORMAL) {
             state->searching = true;
-            state->searchQuery = getInVisual(state);
+            setQuery(&state->search, getInVisual(state));
             state->mode = SHORTCUTS;
             logDotCommand(state);
             setSearchResult(state);
         }
     } else if (!onlyMotions && c == '#') {
-        state->grepQuery = getInVisual(state);
+        setQuery(&state->grep, getInVisual(state));
         state->mode = GREP;
         generateGrepOutput(state);
     } else if (c == 'l') {

@@ -3,48 +3,60 @@
 #include "../util/helper.h"
 #include "../util/modes.h"
 #include "../util/state.h"
+#include "../util/query.h"
 #include <climits>
 #include <ncurses.h>
 
 void sendSearchKeys(State* state, int c) {
     if (c == 27) { // ESC
-        state->searchQuery = std::string("");
-        state->replaceQuery = std::string("");
+        backspaceAll(&state->search);
+        backspaceAll(&state->replace);
         state->replacing = false;
         state->mode = SHORTCUTS;
     } else if (' ' <= c && c <= '~') {
         if (state->replacing) {
-            state->replaceQuery += c;
+            add(&state->replace, c);
         } else {
-            state->searchQuery += c;
+            add(&state->search, c);
         }
     } else if (c == KEY_BACKSPACE || c == 127) {
         if (state->replacing) {
-            state->replaceQuery = state->replaceQuery.substr(0, state->replaceQuery.length() - 1);
+            backspace(&state->replace);
         } else {
-            state->searchQuery = state->searchQuery.substr(0, state->searchQuery.length() - 1);
+            backspace(&state->search);
         }
     } else if (c == ctrl('f')) {
         state->replacing = true;
     } else if (c == ctrl('g')) {
         state->mode = FINDFILE;
+    } else if (c == KEY_LEFT) {
+        if (state->replacing) {
+            moveCursorLeft(&state->replace);
+        } else {
+            moveCursorLeft(&state->search);
+        }
+    } else if (c == KEY_RIGHT) {
+        if (state->replacing) {
+            moveCursorRight(&state->replace);
+        } else {
+            moveCursorRight(&state->search);
+        }
     } else if (c == ctrl('l')) {
         if (state->replacing) {
-            state->replaceQuery = std::string("");
+            backspaceAll(&state->replace);
         } else {
-            state->searchQuery = std::string("");
+            backspaceAll(&state->search);
         }
     } else if (c == ctrl('v')) {
         if (state->replacing) {
-            state->replaceQuery += getFromClipboard();
+            addFromClipboard(&state->replace);
         } else {
-            state->searchQuery += getFromClipboard();
+            addFromClipboard(&state->search);
         }
     } else if (c == '\n') {
         if (state->replacing) {
-            replaceAll(state, state->searchQuery, state->replaceQuery);
+            replaceAll(state, state->search.query, state->replace.query);
         }
-        state->replaceQuery = std::string("");
         state->replacing = false;
         state->mode = SHORTCUTS;
     }

@@ -3,6 +3,7 @@
 #include "../util/helper.h"
 #include "../util/modes.h"
 #include "../util/state.h"
+#include "../util/query.h"
 #include <string>
 #include <vector>
 #include <ncurses.h>
@@ -13,20 +14,24 @@ void sendFindFileKeys(State* state, int c) {
         state->mode = SHORTCUTS;
     } else if (' ' <= c && c <= '~') {
         if (state->selectAll == true) {
-            state->findFileQuery = std::string("");
-            state->findFileSelection = 0;
+            backspaceAll(&state->findFile);
+            state->findFile.selection = 0;
             state->selectAll = false;
         }
-        state->findFileQuery += c;
-        state->findFileSelection = 0;
+        add(&state->findFile, c);
+        state->findFile.selection = 0;
+    } else if (c == KEY_LEFT) {
+        moveCursorLeft(&state->findFile);
+    } else if (c == KEY_RIGHT) {
+        moveCursorRight(&state->findFile);
     } else if (c == KEY_BACKSPACE || c == 127) {
         if (state->selectAll == true) {
-            state->findFileQuery = "";
-            state->findFileSelection = 0;
+            state->findFile.query = "";
+            state->findFile.selection = 0;
             state->selectAll = false;
         } else {
-            state->findFileQuery = state->findFileQuery.substr(0, state->findFileQuery.length() - 1);
-            state->findFileSelection = 0;
+            backspace(&state->findFile);
+            state->findFile.selection = 0;
         }
     } else if (c == ctrl('a')) {
         state->selectAll = !state->selectAll;
@@ -34,50 +39,50 @@ void sendFindFileKeys(State* state, int c) {
         state->mode = GREP;
     } else if (c == ctrl('l')) {
         state->selectAll = false;
-        state->findFileQuery = std::string("");
-        state->findFileSelection = 0;
+        backspaceAll(&state->findFile);
+        state->findFile.selection = 0;
     } else if (c == ctrl('d')) {
         for (unsigned int i = 0; i < state->maxY; i++) {
-            if (state->findFileSelection + 1 < state->findFileOutput.size()) {
-                state->findFileSelection += 1;
+            if (state->findFile.selection + 1 < state->findFileOutput.size()) {
+                state->findFile.selection += 1;
             }
         }
     } else if (c == ctrl('u')) {
         for (unsigned int i = 0; i < state->maxY; i++) {
-            if (state->findFileSelection > 0) {
-                state->findFileSelection -= 1;
+            if (state->findFile.selection > 0) {
+                state->findFile.selection -= 1;
             }
         }
-    } else if (c == ctrl('n')) {
-        if (state->findFileSelection + 1 < state->findFileOutput.size()) {
-            state->findFileSelection += 1;
+    } else if (c == KEY_DOWN || c == ctrl('n')) {
+        if (state->findFile.selection + 1 < state->findFileOutput.size()) {
+            state->findFile.selection += 1;
         }
-    } else if (c == ctrl('p')) {
-        if (state->findFileSelection > 0) {
-            state->findFileSelection -= 1;
+    } else if (c == KEY_UP || c == ctrl('p')) {
+        if (state->findFile.selection > 0) {
+            state->findFile.selection -= 1;
         }
     } else if (c == ctrl('r')) {
-        if (state->findFileSelection < state->findFileOutput.size()) {
+        if (state->findFile.selection < state->findFileOutput.size()) {
             state->selectAll = false;
-            auto selectedFile = state->findFileOutput[state->findFileSelection].string();
+            auto selectedFile = state->findFileOutput[state->findFile.selection].string();
             std::filesystem::path currentDir = ((std::filesystem::path)state->filename).parent_path();
             std::filesystem::path relativePath = std::filesystem::relative(selectedFile, currentDir);
             copyToClipboard(relativePath.string());
             state->mode = SHORTCUTS;
         }
     } else if (c == ctrl('y')) {
-        if (state->findFileSelection < state->findFileOutput.size()) {
+        if (state->findFile.selection < state->findFileOutput.size()) {
             state->selectAll = false;
-            auto selectedFile = state->findFileOutput[state->findFileSelection].string();
+            auto selectedFile = state->findFileOutput[state->findFile.selection].string();
             copyToClipboard(selectedFile);
             state->mode = SHORTCUTS;
         }
     } else if (c == ctrl('v')) {
-        state->findFileQuery += getFromClipboard();
+        addFromClipboard(&state->findFile);
     } else if (c == '\n') {
-        if (state->findFileSelection < state->findFileOutput.size()) {
+        if (state->findFile.selection < state->findFileOutput.size()) {
             state->selectAll = false;
-            auto selectedFile = state->findFileOutput[state->findFileSelection].string();
+            auto selectedFile = state->findFileOutput[state->findFile.selection].string();
             state->resetState(selectedFile);
         }
     }

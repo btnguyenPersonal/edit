@@ -3,39 +3,40 @@
 #include "../util/helper.h"
 #include "../util/modes.h"
 #include "../util/state.h"
+#include "../util/query.h"
 #include <ncurses.h>
 #include <sstream>
 #include <string>
 #include <vector>
 
 void evaluateCommandLineQuery(State* state) {
-    if (state->commandLineQuery == "q") {
+    if (state->commandLine.query == "q") {
         endwin();
         exit(0);
-    } else if (state->commandLineQuery == "w") {
+    } else if (state->commandLine.query == "w") {
         trimTrailingWhitespace(state);
         saveFile(state);
-    } else if (state->commandLineQuery == "wq" || state->commandLineQuery == "x") {
+    } else if (state->commandLine.query == "wq" || state->commandLine.query == "x") {
         trimTrailingWhitespace(state);
         saveFile(state);
         endwin();
         exit(0);
-    } else if (state->commandLineQuery.substr(0, 1) == "s") {
-        std::istringstream iss(state->commandLineQuery);
+    } else if (state->commandLine.query.substr(0, 1) == "s") {
+        std::istringstream iss(state->commandLine.query);
         std::string s, first, second, g;
         if (std::getline(iss, s, '/') && std::getline(iss, first, '/') && std::getline(iss, second, '/')) {
             replaceCurrentLine(state, first, second);
         }
-    } else if (state->commandLineQuery.substr(0, 2) == "gs") {
-        std::istringstream iss(state->commandLineQuery);
+    } else if (state->commandLine.query.substr(0, 2) == "gs") {
+        std::istringstream iss(state->commandLine.query);
         std::string s, first, second, g;
         if (std::getline(iss, s, '/') && std::getline(iss, first, '/') && std::getline(iss, second, '/')) {
             if (!state->dontSave) {
                 replaceAllGlobally(state, first, second);
             }
         }
-    } else if (state->commandLineQuery.substr(0, 2) == "%s") {
-        std::istringstream iss(state->commandLineQuery);
+    } else if (state->commandLine.query.substr(0, 2) == "%s") {
+        std::istringstream iss(state->commandLine.query);
         std::string s, first, second, g;
         do {
             if (std::getline(iss, s, '/') && std::getline(iss, first, '/') && std::getline(iss, second, '/')) {
@@ -43,8 +44,8 @@ void evaluateCommandLineQuery(State* state) {
             }
             std::getline(iss, s, ';');
         } while (!iss.eof());
-    } else if (is_number(state->commandLineQuery)) {
-        unsigned int number = stoul(state->commandLineQuery);
+    } else if (is_number(state->commandLine.query)) {
+        unsigned int number = stoul(state->commandLine.query);
         if (number > 0) {
             state->row = number - 1;
         } else {
@@ -55,27 +56,35 @@ void evaluateCommandLineQuery(State* state) {
 
 void sendCommandLineKeys(State* state, int c) {
     if (c == 27) { // ESC
-        state->commandLineQuery = std::string("");
+        backspaceAll(&state->commandLine);
         state->mode = SHORTCUTS;
     } else if (' ' <= c && c <= '~') {
-        state->commandLineQuery += c;
+        add(&state->commandLine, c);
+    } else if (c == KEY_LEFT) {
+        moveCursorLeft(&state->commandLine);
+    } else if (c == KEY_RIGHT) {
+        moveCursorRight(&state->commandLine);
     } else if (c == ctrl('g')) {
-        if (state->commandLineQuery.length() > 0) {
-            if (state->commandLineQuery[0] == 'g') {
-                state->commandLineQuery = state->commandLineQuery.substr(1);
+        if (state->commandLine.query.length() > 0) {
+            if (state->commandLine.query[0] == 'g') {
+                state->commandLine.query = state->commandLine.query.substr(1);
+                if (state->commandLine.cursor > 0) {
+                    state->commandLine.cursor -= 1;
+                }
             } else {
-                state->commandLineQuery = 'g' + state->commandLineQuery;
+                state->commandLine.query = 'g' + state->commandLine.query;
+                state->commandLine.cursor += 1;
             }
         }
     } else if (c == KEY_BACKSPACE || c == 127) {
-        state->commandLineQuery = state->commandLineQuery.substr(0, state->commandLineQuery.length() - 1);
+        backspace(&state->commandLine);
     } else if (c == ctrl('l')) {
-        state->commandLineQuery = "";
+        backspaceAll(&state->commandLine);
     } else if (c == ctrl('v')) {
-        state->commandLineQuery += getFromClipboard();
+        addFromClipboard(&state->commandLine);
     } else if (c == '\n') {
         evaluateCommandLineQuery(state);
-        state->commandLineQuery = std::string("");
+        backspaceAll(&state->commandLine);
         state->mode = SHORTCUTS;
     }
 }

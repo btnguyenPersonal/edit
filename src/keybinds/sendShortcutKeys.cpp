@@ -8,6 +8,7 @@
 #include "../util/modes.h"
 #include "../util/state.h"
 #include "../util/visualType.h"
+#include "../util/query.h"
 #include "sendKeys.h"
 #include "sendVisualKeys.h"
 #include <algorithm>
@@ -97,7 +98,7 @@ void sendShortcutKeys(State* state, int c) {
     } else if (state->prevKeys == "g" && c == 'r') {
         initVisual(state, NORMAL);
         setStateFromWordPosition(state, getWordPosition(state->data[state->row], state->col));
-        state->searchQuery = getInVisual(state);
+        state->search.query = getInVisual(state);
         state->searching = true;
         searchFromTop(state);
         state->prevKeys = "";
@@ -184,14 +185,14 @@ void sendShortcutKeys(State* state, int c) {
     } else if (c == '#') {
         initVisual(state, NORMAL);
         setStateFromWordPosition(state, getWordPosition(state->data[state->row], state->col));
-        state->grepQuery = getInVisual(state);
-        state->grepSelection = 0;
+        setQuery(&state->grep, getInVisual(state));
+        state->grep.selection = 0;
         state->mode = GREP;
         generateGrepOutput(state);
     } else if (c == '*') {
         initVisual(state, NORMAL);
         setStateFromWordPosition(state, getWordPosition(state->data[state->row], state->col));
-        state->searchQuery = getInVisual(state);
+        setQuery(&state->search, getInVisual(state));
         state->searching = true;
         state->col += 1;
         unsigned int temp_col = state->col;
@@ -264,7 +265,7 @@ void sendShortcutKeys(State* state, int c) {
         state->mark = {state->filename, state->row};
     } else if (c == '@') {
         state->searching = true;
-        state->searchQuery = state->grepQuery;
+        state->search.query = state->grep.query;
         state->col += 1;
         unsigned int temp_col = state->col;
         unsigned int temp_row = state->row;
@@ -329,7 +330,7 @@ void sendShortcutKeys(State* state, int c) {
         }
         state->dotCommand = c;
     } else if (c == '/') {
-        state->searchQuery = std::string("");
+        backspaceAll(&state->search);
         state->mode = SEARCH;
     } else if (c == '^') {
         state->col = getIndexFirstNonSpace(state);
