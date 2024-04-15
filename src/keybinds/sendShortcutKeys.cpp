@@ -91,6 +91,8 @@ void sendShortcutKeys(State* state, int c) {
         down(state);
         state->prevKeys = "";
         state->dotCommand = "gq";
+    } else if (state->prevKeys == "g" && c == '/') {
+        state->mode = SEARCH;
     } else if (state->prevKeys == "g" && c == 'm') {
         toggleLoggingCode(state, state->lastLoggingVar, true);
         state->prevKeys = "";
@@ -98,7 +100,7 @@ void sendShortcutKeys(State* state, int c) {
     } else if (state->prevKeys == "g" && c == 'r') {
         initVisual(state, NORMAL);
         setStateFromWordPosition(state, getWordPosition(state->data[state->row], state->col));
-        state->search.query = getInVisual(state);
+        setQuery(&state->search, getInVisual(state));
         state->searching = true;
         searchFromTop(state);
         state->prevKeys = "";
@@ -265,7 +267,7 @@ void sendShortcutKeys(State* state, int c) {
         state->mark = {state->filename, state->row};
     } else if (c == '@') {
         state->searching = true;
-        state->search.query = state->grep.query;
+        setQuery(&state->search, state->grep.query);
         state->col += 1;
         unsigned int temp_col = state->col;
         unsigned int temp_row = state->row;

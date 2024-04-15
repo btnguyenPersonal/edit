@@ -374,7 +374,7 @@ bool sendVisualKeys(State* state, char c, bool onlyMotions) {
     } else if (!onlyMotions && state->prevKeys == "g" && c == 'r') {
         if (state->visualType == NORMAL) {
             state->mode = SHORTCUTS;
-            state->search.query = getInVisual(state);
+            setQuery(&state->search, getInVisual(state));
             state->searching = true;
             searchFromTop(state);
         }
