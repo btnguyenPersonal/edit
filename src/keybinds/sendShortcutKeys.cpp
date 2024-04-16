@@ -469,13 +469,13 @@ void sendShortcutKeys(State* state, int c) {
         state->harpoonIndex = state->harpoonFiles.size() - 1;
     } else if (c == 'G') {
         state->row = state->data.size() - 1;
-    } else if (c == '9') {
+    } else if (c == '8') {
         if (state->jumplist.index > 0) {
             state->jumplist.index--;
             state->row = state->jumplist.list[state->jumplist.index].row;
             state->col = state->jumplist.list[state->jumplist.index].col;
         }
-    } else if (c == '8') {
+    } else if (c == '9') {
         if (state->jumplist.index + 1 < state->jumplist.list.size()) {
             state->jumplist.index++;
             state->row = state->jumplist.list[state->jumplist.index].row;
