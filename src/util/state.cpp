@@ -148,6 +148,17 @@ State::State() {
     this->motion = std::string("");
 }
 
+State::State(std::vector<std::string> data) : State() {
+    this->filename = std::string("test");
+    this->data = data;
+    this->previousState = data;
+    this->commentSymbol = "";
+    this->mode = SHORTCUTS;
+    this->fileStack = {filename};
+    this->fileStackIndex = 0;
+    this->dontSave = true;
+}
+
 State::State(std::string filename) : State() {
     if (!std::filesystem::is_regular_file(filename.c_str())) {
         endwin();

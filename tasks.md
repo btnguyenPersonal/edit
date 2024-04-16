@@ -107,9 +107,11 @@
     - this one is cancer to deal with, makes esc so laggy
     - export ESCDELAY=0 ????? fixes everything
 - add cursors that are movable for findfile, grep, etc as structs, and change all the state->grep crap to state->grep.query
+- make search save queries
+- read from stdinput when just have dash
 
 ## TODO
-- make search save queryies
+- ! executes all current file in bash and replaces with output
 
 ## LOW PRIO
 - add mouse clicks
@@ -129,8 +131,6 @@
 - need to fix the crap with onlyMotions, every motion should work all the same and not have jank logic (maybe separate out motions into it's own thing?)
     - have isMotion() can't be too broken?
     - maybe just having maps of keycombos and function pointers is the correct call??
-- ! executes all current file in bash and replaces with output
-- read from stdinput when just have dash
 - add git gutter maybe () can jump to next/prev git changes
 - handle render wide characters fully
 - speed up grepFiles
