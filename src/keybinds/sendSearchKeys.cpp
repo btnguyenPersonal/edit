@@ -9,8 +9,6 @@
 
 void sendSearchKeys(State* state, int c) {
     if (c == 27) { // ESC
-        backspaceAll(&state->search);
-        backspaceAll(&state->replace);
         state->replacing = false;
         state->mode = SHORTCUTS;
     } else if (' ' <= c && c <= '~') {

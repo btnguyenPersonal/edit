@@ -106,9 +106,10 @@
 - make getch() int, and have enums for characters
     - this one is cancer to deal with, makes esc so laggy
     - export ESCDELAY=0 ????? fixes everything
+- add cursors that are movable for findfile, grep, etc as structs, and change all the state->grep crap to state->grep.query
 
 ## TODO
-- add cursors that are movable for findfile, grep, etc as structs, and change all the state->grep crap to state->grep.query
+- make search save queryies
 
 ## LOW PRIO
 - add mouse clicks
