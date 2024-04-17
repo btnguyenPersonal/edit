@@ -31,8 +31,6 @@ int main(int argc, char* argv[]) {
             data.push_back(line);
         }
         state = new State(data);
-        close(0);
-        open("/dev/tty", O_RDONLY);
     } else if (!filename.empty()) {
         state = new State(filename);
     } else {
@@ -49,6 +47,8 @@ int main(int argc, char* argv[]) {
         }
         return 0;
     }
+    close(0);
+    open("/dev/tty", O_RDONLY);
     initTerminal();
     calcWindowBounds();
     renderScreen(state);
