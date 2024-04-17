@@ -109,9 +109,10 @@
 - add cursors that are movable for findfile, grep, etc as structs, and change all the state->grep crap to state->grep.query
 - make search save queries
 - read from stdinput when just have dash
+- ! executes all current file in bash and replaces with output
 
 ## TODO
-- ! executes all current file in bash and replaces with output
+- clean up all the render code, sooo trash and complicated
 
 ## LOW PRIO
 - add mouse clicks
@@ -126,7 +127,6 @@
 - when not in typing restrict to have cursor not pass last character
 - backup file (some way to debug??)
 - add multi-line searches
-- clean up all the render code, sooo trash and complicated
 - make helper function for printing w/ color w/o having to turn on and off manually duping logic before and after print
 - need to fix the crap with onlyMotions, every motion should work all the same and not have jank logic (maybe separate out motions into it's own thing?)
     - have isMotion() can't be too broken?
