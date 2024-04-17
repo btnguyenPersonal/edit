@@ -481,6 +481,9 @@ void sendShortcutKeys(State* state, int c) {
             state->row = state->jumplist.list[state->jumplist.index].row;
             state->col = state->jumplist.list[state->jumplist.index].col;
         }
+    } else if (c == '!') {
+        state->mode = COMMANDLINE;
+        add(&state->commandLine, '!');
     }
     if (state->mode != SHORTCUTS) {
         state->motion = c;

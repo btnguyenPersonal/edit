@@ -13,6 +13,10 @@ void evaluateCommandLineQuery(State* state) {
     if (state->commandLine.query == "q") {
         endwin();
         exit(0);
+    } else if (state->commandLine.query == "!sh") {
+        for (unsigned int i = 0; i < state->data.size(); i++) {
+            runCommand(state, state->data[i]);
+        }
     } else if (state->commandLine.query == "w") {
         trimTrailingWhitespace(state);
         saveFile(state);

@@ -23,6 +23,7 @@ unsigned int getNextEmptyLine(State* state);
 std::string getGitHash(State* state);
 std::vector<std::string> getGitBlame(const std::string& filename);
 unsigned int getLineNumberOffset(State* state);
+void runCommand(State* state, const std::string& command);
 void replaceAllGlobally(State* state, const std::string& query, const std::string& replace);
 void replaceCurrentLine(State* state, const std::string& query, const std::string& replace);
 std::string getCurrentWord(State* state);
