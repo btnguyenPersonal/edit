@@ -351,7 +351,7 @@ void sendShortcutKeys(State* state, int c) {
             state->data[state->row] = state->data[state->row].substr(0, state->col) + state->data[state->row].substr(state->col + 1);
         }
         state->dotCommand = c;
-    } else if (!state->recording && c == ctrl('h')) {
+    } else if (!state->recording && (c == ctrl('h') || c == KEY_BACKSPACE)) {
         if (state->harpoonFiles.size() > 0) {
             moveHarpoonLeft(state);
         }
