@@ -19,7 +19,7 @@ void sendMultiCursorKeys(State* state, int c) {
         state->dotCommand = state->motion;
         state->motion = "";
         return;
-    } else if (c == KEY_BACKSPACE || c == ctrl('h')) {
+    } else if (c == KEY_BACKSPACE || c == 127) {
         if (state->col > 0) {
             for (unsigned int i = bounds.minR; i <= bounds.maxR; i++) {
                 std::string current = state->data[i];

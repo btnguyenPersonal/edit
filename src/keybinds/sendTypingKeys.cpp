@@ -43,7 +43,7 @@ void sendTypingKeys(State* state, int c) {
         insertNewline(state);
         state->row += 1;
         state->col = 0;
-    } else if (c == KEY_BACKSPACE || c == ctrl('h')) {
+    } else if (c == KEY_BACKSPACE || c == 127) {
         if (state->col > 0) {
             std::string current = state->data[state->row];
             state->data[state->row] = current.substr(0, state->col - 1) + current.substr(state->col);

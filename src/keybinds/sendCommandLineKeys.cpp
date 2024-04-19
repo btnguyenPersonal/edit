@@ -80,7 +80,7 @@ void sendCommandLineKeys(State* state, int c) {
                 state->commandLine.cursor += 1;
             }
         }
-    } else if (c == KEY_BACKSPACE || c == ctrl('h')) {
+    } else if (c == KEY_BACKSPACE || c == 127) {
         backspace(&state->commandLine);
     } else if (c == ctrl('l')) {
         backspaceAll(&state->commandLine);
