@@ -28,9 +28,9 @@ std::string getRemoveLoggingPattern(State* state) {
     std::string extension = getExtension(state->filename);
     std::string pattern = "";
     if (extension == "js" || extension == "jsx" || extension == "ts" || extension == "tsx") {
-        pattern = "console\\.log\\('" + state->filename + ":[0-9]+', .+?\\);";
+        pattern = "console\\.log\\('[0-9]+', .+?\\);";
     } else if (extension == "cpp") {
-        pattern = "std::cout << \"" + state->filename + ":[0-9]+ .+? << std::endl;";
+        pattern = "std::cout << \"[0-9]+\" .+? << std::endl;";
     }
     return pattern;
 }
@@ -50,14 +50,14 @@ std::string getLoggingCode(State* state, unsigned int row, std::string variableN
     std::string extension = getExtension(state->filename);
     std::string rowStr = std::to_string(row + 1);
     if (extension == "js" || extension == "jsx" || extension == "ts" || extension == "tsx") {
-        std::string s = "console.log('" + state->filename + ":" + rowStr + "', " + "'" + variableName + "'";
+        std::string s = "console.log('" + rowStr + "', " + "'" + variableName + "'";
         if (showValue) {
             s += ", " + variableName;
         }
         s += ");";
         return s;
     } else if (extension == "cpp") {
-        std::string s = "std::cout << \"" + state->filename + ":" + rowStr + " " + variableName + "\"";
+        std::string s = "std::cout << \"" + rowStr + " " + variableName + "\"";
         if (showValue) {
             s += " << " + variableName;
         }
