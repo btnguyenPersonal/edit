@@ -2,6 +2,7 @@
 #include <fstream>
 #include <string>
 #include <vector>
+#include <regex>
 
 #include "helper.h"
 #include "insertLoggingCode.h"
@@ -255,10 +256,19 @@ void printLineNumber(State* state, int r, int i, bool isCurrentRow, bool recordi
         mvprintw(r, 0, "%5d", i + 1);
         attroff(COLOR_PAIR(GREY));
     }
-    char spacingChar = (int)state->mark.mark == i && state->mark.filename == state->filename ? '|' : ' ';
-    attron(COLOR_PAIR(YELLOW));
+    bool isLogging = std::regex_search(state->data[i], std::regex(getLoggingRegex(state)));
+    char spacingChar = ((int)state->mark.mark == i && state->mark.filename == state->filename) || isLogging ? '|' : ' ';
+    if (isLogging) {
+        attron(COLOR_PAIR(YELLOW));
+    } else {
+        attron(COLOR_PAIR(CYAN));
+    }
     mvprintw(r, 5, "%c", spacingChar);
-    attroff(COLOR_PAIR(YELLOW));
+    if (isLogging) {
+        attroff(COLOR_PAIR(YELLOW));
+    } else {
+        attroff(COLOR_PAIR(CYAN));
+    }
     if (state->mode == BLAME) {
         if (i == (int)state->row) {
             attron(COLOR_PAIR(invertColor(WHITE)));
