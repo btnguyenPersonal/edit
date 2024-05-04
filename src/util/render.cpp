@@ -375,21 +375,23 @@ void printLine(State* state, int row) {
                     searchCounter = 0;
                 } else {
                     int color;
-                    if (searchCounter != 0 && state->searching == true) {
-                        color = getSearchColor(state, row, startOfSearch);
-                    } else if (isMergeConflict(state->data[row])) {
-                        color = RED;
-                    } else if (isComment) {
-                        color = GREEN;
-                    } else if (isInString == true && getExtension(state->filename) != "md" && getExtension(state->filename) != "txt") {
-                        color = CYAN;
-                    } else if (state->matching.row == (unsigned int)row && state->matching.col == col && (state->matching.row != state->row || state->matching.col != state->col)) {
+                    if (state->matching.row == (unsigned int)row && state->matching.col == col && (state->matching.row != state->row || state->matching.col != state->col)) {
                         color = invertColor(GREY);
                     } else {
-                        color = getColorFromChar(state->data[row][col]);
-                    }
-                    if (isRowColInVisual(state, row, col)) {
-                        color = invertColor(color);
+                        if (searchCounter != 0 && state->searching == true) {
+                            color = getSearchColor(state, row, startOfSearch);
+                        } else if (isMergeConflict(state->data[row])) {
+                            color = RED;
+                        } else if (isComment) {
+                            color = GREEN;
+                        } else if (isInString == true && getExtension(state->filename) != "md" && getExtension(state->filename) != "txt") {
+                            color = CYAN;
+                        } else {
+                            color = getColorFromChar(state->data[row][col]);
+                        }
+                        if (isRowColInVisual(state, row, col)) {
+                            color = invertColor(color);
+                        }
                     }
                     printChar(state, row, renderCol, state->data[row][col], color);
                     renderCol++;
