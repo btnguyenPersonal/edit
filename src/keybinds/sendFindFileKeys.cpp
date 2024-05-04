@@ -26,7 +26,7 @@ void sendFindFileKeys(State* state, int c) {
         moveCursorRight(&state->findFile);
     } else if (c == KEY_BACKSPACE || c == 127) {
         if (state->selectAll == true) {
-            state->findFile.query = "";
+            backspaceAll(&state->findFile);
             state->findFile.selection = 0;
             state->selectAll = false;
         } else {
