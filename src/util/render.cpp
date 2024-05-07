@@ -256,7 +256,7 @@ void printLineNumber(State* state, int r, int i, bool isCurrentRow, bool recordi
         mvprintw(r, 0, "%5d", i + 1);
         attroff(COLOR_PAIR(GREY));
     }
-    bool isLogging = std::regex_search(state->data[i], std::regex(getLoggingRegex(state)));
+    bool isLogging = getLoggingRegex(state) != "" && std::regex_search(state->data[i], std::regex(getLoggingRegex(state)));
     char spacingChar = ((int)state->mark.mark == i && state->mark.filename == state->filename) || isLogging ? '|' : ' ';
     if (isLogging) {
         attron(COLOR_PAIR(YELLOW));
