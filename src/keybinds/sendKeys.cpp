@@ -50,7 +50,9 @@ void sendKeys(State* state, int c) {
             centerScreen(state);
         }
         if (state->recording == true && state->dontRecordKey == false) {
-            state->macroCommand += c;
+            if (!(c == ',' && state->mode == SHORTCUTS)) {
+                state->macroCommand += c;
+            }
         }
         if (state->recording == false && state->mode == SHORTCUTS) {
             std::vector<diffLine> diff = generateDiff(state->previousState, state->data);
