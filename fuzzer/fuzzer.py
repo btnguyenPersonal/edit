@@ -56,9 +56,10 @@ def run_test(input_string):
         print(f"Tested: {readable_string(input_string)}, Failed with error: {e}")
 
 def fuzzer(charset, string_length):
-    for i in range(99999):
-        input_string = ''.join(random.choice(charset) for _ in range(string_length))
-        threading.Thread(target=run_test, args=(input_string,)).start()
+    while True:
+        if threading.active_count() <= 8:
+            input_string = ''.join(random.choice(charset) for _ in range(string_length))
+            threading.Thread(target=run_test, args=(input_string,)).start()
 
 if __name__ == "__main__":
     fuzzer(charset, 30)
