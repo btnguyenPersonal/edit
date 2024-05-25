@@ -1,4 +1,5 @@
 funfcasdfasdtfion tryhard() {
+    hello('hsdf');
     return(asdf
         <Brain
             a;sdlfjas;dlkfasdfbrasdasdasdffains
