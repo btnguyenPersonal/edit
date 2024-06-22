@@ -221,6 +221,9 @@ void sendShortcutKeys(State* state, int c) {
         state->mode = VISUAL;
         initVisual(state, LINE);
     } else if (c == 'b') {
+        if (state->col >= state->data[state->row].length()) {
+            state->col = state->data[state->row].length();
+        }
         state->col = b(state);
     } else if (c == 'w') {
         state->col = w(state);
