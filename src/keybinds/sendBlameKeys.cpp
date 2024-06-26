@@ -23,7 +23,7 @@ void sendBlameKeys(State* state, int c) {
         downHalfScreen(state);
     } else if (c == 'y' || c == ctrl('y')) {
         std::string gitHash = getGitHash(state);
-        copyToClipboard("git show " + gitHash);
+        copyToClipboard(gitHash);
         state->status = gitHash;
         state->mode = SHORTCUTS;
     }
