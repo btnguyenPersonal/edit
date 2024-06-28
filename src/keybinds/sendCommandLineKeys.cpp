@@ -15,7 +15,11 @@ void evaluateCommandLineQuery(State* state) {
         exit(0);
     } else if (state->commandLine.query == "a") {
         state->autosave = !state->autosave;
-        state->status = "AUTOSAVE OFF";
+        if (state->autosave) {
+            state->status = "AUTOSAVE ON";
+        } else {
+            state->status = "AUTOSAVE OFF";
+        }
     } else if (state->commandLine.query == "!sh") {
         for (unsigned int i = 0; i < state->data.size(); i++) {
             runCommand(state, state->data[i]);
