@@ -62,6 +62,7 @@ struct Query {
 class State {
 public:
     Position matching;
+    bool autosave;
     bool searchFail;
     Jumplist jumplist;
     std::deque<std::chrono::steady_clock::time_point> actionTimestamps;

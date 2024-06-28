@@ -104,6 +104,7 @@ void State::resetState(std::string filename) {
 }
 
 State::State() {
+    this->autosave = true;
     this->mark = {"", 0};
     this->matching = {0, 0};
     this->searching = false;

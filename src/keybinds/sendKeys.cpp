@@ -16,6 +16,9 @@
 
 void sendKeys(State* state, int c) {
     state->status = std::string("");
+    if (!state->autosave) {
+        state->status = "AUTOSAVE OFF";
+    }
     state->searchFail = false;
     state->showFileStack = false;
     state->dontRecordKey = false;
@@ -57,7 +60,9 @@ void sendKeys(State* state, int c) {
         if (state->recording == false && state->mode == SHORTCUTS) {
             std::vector<diffLine> diff = generateDiff(state->previousState, state->data);
             if (diff.size() != 0) {
-                saveFile(state);
+                if (state->autosave) {
+                    saveFile(state);
+                }
                 state->previousState = state->data;
                 if (c != ctrl('r') && c != 'u') {
                     if (state->historyPosition < (int)state->history.size()) {
