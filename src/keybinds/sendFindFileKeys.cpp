@@ -78,6 +78,11 @@ void sendFindFileKeys(State* state, int c) {
             state->mode = SHORTCUTS;
         }
     } else if (c == ctrl('v')) {
+        if (state->selectAll == true) {
+            backspaceAll(&state->findFile);
+            state->findFile.selection = 0;
+            state->selectAll = false;
+        }
         addFromClipboard(&state->findFile);
     } else if (c == '\n') {
         if (state->findFile.selection < state->findFileOutput.size()) {
