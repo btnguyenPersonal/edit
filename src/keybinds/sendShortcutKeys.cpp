@@ -301,12 +301,14 @@ void sendShortcutKeys(State* state, int c) {
         }
         centerScreen(state);
     } else if (c == '.') {
+        resetValidCursorState(state);
         for (unsigned int i = 0; i < state->dotCommand.length(); i++) {
             state->dontRecordKey = true;
             sendKeys(state, state->dotCommand[i]);
         }
         state->dontRecordKey = true;
     } else if (c == ',' && state->recording == false) {
+        resetValidCursorState(state);
         for (unsigned int i = 0; i < state->macroCommand.length(); i++) {
             state->dontRecordKey = true;
             sendKeys(state, state->macroCommand[i]);

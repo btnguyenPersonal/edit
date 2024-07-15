@@ -2,10 +2,10 @@ funfcasdfasdtfion tryhard() {
     hello('hsdf');
     return(
         <Brain
-            a;sdlfjas;dlkfasdfbrasdasdasdffains
-            bob's burgers breakurns asdffadsff                        asd;lfkjasd;lfkjas;dlfjas;dklfj
-            bob's burgers ret2urns asdffadsffas;dlkfja;lsdkjf;asldfjk
-            bob's burgers ret3urns asdffadsff
+            a;sdlfjas;brug
+            bob's burgers breakurns brabracj
+            bob's burgers ret2urns brug
+            bob's brug ret3urns brug
             bob's burgers breakurns asdffadsff
             bob's burgers ret5urns asdffadsff
             bob's burgers ret6urns asdffadsff

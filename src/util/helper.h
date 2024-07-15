@@ -7,6 +7,7 @@
 #include <string>
 #include <vector>
 
+void resetValidCursorState(State* state);
 bool setSearchResultCurrentLine(State* state, const std::string& query);
 Position matchIt(State* state);
 bool searchFromTop(State* state);

@@ -124,7 +124,7 @@
 - figure out how to go down to assembly and view it
 - have cib ciB work for multi-line brackets
 - ci' parse entire line to get actual strings instead of just between '
-- ciw dot command not working correctly end string
+- ciw dot command not working correctly
 - when not in typing restrict to have cursor not pass last character
 - backup file (some way to debug??)
 - add multi-line searches

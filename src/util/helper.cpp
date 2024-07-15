@@ -705,6 +705,16 @@ int maxConsecutiveMatch(const std::filesystem::path& filePath, const std::string
     return maxLength;
 }
 
+void resetValidCursorState(State* state) {
+    if (state->data[state->row].length() <= state->col) {
+        if (state->data[state->row].length() - 1 > 0) {
+            state->col = state->data[state->row].length() - 1;
+        } else {
+            state->col = 0;
+        }
+    }
+}
+
 bool filePathContainsSubstring(const std::filesystem::path& filePath, const std::string& query) {
     std::string filePathStr = filePath.string();
     std::string queryLower = query;
