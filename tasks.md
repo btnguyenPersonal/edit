@@ -112,7 +112,8 @@
 - ! executes all current file in bash and replaces with output
 
 ## TODO
-- clean up all the render code, sooo trash and complicated
+- fix status bar abstraction for calculating where to render stuff on the status bar
+- clean up all the render code, (figure out how to abstract attron and attroff stuff (better color control around it)
 
 ## LOW PRIO
 - add mouse clicks
