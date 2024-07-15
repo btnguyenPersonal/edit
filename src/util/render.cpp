@@ -257,14 +257,20 @@ void printLineNumber(State* state, int r, int i, bool isCurrentRow, bool recordi
         attroff(COLOR_PAIR(GREY));
     }
     bool isLogging = getLoggingRegex(state) != "" && std::regex_search(state->data[i], std::regex(getLoggingRegex(state)));
-    char spacingChar = ((int)state->mark.mark == i && state->mark.filename == state->filename) || isLogging ? '|' : ' ';
-    if (isLogging) {
+    bool endsWithSpace = state->data[i].back() == ' ';
+    if (endsWithSpace && state->mode != TYPING) {
+        attron(COLOR_PAIR(RED));
+    } else if (isLogging) {
         attron(COLOR_PAIR(YELLOW));
     } else {
         attron(COLOR_PAIR(CYAN));
     }
-    mvprintw(r, 5, "%c", spacingChar);
-    if (isLogging) {
+    if (((int)state->mark.mark == i && state->mark.filename == state->filename) || isLogging || (endsWithSpace && state->mode != TYPING)) {
+        mvprintw(r, 5, "%c", '|');
+    }
+    if (endsWithSpace && state->mode != TYPING) {
+        attroff(COLOR_PAIR(RED));
+    } else if (isLogging) {
         attroff(COLOR_PAIR(YELLOW));
     } else {
         attroff(COLOR_PAIR(CYAN));

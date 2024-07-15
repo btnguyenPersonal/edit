@@ -1,6 +1,6 @@
 funfcasdfasdtfion tryhard() {
     hello('hsdf');
-    return(asdf
+    return(
         <Brain
             a;sdlfjas;dlkfasdfbrasdasdasdffains
             bob's burgers breakurns asdffadsff                        asd;lfkjasd;lfkjas;dlfjas;dklfj
