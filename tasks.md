@@ -113,7 +113,7 @@
 
 ## TODO
 - fix status bar abstraction for calculating where to render stuff on the status bar
-- clean up all the render code, (figure out how to abstract attron and attroff stuff (better color control around it)
+- clean up all the render code, (figure out how to abstract attron and attroff stuff (better color control around it))
 - fix history slowing down copy/pasting large diff (also look into what is really causing it)
 
 ## LOW PRIO
