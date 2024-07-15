@@ -57,6 +57,8 @@ void sendKeys(State* state, int c) {
                 state->macroCommand += c;
             }
         }
+        // some way have it switch to stop generating diff when it gets too slow to be worth it
+        // I think it could be worth to just switch to full copies or just not have history
         if (state->recording == false && state->mode == SHORTCUTS) {
             std::vector<diffLine> diff = generateDiff(state->previousState, state->data);
             if (diff.size() != 0) {
