@@ -193,6 +193,9 @@ std::string getGitHash(State* state) {
     }
     std::stringstream ss(output);
     std::getline(ss, line);
+    if (safeSubstring(line, 0, 1) == "^") {
+        return safeSubstring(line, 1);
+    }
     return line;
 }
 
