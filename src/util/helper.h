@@ -15,8 +15,6 @@ void getAndAddNumber(State* state, unsigned int row, unsigned int col, int num);
 std::string safeSubstring(const std::string& str, std::size_t pos, std::size_t len);
 std::string safeSubstring(const std::string& str, std::size_t pos);
 bool isAllLowercase(const std::string& str);
-void recordAction(State* state);
-int calculateAPM(State* state);
 unsigned int findNextChar(State* state, char c);
 unsigned int toNextChar(State* state, char c);
 unsigned int getPrevEmptyLine(State* state);

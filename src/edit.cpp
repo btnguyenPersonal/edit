@@ -55,7 +55,6 @@ int main(int argc, char* argv[]) {
     while (true) {
         c = getch();
         if (c != ERR) {
-            recordAction(state);
             sendKeys(state, c);
             renderScreen(state);
         }

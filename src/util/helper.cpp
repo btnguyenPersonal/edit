@@ -98,14 +98,6 @@ std::string safeSubstring(const std::string& str, std::size_t pos) {
     return str.substr(pos);
 }
 
-void recordAction(State* state) {
-    auto now = std::chrono::steady_clock::now();
-    state->actionTimestamps.push_back(now);
-    while (!state->actionTimestamps.empty() && now - state->actionTimestamps.front() > std::chrono::seconds(60)) {
-        state->actionTimestamps.pop_front();
-    }
-}
-
 void getAndAddNumber(State* state, unsigned int row, unsigned int col, int num) {
     std::string number;
     int startPos = col;
@@ -138,19 +130,6 @@ void getAndAddNumber(State* state, unsigned int row, unsigned int col, int num) 
             state->status = "number too large";
         }
     }
-}
-
-int calculateAPM(State* state) {
-    if (state->actionTimestamps.empty()) {
-        return 0;
-    }
-    auto now = std::chrono::steady_clock::now();
-    auto duration = std::chrono::duration_cast<std::chrono::seconds>(now - state->actionTimestamps.front());
-    double minutes = duration.count() / 60.0;
-    if (minutes == 0.0) {
-        minutes = 1.0 / 60.0;
-    }
-    return static_cast<int>(state->actionTimestamps.size() / minutes);
 }
 
 std::string getCommentSymbol(const std::string& filename) {

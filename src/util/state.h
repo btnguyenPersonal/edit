@@ -2,8 +2,6 @@
 
 #include "modes.h"
 #include "visualType.h"
-#include <chrono>
-#include <deque>
 #include <filesystem>
 #include <string>
 #include <vector>
@@ -65,7 +63,6 @@ public:
     bool autosave;
     bool searchFail;
     Jumplist jumplist;
-    std::deque<std::chrono::steady_clock::time_point> actionTimestamps;
     std::vector<Archive> archives;
     std::vector<std::string> harpoonFiles;
     unsigned int harpoonIndex;
