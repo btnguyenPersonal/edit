@@ -436,6 +436,7 @@ bool sendVisualKeys(State* state, char c, bool onlyMotions) {
     } else if (!onlyMotions && c == ':') {
         if (state->visualType == NORMAL) {
             state->commandLine.query = "gs/" + getInVisual(state) + "/";
+            state->commandLine.cursor = 3 + getInVisual(state).length() + 1;
             state->mode = COMMANDLINE;
         }
     } else if (c == '^') {
