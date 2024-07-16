@@ -3,9 +3,9 @@
 #include "../util/indent.h"
 #include "../util/modes.h"
 #include "../util/state.h"
+#include <ncurses.h>
 #include <string>
 #include <vector>
-#include <ncurses.h>
 
 void insertNewline(State* state) {
     std::string current = state->data[state->row];

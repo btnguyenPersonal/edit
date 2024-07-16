@@ -1,8 +1,8 @@
 #pragma once
 
 #include "state.h"
-#include <string>
 #include <ncurses.h>
+#include <string>
 
 std::string minimize_filename(const std::string& filename);
 int invertColor(int color);

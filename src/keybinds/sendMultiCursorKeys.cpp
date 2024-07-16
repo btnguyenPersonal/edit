@@ -4,9 +4,9 @@
 #include "../util/modes.h"
 #include "../util/state.h"
 #include "sendVisualKeys.h"
+#include <ncurses.h>
 #include <string>
 #include <vector>
-#include <ncurses.h>
 
 void sendMultiCursorKeys(State* state, int c) {
     if (!state->dontRecordKey) {

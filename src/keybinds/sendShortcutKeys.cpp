@@ -6,9 +6,9 @@
 #include "../util/indent.h"
 #include "../util/insertLoggingCode.h"
 #include "../util/modes.h"
+#include "../util/query.h"
 #include "../util/state.h"
 #include "../util/visualType.h"
-#include "../util/query.h"
 #include "sendKeys.h"
 #include "sendVisualKeys.h"
 #include <algorithm>

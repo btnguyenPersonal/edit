@@ -2,11 +2,11 @@
 #include "../util/clipboard.h"
 #include "../util/helper.h"
 #include "../util/modes.h"
-#include "../util/state.h"
 #include "../util/query.h"
+#include "../util/state.h"
+#include <ncurses.h>
 #include <string>
 #include <vector>
-#include <ncurses.h>
 
 void sendFindFileKeys(State* state, int c) {
     if (c == 27) { // ESC

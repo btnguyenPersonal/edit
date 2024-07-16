@@ -2,8 +2,8 @@
 #include "../util/clipboard.h"
 #include "../util/helper.h"
 #include "../util/modes.h"
-#include "../util/state.h"
 #include "../util/query.h"
+#include "../util/state.h"
 #include <ncurses.h>
 #include <sstream>
 #include <string>

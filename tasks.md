@@ -121,6 +121,7 @@
 - backup file (some way to debug?? dump entire state when segfault error happns like edit js had)
 - logging file (per session log all keypresses, in what order so can do analysis on most used commands, etc)
 - lots of valgrind errors?? need to figure out what's going on there
+    - maybe should ask someone w/ more c++ logic where my deallocations should be, probably not right to just treat it as garbage collected
 - figure out how to go down to assembly and view it
 - ci' parse entire line to get actual strings instead of just between ' (maybe try out for a while)
 

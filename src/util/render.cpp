@@ -1,8 +1,8 @@
 #include <filesystem>
 #include <fstream>
+#include <regex>
 #include <string>
 #include <vector>
-#include <regex>
 
 #include "helper.h"
 #include "insertLoggingCode.h"

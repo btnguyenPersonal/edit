@@ -3,10 +3,10 @@
 #include "util/render.h"
 #include "util/state.h"
 #include <cstring>
-#include <iostream>
-#include <unistd.h>
 #include <fcntl.h>
+#include <iostream>
 #include <ncurses.h>
+#include <unistd.h>
 
 int main(int argc, char* argv[]) {
     int c;

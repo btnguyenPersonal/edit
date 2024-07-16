@@ -6,8 +6,8 @@
 #include "../util/indent.h"
 #include "../util/insertLoggingCode.h"
 #include "../util/modes.h"
-#include "../util/state.h"
 #include "../util/query.h"
+#include "../util/state.h"
 #include <algorithm>
 #include <ncurses.h>
 #include <string>
@@ -302,10 +302,10 @@ bool sendVisualKeys(State* state, char c, bool onlyMotions) {
     } else if (state->prevKeys == "a" && c == '`') {
         setStateFromWordPosition(state, findQuoteBounds(state->data[state->row], '`', state->col, true));
         state->prevKeys = "";
-    } else if (state->prevKeys == "i" && c == '"' ) {
+    } else if (state->prevKeys == "i" && c == '"') {
         setStateFromWordPosition(state, findQuoteBounds(state->data[state->row], '"', state->col, false));
         state->prevKeys = "";
-    } else if (state->prevKeys == "a" && c == '"' ) {
+    } else if (state->prevKeys == "a" && c == '"') {
         setStateFromWordPosition(state, findQuoteBounds(state->data[state->row], '"', state->col, true));
         state->prevKeys = "";
     } else if (state->prevKeys == "i" && c == '\'') {

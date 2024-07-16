@@ -1,8 +1,8 @@
 #pragma once
 
+#include "state.h"
 #include <string>
 #include <vector>
-#include "state.h"
 
 void add(Query* input, const char& c);
 void addFromClipboard(Query* input);
