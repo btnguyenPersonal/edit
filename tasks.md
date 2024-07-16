@@ -110,26 +110,29 @@
 - make search save queries
 - read from stdinput when just have dash
 - ! executes all current file in bash and replaces with output
+- fix rendering colors
+- (figure out how to abstract attron and attroff stuff (better color control around it))
+- make helper function for printing w/ color w/o having to turn on and off manually duping logic before and after print
 
 ## TODO
-- fix status bar abstraction for calculating where to render stuff on the status bar
-- clean up all the render code, (figure out how to abstract attron and attroff stuff (better color control around it))
+- fix status bar abstraction for calculating where to render stuff on the status bar (offset stuff)
+- clean up all the render code
 - fix history slowing down copy/pasting large diff (also look into what is really causing it)
+- backup file (some way to debug?? dump entire state when segfault error happns like edit js had)
+- logging file (per session log all keypresses, in what order so can do analysis on most used commands, etc)
+- lots of valgrind errors?? need to figure out what's going on there
+- figure out how to go down to assembly and view it
+- ci' parse entire line to get actual strings instead of just between ' (maybe try out for a while)
 
-## LOW PRIO
+## BACKLOG
 - add mouse clicks
 - add mouse drag
 - add mouse scroll
 - add python formatting
-- lots of valgrind errors?? need to figure out what's going on there
-- figure out how to go down to assembly and view it
 - have cib ciB work for multi-line brackets
-- ci' parse entire line to get actual strings instead of just between '
 - ciw dot command not working correctly
 - when not in typing restrict to have cursor not pass last character
-- backup file (some way to debug??)
 - add multi-line searches
-- make helper function for printing w/ color w/o having to turn on and off manually duping logic before and after print
 - need to fix the crap with onlyMotions, every motion should work all the same and not have jank logic (maybe separate out motions into it's own thing?)
     - have isMotion() can't be too broken?
     - maybe just having maps of keycombos and function pointers is the correct call??
