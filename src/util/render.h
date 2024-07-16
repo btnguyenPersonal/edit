@@ -2,6 +2,7 @@
 
 #include "state.h"
 #include <string>
+#include <ncurses.h>
 
 std::string minimize_filename(const std::string& filename);
 int invertColor(int color);

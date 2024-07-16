@@ -34,6 +34,31 @@
 
 int invertColor(int color) { return color + 9; }
 
+// is there a better way for arg passing?
+void mvprintw_color(int r, int c, const char* formatString, const char* cstring1, int num, const char* cstring2, int color) {
+    attron(COLOR_PAIR(color));
+    mvprintw(r, c, formatString, cstring1, num, cstring2);
+    attroff(COLOR_PAIR(color));
+}
+
+void mvprintw_color(int r, int c, const char* formatString, int num, int color) {
+    attron(COLOR_PAIR(color));
+    mvprintw(r, c, formatString, num);
+    attroff(COLOR_PAIR(color));
+}
+
+void mvprintw_color(int r, int c, const char* formatString, const char* cstring, int color) {
+    attron(COLOR_PAIR(color));
+    mvprintw(r, c, formatString, cstring);
+    attroff(COLOR_PAIR(color));
+}
+
+void mvaddch_color(int r, int c, char ch, int color) {
+    attron(COLOR_PAIR(color));
+    mvaddch(r, c, ch);
+    attroff(COLOR_PAIR(color));
+}
+
 void initColors() {
     init_pair(BLACK, _COLOR_BLACK, _COLOR_BLACK);
     init_pair(GREY, _COLOR_GREY, _COLOR_BLACK);
@@ -59,69 +84,37 @@ void initColors() {
 int renderStatusBar(State* state) {
     int offset = 0;
     if (state->showFileStack == true) {
-        // TODO make work for fileStack > maxY
         for (int i = (int)(state->fileStack.size() - 1); i >= 0; i--) {
-            if (i == (int)state->fileStackIndex) {
-                attron(COLOR_PAIR(RED));
-            }
-            mvprintw(state->fileStack.size() - i - 1, state->maxX - state->fileStack[i].length() - 2, "\"%s\"", state->fileStack[i].c_str());
-            if (i == (int)state->fileStackIndex) {
-                attroff(COLOR_PAIR(RED));
-            }
+            mvprintw_color(
+                state->fileStack.size() - i - 1,
+                state->maxX - state->fileStack[i].length() - 2,
+                "\"%s\"",
+                state->fileStack[i].c_str(),
+                i == (int)state->fileStackIndex ? RED : WHITE
+            );
         }
     } else {
-        auto apm = calculateAPM(state);
-        auto stringAPM = std::to_string(apm);
-        mvprintw(0, state->maxX - (stringAPM.length() + state->filename.length() + state->prevKeys.length() + 4), "%s ", state->prevKeys.c_str());
-        if (apm > 300) {
-            attron(COLOR_PAIR(RED));
-        } else if (apm > 200) {
-            attron(COLOR_PAIR(YELLOW));
-        }
-        mvprintw(0, state->maxX - (stringAPM.length() + state->filename.length() + 3), "%s ", stringAPM.c_str());
-        if (apm > 300) {
-            attroff(COLOR_PAIR(RED));
-        } else if (apm > 200) {
-            attroff(COLOR_PAIR(YELLOW));
-        }
-        mvprintw(0, state->maxX - (state->filename.length() + 2), "\"%s\"", state->filename.c_str());
+        mvprintw_color(0, state->maxX - (state->filename.length() + 2), "\"%s\"", state->filename.c_str(), WHITE);
     }
     if (state->status.length() > 0) {
-        attron(COLOR_PAIR(RED));
-        mvprintw(0, offset, "%s ", state->status.c_str());
-        attroff(COLOR_PAIR(RED));
+        mvprintw_color(0, offset, "%s ", state->status.c_str(), RED);
         offset += state->status.length() + 1;
     }
     if (state->mode == COMMANDLINE) {
-        mvprintw(0, offset, ":%s", state->commandLine.query.c_str());
+        mvprintw_color(0, offset, ":%s", state->commandLine.query.c_str(), WHITE);
         offset += state->commandLine.cursor + 1;
         return offset;
     } else if (state->mode == GREP) {
-        attron(COLOR_PAIR(GREEN));
-        mvprintw(0, offset, "> %s", state->grep.query.c_str());
-        attroff(COLOR_PAIR(GREEN));
+        mvprintw_color(0, offset, "> %s", state->grep.query.c_str(), GREEN);
         offset += state->grep.cursor + 2;
         return offset;
     } else if (state->mode == FINDFILE) {
-        attron(COLOR_PAIR(YELLOW));
-        mvprintw(0, offset, "> ");
-        attroff(COLOR_PAIR(YELLOW));
+        mvprintw_color(0, offset, "> ", "", YELLOW);
         offset += 2;
-        if (state->selectAll) {
-            attron(COLOR_PAIR(invertColor(YELLOW)));
-        }
-        mvprintw(0, offset, "%s", state->findFile.query.c_str());
+        mvprintw_color(0, offset, "%s", state->findFile.query.c_str(), state->selectAll ? invertColor(YELLOW) : YELLOW);
         offset += state->findFile.cursor;
-        if (state->selectAll) {
-            attroff(COLOR_PAIR(invertColor(YELLOW)));
-        }
         return offset;
     } else {
-        if (state->searchFail) {
-            attron(COLOR_PAIR(RED));
-        } else {
-            attron(COLOR_PAIR(GREEN));
-        }
         std::string displayQuery = state->search.query;
         for (size_t i = 0; i < displayQuery.length(); ++i) {
             if (displayQuery[i] == '\n') {
@@ -133,33 +126,16 @@ int renderStatusBar(State* state) {
             displayQuery = safeSubstring(displayQuery, 0, 60);
             displayQuery += "...";
         }
-        mvprintw(0, offset, "/%s", displayQuery.c_str());
+        mvprintw_color(0, offset, "/%s", displayQuery.c_str(), state->searchFail ? RED : GREEN);
         offset += displayQuery.length() + 1;
-        if (state->searchFail) {
-            attroff(COLOR_PAIR(RED));
-        } else {
-            attroff(COLOR_PAIR(GREEN));
-        }
         if (state->replacing) {
-            attron(COLOR_PAIR(MAGENTA));
-            mvprintw(0, offset, "/%s", state->replace.query.c_str());
+            mvprintw_color(0, offset, "/%s", state->replace.query.c_str(), MAGENTA);
             offset += state->replace.query.length() + 1;
-            attroff(COLOR_PAIR(MAGENTA));
         }
         for (unsigned int i = 0; i < state->harpoonFiles.size(); i++) {
-            if (state->harpoonFiles[i] == state->filename) {
-                attron(COLOR_PAIR(YELLOW));
-            } else {
-                attron(COLOR_PAIR(GREY));
-            }
             auto min_name = minimize_filename(state->harpoonFiles[i]);
-            mvprintw(0, offset, " %s", min_name.c_str());
+            mvprintw_color(0, offset, " %s", min_name.c_str(), state->harpoonFiles[i] == state->filename ? YELLOW : GREY);
             offset += min_name.length() + 1;
-            if (state->harpoonFiles[i] == state->filename) {
-                attroff(COLOR_PAIR(YELLOW));
-            } else {
-                attroff(COLOR_PAIR(GREY));
-            }
         }
         if (state->replacing) {
             return state->search.query.length() + state->replace.cursor + 2;
@@ -224,65 +200,38 @@ bool isMergeConflict(const std::string& str) {
 
 void printChar(State* state, int row, int col, char c, int color) {
     if (' ' <= c && c <= '~') {
-        attron(COLOR_PAIR(color));
-        mvaddch(row - state->windowPosition.row + 1, col + getLineNumberOffset(state), c);
-        attroff(COLOR_PAIR(color));
+        mvaddch_color(row - state->windowPosition.row + 1, col + getLineNumberOffset(state), c, color);
     } else if (c == '\t') {
-        attron(COLOR_PAIR(invertColor(RED)));
-        mvaddch(row - state->windowPosition.row + 1, col + getLineNumberOffset(state), ' ');
-        attroff(COLOR_PAIR(invertColor(RED)));
+        mvaddch_color(row - state->windowPosition.row + 1, col + getLineNumberOffset(state), ' ', invertColor(RED));
     } else if (' ' <= unctrl(c) && unctrl(c) <= '~') {
-        attron(COLOR_PAIR(invertColor(MAGENTA)));
-        mvaddch(row - state->windowPosition.row + 1, col + getLineNumberOffset(state), unctrl(c));
-        attroff(COLOR_PAIR(invertColor(MAGENTA)));
+        mvaddch_color(row - state->windowPosition.row + 1, col + getLineNumberOffset(state), unctrl(c), invertColor(MAGENTA));
     } else {
-        attron(COLOR_PAIR(invertColor(MAGENTA)));
-        mvaddch(row - state->windowPosition.row + 1, col + getLineNumberOffset(state), ' ');
-        attroff(COLOR_PAIR(invertColor(MAGENTA)));
+        mvaddch_color(row - state->windowPosition.row + 1, col + getLineNumberOffset(state), ' ', invertColor(MAGENTA));
     }
 }
 
 void printLineNumber(State* state, int r, int i, bool isCurrentRow, bool recording, std::string blame) {
     if (isCurrentRow == true) {
-        attron(COLOR_PAIR(WHITE));
-        mvprintw(r, 0, "%5d", i + 1);
-        attroff(COLOR_PAIR(WHITE));
+        mvprintw_color(r, 0, "%5d", i + 1, WHITE);
     } else if (recording) {
-        attron(COLOR_PAIR(RED));
-        mvprintw(r, 0, "%5d", i + 1);
-        attroff(COLOR_PAIR(RED));
+        mvprintw_color(r, 0, "%5d", i + 1, RED);
     } else {
-        attron(COLOR_PAIR(GREY));
-        mvprintw(r, 0, "%5d", i + 1);
-        attroff(COLOR_PAIR(GREY));
+        mvprintw_color(r, 0, "%5d", i + 1, GREY);
     }
     bool isLogging = getLoggingRegex(state) != "" && std::regex_search(state->data[i], std::regex(getLoggingRegex(state)));
     bool endsWithSpace = state->data[i].back() == ' ';
+    bool isOnMark = (int)state->mark.mark == i && state->mark.filename == state->filename;
+    int color = BLACK;
     if (endsWithSpace && state->mode != TYPING) {
-        attron(COLOR_PAIR(RED));
+        color = RED;
     } else if (isLogging) {
-        attron(COLOR_PAIR(YELLOW));
-    } else {
-        attron(COLOR_PAIR(CYAN));
+        color = YELLOW;
+    } else if (isOnMark) {
+        color = CYAN;
     }
-    if (((int)state->mark.mark == i && state->mark.filename == state->filename) || isLogging || (endsWithSpace && state->mode != TYPING)) {
-        mvprintw(r, 5, "%c", '|');
-    }
-    if (endsWithSpace && state->mode != TYPING) {
-        attroff(COLOR_PAIR(RED));
-    } else if (isLogging) {
-        attroff(COLOR_PAIR(YELLOW));
-    } else {
-        attroff(COLOR_PAIR(CYAN));
-    }
+    mvprintw_color(r, 5, "%c", '|', color);
     if (state->mode == BLAME) {
-        if (i == (int)state->row) {
-            attron(COLOR_PAIR(invertColor(WHITE)));
-        }
-        mvprintw(r, 6, "%-65s", blame.substr(0, 65).c_str());
-        if (i == (int)state->row) {
-            attroff(COLOR_PAIR(invertColor(WHITE)));
-        }
+        mvprintw_color(r, 6, "%-65s", blame.substr(0, 65).c_str(), i == (int)state->row ? invertColor(WHITE) : WHITE);
     }
 }
 
@@ -438,13 +387,15 @@ void renderGrepOutput(State* state) {
     }
     unsigned int renderIndex = 1;
     for (unsigned int i = index; i < state->grepOutput.size() && i < index + state->maxY; i++) {
-        if (i == state->grep.selection) {
-            attron(COLOR_PAIR(invertColor(WHITE)));
-            mvprintw(renderIndex, 0, "%s:%d %s\n", state->grepOutput[i].path.c_str(), state->grepOutput[i].lineNum, state->grepOutput[i].line.c_str());
-            attroff(COLOR_PAIR(invertColor(WHITE)));
-        } else {
-            mvprintw(renderIndex, 0, "%s:%d %s\n", state->grepOutput[i].path.c_str(), state->grepOutput[i].lineNum, state->grepOutput[i].line.c_str());
-        }
+        mvprintw_color(
+            renderIndex,
+            0,
+            "%s:%d %s\n",
+            state->grepOutput[i].path.c_str(),
+            state->grepOutput[i].lineNum,
+            state->grepOutput[i].line.c_str(),
+            i == state->grep.selection ? invertColor(WHITE) : WHITE
+        );
         renderIndex++;
     }
 }
@@ -458,13 +409,13 @@ void renderFindFileOutput(State* state) {
     }
     unsigned int renderIndex = 1;
     for (unsigned int i = index; i < state->findFileOutput.size() && i < index + state->maxY; i++) {
-        if (i == state->findFile.selection) {
-            attron(COLOR_PAIR(invertColor(WHITE)));
-            mvprintw(renderIndex, 0, "%s\n", state->findFileOutput[i].c_str());
-            attroff(COLOR_PAIR(invertColor(WHITE)));
-        } else {
-            mvprintw(renderIndex, 0, "%s\n", state->findFileOutput[i].c_str());
-        }
+        mvprintw_color(
+            renderIndex,
+            0,
+            "%s\n",
+            state->findFileOutput[i].c_str(),
+            i == state->findFile.selection ? invertColor(WHITE) : WHITE
+        );
         renderIndex++;
     }
 }
