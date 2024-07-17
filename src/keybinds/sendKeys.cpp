@@ -57,22 +57,28 @@ void sendKeys(State* state, int c) {
                 state->macroCommand += c;
             }
         }
-        // some way have it switch to stop generating diff when it gets too slow to be worth it
-        // I think it could be worth to just switch to full copies or just not have history
         if (state->recording == false && state->mode == SHORTCUTS) {
-            std::vector<diffLine> diff = generateDiff(state->previousState, state->data);
-            if (diff.size() != 0) {
+            if (state->data.size() < 5000 && state->previousState.size() < 5000) {
+                std::vector<diffLine> diff = generateDiff(state->previousState, state->data);
+                if (diff.size() != 0) {
+                    if (state->autosave) {
+                        saveFile(state);
+                    }
+                    state->previousState = state->data;
+                    if (c != ctrl('r') && c != 'u') {
+                        if (state->historyPosition < (int)state->history.size()) {
+                            state->history.erase(state->history.begin() + state->historyPosition + 1, state->history.end());
+                        }
+                        state->history.push_back(diff);
+                        state->historyPosition = (int)state->history.size() - 1;
+                    }
+                }
+            } else {
+                // TODO implement faster diff algorithm
                 if (state->autosave) {
                     saveFile(state);
                 }
                 state->previousState = state->data;
-                if (c != ctrl('r') && c != 'u') {
-                    if (state->historyPosition < (int)state->history.size()) {
-                        state->history.erase(state->history.begin() + state->historyPosition + 1, state->history.end());
-                    }
-                    state->history.push_back(diff);
-                    state->historyPosition = (int)state->history.size() - 1;
-                }
             }
         }
         state->matching = matchIt(state);
