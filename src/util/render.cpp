@@ -109,7 +109,8 @@ int renderStatusBar(State* state) {
         offset += state->grep.cursor + 2;
         return offset;
     } else if (state->mode == FINDFILE) {
-        mvprintw_color(0, offset, "> %s", state->findFile.query.c_str(), state->selectAll ? invertColor(YELLOW) : YELLOW);
+        mvprintw_color(0, offset, "> ", "", YELLOW);
+        mvprintw_color(0, offset + 2, "%s", state->findFile.query.c_str(), state->selectAll ? invertColor(YELLOW) : YELLOW);
         offset += state->findFile.cursor + 2;
         return offset;
     } else {
