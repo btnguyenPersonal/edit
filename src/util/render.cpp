@@ -81,6 +81,16 @@ void initColors() {
     init_pair(invertColor(WHITE), _COLOR_BLACK, _COLOR_WHITE);
 }
 
+void renderNumMatches(int offset, int selection, int total) {
+    int index = offset;
+    mvprintw_color(0, index, "%d", selection, WHITE);
+    index += std::to_string(selection).length();
+    mvprintw_color(0, index, " of ", "", WHITE);
+    index += 4;
+    mvprintw_color(0, index, "%d", total, WHITE);
+    index += std::to_string(total).length();
+}
+
 int renderStatusBar(State* state) {
     int offset = 0;
     if (state->showFileStack == true) {
@@ -107,6 +117,7 @@ int renderStatusBar(State* state) {
     } else if (state->mode == GREP) {
         mvprintw_color(0, offset, "> %s", state->grep.query.c_str(), GREEN);
         offset += state->grep.cursor + 2;
+        renderNumMatches(offset + 2, state->grep.selection + 1, state->grepOutput.size());
         return offset;
     } else if (state->mode == FINDFILE) {
         mvprintw_color(0, offset, "> ", "", YELLOW);
