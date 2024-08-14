@@ -770,6 +770,12 @@ std::vector<grepMatch> grepFile(const std::filesystem::path& file_path, const st
     return matches;
 }
 
+bool sortByFileType(const grepMatch& first, const grepMatch& second) {
+    std::string firstFile = first.path.string();
+    std::string secondFile = second.path.string();
+    return firstFile < secondFile;
+}
+
 std::vector<grepMatch> grepFiles(const std::filesystem::path& dir_path, const std::string& query) {
     std::vector<std::future<std::vector<grepMatch>>> futures;
     for (auto it = std::filesystem::recursive_directory_iterator(dir_path); it != std::filesystem::recursive_directory_iterator(); ++it) {
@@ -786,6 +792,7 @@ std::vector<grepMatch> grepFiles(const std::filesystem::path& dir_path, const st
         auto matches = future.get();
         allMatches.insert(allMatches.end(), matches.begin(), matches.end());
     }
+    std::sort(allMatches.begin(), allMatches.end(), sortByFileType);
 
     return allMatches;
 }

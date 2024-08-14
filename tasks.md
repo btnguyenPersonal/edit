@@ -124,6 +124,7 @@
     - maybe should ask someone w/ more c++ logic where my deallocations should be, probably not right to just treat it as garbage collected
 - figure out how to go down to assembly and view it
 - ci' parse entire line to get actual strings instead of just between ' (maybe try out for a while)
+- render test files in a different color, put them under source files
 
 ## BACKLOG
 - add mouse clicks
