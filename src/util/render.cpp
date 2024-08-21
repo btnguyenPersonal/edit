@@ -117,12 +117,13 @@ int renderStatusBar(State* state) {
     } else if (state->mode == GREP) {
         mvprintw_color(0, offset, "> %s", state->grep.query.c_str(), GREEN);
         offset += state->grep.cursor + 2;
-        renderNumMatches(offset + 2, state->grep.selection + 1, state->grepOutput.size());
+        renderNumMatches(state->grep.query.length() + 4, state->grep.selection + 1, state->grepOutput.size());
         return offset;
     } else if (state->mode == FINDFILE) {
         mvprintw_color(0, offset, "> ", "", YELLOW);
         mvprintw_color(0, offset + 2, "%s", state->findFile.query.c_str(), state->selectAll ? invertColor(YELLOW) : YELLOW);
         offset += state->findFile.cursor + 2;
+        renderNumMatches(state->findFile.query.length() + 4, state->findFile.selection + 1, state->findFileOutput.size());
         return offset;
     } else {
         std::string displayQuery = state->search.query;
