@@ -64,6 +64,7 @@ public:
     bool searchFail;
     Jumplist jumplist;
     std::vector<Archive> archives;
+    std::vector<std::string> blame;
     std::vector<std::string> harpoonFiles;
     unsigned int harpoonIndex;
     std::string filename;

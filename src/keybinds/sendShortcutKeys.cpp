@@ -367,6 +367,11 @@ void sendShortcutKeys(State* state, int c) {
     } else if (c == ctrl('y')) {
         state->col = 0;
         state->mode = BLAME;
+        try {
+            state->blame = getGitBlame(state->filename);
+        } catch (const std::exception& e) {
+            state->status = "git blame error";
+        }
     } else if (c == ctrl('f')) {
         state->mode = SEARCH;
         state->replacing = true;

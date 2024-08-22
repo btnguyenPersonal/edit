@@ -432,19 +432,9 @@ void renderFindFileOutput(State* state) {
 }
 
 void renderVisibleLines(State* state) {
-    std::vector<std::string> blame;
-    bool blameError = false;
-    if (state->mode == BLAME) {
-        try {
-            blame = getGitBlame(state->filename);
-        } catch (const std::exception& e) {
-            state->status = "git blame error";
-            blameError = true;
-        }
-    }
     for (int i = state->windowPosition.row; i < (int)state->data.size() && i < (int)(state->maxY + state->windowPosition.row) - 1; i++) {
         printLineNumber(state, i - state->windowPosition.row + 1, i, i == (int)state->row, state->recording,
-                        state->mode == BLAME && !blameError && blame.size() >= state->data.size() && i < (int)state->data.size() ? blame[i] : "");
+                        state->mode == BLAME && state->blame.size() >= state->data.size() && i < (int)state->data.size() ? state->blame[i] : "");
         printLine(state, i);
     }
 }
