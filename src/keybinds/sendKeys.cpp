@@ -95,5 +95,10 @@ void sendKeys(State* state, int c) {
                 state->jumplist.index = state->jumplist.list.size() - 1;
             }
         }
+        for (unsigned int i = 0; i < state->harpoonFiles.size(); i++) {
+            if (state->harpoonFiles[i] == state->filename) {
+                state->harpoonIndex = i;
+            }
+        }
     }
 }

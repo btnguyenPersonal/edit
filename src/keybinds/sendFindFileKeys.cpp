@@ -89,11 +89,6 @@ void sendFindFileKeys(State* state, int c) {
             state->selectAll = false;
             auto selectedFile = state->findFileOutput[state->findFile.selection].string();
             state->resetState(selectedFile);
-            for (unsigned int i = 0; i < state->harpoonFiles.size(); i++) {
-                if (state->harpoonFiles[i] == state->filename) {
-                    state->harpoonIndex = i;
-                }
-            }
         }
     }
     if (state->mode == FINDFILE && c != ctrl('u') && c != ctrl('d') && c != ctrl('p') && c != ctrl('n')) {
