@@ -113,17 +113,27 @@
 - fix rendering colors
 - (figure out how to abstract attron and attroff stuff (better color control around it))
 - make helper function for printing w/ color w/o having to turn on and off manually duping logic before and after print
-
-## TODO
-- fix status bar abstraction for calculating where to render stuff on the status bar (offset stuff)
 - clean up all the render code
-- fix history slowing down copy/pasting large diff (also look into what is really causing it)
 - backup file (some way to debug?? dump entire state when segfault error happns like edit js had)
 - logging file (per session log all keypresses, in what order so can do analysis on most used commands, etc)
 - lots of valgrind errors?? need to figure out what's going on there
     - maybe should ask someone w/ more c++ logic where my deallocations should be, probably not right to just treat it as garbage collected
 - figure out how to go down to assembly and view it
+
+## TODO
+- add go to definition (without any lsp will be really hard)
+    - have strategies that you try each one, and if you find definition change to it
+        - ex. see if current is in current file as const `match` = ...;
+        - ex. see if current matches import { `match` } from '../../src';
+        - ex. see if current is a function of an import
+
+- add filetree on left side, that has to be toggled open/closed, and allows you to just click through all the files really quick to see which one you want
+    - fix status bar abstraction for calculating where to render stuff on the status bar (offset stuff)
+
+- fix history slowing down copy/pasting large diff (also look into what is really causing it)
+
 - ci' parse entire line to get actual strings instead of just between ' (maybe try out for a while)
+
 - render test files in a different color, put them under source files
 
 ## BACKLOG
