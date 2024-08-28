@@ -39,6 +39,10 @@ void sendSearchKeys(State* state, int c) {
         } else {
             moveCursorRight(&state->search);
         }
+    } else if (c == ctrl('r')) {
+        state->replacing = true;
+        state->replace.query = state->search.query;
+        state->replace.cursor = state->replace.query.length();
     } else if (c == ctrl('l')) {
         if (state->replacing) {
             backspaceAll(&state->replace);
