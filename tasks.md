@@ -121,6 +121,12 @@
 - figure out how to go down to assembly and view it
 
 ## TODO
+- fix history slowing down copy/pasting large diff (also look into what is really causing it)
+    - also could hack into the std::string, add a modified value, use that to parse history
+    - THE PLAN!!!!!!
+    - we make one big for loop
+        - it tries add and delete at the same time, and if it finds one it cuts everything off
+
 - add go to definition (without any lsp will be really hard)
     - have strategies that you try each one, and if you find definition change to it
         - ex. see if current is in current file as const `match` = ...;
@@ -129,8 +135,6 @@
 
 - add filetree on left side, that has to be toggled open/closed, and allows you to just click through all the files really quick to see which one you want
     - fix status bar abstraction for calculating where to render stuff on the status bar (offset stuff)
-
-- fix history slowing down copy/pasting large diff (also look into what is really causing it)
 
 - ci' parse entire line to get actual strings instead of just between ' (maybe try out for a while)
 
