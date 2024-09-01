@@ -119,14 +119,13 @@
 - lots of valgrind errors?? need to figure out what's going on there
     - maybe should ask someone w/ more c++ logic where my deallocations should be, probably not right to just treat it as garbage collected
 - figure out how to go down to assembly and view it
-
-## TODO
 - fix history slowing down copy/pasting large diff (also look into what is really causing it)
     - also could hack into the std::string, add a modified value, use that to parse history
     - THE PLAN!!!!!!
     - we make one big for loop
         - it tries add and delete at the same time, and if it finds one it cuts everything off
 
+## TODO
 - add go to definition (without any lsp will be really hard)
     - have strategies that you try each one, and if you find definition change to it
         - ex. see if current is in current file as const `match` = ...;
