@@ -126,14 +126,14 @@
         - it tries add and delete at the same time, and if it finds one it cuts everything off
 
 ## TODO
+- add filetree on left side, that has to be toggled open/closed, and allows you to just click through all the files really quick to see which one you want
+    - fix status bar abstraction for calculating where to render stuff on the status bar (offset stuff)
+
 - add go to definition (without any lsp will be really hard)
     - have strategies that you try each one, and if you find definition change to it
         - ex. see if current is in current file as const `match` = ...;
         - ex. see if current matches import { `match` } from '../../src';
         - ex. see if current is a function of an import
-
-- add filetree on left side, that has to be toggled open/closed, and allows you to just click through all the files really quick to see which one you want
-    - fix status bar abstraction for calculating where to render stuff on the status bar (offset stuff)
 
 - ci' parse entire line to get actual strings instead of just between ' (maybe try out for a while)
 
