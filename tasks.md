@@ -133,6 +133,21 @@
         - printLine
         - renderStatusBar? - prob not see how it looks
 
+        - render fileExplorer
+            - prob start with it default open just to see improvements faster
+            - cache explorer output when opening fileExplorer (start by gathering root directory, and listing only current files, and only explore down current file path)
+                - show ignoreList as grey, but still show it
+                - current as middle if needed
+            - have everything default closed except top level files/folders (and show where current file is)
+            - always center on current file when changing file
+                - also when changing file don't autoclose, just open new path to new current file if needed
+            - search also needs to work same (maybe refactor search to work generically??)
+            - do i keep it open all the time?
+                - maybe press esc to go back to editor, and ctrl z to close
+            - open w/ enter, j, k, ctrl u, ctrl d, G, gg, z, ctrl r copy relative file path, R hard reset to only showing current file paths opened, have ctrl o goto parent
+            - add copy/paste(folders too)/rename(with current file rename as well)
+                - keybind: `I`: import files/folder from other project? somehow trigger os to open fileExplorer and select folder
+
 - add go to definition (without any lsp will be really hard)
     - have strategies that you try each one, and if you find definition change to it
         - ex. see if current is in current file as const `match` = ...;
