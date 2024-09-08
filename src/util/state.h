@@ -60,6 +60,7 @@ struct Query {
 class State {
 public:
     bool fileExplorerOpen;
+    int fileExplorerSize;
     Position matching;
     bool autosave;
     bool searchFail;

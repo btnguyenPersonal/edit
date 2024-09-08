@@ -228,10 +228,14 @@ std::vector<std::string> getGitBlame(const std::string& filename) {
 }
 
 unsigned int getLineNumberOffset(State* state) {
+    unsigned int offset = 6;
     if (state->mode == BLAME) {
-        return 6 + 65;
+        offset += 65;
     }
-    return 6;
+    if (state->fileExplorerOpen) {
+        offset += state->fileExplorerSize;
+    }
+    return offset;
 }
 
 std::string getExtension(const std::string& filename) {
@@ -896,9 +900,13 @@ std::vector<std::string> readFile(const std::string& filename) {
 }
 
 bool isWindowPositionInvalid(State* state) {
-    if (state->row < state->windowPosition.row || (int)state->row - (int)state->windowPosition.row > ((int)state->maxY - 2)) {
+    bool isRowTooSmall = state->row < state->windowPosition.row;
+    bool isRowTooBig = (int)state->row - (int)state->windowPosition.row > ((int)state->maxY - 2);
+    bool isColTooSmall = state->col < state->windowPosition.col;
+    bool isColTooBig = (int)state->col - (int)state->windowPosition.col > (int)state->maxX - (int)getLineNumberOffset(state) - 1;
+    if (isRowTooSmall || isRowTooBig) {
         return true;
-    } else if (state->col < state->windowPosition.col || (int)state->col - (int)state->windowPosition.col > ((int)state->maxX - (int)getLineNumberOffset(state) - 1)) {
+    } else if (isColTooSmall || isColTooBig) {
         return true;
     }
     return false;

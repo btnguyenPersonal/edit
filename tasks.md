@@ -128,6 +128,10 @@
 ## TODO
 - add filetree on left side, that has to be toggled open/closed, and allows you to just click through all the files really quick to see which one you want
     - fix status bar abstraction for calculating where to render stuff on the status bar (offset stuff)
+    - need to change
+        - printLineNumber
+        - printLine
+        - renderStatusBar? - prob not see how it looks
 
 - add go to definition (without any lsp will be really hard)
     - have strategies that you try each one, and if you find definition change to it

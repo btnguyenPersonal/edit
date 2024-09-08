@@ -107,6 +107,7 @@ State::State() {
     this->autosave = true;
     this->mark = {"", 0};
     this->fileExplorerOpen = false;
+    this->fileExplorerSize = 25;
     this->matching = {0, 0};
     this->searching = false;
     this->dontSave = false;

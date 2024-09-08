@@ -222,12 +222,13 @@ void printChar(State* state, int row, int col, char c, int color) {
 }
 
 void printLineNumber(State* state, int r, int i, bool isCurrentRow, bool recording, std::string blame) {
+    int border = state->fileExplorerOpen ? state->fileExplorerSize : 0;
     if (isCurrentRow == true) {
-        mvprintw_color(r, 0, "%5d", i + 1, WHITE);
+        mvprintw_color(r, border, "%5d", i + 1, WHITE);
     } else if (recording) {
-        mvprintw_color(r, 0, "%5d", i + 1, RED);
+        mvprintw_color(r, border, "%5d", i + 1, RED);
     } else {
-        mvprintw_color(r, 0, "%5d", i + 1, GREY);
+        mvprintw_color(r, border, "%5d", i + 1, GREY);
     }
     bool isLogging = getLoggingRegex(state) != "" && std::regex_search(state->data[i], std::regex(getLoggingRegex(state)));
     bool endsWithSpace = state->data[i].back() == ' ';
@@ -240,9 +241,9 @@ void printLineNumber(State* state, int r, int i, bool isCurrentRow, bool recordi
     } else if (isOnMark) {
         color = CYAN;
     }
-    mvprintw_color(r, 5, "%c", '|', color);
+    mvprintw_color(r, border + 5, "%c", '|', color);
     if (state->mode == BLAME) {
-        mvprintw_color(r, 6, "%-65s", blame.substr(0, 65).c_str(), i == (int)state->row ? invertColor(WHITE) : WHITE);
+        mvprintw_color(r, border + 6, "%-65s", blame.substr(0, 65).c_str(), i == (int)state->row ? invertColor(WHITE) : WHITE);
     }
 }
 
