@@ -10,6 +10,7 @@ BUILD_DIR = build
 SOURCES = $(SRC_DIR)/edit.cpp \
           $(UTIL_DIR)/helper.cpp \
           $(UTIL_DIR)/render.cpp \
+          $(UTIL_DIR)/fileExplorerNode.cpp \
           $(UTIL_DIR)/state.cpp \
           $(UTIL_DIR)/clipboard.cpp \
           $(UTIL_DIR)/history.cpp \

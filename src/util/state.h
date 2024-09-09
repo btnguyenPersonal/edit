@@ -2,6 +2,7 @@
 
 #include "modes.h"
 #include "visualType.h"
+#include "fileExplorerNode.h"
 #include <filesystem>
 #include <string>
 #include <vector>
@@ -107,6 +108,7 @@ public:
     bool dontSave;
     bool selectAll;
     bool showFileStack;
+    FileExplorerNode* fileExplorer;
     Mode mode;
     State();
     State(std::string filename);
