@@ -477,8 +477,8 @@ int renderFileExplorerNode(FileExplorerNode* node, int r, std::string startingSp
     mvprintw_color(
         row,
         offset,
-        (std::string("%-") + std::to_string(40 - offset) + std::string("s")).c_str(),
-        node->name.c_str(),
+        (std::string("%-") + std::to_string(40 - offset - 1) + std::string("s")).c_str(),
+        node->name.length() >= 40 ? (node->name.substr(0, 37) + "...").c_str() : node->name.substr(0, 40).c_str(),
         node->isFolder ? CYAN : WHITE
     );
     if (node->isOpen) {

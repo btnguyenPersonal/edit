@@ -77,7 +77,9 @@ void State::changeFile(std::string filename) {
     this->searchFail = false;
     this->motion = std::string("");
     this->mode = SHORTCUTS;
-    this->fileExplorer->expand(filename);
+    if (this->fileExplorerOpen) {
+        this->fileExplorer->expand(filename);
+    }
 }
 
 void State::pushFileStack(std::string filename) {
@@ -108,7 +110,7 @@ State::State() {
     this->fileExplorer = new FileExplorerNode(std::filesystem::current_path());
     this->fileExplorer->open();
     this->fileExplorerOpen = false;
-    this->fileExplorerSize = 40;
+    this->fileExplorerSize = 44;
     this->autosave = true;
     this->mark = {"", 0};
     this->matching = {0, 0};
