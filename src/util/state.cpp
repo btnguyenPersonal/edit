@@ -109,8 +109,9 @@ void State::resetState(std::string filename) {
 State::State() {
     this->fileExplorer = new FileExplorerNode(std::filesystem::current_path());
     this->fileExplorer->open();
-    this->fileExplorerOpen = false;
+    this->fileExplorerOpen = true;
     this->fileExplorerSize = 44;
+    this->fileExplorerIndex = 0;
     this->autosave = true;
     this->mark = {"", 0};
     this->matching = {0, 0};

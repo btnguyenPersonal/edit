@@ -4,6 +4,7 @@
 #include "../util/modes.h"
 #include "../util/state.h"
 #include "sendBlameKeys.h"
+#include "sendFileExplorerKeys.h"
 #include "sendCommandLineKeys.h"
 #include "sendFindFileKeys.h"
 #include "sendGrepKeys.h"
@@ -38,6 +39,8 @@ void sendKeys(State* state, int c) {
         sendGrepKeys(state, c);
     } else if (state->mode == SEARCH) {
         sendSearchKeys(state, c);
+    } else if (state->mode == FILEEXPLORER) {
+        sendFileExplorerKeys(state, c);
     } else if (state->mode == BLAME) {
         sendBlameKeys(state, c);
     } else if (state->mode == MULTICURSOR) {

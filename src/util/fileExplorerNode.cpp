@@ -18,15 +18,29 @@ void FileExplorerNode::expand(std::string input) {
         path.push_back(line);
     }
     FileExplorerNode* current = this;
+    bool found = false;
     for (unsigned int i = 0; i < path.size(); i++) {
         current->open();
+        found = false;
         for (unsigned int j = 0; j < current->children.size(); j++) {
             if (current->children[j].name == path[i]) {
                 current = &current->children[j];
+                found = true;
                 break;
             }
         }
+        if (!found) {
+            return;
+        }
     }
+}
+
+int FileExplorerNode::getTotalChildren() {
+    int total = 1;
+    for (unsigned int i = 0; i < this->children.size(); i++) {
+        total += this->children[i].getTotalChildren();
+    }
+    return total;
 }
 
 void FileExplorerNode::open() {
@@ -44,6 +58,27 @@ void FileExplorerNode::open() {
             return a.name < b.name;
         });
     }
+}
+
+FileExplorerNode* FileExplorerNode::getFileExplorerNode(FileExplorerNode* node, int n) {
+    if (n < 0 || !node) {
+        return nullptr;
+    }
+    std::stack<FileExplorerNode*> stack;
+    stack.push(node);
+    int count = 0;
+    while (!stack.empty()) {
+        FileExplorerNode* current = stack.top();
+        stack.pop();
+        if (count == n) {
+            return current;
+        }
+        count++;
+        for (auto it = current->children.rbegin(); it != current->children.rend(); ++it) {
+            stack.push(&(*it));
+        }
+    }
+    return nullptr;
 }
 
 FileExplorerNode::FileExplorerNode(const std::filesystem::path& path) {

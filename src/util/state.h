@@ -62,6 +62,7 @@ class State {
 public:
     bool fileExplorerOpen;
     int fileExplorerSize;
+    int fileExplorerIndex;
     Position matching;
     bool autosave;
     bool searchFail;

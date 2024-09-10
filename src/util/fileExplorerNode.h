@@ -5,6 +5,7 @@
 #include <filesystem>
 #include <algorithm>
 #include <sstream>
+#include <stack>
 
 class FileExplorerNode {
 public:
@@ -15,6 +16,8 @@ public:
     std::vector<FileExplorerNode> children;
     FileExplorerNode();
     FileExplorerNode(const std::filesystem::path& path);
+    static FileExplorerNode* getFileExplorerNode(FileExplorerNode* node, int index);
+    int getTotalChildren();
     void expand(std::string input);
     void open();
     void close();
