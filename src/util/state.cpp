@@ -77,6 +77,7 @@ void State::changeFile(std::string filename) {
     this->searchFail = false;
     this->motion = std::string("");
     this->mode = SHORTCUTS;
+    this->fileExplorer->expand(filename);
 }
 
 void State::pushFileStack(std::string filename) {

@@ -468,13 +468,19 @@ void moveCursor(State* state, int cursorPosition) {
 int renderFileExplorerNode(FileExplorerNode* node, int r, std::string startingSpaces) {
     int row = r + 1;
     int offset = 0;
-    mvprintw_color(row, offset, "%-40s", startingSpaces.c_str(), WHITE);
+    mvprintw_color(row, offset, "%s", startingSpaces.c_str(), WHITE);
     offset += startingSpaces.length();
-    if (!node->isOpen && node->isFolder) {
-        mvprintw_color(row, offset, "%-40s", ">", WHITE);
-        offset += 1;
+    if (node->isFolder) {
+        mvprintw_color(row, offset, "%s", node->isOpen ? "v " : "> ", GREY);
+        offset += 2;
     }
-    mvprintw_color(row, offset, "%-40s", node->name.c_str(), node->isFolder ? CYAN : WHITE);
+    mvprintw_color(
+        row,
+        offset,
+        (std::string("%-") + std::to_string(40 - offset) + std::string("s")).c_str(),
+        node->name.c_str(),
+        node->isFolder ? CYAN : WHITE
+    );
     if (node->isOpen) {
         for(unsigned int i = 0; i < node->children.size(); i++) {
             row = renderFileExplorerNode(&node->children[i], row, startingSpaces + "  ");

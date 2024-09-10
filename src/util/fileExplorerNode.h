@@ -4,6 +4,7 @@
 #include <string>
 #include <filesystem>
 #include <algorithm>
+#include <sstream>
 
 class FileExplorerNode {
 public:
@@ -14,6 +15,7 @@ public:
     std::vector<FileExplorerNode> children;
     FileExplorerNode();
     FileExplorerNode(const std::filesystem::path& path);
+    void expand(std::string input);
     void open();
     void close();
 };
