@@ -20,6 +20,7 @@ void sendFileExplorerKeys(State* state, int c) {
         }
     } else if (c == '\n') {
         auto node = FileExplorerNode::getFileExplorerNode(state->fileExplorer, state->fileExplorerIndex);
+        state->status = std::to_string(node->getTotalChildren());
         if (node->isFolder) {
             if (node->isOpen) {
                 node->close();
@@ -27,20 +28,9 @@ void sendFileExplorerKeys(State* state, int c) {
                 node->open();
             }
         } else {
-            state->changeFile(node->path.string());
+            auto baseDir = std::filesystem::current_path();
+            auto relativePath = std::filesystem::relative(node->path.string(), baseDir);
+            state->changeFile(relativePath);
         }
-    // } else if (c == '[') {
-    //     state->row = getPrevLineSameIndent(state);
-    // } else if (c == ']') {
-    //     state->row = getNextLineSameIndent(state);
-    // } else if (c == ctrl('u')) {
-    //     upHalfScreen(state);
-    // } else if (c == ctrl('d')) {
-    //     downHalfScreen(state);
-    // } else if (c == 'y' || c == ctrl('y')) {
-    //     std::string gitHash = getGitHash(state);
-    //     copyToClipboard(gitHash);
-    //     state->status = gitHash;
-    //     state->mode = SHORTCUTS;
     }
 }

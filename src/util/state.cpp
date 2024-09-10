@@ -78,7 +78,7 @@ void State::changeFile(std::string filename) {
     this->motion = std::string("");
     this->mode = SHORTCUTS;
     if (this->fileExplorerOpen) {
-        this->fileExplorer->expand(filename);
+        this->fileExplorerIndex = this->fileExplorer->expand(filename);
     }
 }
 

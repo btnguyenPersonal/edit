@@ -10,7 +10,7 @@ void FileExplorerNode::close() {
     }
 }
 
-void FileExplorerNode::expand(std::string input) {
+int FileExplorerNode::expand(std::string input) {
     std::stringstream ss(input);
     std::string line;
     std::vector<std::string> path;
@@ -19,6 +19,7 @@ void FileExplorerNode::expand(std::string input) {
     }
     FileExplorerNode* current = this;
     bool found = false;
+    int output = 0;
     for (unsigned int i = 0; i < path.size(); i++) {
         current->open();
         found = false;
@@ -26,19 +27,25 @@ void FileExplorerNode::expand(std::string input) {
             if (current->children[j].name == path[i]) {
                 current = &current->children[j];
                 found = true;
+                output++;
                 break;
+            } else {
+                output += current->children[j].getTotalChildren();
             }
         }
         if (!found) {
-            return;
+            return output;
         }
     }
+    return output;
 }
 
 int FileExplorerNode::getTotalChildren() {
     int total = 1;
-    for (unsigned int i = 0; i < this->children.size(); i++) {
-        total += this->children[i].getTotalChildren();
+    if (this->isOpen) {
+        for (unsigned int i = 0; i < this->children.size(); i++) {
+            total += this->children[i].getTotalChildren();
+        }
     }
     return total;
 }
