@@ -482,6 +482,10 @@ int renderFileExplorerNode(FileExplorerNode* node, int r, int selectedRow, std::
         mvprintw_color(row, offset, "%s", node->isOpen ? "v " : "> ", GREY);
         offset += 2;
     }
+    if (selectedRow == r) {
+        mvprintw_color(row, offset, "%s", "[", RED);
+        offset += 1;
+    }
     mvprintw_color(
         row,
         offset,
@@ -489,8 +493,10 @@ int renderFileExplorerNode(FileExplorerNode* node, int r, int selectedRow, std::
         node->name.length() >= 40 ? (node->name.substr(0, 37) + "...").c_str() : node->name.substr(0, 40).c_str(),
         color
     );
+    offset += node->name.substr(0, 39).length();
     if (selectedRow == r) {
-        mvprintw_color(row, 0, "%s", ">>", isFileExplorerOpen ? GREEN : YELLOW);
+        mvprintw_color(row, offset, "%s", "]", RED);
+        offset += 1;
     }
     if (node->isOpen) {
         for(unsigned int i = 0; i < node->children.size(); i++) {

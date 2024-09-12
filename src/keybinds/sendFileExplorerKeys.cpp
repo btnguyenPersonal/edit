@@ -20,7 +20,6 @@ void sendFileExplorerKeys(State* state, int c) {
         }
     } else if (c == '\n') {
         auto node = FileExplorerNode::getFileExplorerNode(state->fileExplorer, state->fileExplorerIndex);
-        state->status = std::to_string(node->getTotalChildren());
         if (node->isFolder) {
             if (node->isOpen) {
                 node->close();

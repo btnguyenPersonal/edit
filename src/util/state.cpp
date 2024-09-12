@@ -183,6 +183,9 @@ State::State(std::string filename) : State() {
     this->mode = SHORTCUTS;
     this->fileStack = {filename};
     this->fileStackIndex = 0;
+    if (this->fileExplorerOpen) {
+        this->fileExplorerIndex = this->fileExplorer->expand(filename);
+    }
 }
 
 void State::setMaxYX(int y, int x) {
