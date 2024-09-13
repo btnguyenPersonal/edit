@@ -12,6 +12,7 @@ void sendFileExplorerKeys(State* state, int c) {
         state->mode = SHORTCUTS;
     } else if (c == ctrl('z')) {
         state->mode = SHORTCUTS;
+        state->fileExplorerOpen = false;
     } else if (c == ctrl('u')) {
         for (unsigned int i = 0; i < state->maxY / 2; i++) {
             if (state->fileExplorerIndex > 0) {

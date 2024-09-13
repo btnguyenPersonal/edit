@@ -337,6 +337,7 @@ void sendShortcutKeys(State* state, int c) {
         state->col = getIndexFirstNonSpace(state);
     } else if (c == ctrl('z')) {
         state->mode = FILEEXPLORER;
+        state->fileExplorerOpen = true;
     } else if (c == ctrl('s')) {
         getAndAddNumber(state, state->row, state->col, -1);
     } else if (c == ctrl('a')) {
