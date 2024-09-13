@@ -465,7 +465,7 @@ void moveCursor(State* state, int cursorPosition) {
     }
 }
 
-int renderFileExplorerNode(FileExplorerNode* node, int r, int selectedRow, std::string startingSpaces, bool isFileExplorerOpen) {
+int renderFileExplorerNode(FileExplorerNode* node, int r, int selectedRow, std::string startingSpaces, bool isFileExplorerOpen, int fileExplorerWindowLine) {
     int color;
     if (shouldIgnoreFile(node->path)) {
         color = GREY;
@@ -476,38 +476,40 @@ int renderFileExplorerNode(FileExplorerNode* node, int r, int selectedRow, std::
     }
     int row = r + 1;
     int offset = 0;
-    mvprintw_color(row, offset, "%s", startingSpaces.c_str(), WHITE);
-    offset += startingSpaces.length();
-    if (node->isFolder) {
-        mvprintw_color(row, offset, "%s", node->isOpen ? "v " : "> ", GREY);
-        offset += 2;
-    }
-    if (selectedRow == r) {
-        mvprintw_color(row, offset, "%s", "[", RED);
+    if (row - fileExplorerWindowLine > 0) {
+        auto displayRow = row - fileExplorerWindowLine;
+        mvprintw_color(displayRow, offset, "%s", startingSpaces.c_str(), WHITE);
+        offset += startingSpaces.length();
+        if (node->isFolder) {
+            mvprintw_color(displayRow, offset, "%s", node->isOpen ? "v" : ">", GREY);
+            offset += 1;
+        }
+        if (selectedRow == r) {
+            mvprintw_color(displayRow, offset, "%s", "[", isFileExplorerOpen ? RED : GREY);
+        }
         offset += 1;
-    }
-    mvprintw_color(
-        row,
-        offset,
-        (std::string("%-") + std::to_string(40 - offset - 1) + std::string("s")).c_str(),
-        node->name.length() >= 40 ? (node->name.substr(0, 37) + "...").c_str() : node->name.substr(0, 40).c_str(),
-        color
-    );
-    offset += node->name.substr(0, 39).length();
-    if (selectedRow == r) {
-        mvprintw_color(row, offset, "%s", "]", RED);
-        offset += 1;
+        mvprintw_color(
+            displayRow,
+            offset,
+            (std::string("%-") + std::to_string(40 - offset - 1) + std::string("s")).c_str(),
+            node->name.length() >= 40 ? (node->name.substr(0, 37) + "...").c_str() : node->name.substr(0, 40).c_str(),
+            color
+        );
+        offset += node->name.substr(0, 40).length();
+        if (selectedRow == r) {
+            mvprintw_color(displayRow, offset, "%s", "]", isFileExplorerOpen ? RED : GREY);
+        }
     }
     if (node->isOpen) {
         for(unsigned int i = 0; i < node->children.size(); i++) {
-            row = renderFileExplorerNode(&node->children[i], row, selectedRow, startingSpaces + "  ", isFileExplorerOpen);
+            row = renderFileExplorerNode(&node->children[i], row, selectedRow, startingSpaces + "  ", isFileExplorerOpen, fileExplorerWindowLine);
         }
     }
     return row;
 }
 
 void renderFileExplorer(State* state) {
-    renderFileExplorerNode(state->fileExplorer, 0, state->fileExplorerIndex, std::string(""), state->mode == FILEEXPLORER);
+    renderFileExplorerNode(state->fileExplorer, 0, state->fileExplorerIndex, std::string(""), state->mode == FILEEXPLORER, state->fileExplorerWindowLine);
 }
 
 void renderScreen(State* state) {

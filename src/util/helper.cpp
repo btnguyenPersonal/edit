@@ -16,6 +16,16 @@
 #include <string>
 #include <vector>
 
+void centerFileExplorer(State* state) {
+    if ((state->fileExplorerIndex - ((int)state->maxY / 2)) > 0) {
+        if (state->fileExplorer->getTotalChildren() > ((int)state->maxY)) {
+            state->fileExplorerWindowLine = (state->fileExplorerIndex - ((int)state->maxY / 2));
+        }
+    } else {
+        state->fileExplorerWindowLine = 0;
+    }
+}
+
 bool isOpenParen(char c) { return c == '(' || c == '{' || c == '['; }
 
 bool isCloseParen(char c) { return c == ')' || c == '}' || c == ']'; }

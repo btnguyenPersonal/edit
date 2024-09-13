@@ -10,9 +10,23 @@
 void sendFileExplorerKeys(State* state, int c) {
     if (c == 27) { // ESC
         state->mode = SHORTCUTS;
+    } else if (c == ctrl('z')) {
+        state->mode = SHORTCUTS;
+    } else if (c == ctrl('u')) {
+        for (unsigned int i = 0; i < state->maxY / 2; i++) {
+            if (state->fileExplorerIndex > 0) {
+                state->fileExplorerIndex--;
+            }
+        }
     } else if (c == 'k') {
         if (state->fileExplorerIndex > 0) {
             state->fileExplorerIndex--;
+        }
+    } else if (c == ctrl('d')) {
+        for (unsigned int i = 0; i < state->maxY / 2; i++) {
+            if (state->fileExplorerIndex + 1 < state->fileExplorer->getTotalChildren()) {
+                state->fileExplorerIndex++;
+            }
         }
     } else if (c == 'j') {
         if (state->fileExplorerIndex + 1 < state->fileExplorer->getTotalChildren()) {
@@ -32,4 +46,5 @@ void sendFileExplorerKeys(State* state, int c) {
             state->changeFile(relativePath);
         }
     }
+    centerFileExplorer(state);
 }

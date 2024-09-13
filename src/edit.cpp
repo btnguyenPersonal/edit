@@ -51,6 +51,7 @@ int main(int argc, char* argv[]) {
     open("/dev/tty", O_RDONLY);
     initTerminal();
     calcWindowBounds();
+    centerFileExplorer(state);
     renderScreen(state);
     while (true) {
         c = getch();

@@ -63,6 +63,7 @@ public:
     bool fileExplorerOpen;
     int fileExplorerSize;
     int fileExplorerIndex;
+    int fileExplorerWindowLine;
     Position matching;
     bool autosave;
     bool searchFail;
