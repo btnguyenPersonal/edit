@@ -52,6 +52,10 @@ void State::changeFile(std::string filename) {
             this->col = archive.col;
             this->jumplist = archive.jumplist;
             this->mode = SHORTCUTS;
+            if (this->fileExplorerOpen) {
+                this->fileExplorerIndex = this->fileExplorer->expand(filename);
+                centerFileExplorer(this);
+            }
             return;
         }
     }

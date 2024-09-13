@@ -443,6 +443,8 @@ void renderVisibleLines(State* state) {
 void moveCursor(State* state, int cursorPosition) {
     if (cursorPosition != -1) {
         move(0, cursorPosition);
+    } else if (state->mode == FILEEXPLORER) {
+        move(state->fileExplorerIndex + 1, 0);
     } else {
         unsigned int row = state->row + 1;
         if (row > state->windowPosition.row) {
@@ -485,7 +487,7 @@ int renderFileExplorerNode(FileExplorerNode* node, int r, int selectedRow, std::
             offset += 1;
         }
         if (selectedRow == r) {
-            mvprintw_color(displayRow, offset, "%s", "[", isFileExplorerOpen ? RED : GREY);
+            mvprintw_color(displayRow, offset, "%s", "[", isFileExplorerOpen ? RED : YELLOW);
         }
         offset += 1;
         mvprintw_color(
@@ -497,7 +499,7 @@ int renderFileExplorerNode(FileExplorerNode* node, int r, int selectedRow, std::
         );
         offset += node->name.substr(0, 40).length();
         if (selectedRow == r) {
-            mvprintw_color(displayRow, offset, "%s", "]", isFileExplorerOpen ? RED : GREY);
+            mvprintw_color(displayRow, offset, "%s", "]", isFileExplorerOpen ? RED : YELLOW);
         }
     }
     if (node->isOpen) {

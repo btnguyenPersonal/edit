@@ -10,6 +10,12 @@
 void sendFileExplorerKeys(State* state, int c) {
     if (c == 27) { // ESC
         state->mode = SHORTCUTS;
+    } else if (c == '-') {
+        state->fileExplorerWindowLine = 0;
+        state->fileExplorerIndex = 0;
+        auto node = FileExplorerNode::getFileExplorerNode(state->fileExplorer, state->fileExplorerIndex);
+        node->close();
+        node->open();
     } else if (c == ctrl('z')) {
         state->mode = SHORTCUTS;
         state->fileExplorerOpen = false;
