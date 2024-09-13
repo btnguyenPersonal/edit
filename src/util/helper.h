@@ -7,6 +7,7 @@
 #include <string>
 #include <vector>
 
+void centerFileExplorer(State* state);
 void resetValidCursorState(State* state);
 bool setSearchResultCurrentLine(State* state, const std::string& query);
 Position matchIt(State* state);

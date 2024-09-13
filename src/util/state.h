@@ -2,6 +2,7 @@
 
 #include "modes.h"
 #include "visualType.h"
+#include "fileExplorerNode.h"
 #include <filesystem>
 #include <string>
 #include <vector>
@@ -59,6 +60,10 @@ struct Query {
 
 class State {
 public:
+    bool fileExplorerOpen;
+    int fileExplorerSize;
+    int fileExplorerIndex;
+    int fileExplorerWindowLine;
     Position matching;
     bool autosave;
     bool searchFail;
@@ -105,6 +110,7 @@ public:
     bool dontSave;
     bool selectAll;
     bool showFileStack;
+    FileExplorerNode* fileExplorer;
     Mode mode;
     State();
     State(std::string filename);

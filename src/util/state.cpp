@@ -77,6 +77,10 @@ void State::changeFile(std::string filename) {
     this->searchFail = false;
     this->motion = std::string("");
     this->mode = SHORTCUTS;
+    if (this->fileExplorerOpen) {
+        this->fileExplorerIndex = this->fileExplorer->expand(filename);
+        centerFileExplorer(this);
+    }
 }
 
 void State::pushFileStack(std::string filename) {
@@ -104,6 +108,12 @@ void State::resetState(std::string filename) {
 }
 
 State::State() {
+    this->fileExplorer = new FileExplorerNode(std::filesystem::current_path());
+    this->fileExplorer->open();
+    this->fileExplorerOpen = true;
+    this->fileExplorerSize = 46;
+    this->fileExplorerWindowLine = 0;
+    this->fileExplorerIndex = 0;
     this->autosave = true;
     this->mark = {"", 0};
     this->matching = {0, 0};
@@ -175,6 +185,9 @@ State::State(std::string filename) : State() {
     this->mode = SHORTCUTS;
     this->fileStack = {filename};
     this->fileStackIndex = 0;
+    if (this->fileExplorerOpen) {
+        this->fileExplorerIndex = this->fileExplorer->expand(filename);
+    }
 }
 
 void State::setMaxYX(int y, int x) {

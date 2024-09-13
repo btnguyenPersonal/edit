@@ -10,6 +10,7 @@ BUILD_DIR = build
 SOURCES = $(SRC_DIR)/edit.cpp \
           $(UTIL_DIR)/helper.cpp \
           $(UTIL_DIR)/render.cpp \
+          $(UTIL_DIR)/fileExplorerNode.cpp \
           $(UTIL_DIR)/state.cpp \
           $(UTIL_DIR)/clipboard.cpp \
           $(UTIL_DIR)/history.cpp \
@@ -21,6 +22,7 @@ SOURCES = $(SRC_DIR)/edit.cpp \
           $(KEYBINDS_DIR)/sendVisualKeys.cpp \
           $(KEYBINDS_DIR)/sendBlameKeys.cpp \
           $(KEYBINDS_DIR)/sendFindFileKeys.cpp \
+          $(KEYBINDS_DIR)/sendFileExplorerKeys.cpp \
           $(KEYBINDS_DIR)/sendSearchKeys.cpp \
           $(KEYBINDS_DIR)/sendGrepKeys.cpp \
           $(KEYBINDS_DIR)/sendCommandLineKeys.cpp \

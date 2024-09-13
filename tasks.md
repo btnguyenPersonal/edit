@@ -126,14 +126,135 @@
         - it tries add and delete at the same time, and if it finds one it cuts everything off
 
 ## TODO
+- add filetree on left side, that has to be toggled open/closed, and allows you to just click through all the files really quick to see which one you want
+    - fix status bar abstraction for calculating where to render stuff on the status bar (offset stuff)
+    - need to change
+        - printLineNumber
+        - printLine
+        - renderStatusBar? - prob not see how it looks
+
+        - render fileExplorer
+            - prob start with it default open just to see improvements faster
+            - cache explorer output when opening fileExplorer (start by gathering root directory, and listing only current files, and only explore down current file path)
+                - show ignoreList as grey, but still show it
+                - current as middle if needed
+            - have everything default closed except top level files/folders (and show where current file is)
+            - always center on current file when changing file
+                - also when changing file don't autoclose, just open new path to new current file if needed
+            - search also needs to work same (maybe refactor search to work generically??)
+            - do i keep it open all the time?
+                - maybe press esc to go back to editor, and ctrl z to close
+            - open w/ enter, j, k, ctrl u, ctrl d, G, gg, z, ctrl r copy relative file path, R hard reset to only showing current file paths opened, have ctrl o goto parent
+            - add copy/paste(folders too)/rename(with current file rename as well)
+                - keybind: `I`: import files/folder from other project? somehow trigger os to open fileExplorer and select folder
+
 - add go to definition (without any lsp will be really hard)
     - have strategies that you try each one, and if you find definition change to it
         - ex. see if current is in current file as const `match` = ...;
         - ex. see if current matches import { `match` } from '../../src';
         - ex. see if current is a function of an import
+        #####include <iostream>
+        #####include <fstream>
+        #####include <string>
+        #####include <unordered_map>
+        #####include <vector>
+        #####include <regex>
 
-- add filetree on left side, that has to be toggled open/closed, and allows you to just click through all the files really quick to see which one you want
-    - fix status bar abstraction for calculating where to render stuff on the status bar (offset stuff)
+        ####// Structure to hold file and location information
+        ####struct Location {
+        ####    std::string filePath;
+        ####    int line;
+        ####    int column;
+        ####};
+
+        ####// Structure to hold symbol information
+        ####struct SymbolInfo {
+        ####    Location definition;
+        ####    std::vector<Location> references;
+        ####};
+
+        ####// Function to build an index of symbols and their references
+        ####std::unordered_map<std::string, SymbolInfo> buildSymbolIndex(const std::vector<std::string>& filePaths) {
+        ####    std::unordered_map<std::string, SymbolInfo> symbolIndex;
+
+        ####    for (const auto& filePath : filePaths) {
+        ####        std::ifstream file(filePath);
+        ####        std::string line;
+        ####        int lineNumber = 0;
+
+        ####        while (std::getline(file, line)) {
+        ####            lineNumber++;
+
+        ####            // This is a very simple regex to match function definitions and calls
+        ####            // You would need more sophisticated parsing for a real implementation
+        ####            std::regex symbolRegex(R"(\b(\w+)\s*\()");
+        ####            std::smatch match;
+
+        ####            auto searchStart = line.cbegin();
+        ####            while (std::regex_search(searchStart, line.cend(), match, symbolRegex)) {
+        ####                std::string symbol = match[1];
+        ####                int column = match.position(1) + (searchStart - line.cbegin());
+
+        ####                if (line.find("def " + symbol) != std::string::npos) {
+        ####                    // This is a definition
+        ####                    symbolIndex[symbol].definition = {filePath, lineNumber, column};
+        ####                } else {
+        ####                    // This is a reference
+        ####                    symbolIndex[symbol].references.push_back({filePath, lineNumber, column});
+        ####                }
+
+        ####                searchStart = match.suffix().first;
+        ####            }
+        ####        }
+        ####    }
+
+        ####    return symbolIndex;
+        ####}
+
+        ####// Function to go to a reference
+        ####Location goToReference(const std::string& symbol, const Location& currentLocation,
+        ####const std::unordered_map<std::string, SymbolInfo>& symbolIndex) {
+        ####    auto it = symbolIndex.find(symbol);
+        ####    if (it == symbolIndex.end()) {
+        ####        std::cerr << "Symbol not found: " << symbol << std::endl;
+        ####        return currentLocation;
+        ####    }
+
+        ####    const auto& symbolInfo = it->second;
+
+        ####    // First, try to go to the definition
+        ####    if (symbolInfo.definition.filePath != currentLocation.filePath ||
+        ####    symbolInfo.definition.line != currentLocation.line) {
+        ####        return symbolInfo.definition;
+        ####    }
+
+        ####    // If we're already at the definition, cycle through references
+        ####    for (const auto& ref : symbolInfo.references) {
+        ####        if (ref.filePath != currentLocation.filePath ||
+        ####        ref.line != currentLocation.line) {
+        ####            return ref;
+        ####        }
+        ####    }
+
+        ####    // If we've gone through all references, loop back to the definition
+        ####    return symbolInfo.definition;
+        ####}
+
+        ####// Example usage
+        ####int main() {
+        ####    std::vector<std::string> filePaths = {"file1.cpp", "file2.cpp", "file3.cpp"};
+        ####    auto symbolIndex = buildSymbolIndex(filePaths);
+
+        ####    Location currentLocation = {"file1.cpp", 10, 5};
+        ####    std::string symbolToFind = "exampleFunction";
+
+        ####    Location newLocation = goToReference(symbolToFind, currentLocation, symbolIndex);
+
+        ####    std::cout << "Go to: " << newLocation.filePath << " at line " << newLocation.line
+        ####    << ", column " << newLocation.column << std::endl;
+
+        ####    return 0;
+        ####}
 
 - ci' parse entire line to get actual strings instead of just between ' (maybe try out for a while)
 
@@ -141,6 +262,54 @@
 
 ## BACKLOG
 - add mouse clicks
+    # #include <ncurses.h>
+
+    # int main() {
+    #     // Initialize ncurses
+    #     initscr();
+    #     cbreak();
+    #     noecho();
+    #     keypad(stdscr, TRUE);
+
+    #     // Enable mouse input
+    #     mousemask(ALL_MOUSE_EVENTS | REPORT_MOUSE_POSITION, NULL);
+
+    #     // Print instructions
+    #     mvprintw(0, 0, "Click or scroll anywhere in the terminal. Press 'q' to quit.");
+    #     refresh();
+
+    #     MEVENT event;
+    #     int ch;
+
+    #     while ((ch = getch()) != 'q') {
+    #         if (ch == KEY_MOUSE) {
+    #             if (getmouse(&event) == OK) {
+    #                 // Clear previous line
+    #                 move(1, 0);
+    #                 clrtoeol();
+
+    #                 // Print mouse event details
+    #                 mvprintw(1, 0, "Mouse event: x=%d, y=%d, button=%d",
+    #                          event.x, event.y, event.bstate);
+
+    #                 if (event.bstate & BUTTON1_CLICKED)
+    #                     mvprintw(2, 0, "Left click detected   ");
+    #                 else if (event.bstate & BUTTON3_CLICKED)
+    #                     mvprintw(2, 0, "Right click detected  ");
+    #                 else if (event.bstate & BUTTON4_PRESSED)
+    #                     mvprintw(2, 0, "Scroll up detected    ");
+    #                 else if (event.bstate & BUTTON5_PRESSED)
+    #                     mvprintw(2, 0, "Scroll down detected  ");
+
+    #                 refresh();
+    #             }
+    #         }
+    #     }
+
+    #     // Clean up
+    #     endwin();
+    #     return 0;
+    # }
 - add mouse drag
 - add mouse scroll
 - add python formatting
