@@ -113,12 +113,10 @@ std::vector<diffLine> generateFastDiff(const std::vector<std::string>& a, const 
         if (aIndex >= a.size()) {
             output.push_back({ aIndex, false, a[aIndex] });
             aIndex++;
-            break;
         }
         if (bIndex >= b.size()) {
             output.push_back({ aIndex, true, b[bIndex] });
             bIndex++;
-            break;
         }
         if (a[aIndex] == b[bIndex]) {
             aIndex++;
@@ -131,10 +129,10 @@ std::vector<diffLine> generateFastDiff(const std::vector<std::string>& a, const 
                 output.push_back({ aIndex, true, b[bIndex] });
                 bIndex++;
             } else {
-                output.push_back({ aIndex, false, a[aIndex] });
-                aIndex++;
                 output.push_back({ aIndex, true, b[bIndex] });
                 bIndex++;
+                output.push_back({ aIndex, false, a[aIndex] });
+                aIndex++;
             }
         }
     }
