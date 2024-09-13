@@ -10,6 +10,12 @@
 void sendFileExplorerKeys(State* state, int c) {
     if (c == 27) { // ESC
         state->mode = SHORTCUTS;
+    } else if (c == ctrl('g')) {
+        state->mode = GREP;
+    } else if (c == ctrl('p')) {
+        state->mode = FINDFILE;
+    } else if (c == ':') {
+        state->mode = COMMANDLINE;
     } else if (c == '-') {
         state->fileExplorerWindowLine = 0;
         state->fileExplorerIndex = 0;
