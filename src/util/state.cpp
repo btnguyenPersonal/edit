@@ -115,7 +115,7 @@ State::State() {
     this->fileExplorer = new FileExplorerNode(std::filesystem::current_path());
     this->fileExplorer->open();
     this->fileExplorerOpen = true;
-    this->fileExplorerSize = 46;
+    this->fileExplorerSize = 40;
     this->fileExplorerWindowLine = 0;
     this->fileExplorerIndex = 0;
     this->autosave = true;

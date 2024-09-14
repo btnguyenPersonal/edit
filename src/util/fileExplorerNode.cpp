@@ -34,7 +34,7 @@ int FileExplorerNode::expand(std::string input) {
             }
         }
         if (!found) {
-            return output;
+            return 0;
         }
     }
     return output;

@@ -58,6 +58,8 @@ void sendFileExplorerKeys(State* state, int c) {
             auto relativePath = std::filesystem::relative(node->path.string(), baseDir);
             state->changeFile(relativePath);
         }
+    } else {
+        return;
     }
     centerFileExplorer(state);
 }
