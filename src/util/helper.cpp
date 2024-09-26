@@ -935,6 +935,20 @@ void centerScreen(State* state) {
     }
 }
 
+void upScreen(State* state) {
+    if (state->row > 0) {
+        state->row -= 1;
+        state->windowPosition.row -= 1;
+    }
+}
+
+void downScreen(State* state) {
+    if (state->row < state->data.size() - 1) {
+        state->row += 1;
+        state->windowPosition.row += 1;
+    }
+}
+
 void upHalfScreen(State* state) {
     for (unsigned int i = 0; i < state->maxY / 2; i++) {
         if (state->row > 0) {

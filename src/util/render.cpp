@@ -549,4 +549,5 @@ void initTerminal() {
         exit(1);
     }
     initColors();
+    mousemask(ALL_MOUSE_EVENTS | REPORT_MOUSE_POSITION, NULL);
 }

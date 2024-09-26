@@ -7,6 +7,8 @@
 #include <string>
 #include <vector>
 
+void upScreen(State* state);
+void downScreen(State* state);
 void centerFileExplorer(State* state);
 void resetValidCursorState(State* state);
 bool setSearchResultCurrentLine(State* state, const std::string& query);

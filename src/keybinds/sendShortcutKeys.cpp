@@ -21,6 +21,17 @@ void sendShortcutKeys(State* state, int c) {
     if (c == 27) { // ESC
         state->prevKeys = "";
         state->motion = "";
+    } else if (c == KEY_MOUSE) {
+        MEVENT event;
+        if (getmouse(&event) == OK) {
+            if (event.bstate & BUTTON1_PRESSED) {
+                state->status = "mouse click";
+            } else if (event.bstate & BUTTON4_PRESSED) {
+                upScreen(state);
+            } else if (event.bstate & BUTTON5_PRESSED) {
+                downScreen(state);
+            }
+        }
     } else if (state->prevKeys == "t") {
         state->col = toNextChar(state, c);
         state->prevKeys = "";
