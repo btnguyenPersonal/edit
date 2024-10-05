@@ -30,12 +30,12 @@ bool isFunctionLine(std::string line, std::string s, std::string extension) {
     std::vector<std::vector<std::string>> functionStrings;
     if (extension == "js" || extension == "jsx" || extension == "ts" || extension == "tsx") {
         functionStrings = {
-            {"class", ""},
+            {"class", " {"},
             {"", "("},
-            {"const", "("},
+            {"const", " "},
             {"function", "("},
-            {"struct", "("},
-            {"interface", "("},
+            {"struct", " {"},
+            {"interface", " {"},
         };
     } else if (extension == "c" || extension == "cpp" || extension == "h" || extension == "hpp") {
         functionStrings = {
@@ -799,7 +799,7 @@ bool shouldIgnoreFile(const std::filesystem::path& path) {
         }
     }
     std::vector<std::string> ignoreList = {
-        ".nyc_output",
+        "nyc_output",
         "results",
         "resources",
         ".git",
