@@ -62,13 +62,7 @@ void sendGrepKeys(State* state, int c) {
     } else if (c == ctrl('v')) {
         addFromClipboard(&state->grep);
     } else if (c == '\n') {
-        if (state->grep.selection < state->grepOutput.size()) {
-            std::filesystem::path selectedFile = state->grepOutput[state->grep.selection].path;
-            int lineNum = state->grepOutput[state->grep.selection].lineNum;
-            state->resetState(selectedFile);
-            state->row = lineNum - 1;
-            setSearchResultCurrentLine(state, state->grep.query);
-        }
+        changeToGrepFile(state);
     }
     if (state->mode == GREP && c != ctrl('u') && c != ctrl('d') && c != ctrl('p') && c != ctrl('n')) {
         generateGrepOutput(state);

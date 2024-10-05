@@ -16,6 +16,50 @@
 #include <string>
 #include <vector>
 
+void changeToGrepFile(State* state) {
+    if (state->grep.selection < state->grepOutput.size()) {
+        std::filesystem::path selectedFile = state->grepOutput[state->grep.selection].path;
+        int lineNum = state->grepOutput[state->grep.selection].lineNum;
+        state->resetState(selectedFile);
+        state->row = lineNum - 1;
+        setSearchResultCurrentLine(state, state->grep.query);
+    }
+}
+
+bool isFunctionLine(std::string line, std::string s, std::string extension) {
+    std::vector<std::string> functionStrings;
+    if (extension == "js" || extension == "jsx" || extension == "ts" || extension == "tsx") {
+        functionStrings = {
+            "const",
+            "function",
+            "struct",
+            "interface",
+        };
+    } else if (extension == "c" || extension == "cpp" || extension == "h" || extension == "hpp") {
+        functionStrings = {
+            "",
+        };
+    }
+    for (unsigned int i = 0; i < functionStrings.size(); i++) {
+        if (line.find(functionStrings[i] + " " + s + "(") != std::string::npos) {
+            return true;
+        }
+    }
+    return functionStrings.size() == 0;
+}
+
+void findDefinitionFromGrepOutput(State* state, std::string s) {
+    std::string extension = getExtension(state->filename);
+    for (unsigned int i = 0; i < state->grepOutput.size(); i++) {
+        if (state->grepOutput[i].line.back() == '(' || state->grepOutput[i].line.back() == '{') {
+            if (isFunctionLine(state->grepOutput[i].line, s, extension)) {
+                state->grep.selection = i;
+                changeToGrepFile(state);
+            }
+        }
+    }
+}
+
 void handleMouseClick(State* state, int y, int x) {
     state->row = y - 1 >= 0 ? y - 1 : 0;
     state->row += state->windowPosition.row;

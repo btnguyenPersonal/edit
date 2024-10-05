@@ -7,6 +7,8 @@
 #include <string>
 #include <vector>
 
+void changeToGrepFile(State* state);
+void findDefinitionFromGrepOutput(State* state, std::string s);
 void handleMouseClick(State* state, int y, int x);
 void upScreen(State* state);
 void downScreen(State* state);

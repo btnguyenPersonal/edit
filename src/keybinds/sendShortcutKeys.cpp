@@ -105,9 +105,9 @@ void sendShortcutKeys(State* state, int c) {
     } else if (state->prevKeys == "g" && c == 'r') {
         initVisual(state, NORMAL);
         setStateFromWordPosition(state, getWordPosition(state->data[state->row], state->col));
-        setQuery(&state->search, getInVisual(state));
-        state->searching = true;
-        searchFromTop(state);
+        setQuery(&state->grep, getInVisual(state));
+        generateGrepOutput(state);
+        findDefinitionFromGrepOutput(state, getInVisual(state));
         state->prevKeys = "";
     } else if (state->prevKeys == "g" && c == 'e') {
         unCommentBlock(state);

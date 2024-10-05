@@ -373,10 +373,9 @@ bool sendVisualKeys(State* state, char c, bool onlyMotions) {
         state->prevKeys = "";
     } else if (!onlyMotions && state->prevKeys == "g" && c == 'r') {
         if (state->visualType == NORMAL) {
-            state->mode = SHORTCUTS;
-            setQuery(&state->search, getInVisual(state));
-            state->searching = true;
-            searchFromTop(state);
+            setQuery(&state->grep, getInVisual(state));
+            generateGrepOutput(state);
+            findDefinitionFromGrepOutput(state, getInVisual(state));
         }
         state->prevKeys = "";
     } else if (!onlyMotions && state->prevKeys == "g" && c == 'f') {
