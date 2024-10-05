@@ -58,18 +58,7 @@ int main(int argc, char* argv[]) {
 
     while (true) {
         c = getch();
-        if (c == KEY_MOUSE) {
-            if (getmouse(&event) == OK) {
-                state->status = "DETECT";
-                if (event.bstate & BUTTON1_CLICKED) {
-                    state->status += "BUTTON1_CLICKED";
-                }
-                if (event.bstate & BUTTON1_PRESSED) {
-                    state->status += "BUTTON1_PRESSED";
-                }
-                renderScreen(state);
-            }
-        } else if (c != ERR) {
+        if (c != ERR) {
             sendKeys(state, c);
             renderScreen(state);
         }

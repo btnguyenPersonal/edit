@@ -17,21 +17,21 @@ void sendFileExplorerKeys(State* state, int c) {
         state->mode = FINDFILE;
     } else if (c == ':') {
         state->mode = COMMANDLINE;
-    } else if (c == KEY_MOUSE) {
-        MEVENT event;
-        if (getmouse(&event) == OK) {
-            if (event.bstate & BUTTON1_PRESSED) {
-                handleMouseClick(state, event.y, event.x);
-            } else if (event.bstate & BUTTON4_PRESSED) {
-                if (state->fileExplorerIndex > 0) {
-                    state->fileExplorerIndex--;
-                }
-            } else if (event.bstate & BUTTON5_PRESSED) {
-                if (state->fileExplorerIndex + 1 < state->fileExplorer->getTotalChildren()) {
-                    state->fileExplorerIndex++;
-                }
-            }
-        }
+    // } else if (c == KEY_MOUSE) {
+    //     MEVENT event;
+    //     if (getmouse(&event) == OK) {
+    //         if (event.bstate & BUTTON1_PRESSED) {
+    //             handleMouseClick(state, event.y, event.x);
+    //         } else if (event.bstate & BUTTON4_PRESSED) {
+    //             if (state->fileExplorerIndex > 0) {
+    //                 state->fileExplorerIndex--;
+    //             }
+    //         } else if (event.bstate & BUTTON5_PRESSED) {
+    //             if (state->fileExplorerIndex + 1 < state->fileExplorer->getTotalChildren()) {
+    //                 state->fileExplorerIndex++;
+    //             }
+    //         }
+    //     }
     } else if (c == '-') {
         state->fileExplorerWindowLine = 0;
         state->fileExplorerIndex = 0;

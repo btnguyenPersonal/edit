@@ -264,6 +264,7 @@
 
 ## BACKLOG
 - add mouse clicks
+- its sooooooooooooooooooooo slow wtffffffff
     # #include <ncurses.h>
 
     # int main() {
