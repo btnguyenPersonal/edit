@@ -30,8 +30,9 @@ bool isFunctionLine(std::string line, std::string s, std::string extension) {
     std::vector<std::vector<std::string>> functionStrings;
     if (extension == "js" || extension == "jsx" || extension == "ts" || extension == "tsx") {
         functionStrings = {
+            {"enum", " {"},
             {"class", " {"},
-            {"", "("},
+            {" ", "("},
             {"const", " "},
             {"function", "("},
             {"struct", " {"},
