@@ -54,8 +54,6 @@ int main(int argc, char* argv[]) {
     calcWindowBounds();
     centerFileExplorer(state);
     renderScreen(state);
-    MEVENT event;
-
     while (true) {
         c = getch();
         if (c != ERR) {
