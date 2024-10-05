@@ -260,6 +260,8 @@
 
 - render test files in a different color, put them under source files
 
+- add undo to queries
+
 ## BACKLOG
 - add mouse clicks
     # #include <ncurses.h>

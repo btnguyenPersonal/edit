@@ -16,6 +16,12 @@
 #include <string>
 #include <vector>
 
+void handleMouseClick(State* state, int y, int x) {
+    state->row = y - 1 >= 0 ? y - 1 : 0;
+    state->row += state->windowPosition.row;
+    state->col = x - getLineNumberOffset(state) >= 0 ? x - getLineNumberOffset(state) : 0;
+}
+
 void centerFileExplorer(State* state) {
     if ((state->fileExplorerIndex - ((int)state->maxY / 2)) > 0) {
         if (state->fileExplorer->getTotalChildren() > ((int)state->maxY)) {

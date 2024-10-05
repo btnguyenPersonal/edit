@@ -7,6 +7,7 @@
 #include <string>
 #include <vector>
 
+void handleMouseClick(State* state, int y, int x);
 void upScreen(State* state);
 void downScreen(State* state);
 void centerFileExplorer(State* state);

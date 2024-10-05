@@ -21,7 +21,7 @@ void sendFileExplorerKeys(State* state, int c) {
         MEVENT event;
         if (getmouse(&event) == OK) {
             if (event.bstate & BUTTON1_PRESSED) {
-                state->status = "mouse click";
+                handleMouseClick(state, event.y, event.x);
             } else if (event.bstate & BUTTON4_PRESSED) {
                 if (state->fileExplorerIndex > 0) {
                     state->fileExplorerIndex--;

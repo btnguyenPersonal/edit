@@ -25,7 +25,7 @@ void sendShortcutKeys(State* state, int c) {
         MEVENT event;
         if (getmouse(&event) == OK) {
             if (event.bstate & BUTTON1_PRESSED) {
-                state->status = "mouse click";
+                handleMouseClick(state, event.y, event.x);
             } else if (event.bstate & BUTTON4_PRESSED) {
                 upScreen(state);
             } else if (event.bstate & BUTTON5_PRESSED) {
