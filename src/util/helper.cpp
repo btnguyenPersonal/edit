@@ -27,21 +27,23 @@ void changeToGrepFile(State* state) {
 }
 
 bool isFunctionLine(std::string line, std::string s, std::string extension) {
-    std::vector<std::string> functionStrings;
+    std::vector<std::vector<std::string>> functionStrings;
     if (extension == "js" || extension == "jsx" || extension == "ts" || extension == "tsx") {
         functionStrings = {
-            "const",
-            "function",
-            "struct",
-            "interface",
+            {"class", ""},
+            {"", "("},
+            {"const", "("},
+            {"function", "("},
+            {"struct", "("},
+            {"interface", "("},
         };
     } else if (extension == "c" || extension == "cpp" || extension == "h" || extension == "hpp") {
         functionStrings = {
-            "",
+            {"", "("},
         };
     }
     for (unsigned int i = 0; i < functionStrings.size(); i++) {
-        if (line.find(functionStrings[i] + " " + s + "(") != std::string::npos) {
+        if (line.find(functionStrings[i][0] + s + functionStrings[i][1]) != std::string::npos) {
             return true;
         }
     }
@@ -797,6 +799,7 @@ bool shouldIgnoreFile(const std::filesystem::path& path) {
         }
     }
     std::vector<std::string> ignoreList = {
+        ".nyc_output",
         "results",
         "resources",
         ".git",
