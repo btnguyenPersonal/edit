@@ -244,7 +244,7 @@ unsigned int toNextChar(State* state, char c) {
 std::string getGitHash(State* state) {
     std::stringstream command;
     command << "git blame -l -L " << state->row + 1 << ",+1 " << state->filename << " | awk '{print $1}'";
-    std::unique_ptr<FILE, decltype(&pclose)> pipe(popen(command.str().c_str(), "r"), pclose);
+    std::unique_ptr<FILE, int(*)(FILE*)> pipe(popen(command.str().c_str(), "r"), pclose);
     if (!pipe) {
         state->status = "popen() failed!";
         return "";
@@ -266,7 +266,7 @@ std::vector<std::string> getGitBlame(const std::string& filename) {
     std::vector<std::string> blameLines;
     try {
         std::string command = "git --no-pager blame ./" + filename + " --date=short 2>/dev/null | awk '{print $1, $2, $3, $4, \")\"}'";
-        std::unique_ptr<FILE, decltype(&pclose)> pipe(popen(command.c_str(), "r"), pclose);
+        std::unique_ptr<FILE, int(*)(FILE*)> pipe(popen(command.c_str(), "r"), pclose);
         if (!pipe) {
             throw std::runtime_error("popen() failed!");
         }

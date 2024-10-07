@@ -349,6 +349,9 @@ void sendShortcutKeys(State* state, int c) {
     } else if (c == ctrl('z')) {
         state->mode = FILEEXPLORER;
         state->fileExplorerOpen = true;
+        if (state->fileExplorerOpen) {
+            state->fileExplorerIndex = state->fileExplorer->expand(state->filename);
+        }
     } else if (c == ctrl('s')) {
         getAndAddNumber(state, state->row, state->col, -1);
     } else if (c == ctrl('a')) {
