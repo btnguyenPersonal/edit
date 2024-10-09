@@ -413,6 +413,7 @@ void runCommand(State* state, const std::string& command) {
     } catch (const std::exception& e) {
         state->status = "command failed";
     }
+    state->changeFile(state->filename);
 }
 
 void replaceAllGlobally(State* state, const std::string& query, const std::string& replace) {
