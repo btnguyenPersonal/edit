@@ -20,10 +20,8 @@ void evaluateCommandLineQuery(State* state) {
         } else {
             state->status = "AUTOSAVE OFF";
         }
-    } else if (state->commandLine.query == "!sh") {
-        for (unsigned int i = 0; i < state->data.size(); i++) {
-            runCommand(state, state->data[i]);
-        }
+    } else if (state->commandLine.query.substr(0, 1) == "!") {
+        runCommand(state, state->commandLine.query.substr(1));
     } else if (state->commandLine.query == "w") {
         trimTrailingWhitespace(state);
         saveFile(state);

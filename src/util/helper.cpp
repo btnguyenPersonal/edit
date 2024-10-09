@@ -405,7 +405,8 @@ void replaceCurrentLine(State* state, const std::string& query, const std::strin
 
 void runCommand(State* state, const std::string& command) {
     try {
-        int returnValue = std::system((command + " >/dev/null 2>/dev/null").c_str());
+        std::string prompt = std::string("bash -ic '") + (command + " >/dev/null 2>/dev/null") + "'";
+        int returnValue = std::system(prompt.c_str());
         if (returnValue != 0) {
             throw std::exception();
         }

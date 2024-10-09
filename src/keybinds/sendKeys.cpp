@@ -77,7 +77,7 @@ void sendKeys(State* state, int c) {
             }
         }
         state->matching = matchIt(state);
-        if (state->mode == SHORTCUTS && c != '8' && c != '9') {
+        if (state->mode == SHORTCUTS && c != ctrl('z') && c != ctrl('q')) {
             if (state->jumplist.list.size() > 0) {
                 auto pos = state->jumplist.list.back();
                 if (pos.row != state->row || pos.col != state->col) {
