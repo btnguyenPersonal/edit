@@ -23,7 +23,7 @@ void sendFileExplorerKeys(State* state, int c) {
         auto node = FileExplorerNode::getFileExplorerNode(state->fileExplorer, state->fileExplorerIndex);
         node->close();
         node->open();
-    } else if (c == ctrl('z')) {
+    } else if (c == ctrl('t')) {
         state->mode = SHORTCUTS;
         state->fileExplorerOpen = false;
     } else if (c == ctrl('u')) {
