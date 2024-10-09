@@ -7,6 +7,7 @@ a term-based ide with
 ### setup
 
 requires g++-13
+requires xclip (on linux)
 
 ```
 sudo make install
