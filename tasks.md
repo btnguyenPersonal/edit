@@ -17,6 +17,11 @@
 - do deep dive of history and grep, and search for performance
     - move them to their own file and test them individually w/o the ncurses crap mucking everything up
 
+- copy/paste files in fileExplorer
+    - will have to put some extra code in clipboard for macos and linux differences i think
+- delete files in fileExplorer
+- new files/directory in fileExplorer
+
 ## BACKLOG
 - for go to definition, go to the .d.ts file if needed
 - add mouse clicks
