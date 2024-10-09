@@ -1,4 +1,75 @@
+## TODO
+- ci' parse entire line to get actual strings instead of just between ' (maybe try out for a while)
+
+- render test files in a different color, put them under source files
+
+- make select all a part of the queries individually
+- add undo to queries
+
+- red if params are broken
+
+- go to where the prop was defined
+
+- grep highlight background in green when finds occurrence
+
+- do complete look through of commands and delete ones I don't use
+
+- do deep dive of history and grep, and search for performance
+    - move them to their own file and test them individually w/o the ncurses crap mucking everything up
+
+## BACKLOG
+- for go to definition, go to the .d.ts file if needed
+- add mouse clicks
+- its sooooooooooooooooooooo slow wtffffffff
+- add mouse drag
+- add mouse scroll
+- add python formatting
+- have cib ciB work for multi-line brackets
+- ciw dot command not working correctly
+- when not in typing restrict to have cursor not pass last character
+- add multi-line searches
+- need to fix the crap with onlyMotions, every motion should work all the same and not have jank logic (maybe separate out motions into it's own thing?)
+    - have isMotion() can't be too broken?
+    - maybe just having maps of keycombos and function pointers is the correct call??
+- add git gutter maybe () can jump to next/prev git changes
+- handle render wide characters fully
+- speed up grepFiles
+    - use boyer-moore algorithm
+        - https://en.wikipedia.org/wiki/Boyer%E2%80%93Moore_string-search_algorithm
+    - figure out why fs::relative takes so damn long
+        - should figure out a function to just cut off the parents/string at the point where we don't want, but every time i did it, it got slower
+- research adding lsp??
+- fileExplorer (current one is trash and i never use it) actually make it good now
+
 ## DONE
+- add filetree on left side, that has to be toggled open/closed, and allows you to just click through all the files really quick to see which one you want
+    - fix status bar abstraction for calculating where to render stuff on the status bar (offset stuff)
+    - need to change
+        - printLineNumber
+        - printLine
+        - renderStatusBar? - prob not see how it looks
+
+        - render fileExplorer
+            - prob start with it default open just to see improvements faster
+            - cache explorer output when opening fileExplorer (start by gathering root directory, and listing only current files, and only explore down current file path)
+                - show ignoreList as grey, but still show it
+                - current as middle if needed
+            - have everything default closed except top level files/folders (and show where current file is)
+            - always center on current file when changing file
+                - also when changing file don't autoclose, just open new path to new current file if needed
+            - search also needs to work same (maybe refactor search to work generically??)
+            - do i keep it open all the time?
+                - maybe press esc to go back to editor, and ctrl z to close
+            - open w/ enter, j, k, ctrl u, ctrl d, G, gg, z, ctrl r copy relative file path, R hard reset to only showing current file paths opened, have ctrl o goto parent
+            - add copy/paste(folders too)/rename(with current file rename as well)
+                - keybind: `I`: import files/folder from other project? somehow trigger os to open fileExplorer and select folder
+
+- add go to definition (without any lsp will be really hard)
+    - have strategies that you try each one, and if you find definition change to it
+        - ex. see if current is in current file as const `match` = ...;
+        - ex. see if current matches import { `match` } from '../../src';
+        - ex. see if current is a function of an import
+
 - search replace highlighting, N
 - J K
 - visual > <
@@ -124,61 +195,3 @@
     - THE PLAN!!!!!!
     - we make one big for loop
         - it tries add and delete at the same time, and if it finds one it cuts everything off
-
-## TODO
-- add filetree on left side, that has to be toggled open/closed, and allows you to just click through all the files really quick to see which one you want
-    - fix status bar abstraction for calculating where to render stuff on the status bar (offset stuff)
-    - need to change
-        - printLineNumber
-        - printLine
-        - renderStatusBar? - prob not see how it looks
-
-        - render fileExplorer
-            - prob start with it default open just to see improvements faster
-            - cache explorer output when opening fileExplorer (start by gathering root directory, and listing only current files, and only explore down current file path)
-                - show ignoreList as grey, but still show it
-                - current as middle if needed
-            - have everything default closed except top level files/folders (and show where current file is)
-            - always center on current file when changing file
-                - also when changing file don't autoclose, just open new path to new current file if needed
-            - search also needs to work same (maybe refactor search to work generically??)
-            - do i keep it open all the time?
-                - maybe press esc to go back to editor, and ctrl z to close
-            - open w/ enter, j, k, ctrl u, ctrl d, G, gg, z, ctrl r copy relative file path, R hard reset to only showing current file paths opened, have ctrl o goto parent
-            - add copy/paste(folders too)/rename(with current file rename as well)
-                - keybind: `I`: import files/folder from other project? somehow trigger os to open fileExplorer and select folder
-
-- add go to definition (without any lsp will be really hard)
-    - have strategies that you try each one, and if you find definition change to it
-        - ex. see if current is in current file as const `match` = ...;
-        - ex. see if current matches import { `match` } from '../../src';
-        - ex. see if current is a function of an import
-
-- ci' parse entire line to get actual strings instead of just between ' (maybe try out for a while)
-
-- render test files in a different color, put them under source files
-
-- add undo to queries
-
-## BACKLOG
-- add mouse clicks
-- its sooooooooooooooooooooo slow wtffffffff
-- add mouse drag
-- add mouse scroll
-- add python formatting
-- have cib ciB work for multi-line brackets
-- ciw dot command not working correctly
-- when not in typing restrict to have cursor not pass last character
-- add multi-line searches
-- need to fix the crap with onlyMotions, every motion should work all the same and not have jank logic (maybe separate out motions into it's own thing?)
-    - have isMotion() can't be too broken?
-    - maybe just having maps of keycombos and function pointers is the correct call??
-- add git gutter maybe () can jump to next/prev git changes
-- handle render wide characters fully
-- speed up grepFiles
-    - use boyer-moore algorithm
-        - https://en.wikipedia.org/wiki/Boyer%E2%80%93Moore_string-search_algorithm
-    - figure out why fs::relative takes so damn long
-        - should figure out a function to just cut off the parents/string at the point where we don't want, but every time i did it, it got slower
-- research adding lsp??
-- fileExplorer (current one is trash and i never use it) actually make it good now
