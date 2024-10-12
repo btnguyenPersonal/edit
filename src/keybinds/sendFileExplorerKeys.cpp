@@ -25,7 +25,7 @@ void sendFileExplorerKeys(State* state, int c) {
         node->open();
     } else if (c == 'y') {
         auto node = FileExplorerNode::getFileExplorerNode(state->fileExplorer, state->fileExplorerIndex);
-        copyFileToClipboard(state, node->name);
+        copyFileToClipboard(state, node->path.string());
     } else if (c == ctrl('t')) {
         state->mode = SHORTCUTS;
         state->fileExplorerOpen = false;

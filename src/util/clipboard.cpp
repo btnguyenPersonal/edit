@@ -9,19 +9,6 @@
 #include <string>
 #include <vector>
 
-std::string exec(const char* cmd) {
-    std::array<char, 128> buffer;
-    std::string result;
-    std::unique_ptr<FILE, int(*)(FILE*)> pipe(popen(cmd, "r"), pclose);
-    if (!pipe) {
-        throw std::runtime_error("popen() failed!");
-    }
-    while (fgets(buffer.data(), buffer.size(), pipe.get()) != nullptr) {
-        result += buffer.data();
-    }
-    return result;
-}
-
 std::string getFromClipboard() {
     std::string command;
 #ifdef __APPLE__
@@ -66,8 +53,7 @@ void copyFileToClipboard(State* state, const std::string& filePath) {
 #ifdef __APPLE__
     // TODO
 #elif defined(__linux__)
-    auto absolutePath = std::filesystem::absolute(filePath);
-    auto path = std::string("file://") + escapeForShell(absolutePath.string());
+    auto path = std::string("file://") + escapeForShell(filePath);
     std::string command = "xclip -selection clipboard -t text/uri-list";
     try {
         FILE* pipe = popen(command.c_str(), "w");
