@@ -9,6 +9,19 @@
 #include <string>
 #include <vector>
 
+std::string exec(const char* cmd) {
+    std::array<char, 128> buffer;
+    std::string result;
+    std::unique_ptr<FILE, int(*)(FILE*)> pipe(popen(cmd, "r"), pclose);
+    if (!pipe) {
+        throw std::runtime_error("popen() failed!");
+    }
+    while (fgets(buffer.data(), buffer.size(), pipe.get()) != nullptr) {
+        result += buffer.data();
+    }
+    return result;
+}
+
 std::string getFromClipboard() {
     std::string command;
 #ifdef __APPLE__
@@ -35,6 +48,40 @@ std::string getFromClipboard() {
         return {""};
     }
     return result;
+}
+
+std::string escapeForShell(const std::string& s) {
+    std::ostringstream oss;
+    for (auto c : s) {
+        if (c == '\'') {
+            oss << "'\\''";
+        } else {
+            oss << c;
+        }
+    }
+    return oss.str();
+}
+
+void copyFileToClipboard(State* state, const std::string& filePath) {
+#ifdef __APPLE__
+    // TODO
+#elif defined(__linux__)
+    auto absolutePath = std::filesystem::absolute(filePath);
+    auto path = std::string("file://") + escapeForShell(absolutePath.string());
+    std::string command = "xclip -selection clipboard -t text/uri-list";
+    try {
+        FILE* pipe = popen(command.c_str(), "w");
+        if (pipe != nullptr) {
+            fwrite(path.c_str(), sizeof(char), path.size(), pipe);
+            pclose(pipe);
+        }
+        state->status = filePath;
+    } catch (const std::exception& e) {
+        state->status = std::string("file copy failed") + filePath;
+    }
+#else
+#error "Platform not supported"
+#endif
 }
 
 void pasteFromClipboardVisual(State* state) {
