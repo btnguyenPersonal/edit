@@ -19,8 +19,11 @@
 
 - copy/paste files in fileExplorer
     - will have to put some extra code in clipboard for macos and linux differences i think
+    - need to be able to paste when on a file, and have it go to parent folder and paste
 - delete files in fileExplorer
 - new files/directory in fileExplorer
+- rename files
+    - remember to update harpoon and call changeFile(); if changing current file
 
 ## BACKLOG
 - for go to definition, go to the .d.ts file if needed
