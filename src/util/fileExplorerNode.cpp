@@ -64,7 +64,7 @@ void FileExplorerNode::refresh() {
                 }
             }
             if (!found) {
-                newChildren.push_back(FileExplorerNode(entry.path()));
+                newChildren.push_back(FileExplorerNode(entry.path(), this));
             }
         }
         this->children = newChildren;
@@ -79,11 +79,17 @@ void FileExplorerNode::refresh() {
     }
 }
 
+void FileExplorerNode::remove() {
+    if (this->parent != nullptr) {
+        std::filesystem::remove_all(this->path);
+    }
+}
+
 void FileExplorerNode::open() {
     if (this->isFolder && !this->isOpen) {
         this->isOpen = true;
         for (const auto & entry : std::filesystem::directory_iterator(this->path)) {
-            this->children.push_back(FileExplorerNode(entry.path()));
+            this->children.push_back(FileExplorerNode(entry.path(), this));
         }
         std::sort(this->children.begin(), this->children.end(), [](const FileExplorerNode a, const FileExplorerNode b) {
             if (a.isFolder && !b.isFolder) {
@@ -123,4 +129,13 @@ FileExplorerNode::FileExplorerNode(const std::filesystem::path& path) {
     this->isFolder = std::filesystem::is_directory(path);
     this->isOpen = false;
     this->children = std::vector<FileExplorerNode>();
+}
+
+FileExplorerNode::FileExplorerNode(const std::filesystem::path& path, FileExplorerNode* parent) {
+    this->path = path;
+    this->name = path.filename();
+    this->isFolder = std::filesystem::is_directory(path);
+    this->isOpen = false;
+    this->children = std::vector<FileExplorerNode>();
+    this->parent = parent;
 }
