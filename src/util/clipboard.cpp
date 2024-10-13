@@ -49,6 +49,78 @@ std::string escapeForShell(const std::string& s) {
     return oss.str();
 }
 
+std::string getFileFromClipboard() {
+#ifdef __APPLE__
+    // FILE* pipe = popen("osascript -e 'get the clipboard as «class furl»'", "r");
+#elif defined(__linux__)
+    FILE* pipe = popen("xclip -selection clipboard -o -t text/uri-list", "r");
+#else
+#error "Platform not supported"
+#endif
+
+    if (!pipe) {
+        throw std::runtime_error("Failed to open pipe");
+    }
+
+    char buffer[128];
+    std::string result = "";
+    while (!feof(pipe)) {
+        if (fgets(buffer, 128, pipe) != nullptr)
+            result += buffer;
+    }
+    pclose(pipe);
+
+    // Remove any trailing newline
+    if (!result.empty() && result[result.length()-1] == '\n') {
+        result.erase(result.length()-1);
+    }
+
+    return result;
+}
+
+std::filesystem::path getUniqueFilePath(const std::filesystem::path& basePath) {
+    if (!std::filesystem::exists(basePath)) {
+        return basePath;
+    }
+
+    std::filesystem::path stem = basePath.stem();
+    std::filesystem::path extension = basePath.extension();
+    std::filesystem::path directory = basePath.parent_path();
+
+    for (int i = 1; ; ++i) {
+        std::filesystem::path newPath = directory / (stem.string() + " (" + std::to_string(i) + ")" + extension.string());
+        if (!std::filesystem::exists(newPath)) {
+            return newPath;
+        }
+    }
+}
+
+void pasteFileFromClipboard(State* state, const std::string& destFolder) {
+    try {
+        std::string sourcePathStr = getFileFromClipboard();
+        state->status = sourcePathStr;
+#ifdef __APPLE__
+        // TODO
+        std::filesystem::path sourcePath(sourcePathStr);
+#elif defined(__linux__)
+        std::filesystem::path sourcePath(sourcePathStr.substr(7));
+#else
+#error "Platform not supported"
+#endif
+        if (!std::filesystem::exists(sourcePath)) {
+            state->status = std::string("Error: file does not exist: ") + sourcePath.string();
+            return;
+        }
+
+        std::filesystem::path destPath = std::filesystem::path(destFolder) / sourcePath.filename();
+        destPath = getUniqueFilePath(destPath);
+
+        std::filesystem::copy(sourcePath, destPath, std::filesystem::copy_options::overwrite_existing);
+    } catch (const std::exception& e) {
+        state->status = "File paste failed: " + std::string(e.what());
+    }
+}
+
 void copyFileToClipboard(State* state, const std::string& filePath) {
 #ifdef __APPLE__
     // TODO

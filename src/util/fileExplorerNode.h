@@ -20,5 +20,6 @@ public:
     int getTotalChildren();
     int expand(std::string input);
     void open();
+    void refresh();
     void close();
 };

@@ -50,6 +50,35 @@ int FileExplorerNode::getTotalChildren() {
     return total;
 }
 
+void FileExplorerNode::refresh() {
+    if (this->isFolder && this->isOpen) {
+        std::vector<FileExplorerNode> newChildren;
+        bool found = false;
+        for (const auto & entry : std::filesystem::directory_iterator(this->path)) {
+            found = false;
+            for (unsigned int i = 0; i < this->children.size(); i++) { // TODO could be binary sorted added in sorted order
+                if (this->children[i].path == entry.path()) {
+                    newChildren.push_back(this->children[i]);
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                newChildren.push_back(FileExplorerNode(entry.path()));
+            }
+        }
+        this->children = newChildren;
+        std::sort(this->children.begin(), this->children.end(), [](const FileExplorerNode a, const FileExplorerNode b) {
+            if (a.isFolder && !b.isFolder) {
+                return true;
+            } else if (!a.isFolder && b.isFolder) {
+                return false;
+            }
+            return a.name < b.name;
+        });
+    }
+}
+
 void FileExplorerNode::open() {
     if (this->isFolder && !this->isOpen) {
         this->isOpen = true;
