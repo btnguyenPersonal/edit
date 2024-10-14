@@ -33,6 +33,11 @@ std::filesystem::path getUniqueFilePath(const std::filesystem::path& basePath) {
     }
 }
 
+void createFolder(State* state, std::filesystem::path path, std::string name) {
+    std::filesystem::path fullPath = path / name;
+    std::filesystem::create_directories(fullPath);
+}
+
 void createFile(State* state, std::filesystem::path path, std::string name) {
     std::filesystem::path fullPath = path / name;
     auto uniquePath = getUniqueFilePath(fullPath);

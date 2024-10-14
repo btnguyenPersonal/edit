@@ -34,6 +34,18 @@ void sendFileExplorerKeys(State* state, int c) {
                 state->status = "remove failed";
             }
         }
+    } else if (c == 'N') {
+        std::string name = inputName(state, "");
+        if (name != "") {
+            auto node = FileExplorerNode::getFileExplorerNode(state->fileExplorer, state->fileExplorerIndex);
+            if (node->isFolder) {
+                createFolder(state, node->path.string(), name);
+                node->refresh();
+            } else {
+                createFolder(state, node->path.parent_path().string(), name);
+                node->parent->refresh();
+            }
+        }
     } else if (c == 'n') {
         std::string name = inputName(state, "");
         if (name != "") {

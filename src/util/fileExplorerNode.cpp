@@ -51,7 +51,8 @@ int FileExplorerNode::getTotalChildren() {
 }
 
 void FileExplorerNode::refresh() {
-    if (this->isFolder && this->isOpen) {
+    if (this->isFolder) {
+        this->isOpen = true;
         std::vector<FileExplorerNode> newChildren;
         bool found = false;
         for (const auto & entry : std::filesystem::directory_iterator(this->path)) {

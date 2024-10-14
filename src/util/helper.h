@@ -7,6 +7,7 @@
 #include <string>
 #include <vector>
 
+void createFolder(State* state, std::filesystem::path path, std::string name);
 std::filesystem::path getUniqueFilePath(const std::filesystem::path& basePath);
 void createFile(State* state, std::filesystem::path path, std::string name);
 void changeToGrepFile(State* state);
