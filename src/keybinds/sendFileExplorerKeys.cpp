@@ -25,8 +25,6 @@ void sendFileExplorerKeys(State* state, int c) {
         auto node = FileExplorerNode::getFileExplorerNode(state->fileExplorer, state->fileExplorerIndex);
         node->close();
         node->open();
-    } else if (c == 'r') {
-        // TODO refresh open fileExplorer file nodes
     } else if (c == 'R') {
         auto node = FileExplorerNode::getFileExplorerNode(state->fileExplorer, state->fileExplorerIndex);
         std::string name = inputName(state, node->name);
