@@ -4,6 +4,7 @@
 #include "../util/helper.h"
 #include "../util/modes.h"
 #include "../util/state.h"
+#include "../util/name.h"
 #include <ncurses.h>
 #include <string>
 #include <vector>
@@ -33,6 +34,18 @@ void sendFileExplorerKeys(State* state, int c) {
                 state->status = "remove failed";
             }
         }
+    } else if (c == 'n') {
+        std::string name = inputName(state, "");
+        if (name != "") {
+            auto node = FileExplorerNode::getFileExplorerNode(state->fileExplorer, state->fileExplorerIndex);
+            if (node->isFolder) {
+                createFile(state, node->path.string(), name);
+                node->refresh();
+            } else {
+                createFile(state, node->path.parent_path().string(), name);
+                node->parent->refresh();
+            }
+        }
     } else if (c == 'p' || c == 'P') {
         auto node = FileExplorerNode::getFileExplorerNode(state->fileExplorer, state->fileExplorerIndex);
         if (node->isFolder) {
@@ -43,6 +56,7 @@ void sendFileExplorerKeys(State* state, int c) {
             node->parent->refresh();
         }
     } else if (c == 'y') {
+        // TODO add copy for folders
         auto node = FileExplorerNode::getFileExplorerNode(state->fileExplorer, state->fileExplorerIndex);
         copyFileToClipboard(state, node->path.string());
     } else if (c == ctrl('t')) {
@@ -68,6 +82,20 @@ void sendFileExplorerKeys(State* state, int c) {
         if (state->fileExplorerIndex + 1 < state->fileExplorer->getTotalChildren()) {
             state->fileExplorerIndex++;
         }
+    } else if (c == 'f') {
+        auto node = FileExplorerNode::getFileExplorerNode(state->fileExplorer, state->fileExplorerIndex);
+        if (node->isFolder) {
+            if (node->isOpen) {
+                node->close();
+            } else {
+                node->open();
+            }
+        } else {
+            auto baseDir = std::filesystem::current_path();
+            auto relativePath = std::filesystem::relative(node->path.string(), baseDir);
+            state->changeFile(relativePath);
+        }
+        state->mode = FILEEXPLORER;
     } else if (c == '\n') {
         auto node = FileExplorerNode::getFileExplorerNode(state->fileExplorer, state->fileExplorerIndex);
         if (node->isFolder) {

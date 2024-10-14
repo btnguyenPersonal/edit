@@ -16,6 +16,33 @@
 #include <string>
 #include <vector>
 
+std::filesystem::path getUniqueFilePath(const std::filesystem::path& basePath) {
+    if (!std::filesystem::exists(basePath)) {
+        return basePath;
+    }
+
+    std::filesystem::path stem = basePath.stem();
+    std::filesystem::path extension = basePath.extension();
+    std::filesystem::path directory = basePath.parent_path();
+
+    for (int i = 1; ; ++i) {
+        std::filesystem::path newPath = directory / (stem.string() + " (" + std::to_string(i) + ")" + extension.string());
+        if (!std::filesystem::exists(newPath)) {
+            return newPath;
+        }
+    }
+}
+
+void createFile(State* state, std::filesystem::path path, std::string name) {
+    std::filesystem::path fullPath = path / name;
+    auto uniquePath = getUniqueFilePath(fullPath);
+    std::ofstream file(fullPath);
+    if (!file) {
+        state->status = "failed to create file";
+    }
+    file.close();
+}
+
 void changeToGrepFile(State* state) {
     if (state->grep.selection < state->grepOutput.size()) {
         std::filesystem::path selectedFile = state->grepOutput[state->grep.selection].path;

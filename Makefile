@@ -18,6 +18,7 @@ SOURCES = $(SRC_DIR)/edit.cpp \
           $(UTIL_DIR)/comment.cpp \
           $(UTIL_DIR)/insertLoggingCode.cpp \
           $(UTIL_DIR)/query.cpp \
+          $(UTIL_DIR)/name.cpp \
           $(KEYBINDS_DIR)/sendKeys.cpp \
           $(KEYBINDS_DIR)/sendVisualKeys.cpp \
           $(KEYBINDS_DIR)/sendBlameKeys.cpp \

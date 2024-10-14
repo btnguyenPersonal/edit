@@ -78,23 +78,6 @@ std::string getFileFromClipboard() {
     return result;
 }
 
-std::filesystem::path getUniqueFilePath(const std::filesystem::path& basePath) {
-    if (!std::filesystem::exists(basePath)) {
-        return basePath;
-    }
-
-    std::filesystem::path stem = basePath.stem();
-    std::filesystem::path extension = basePath.extension();
-    std::filesystem::path directory = basePath.parent_path();
-
-    for (int i = 1; ; ++i) {
-        std::filesystem::path newPath = directory / (stem.string() + " (" + std::to_string(i) + ")" + extension.string());
-        if (!std::filesystem::exists(newPath)) {
-            return newPath;
-        }
-    }
-}
-
 void pasteFileFromClipboard(State* state, const std::string& destFolder) {
     try {
         std::string sourcePathStr = getFileFromClipboard();

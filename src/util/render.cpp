@@ -110,7 +110,11 @@ int renderStatusBar(State* state) {
         mvprintw_color(0, offset, "%s ", state->status.c_str(), RED);
         offset += state->status.length() + 1;
     }
-    if (state->mode == COMMANDLINE) {
+    if (state->mode == NAMING) {
+        mvprintw_color(0, offset, "name: %s", state->name.query.c_str(), WHITE);
+        offset += state->name.cursor + 6;
+        return offset;
+    } else if (state->mode == COMMANDLINE) {
         mvprintw_color(0, offset, ":%s", state->commandLine.query.c_str(), WHITE);
         offset += state->commandLine.cursor + 1;
         return offset;

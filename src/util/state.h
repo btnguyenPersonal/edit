@@ -91,6 +91,7 @@ public:
     unsigned int row;
     unsigned int col;
     std::string commentSymbol;
+    Query name;
     Query search;
     Query replace;
     Query commandLine;
