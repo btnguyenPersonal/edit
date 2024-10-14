@@ -10,6 +10,7 @@
 #include <vector>
 
 void sendFileExplorerKeys(State* state, int c) {
+    // TODO wrap everything in try catch (high risk of exceptions I didn't think about)
     if (c == 27) { // ESC
         state->mode = SHORTCUTS;
     } else if (c == ctrl('g')) {
@@ -24,6 +25,14 @@ void sendFileExplorerKeys(State* state, int c) {
         auto node = FileExplorerNode::getFileExplorerNode(state->fileExplorer, state->fileExplorerIndex);
         node->close();
         node->open();
+    } else if (c == 'r') {
+        // TODO refresh open fileExplorer file nodes
+    } else if (c == 'R') {
+        auto node = FileExplorerNode::getFileExplorerNode(state->fileExplorer, state->fileExplorerIndex);
+        std::string name = inputName(state, node->name);
+        rename(state, node->path, name);
+        node->parent->refresh();
+        // TODO figure out rename Harpoon and may archive??
     } else if (c == 'X') {
         auto node = FileExplorerNode::getFileExplorerNode(state->fileExplorer, state->fileExplorerIndex);
         if (node->parent != nullptr) {

@@ -16,6 +16,20 @@
 #include <string>
 #include <vector>
 
+void rename(State* state, const std::filesystem::path& oldPath, const std::string& newName) {
+    if (!std::filesystem::exists(oldPath)) {
+        state->status = "path does not exist";
+    }
+
+    std::filesystem::path newPath = oldPath.parent_path() / newName;
+
+    try {
+        std::filesystem::rename(oldPath, newPath);
+    } catch (const std::filesystem::filesystem_error& e) {
+        state->status = std::string("Failed to rename: ") + std::string(e.what());
+    }
+}
+
 std::filesystem::path getUniqueFilePath(const std::filesystem::path& basePath) {
     if (!std::filesystem::exists(basePath)) {
         return basePath;

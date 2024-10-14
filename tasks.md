@@ -14,6 +14,8 @@
 
 - do complete look through of commands and delete ones I don't use
 
+- change all the query stuff to use inputName
+
 - do deep dive of history and grep, and search for performance
     - move them to their own file and test them individually w/o the ncurses crap mucking everything up
 

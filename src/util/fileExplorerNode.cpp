@@ -57,7 +57,7 @@ void FileExplorerNode::refresh() {
         bool found = false;
         for (const auto & entry : std::filesystem::directory_iterator(this->path)) {
             found = false;
-            for (unsigned int i = 0; i < this->children.size(); i++) { // TODO could be binary sorted added in sorted order
+            for (unsigned int i = 0; i < this->children.size(); i++) { // TODO could be binary searched and added in sorted order
                 if (this->children[i].path == entry.path()) {
                     newChildren.push_back(this->children[i]);
                     found = true;
