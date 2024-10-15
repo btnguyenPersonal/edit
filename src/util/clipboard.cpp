@@ -51,7 +51,7 @@ std::string escapeForShell(const std::string& s) {
 
 std::string getFileFromClipboard() {
 #ifdef __APPLE__
-    // FILE* pipe = popen("osascript -e 'get the clipboard as «class furl»'", "r");
+    FILE* pipe = popen("osascript -e 'get the clipboard as «class furl»'", "r");
 #elif defined(__linux__)
     FILE* pipe = popen("xclip -selection clipboard -o -t text/uri-list", "r");
 #else
@@ -83,7 +83,6 @@ void pasteFileFromClipboard(State* state, const std::string& destFolder) {
         std::string sourcePathStr = getFileFromClipboard();
         state->status = sourcePathStr;
 #ifdef __APPLE__
-        // TODO
         std::filesystem::path sourcePath(sourcePathStr);
 #elif defined(__linux__)
         std::filesystem::path sourcePath(sourcePathStr.substr(7));
@@ -106,10 +105,13 @@ void pasteFileFromClipboard(State* state, const std::string& destFolder) {
 
 void copyFileToClipboard(State* state, const std::string& filePath) {
 #ifdef __APPLE__
-    // TODO
+    std::string command = "osascript -e 'set the clipboard to POSIX file \"" + escapeForShell(filePath) + "\"'";
 #elif defined(__linux__)
     auto path = std::string("file://") + escapeForShell(filePath);
     std::string command = "xclip -selection clipboard -t text/uri-list";
+#else
+#error "Platform not supported"
+#endif
     try {
         FILE* pipe = popen(command.c_str(), "w");
         if (pipe != nullptr) {
@@ -120,9 +122,6 @@ void copyFileToClipboard(State* state, const std::string& filePath) {
     } catch (const std::exception& e) {
         state->status = std::string("file copy failed") + filePath;
     }
-#else
-#error "Platform not supported"
-#endif
 }
 
 void pasteFromClipboardVisual(State* state) {
