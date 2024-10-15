@@ -115,8 +115,12 @@ void copyFileToClipboard(State* state, const std::string& filePath) {
     try {
         FILE* pipe = popen(command.c_str(), "w");
         if (pipe != nullptr) {
+#ifdef __APPLE__
+            pclose(pipe);
+#else
             fwrite(path.c_str(), sizeof(char), path.size(), pipe);
             pclose(pipe);
+#endif
         }
         state->status = filePath;
     } catch (const std::exception& e) {
