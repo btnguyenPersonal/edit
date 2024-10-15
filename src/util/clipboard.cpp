@@ -51,7 +51,7 @@ std::string escapeForShell(const std::string& s) {
 
 std::string getFileFromClipboard() {
 #ifdef __APPLE__
-    FILE* pipe = popen("osascript -e 'get the clipboard as «class furl»'", "r");
+    FILE* pipe = popen("osascript -e 'POSIX path of (the clipboard as «class furl»)'", "r");
 #elif defined(__linux__)
     FILE* pipe = popen("xclip -selection clipboard -o -t text/uri-list", "r");
 #else
