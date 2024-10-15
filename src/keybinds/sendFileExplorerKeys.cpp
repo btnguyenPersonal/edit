@@ -11,126 +11,132 @@
 
 void sendFileExplorerKeys(State* state, int c) {
     // TODO wrap everything in try catch (high risk of exceptions I didn't think about)
-    if (c == 27) { // ESC
-        state->mode = SHORTCUTS;
-    } else if (c == ctrl('g')) {
-        state->mode = GREP;
-    } else if (c == ctrl('p')) {
-        state->mode = FINDFILE;
-    } else if (c == ':') {
-        state->mode = COMMANDLINE;
-    } else if (c == '-') {
-        state->fileExplorerWindowLine = 0;
-        state->fileExplorerIndex = 0;
-        auto node = FileExplorerNode::getFileExplorerNode(state->fileExplorer, state->fileExplorerIndex);
-        node->close();
-        node->open();
-    } else if (c == 'R') {
-        auto node = FileExplorerNode::getFileExplorerNode(state->fileExplorer, state->fileExplorerIndex);
-        std::string name = inputName(state, node->name);
-        rename(state, node->path, name);
-        node->parent->refresh();
-        // TODO figure out rename Harpoon and may archive??
-    } else if (c == 'X') {
-        auto node = FileExplorerNode::getFileExplorerNode(state->fileExplorer, state->fileExplorerIndex);
-        if (node->parent != nullptr) {
-            try {
-                node->remove();
-                node->parent->refresh();
-            } catch (const std::exception& e) {
-                state->status = "remove failed";
-            }
-        }
-    } else if (c == 'N') {
-        std::string name = inputName(state, "");
-        if (name != "") {
+    try {
+        if (c == 27) { // ESC
+            state->mode = SHORTCUTS;
+        } else if (c == ctrl('g')) {
+            state->mode = GREP;
+        } else if (c == ctrl('p')) {
+            state->mode = FINDFILE;
+        } else if (c == ':') {
+            state->mode = COMMANDLINE;
+        } else if (c == '-') {
+            state->fileExplorerWindowLine = 0;
+            state->fileExplorerIndex = 0;
             auto node = FileExplorerNode::getFileExplorerNode(state->fileExplorer, state->fileExplorerIndex);
-            if (node->isFolder) {
-                createFolder(state, node->path.string(), name);
-                node->refresh();
-            } else {
-                createFolder(state, node->path.parent_path().string(), name);
-                node->parent->refresh();
-            }
-        }
-    } else if (c == 'n') {
-        std::string name = inputName(state, "");
-        if (name != "") {
+            node->close();
+            node->open();
+        } else if (c == 'R') {
             auto node = FileExplorerNode::getFileExplorerNode(state->fileExplorer, state->fileExplorerIndex);
-            if (node->isFolder) {
-                createFile(state, node->path.string(), name);
-                node->refresh();
-            } else {
-                createFile(state, node->path.parent_path().string(), name);
-                node->parent->refresh();
-            }
-        }
-    } else if (c == 'p' || c == 'P') {
-        auto node = FileExplorerNode::getFileExplorerNode(state->fileExplorer, state->fileExplorerIndex);
-        if (node->isFolder) {
-            pasteFileFromClipboard(state, node->path.string());
-            node->refresh();
-        } else {
-            pasteFileFromClipboard(state, node->path.parent_path().string());
+            std::string name = inputName(state, node->name);
+            rename(state, node->path, name);
             node->parent->refresh();
-        }
-    } else if (c == 'y') {
-        // TODO add copy for folders
-        auto node = FileExplorerNode::getFileExplorerNode(state->fileExplorer, state->fileExplorerIndex);
-        copyFileToClipboard(state, node->path.string());
-    } else if (c == ctrl('t')) {
-        state->mode = SHORTCUTS;
-        state->fileExplorerOpen = false;
-    } else if (c == ctrl('u')) {
-        for (unsigned int i = 0; i < state->maxY / 2; i++) {
+            // TODO figure out rename Harpoon and may archive??
+        } else if (c == 'X') {
+            auto node = FileExplorerNode::getFileExplorerNode(state->fileExplorer, state->fileExplorerIndex);
+            if (node->parent != nullptr) {
+                try {
+                    node->remove();
+                    node->parent->refresh();
+                } catch (const std::exception& e) {
+                    state->status = "remove failed";
+                }
+            }
+        } else if (c == 'N') {
+            std::string name = inputName(state, "");
+            if (name != "") {
+                auto node = FileExplorerNode::getFileExplorerNode(state->fileExplorer, state->fileExplorerIndex);
+                if (node->isFolder) {
+                    createFolder(state, node->path.string(), name);
+                    node->refresh();
+                } else {
+                    createFolder(state, node->path.parent_path().string(), name);
+                    node->parent->refresh();
+                }
+            }
+        } else if (c == 'n') {
+            std::string name = inputName(state, "");
+            if (name != "") {
+                auto node = FileExplorerNode::getFileExplorerNode(state->fileExplorer, state->fileExplorerIndex);
+                if (node->isFolder) {
+                    createFile(state, node->path.string(), name);
+                    node->refresh();
+                } else {
+                    createFile(state, node->path.parent_path().string(), name);
+                    node->parent->refresh();
+                }
+            }
+        } else if (c == 'p' || c == 'P') {
+            auto node = FileExplorerNode::getFileExplorerNode(state->fileExplorer, state->fileExplorerIndex);
+            if (node->isFolder) {
+                pasteFileFromClipboard(state, node->path.string());
+                node->refresh();
+            } else {
+                pasteFileFromClipboard(state, node->path.parent_path().string());
+                node->parent->refresh();
+            }
+        } else if (c == 'y') {
+            // TODO add copy for folders
+            auto node = FileExplorerNode::getFileExplorerNode(state->fileExplorer, state->fileExplorerIndex);
+            copyFileToClipboard(state, node->path.string());
+        } else if (c == ctrl('t')) {
+            state->mode = SHORTCUTS;
+            state->fileExplorerOpen = false;
+        } else if (c == ctrl('u')) {
+            for (unsigned int i = 0; i < state->maxY / 2; i++) {
+                if (state->fileExplorerIndex > 0) {
+                    state->fileExplorerIndex--;
+                }
+            }
+        } else if (c == 'k') {
             if (state->fileExplorerIndex > 0) {
                 state->fileExplorerIndex--;
             }
-        }
-    } else if (c == 'k') {
-        if (state->fileExplorerIndex > 0) {
-            state->fileExplorerIndex--;
-        }
-    } else if (c == ctrl('d')) {
-        for (unsigned int i = 0; i < state->maxY / 2; i++) {
+        } else if (c == ctrl('d')) {
+            for (unsigned int i = 0; i < state->maxY / 2; i++) {
+                if (state->fileExplorerIndex + 1 < state->fileExplorer->getTotalChildren()) {
+                    state->fileExplorerIndex++;
+                }
+            }
+        } else if (c == 'j') {
             if (state->fileExplorerIndex + 1 < state->fileExplorer->getTotalChildren()) {
                 state->fileExplorerIndex++;
             }
-        }
-    } else if (c == 'j') {
-        if (state->fileExplorerIndex + 1 < state->fileExplorer->getTotalChildren()) {
-            state->fileExplorerIndex++;
-        }
-    } else if (c == 'f') {
-        auto node = FileExplorerNode::getFileExplorerNode(state->fileExplorer, state->fileExplorerIndex);
-        if (node->isFolder) {
-            if (node->isOpen) {
-                node->close();
+        } else if (c == 'f') {
+            auto node = FileExplorerNode::getFileExplorerNode(state->fileExplorer, state->fileExplorerIndex);
+            if (node->isFolder) {
+                if (node->isOpen) {
+                    node->close();
+                } else {
+                    node->open();
+                }
             } else {
-                node->open();
+                auto baseDir = std::filesystem::current_path();
+                auto relativePath = std::filesystem::relative(node->path.string(), baseDir);
+                state->changeFile(relativePath);
+            }
+            state->mode = FILEEXPLORER;
+        } else if (c == '\n') {
+            auto node = FileExplorerNode::getFileExplorerNode(state->fileExplorer, state->fileExplorerIndex);
+            if (node->isFolder) {
+                if (node->isOpen) {
+                    node->close();
+                } else {
+                    node->open();
+                }
+            } else {
+                auto baseDir = std::filesystem::current_path();
+                auto relativePath = std::filesystem::relative(node->path.string(), baseDir);
+                state->changeFile(relativePath);
             }
         } else {
-            auto baseDir = std::filesystem::current_path();
-            auto relativePath = std::filesystem::relative(node->path.string(), baseDir);
-            state->changeFile(relativePath);
+            return;
         }
-        state->mode = FILEEXPLORER;
-    } else if (c == '\n') {
-        auto node = FileExplorerNode::getFileExplorerNode(state->fileExplorer, state->fileExplorerIndex);
-        if (node->isFolder) {
-            if (node->isOpen) {
-                node->close();
-            } else {
-                node->open();
-            }
-        } else {
-            auto baseDir = std::filesystem::current_path();
-            auto relativePath = std::filesystem::relative(node->path.string(), baseDir);
-            state->changeFile(relativePath);
+        if (state->fileExplorerIndex >= state->fileExplorer->getTotalChildren()) {
+            state->fileExplorerIndex = state->fileExplorer->getTotalChildren() - 1;
         }
-    } else {
-        return;
+        centerFileExplorer(state);
+    } catch (const std::exception& e) {
+        state->status = "something went wrong with fileExplorer";
     }
-    // TODO add bounds checking
-    centerFileExplorer(state);
 }

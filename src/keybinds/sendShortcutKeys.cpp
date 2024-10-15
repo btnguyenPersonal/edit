@@ -337,10 +337,10 @@ void sendShortcutKeys(State* state, int c) {
         state->col = getIndexFirstNonSpace(state);
     } else if (c == ctrl('t')) {
         state->mode = FILEEXPLORER;
-        state->fileExplorerOpen = true;
-        if (state->fileExplorerOpen) {
+        if (!state->fileExplorerOpen) {
             state->fileExplorerIndex = state->fileExplorer->expand(state->filename);
         }
+        state->fileExplorerOpen = true;
     } else if (c == ctrl('s')) {
         getAndAddNumber(state, state->row, state->col, -1);
     } else if (c == ctrl('a')) {
