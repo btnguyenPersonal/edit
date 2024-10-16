@@ -10,7 +10,6 @@
 #include <vector>
 
 void sendFileExplorerKeys(State* state, int c) {
-    // TODO wrap everything in try catch (high risk of exceptions I didn't think about)
     try {
         if (c == 27) { // ESC
             state->mode = SHORTCUTS;
@@ -30,8 +29,17 @@ void sendFileExplorerKeys(State* state, int c) {
             auto node = FileExplorerNode::getFileExplorerNode(state->fileExplorer, state->fileExplorerIndex);
             std::string name = inputName(state, node->name);
             rename(state, node->path, name);
+            auto relativePath = std::filesystem::relative(node->path, std::filesystem::current_path()).string();
+            for(unsigned int i = 0; i < state->harpoonFiles.size(); i++) {
+                if (state->harpoonFiles[i] == relativePath) {
+                    state->harpoonFiles[i] = name;
+                    break;
+                }
+            }
+            if (state->filename == relativePath) {
+                state->filename = name;
+            }
             node->parent->refresh();
-            // TODO figure out rename Harpoon and may archive??
         } else if (c == 'X') {
             auto node = FileExplorerNode::getFileExplorerNode(state->fileExplorer, state->fileExplorerIndex);
             if (node->parent != nullptr) {
