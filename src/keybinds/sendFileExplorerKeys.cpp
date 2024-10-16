@@ -137,6 +137,6 @@ void sendFileExplorerKeys(State* state, int c) {
         }
         centerFileExplorer(state);
     } catch (const std::exception& e) {
-        state->status = "something went wrong with fileExplorer";
+        state->status = "something went wrong with fileExplorer" + std::string(e.what());
     }
 }
