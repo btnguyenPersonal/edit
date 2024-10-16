@@ -447,6 +447,8 @@ void renderVisibleLines(State* state) {
 void moveCursor(State* state, int cursorPosition) {
     if (cursorPosition != -1) {
         move(0, cursorPosition);
+    } else if (state->mode == FILEEXPLORER) {
+        move(state->fileExplorerIndex + 1 - state->fileExplorerWindowLine, 0);
     } else {
         unsigned int row = state->row + 1;
         if (row > state->windowPosition.row) {

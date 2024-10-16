@@ -543,7 +543,6 @@ bool setSearchResultCurrentLine(State* state, const std::string& query) {
     return false;
 }
 
-// TODO make this look cleaner
 bool setSearchResult(State* state) {
     fixColOverMax(state);
     unsigned int initialCol = state->col;

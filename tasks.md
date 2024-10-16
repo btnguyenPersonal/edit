@@ -19,13 +19,7 @@
 - do deep dive of history and grep, and search for performance
     - move them to their own file and test them individually w/o the ncurses crap mucking everything up
 
-- copy/paste files in fileExplorer
-    - will have to put some extra code in clipboard for macos and linux differences i think
-    - need to be able to paste when on a file, and have it go to parent folder and paste
-- delete files in fileExplorer
-- new files/directory in fileExplorer
-- rename files
-    - remember to update harpoon and call changeFile(); if changing current file
+- copy/paste folders
 
 ## BACKLOG
 - for go to definition, go to the .d.ts file if needed
@@ -52,6 +46,14 @@
 - fileExplorer (current one is trash and i never use it) actually make it good now
 
 ## DONE
+- copy/paste files in fileExplorer
+    - will have to put some extra code in clipboard for macos and linux differences i think
+    - need to be able to paste when on a file, and have it go to parent folder and paste
+- delete files in fileExplorer
+- new files/directory in fileExplorer
+- rename files
+    - remember to update harpoon and call changeFile(); if changing current file
+
 - add filetree on left side, that has to be toggled open/closed, and allows you to just click through all the files really quick to see which one you want
     - fix status bar abstraction for calculating where to render stuff on the status bar (offset stuff)
     - need to change

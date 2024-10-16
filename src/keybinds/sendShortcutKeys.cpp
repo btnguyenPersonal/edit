@@ -97,6 +97,7 @@ void sendShortcutKeys(State* state, int c) {
         setQuery(&state->grep, getInVisual(state));
         generateGrepOutput(state);
         findDefinitionFromGrepOutput(state, getInVisual(state));
+        centerScreen(state);
         state->prevKeys = "";
     } else if (state->prevKeys == "g" && c == 'e') {
         unCommentBlock(state);
