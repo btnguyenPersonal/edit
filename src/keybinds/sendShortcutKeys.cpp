@@ -376,6 +376,7 @@ void sendShortcutKeys(State* state, int c) {
     } else if (c == ctrl('f')) {
         state->mode = SEARCH;
         state->replacing = true;
+        backspaceAll(&state->replace);
     } else if (c == '0') {
         state->col = 0;
     } else if (c == '$') {
