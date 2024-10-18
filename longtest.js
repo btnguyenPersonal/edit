@@ -9,5 +9,13 @@ if (c == 'J') {
                 }
             }
         }
+        // if (state->row + 1 < state->data.size()) {
+        //     if (state->row + 1 < state->data.size()) {
+        //         if (state->row + 1 < state->data.size()) {
+        //             if (state->row + 1 < state->data.size()) {
+        //             }
+        //         }
+        //     }
+        // }
     }
 }
