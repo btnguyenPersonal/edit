@@ -78,6 +78,7 @@ bool isFunctionLine(std::string line, std::string s, std::string extension) {
         functionStrings = {
             {"enum", " {"},
             {"class", " {"},
+            {" ", " ("},
             {" ", "("},
             {"const", " "},
             {"function", "("},
