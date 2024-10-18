@@ -464,7 +464,14 @@ void runCommand(State* state, const std::string& command) {
 
 void replaceAllGlobally(State* state, const std::string& query, const std::string& replace) {
     try {
-        std::string command = ("git ls-files | xargs -I {} sed -i'' \"s/" + query + '/' + replace + "/g\" \"{}\" 2>/dev/null");
+        std::string command;
+#ifdef __APPLE__
+        command = ("git ls-files | xargs -I {} sed -i '' \"s/" + query + '/' + replace + "/g\" \"{}\" 2>/dev/null");
+#elif defined(__linux__)
+        command = ("git ls-files | xargs -I {} sed -i'' \"s/" + query + '/' + replace + "/g\" \"{}\" 2>/dev/null");
+#else
+#error "Platform not supported"
+#endif
         int returnValue = std::system(command.c_str());
         if (returnValue != 0) {
             throw std::exception();
