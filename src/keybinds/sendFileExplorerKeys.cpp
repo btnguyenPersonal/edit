@@ -13,12 +13,6 @@ void sendFileExplorerKeys(State* state, int c) {
     try {
         if (c == 27) { // ESC
             state->mode = SHORTCUTS;
-        } else if (c == ctrl('g')) {
-            state->mode = GREP;
-        } else if (c == ctrl('p')) {
-            state->mode = FINDFILE;
-        } else if (c == ':') {
-            state->mode = COMMANDLINE;
         } else if (c == '-') {
             state->fileExplorerWindowLine = 0;
             state->fileExplorerIndex = 0;
@@ -99,7 +93,7 @@ void sendFileExplorerKeys(State* state, int c) {
                     state->fileExplorerIndex--;
                 }
             }
-        } else if (c == 'k') {
+        } else if (c == 'k' || c == ctrl('p')) {
             if (state->fileExplorerIndex > 0) {
                 state->fileExplorerIndex--;
             }
@@ -109,7 +103,7 @@ void sendFileExplorerKeys(State* state, int c) {
                     state->fileExplorerIndex++;
                 }
             }
-        } else if (c == 'j') {
+        } else if (c == 'j' || c == ctrl('n')) {
             if (state->fileExplorerIndex + 1 < state->fileExplorer->getTotalChildren()) {
                 state->fileExplorerIndex++;
             }
