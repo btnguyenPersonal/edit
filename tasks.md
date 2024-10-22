@@ -1,20 +1,18 @@
 ## TODO
-- ci' parse entire line to get actual strings instead of just between ' (maybe try out for a while)
+- in grep render test files in a different color, put them under source files
 
-- render test files in a different color, put them under source files
+- improve queries abstraction
+    - change all the query stuff to use inputName
+    - make selection a part of the queries individually
+    - add undo to queries
 
-- make select all a part of the queries individually
-- add undo to queries
+- lsp
+    - red if params are broken
+    - go to where the prop was defined
+    - have gr access node_modules maybe...
 
-- red if params are broken
-
-- go to where the prop was defined
-
-- grep highlight background in green when finds occurrence
-
-- do complete look through of commands and delete ones I don't use
-
-- change all the query stuff to use inputName
+- maybe can just have a button that is like grep, that just runs `tsc` or whatever build and creates jumplist that shows the errors and a way to easily access them
+- can have another for having the autocomplete for functions
 
 - do deep dive of history and grep, and search for performance
     - move them to their own file and test them individually w/o the ncurses crap mucking everything up
