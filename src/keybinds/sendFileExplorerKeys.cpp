@@ -19,7 +19,7 @@ void sendFileExplorerKeys(State* state, int c) {
             auto node = FileExplorerNode::getFileExplorerNode(state->fileExplorer, state->fileExplorerIndex);
             node->close();
             node->open();
-        } else if (c == ctrl('h')) {
+        } else if (c == KEY_BACKSPACE || c == ctrl('h')) {
             if (state->fileExplorerSize - 5 > 10) {
                 state->fileExplorerSize -= 5;
             }
