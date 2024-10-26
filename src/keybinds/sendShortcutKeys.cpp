@@ -340,6 +340,7 @@ void sendShortcutKeys(State* state, int c) {
         state->mode = FILEEXPLORER;
         if (!state->fileExplorerOpen) {
             state->fileExplorerIndex = state->fileExplorer->expand(state->filename);
+            centerFileExplorer(state);
         }
         state->fileExplorerOpen = true;
     } else if (c == ctrl('s')) {
