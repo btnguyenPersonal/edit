@@ -1,5 +1,6 @@
 #include "sendCommandLineKeys.h"
 #include "../util/clipboard.h"
+#include "../util/render.h"
 #include "../util/helper.h"
 #include "../util/modes.h"
 #include "../util/query.h"
@@ -41,6 +42,7 @@ void evaluateCommandLineQuery(State* state) {
         std::string s, first, second, g;
         if (std::getline(iss, s, '/') && std::getline(iss, first, '/') && std::getline(iss, second, '/')) {
             if (!state->dontSave) {
+                renderScreen(state);
                 replaceAllGlobally(state, first, second);
             }
         }

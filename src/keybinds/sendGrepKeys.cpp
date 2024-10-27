@@ -1,5 +1,6 @@
 #include "sendGrepKeys.h"
 #include "../util/clipboard.h"
+#include "../util/render.h"
 #include "../util/helper.h"
 #include "../util/modes.h"
 #include "../util/query.h"
@@ -63,8 +64,10 @@ void sendGrepKeys(State* state, int c) {
         addFromClipboard(&state->grep);
     } else if (c == '\n') {
         changeToGrepFile(state);
+        centerScreen(state);
     }
     if (state->mode == GREP && c != ctrl('u') && c != ctrl('d') && c != ctrl('p') && c != ctrl('n')) {
+        renderScreen(state);
         generateGrepOutput(state);
     }
 }

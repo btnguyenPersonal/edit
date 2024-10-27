@@ -2,6 +2,7 @@
 #include "../util/clipboard.h"
 #include "../util/helper.h"
 #include "../util/modes.h"
+#include "../util/render.h"
 #include "../util/query.h"
 #include "../util/state.h"
 #include <ncurses.h>
@@ -92,6 +93,7 @@ void sendFindFileKeys(State* state, int c) {
         }
     }
     if (state->mode == FINDFILE && c != ctrl('u') && c != ctrl('d') && c != ctrl('p') && c != ctrl('n')) {
+        renderScreen(state);
         generateFindFileOutput(state);
     }
 }
