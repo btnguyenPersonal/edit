@@ -16,6 +16,66 @@
 #include <string>
 #include <vector>
 
+void jumpToBuildError(State* state) {
+    if (state->buildErrors.size() > 0) {
+        std::string filename = "";
+        std::string foundRow = "";
+        std::string foundCol = "";
+        unsigned int i;
+        std::string error = "";
+        for (i = 0; i < state->buildErrors[state->buildErrorIndex].length(); i++) {
+            if (state->buildErrors[state->buildErrorIndex][i] != ':') {
+                filename += state->buildErrors[state->buildErrorIndex][i];
+            } else {
+                i++;
+                break;
+            }
+        }
+        for (; i < state->buildErrors[state->buildErrorIndex].length(); i++) {
+            if (state->buildErrors[state->buildErrorIndex][i] != ',') {
+                foundRow += state->buildErrors[state->buildErrorIndex][i];
+            } else {
+                i++;
+                break;
+            }
+        }
+        for (; i < state->buildErrors[state->buildErrorIndex].length(); i++) {
+            if (state->buildErrors[state->buildErrorIndex][i] != ':') {
+                foundCol += state->buildErrors[state->buildErrorIndex][i];
+            } else {
+                i++;
+                break;
+            }
+        }
+        state->changeFile(filename);
+        state->row = std::stoi(foundRow) - 1;
+        state->col = std::stoi(foundCol) - 1;
+        state->status = "(" + std::to_string(state->buildErrorIndex + 1) + " of " + std::to_string(state->buildErrors.size()) + ") " + state->buildErrors[state->buildErrorIndex].substr(i + 1);
+    }
+}
+
+std::vector<std::string> runCommandAndCaptureOutput(const std::string& command) {
+    std::vector<std::string> outputLines;
+    std::string line;
+    std::unique_ptr<FILE, int(*)(FILE*)> pipe(popen(command.c_str(), "r"), pclose);
+    if (!pipe) {
+        throw std::runtime_error("popen() failed!");
+    }
+    char buffer[128];
+    while (fgets(buffer, sizeof(buffer), pipe.get()) != nullptr) {
+        line = buffer;
+
+        // Replace the first '(' with ':'
+        size_t pos = line.find('(');
+        if (pos != std::string::npos) {
+            line.replace(pos, 1, ":");
+        }
+
+        outputLines.push_back(line);
+    }
+    return outputLines;
+}
+
 void rename(State* state, const std::filesystem::path& oldPath, const std::string& newName) {
     if (!std::filesystem::exists(oldPath)) {
         state->status = "path does not exist";

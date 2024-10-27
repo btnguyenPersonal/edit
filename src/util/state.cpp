@@ -121,6 +121,8 @@ State::State() {
     this->dontSave = false;
     this->replacing = false;
     this->jumplist = {0, std::vector<Position>()};
+    this->buildErrorIndex = 0;
+    this->buildErrors = std::vector<std::string>();
     this->blame = std::vector<std::string>();
     this->harpoonFiles = std::vector<std::string>();
     this->harpoonIndex = 0;
