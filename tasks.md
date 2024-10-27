@@ -17,6 +17,8 @@
 - do deep dive of history and grep, and search for performance
     - move them to their own file and test them individually w/o the ncurses crap mucking everything up
 
+- make tabs look nicer (4 spaces w/ some indication)
+
 - copy/paste folders
 
 ## BACKLOG
