@@ -117,32 +117,29 @@ void sendShortcutKeys(State* state, int c) {
     } else if (state->prevKeys != "") {
         state->prevKeys = "";
     } else if (c == ctrl('k')) {
-        try {
-            if (state->buildErrorIndex - 1 >= 0) {
-                state->buildErrorIndex--;
-            }
-            jumpToBuildError(state);
-        } catch (const std::exception& e) {
-            state->status = "Unexpected Error while jumping to build error: " + std::string(e.what());
+        if (state->buildErrorIndex - 1 >= 0) {
+            state->buildErrorIndex--;
         }
+        jumpToBuildError(state);
     } else if (c == ctrl('j')) {
-        try {
-            if (state->buildErrorIndex + 1 < (int)state->buildErrors.size()) {
-                state->buildErrorIndex++;
-            }
-            jumpToBuildError(state);
-        } catch (const std::exception& e) {
-            state->status = "Unexpected Error while jumping to build error: " + std::string(e.what());
+        if (state->buildErrorIndex + 1 < (int)state->buildErrors.size()) {
+            state->buildErrorIndex++;
         }
+        jumpToBuildError(state);
     } else if (c == ';') {
         state->status = "Building...";
         renderScreen(state);
+        std::string flags = "";
+        if (state->buildDir != "") {
+            flags += " -p " + state->buildDir;
+        }
+        flags += " --noEmit";
         try {
-            state->buildErrors = runCommandAndCaptureOutput("tsc --noEmit 2>&1 | sed 's/):/:/' | sed 's/(/:/'");
-            jumpToBuildError(state);
+            state->buildErrors = runCommandAndCaptureOutput("tsc" + flags + " 2>&1 | grep 'error TS' | sed 's/):/:/' | sed 's/(/:/'");
         } catch (const std::exception& e) {
             state->status = "Unexpected Error while building: " + std::string(e.what());
         }
+        jumpToBuildError(state);
     } else if (c == ':') {
         state->mode = COMMANDLINE;
     } else if (c == '<') {

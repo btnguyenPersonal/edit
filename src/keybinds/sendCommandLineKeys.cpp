@@ -21,6 +21,8 @@ void evaluateCommandLineQuery(State* state) {
         } else {
             state->status = "AUTOSAVE OFF";
         }
+    } else if (state->commandLine.query.substr(0, 2) == "b=") {
+        state->buildDir = state->commandLine.query.substr(2);
     } else if (state->commandLine.query.substr(0, 1) == "!") {
         runCommand(state, state->commandLine.query.substr(1));
     } else if (state->commandLine.query == "w") {

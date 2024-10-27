@@ -74,6 +74,7 @@ public:
     std::vector<std::string> blame;
     std::vector<std::string> harpoonFiles;
     unsigned int harpoonIndex;
+    std::string buildDir;
     std::string filename;
     std::vector<std::string> data;
     std::vector<std::string> previousState;

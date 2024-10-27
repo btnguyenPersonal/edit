@@ -115,6 +115,7 @@ State::State() {
     this->fileExplorerWindowLine = 0;
     this->fileExplorerIndex = 0;
     this->autosave = true;
+    this->buildDir = "";
     this->mark = {"", 0};
     this->matching = {0, 0};
     this->searching = false;
