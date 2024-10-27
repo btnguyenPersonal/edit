@@ -13,7 +13,6 @@ void sendGrepKeys(State* state, int c) {
     if (c == 27) { // ESC
         state->mode = SHORTCUTS;
     } else if (' ' <= c && c <= '~') {
-        add(&state->grep, c);
         state->grep.selection = 0;
     } else if (c == KEY_LEFT) {
         moveCursorLeft(&state->grep);
@@ -69,5 +68,6 @@ void sendGrepKeys(State* state, int c) {
     if (state->mode == GREP && c != ctrl('u') && c != ctrl('d') && c != ctrl('p') && c != ctrl('n')) {
         renderScreen(state);
         generateGrepOutput(state);
+        state->cancel = true;
     }
 }

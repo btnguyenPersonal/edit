@@ -15,6 +15,10 @@
 #include <stdexcept>
 #include <string>
 #include <vector>
+// TODO REMOVE
+#include <thread>
+#include <atomic>
+#include <chrono>
 
 void rename(State* state, const std::filesystem::path& oldPath, const std::string& newName) {
     if (!std::filesystem::exists(oldPath)) {
@@ -878,13 +882,16 @@ bool shouldIgnoreFile(const std::filesystem::path& path) {
     return false;
 }
 
-std::vector<grepMatch> grepFile(const std::filesystem::path& file_path, const std::string& query, const std::filesystem::path& dir_path) {
+std::vector<grepMatch> grepFile(const std::filesystem::path& file_path, const std::string& query, const std::filesystem::path& dir_path, State* state) {
     auto relativePath = file_path.lexically_relative(dir_path);
     std::vector<grepMatch> matches;
     std::ifstream file(file_path);
     std::string line;
     int lineNumber = 0;
     while (std::getline(file, line)) {
+        if (state->cancel) {
+            return matches;
+        }
         lineNumber++;
         if (line.find(query) != std::string::npos) {
             matches.emplace_back(relativePath, lineNumber, line);
@@ -899,7 +906,7 @@ bool sortByFileType(const grepMatch& first, const grepMatch& second) {
     return firstFile < secondFile;
 }
 
-std::vector<grepMatch> grepFiles(const std::filesystem::path& dir_path, const std::string& query) {
+std::vector<grepMatch> grepFiles(const std::filesystem::path& dir_path, const std::string& query, State* state) {
     std::vector<std::future<std::vector<grepMatch>>> futures;
     for (auto it = std::filesystem::recursive_directory_iterator(dir_path); it != std::filesystem::recursive_directory_iterator(); ++it) {
         if (shouldIgnoreFile(it->path())) {
@@ -907,7 +914,7 @@ std::vector<grepMatch> grepFiles(const std::filesystem::path& dir_path, const st
             continue;
         }
         if (std::filesystem::is_regular_file(it->path())) {
-            futures.push_back(std::async(std::launch::async, grepFile, it->path(), query, dir_path));
+            futures.push_back(std::async(std::launch::async, grepFile, it->path(), query, dir_path, state));
         }
     }
     std::vector<grepMatch> allMatches;
@@ -949,7 +956,7 @@ void generateGrepOutput(State* state) {
     if (state->grep.query == "") {
         state->grepOutput.clear();
     } else {
-        state->grepOutput = grepFiles(std::filesystem::current_path(), state->grep.query);
+        state->grepOutput = grepFiles(std::filesystem::current_path(), state->grep.query, state);
     }
     if (state->grep.selection >= state->grepOutput.size()) {
         if (state->grepOutput.size() > 0) {

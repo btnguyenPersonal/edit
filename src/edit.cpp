@@ -2,6 +2,7 @@
 #include "util/helper.h"
 #include "util/render.h"
 #include "util/state.h"
+#include <thread>
 #include <cstring>
 #include <fcntl.h>
 #include <iostream>
@@ -54,11 +55,16 @@ int main(int argc, char* argv[]) {
     calcWindowBounds();
     centerFileExplorer(state);
     renderScreen(state);
+    std::thread mainThread;
     while (true) {
         c = getch();
         if (c != ERR) {
-            sendKeys(state, c);
-            renderScreen(state);
+            state->cancel = false;
+            mainThread = std::thread(sendKeys, state, c);
+            if (mainThread.joinable()) {
+                mainThread.join();
+                renderScreen(state);
+            }
         }
     }
     endwin();

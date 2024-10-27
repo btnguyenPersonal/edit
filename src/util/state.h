@@ -4,6 +4,7 @@
 #include "visualType.h"
 #include "fileExplorerNode.h"
 #include <filesystem>
+#include <atomic>
 #include <string>
 #include <vector>
 
@@ -60,6 +61,7 @@ struct Query {
 
 class State {
 public:
+    std::atomic<bool> cancel;
     bool fileExplorerOpen;
     int fileExplorerSize;
     int fileExplorerIndex;

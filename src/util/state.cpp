@@ -108,6 +108,7 @@ void State::resetState(std::string filename) {
 }
 
 State::State() {
+    this->cancel = false;
     this->fileExplorer = new FileExplorerNode(std::filesystem::current_path());
     this->fileExplorer->open();
     this->fileExplorerOpen = false;
