@@ -213,16 +213,21 @@ bool isMergeConflict(const std::string& str) {
     return false;
 }
 
-void printChar(State* state, int row, int col, char c, int color) {
+int printChar(State* state, int row, int col, char c, int color) {
     if (' ' <= c && c <= '~') {
         mvaddch_color(row - state->windowPosition.row + 1, col + getLineNumberOffset(state), c, color);
     } else if (c == '\t') {
-        mvaddch_color(row - state->windowPosition.row + 1, col + getLineNumberOffset(state), ' ', invertColor(RED));
+        mvaddch_color(row - state->windowPosition.row + 1, col + getLineNumberOffset(state), ' ', GREY);
+        mvaddch_color(row - state->windowPosition.row + 1, col + 1 + getLineNumberOffset(state), ' ', GREY);
+        mvaddch_color(row - state->windowPosition.row + 1, col + 2 + getLineNumberOffset(state), ' ', GREY);
+        mvaddch_color(row - state->windowPosition.row + 1, col + 3 + getLineNumberOffset(state), '|', GREY);
+        return 4;
     } else if (' ' <= unctrl(c) && unctrl(c) <= '~') {
         mvaddch_color(row - state->windowPosition.row + 1, col + getLineNumberOffset(state), unctrl(c), invertColor(MAGENTA));
     } else {
         mvaddch_color(row - state->windowPosition.row + 1, col + getLineNumberOffset(state), ' ', invertColor(MAGENTA));
     }
+    return 1;
 }
 
 void printLineNumber(State* state, int r, int i, bool isCurrentRow, bool recording, std::string blame) {
@@ -339,8 +344,7 @@ void printLine(State* state, int row) {
             if (col >= state->windowPosition.col) {
                 if (state->replacing && searchCounter != 0) {
                     for (unsigned int i = 0; i < state->replace.query.length(); i++) {
-                        printChar(state, row, renderCol, state->replace.query[i], getSearchColor(state, row, startOfSearch));
-                        renderCol++;
+                        renderCol += printChar(state, row, renderCol, state->replace.query[i], getSearchColor(state, row, startOfSearch));
                     }
                     col += state->search.query.length();
                     searchCounter = 0;
@@ -364,8 +368,7 @@ void printLine(State* state, int row) {
                             color = invertColor(color);
                         }
                     }
-                    printChar(state, row, renderCol, state->data[row][col], color);
-                    renderCol++;
+                    renderCol += printChar(state, row, renderCol, state->data[row][col], color);
                     col++;
                 }
             } else {
@@ -456,7 +459,15 @@ void moveCursor(State* state, int cursorPosition) {
         } else {
             row = 1;
         }
-        unsigned int col = state->col + getLineNumberOffset(state);
+        unsigned int col = 0;
+        for (unsigned int i = 0; i < state->col; i++) {
+            if (state->data[state->row][i] == '\t') {
+                col += 4;
+            } else {
+                col += 1;
+            }
+        }
+        col += getLineNumberOffset(state);
         if (state->col > state->data[state->row].length()) {
             col = state->data[state->row].length() + getLineNumberOffset(state);
             if (state->windowPosition.col > col) {
@@ -464,7 +475,7 @@ void moveCursor(State* state, int cursorPosition) {
             } else {
                 col -= state->windowPosition.col;
             }
-        } else if (col > state->windowPosition.col) {
+        } else if (state->col + getLineNumberOffset(state) > state->windowPosition.col) {
             col -= state->windowPosition.col;
         }
         move(row, col);
