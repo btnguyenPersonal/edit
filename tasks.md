@@ -1,6 +1,4 @@
 ## TODO
-- in grep render test files in a different color, put them under source files
-
 - improve queries abstraction
     - change all the query stuff to use inputName
     - make selection a part of the queries individually
@@ -14,6 +12,9 @@
 
 - do deep dive of history and grep, and search for performance
     - move them to their own file and test them individually w/o the ncurses crap mucking everything up
+    - prob will when something at work goes super slow so I can't just skate by with what i have
+
+- change render to not use mvprintw directly, just make a 2d array of structs w/ char & color then mvprintw through everything after
 
 - make tabs look nicer (4 spaces w/ some indication)
 
@@ -42,6 +43,7 @@
 - fileExplorer (current one is trash and i never use it) actually make it good now
 
 ## DONE
+- in grep render test files in a different color, put them under source files
 - copy/paste folders
 - maybe can just have a button that is like grep, that just runs `tsc` or whatever build and creates jumplist that shows the errors and a way to easily access them
 - copy/paste files in fileExplorer
