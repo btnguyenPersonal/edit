@@ -95,9 +95,23 @@ void pasteFileFromClipboard(State* state, const std::string& destFolder) {
         }
 
         std::filesystem::path destPath = std::filesystem::path(destFolder) / sourcePath.filename();
+
+        if (std::filesystem::is_directory(sourcePath)) {
+            std::filesystem::path canonicalSrc = std::filesystem::canonical(sourcePath);
+            std::filesystem::path canonicalDest = std::filesystem::canonical(destFolder);
+            if (canonicalDest.string().find(canonicalSrc.string()) == 0) {
+                state->status = "Error: Cannot paste a folder into itself or its subdirectories";
+                return;
+            }
+        }
+
         destPath = getUniqueFilePath(destPath);
 
-        std::filesystem::copy(sourcePath, destPath, std::filesystem::copy_options::overwrite_existing);
+        if (std::filesystem::is_directory(sourcePath)) {
+            std::filesystem::copy(sourcePath, destPath, std::filesystem::copy_options::recursive | std::filesystem::copy_options::overwrite_existing);
+        } else {
+            std::filesystem::copy(sourcePath, destPath, std::filesystem::copy_options::overwrite_existing);
+        }
     } catch (const std::exception& e) {
         state->status = "File paste failed: " + std::string(e.what());
     }
