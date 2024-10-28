@@ -27,7 +27,6 @@
 - add python formatting
 - have cib ciB work for multi-line brackets
 - ciw dot command not working correctly
-- when not in typing restrict to have cursor not pass last character
 - add multi-line searches
 - need to fix the crap with onlyMotions, every motion should work all the same and not have jank logic (maybe separate out motions into it's own thing?)
     - have isMotion() can't be too broken?
@@ -43,6 +42,7 @@
 - fileExplorer (current one is trash and i never use it) actually make it good now
 
 ## DONE
+- when not in typing restrict to have cursor not pass last character
 - in grep render test files in a different color, put them under source files
 - copy/paste folders
 - maybe can just have a button that is like grep, that just runs `tsc` or whatever build and creates jumplist that shows the errors and a way to easily access them
