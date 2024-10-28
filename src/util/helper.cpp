@@ -16,6 +16,10 @@
 #include <string>
 #include <vector>
 
+bool isTestFile(const std::string& filepath) {
+    return filepath.find(".spec") != std::string::npos || filepath.find(".test") != std::string::npos;
+}
+
 void jumpToBuildError(State* state) {
     try {
         if (state->buildErrors.size() > 0) {
@@ -962,6 +966,12 @@ std::vector<grepMatch> grepFile(const std::filesystem::path& file_path, const st
 bool sortByFileType(const grepMatch& first, const grepMatch& second) {
     std::string firstFile = first.path.string();
     std::string secondFile = second.path.string();
+    if (isTestFile(firstFile) && !isTestFile(secondFile)) {
+        return false;
+    }
+    if (!isTestFile(firstFile) && isTestFile(secondFile)) {
+        return true;
+    }
     return firstFile < secondFile;
 }
 
@@ -1004,9 +1014,15 @@ std::vector<std::filesystem::path> findFiles(const std::filesystem::path& dir_pa
         int matchA = maxConsecutiveMatch(a, query);
         int matchB = maxConsecutiveMatch(b, query);
         if (matchA == matchB) {
-            return a.string() < b.string(); // Alphabetical order if matches are equal
+            if (isTestFile(a.string()) && !isTestFile(b.string())) {
+                return false;
+            }
+            if (!isTestFile(a.string()) && isTestFile(b.string())) {
+                return true;
+            }
+            return a.string() < b.string();
         }
-        return matchA > matchB; // Descending order of matches
+        return matchA > matchB;
     });
     return matching_files;
 }

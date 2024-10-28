@@ -21,6 +21,7 @@
 #define _COLOR_MAGENTA 201
 #define _COLOR_CYAN 51
 #define _COLOR_WHITE 231
+#define _COLOR_ORANGE 214
 
 #define BLACK 1
 #define GREY 2
@@ -31,8 +32,9 @@
 #define MAGENTA 7
 #define CYAN 8
 #define WHITE 9
+#define ORANGE 10
 
-int invertColor(int color) { return color + 9; }
+int invertColor(int color) { return color + 10; }
 
 // is there a better way for arg passing?
 void mvprintw_color(int r, int c, const char* formatString, const char* cstring1, int num, const char* cstring2, int color) {
@@ -69,6 +71,7 @@ void initColors() {
     init_pair(MAGENTA, _COLOR_MAGENTA, _COLOR_BLACK);
     init_pair(CYAN, _COLOR_CYAN, _COLOR_BLACK);
     init_pair(WHITE, _COLOR_WHITE, _COLOR_BLACK);
+    init_pair(ORANGE, _COLOR_ORANGE, _COLOR_BLACK);
 
     init_pair(invertColor(BLACK), _COLOR_BLACK, _COLOR_BLACK);
     init_pair(invertColor(GREY), _COLOR_BLACK, _COLOR_GREY);
@@ -79,6 +82,7 @@ void initColors() {
     init_pair(invertColor(MAGENTA), _COLOR_BLACK, _COLOR_MAGENTA);
     init_pair(invertColor(CYAN), _COLOR_BLACK, _COLOR_CYAN);
     init_pair(invertColor(WHITE), _COLOR_BLACK, _COLOR_WHITE);
+    init_pair(invertColor(ORANGE), _COLOR_BLACK, _COLOR_ORANGE);
 }
 
 void renderNumMatches(int offset, int selection, int total) {
@@ -402,7 +406,9 @@ void renderGrepOutput(State* state) {
         index = 0;
     }
     unsigned int renderIndex = 1;
+    int color;
     for (unsigned int i = index; i < state->grepOutput.size() && i < index + state->maxY; i++) {
+        color = isTestFile(state->grepOutput[i].path.string()) ? ORANGE : WHITE;
         mvprintw_color(
             renderIndex,
             0,
@@ -410,7 +416,7 @@ void renderGrepOutput(State* state) {
             state->grepOutput[i].path.c_str(),
             state->grepOutput[i].lineNum,
             state->grepOutput[i].line.c_str(),
-            i == state->grep.selection ? invertColor(WHITE) : WHITE
+            i == state->grep.selection ? invertColor(color) : color
         );
         renderIndex++;
     }
@@ -424,13 +430,15 @@ void renderFindFileOutput(State* state) {
         index = 0;
     }
     unsigned int renderIndex = 1;
+    int color;
     for (unsigned int i = index; i < state->findFileOutput.size() && i < index + state->maxY; i++) {
+        color = isTestFile(state->findFileOutput[i]) ? ORANGE : WHITE;
         mvprintw_color(
             renderIndex,
             0,
             "%s\n",
             state->findFileOutput[i].c_str(),
-            i == state->findFile.selection ? invertColor(WHITE) : WHITE
+            i == state->findFile.selection ? invertColor(color) : color
         );
         renderIndex++;
     }
