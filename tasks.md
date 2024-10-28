@@ -10,16 +10,12 @@
     - red if params are broken
     - go to where the prop was defined
     - have gr access node_modules maybe...
-
-- maybe can just have a button that is like grep, that just runs `tsc` or whatever build and creates jumplist that shows the errors and a way to easily access them
-- can have another for having the autocomplete for functions
+    - autocomplete for functions
 
 - do deep dive of history and grep, and search for performance
     - move them to their own file and test them individually w/o the ncurses crap mucking everything up
 
 - make tabs look nicer (4 spaces w/ some indication)
-
-- copy/paste folders
 
 ## BACKLOG
 - for go to definition, go to the .d.ts file if needed
@@ -46,6 +42,8 @@
 - fileExplorer (current one is trash and i never use it) actually make it good now
 
 ## DONE
+- copy/paste folders
+- maybe can just have a button that is like grep, that just runs `tsc` or whatever build and creates jumplist that shows the errors and a way to easily access them
 - copy/paste files in fileExplorer
     - will have to put some extra code in clipboard for macos and linux differences i think
     - need to be able to paste when on a file, and have it go to parent folder and paste
