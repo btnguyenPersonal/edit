@@ -18,6 +18,8 @@
 
 - make tabs look nicer (4 spaces w/ some indication)
 
+- have shortcuts to switch between kabob Title lower ENUM
+
 ## BACKLOG
 - for go to definition, go to the .d.ts file if needed
 - add mouse clicks
@@ -40,6 +42,7 @@
         - should figure out a function to just cut off the parents/string at the point where we don't want, but every time i did it, it got slower
 - research adding lsp??
 - fileExplorer (current one is trash and i never use it) actually make it good now
+- run current line w/mocha or jest??
 
 ## DONE
 - when not in typing restrict to have cursor not pass last character
