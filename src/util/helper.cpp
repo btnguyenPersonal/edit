@@ -52,13 +52,14 @@ void jumpToBuildError(State* state) {
                     break;
                 }
             }
+            state->status = foundRow + " " + foundCol;
             if (filename != "" && isInt(foundRow) && isInt(foundCol)) {
                 state->changeFile(filename);
                 state->row = std::stoi(foundRow) - 1;
                 state->col = std::stoi(foundCol) - 1;
-                state->status = "(" + std::to_string(state->buildErrorIndex + 1) + " of " + std::to_string(state->buildErrors.size()) + ") " + state->buildErrors[state->buildErrorIndex].substr(i + 1);
+                state->status = "(" + std::to_string(state->buildErrorIndex + 1) + " of " + std::to_string(state->buildErrors.size()) + ") " + state->buildErrors[state->buildErrorIndex].substr(i);
             } else {
-                throw std::runtime_error("invalid buildError format: " + state->buildErrors[i]);
+                state->status = std::string("invalid buildError format: ") + state->buildErrors[state->buildErrorIndex];
             }
         } else {
             state->status = "(0 of 0)";
@@ -69,31 +70,23 @@ void jumpToBuildError(State* state) {
 }
 
 bool isInt(const std::string& s) {
-    return !s.empty() && std::all_of(s.begin(), s.end(), ::isdigit);
+    if (s == "") {
+        return false;
+    }
+    return std::all_of(s.begin(), s.end(), ::isdigit);
 }
 
 std::vector<std::string> runCommandAndCaptureOutput(const std::string& command) {
     std::vector<std::string> outputLines;
     std::unique_ptr<FILE, int(*)(FILE*)> pipe(popen(command.c_str(), "r"), pclose);
     if (!pipe) {
-        throw std::runtime_error("popen() failed!");
-    }
-
-    constexpr size_t BUFFER_SIZE = 4096;
-    std::string buffer;
-    buffer.reserve(BUFFER_SIZE);
-
-    char chunk[BUFFER_SIZE];
-    std::stringstream accumulator;
-
-    while (fgets(chunk, sizeof(chunk), pipe.get()) != nullptr) {
-        accumulator << chunk;
+        return std::vector<std::string>();
     }
     std::string line;
-    while (std::getline(accumulator, line)) {
-        if (!line.empty() && line.back() == '\r') {
-            line.pop_back();
-        }
+    // increase this if command output is longer than 4096 idk
+    char buffer[4096];
+    while (fgets(buffer, sizeof(buffer), pipe.get()) != nullptr) {
+        line = buffer;
         size_t pos = line.find('(');
         if (pos != std::string::npos) {
             line.replace(pos, 1, ":");
