@@ -493,30 +493,6 @@ bool sendVisualKeys(State* state, char c, bool onlyMotions) {
         generateGrepOutput(state);
     } else if (c == 'l') {
         right(state);
-    } else if (!onlyMotions && c == ctrl('k')) {
-        Bounds bounds = getBounds(state);
-        for (unsigned int i = bounds.minR; i < bounds.maxR; i++) {
-            state->col = state->data[bounds.minR].length();
-            if (bounds.minR + 1 < state->data.size()) {
-                ltrim(state->data[bounds.minR + 1]);
-                state->data[bounds.minR] += " " + state->data[bounds.minR + 1];
-                state->data.erase(state->data.begin() + bounds.minR + 1);
-            }
-        }
-        state->row = bounds.minR;
-        state->mode = SHORTCUTS;
-    } else if (!onlyMotions && c == ctrl('j')) {
-        Bounds bounds = getBounds(state);
-        for (unsigned int i = bounds.minR; i < bounds.maxR; i++) {
-            state->col = state->data[bounds.minR].length();
-            if (bounds.minR + 1 < state->data.size()) {
-                ltrim(state->data[bounds.minR + 1]);
-                state->data[bounds.minR] += state->data[bounds.minR + 1];
-                state->data.erase(state->data.begin() + bounds.minR + 1);
-            }
-        }
-        state->row = bounds.minR;
-        state->mode = SHORTCUTS;
     } else if (!onlyMotions && c == 'K') {
         Bounds bounds = getBounds(state);
         if (bounds.minR > 0) {

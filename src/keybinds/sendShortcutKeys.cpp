@@ -135,6 +135,7 @@ void sendShortcutKeys(State* state, int c) {
         }
         flags += " --noEmit";
         try {
+            state->buildErrorIndex = 0;
             state->buildErrors = runCommandAndCaptureOutput("tsc" + flags + " 2>&1 | grep 'error TS' | sed 's/):/:/' | sed 's/(/:/'");
         } catch (const std::exception& e) {
             state->status = "Unexpected Error while building: " + std::string(e.what());

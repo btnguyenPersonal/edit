@@ -7,6 +7,7 @@
 #include <string>
 #include <vector>
 
+bool isInt(const std::string& s);
 bool isTestFile(const std::string& filepath);
 void jumpToBuildError(State* state);
 std::vector<std::string> runCommandAndCaptureOutput(const std::string& command);

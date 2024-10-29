@@ -62,9 +62,9 @@ void sendGrepKeys(State* state, int c) {
         }
     } else if (c == ctrl('v')) {
         addFromClipboard(&state->grep);
-    } else if (c == ctrl('k')) {
+    } else if (c == ctrl('w')) {
         state->grep.selection = 0;
-    } else if (c == ctrl('j')) {
+    } else if (c == ctrl('e')) {
         for (unsigned int i = 0; i < state->grepOutput.size(); i++) {
             if (state->grep.selection + 1 < state->grepOutput.size()) {
                 state->grep.selection += 1;
