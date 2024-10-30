@@ -78,14 +78,14 @@ bool isInt(const std::string& s) {
 
 std::vector<std::string> runCommandAndCaptureOutput(const std::string& command) {
     std::vector<std::string> outputLines;
-    std::unique_ptr<FILE, int(*)(FILE*)> pipe(popen(command.c_str(), "r"), pclose);
+    std::string shellCommand = "bash -c \"set -o pipefail && " + command + "\"";
+    FILE* pipe = popen(shellCommand.c_str(), "r");
     if (!pipe) {
-        return std::vector<std::string>();
+        throw std::runtime_error(command);
     }
     std::string line;
-    // increase this if command output is longer than 4096 idk
     char buffer[4096];
-    while (fgets(buffer, sizeof(buffer), pipe.get()) != nullptr) {
+    while (fgets(buffer, sizeof(buffer), pipe) != nullptr) {
         line = buffer;
         size_t pos = line.find('(');
         if (pos != std::string::npos) {
@@ -93,6 +93,14 @@ std::vector<std::string> runCommandAndCaptureOutput(const std::string& command) 
         }
 
         outputLines.push_back(line);
+    }
+    int status = pclose(pipe);
+    if (status == -1) {
+        throw std::runtime_error("Failed to get command exit status: " + command);
+    }
+    int exitCode = WEXITSTATUS(status);
+    if (exitCode != 0) {
+        throw std::runtime_error(command);
     }
     return outputLines;
 }

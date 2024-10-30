@@ -143,10 +143,10 @@ void sendShortcutKeys(State* state, int c) {
         try {
             state->buildErrorIndex = 0;
             state->buildErrors = runCommandAndCaptureOutput("tsc" + flags + " 2>&1 | grep 'error TS' | sed 's/):/:/' | sed 's/(/:/'");
+            jumpToBuildError(state);
         } catch (const std::exception& e) {
-            state->status = "Unexpected Error while building: " + std::string(e.what());
+            state->status = "invalid build target: " + state->buildDir;
         }
-        jumpToBuildError(state);
     } else if (c == ':') {
         state->mode = COMMANDLINE;
     } else if (c == '<') {
