@@ -126,6 +126,12 @@ void sendShortcutKeys(State* state, int c) {
             state->buildErrorIndex++;
         }
         jumpToBuildError(state);
+    } else if (c == '~') {
+        if (isupper(state->data[state->row][state->col])) {
+            state->data[state->row][state->col] = std::tolower(state->data[state->row][state->col]);
+        } else if (islower(state->data[state->row][state->col])) {
+            state->data[state->row][state->col] = std::toupper(state->data[state->row][state->col]);
+        }
     } else if (c == ';') {
         state->status = "Building...";
         renderScreen(state);

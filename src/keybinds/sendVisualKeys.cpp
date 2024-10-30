@@ -68,6 +68,58 @@ void replaceAllWithChar(State* state, int c) {
     }
 }
 
+void changeConventionVisual(State* state, std::string type) {
+    Bounds bounds = getBounds(state);
+    if (state->visualType == NORMAL && bounds.minR == bounds.maxR) {
+        std::string variableName = getInVisual(state);
+        std::string temp = "";
+        for (unsigned int i = 0; i < variableName.length(); i++) {
+            if (variableName[i] == '-' || variableName[i] == '_') {
+                temp += " ";
+            } else if (i != 0 && isupper(variableName[i])) {
+                temp += " ";
+                temp += std::tolower(variableName[i]);
+            } else {
+                temp += std::tolower(variableName[i]);
+            }
+        }
+        std::string output = "";
+        if (type == "camel" || type == "title") {
+            bool lastWasSpace = type == "title";
+            for (unsigned int i = 0; i < temp.length(); i++) {
+                if (lastWasSpace) {
+                    output += toupper(temp[i]);
+                    lastWasSpace = false;
+                } else if (temp[i] == ' ') {
+                    lastWasSpace = true;
+                } else {
+                    output += tolower(temp[i]);
+                }
+            }
+        } else if (type == "snake" || type == "kebab" || type == "enum") {
+            for (unsigned int i = 0; i < temp.length(); i++) {
+                if (temp[i] == ' ') {
+                    if (type == "snake" || type == "enum") {
+                        output += "_";
+                    } else if (type == "kebab") {
+                        output += "-";
+                    }
+                } else {
+                    if (type == "enum") {
+                        output += toupper(temp[i]);
+                    } else {
+                        output += tolower(temp[i]);
+                    }
+                }
+            }
+        }
+        deleteInVisual(state);
+        state->col = bounds.minC;
+        std::string current = state->data[state->row];
+        state->data[state->row] = current.substr(0, state->col) + output + current.substr(state->col);
+    }
+}
+
 void changeCaseVisual(State* state, bool upper) {
     Bounds bounds = getBounds(state);
     if (state->visualType == NORMAL) {
@@ -408,6 +460,26 @@ bool sendVisualKeys(State* state, char c, bool onlyMotions) {
     } else if (!onlyMotions && state->prevKeys == "g" && c == 'u') {
         changeCaseVisual(state, false);
         state->prevKeys = "";
+        state->mode = SHORTCUTS;
+    } else if (state->prevKeys == "g" && c == '_') {
+        state->prevKeys = "";
+        changeConventionVisual(state, "snake");
+        state->mode = SHORTCUTS;
+    } else if (state->prevKeys == "g" && c == '-') {
+        state->prevKeys = "";
+        changeConventionVisual(state, "kebab");
+        state->mode = SHORTCUTS;
+    } else if (state->prevKeys == "g" && c == 'E') {
+        state->prevKeys = "";
+        changeConventionVisual(state, "enum");
+        state->mode = SHORTCUTS;
+    } else if (state->prevKeys == "g" && c == 'T') {
+        state->prevKeys = "";
+        changeConventionVisual(state, "title");
+        state->mode = SHORTCUTS;
+    } else if (state->prevKeys == "g" && c == 't') {
+        state->prevKeys = "";
+        changeConventionVisual(state, "camel");
         state->mode = SHORTCUTS;
     } else if (state->prevKeys == "g" && c == 'g') {
         state->row = 0;
