@@ -102,12 +102,23 @@ void rename(State* state, const std::filesystem::path& oldPath, const std::strin
         state->status = "path does not exist";
     }
 
-    std::filesystem::path newPath = oldPath.parent_path() / newName;
+    std::filesystem::path newPath = std::filesystem::relative(oldPath.parent_path() / newName, std::filesystem::current_path());
 
     try {
         std::filesystem::rename(oldPath, newPath);
     } catch (const std::filesystem::filesystem_error& e) {
         state->status = std::string("Failed to rename: ") + std::string(e.what());
+    }
+
+    auto relativePath = std::filesystem::relative(oldPath, std::filesystem::current_path()).string();
+    for(unsigned int i = 0; i < state->harpoonFiles.size(); i++) {
+        if (state->harpoonFiles[i] == relativePath) {
+            state->harpoonFiles[i] = newPath.string();
+            break;
+        }
+    }
+    if (state->filename == relativePath) {
+        state->filename = newPath.string();
     }
 }
 

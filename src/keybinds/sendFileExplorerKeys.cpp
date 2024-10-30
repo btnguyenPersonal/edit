@@ -33,16 +33,6 @@ void sendFileExplorerKeys(State* state, int c) {
             std::string name = inputName(state, node->name);
             if (name != "") {
                 rename(state, node->path, name);
-                auto relativePath = std::filesystem::relative(node->path, std::filesystem::current_path()).string();
-                for(unsigned int i = 0; i < state->harpoonFiles.size(); i++) {
-                    if (state->harpoonFiles[i] == relativePath) {
-                        state->harpoonFiles[i] = name;
-                        break;
-                    }
-                }
-                if (state->filename == relativePath) {
-                    state->filename = name;
-                }
                 node->parent->refresh();
             }
         } else if (c == 'X') {
