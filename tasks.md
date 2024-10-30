@@ -18,8 +18,6 @@
 
 - make tabs look nicer (4 spaces w/ some indication)
 
-- have shortcuts to switch between kabob Title lower ENUM
-
 ## BACKLOG
 - for go to definition, go to the .d.ts file if needed
 - add mouse clicks
@@ -45,6 +43,7 @@
 - run current line w/mocha or jest??
 
 ## DONE
+- have shortcuts to switch between kabob Title lower ENUM
 - when not in typing restrict to have cursor not pass last character
 - in grep render test files in a different color, put them under source files
 - copy/paste folders
