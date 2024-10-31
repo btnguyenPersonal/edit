@@ -12,6 +12,10 @@ unsigned int State::maxX = 0;
 unsigned int State::maxY = 0;
 
 void State::changeFile(std::string filename) {
+    if (this->fileExplorerOpen) {
+        this->fileExplorerIndex = this->fileExplorer->expand(filename);
+        centerFileExplorer(this);
+    }
     bool found = false;
     for (unsigned int i = 0; i < this->archives.size(); i++) {
         if (this->archives[i].filename == this->filename) {
@@ -52,10 +56,6 @@ void State::changeFile(std::string filename) {
             this->col = archive.col;
             this->jumplist = archive.jumplist;
             this->mode = SHORTCUTS;
-            if (this->fileExplorerOpen) {
-                this->fileExplorerIndex = this->fileExplorer->expand(filename);
-                centerFileExplorer(this);
-            }
             return;
         }
     }
