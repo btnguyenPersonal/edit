@@ -529,19 +529,46 @@ void renderFileExplorer(State* state) {
 }
 
 void renderScreen(State* state) {
-    erase();
-    if (state->mode == FINDFILE) {
-        renderFindFileOutput(state);
-    } else if (state->mode == GREP) {
-        renderGrepOutput(state);
-    } else {
-        renderVisibleLines(state);
-        if (state->fileExplorerOpen) {
-            renderFileExplorer(state);
+    // erase();
+    std::vector<std::vector<Pixel>> pixels(state->maxY, std::vector<Pixel>(state->maxX));
+    for (int i = 0; i < state->maxY; i++) {
+        for (int j = 0; j < state->maxX; j++) {
+            pixels[i][j].character = ' ';
+            pixels[i][j].color = WHITE;
         }
     }
-    int cursorPosition = renderStatusBar(state);
-    moveCursor(state, cursorPosition);
+    for (unsigned int i = 0; i < state->data.size(); i++) {
+        for (unsigned int j = 0; j < state->data[i].size(); j++) {
+            pixels[i][j].character = state->data[i][j];
+            pixels[i][j].color = WHITE;
+        }
+    }
+    renderPixels(pixels);
+    // if (state->mode == FINDFILE) {
+    //     renderFindFileOutput(state);
+    // } else if (state->mode == GREP) {
+    //     renderGrepOutput(state);
+    // } else {
+    //     renderVisibleLines(state);
+    //     if (state->fileExplorerOpen) {
+    //         renderFileExplorer(state);
+    //     }
+    // }
+    // int cursorPosition = renderStatusBar(state);
+    // moveCursor(state, cursorPosition);
+    // wnoutrefresh(stdscr);
+    // doupdate();
+}
+
+void renderPixels(std::vector<std::vector<Pixel>> pixels) {
+    erase();
+    for (unsigned int i = 0; i < pixels.size(); i++) {
+        for (unsigned int j = 0; j < pixels[i].size(); j++) {
+            attron(COLOR_PAIR(pixels[i][j].color));
+            mvaddch(i, j, pixels[i][j].character);
+            attroff(COLOR_PAIR(pixels[i][j].color));
+        }
+    }
     wnoutrefresh(stdscr);
     doupdate();
 }
