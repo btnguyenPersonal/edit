@@ -21,5 +21,5 @@ void printChar(State* state, int row, int col, char c, int color);
 int getSearchColor(State* state, int row, unsigned int startOfSearch);
 unsigned int renderAutoComplete(State* state, int row, unsigned int col, unsigned int renderCol);
 void printLine(State* state, int i);
-void printLineNumber(State* state, int r, int i, bool isCurrentRow, bool recording, std::string blame);
+void printLineNumber(State* state, int i);
 bool isRowColInVisual(State* state, unsigned int i, unsigned int j);
