@@ -611,35 +611,8 @@ void fillLineNum(State* state, std::vector<std::vector<Pixel>>& pixels) {
             pixels[i + STATUS_BAR_HEIGHT][j + border].color = color;
         }
     }
+    // TODO add extra Marks
 }
-
-// void printLineNumber(State* state, int i) {
-//     int r = i - state->windowPosition.row + 1;
-//     bool isCurrentRow = i == (int)state->row;
-//     int border = state->fileExplorerOpen ? state->fileExplorerSize : 0;
-//     if (isCurrentRow == true) {
-//         mvprintw_color(r, border, "%5d", i + 1, WHITE);
-//     } else if (state->recording) {
-//         mvprintw_color(r, border, "%5d", i + 1, RED);
-//     } else {
-//         mvprintw_color(r, border, "%5d", i + 1, GREY);
-//     }
-//     bool isLogging = getLoggingRegex(state) != "" && std::regex_search(state->data[i], std::regex(getLoggingRegex(state)));
-//     bool endsWithSpace = state->data[i].back() == ' ';
-//     bool isOnMark = (int)state->mark.mark == i && state->mark.filename == state->filename;
-//     int color = BLACK;
-//     if (endsWithSpace && state->mode != TYPING) {
-//         color = RED;
-//     } else if (isLogging) {
-//         color = YELLOW;
-//     } else if (isOnMark) {
-//         color = CYAN;
-//     }
-//     mvprintw_color(r, border + 5, "%c", '|', color);
-//     if (state->mode == BLAME && state->blame.size() >= state->data.size() && i < (int)state->data.size()) {
-//         mvprintw_color(r, border + 6, "%-65s", state->blame[i].substr(0, 65).c_str(), i == (int)state->row ? invertColor(WHITE) : WHITE);
-//     }
-// }
 
 void fillData(State* state, std::vector<std::vector<Pixel>>& pixels, Position& cursor) {
     unsigned int r = STATUS_BAR_HEIGHT;
@@ -663,6 +636,7 @@ void fillData(State* state, std::vector<std::vector<Pixel>>& pixels, Position& c
 }
 
 void renderPixels(std::vector<std::vector<Pixel>> pixels) {
+    erase();
     for (unsigned int i = 0; i < pixels.size(); i++) {
         for (unsigned int j = 0; j < pixels[i].size(); j++) {
             attron(COLOR_PAIR(pixels[i][j].color));
@@ -670,21 +644,22 @@ void renderPixels(std::vector<std::vector<Pixel>> pixels) {
             attroff(COLOR_PAIR(pixels[i][j].color));
         }
     }
+    wnoutrefresh(stdscr);
+    doupdate();
 }
 
 void renderScreen(State* state) {
-    erase();
     std::vector<std::vector<Pixel>> pixels(state->maxY, std::vector<Pixel>(state->maxX));
     Position cursor;
     fillPixels(state, pixels);
     fillLineNum(state, pixels);
+    // TODO grep, findfile, etc
     fillData(state, pixels, cursor);
+    // TODO syntax highlighting
     fillStatusBar(state, pixels, cursor);
+    // TODO renderFileStack
     renderPixels(pixels);
     move(cursor.row, cursor.col);
-    // TODO renderFileStack
-    wnoutrefresh(stdscr);
-    doupdate();
 }
 
 void initTerminal() {
