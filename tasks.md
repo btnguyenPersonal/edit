@@ -15,8 +15,14 @@
     - prob will when something at work goes super slow so I can't just skate by with what i have
 
 - change render to not use mvprintw directly, just make a 2d array of structs w/ char & color then mvprintw through everything after
+    - make each "window" return an array Pixels
+    - have an addToPixels left and addToPixels top so each window can be tiled
 
 - make tabs look nicer (4 spaces w/ some indication)
+
+- only load in the text that needs to be on the viewport??
+    - can it be chunk based like minecraft??
+    - then global changes will need to load the entire file, but maybe not??
 
 ## BACKLOG
 - for go to definition, go to the .d.ts file if needed
