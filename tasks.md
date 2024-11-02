@@ -24,6 +24,8 @@
     - can it be chunk based like minecraft??
     - then global changes will need to load the entire file, but maybe not??
 
+- ; works with make (maybe will make me improve the build script)
+
 ## BACKLOG
 - for go to definition, go to the .d.ts file if needed
 - add mouse clicks
