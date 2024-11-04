@@ -36,6 +36,7 @@
 
 #define LINE_NUM_LENGTH 6
 #define STATUS_BAR_HEIGHT 1
+#define MARKS_LENGTH 1
 
 int invertColor(int color) { return color + 10; }
 
@@ -532,9 +533,9 @@ void renderFileExplorer(State* state) {
     renderFileExplorerNode(state->fileExplorer, 0, state->fileExplorerIndex, std::string(""), state->mode == FILEEXPLORER, state->fileExplorerWindowLine, state->fileExplorerSize);
 }
 
-void fillPixels(State* state, std::vector<std::vector<Pixel>>& pixels) {
-    for (unsigned int i = 0; i < state->maxY; i++) {
-        for (unsigned int j = 0; j < state->maxX; j++) {
+void fillPixels(std::vector<std::vector<Pixel>>& pixels) {
+    for (unsigned int i = 0; i < pixels.size(); i++) {
+        for (unsigned int j = 0; j < pixels[i].size(); j++) {
             pixels[i][j].character = ' ';
             pixels[i][j].color = WHITE;
         }
@@ -554,7 +555,9 @@ unsigned int addToStatusBar(Query query, std::vector<std::vector<Pixel>>& pixels
     return c;
 }
 
-void fillStatusBar(State* state, std::vector<std::vector<Pixel>>& pixels, Position& cursor) {
+std::vector<std::vector<Pixel>> fillStatusBar(State* state, Position& cursor) {
+    std::vector<std::vector<Pixel>> pixels(STATUS_BAR_HEIGHT, std::vector<Pixel>(state->maxX));
+    fillPixels(pixels);
     unsigned int c = 0;
     if (state->status.length() > 0) {
         Query temp = {state->status, 0, 0};
@@ -586,12 +589,14 @@ void fillStatusBar(State* state, std::vector<std::vector<Pixel>>& pixels, Positi
     for (unsigned int i = 0; i < displayFilename.length(); i++) {
         pixels[0].push_back({displayFilename[i], WHITE});
     }
+    return pixels;
 }
 
-void fillLineNum(State* state, std::vector<std::vector<Pixel>>& pixels) {
-    for (unsigned int i = 0; i + STATUS_BAR_HEIGHT < pixels.size() && i + state->windowPosition.row < state->data.size(); i++) {
+std::vector<std::vector<Pixel>> fillLineNum(State* state) {
+    std::vector<std::vector<Pixel>> pixels(state->maxY, std::vector<Pixel>(LINE_NUM_LENGTH));
+    fillPixels(pixels);
+    for (unsigned int i = 0; i < pixels.size() && i + state->windowPosition.row < state->data.size(); i++) {
         int r = i + state->windowPosition.row + 1;
-        int border = state->fileExplorerOpen ? state->fileExplorerSize : 0;
         int color = GREY;
         if (i + state->windowPosition.row == state->row) {
             color = WHITE;
@@ -600,25 +605,45 @@ void fillLineNum(State* state, std::vector<std::vector<Pixel>>& pixels) {
         }
         std::string lineNum = std::to_string(r);
         if (lineNum.length() >= LINE_NUM_LENGTH) {
-            lineNum = lineNum.substr(lineNum.length() - LINE_NUM_LENGTH + 1);
+            lineNum = lineNum.substr(lineNum.length() - LINE_NUM_LENGTH);
         } else {
-            while (lineNum.length() + 1 < LINE_NUM_LENGTH) {
+            while (lineNum.length() < LINE_NUM_LENGTH) {
                 lineNum = std::string(" ") + lineNum;
             }
         }
         for (unsigned int j = 0; j < lineNum.length(); j++) {
-            pixels[i + STATUS_BAR_HEIGHT][j + border].character = lineNum[j];
-            pixels[i + STATUS_BAR_HEIGHT][j + border].color = color;
+            pixels[i][j].character = lineNum[j];
+            pixels[i][j].color = color;
         }
     }
+    return pixels;
     // TODO add extra Marks
 }
 
-void fillData(State* state, std::vector<std::vector<Pixel>>& pixels, Position& cursor) {
-    unsigned int r = STATUS_BAR_HEIGHT;
-    unsigned int c = LINE_NUM_LENGTH;
+
+void addToScreen(std::vector<std::vector<Pixel>>& pixels, std::vector<std::vector<Pixel>> window, unsigned int y, unsigned int x) {
+    unsigned int r = y;
+    unsigned int i = 0;
+    while (r < pixels.size() && i < window.size()) {
+        unsigned int c = x;
+        unsigned int j = 0;
+        while (c < pixels[r].size() && j < window[i].size()) {
+            pixels[r][c] = window[i][j];
+            c++;
+            j++;
+        }
+        r++;
+        i++;
+    }
+}
+
+std::vector<std::vector<Pixel>> fillData(State* state, Position& cursor) {
+    std::vector<std::vector<Pixel>> pixels(state->maxY, std::vector<Pixel>(state->maxX));
+    fillPixels(pixels);
+    unsigned int r = 0;
+    unsigned int c = 0;
     for (unsigned int i = state->windowPosition.row; r < pixels.size() && i < state->data.size(); i++) {
-        c = LINE_NUM_LENGTH;
+        c = 0;
         unsigned int j = 0;
         for (j = state->windowPosition.col; c < pixels[r].size() && j < state->data[i].size(); j++) {
             if (state->row == i && state->col == j) {
@@ -633,6 +658,7 @@ void fillData(State* state, std::vector<std::vector<Pixel>>& pixels, Position& c
         }
         r++;
     }
+    return pixels;
 }
 
 void renderPixels(std::vector<std::vector<Pixel>> pixels) {
@@ -649,14 +675,22 @@ void renderPixels(std::vector<std::vector<Pixel>> pixels) {
 }
 
 void renderScreen(State* state) {
-    std::vector<std::vector<Pixel>> pixels(state->maxY, std::vector<Pixel>(state->maxX));
     Position cursor;
-    fillPixels(state, pixels);
-    fillLineNum(state, pixels);
+    std::vector<std::vector<Pixel>> pixels(state->maxY, std::vector<Pixel>(state->maxX));
+    fillPixels(pixels);
+    int r = 0;
+    int c = 0;
+    r += STATUS_BAR_HEIGHT;
+    addToScreen(pixels, fillLineNum(state), r, 0);
+    c += LINE_NUM_LENGTH;
+    // TODO marks
+    c += MARKS_LENGTH;
     // TODO grep, findfile, etc
-    fillData(state, pixels, cursor);
+    addToScreen(pixels, fillData(state, cursor), r, c);
+    cursor.row += r;
+    cursor.col += c;
+    addToScreen(pixels, fillStatusBar(state, cursor), 0, 0); // TODO make not at the end
     // TODO syntax highlighting
-    fillStatusBar(state, pixels, cursor);
     // TODO renderFileStack
     renderPixels(pixels);
     move(cursor.row, cursor.col);

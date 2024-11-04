@@ -9,7 +9,6 @@ struct Pixel {
     int color;
 };
 
-void renderPixels(std::vector<std::vector<Pixel>> pixels);
 std::string minimize_filename(const std::string& filename);
 int invertColor(int color);
 void initColors();
