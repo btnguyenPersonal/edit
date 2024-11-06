@@ -140,13 +140,14 @@ void sendShortcutKeys(State* state, int c) {
             flags += " -p " + state->buildDir;
         }
         flags += " --noEmit";
+        std::string command = "tsc" + flags + " 2>&1 | grep 'error TS' | sed 's/):/:/' | sed 's/(/:/' | sed 's/,/:/'";
         try {
             state->buildErrorIndex = 0;
-            state->buildErrors = runCommandAndCaptureOutput("tsc" + flags + " 2>&1 | grep 'error TS' | sed 's/):/:/' | sed 's/(/:/'");
-            jumpToBuildError(state);
+            state->buildErrors = runCommandAndCaptureOutput(command);
         } catch (const std::exception& e) {
             state->status = "invalid build target: " + state->buildDir;
         }
+        jumpToBuildError(state);
     } else if (c == ':') {
         state->mode = COMMANDLINE;
     } else if (c == '<') {

@@ -37,7 +37,7 @@ void jumpToBuildError(State* state) {
                 }
             }
             for (; i < state->buildErrors[state->buildErrorIndex].length(); i++) {
-                if (state->buildErrors[state->buildErrorIndex][i] != ',') {
+                if (state->buildErrors[state->buildErrorIndex][i] != ':') {
                     foundRow += state->buildErrors[state->buildErrorIndex][i];
                 } else {
                     i++;
@@ -57,7 +57,7 @@ void jumpToBuildError(State* state) {
                 state->changeFile(filename);
                 state->row = std::stoi(foundRow) - 1;
                 state->col = std::stoi(foundCol) - 1;
-                state->status = "(" + std::to_string(state->buildErrorIndex + 1) + " of " + std::to_string(state->buildErrors.size()) + ") " + state->buildErrors[state->buildErrorIndex].substr(i);
+                state->status = "(" + std::to_string(state->buildErrorIndex + 1) + " of " + std::to_string(state->buildErrors.size()) + ")" + state->buildErrors[state->buildErrorIndex].substr(i);
             } else {
                 state->status = std::string("invalid buildError format: ") + state->buildErrors[state->buildErrorIndex];
             }
@@ -78,29 +78,16 @@ bool isInt(const std::string& s) {
 
 std::vector<std::string> runCommandAndCaptureOutput(const std::string& command) {
     std::vector<std::string> outputLines;
-    std::string shellCommand = "bash -c \"set -o pipefail && " + command + "\"";
-    FILE* pipe = popen(shellCommand.c_str(), "r");
-    if (!pipe) {
-        throw std::runtime_error(command);
-    }
     std::string line;
+    std::unique_ptr<FILE, int(*)(FILE*)> pipe(popen(command.c_str(), "r"), pclose);
+    if (!pipe) {
+        throw std::runtime_error("popen() failed!");
+    }
     char buffer[4096];
-    while (fgets(buffer, sizeof(buffer), pipe) != nullptr) {
+    while (fgets(buffer, sizeof(buffer), pipe.get()) != nullptr) {
         line = buffer;
-        size_t pos = line.find('(');
-        if (pos != std::string::npos) {
-            line.replace(pos, 1, ":");
-        }
 
         outputLines.push_back(line);
-    }
-    int status = pclose(pipe);
-    if (status == -1) {
-        throw std::runtime_error("Failed to get command exit status: " + command);
-    }
-    int exitCode = WEXITSTATUS(status);
-    if (exitCode != 0) {
-        throw std::runtime_error(command);
     }
     return outputLines;
 }
