@@ -135,12 +135,17 @@ void sendShortcutKeys(State* state, int c) {
     } else if (c == ';') {
         state->status = "Building...";
         renderScreen(state);
-        std::string flags = "";
-        if (state->buildDir != "") {
-            flags += " -p " + state->buildDir;
+        std::string command;
+        if (std::filesystem::exists("Makefile")) {
+            command = "TERM=dumb make 2>&1 | sed \"s/’/\\'/g\" | sed \"s/‘/\\'/g\" | grep 'error: '";
+        } else {
+            std::string flags = "";
+            if (state->buildDir != "") {
+                flags += " -p " + state->buildDir;
+            }
+            flags += " --noEmit";
+            command = "tsc" + flags + " 2>&1 | grep 'error TS' | sed 's/):/:/' | sed 's/(/:/' | sed 's/,/:/'";
         }
-        flags += " --noEmit";
-        std::string command = "tsc" + flags + " 2>&1 | grep 'error TS' | sed 's/):/:/' | sed 's/(/:/' | sed 's/,/:/'";
         try {
             state->buildErrorIndex = 0;
             state->buildErrors = runCommandAndCaptureOutput(command);
