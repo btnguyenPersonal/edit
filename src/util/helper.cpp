@@ -164,6 +164,7 @@ bool isFunctionLine(std::string line, std::string s, std::string extension) {
     if (extension == "js" || extension == "jsx" || extension == "ts" || extension == "tsx") {
         functionStrings = {
             {"enum", " {"},
+            {"async", ""},
             {"class", " {"},
             {" ", " ("},
             {" ", "("},
