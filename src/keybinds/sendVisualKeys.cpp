@@ -96,20 +96,16 @@ void changeConventionVisual(State* state, std::string type) {
                     output += tolower(temp[i]);
                 }
             }
-        } else if (type == "snake" || type == "kebab" || type == "enum") {
+        } else if (type == "snake" || type == "kebab") {
             for (unsigned int i = 0; i < temp.length(); i++) {
                 if (temp[i] == ' ') {
-                    if (type == "snake" || type == "enum") {
+                    if (type == "snake") {
                         output += "_";
                     } else if (type == "kebab") {
                         output += "-";
                     }
                 } else {
-                    if (type == "enum") {
-                        output += toupper(temp[i]);
-                    } else {
-                        output += tolower(temp[i]);
-                    }
+                    output += tolower(temp[i]);
                 }
             }
         }
@@ -468,10 +464,6 @@ bool sendVisualKeys(State* state, char c, bool onlyMotions) {
     } else if (state->prevKeys == "g" && c == '-') {
         state->prevKeys = "";
         changeConventionVisual(state, "kebab");
-        state->mode = SHORTCUTS;
-    } else if (state->prevKeys == "g" && c == 'E') {
-        state->prevKeys = "";
-        changeConventionVisual(state, "enum");
         state->mode = SHORTCUTS;
     } else if (state->prevKeys == "g" && c == 'T') {
         state->prevKeys = "";

@@ -18,6 +18,8 @@
 
 - make tabs look nicer (4 spaces w/ some indication)
 
+- have viW for allowing everything except spaces
+
 ## BACKLOG
 - for go to definition, go to the .d.ts file if needed
 - add mouse clicks
