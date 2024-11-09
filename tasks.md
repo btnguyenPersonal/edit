@@ -1,4 +1,19 @@
 ## TODO
+- do deep dive of history and grep, and search for performance
+    - move them to their own file and test them individually w/o the ncurses crap mucking everything up
+    - prob will when something at work goes super slow so I can't just skate by with what i have
+
+- change render to not use mvprintw directly, just make a 2d array of structs w/ char & color then mvprintw through everything after
+
+- make tabs look nicer (4 spaces w/ some indication)
+
+- have viW for allowing everything except spaces
+
+- speed up `make`
+
+- figure out how to make build errors propogate in background
+
+## BACKLOG
 - improve queries abstraction
     - change all the query stuff to use inputName
     - make selection a part of the queries individually
@@ -10,17 +25,6 @@
     - have gr access node_modules maybe...
     - autocomplete for functions
 
-- do deep dive of history and grep, and search for performance
-    - move them to their own file and test them individually w/o the ncurses crap mucking everything up
-    - prob will when something at work goes super slow so I can't just skate by with what i have
-
-- change render to not use mvprintw directly, just make a 2d array of structs w/ char & color then mvprintw through everything after
-
-- make tabs look nicer (4 spaces w/ some indication)
-
-- have viW for allowing everything except spaces
-
-## BACKLOG
 - for go to definition, go to the .d.ts file if needed
 - add mouse clicks
 - its sooooooooooooooooooooo slow wtffffffff
