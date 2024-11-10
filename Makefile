@@ -1,5 +1,10 @@
 CC = g++-13
-CFLAGS = -Wall -lncurses -pthread -O2
+
+NPROCS = $(shell nproc)
+MAKEFLAGS += --jobs=$(NPROCS) --output-sync=target
+
+CFLAGS = -Wall -O2
+LDFLAGS = -lncurses -pthread
 DEPFLAGS = -MMD -MP
 
 SRC_DIR = src
@@ -7,7 +12,7 @@ KEYBINDS_DIR = $(SRC_DIR)/keybinds
 UTIL_DIR = $(SRC_DIR)/util
 BUILD_DIR = build
 
-SOURCES = $(SRC_DIR)/edit.cpp \
+SOURCES := $(SRC_DIR)/edit.cpp \
           $(UTIL_DIR)/helper.cpp \
           $(UTIL_DIR)/render.cpp \
           $(UTIL_DIR)/fileExplorerNode.cpp \
@@ -31,19 +36,18 @@ SOURCES = $(SRC_DIR)/edit.cpp \
           $(KEYBINDS_DIR)/sendMultiCursorKeys.cpp \
           $(KEYBINDS_DIR)/sendTypingKeys.cpp
 
-OBJECTS = $(SOURCES:$(SRC_DIR)/%.cpp=$(BUILD_DIR)/%.o)
+OBJECTS := $(SOURCES:$(SRC_DIR)/%.cpp=$(BUILD_DIR)/%.o)
+DEPS := $(OBJECTS:.o=.d)
+EXECUTABLE := $(BUILD_DIR)/e
 
-DEPS = $(OBJECTS:.o=.d)
-
-EXECUTABLE = $(BUILD_DIR)/e
-
+.PHONY: all clean format test install
 all: $(BUILD_DIR) $(EXECUTABLE)
 
 $(BUILD_DIR):
 	mkdir -p $(BUILD_DIR)/util $(BUILD_DIR)/keybinds
 
 $(EXECUTABLE): $(OBJECTS)
-	$(CC) $^ -o $@ $(CFLAGS)
+	$(CC) $^ -o $@ $(LDFLAGS) $(CFLAGS)
 
 $(BUILD_DIR)/%.o: $(SRC_DIR)/%.cpp
 	$(CC) -c $< -o $@ $(CFLAGS) $(DEPFLAGS)
@@ -62,4 +66,4 @@ clean:
 
 -include $(DEPS)
 
-.PHONY: all clean
+.SECONDEXPANSION:
