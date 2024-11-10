@@ -355,17 +355,19 @@ void printLine(State* state, int row) {
                     } else {
                         if (searchCounter != 0 && state->searching == true) {
                             color = getSearchColor(state, row, startOfSearch);
-                        } else if (isMergeConflict(state->data[row])) {
-                            color = RED;
-                        } else if (isComment) {
-                            color = GREEN;
-                        } else if (isInString == true && getExtension(state->filename) != "md" && getExtension(state->filename) != "txt") {
-                            color = CYAN;
                         } else {
-                            color = getColorFromChar(state->data[row][col]);
-                        }
-                        if (isRowColInVisual(state, row, col)) {
-                            color = invertColor(color);
+                            if (isMergeConflict(state->data[row])) {
+                                color = RED;
+                            } else if (isComment) {
+                                color = GREEN;
+                            } else if (isInString == true && getExtension(state->filename) != "md" && getExtension(state->filename) != "txt") {
+                                color = CYAN;
+                            } else {
+                                color = getColorFromChar(state->data[row][col]);
+                            }
+                            if (isRowColInVisual(state, row, col)) {
+                                color = invertColor(color);
+                            }
                         }
                     }
                     printChar(state, row, renderCol, state->data[row][col], color);

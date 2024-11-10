@@ -123,13 +123,6 @@ The full include-list for src/util/comment.cpp:
 #include "indent.h"  // for getNumLeadingSpaces
 #include "state.h"   // for State
 ---
-
-src/util/state.h should add these lines:
-class FileExplorerNode;
-
-src/util/state.h should remove these lines:
-- #include "fileExplorerNode.h"  // lines 5-5
-
 The full include-list for src/util/state.h:
 #include <filesystem>    // for path
 #include <string>        // for basic_string, string
@@ -138,17 +131,6 @@ The full include-list for src/util/state.h:
 #include "visualType.h"  // for VisualType
 class FileExplorerNode;
 ---
-
-src/util/state.cpp should add these lines:
-#include <curses.h>                 // for endwin
-#include <stdlib.h>                 // for exit
-#include <algorithm>                // for max
-#include "util/fileExplorerNode.h"  // for FileExplorerNode
-
-src/util/state.cpp should remove these lines:
-- #include "state.h"  // lines 4-4
-- #include <ncurses.h>  // lines 7-7
-
 The full include-list for src/util/state.cpp:
 #include "state.h"
 #include <curses.h>                 // for endwin
@@ -162,28 +144,10 @@ The full include-list for src/util/state.cpp:
 #include "util/fileExplorerNode.h"  // for FileExplorerNode
 #include "visualType.h"             // for VisualType
 ---
-
-src/util/render.h should add these lines:
-class State;
-
-src/util/render.h should remove these lines:
-- #include <ncurses.h>  // lines 4-4
-- #include "state.h"  // lines 3-3
-
 The full include-list for src/util/render.h:
 #include <string>  // for string
 class State;
 ---
-
-src/util/render.cpp should add these lines:
-#include <stdlib.h>                 // for exit, size_t, NULL
-#include <sstream>                  // for basic_stringstream
-#include "util/fileExplorerNode.h"  // for FileExplorerNode
-#include "util/visualType.h"        // for VisualType
-
-src/util/render.cpp should remove these lines:
-- #include <fstream>  // lines 2-2
-
 The full include-list for src/util/render.cpp:
 #include "render.h"
 #include <ncurses.h>                // for init_pair, COLOR_PAIR, move, mvpr...
@@ -201,30 +165,10 @@ The full include-list for src/util/render.cpp:
 #include "util/fileExplorerNode.h"  // for FileExplorerNode
 #include "util/visualType.h"        // for VisualType
 ---
-
-src/util/clipboard.h should add these lines:
-class State;
-
-src/util/clipboard.h should remove these lines:
-- #include <vector>  // lines 5-5
-- #include "state.h"  // lines 3-3
-
 The full include-list for src/util/clipboard.h:
 #include <string>  // for string
 class State;
 ---
-
-src/util/clipboard.cpp should add these lines:
-#include <stdio.h>                       // for pclose, popen, FILE, fgets
-#include <algorithm>                     // for max
-#include <exception>                     // for exception
-#include <filesystem>                    // for path, copy_options, canonical
-#include <stdexcept>                     // for runtime_error
-#include "util/visualType.h"             // for VisualType
-
-src/util/clipboard.cpp should remove these lines:
-- #include <iterator>  // lines 7-7
-
 The full include-list for src/util/clipboard.cpp:
 #include "clipboard.h"
 #include <stdio.h>                       // for pclose, popen, FILE, fgets
@@ -242,33 +186,9 @@ The full include-list for src/util/clipboard.cpp:
 #include "state.h"                       // for State, Position
 #include "util/visualType.h"             // for VisualType
 ---
-src/keybinds/sendShortcutKeys.cpp:35:33: warning: adding 'int' to a string does not append to the string [-Wstring-plus-int]
-   35 |         state->dotCommand = "r" + c;
-      |                             ~~~~^~~
-src/keybinds/sendShortcutKeys.cpp:35:33: note: use array indexing to silence this warning
-   35 |         state->dotCommand = "r" + c;
-      |                                 ^
-      |                             &   [  ]
-
-src/keybinds/sendShortcutKeys.h should add these lines:
-class State;
-
-src/keybinds/sendShortcutKeys.h should remove these lines:
-- #include "../util/state.h"  // lines 3-3
-
 The full include-list for src/keybinds/sendShortcutKeys.h:
 class State;
 ---
-
-src/keybinds/sendShortcutKeys.cpp should add these lines:
-#include <cctype>                       // for tolower, toupper, islower
-#include <exception>                    // for exception
-#include <filesystem>                   // for is_regular_file, path, exists
-#include "util/fileExplorerNode.h"      // for FileExplorerNode
-
-src/keybinds/sendShortcutKeys.cpp should remove these lines:
-- #include <climits>  // lines 16-16
-
 The full include-list for src/keybinds/sendShortcutKeys.cpp:
 #include "sendShortcutKeys.h"
 #include <ncurses.h>                    // for KEY_BACKSPACE, KEY_DOWN, KEY_...
@@ -293,22 +213,9 @@ The full include-list for src/keybinds/sendShortcutKeys.cpp:
 #include "sendVisualKeys.h"             // for getInVisual, sendVisualKeys
 #include "util/fileExplorerNode.h"      // for FileExplorerNode
 ---
-
-src/keybinds/sendFindFileKeys.h should add these lines:
-class State;
-
-src/keybinds/sendFindFileKeys.h should remove these lines:
-- #include "../util/state.h"  // lines 3-3
-
 The full include-list for src/keybinds/sendFindFileKeys.h:
 class State;
 ---
-
-src/keybinds/sendFindFileKeys.cpp should add these lines:
-#include <filesystem>           // for path, relative
-
-src/keybinds/sendFindFileKeys.cpp should remove these lines:
-
 The full include-list for src/keybinds/sendFindFileKeys.cpp:
 #include "sendFindFileKeys.h"
 #include <ncurses.h>            // for KEY_BACKSPACE, KEY_DOWN, KEY_LEFT
@@ -322,27 +229,9 @@ The full include-list for src/keybinds/sendFindFileKeys.cpp:
 #include "../util/render.h"     // for renderScreen
 #include "../util/state.h"      // for State, Query
 ---
-
-src/keybinds/sendKeys.h should add these lines:
-class State;
-
-src/keybinds/sendKeys.h should remove these lines:
-- #include "../util/state.h"  // lines 3-3
-
 The full include-list for src/keybinds/sendKeys.h:
 class State;
 ---
-
-src/keybinds/sendKeys.cpp should add these lines:
-#include <curses.h>                // for endwin
-#include <stdlib.h>                // for exit
-#include <algorithm>               // for max
-#include <string>                  // for basic_string, allocator, char_traits
-#include <vector>                  // for vector
-
-src/keybinds/sendKeys.cpp should remove these lines:
-- #include <ncurses.h>  // lines 16-16
-
 The full include-list for src/keybinds/sendKeys.cpp:
 #include "sendKeys.h"
 #include <curses.h>                // for endwin
@@ -365,24 +254,9 @@ The full include-list for src/keybinds/sendKeys.cpp:
 #include "sendTypingKeys.h"        // for sendTypingKeys
 #include "sendVisualKeys.h"        // for sendVisualKeys
 ---
-
-src/keybinds/sendCommandLineKeys.h should add these lines:
-class State;
-
-src/keybinds/sendCommandLineKeys.h should remove these lines:
-- #include "../util/state.h"  // lines 3-3
-
 The full include-list for src/keybinds/sendCommandLineKeys.h:
 class State;
 ---
-
-src/keybinds/sendCommandLineKeys.cpp should add these lines:
-#include <stdlib.h>          // for exit
-#include <algorithm>         // for max
-
-src/keybinds/sendCommandLineKeys.cpp should remove these lines:
-- #include "../util/clipboard.h"  // lines 2-2
-
 The full include-list for src/keybinds/sendCommandLineKeys.cpp:
 #include "sendCommandLineKeys.h"
 #include <ncurses.h>         // for endwin, KEY_BACKSPACE, KEY_LEFT, KEY_RIGHT
@@ -397,23 +271,9 @@ The full include-list for src/keybinds/sendCommandLineKeys.cpp:
 #include "../util/render.h"  // for renderScreen
 #include "../util/state.h"   // for State, Query
 ---
-
-src/keybinds/sendMultiCursorKeys.h should add these lines:
-class State;
-
-src/keybinds/sendMultiCursorKeys.h should remove these lines:
-- #include "../util/state.h"  // lines 3-3
-
 The full include-list for src/keybinds/sendMultiCursorKeys.h:
 class State;
 ---
-
-src/keybinds/sendMultiCursorKeys.cpp should add these lines:
-#include <curses.h>          // for KEY_BACKSPACE
-
-src/keybinds/sendMultiCursorKeys.cpp should remove these lines:
-- #include <ncurses.h>  // lines 7-7
-
 The full include-list for src/keybinds/sendMultiCursorKeys.cpp:
 #include "sendMultiCursorKeys.h"
 #include <curses.h>          // for KEY_BACKSPACE

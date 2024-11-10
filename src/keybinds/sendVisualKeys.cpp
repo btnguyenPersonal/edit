@@ -614,6 +614,25 @@ bool sendVisualKeys(State* state, char c, bool onlyMotions) {
         auto pos = matchIt(state);
         state->row = pos.row;
         state->col = pos.col;
+    } else if (c == 'N') {
+        state->searching = true;
+        bool result = setSearchResultReverse(state);
+        if (result == false) {
+            state->searchFail = true;
+        }
+        centerScreen(state);
+    } else if (c == 'n') {
+        state->searching = true;
+        state->col += 1;
+        unsigned int temp_col = state->col;
+        unsigned int temp_row = state->row;
+        bool result = setSearchResult(state);
+        if (result == false) {
+            state->searchFail = true;
+            state->row = temp_row;
+            state->col = temp_col - 1;
+        }
+        centerScreen(state);
     } else if (!onlyMotions && c == '<') {
         Bounds bounds = getBounds(state);
         state->row = bounds.minR;

@@ -1,58 +1,68 @@
 #!/bin/bash
 
-# Install required tools if they're missing
-install_tools() {
-    if ! command -v iwyu_tool.py &> /dev/null || ! command -v fix_includes.py &> /dev/null; then
-        echo "Installing include-what-you-use tools..."
-        if [[ "$OSTYPE" == "darwin"* ]]; then
-            brew install include-what-you-use
-        else
-            sudo apt-get update && sudo apt-get install -y include-what-you-use iwyu-tool
-        fi
+# Create backup of source files
+backup_dir="include_backup_$(date +%Y%m%d_%H%M%S)"
+mkdir -p "$backup_dir"
+cp -r src "$backup_dir/"
+
+# Function to process a single file
+process_file() {
+    local file="$1"
+    local temp_file="${file}.tmp"
+
+    # Run include-what-you-use and capture output
+    include-what-you-use \
+        -std=c++17 \
+        -I./src \
+        -I/usr/include \
+        -I/usr/local/include \
+        "${file}" 2>&1 | awk '
+        # Process IWYU output and modify includes
+        BEGIN { add=0; remove=0; }
+        /should add these lines:/ { add=1; remove=0; next }
+        /should remove these lines:/ { add=0; remove=1; next }
+        /^-/ && remove==1 {
+            # Store lines to remove
+            sub(/^- /, "");
+            sub(/ +#.*$/, "");
+            removes[$0] = 1;
+            next
+        }
+        add==1 && /^#include/ {
+            # Store lines to add
+            sub(/ +#.*$/, "");
+            adds[NR] = $0;
+        }
+        END {
+            # Process the original file
+            while ((getline line < FILENAME) > 0) {
+                if (line ~ /^#include/) {
+                    sub(/ +#.*$/, "", line);
+                    if (!(line in removes)) {
+                        print line > "'${temp_file}'"
+                    }
+                } else {
+                    print line > "'${temp_file}'"
+                }
+            }
+            # Add new includes after the last include or at the start
+            for (i in adds) {
+                print adds[i] > "'${temp_file}'"
+            }
+        }' "${file}"
+
+    # If temporary file was created, replace original
+    if [ -f "${temp_file}" ]; then
+        mv "${temp_file}" "${file}"
     fi
 }
 
-# Generate compilation database
-generate_compile_commands() {
-    echo '[' > compile_commands.json
-    find src -name "*.cpp" | while read -r file; do
-        echo '  {
-            "directory": "'$(pwd)'",
-            "command": "g++-13 -c -Wall -lncurses -pthread -O2 -I./src '${file}' -o '${file}'.o",
-            "file": "'${file}'"
-        },' >> compile_commands.json
-    done
-    echo '  {}' >> compile_commands.json  # Add empty object to make valid JSON
-    echo ']' >> compile_commands.json
-}
+# Find and process all source files
+echo "Processing source files..."
+find src -type f \( -name "*.cpp" -o -name "*.h" \) | while read -r file; do
+    echo "Processing $file..."
+    process_file "$file"
+done
 
-# Main function to run IWYU and apply fixes
-fix_includes() {
-    # Create backup directory
-    backup_dir="include_backup_$(date +%Y%m%d_%H%M%S)"
-    mkdir -p "$backup_dir"
-
-    # Backup all source files
-    find src -type f \( -name "*.cpp" -o -name "*.h" \) -exec cp --parents {} "$backup_dir/" \;
-
-    echo "Running include-what-you-use analysis..."
-    iwyu_tool.py -p . -- -Xiwyu --mapping_file=${IWYU_MAPPING_FILE:-/usr/share/include-what-you-use/gcc.libc.imp} \
-        -Xiwyu --no_fwd_decls \
-        2>&1 | tee iwyu.out
-
-    echo "Applying suggested fixes..."
-    fix_includes.py < iwyu.out
-
-    echo "Backup of original files saved in: $backup_dir"
-    echo "If you need to revert changes, run: cp -r $backup_dir/* ."
-}
-
-# Main script execution
-echo "Starting automatic include fixing..."
-install_tools
-generate_compile_commands
-fix_includes
-echo "Include fixing complete!"
-
-# Optional: clean up temporary files
-rm -f iwyu.out compile_commands.json
+echo "Backup of original files saved in: $backup_dir"
+echo "If you need to revert changes, run: cp -r $backup_dir/* ."

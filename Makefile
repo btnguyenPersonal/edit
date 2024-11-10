@@ -1,7 +1,7 @@
 CC = g++-13
 
 NPROCS = $(shell nproc)
-MAKEFLAGS += --jobs=$(NPROCS) --output-sync=target
+MAKEFLAGS += --jobs=$(NPROCS)
 
 CFLAGS = -Wall -O2
 LDFLAGS = -lncurses -pthread
@@ -40,7 +40,7 @@ OBJECTS := $(SOURCES:$(SRC_DIR)/%.cpp=$(BUILD_DIR)/%.o)
 DEPS := $(OBJECTS:.o=.d)
 EXECUTABLE := $(BUILD_DIR)/e
 
-.PHONY: all clean format test install
+.PHONY: all clean
 all: $(BUILD_DIR) $(EXECUTABLE)
 
 $(BUILD_DIR):
