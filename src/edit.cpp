@@ -7,7 +7,6 @@
 #include <iostream>
 #include <ncurses.h>
 #include <unistd.h>
-#include <sys/select.h>
 
 int main(int argc, char* argv[]) {
     int c;
