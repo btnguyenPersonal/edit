@@ -829,6 +829,34 @@ WordPosition findParentheses(const std::string& str, char openParen, char closeP
     return {0, 0};
 }
 
+WordPosition getBigWordPosition(const std::string& str, unsigned int cursor) {
+    if (cursor >= str.size()) {
+        return {0, 0};
+    }
+    // Move cursor to the start of the current chunk
+    while (cursor > 0 && str[cursor - 1] != ' ') {
+        cursor--;
+    }
+    // If cursor is on a space, move to the next chunk
+    if (str[cursor] == ' ') {
+        while (cursor < str.size() && str[cursor] == ' ') {
+            cursor++;
+        }
+    }
+    // If no non-space chunk is found
+    if (cursor >= str.size()) {
+        return {0, 0};
+    }
+    // Find the end of the chunk
+    unsigned int start = cursor;
+    unsigned int end = start;
+    while (end < str.size() && str[end] != ' ') {
+        end++;
+    }
+
+    return {start, end - 1};
+}
+
 WordPosition getWordPosition(const std::string& str, unsigned int cursor) {
     if (cursor >= str.size()) {
         return {0, 0};

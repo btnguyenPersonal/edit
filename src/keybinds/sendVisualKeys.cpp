@@ -395,6 +395,9 @@ bool sendVisualKeys(State* state, char c, bool onlyMotions) {
     } else if (state->prevKeys == "i" && c == 'w') {
         setStateFromWordPosition(state, getWordPosition(state->data[state->row], state->col));
         state->prevKeys = "";
+    } else if (state->prevKeys == "i" && c == 'W') {
+        setStateFromWordPosition(state, getBigWordPosition(state->data[state->row], state->col));
+        state->prevKeys = "";
     } else if (state->prevKeys == "i" && c == 'p') {
         state->visualType = LINE;
         surroundParagraph(state, false);

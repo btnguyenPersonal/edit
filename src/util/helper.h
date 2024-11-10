@@ -60,6 +60,7 @@ WordPosition findParentheses(const std::string& str, char openParen, char closeP
 unsigned int getIndent(const std::string& str);
 unsigned int getNextLineSameIndent(State* state);
 unsigned int getPrevLineSameIndent(State* state);
+WordPosition getBigWordPosition(const std::string& str, unsigned int cursor);
 WordPosition getWordPosition(const std::string& str, unsigned int cursor);
 std::vector<grepMatch> grepFiles(const std::filesystem::path& dir_path, const std::string& query);
 void generateGrepOutput(State* state);

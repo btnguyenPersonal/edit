@@ -7,13 +7,12 @@
 
 - make tabs look nicer (4 spaces w/ some indication)
 
-- have viW for allowing everything except spaces
-
 - speed up `make`
 
 - figure out how to make build errors propogate in background
 
 ## BACKLOG
+- have viW for allowing everything except spaces
 - improve queries abstraction
     - change all the query stuff to use inputName
     - make selection a part of the queries individually
