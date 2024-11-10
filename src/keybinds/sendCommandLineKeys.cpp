@@ -23,8 +23,15 @@ void evaluateCommandLineQuery(State* state) {
         }
     } else if (state->commandLine.query.substr(0, 2) == "b=") {
         state->buildDir = state->commandLine.query.substr(2);
-    } else if (state->commandLine.query.substr(0, 1) == "!") {
-        runCommand(state, state->commandLine.query.substr(1));
+    } else if (state->commandLine.query == "!sh") {
+        std::vector<std::string> output;
+        for (unsigned int i = 0; i < state->data.size(); i++) {
+            auto lines = runCommandAndCaptureOutput(state->data[i]);
+            for (std::string line : lines) {
+                output.push_back(line);
+            }
+        }
+        state->data = output;
     } else if (state->commandLine.query == "w") {
         trimTrailingWhitespace(state);
         saveFile(state);
