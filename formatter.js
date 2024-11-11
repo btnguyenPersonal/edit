@@ -1,4 +1,4 @@
-// eslint `state->buildDir` -f ~/formatter.js
+// eslint `state->buildDir` -f ~/formatter.js | grep "Error:"
 module.exports = (results, data) => {
     var results = results || [];
 
@@ -23,7 +23,7 @@ module.exports = (results, data) => {
 
     if (summary.errors.length > 0) {
         return summary.errors.map((msg) => (
-            msg.filePath + ":" + msg.line + ":" + msg.column + " error: " + msg.message
+            msg.filePath + ":" + msg.line + ":" + msg.column + " Error: " + msg.message
         )).join("\n");
     }
 };
