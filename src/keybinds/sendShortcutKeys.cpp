@@ -144,6 +144,7 @@ void sendShortcutKeys(State* state, int c) {
                 flags += " -p " + state->buildDir;
             }
             flags += " --noEmit";
+            flags += " --incremental";
             command = "tsc" + flags + " 2>&1 | grep 'error TS' | sed 's/):/:/' | sed 's/(/:/' | sed 's/,/:/'";
         }
         try {
