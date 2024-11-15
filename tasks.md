@@ -11,6 +11,13 @@
 
 - figure out how to make build errors propogate in background
 
+- show red for build errors
+
+- make Lint spit out non-absolute paths
+    - prob can just make absolute paths set filename to relative path if start matches the relative path
+
+- fix autocomplete for off the screen
+
 ## BACKLOG
 - have viW for allowing everything except spaces
 - improve queries abstraction
@@ -26,7 +33,7 @@
 
 - for go to definition, go to the .d.ts file if needed
 - add mouse clicks
-- its sooooooooooooooooooooo slow wtffffffff
+    - its sooooooooooooooooooooo slow wtffffffff
 - add mouse drag
 - add mouse scroll
 - add python formatting

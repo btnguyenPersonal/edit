@@ -132,6 +132,19 @@ void sendShortcutKeys(State* state, int c) {
         } else if (islower(state->data[state->row][state->col])) {
             state->data[state->row][state->col] = std::toupper(state->data[state->row][state->col]);
         }
+    } else if (c == 'L') {
+        state->status = "Linting...";
+        renderScreen(state);
+        std::string command = "(cd ";
+        command += state->buildDir;
+        command += " && eslint . -f ~/formatter.js 2>&1 | grep ' Error: ')";
+        try {
+            state->buildErrorIndex = 0;
+            state->buildErrors = runCommandAndCaptureOutput(command);
+        } catch (const std::exception& e) {
+            state->status = "invalid build target: " + state->buildDir;
+        }
+        jumpToBuildError(state);
     } else if (c == ';') {
         state->status = "Building...";
         renderScreen(state);

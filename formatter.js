@@ -1,4 +1,3 @@
-// eslint `state->buildDir` -f ~/formatter.js | grep "Error:"
 module.exports = (results, data) => {
     var results = results || [];
 
@@ -8,8 +7,6 @@ module.exports = (results, data) => {
                 if (msg.severity === 2) {
                     seq.errors.push({
                         filePath: current.filePath,
-                        ruleId: msg.ruleId,
-                        ruleUrl: data.rulesMeta[msg.ruleId].docs.url,
                         message: msg.message,
                         line: msg.line,
                         column: msg.column
@@ -23,7 +20,7 @@ module.exports = (results, data) => {
 
     if (summary.errors.length > 0) {
         return summary.errors.map((msg) => (
-            msg.filePath + ":" + msg.line + ":" + msg.column + " Error: " + msg.message
+            msg.filePath + ":" + msg.line + ":" + msg.column + ": Error: " + msg.message
         )).join("\n");
     }
 };
