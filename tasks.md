@@ -13,10 +13,10 @@
 
 - show red for build errors
 
+## BACKLOG
 - make Lint spit out non-absolute paths
     - prob can just make absolute paths set filename to relative path if start matches the relative path
 
-## BACKLOG
 - fix autocomplete for off the screen
 - have viW for allowing everything except spaces
 - improve queries abstraction

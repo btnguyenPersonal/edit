@@ -11,9 +11,19 @@
 unsigned int State::maxX = 0;
 unsigned int State::maxY = 0;
 
+std::string normalizeFilename(std::string filename) {
+    std::string current_path = std::filesystem::current_path().string() + "/";
+    if (filename.substr(0, current_path.length()) == current_path) {
+        return filename.substr(current_path.length());
+    } else {
+        return filename;
+    }
+}
+
 void State::changeFile(std::string filename) {
+    auto normalizedFilename = normalizeFilename(filename);
     if (this->fileExplorerOpen) {
-        this->fileExplorerIndex = this->fileExplorer->expand(filename);
+        this->fileExplorerIndex = this->fileExplorer->expand(normalizedFilename);
         centerFileExplorer(this);
     }
     bool found = false;
@@ -43,11 +53,11 @@ void State::changeFile(std::string filename) {
         });
     }
     for (unsigned int i = 0; i < this->archives.size(); i++) {
-        if (this->archives[i].filename == std::string(filename)) {
+        if (this->archives[i].filename == normalizedFilename) {
             auto archive = this->archives[i];
-            this->filename = std::string(filename);
-            this->data = readFile(filename);
-            this->commentSymbol = getCommentSymbol(filename);
+            this->filename = normalizedFilename;
+            this->data = readFile(normalizedFilename);
+            this->commentSymbol = getCommentSymbol(normalizedFilename);
             this->previousState = archive.previousState;
             this->history = archive.history;
             this->historyPosition = archive.historyPosition;
@@ -59,11 +69,11 @@ void State::changeFile(std::string filename) {
             return;
         }
     }
-    auto data = readFile(filename);
-    this->filename = std::string(filename);
+    auto data = readFile(normalizedFilename);
+    this->filename = normalizedFilename;
     this->data = data;
     this->previousState = data;
-    this->commentSymbol = getCommentSymbol(filename);
+    this->commentSymbol = getCommentSymbol(normalizedFilename);
     this->history = std::vector<std::vector<diffLine>>();
     this->historyPosition = -1;
     this->windowPosition.row = 0;
@@ -97,14 +107,15 @@ void State::pushFileStack(std::string filename) {
 }
 
 void State::resetState(std::string filename) {
+    auto normalizedFilename = normalizeFilename(filename);
     this->pushFileStack(this->filename);
-    this->pushFileStack(filename);
+    this->pushFileStack(normalizedFilename);
     this->fileStackIndex = this->fileStack.size() - 1;
-    if (!std::filesystem::is_regular_file(filename.c_str())) {
-        this->status = "file not found: " + filename;
+    if (!std::filesystem::is_regular_file(normalizedFilename.c_str())) {
+        this->status = "file not found: " + normalizedFilename;
         exit(1);
     }
-    this->changeFile(filename);
+    this->changeFile(normalizedFilename);
 }
 
 State::State() {
@@ -175,18 +186,19 @@ State::State(std::vector<std::string> data) : State() {
 }
 
 State::State(std::string filename) : State() {
-    if (!std::filesystem::is_regular_file(filename.c_str())) {
+    auto normalizedFilename = normalizeFilename(filename);
+    if (!std::filesystem::is_regular_file(normalizedFilename.c_str())) {
         endwin();
-        std::cout << "file not found: " << filename << std::endl;
+        std::cout << "file not found: " << normalizedFilename << std::endl;
         exit(1);
     }
-    auto data = readFile(filename.c_str());
-    this->filename = std::string(filename);
+    auto data = readFile(normalizedFilename.c_str());
+    this->filename = std::string(normalizedFilename);
     this->data = data;
     this->previousState = data;
-    this->commentSymbol = getCommentSymbol(filename);
+    this->commentSymbol = getCommentSymbol(normalizedFilename);
     this->mode = SHORTCUTS;
-    this->fileStack = {filename};
+    this->fileStack = {normalizedFilename};
     this->fileStackIndex = 0;
 }
 
