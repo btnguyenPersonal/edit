@@ -392,7 +392,7 @@ unsigned int renderAutoComplete(State* state, int row, unsigned int col, unsigne
         std::string completion = autocomplete(state, getCurrentWord(state));
         if (state->data[row].substr(col, completion.length()) != completion) {
             for (unsigned int i = 0; i < completion.length(); i++) {
-                printChar(state, row, col + i, completion[i], GREY);
+                printChar(state, row, renderCol + i, completion[i], GREY);
             }
             return renderCol + completion.length();
         }

@@ -41,10 +41,12 @@ void sendMultiCursorKeys(State* state, int c) {
         state->col += 1;
     } else if (c == ctrl('i')) { // TAB
         std::string completion = autocomplete(state, getCurrentWord(state));
-        for (unsigned int i = bounds.minR; i <= bounds.maxR; i++) {
-            std::string current = state->data[i];
-            state->data[i] = current.substr(0, state->col) + completion + safeSubstring(current, state->col);
+        if (state->data[state->row].substr(state->col, completion.length()) != completion) {
+            for (unsigned int i = bounds.minR; i <= bounds.maxR; i++) {
+                std::string current = state->data[i];
+                state->data[i] = current.substr(0, state->col) + completion + safeSubstring(current, state->col);
+            }
+            state->col += completion.length();
         }
-        state->col += completion.length();
     }
 }

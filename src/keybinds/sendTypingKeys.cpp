@@ -75,9 +75,11 @@ void sendTypingKeys(State* state, int c) {
         state->prevKeys = 'v';
     } else if (c == ctrl('i')) { // TAB
         std::string completion = autocomplete(state, getCurrentWord(state));
-        std::string current = state->data[state->row];
-        state->data[state->row] = current.substr(0, state->col) + completion + current.substr(state->col);
-        state->col += completion.length();
+        if (state->data[state->row].substr(state->col, completion.length()) != completion) {
+            std::string current = state->data[state->row];
+            state->data[state->row] = current.substr(0, state->col) + completion + current.substr(state->col);
+            state->col += completion.length();
+        }
     } else if (c == KEY_LEFT) {
         left(state);
     } else if (c == KEY_RIGHT) {
