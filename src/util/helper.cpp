@@ -23,7 +23,7 @@ bool isTestFile(const std::string& filepath) {
 void populateLintErrors(State* state) {
     std::string command = "(cd ";
     command += state->buildDir;
-    command += " && eslint . -f ~/.local/formatter.js 2>&1 | grep ' Error: ')";
+    command += " && eslint . -f ~/.local/scripts/formatter.js 2>&1 | grep ' Error: ')";
     try {
         state->buildErrorIndex = 0;
         state->buildErrors = runCommandAndCaptureOutput(command);
