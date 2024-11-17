@@ -7,6 +7,13 @@
 #include <string>
 #include <vector>
 
+struct buildError {
+    std::string filename;
+    int row;
+    int col;
+    std::string msg;
+};
+
 struct grepMatch {
     std::filesystem::path path;
     int lineNum;

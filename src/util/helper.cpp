@@ -53,52 +53,55 @@ void populateBuildErrors(State* state) {
     }
 }
 
+buildError parseBuildError(std::string s) {
+    std::string filename = "";
+    std::string foundRow = "";
+    std::string foundCol = "";
+    unsigned int i;
+    for (i = 0; i < s.length(); i++) {
+        if (s[i] != ':') {
+            filename += s[i];
+        } else {
+            i++;
+            break;
+        }
+    }
+    for (; i < s.length(); i++) {
+        if (s[i] != ':') {
+            foundRow += s[i];
+        } else {
+            i++;
+            break;
+        }
+    }
+    for (; i < s.length(); i++) {
+        if (s[i] != ':') {
+            foundCol += s[i];
+        } else {
+            i++;
+            break;
+        }
+    }
+    if (filename != "" && isInt(foundRow) && isInt(foundCol)) {
+        return { filename, std::stoi(foundRow) - 1, std::stoi(foundCol) - 1, s.substr(i)};
+    } else {
+        throw std::exception();
+    }
+}
+
 void jumpToBuildError(State* state) {
     try {
         if (state->buildErrors.size() > 0) {
-            std::string filename = "";
-            std::string foundRow = "";
-            std::string foundCol = "";
-            unsigned int i;
-            std::string error = "";
-            for (i = 0; i < state->buildErrors[state->buildErrorIndex].length(); i++) {
-                if (state->buildErrors[state->buildErrorIndex][i] != ':') {
-                    filename += state->buildErrors[state->buildErrorIndex][i];
-                } else {
-                    i++;
-                    break;
-                }
-            }
-            for (; i < state->buildErrors[state->buildErrorIndex].length(); i++) {
-                if (state->buildErrors[state->buildErrorIndex][i] != ':') {
-                    foundRow += state->buildErrors[state->buildErrorIndex][i];
-                } else {
-                    i++;
-                    break;
-                }
-            }
-            for (; i < state->buildErrors[state->buildErrorIndex].length(); i++) {
-                if (state->buildErrors[state->buildErrorIndex][i] != ':') {
-                    foundCol += state->buildErrors[state->buildErrorIndex][i];
-                } else {
-                    i++;
-                    break;
-                }
-            }
-            state->status = foundRow + " " + foundCol;
-            if (filename != "" && isInt(foundRow) && isInt(foundCol)) {
-                state->changeFile(filename);
-                state->row = std::stoi(foundRow) - 1;
-                state->col = std::stoi(foundCol) - 1;
-                state->status = "(" + std::to_string(state->buildErrorIndex + 1) + " of " + std::to_string(state->buildErrors.size()) + ")" + state->buildErrors[state->buildErrorIndex].substr(i);
-            } else {
-                state->status = std::string("invalid buildError format: ") + state->buildErrors[state->buildErrorIndex];
-            }
+            auto error = parseBuildError(state->buildErrors[state->buildErrorIndex]);
+            state->changeFile(error.filename);
+            state->row = error.row;
+            state->col = error.col;
+            state->status = "(" + std::to_string(state->buildErrorIndex + 1) + " of " + std::to_string(state->buildErrors.size()) + ")" + error.msg;
         } else {
             state->status = "(0 of 0)";
         }
     } catch (const std::exception& e) {
-        state->status = "Unexpected Error while jumping to build error: " + std::string(e.what());
+        state->status = std::string("invalid buildError format: ") + state->buildErrors[state->buildErrorIndex];
     }
 }
 
