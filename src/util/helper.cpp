@@ -20,6 +20,39 @@ bool isTestFile(const std::string& filepath) {
     return filepath.find(".spec") != std::string::npos || filepath.find(".test") != std::string::npos;
 }
 
+void populateLintErrors(State* state) {
+    std::string command = "(cd ";
+    command += state->buildDir;
+    command += " && eslint . -f ~/.eslint.formatter.js 2>&1 | grep ' Error: ')";
+    try {
+        state->buildErrorIndex = 0;
+        state->buildErrors = runCommandAndCaptureOutput(command);
+    } catch (const std::exception& e) {
+        state->status = "invalid build target: " + state->buildDir;
+    }
+}
+
+void populateBuildErrors(State* state) {
+    std::string command;
+    if (std::filesystem::exists("Makefile")) {
+        command = "TERM=dumb make 2>&1 | sed \"s/’/\\'/g\" | sed \"s/‘/\\'/g\" | grep 'error: '";
+    } else {
+        std::string flags = "";
+        if (state->buildDir != "") {
+            flags += " -p " + state->buildDir;
+        }
+        flags += " --noEmit";
+        flags += " --incremental";
+        command = "tsc" + flags + " 2>&1 | grep 'error TS' | sed 's/):/:/' | sed 's/(/:/' | sed 's/,/:/'";
+    }
+    try {
+        state->buildErrorIndex = 0;
+        state->buildErrors = runCommandAndCaptureOutput(command);
+    } catch (const std::exception& e) {
+        state->status = "invalid build target: " + state->buildDir;
+    }
+}
+
 void jumpToBuildError(State* state) {
     try {
         if (state->buildErrors.size() > 0) {

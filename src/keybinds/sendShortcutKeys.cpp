@@ -135,37 +135,12 @@ void sendShortcutKeys(State* state, int c) {
     } else if (c == 'L') {
         state->status = "Linting...";
         renderScreen(state);
-        std::string command = "(cd ";
-        command += state->buildDir;
-        command += " && eslint . -f ~/formatter.js 2>&1 | grep ' Error: ')";
-        try {
-            state->buildErrorIndex = 0;
-            state->buildErrors = runCommandAndCaptureOutput(command);
-        } catch (const std::exception& e) {
-            state->status = "invalid build target: " + state->buildDir;
-        }
+        populateLintErrors(state);
         jumpToBuildError(state);
     } else if (c == ';') {
         state->status = "Building...";
         renderScreen(state);
-        std::string command;
-        if (std::filesystem::exists("Makefile")) {
-            command = "TERM=dumb make 2>&1 | sed \"s/’/\\'/g\" | sed \"s/‘/\\'/g\" | grep 'error: '";
-        } else {
-            std::string flags = "";
-            if (state->buildDir != "") {
-                flags += " -p " + state->buildDir;
-            }
-            flags += " --noEmit";
-            flags += " --incremental";
-            command = "tsc" + flags + " 2>&1 | grep 'error TS' | sed 's/):/:/' | sed 's/(/:/' | sed 's/,/:/'";
-        }
-        try {
-            state->buildErrorIndex = 0;
-            state->buildErrors = runCommandAndCaptureOutput(command);
-        } catch (const std::exception& e) {
-            state->status = "invalid build target: " + state->buildDir;
-        }
+        populateBuildErrors(state);
         jumpToBuildError(state);
     } else if (c == ':') {
         state->mode = COMMANDLINE;
@@ -444,6 +419,7 @@ void sendShortcutKeys(State* state, int c) {
         fixColOverMax(state);
         state->windowPosition.col = 0;
         centerScreen(state);
+        renderScreen(state, true);
     } else if (c == 'P') {
         pasteFromClipboard(state);
         state->dotCommand = c;

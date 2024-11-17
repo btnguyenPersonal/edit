@@ -9,6 +9,8 @@
 
 bool isInt(const std::string& s);
 bool isTestFile(const std::string& filepath);
+void populateLintErrors(State* state);
+void populateBuildErrors(State* state);
 void jumpToBuildError(State* state);
 std::vector<std::string> runCommandAndCaptureOutput(const std::string& command);
 void rename(State* state, const std::filesystem::path& oldPath, const std::string& newName);

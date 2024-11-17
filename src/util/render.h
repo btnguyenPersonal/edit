@@ -10,6 +10,7 @@ void initColors();
 int renderStatusBar(State* state);
 void renderVisibleLines(State* state);
 void renderScreen(State* state);
+void renderScreen(State* state, bool fullRedraw);
 void initTerminal();
 void printChar(State* state, int row, int col, char c, int color);
 int getSearchColor(State* state, int row, unsigned int startOfSearch);

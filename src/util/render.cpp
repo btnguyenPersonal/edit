@@ -530,6 +530,11 @@ void renderFileExplorer(State* state) {
     renderFileExplorerNode(state->fileExplorer, 0, state->fileExplorerIndex, std::string(""), state->mode == FILEEXPLORER, state->fileExplorerWindowLine, state->fileExplorerSize);
 }
 
+void renderScreen(State* state, bool fullRedraw) {
+    clear();
+    renderScreen(state);
+}
+
 void renderScreen(State* state) {
     erase();
     if (state->mode == FINDFILE) {
