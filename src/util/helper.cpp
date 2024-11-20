@@ -17,7 +17,9 @@
 #include <vector>
 
 bool isTestFile(const std::string& filepath) {
-    return filepath.find(".spec") != std::string::npos || filepath.find(".test") != std::string::npos;
+    return filepath.find(".spec") != std::string::npos
+        || filepath.find(".test") != std::string::npos
+        || filepath.find(".cy") != std::string::npos;
 }
 
 void populateLintErrors(State* state) {

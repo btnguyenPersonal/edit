@@ -46,6 +46,8 @@ void evaluateCommandLineQuery(State* state) {
         if (std::getline(iss, s, '/') && std::getline(iss, first, '/') && std::getline(iss, second, '/')) {
             replaceCurrentLine(state, first, second);
         }
+    } else if (state->commandLine.query.substr(0, 4) == "tab=") {
+        state->indent = stoul(state->commandLine.query.substr(4));
     } else if (state->commandLine.query.substr(0, 2) == "gs") {
         std::istringstream iss(state->commandLine.query);
         std::string s, first, second, g;
