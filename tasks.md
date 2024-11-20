@@ -16,6 +16,9 @@
 - make work for bpsc, maybe use next build if next.config.js??
     - also figure out how to ONLY do typechecking part, not actual build portion of it
 
+- emojis(multi-line characters???)
+- render everything (just need to make printChar work correctly)
+
 ## BACKLOG
 - make Lint spit out non-absolute paths
     - prob can just make absolute paths set filename to relative path if start matches the relative path
