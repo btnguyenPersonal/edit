@@ -12,7 +12,7 @@ void renderVisibleLines(State* state);
 void renderScreen(State* state);
 void renderScreen(State* state, bool fullRedraw);
 void initTerminal();
-void printChar(State* state, int row, int col, char c, int color);
+int printChar(State* state, int row, int col, char c, int color);
 int getSearchColor(State* state, int row, unsigned int startOfSearch);
 unsigned int renderAutoComplete(State* state, int row, unsigned int col, unsigned int renderCol);
 void printLine(State* state, int i);
