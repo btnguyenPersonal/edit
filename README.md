@@ -1,5 +1,5 @@
 # edit
-a term-based ide with
+A term-based ide with
 - only keyboard
 - a million shortcuts
 - vim based
