@@ -48,6 +48,16 @@ void evaluateCommandLineQuery(State* state) {
         }
     } else if (state->commandLine.query.substr(0, 4) == "tab=") {
         state->indent = stoul(state->commandLine.query.substr(4));
+    } else if (state->commandLine.query == "l") {
+        state->status = "Linting...";
+        renderScreen(state);
+        populateLintErrors(state);
+        jumpToBuildError(state);
+    } else if (state->commandLine.query == "b") {
+        state->status = "Building...";
+        renderScreen(state);
+        populateBuildErrors(state);
+        jumpToBuildError(state);
     } else if (state->commandLine.query.substr(0, 2) == "gs") {
         std::istringstream iss(state->commandLine.query);
         std::string s, first, second, g;

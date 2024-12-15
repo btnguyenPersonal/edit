@@ -132,16 +132,6 @@ void sendShortcutKeys(State* state, int c) {
         } else if (islower(state->data[state->row][state->col])) {
             state->data[state->row][state->col] = std::toupper(state->data[state->row][state->col]);
         }
-    } else if (c == 'L') {
-        state->status = "Linting...";
-        renderScreen(state);
-        populateLintErrors(state);
-        jumpToBuildError(state);
-    } else if (c == ';') {
-        state->status = "Building...";
-        renderScreen(state);
-        populateBuildErrors(state);
-        jumpToBuildError(state);
     } else if (c == ':') {
         state->mode = COMMANDLINE;
     } else if (c == '<') {
