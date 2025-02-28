@@ -88,10 +88,6 @@ void sendShortcutKeys(State* state, int c) {
         return;
     } else if (state->prevKeys == "g" && c == '/') {
         state->mode = SEARCH;
-    } else if (state->prevKeys == "g" && c == 'm') {
-        toggleLoggingCode(state, state->lastLoggingVar, true);
-        state->prevKeys = "";
-        state->dotCommand = "gm";
     } else if (state->prevKeys == "g" && c == 'r') {
         initVisual(state, NORMAL);
         setStateFromWordPosition(state, getWordPosition(state->data[state->row], state->col));
@@ -116,16 +112,6 @@ void sendShortcutKeys(State* state, int c) {
         state->prevKeys = "";
     } else if (state->prevKeys != "") {
         state->prevKeys = "";
-    } else if (c == ctrl('k')) {
-        if (state->buildErrorIndex - 1 >= 0) {
-            state->buildErrorIndex--;
-        }
-        jumpToBuildError(state);
-    } else if (c == ctrl('j')) {
-        if (state->buildErrorIndex + 1 < (int)state->buildErrors.size()) {
-            state->buildErrorIndex++;
-        }
-        jumpToBuildError(state);
     } else if (c == '~') {
         if (isupper(state->data[state->row][state->col])) {
             state->data[state->row][state->col] = std::tolower(state->data[state->row][state->col]);
@@ -280,19 +266,6 @@ void sendShortcutKeys(State* state, int c) {
         }
     } else if (c == 'M') {
         state->mark = {state->filename, state->row};
-    } else if (c == '@') {
-        state->searching = true;
-        setQuery(&state->search, state->grep.query);
-        state->col += 1;
-        unsigned int temp_col = state->col;
-        unsigned int temp_row = state->row;
-        bool result = setSearchResult(state);
-        if (result == false) {
-            state->searchFail = true;
-            state->row = temp_row;
-            state->col = temp_col - 1;
-        }
-        centerScreen(state);
     } else if (c == 'N') {
         state->searching = true;
         bool result = setSearchResultReverse(state);
@@ -514,9 +487,6 @@ void sendShortcutKeys(State* state, int c) {
             state->row = state->jumplist.list[state->jumplist.index].row;
             state->col = state->jumplist.list[state->jumplist.index].col;
         }
-    } else if (c == '!') {
-        state->mode = COMMANDLINE;
-        add(&state->commandLine, '!');
     }
     if (state->mode != SHORTCUTS) {
         state->motion = c;

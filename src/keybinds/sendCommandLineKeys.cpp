@@ -21,17 +21,6 @@ void evaluateCommandLineQuery(State* state) {
         } else {
             state->status = "AUTOSAVE OFF";
         }
-    } else if (state->commandLine.query.substr(0, 2) == "b=") {
-        state->buildDir = state->commandLine.query.substr(2);
-    } else if (state->commandLine.query == "!sh") {
-        std::vector<std::string> output;
-        for (unsigned int i = 0; i < state->data.size(); i++) {
-            auto lines = runCommandAndCaptureOutput(state->data[i]);
-            for (std::string line : lines) {
-                output.push_back(line);
-            }
-        }
-        state->data = output;
     } else if (state->commandLine.query == "w") {
         trimTrailingWhitespace(state);
         saveFile(state);
@@ -46,19 +35,8 @@ void evaluateCommandLineQuery(State* state) {
         if (std::getline(iss, s, '/') && std::getline(iss, first, '/') && std::getline(iss, second, '/')) {
             replaceCurrentLine(state, first, second);
         }
-    } else if (state->commandLine.query.substr(0, 4) == "tab=") {
-        state->indent = stoul(state->commandLine.query.substr(4));
-    } else if (state->commandLine.query == "l") {
-        state->status = "Linting...";
-        renderScreen(state);
-        populateLintErrors(state);
-        jumpToBuildError(state);
-    } else if (state->commandLine.query == "b") {
-        state->status = "Building...";
-        renderScreen(state);
-        populateBuildErrors(state);
-        jumpToBuildError(state);
     } else if (state->commandLine.query.substr(0, 2) == "gs") {
+        // TODO super buggy for some reason
         std::istringstream iss(state->commandLine.query);
         std::string s, first, second, g;
         if (std::getline(iss, s, '/') && std::getline(iss, first, '/') && std::getline(iss, second, '/')) {

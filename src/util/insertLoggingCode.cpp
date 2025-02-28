@@ -27,10 +27,10 @@ void toggleLoggingCode(State* state, std::string variableName, bool showValue) {
 std::string getLoggingRegex(State* state) {
     std::string extension = getExtension(state->filename);
     std::string pattern = "";
-    if (extension == "js" || extension == "jsx" || extension == "ts" || extension == "tsx") {
-        pattern = "console\\.log\\('[0-9]+', .+?\\);";
-    } else if (extension == "cpp") {
+    if (extension == "cpp") {
         pattern = "std::cout << \"[0-9]+\" .+? << std::endl;";
+    } else {
+        pattern = "console\\.log\\('[0-9]+', .+?\\);";
     }
     return pattern;
 }
@@ -58,14 +58,7 @@ std::string replaceAll(std::string str, const std::string& from, const std::stri
 std::string getLoggingCode(State* state, unsigned int row, std::string variableName, bool showValue) {
     std::string extension = getExtension(state->filename);
     std::string rowStr = std::to_string(row + 1);
-    if (extension == "js" || extension == "jsx" || extension == "ts" || extension == "tsx") {
-        std::string s = "console.log('" + rowStr + "', " + "'" + replaceAll(variableName, "'", "\\'") + "'";
-        if (showValue) {
-            s += ", " + variableName;
-        }
-        s += ");";
-        return s;
-    } else if (extension == "cpp") {
+    if (extension == "cpp") {
         std::string s = "std::cout << \"" + rowStr + " " + variableName + "\"";
         if (showValue) {
             s += " << " + variableName;
@@ -73,6 +66,11 @@ std::string getLoggingCode(State* state, unsigned int row, std::string variableN
         s += " << std::endl;";
         return s;
     } else {
-        return "";
+        std::string s = "console.log('" + rowStr + "', " + "'" + replaceAll(variableName, "'", "\\'") + "'";
+        if (showValue) {
+            s += ", " + variableName;
+        }
+        s += ");";
+        return s;
     }
 }
