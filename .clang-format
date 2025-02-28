@@ -1,4 +1,4 @@
-BfalseasedOnStyle: LLVM
+BasedOnStyle: LLVM
 IndentWidth: 4
 AccessModifierOffset: -4
 ColumnLimit: 180

@@ -7,6 +7,7 @@
 #include <string>
 #include <vector>
 
+std::string setStringToLength(const std::string& s, unsigned int length);
 bool isInt(const std::string& s);
 bool isTestFile(const std::string& filepath);
 void rename(State* state, const std::filesystem::path& oldPath, const std::string& newName);

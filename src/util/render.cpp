@@ -96,21 +96,11 @@ void renderNumMatches(int offset, int selection, int total) {
 }
 
 int renderStatusBar(State* state) {
+    int cursor = -1;
     int offset = 0;
-    if (state->showFileStack == true) {
-        for (int i = (int)(state->fileStack.size() - 1); i >= 0; i--) {
-            mvprintw_color(
-                state->fileStack.size() - i - 1,
-                state->maxX - state->fileStack[i].length() - 2,
-                "\"%s\"",
-                state->fileStack[i].c_str(),
-                i == (int)state->fileStackIndex ? RED : WHITE
-            );
-        }
-    } else {
-        mvprintw_color(0, state->maxX - (state->filename.length() + 2), "\"%s\"", state->filename.c_str(), WHITE);
-    }
+
     if (state->status.length() > 0) {
+        // TODO make status take up whole row in middle
         mvprintw_color(0, offset, "%s ", state->status.c_str(), RED);
         offset += state->status.length() + 1;
     }
@@ -134,6 +124,29 @@ int renderStatusBar(State* state) {
         renderNumMatches(state->findFile.query.length() + 4, state->findFile.selection + 1, state->findFileOutput.size());
         return offset;
     } else {
+        if (state->harpoonIndex < state->harpoonFiles.size()) {
+            auto min_name = minimize_filename(state->harpoonFiles[state->harpoonIndex]);
+            int left = (state->maxX / 2) - (min_name.length() / 2);
+            int right = left + min_name.length();
+            mvprintw_color(0, left, "%s", min_name.c_str(), state->harpoonFiles[state->harpoonIndex] == state->filename ? YELLOW : GREY);
+            for (unsigned int i = state->harpoonIndex + 1; i < state->harpoonFiles.size(); i++) {
+                right += 2;
+                min_name = minimize_filename(state->harpoonFiles[i]);
+                if (right + min_name.length() < state->maxX - 50) {
+                    mvprintw_color(0, right, "%s", min_name.c_str(), GREY);
+                }
+                right += min_name.length();
+            }
+            for (int i = state->harpoonIndex - 1; i >= 0; i--) {
+                left -= 2;
+                min_name = minimize_filename(state->harpoonFiles[i]);
+                left -= min_name.length();
+                if (left >= 50) {
+                    mvprintw_color(0, left, "%s", min_name.c_str(), GREY);
+                }
+            }
+        }
+
         std::string displayQuery = state->search.query;
         for (size_t i = 0; i < displayQuery.length(); ++i) {
             if (displayQuery[i] == '\n') {
@@ -141,8 +154,8 @@ int renderStatusBar(State* state) {
                 i++;
             }
         }
-        if (displayQuery.length() > 60) {
-            displayQuery = safeSubstring(displayQuery, 0, 60);
+        if (displayQuery.length() > 50) {
+            displayQuery = safeSubstring(displayQuery, 0, 50);
             displayQuery += "...";
         }
         mvprintw_color(0, offset, "/%s", displayQuery.c_str(), state->searchFail ? RED : GREEN);
@@ -151,18 +164,27 @@ int renderStatusBar(State* state) {
             mvprintw_color(0, offset, "/%s", state->replace.query.c_str(), MAGENTA);
             offset += state->replace.query.length() + 1;
         }
-        for (unsigned int i = 0; i < state->harpoonFiles.size(); i++) {
-            auto min_name = minimize_filename(state->harpoonFiles[i]);
-            mvprintw_color(0, offset, " %s", min_name.c_str(), state->harpoonFiles[i] == state->filename ? YELLOW : GREY);
-            offset += min_name.length() + 1;
-        }
         if (state->replacing) {
-            return state->search.query.length() + state->replace.cursor + 2;
+            cursor = state->search.query.length() + state->replace.cursor + 2;
         } else if (state->mode == SEARCH) {
-            return state->search.cursor + 1;
+            cursor = state->search.cursor + 1;
         }
     }
-    return -1;
+    if (state->showFileStack == true) {
+        for (int i = (int)(state->fileStack.size() - 1); i >= 0; i--) {
+            mvprintw_color(
+                state->fileStack.size() - i - 1,
+                state->maxX - state->fileStack[i].length() - 2,
+                "\"%s\"",
+                state->fileStack[i].c_str(),
+                i == (int)state->fileStackIndex ? RED : WHITE
+            );
+        }
+    } else {
+        auto displayFileName = setStringToLength(state->filename, 50);
+        mvprintw_color(0, state->maxX - (displayFileName.length() + 2), "\"%s\"", displayFileName.c_str(), WHITE);
+    }
+    return cursor;
 }
 
 std::string minimize_filename(const std::string& filename) {

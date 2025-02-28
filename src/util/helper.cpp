@@ -16,6 +16,18 @@
 #include <string>
 #include <vector>
 
+std::string setStringToLength(const std::string& s, unsigned int length) {
+    if (s.length() <= length) {
+        return s;
+    } else {
+        std::string output = safeSubstring(s, s.length() - length, length);
+        output[0] = '.';
+        output[1] = '.';
+        output[2] = '.';
+        return output;
+    }
+}
+
 bool isTestFile(const std::string& filepath) {
     return filepath.find(".spec") != std::string::npos
         || filepath.find(".test") != std::string::npos
