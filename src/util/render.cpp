@@ -100,9 +100,8 @@ int renderStatusBar(State* state) {
     int offset = 0;
 
     if (state->status.length() > 0) {
-        // TODO make status take up whole row in middle
-        mvprintw_color(0, offset, "%s ", state->status.c_str(), RED);
-        offset += state->status.length() + 1;
+        mvprintw_color(0, (state->maxX / 2) - (state->status.length() / 2), "%s", state->status.c_str(), RED);
+        return cursor;
     }
     if (state->mode == NAMING) {
         mvprintw_color(0, offset, "name: %s", state->name.query.c_str(), WHITE);
@@ -129,22 +128,26 @@ int renderStatusBar(State* state) {
             int left = (state->maxX / 2) - (min_name.length() / 2);
             int right = left + min_name.length();
             mvprintw_color(0, left, "%s", min_name.c_str(), state->harpoonFiles[state->harpoonIndex] == state->filename ? YELLOW : GREY);
+            std::string renderString = "";
             for (unsigned int i = state->harpoonIndex + 1; i < state->harpoonFiles.size(); i++) {
-                right += 2;
                 min_name = minimize_filename(state->harpoonFiles[i]);
-                if (right + min_name.length() < state->maxX - 50) {
-                    mvprintw_color(0, right, "%s", min_name.c_str(), GREY);
-                }
-                right += min_name.length();
+                renderString += "  " + min_name;
             }
+            size_t rightBorder = (static_cast<size_t>(state->maxX - 50) > static_cast<size_t>(right)) ? state->maxX - 50 - right : 0;
+            if (renderString.length() > rightBorder && rightBorder > 0) {
+                renderString = safeSubstring(renderString, 0, rightBorder);
+            }
+            mvprintw_color(0, right, "%s", renderString.c_str(), GREY);
+            renderString = "";
             for (int i = state->harpoonIndex - 1; i >= 0; i--) {
-                left -= 2;
                 min_name = minimize_filename(state->harpoonFiles[i]);
-                left -= min_name.length();
-                if (left >= 50) {
-                    mvprintw_color(0, left, "%s", min_name.c_str(), GREY);
-                }
+                renderString = min_name + "  " + renderString;
             }
+            size_t leftBorder = (left > 50) ? left - 50 : 0;
+            if (renderString.length() > leftBorder && leftBorder > 0) {
+                renderString = safeSubstring(renderString, renderString.length() - leftBorder, leftBorder);
+            }
+            mvprintw_color(0, left - renderString.length(), "%s", renderString.c_str(), GREY);
         }
 
         std::string displayQuery = state->search.query;
