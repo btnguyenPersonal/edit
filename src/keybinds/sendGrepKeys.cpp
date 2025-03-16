@@ -76,6 +76,7 @@ void sendGrepKeys(State* state, int c) {
         }
     } else if (c == '\n') {
         changeToGrepFile(state);
+        state->showGrep = true;
         centerScreen(state);
     }
     if (state->mode == GREP && c != ctrl('u') && c != ctrl('d') && c != ctrl('p') && c != ctrl('n')) {

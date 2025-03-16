@@ -22,6 +22,7 @@
 #define _COLOR_CYAN 51
 #define _COLOR_WHITE 231
 #define _COLOR_ORANGE 214
+#define _COLOR_DARKGREEN 22
 
 #define BLACK 1
 #define GREY 2
@@ -33,8 +34,9 @@
 #define CYAN 8
 #define WHITE 9
 #define ORANGE 10
+#define DARKGREEN 11
 
-int invertColor(int color) { return color + 10; }
+int invertColor(int color) { return color + 11; }
 
 // is there a better way for arg passing?
 void mvprintw_color(int r, int c, const char* formatString, const char* cstring1, int num, const char* cstring2, int color) {
@@ -72,6 +74,7 @@ void initColors() {
     init_pair(CYAN, _COLOR_CYAN, _COLOR_BLACK);
     init_pair(WHITE, _COLOR_WHITE, _COLOR_BLACK);
     init_pair(ORANGE, _COLOR_ORANGE, _COLOR_BLACK);
+    init_pair(DARKGREEN, _COLOR_DARKGREEN, _COLOR_BLACK);
 
     init_pair(invertColor(BLACK), _COLOR_BLACK, _COLOR_BLACK);
     init_pair(invertColor(GREY), _COLOR_BLACK, _COLOR_GREY);
@@ -83,6 +86,7 @@ void initColors() {
     init_pair(invertColor(CYAN), _COLOR_BLACK, _COLOR_CYAN);
     init_pair(invertColor(WHITE), _COLOR_BLACK, _COLOR_WHITE);
     init_pair(invertColor(ORANGE), _COLOR_BLACK, _COLOR_ORANGE);
+    init_pair(invertColor(DARKGREEN), _COLOR_BLACK, _COLOR_DARKGREEN);
 }
 
 void renderNumMatches(int offset, int selection, int total) {
@@ -222,11 +226,11 @@ int getColorFromChar(char c) {
     }
 }
 
-int getSearchColor(State* state, int row, unsigned int startOfSearch) {
-    if (state->row == (unsigned int)row && startOfSearch + state->search.query.length() >= state->col && startOfSearch <= state->col) {
-        return invertColor(MAGENTA);
+int getSearchColor(State* state, int row, unsigned int startOfSearch, std::string query, bool grep) {
+    if (state->row == (unsigned int)row && startOfSearch + query.length() >= state->col && startOfSearch <= state->col) {
+        return invertColor(grep ? GREEN : MAGENTA);
     } else {
-        return invertColor(CYAN);
+        return invertColor(grep ? DARKGREEN : CYAN);
     }
 }
 
@@ -320,9 +324,9 @@ bool isRowColInVisual(State* state, unsigned int i, unsigned int j) {
     return false;
 }
 
-bool isInSearchQuery(State* state, unsigned int row, unsigned int col) {
-    if (state->search.query != "" && col + state->search.query.length() <= state->data[row].length()) {
-        if (state->search.query == state->data[row].substr(col, state->search.query.length())) {
+bool isInQuery(State* state, unsigned int row, unsigned int col, std::string query) {
+    if (query != "" && col + query.length() <= state->data[row].length()) {
+        if (query == state->data[row].substr(col, query.length())) {
             return true;
         }
     }
@@ -343,9 +347,16 @@ void printLine(State* state, int row) {
         unsigned int col = 0;
         while (col < state->data[row].length() && col < state->windowPosition.col + state->maxX - getLineNumberOffset(state)) {
             renderCol = renderAutoComplete(state, row, col, renderCol);
-            if (searchCounter == 0 && isInSearchQuery(state, row, col)) {
-                searchCounter = state->search.query.length();
-                startOfSearch = col;
+            if (state->showGrep) {
+                if (searchCounter == 0 && isInQuery(state, row, col, state->grep.query)) {
+                    searchCounter = state->grep.query.length();
+                    startOfSearch = col;
+                }
+            } else {
+                if (searchCounter == 0 && isInQuery(state, row, col, state->search.query)) {
+                    searchCounter = state->search.query.length();
+                    startOfSearch = col;
+                }
             }
             if (skipNext == false) {
                 char current = state->data[row][col];
@@ -368,7 +379,7 @@ void printLine(State* state, int row) {
             if (col >= state->windowPosition.col) {
                 if (state->replacing && searchCounter != 0) {
                     for (unsigned int i = 0; i < state->replace.query.length(); i++) {
-                        printChar(state, row, renderCol, state->replace.query[i], getSearchColor(state, row, startOfSearch));
+                        printChar(state, row, renderCol, state->replace.query[i], getSearchColor(state, row, startOfSearch, state->search.query, false));
                         renderCol++;
                     }
                     col += state->search.query.length();
@@ -378,8 +389,10 @@ void printLine(State* state, int row) {
                     if (state->matching.row == (unsigned int)row && state->matching.col == col && (state->matching.row != state->row || state->matching.col != state->col)) {
                         color = invertColor(GREY);
                     } else {
-                        if (searchCounter != 0 && state->searching == true) {
-                            color = getSearchColor(state, row, startOfSearch);
+                        if (state->showGrep && searchCounter != 0) {
+                            color = getSearchColor(state, row, startOfSearch, state->grep.query, true);
+                        } else if (searchCounter != 0 && state->searching == true) {
+                            color = getSearchColor(state, row, startOfSearch, state->search.query, false);
                         } else {
                             if (isMergeConflict(state->data[row])) {
                                 color = RED;

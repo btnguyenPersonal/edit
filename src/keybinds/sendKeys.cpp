@@ -16,6 +16,7 @@
 #include <ncurses.h>
 
 void sendKeys(State* state, int c) {
+    state->showGrep = false;
     state->status = std::string("");
     if (!state->autosave) {
         state->status = "AUTOSAVE OFF";
