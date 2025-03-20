@@ -34,7 +34,9 @@ void sendFileExplorerKeys(State* state, int c) {
             if (name != "") {
                 rename(state, node->path, name);
                 node->parent->refresh();
+                state->changeFile((node->path.parent_path() / name).string());
             }
+            refocusFileExplorer(state);
         } else if (c == 'X') {
             auto node = FileExplorerNode::getFileExplorerNode(state->fileExplorer, state->fileExplorerIndex);
             if (node->parent != nullptr) {
@@ -67,8 +69,10 @@ void sendFileExplorerKeys(State* state, int c) {
                 } else {
                     createFile(state, node->path.parent_path().string(), name);
                     node->parent->refresh();
+                    state->changeFile((node->path.parent_path() / name).string());
                 }
             }
+            refocusFileExplorer(state);
         } else if (c == 'p' || c == 'P') {
             auto node = FileExplorerNode::getFileExplorerNode(state->fileExplorer, state->fileExplorerIndex);
             if (node->isFolder) {

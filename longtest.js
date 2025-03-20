@@ -18,6 +18,6 @@ if (c == 'J') {
         //             }
         //         }
         //     }
-        stateForTheBestRow// }
+        // }
     }
 }

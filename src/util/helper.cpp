@@ -146,6 +146,23 @@ void handleMouseClick(State* state, int y, int x) {
     state->col = x - getLineNumberOffset(state) >= 0 ? x - getLineNumberOffset(state) : 0;
 }
 
+std::string normalizeFilename(std::string filename) {
+    std::string current_path = std::filesystem::current_path().string() + "/";
+    if (filename.substr(0, current_path.length()) == current_path) {
+        return filename.substr(current_path.length());
+    } else {
+        return filename;
+    }
+}
+
+void refocusFileExplorer(State* state) {
+    auto normalizedFilename = normalizeFilename(state->filename);
+    if (state->fileExplorerOpen) {
+        state->fileExplorerIndex = state->fileExplorer->expand(normalizedFilename);
+        centerFileExplorer(state);
+    }
+}
+
 void centerFileExplorer(State* state) {
     if ((state->fileExplorerIndex - ((int)state->maxY / 2)) > 0) {
         if (state->fileExplorer->getTotalChildren() > ((int)state->maxY)) {

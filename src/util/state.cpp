@@ -11,21 +11,8 @@
 unsigned int State::maxX = 0;
 unsigned int State::maxY = 0;
 
-std::string normalizeFilename(std::string filename) {
-    std::string current_path = std::filesystem::current_path().string() + "/";
-    if (filename.substr(0, current_path.length()) == current_path) {
-        return filename.substr(current_path.length());
-    } else {
-        return filename;
-    }
-}
-
 void State::changeFile(std::string filename) {
     auto normalizedFilename = normalizeFilename(filename);
-    if (this->fileExplorerOpen) {
-        this->fileExplorerIndex = this->fileExplorer->expand(normalizedFilename);
-        centerFileExplorer(this);
-    }
     bool found = false;
     for (unsigned int i = 0; i < this->archives.size(); i++) {
         if (this->archives[i].filename == this->filename) {
@@ -91,6 +78,7 @@ void State::changeFile(std::string filename) {
     this->searchFail = false;
     this->motion = std::string("");
     this->mode = SHORTCUTS;
+    refocusFileExplorer(this);
 }
 
 void State::pushFileStack(std::string filename) {
@@ -201,10 +189,7 @@ State::State(std::string filename) : State() {
     this->mode = SHORTCUTS;
     this->fileStack = {normalizedFilename};
     this->fileStackIndex = 0;
-    if (this->fileExplorerOpen) {
-        this->fileExplorerIndex = this->fileExplorer->expand(normalizedFilename);
-        centerFileExplorer(this);
-    }
+    refocusFileExplorer(this);
 }
 
 void State::setMaxYX(int y, int x) {
