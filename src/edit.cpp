@@ -7,6 +7,9 @@ int main(int argc, char* argv[]) {
     int c;
     State* state;
     std::string filename;
+    if (argc == 2) {
+        filename = argv[1];
+    }
     if (!filename.empty()) {
         state = new State(filename);
     } else {

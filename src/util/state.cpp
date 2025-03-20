@@ -201,6 +201,10 @@ State::State(std::string filename) : State() {
     this->mode = SHORTCUTS;
     this->fileStack = {normalizedFilename};
     this->fileStackIndex = 0;
+    if (this->fileExplorerOpen) {
+        this->fileExplorerIndex = this->fileExplorer->expand(normalizedFilename);
+        centerFileExplorer(this);
+    }
 }
 
 void State::setMaxYX(int y, int x) {
