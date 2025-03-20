@@ -7,7 +7,7 @@
 #include <string>
 #include <vector>
 
-void refocusFileExplorer(State* state);
+void refocusFileExplorer(State* state, bool changeMode);
 std::string normalizeFilename(std::string filename);
 std::string setStringToLength(const std::string& s, unsigned int length);
 bool isInt(const std::string& s);

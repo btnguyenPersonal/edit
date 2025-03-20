@@ -78,7 +78,7 @@ void State::changeFile(std::string filename) {
     this->searchFail = false;
     this->motion = std::string("");
     this->mode = SHORTCUTS;
-    refocusFileExplorer(this);
+    refocusFileExplorer(this, false);
 }
 
 void State::pushFileStack(std::string filename) {
@@ -189,7 +189,7 @@ State::State(std::string filename) : State() {
     this->mode = SHORTCUTS;
     this->fileStack = {normalizedFilename};
     this->fileStackIndex = 0;
-    refocusFileExplorer(this);
+    refocusFileExplorer(this, false);
 }
 
 void State::setMaxYX(int y, int x) {

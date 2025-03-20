@@ -155,11 +155,14 @@ std::string normalizeFilename(std::string filename) {
     }
 }
 
-void refocusFileExplorer(State* state) {
+void refocusFileExplorer(State* state, bool changeMode) {
     auto normalizedFilename = normalizeFilename(state->filename);
     if (state->fileExplorerOpen) {
         state->fileExplorerIndex = state->fileExplorer->expand(normalizedFilename);
         centerFileExplorer(state);
+    }
+    if (changeMode) {
+        state->mode = FILEEXPLORER;
     }
 }
 
