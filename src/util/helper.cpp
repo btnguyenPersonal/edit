@@ -1127,10 +1127,12 @@ void centerScreen(State* state) {
     } else {
         state->windowPosition.row = state->row - state->maxY / 2;
     }
-    if (state->col < state->windowPosition.col) {
-        state->windowPosition.col = state->col;
-    } else if (state->col > state->windowPosition.col + (state->maxX - getLineNumberOffset(state) - 1)) {
-        state->windowPosition.col = state->col + getLineNumberOffset(state) + 1 - state->maxX;
+    if (!state->wordwrap) {
+        if (state->col < state->windowPosition.col) {
+            state->windowPosition.col = state->col;
+        } else if (state->col > state->windowPosition.col + (state->maxX - getLineNumberOffset(state) - 1)) {
+            state->windowPosition.col = state->col + getLineNumberOffset(state) + 1 - state->maxX;
+        }
     }
 }
 
