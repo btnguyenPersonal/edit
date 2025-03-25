@@ -521,31 +521,13 @@ int printLineContent(State* state, int row, int renderRow, Cursor* cursor) {
     return renderRow + 1;
 }
 
-void moveCursor(State* state, int cursorPosition, Cursor editorCursor) {
-    if (cursorPosition != -1) {
-        move(0, cursorPosition);
+void moveCursor(State* state, int cursorOnStatusBar, Cursor editorCursor) {
+    if (cursorOnStatusBar != -1) {
+        move(0, cursorOnStatusBar);
     } else if (state->mode == FILEEXPLORER) {
         move(state->fileExplorerIndex + 1 - state->fileExplorerWindowLine, 0);
     } else {
         move(editorCursor.row + 1, editorCursor.col + getLineNumberOffset(state));
-        // unsigned int row = state->row + 1;
-        // if (row > state->windowPosition.row) {
-        //     row -= state->windowPosition.row;
-        // } else {
-        //     row = 1;
-        // }
-        // unsigned int col = state->col + getLineNumberOffset(state);
-        // if (state->col > state->data[state->row].length()) {
-        //     col = state->data[state->row].length() + getLineNumberOffset(state);
-        //     if (state->windowPosition.col > col) {
-        //         col = getLineNumberOffset(state);
-        //     } else {
-        //         col -= state->windowPosition.col;
-        //     }
-        // } else if (col > state->windowPosition.col) {
-        //     col -= state->windowPosition.col;
-        // }
-        // move(row, col);
     }
 }
 
