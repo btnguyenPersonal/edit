@@ -18,7 +18,6 @@ std::filesystem::path getUniqueFilePath(const std::filesystem::path& basePath);
 void createFile(State* state, std::filesystem::path path, std::string name);
 void changeToGrepFile(State* state);
 void findDefinitionFromGrepOutput(State* state, std::string s);
-void handleMouseClick(State* state, int y, int x);
 void upScreen(State* state);
 void downScreen(State* state);
 void centerFileExplorer(State* state);

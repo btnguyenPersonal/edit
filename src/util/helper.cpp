@@ -140,12 +140,6 @@ void findDefinitionFromGrepOutput(State* state, std::string s) {
     }
 }
 
-void handleMouseClick(State* state, int y, int x) {
-    state->row = y - 1 >= 0 ? y - 1 : 0;
-    state->row += state->windowPosition.row;
-    state->col = x - getLineNumberOffset(state) >= 0 ? x - getLineNumberOffset(state) : 0;
-}
-
 std::string normalizeFilename(std::string filename) {
     std::string current_path = std::filesystem::current_path().string() + "/";
     if (filename.substr(0, current_path.length()) == current_path) {
@@ -1115,7 +1109,7 @@ bool isWindowPositionInvalid(State* state) {
     bool isColTooBig = (int)state->col - (int)state->windowPosition.col > (int)state->maxX - (int)getLineNumberOffset(state) - 1;
     if (isRowTooSmall || isRowTooBig) {
         return true;
-    } else if (isColTooSmall || isColTooBig) {
+    } else if (!state->wordwrap && (isColTooSmall || isColTooBig)) {
         return true;
     }
     return false;
@@ -1172,17 +1166,11 @@ void up(State* state) {
     if (state->row > 0) {
         state->row -= 1;
     }
-    if (state->row < state->windowPosition.row) {
-        state->windowPosition.row -= 1;
-    }
 }
 
 void down(State* state) {
     if (state->row < state->data.size() - 1) {
         state->row += 1;
-    }
-    if ((int)state->row - (int)state->windowPosition.row > ((int)state->maxY - 2)) {
-        state->windowPosition.row += 1;
     }
 }
 
