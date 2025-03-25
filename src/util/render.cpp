@@ -258,32 +258,6 @@ void printChar(State* state, int row, int col, char c, int color) {
     }
 }
 
-void printLineNumber(State* state, int r, int i, bool isCurrentRow, bool recording, std::string blame) {
-    int border = state->fileExplorerOpen ? state->fileExplorerSize : 0;
-    if (isCurrentRow == true) {
-        mvprintw_color(r, border, "%5d", i + 1, WHITE);
-    } else if (recording) {
-        mvprintw_color(r, border, "%5d", i + 1, RED);
-    } else {
-        mvprintw_color(r, border, "%5d", i + 1, GREY);
-    }
-    bool isLogging = getLoggingRegex(state) != "" && std::regex_search(state->data[i], std::regex(getLoggingRegex(state)));
-    bool endsWithSpace = state->data[i].back() == ' ';
-    bool isOnMark = (int)state->mark.mark == i && state->mark.filename == state->filename;
-    int color = BLACK;
-    if (endsWithSpace && state->mode != TYPING) {
-        color = RED;
-    } else if (isLogging) {
-        color = YELLOW;
-    } else if (isOnMark) {
-        color = CYAN;
-    }
-    mvprintw_color(r, border + 5, "%c", '|', color);
-    if (state->mode == BLAME) {
-        mvprintw_color(r, border + 6, "%-65s", blame.substr(0, 65).c_str(), i == (int)state->row ? invertColor(WHITE) : WHITE);
-    }
-}
-
 bool isRowColInVisual(State* state, unsigned int i, unsigned int j) {
     if (state->mode == VISUAL) {
         unsigned int minR;
@@ -331,96 +305,6 @@ bool isInQuery(State* state, unsigned int row, unsigned int col, std::string que
         }
     }
     return false;
-}
-
-void printLine(State* state, int row) {
-    if (isRowColInVisual(state, row, 0) == true && state->data[row].length() == 0) {
-        printChar(state, row, 0, ' ', invertColor(WHITE));
-    } else {
-        bool isInString = false;
-        bool skipNext = false;
-        unsigned int searchCounter = 0;
-        int renderCol = 0;
-        unsigned int startOfSearch = 0;
-        bool isComment = false;
-        char stringType;
-        unsigned int col = 0;
-        while (col < state->data[row].length() && col < state->windowPosition.col + state->maxX - getLineNumberOffset(state)) {
-            renderCol = renderAutoComplete(state, row, col, renderCol);
-            if (state->showGrep) {
-                if (searchCounter == 0 && isInQuery(state, row, col, state->grep.query)) {
-                    searchCounter = state->grep.query.length();
-                    startOfSearch = col;
-                }
-            } else {
-                if (searchCounter == 0 && isInQuery(state, row, col, state->search.query)) {
-                    searchCounter = state->search.query.length();
-                    startOfSearch = col;
-                }
-            }
-            if (skipNext == false) {
-                char current = state->data[row][col];
-                if (isInString && current == '\\') {
-                    skipNext = true;
-                } else {
-                    if (isInString == false && (current == '"' || current == '`' || current == '\'')) {
-                        isInString = true;
-                        stringType = current;
-                    } else if (isInString == true && current == stringType) {
-                        isInString = false;
-                    }
-                }
-            } else {
-                skipNext = false;
-            }
-            if (!isInString && state->data[row].substr(col, state->commentSymbol.length()) == state->commentSymbol && state->commentSymbol != "") {
-                isComment = true;
-            }
-            if (col >= state->windowPosition.col) {
-                if (state->replacing && searchCounter != 0) {
-                    for (unsigned int i = 0; i < state->replace.query.length(); i++) {
-                        printChar(state, row, renderCol, state->replace.query[i], getSearchColor(state, row, startOfSearch, state->search.query, false));
-                        renderCol++;
-                    }
-                    col += state->search.query.length();
-                    searchCounter = 0;
-                } else {
-                    int color;
-                    if (state->matching.row == (unsigned int)row && state->matching.col == col && (state->matching.row != state->row || state->matching.col != state->col)) {
-                        color = invertColor(GREY);
-                    } else {
-                        if (state->showGrep && searchCounter != 0) {
-                            color = getSearchColor(state, row, startOfSearch, state->grep.query, true);
-                        } else if (searchCounter != 0 && state->searching == true) {
-                            color = getSearchColor(state, row, startOfSearch, state->search.query, false);
-                        } else {
-                            if (isMergeConflict(state->data[row])) {
-                                color = RED;
-                            } else if (isComment) {
-                                color = GREEN;
-                            } else if (isInString == true && getExtension(state->filename) != "md" && getExtension(state->filename) != "txt") {
-                                color = CYAN;
-                            } else {
-                                color = getColorFromChar(state->data[row][col]);
-                            }
-                            if (isRowColInVisual(state, row, col)) {
-                                color = invertColor(color);
-                            }
-                        }
-                    }
-                    printChar(state, row, renderCol, state->data[row][col], color);
-                    renderCol++;
-                    col++;
-                }
-            } else {
-                col++;
-            }
-            if (searchCounter != 0) {
-                searchCounter -= 1;
-            }
-        }
-        renderCol = renderAutoComplete(state, row, col, renderCol);
-    }
 }
 
 bool isRowInVisual(State* state, int row) { return ((int)state->visual.row <= row && row <= (int)state->row) || ((int)state->row <= row && row <= (int)state->visual.row); }
@@ -484,12 +368,143 @@ void renderFindFileOutput(State* state) {
     }
 }
 
-void renderVisibleLines(State* state) {
-    for (int i = state->windowPosition.row; i < (int)state->data.size() && i < (int)(state->maxY + state->windowPosition.row) - 1; i++) {
-        printLineNumber(state, i - state->windowPosition.row + 1, i, i == (int)state->row, state->recording,
-                        state->mode == BLAME && state->blame.size() >= state->data.size() && i < (int)state->data.size() ? state->blame[i] : "");
-        printLine(state, i);
+std::string getRenderBlameString(State* state, int i) {
+    if (state->mode == BLAME && state->blame.size() >= state->data.size() && i < (int)state->data.size()) {
+        return state->blame[i];
+    } else {
+        return "";
     }
+}
+
+Cursor renderVisibleLines(State* state) {
+    Cursor cursor{-1, -1};
+    int currentRenderRow = 0;
+    for (int i = state->windowPosition.row; i < (int)state->data.size() && i < (int)(state->maxY + state->windowPosition.row) - 1; i++) {
+        printLineNumber(state, i, currentRenderRow + 1);
+        currentRenderRow = printLineContent(state, i, currentRenderRow);
+    }
+}
+
+void printLineNumber(State* state, int row, int renderRow) {
+    int border = state->fileExplorerOpen ? state->fileExplorerSize : 0;
+    if (row == (int)state->row) {
+        mvprintw_color(renderRow, border, "%5d", row + 1, WHITE);
+    } else if (state->recording) {
+        mvprintw_color(renderRow, border, "%5d", row + 1, RED);
+    } else {
+        mvprintw_color(renderRow, border, "%5d", row + 1, GREY);
+    }
+    bool isLogging = getLoggingRegex(state) != "" && std::regex_search(state->data[row], std::regex(getLoggingRegex(state)));
+    bool endsWithSpace = state->data[row].back() == ' ';
+    bool isOnMark = (int)state->mark.mark == row && state->mark.filename == state->filename;
+    int color = BLACK;
+    if (endsWithSpace && state->mode != TYPING) {
+        color = RED;
+    } else if (isLogging) {
+        color = YELLOW;
+    } else if (isOnMark) {
+        color = CYAN;
+    }
+    mvprintw_color(renderRow, border + 5, "%c", '|', color);
+    if (state->mode == BLAME) {
+        mvprintw_color(renderRow, border + 6, "%-65s", getRenderBlameString(state, row).substr(0, 65).c_str(), row == (int)state->row ? invertColor(WHITE) : WHITE);
+    }
+}
+
+int printLineContent(State* state, int row, int renderRow) {
+    if (isRowColInVisual(state, row, 0) == true && state->data[row].length() == 0) {
+        printChar(state, row, 0, ' ', invertColor(WHITE));
+    } else {
+        bool isInString = false;
+        bool skipNext = false;
+        unsigned int searchCounter = 0;
+        int renderCol = 0;
+        unsigned int startOfSearch = 0;
+        bool isComment = false;
+        char stringType;
+        unsigned int col = 0;
+        while (col < state->data[row].length()) {
+            renderCol = renderAutoComplete(state, row, col, renderCol);
+            if (state->showGrep) {
+                if (searchCounter == 0 && isInQuery(state, row, col, state->grep.query)) {
+                    searchCounter = state->grep.query.length();
+                    startOfSearch = col;
+                }
+            } else {
+                if (searchCounter == 0 && isInQuery(state, row, col, state->search.query)) {
+                    searchCounter = state->search.query.length();
+                    startOfSearch = col;
+                }
+            }
+            if (skipNext == false) {
+                char current = state->data[row][col];
+                if (isInString && current == '\\') {
+                    skipNext = true;
+                } else {
+                    if (isInString == false && (current == '"' || current == '`' || current == '\'')) {
+                        isInString = true;
+                        stringType = current;
+                    } else if (isInString == true && current == stringType) {
+                        isInString = false;
+                    }
+                }
+            } else {
+                skipNext = false;
+            }
+            if (!isInString && state->data[row].substr(col, state->commentSymbol.length()) == state->commentSymbol && state->commentSymbol != "") {
+                isComment = true;
+            }
+            if (col >= state->windowPosition.col) {
+                if (state->replacing && searchCounter != 0) {
+                    for (unsigned int i = 0; i < state->replace.query.length(); i++) {
+                        printChar(state, row, renderCol, state->replace.query[i], getSearchColor(state, row, startOfSearch, state->search.query, false));
+                        renderCol++;
+                    }
+                    col += state->search.query.length();
+                    searchCounter = 0;
+                } else {
+                    int color;
+                    if (state->matching.row == (unsigned int)row && state->matching.col == col && (state->matching.row != state->row || state->matching.col != state->col)) {
+                        color = invertColor(GREY);
+                    } else {
+                        if (state->showGrep && searchCounter != 0) {
+                            color = getSearchColor(state, row, startOfSearch, state->grep.query, true);
+                        } else if (searchCounter != 0 && state->searching == true) {
+                            color = getSearchColor(state, row, startOfSearch, state->search.query, false);
+                        } else {
+                            if (isMergeConflict(state->data[row])) {
+                                color = RED;
+                            } else if (isComment) {
+                                color = GREEN;
+                            } else if (isInString == true && getExtension(state->filename) != "md" && getExtension(state->filename) != "txt") {
+                                color = CYAN;
+                            } else {
+                                color = getColorFromChar(state->data[row][col]);
+                            }
+                            if (isRowColInVisual(state, row, col)) {
+                                color = invertColor(color);
+                            }
+                        }
+                    }
+                    printChar(state, renderRow, renderCol, state->data[row][col], color);
+                    col++;
+                    if ((unsigned int)renderCol + 1 >= state->maxX - getLineNumberOffset(state)) {
+                        renderRow++;
+                        renderCol = 0;
+                    } else {
+                        renderCol++;
+                    }
+                }
+            } else {
+                col++;
+            }
+            if (searchCounter != 0) {
+                searchCounter -= 1;
+            }
+        }
+        renderCol = renderAutoComplete(state, row, col, renderCol);
+    }
+    return renderRow + 1;
 }
 
 void moveCursor(State* state, int cursorPosition) {
@@ -585,8 +600,8 @@ void renderScreen(State* state) {
             renderFileExplorer(state);
         }
     }
-    int cursorPosition = renderStatusBar(state);
-    moveCursor(state, cursorPosition);
+    int cursorOnStatusBar = renderStatusBar(state);
+    moveCursor(state, cursorOnStatusBar);
     wnoutrefresh(stdscr);
     doupdate();
 }
