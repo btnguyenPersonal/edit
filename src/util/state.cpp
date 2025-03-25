@@ -110,6 +110,7 @@ State::State() {
     this->fileExplorer = new FileExplorerNode(std::filesystem::current_path());
     this->fileExplorer->open();
     this->showGrep = false;
+    this->wordwrap = true;
     this->fileExplorerOpen = false;
     this->fileExplorerSize = 40;
     this->fileExplorerWindowLine = 0;

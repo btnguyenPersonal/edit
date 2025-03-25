@@ -381,8 +381,9 @@ Cursor renderVisibleLines(State* state) {
     int currentRenderRow = 0;
     for (int i = state->windowPosition.row; i < (int)state->data.size() && i < (int)(state->maxY + state->windowPosition.row) - 1; i++) {
         printLineNumber(state, i, currentRenderRow + 1);
-        currentRenderRow = printLineContent(state, i, currentRenderRow);
+        currentRenderRow = printLineContent(state, i, currentRenderRow, &cursor);
     }
+    return cursor;
 }
 
 void printLineNumber(State* state, int row, int renderRow) {
@@ -411,9 +412,13 @@ void printLineNumber(State* state, int row, int renderRow) {
     }
 }
 
-int printLineContent(State* state, int row, int renderRow) {
+int printLineContent(State* state, int row, int renderRow, Cursor* cursor) {
     if (isRowColInVisual(state, row, 0) == true && state->data[row].length() == 0) {
         printChar(state, row, 0, ' ', invertColor(WHITE));
+        if (state->row == (unsigned int)row) {
+            cursor->row = renderRow;
+            cursor->col = 0;
+        }
     } else {
         bool isInString = false;
         bool skipNext = false;
@@ -487,13 +492,17 @@ int printLineContent(State* state, int row, int renderRow) {
                         }
                     }
                     printChar(state, renderRow, renderCol, state->data[row][col], color);
-                    col++;
-                    if ((unsigned int)renderCol + 1 >= state->maxX - getLineNumberOffset(state)) {
+                    if (state->row == (unsigned int)row && state->col == col) {
+                        cursor->row = renderRow;
+                        cursor->col = renderCol;
+                    }
+                    if (state->wordwrap && (unsigned int)renderCol + 1 >= state->maxX - getLineNumberOffset(state)) {
                         renderRow++;
                         renderCol = 0;
                     } else {
                         renderCol++;
                     }
+                    col++;
                 }
             } else {
                 col++;
@@ -502,35 +511,41 @@ int printLineContent(State* state, int row, int renderRow) {
                 searchCounter -= 1;
             }
         }
-        renderCol = renderAutoComplete(state, row, col, renderCol);
+        if (state->col >= state->data[row].length()) {
+            if (state->row == (unsigned int)row) {
+                cursor->row = renderRow;
+                cursor->col = renderCol;
+            }
+        }
     }
     return renderRow + 1;
 }
 
-void moveCursor(State* state, int cursorPosition) {
+void moveCursor(State* state, int cursorPosition, Cursor editorCursor) {
     if (cursorPosition != -1) {
         move(0, cursorPosition);
     } else if (state->mode == FILEEXPLORER) {
         move(state->fileExplorerIndex + 1 - state->fileExplorerWindowLine, 0);
     } else {
-        unsigned int row = state->row + 1;
-        if (row > state->windowPosition.row) {
-            row -= state->windowPosition.row;
-        } else {
-            row = 1;
-        }
-        unsigned int col = state->col + getLineNumberOffset(state);
-        if (state->col > state->data[state->row].length()) {
-            col = state->data[state->row].length() + getLineNumberOffset(state);
-            if (state->windowPosition.col > col) {
-                col = getLineNumberOffset(state);
-            } else {
-                col -= state->windowPosition.col;
-            }
-        } else if (col > state->windowPosition.col) {
-            col -= state->windowPosition.col;
-        }
-        move(row, col);
+        move(editorCursor.row + 1, editorCursor.col + getLineNumberOffset(state));
+        // unsigned int row = state->row + 1;
+        // if (row > state->windowPosition.row) {
+        //     row -= state->windowPosition.row;
+        // } else {
+        //     row = 1;
+        // }
+        // unsigned int col = state->col + getLineNumberOffset(state);
+        // if (state->col > state->data[state->row].length()) {
+        //     col = state->data[state->row].length() + getLineNumberOffset(state);
+        //     if (state->windowPosition.col > col) {
+        //         col = getLineNumberOffset(state);
+        //     } else {
+        //         col -= state->windowPosition.col;
+        //     }
+        // } else if (col > state->windowPosition.col) {
+        //     col -= state->windowPosition.col;
+        // }
+        // move(row, col);
     }
 }
 
@@ -590,18 +605,19 @@ void renderScreen(State* state, bool fullRedraw) {
 
 void renderScreen(State* state) {
     erase();
+    Cursor editorCursor;
     if (state->mode == FINDFILE) {
         renderFindFileOutput(state);
     } else if (state->mode == GREP) {
         renderGrepOutput(state);
     } else {
-        renderVisibleLines(state);
+        editorCursor = renderVisibleLines(state);
         if (state->fileExplorerOpen) {
             renderFileExplorer(state);
         }
     }
     int cursorOnStatusBar = renderStatusBar(state);
-    moveCursor(state, cursorOnStatusBar);
+    moveCursor(state, cursorOnStatusBar, editorCursor);
     wnoutrefresh(stdscr);
     doupdate();
 }

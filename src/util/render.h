@@ -5,8 +5,8 @@
 #include <string>
 
 struct Cursor {
-    int x;
-    int y;
+    int row;
+    int col;
 };
 
 std::string minimize_filename(const std::string& filename);
@@ -21,6 +21,6 @@ void printChar(State* state, int row, int col, char c, int color);
 int getSearchColor(State* state, int row, unsigned int startOfSearch);
 unsigned int renderAutoComplete(State* state, int row, unsigned int col, unsigned int renderCol);
 std::string getRenderBlameString(State* state);
-int printLineContent(State* state, int row, int renderRow);
 void printLineNumber(State* state, int row, int renderRow);
+int printLineContent(State* state, int row, int renderRow, Cursor* cursor);
 bool isRowColInVisual(State* state, unsigned int i, unsigned int j);
