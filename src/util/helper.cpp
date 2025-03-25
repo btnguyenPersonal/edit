@@ -1103,11 +1103,9 @@ std::vector<std::string> readFile(const std::string& filename) {
 }
 
 bool isWindowPositionInvalid(State* state) {
-    bool isRowTooSmall = state->row < state->windowPosition.row;
-    bool isRowTooBig = (int)state->row - (int)state->windowPosition.row > ((int)state->maxY - 2);
     bool isColTooSmall = state->col < state->windowPosition.col;
     bool isColTooBig = (int)state->col - (int)state->windowPosition.col > (int)state->maxX - (int)getLineNumberOffset(state) - 1;
-    if (isRowTooSmall || isRowTooBig) {
+    if (isOffScreenVertical(state)) {
         return true;
     } else if (!state->wordwrap && (isColTooSmall || isColTooBig)) {
         return true;
@@ -1115,12 +1113,49 @@ bool isWindowPositionInvalid(State* state) {
     return false;
 }
 
-void centerScreen(State* state) {
-    if (state->row < state->maxY / 2) {
-        state->windowPosition.row = 0;
-    } else {
-        state->windowPosition.row = state->row - state->maxY / 2;
+bool isOffScreenVertical(State* state) {
+    if (state->row < state->windowPosition.row) {
+        return true;
     }
+    unsigned int windowRow = state->windowPosition.row;
+    unsigned int rowsBelow = 0;
+    while (windowRow < state->data.size() && rowsBelow + 1 < state->maxY) {
+        if (state->row == windowRow) {
+            return false;
+        }
+        rowsBelow += getDisplayRows(state, windowRow);
+        windowRow++;
+    }
+    return true;
+}
+
+unsigned int getCenteredWindowPosition(State* state) {
+    unsigned int windowRow = state->row;
+    unsigned int rowsAbove = getDisplayRows(state, state->row, state->col);
+    while (windowRow > 0 && rowsAbove < state->maxY / 2) {
+        windowRow--;
+        rowsAbove += getDisplayRows(state, windowRow);
+    }
+    return windowRow;
+}
+
+unsigned int getDisplayRows(State* state, unsigned int r, unsigned int c) {
+    if (!state->wordwrap) {
+        return 1;
+    }
+    auto physicalCol = state->data[r].length() < c ? state->data[r].length() : c;
+    return 1 + physicalCol / (state->maxX - getLineNumberOffset(state));
+}
+
+unsigned int getDisplayRows(State* state, unsigned int r) {
+    if (!state->wordwrap) {
+        return 1;
+    }
+    return 1 + state->data[r].length() / (state->maxX - getLineNumberOffset(state));
+}
+
+void centerScreen(State* state) {
+    state->windowPosition.row = getCenteredWindowPosition(state);
     if (!state->wordwrap) {
         if (state->col < state->windowPosition.col) {
             state->windowPosition.col = state->col;
@@ -1166,11 +1201,17 @@ void up(State* state) {
     if (state->row > 0) {
         state->row -= 1;
     }
+    if (isOffScreenVertical(state)) {
+        state->windowPosition.row -= 1;
+    }
 }
 
 void down(State* state) {
     if (state->row < state->data.size() - 1) {
         state->row += 1;
+    }
+    if (isOffScreenVertical(state)) {
+        state->windowPosition.row += 1;
     }
 }
 

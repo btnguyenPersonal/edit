@@ -7,3 +7,5 @@
     - currently thinks that it can just tell from the state->maxY maxX
 
 - fix cursor for fileExplorer
+
+- use all fixed with ints, will make look more professional, also have NASA asserts

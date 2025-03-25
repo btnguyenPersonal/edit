@@ -7,6 +7,10 @@
 #include <string>
 #include <vector>
 
+bool isOffScreenVertical(State* state);
+unsigned int getCenteredWindowPosition(State* state);
+unsigned int getDisplayRows(State* state, unsigned int r, unsigned int c);
+unsigned int getDisplayRows(State* state, unsigned int r);
 void refocusFileExplorer(State* state, bool changeMode);
 std::string normalizeFilename(std::string filename);
 std::string setStringToLength(const std::string& s, unsigned int length);
