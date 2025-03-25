@@ -248,13 +248,13 @@ bool isMergeConflict(const std::string& str) {
 
 void printChar(State* state, int row, int col, char c, int color) {
     if (' ' <= c && c <= '~') {
-        mvaddch_color(row - state->windowPosition.row + 1, col + getLineNumberOffset(state), c, color);
+        mvaddch_color(row, col + getLineNumberOffset(state), c, color);
     } else if (c == '\t') {
-        mvaddch_color(row - state->windowPosition.row + 1, col + getLineNumberOffset(state), ' ', invertColor(RED));
+        mvaddch_color(row, col + getLineNumberOffset(state), ' ', invertColor(RED));
     } else if (' ' <= unctrl(c) && unctrl(c) <= '~') {
-        mvaddch_color(row - state->windowPosition.row + 1, col + getLineNumberOffset(state), unctrl(c), invertColor(MAGENTA));
+        mvaddch_color(row, col + getLineNumberOffset(state), unctrl(c), invertColor(MAGENTA));
     } else {
-        mvaddch_color(row - state->windowPosition.row + 1, col + getLineNumberOffset(state), ' ', invertColor(MAGENTA));
+        mvaddch_color(row, col + getLineNumberOffset(state), ' ', invertColor(MAGENTA));
     }
 }
 
@@ -378,9 +378,9 @@ std::string getRenderBlameString(State* state, int i) {
 
 Cursor renderVisibleLines(State* state) {
     Cursor cursor{-1, -1};
-    int currentRenderRow = 0;
+    int currentRenderRow = 1;
     for (int i = state->windowPosition.row; i < (int)state->data.size() && i < (int)(state->maxY + state->windowPosition.row) - 1; i++) {
-        printLineNumber(state, i, currentRenderRow + 1);
+        printLineNumber(state, i, currentRenderRow);
         currentRenderRow = printLineContent(state, i, currentRenderRow, &cursor);
     }
     return cursor;
@@ -414,9 +414,9 @@ void printLineNumber(State* state, int row, int renderRow) {
 
 int printLineContent(State* state, int row, int renderRow, Cursor* cursor) {
     if (isRowColInVisual(state, row, 0) == true && state->data[row].length() == 0) {
-        printChar(state, row, 0, ' ', invertColor(WHITE));
+        printChar(state, renderRow, 0, ' ', invertColor(WHITE));
         if (state->row == (unsigned int)row) {
-            cursor->row = renderRow;
+            cursor->row = renderRow - 1;
             cursor->col = 0;
         }
     } else {
@@ -462,7 +462,7 @@ int printLineContent(State* state, int row, int renderRow, Cursor* cursor) {
             if (col >= state->windowPosition.col) {
                 if (state->replacing && searchCounter != 0) {
                     for (unsigned int i = 0; i < state->replace.query.length(); i++) {
-                        printChar(state, row, renderCol, state->replace.query[i], getSearchColor(state, row, startOfSearch, state->search.query, false));
+                        printChar(state, renderRow, renderCol, state->replace.query[i], getSearchColor(state, row, startOfSearch, state->search.query, false));
                         renderCol++;
                     }
                     col += state->search.query.length();
@@ -493,7 +493,7 @@ int printLineContent(State* state, int row, int renderRow, Cursor* cursor) {
                     }
                     printChar(state, renderRow, renderCol, state->data[row][col], color);
                     if (state->row == (unsigned int)row && state->col == col) {
-                        cursor->row = renderRow;
+                        cursor->row = renderRow - 1;
                         cursor->col = renderCol;
                     }
                     if (state->wordwrap && (unsigned int)renderCol + 1 >= state->maxX - getLineNumberOffset(state)) {
@@ -513,7 +513,7 @@ int printLineContent(State* state, int row, int renderRow, Cursor* cursor) {
         }
         if (state->col >= state->data[row].length()) {
             if (state->row == (unsigned int)row) {
-                cursor->row = renderRow;
+                cursor->row = renderRow - 1;
                 cursor->col = renderCol;
             }
         }
