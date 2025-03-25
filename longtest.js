@@ -1,7 +1,17 @@
 if (c == 'J') {
     state->col = state->data[state->row].length();state->col = state->data[state->row].length();state->col = state->data[state->row].length();state->col = state->data[state->row].length();state->col = state->data[state->row].length();state->col = state->data[state->row].length();
-    state->col = state->data[state->row].length();
-    if (stateForTheBestRow + 1 < state->data.size()) {
+    state->col = state->data[state->row].length();state->col = state->data[state->row].length();state->col = state->data[state->row].length();state->col = state->data[state->row].length();state->col = state->data[state->row].length();state->col = state->data[state->row].length();
+    state->col = state->data[state->row].length();state->col = state->data[state->row].length();state->col = state->data[state->row].length();state->col = state->data[state->row].length();state->col = state->data[state->row].length();state->col = state->data[state->row].length();
+    state->col = state->data[state->row].length();state->col = state->data[state->row].length();state->col = state->data[state->row].length();state->col = state->data[state->row].length();state->col = state->data[state->row].length();state->col = state->data[state->row].length();
+    state->col = state->data[state->row].length();state->col = state->data[state->row].length();state->col = state->data[state->row].length();state->col = state->data[state->row].length();state->col = state->data[state->row].length();state->col = state->data[state->row].length();
+    state->col = state->data[state->row].length();state->col = state->data[state->row].length();state->col = state->data[state->row].length();state->col = state->data[state->row].length();state->col = state->data[state->row].length();state->col = state->data[state->row].length();
+    state->col = state->data[state->row].length();state->col = state->data[state->row].length();state->col = state->data[state->row].length();state->col = state->data[state->row].length();state->col = state->data[state->row].length();state->col = state->data[state->row].length();
+    state->col = state->data[state->row].length();state->col = state->data[state->row].length();state->col = state->data[state->row].length();state->col = state->data[state->row].length();state->col = state->data[state->row].length();state->col = state->data[state->row].length();
+    state->col = state->data[state->row].length();state->col = state->data[state->row].length();state->col = state->data[state->row].length();state->col = state->data[state->row].length();state->col = state->data[state->row].length();state->col = state->data[state->row].length();
+    state->col = state->data[state->row].length();state->col = state->data[state->row].length();state->col = state->data[state->row].length();state->col = state->data[state->row].length();state->col = state->data[state->row].length();state->col = state->data[state->row].length();
+    state->col = state->data[state->row].length();state->col = state->data[state->row].length();state->col = state->data[state->row].length();state->col = state->data[state->row].length();state->col = state->data[state->row].length();state->col = state->data[state->row].length();
+    state->col = state->data[state->row].length();state->col = state->data[state->row].length();state->col = state->data[state->row].length();state->col = state->data[state->row].length();state->col = state->data[state->row].length();state->col = state->data[state->row].length();
+    state->col = state->data[state->row].length();state->col = state->data[state->row].length();state->col = state->data[state->row].length();state->col = state->data[state->row].length();state->col = state->data[state->row].length();state->col = state->data[state->row].length();state->col = state->data[state->row].length();state->col = state->data[state->row].length();state->col = state->data[state->row].length();state->col = state->data[state->row].length();state->col = state->data[state->row].length();state->col = state->data[state->row].length();state->col = state->data[state->row].length();state->col = state->data[state->row].length();state->col = state->data[state->row].length();state->col = state->data[state->row].length();state->col = state->data[state->row].length();state->col = state->data[state->row].length();state->col = state->data[state->row].length();state->col = state->data[state->row].length();state->col = state->data[state->row].length();state->col = state->data[state->row].length();state->col = state->data[state->row].length();state->col = state->data[state->row].length();state->col = state->data[state->row].length();state->col = state->data[state->row].length();state->col = state->data[state->row].length();state->col = state->data[state->row].length();state->col = state->data[state->row].length();state->col = state->data[state->row].length();state->col = state->data[state->row].length();state->col = state->data[state->row].length();state->col = state->data[state->row].length();state->col = state->data[state->row].length();state->col = state->data[state->row].length();state->col = state->data[state->row].length();state->col = state->data[state->row].length();state->col = state->data[state->row].length();state->col = state->data[state->row].length();state->col = state->data[ssstate->col = state->data[state->row].length();state->col = state->data[state->row].length();state->col = state->data[state->row].length();state->col = state->data[sssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssstesting = state->data[state->row].length();if (stateForTheBestRow + 1 < state->data.size()) {
         if (state->row + 1 < state->data.size()) {
             if (state->row + 1 < state->data.size()) {
                 if (state->row + 1 < state->data.size()) {
@@ -21,3 +31,32 @@ if (c == 'J') {
         // }
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

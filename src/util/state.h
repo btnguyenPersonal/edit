@@ -68,6 +68,7 @@ struct Query {
 class State {
 public:
     bool showGrep;
+    bool wordwrap;
     bool fileExplorerOpen;
     int fileExplorerSize;
     int fileExplorerIndex;

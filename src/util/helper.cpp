@@ -140,12 +140,6 @@ void findDefinitionFromGrepOutput(State* state, std::string s) {
     }
 }
 
-void handleMouseClick(State* state, int y, int x) {
-    state->row = y - 1 >= 0 ? y - 1 : 0;
-    state->row += state->windowPosition.row;
-    state->col = x - getLineNumberOffset(state) >= 0 ? x - getLineNumberOffset(state) : 0;
-}
-
 std::string normalizeFilename(std::string filename) {
     std::string current_path = std::filesystem::current_path().string() + "/";
     if (filename.substr(0, current_path.length()) == current_path) {
@@ -1109,28 +1103,65 @@ std::vector<std::string> readFile(const std::string& filename) {
 }
 
 bool isWindowPositionInvalid(State* state) {
-    bool isRowTooSmall = state->row < state->windowPosition.row;
-    bool isRowTooBig = (int)state->row - (int)state->windowPosition.row > ((int)state->maxY - 2);
     bool isColTooSmall = state->col < state->windowPosition.col;
     bool isColTooBig = (int)state->col - (int)state->windowPosition.col > (int)state->maxX - (int)getLineNumberOffset(state) - 1;
-    if (isRowTooSmall || isRowTooBig) {
+    if (isOffScreenVertical(state)) {
         return true;
-    } else if (isColTooSmall || isColTooBig) {
+    } else if (!state->wordwrap && (isColTooSmall || isColTooBig)) {
         return true;
     }
     return false;
 }
 
-void centerScreen(State* state) {
-    if (state->row < state->maxY / 2) {
-        state->windowPosition.row = 0;
-    } else {
-        state->windowPosition.row = state->row - state->maxY / 2;
+bool isOffScreenVertical(State* state) {
+    if (state->row < state->windowPosition.row) {
+        return true;
     }
-    if (state->col < state->windowPosition.col) {
-        state->windowPosition.col = state->col;
-    } else if (state->col > state->windowPosition.col + (state->maxX - getLineNumberOffset(state) - 1)) {
-        state->windowPosition.col = state->col + getLineNumberOffset(state) + 1 - state->maxX;
+    unsigned int windowRow = state->windowPosition.row;
+    unsigned int rowsBelow = 0;
+    while (windowRow < state->data.size() && rowsBelow + 1 < state->maxY) {
+        if (state->row == windowRow) {
+            return false;
+        }
+        rowsBelow += getDisplayRows(state, windowRow);
+        windowRow++;
+    }
+    return true;
+}
+
+unsigned int getCenteredWindowPosition(State* state) {
+    unsigned int windowRow = state->row;
+    unsigned int rowsAbove = getDisplayRows(state, state->row, state->col);
+    while (windowRow > 0 && rowsAbove < state->maxY / 2) {
+        windowRow--;
+        rowsAbove += getDisplayRows(state, windowRow);
+    }
+    return windowRow;
+}
+
+unsigned int getDisplayRows(State* state, unsigned int r, unsigned int c) {
+    if (!state->wordwrap) {
+        return 1;
+    }
+    auto physicalCol = state->data[r].length() < c ? state->data[r].length() : c;
+    return 1 + physicalCol / (state->maxX - getLineNumberOffset(state));
+}
+
+unsigned int getDisplayRows(State* state, unsigned int r) {
+    if (!state->wordwrap) {
+        return 1;
+    }
+    return 1 + state->data[r].length() / (state->maxX - getLineNumberOffset(state));
+}
+
+void centerScreen(State* state) {
+    state->windowPosition.row = getCenteredWindowPosition(state);
+    if (!state->wordwrap) {
+        if (state->col < state->windowPosition.col) {
+            state->windowPosition.col = state->col;
+        } else if (state->col > state->windowPosition.col + (state->maxX - getLineNumberOffset(state) - 1)) {
+            state->windowPosition.col = state->col + getLineNumberOffset(state) + 1 - state->maxX;
+        }
     }
 }
 
@@ -1170,7 +1201,7 @@ void up(State* state) {
     if (state->row > 0) {
         state->row -= 1;
     }
-    if (state->row < state->windowPosition.row) {
+    if (isOffScreenVertical(state)) {
         state->windowPosition.row -= 1;
     }
 }
@@ -1179,7 +1210,7 @@ void down(State* state) {
     if (state->row < state->data.size() - 1) {
         state->row += 1;
     }
-    if ((int)state->row - (int)state->windowPosition.row > ((int)state->maxY - 2)) {
+    if (isOffScreenVertical(state)) {
         state->windowPosition.row += 1;
     }
 }

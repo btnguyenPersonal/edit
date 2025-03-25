@@ -7,6 +7,10 @@
 #include <string>
 #include <vector>
 
+bool isOffScreenVertical(State* state);
+unsigned int getCenteredWindowPosition(State* state);
+unsigned int getDisplayRows(State* state, unsigned int r, unsigned int c);
+unsigned int getDisplayRows(State* state, unsigned int r);
 void refocusFileExplorer(State* state, bool changeMode);
 std::string normalizeFilename(std::string filename);
 std::string setStringToLength(const std::string& s, unsigned int length);
@@ -18,7 +22,6 @@ std::filesystem::path getUniqueFilePath(const std::filesystem::path& basePath);
 void createFile(State* state, std::filesystem::path path, std::string name);
 void changeToGrepFile(State* state);
 void findDefinitionFromGrepOutput(State* state, std::string s);
-void handleMouseClick(State* state, int y, int x);
 void upScreen(State* state);
 void downScreen(State* state);
 void centerFileExplorer(State* state);
