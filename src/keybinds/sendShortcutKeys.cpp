@@ -370,6 +370,24 @@ void sendShortcutKeys(State* state, int c) {
         state->mode = SEARCH;
         state->replacing = true;
         backspaceAll(&state->replace);
+    } else if (c == '1') {
+        jumpToHarpoon(state, 1);
+    } else if (c == '2') {
+        jumpToHarpoon(state, 2);
+    } else if (c == '3') {
+        jumpToHarpoon(state, 3);
+    } else if (c == '4') {
+        jumpToHarpoon(state, 4);
+    } else if (c == '5') {
+        jumpToHarpoon(state, 5);
+    } else if (c == '6') {
+        jumpToHarpoon(state, 6);
+    } else if (c == '7') {
+        jumpToHarpoon(state, 7);
+    } else if (c == '8') {
+        jumpToHarpoon(state, 8);
+    } else if (c == '9') {
+        jumpToHarpoon(state, 9);
     } else if (c == '0') {
         state->col = 0;
     } else if (c == '$') {

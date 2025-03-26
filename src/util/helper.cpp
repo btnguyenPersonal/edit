@@ -16,6 +16,13 @@
 #include <string>
 #include <vector>
 
+void jumpToHarpoon(State* state, unsigned int num) {
+    if (0 < num && num <= state->harpoonFiles.size()) {
+        state->harpoonIndex = num - 1;
+        state->resetState(state->harpoonFiles[state->harpoonIndex]);
+    }
+}
+
 std::string setStringToLength(const std::string& s, unsigned int length) {
     if (s.length() <= length) {
         return s;

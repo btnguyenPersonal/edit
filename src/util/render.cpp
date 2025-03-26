@@ -36,6 +36,9 @@
 #define ORANGE 10
 #define DARKGREEN 11
 
+#define LEFT_STATUS_BORDER 25
+#define RIGHT_STATUS_BORDER 25
+
 int invertColor(int color) { return color + 11; }
 
 // is there a better way for arg passing?
@@ -137,7 +140,7 @@ int renderStatusBar(State* state) {
                 min_name = minimize_filename(state->harpoonFiles[i]);
                 renderString += "  " + min_name;
             }
-            size_t rightBorder = (static_cast<size_t>(state->maxX - 50) > static_cast<size_t>(right)) ? state->maxX - 50 - right : 0;
+            size_t rightBorder = (static_cast<size_t>(state->maxX - RIGHT_STATUS_BORDER) > static_cast<size_t>(right)) ? state->maxX - RIGHT_STATUS_BORDER - right : 0;
             if (renderString.length() > rightBorder && rightBorder > 0) {
                 renderString = safeSubstring(renderString, 0, rightBorder);
             }
@@ -147,7 +150,7 @@ int renderStatusBar(State* state) {
                 min_name = minimize_filename(state->harpoonFiles[i]);
                 renderString = min_name + "  " + renderString;
             }
-            size_t leftBorder = (left > 50) ? left - 50 : 0;
+            size_t leftBorder = (left > LEFT_STATUS_BORDER) ? left - LEFT_STATUS_BORDER : 0;
             if (renderString.length() > leftBorder && leftBorder > 0) {
                 renderString = safeSubstring(renderString, renderString.length() - leftBorder, leftBorder);
             }
@@ -161,8 +164,8 @@ int renderStatusBar(State* state) {
                 i++;
             }
         }
-        if (displayQuery.length() > 50) {
-            displayQuery = safeSubstring(displayQuery, 0, 50);
+        if (displayQuery.length() > LEFT_STATUS_BORDER) {
+            displayQuery = safeSubstring(displayQuery, 0, LEFT_STATUS_BORDER);
             displayQuery += "...";
         }
         mvprintw_color(0, offset, "/%s", displayQuery.c_str(), state->searchFail ? RED : GREEN);
@@ -188,7 +191,7 @@ int renderStatusBar(State* state) {
             );
         }
     } else {
-        auto displayFileName = setStringToLength(state->filename, 50);
+        auto displayFileName = setStringToLength(state->filename, RIGHT_STATUS_BORDER);
         mvprintw_color(0, state->maxX - (displayFileName.length() + 2), "\"%s\"", displayFileName.c_str(), WHITE);
     }
     return cursor;

@@ -7,6 +7,7 @@
 #include <string>
 #include <vector>
 
+void jumpToHarpoon(State* state, unsigned int num);
 bool isOffScreenVertical(State* state);
 unsigned int getCenteredWindowPosition(State* state);
 unsigned int getDisplayRows(State* state, unsigned int r, unsigned int c);
