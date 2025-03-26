@@ -312,12 +312,12 @@ bool isInQuery(State* state, unsigned int row, unsigned int col, std::string que
 
 bool isRowInVisual(State* state, int row) { return ((int)state->visual.row <= row && row <= (int)state->row) || ((int)state->row <= row && row <= (int)state->visual.row); }
 
-unsigned int renderAutoComplete(State* state, int row, unsigned int col, unsigned int renderCol) {
-    if ((state->mode == TYPING || state->mode == MULTICURSOR) && row == (int)state->row && col == state->col && isRowInVisual(state, row)) {
+unsigned int renderAutoComplete(State* state, unsigned int renderRow, unsigned int renderCol) {
+    if (state->mode == TYPING || state->mode == MULTICURSOR) {
         std::string completion = autocomplete(state, getCurrentWord(state));
-        if (state->data[row].substr(col, completion.length()) != completion) {
+        if (state->data[state->row].substr(state->col, completion.length()) != completion) {
             for (unsigned int i = 0; i < completion.length(); i++) {
-                printChar(state, row, renderCol + i, completion[i], GREY);
+                printChar(state, renderRow, renderCol + i, completion[i], GREY);
             }
             return renderCol + completion.length();
         }
@@ -415,6 +415,15 @@ void printLineNumber(State* state, int row, int renderRow) {
     }
 }
 
+void advancePosition(State* state, int& renderRow, int& renderCol) {
+    if (state->wordwrap && (unsigned int)renderCol + 1 >= state->maxX - getLineNumberOffset(state)) {
+        renderRow++;
+        renderCol = 0;
+    } else {
+        renderCol++;
+    }
+}
+
 int printLineContent(State* state, int row, int renderRow, Cursor* cursor) {
     if (isRowColInVisual(state, row, 0) == true && state->data[row].length() == 0) {
         printChar(state, renderRow, 0, ' ', invertColor(WHITE));
@@ -432,7 +441,6 @@ int printLineContent(State* state, int row, int renderRow, Cursor* cursor) {
         char stringType;
         unsigned int col = 0;
         while (col < state->data[row].length()) {
-            renderCol = renderAutoComplete(state, row, col, renderCol);
             if (state->showGrep) {
                 if (searchCounter == 0 && isInQuery(state, row, col, state->grep.query)) {
                     searchCounter = state->grep.query.length();
@@ -466,9 +474,9 @@ int printLineContent(State* state, int row, int renderRow, Cursor* cursor) {
                 if (state->replacing && searchCounter != 0) {
                     for (unsigned int i = 0; i < state->replace.query.length(); i++) {
                         printChar(state, renderRow, renderCol, state->replace.query[i], getSearchColor(state, row, startOfSearch, state->search.query, false));
-                        renderCol++;
+                        advancePosition(state, renderRow, renderCol);
+                        col++;
                     }
-                    col += state->search.query.length();
                     searchCounter = 0;
                 } else {
                     int color;
@@ -494,17 +502,12 @@ int printLineContent(State* state, int row, int renderRow, Cursor* cursor) {
                             }
                         }
                     }
-                    printChar(state, renderRow, renderCol, state->data[row][col], color);
                     if (state->row == (unsigned int)row && state->col == col) {
                         cursor->row = renderRow - 1;
                         cursor->col = renderCol;
                     }
-                    if (state->wordwrap && (unsigned int)renderCol + 1 >= state->maxX - getLineNumberOffset(state)) {
-                        renderRow++;
-                        renderCol = 0;
-                    } else {
-                        renderCol++;
-                    }
+                    printChar(state, renderRow, renderCol, state->data[row][col], color);
+                    advancePosition(state, renderRow, renderCol);
                     col++;
                 }
             } else {
