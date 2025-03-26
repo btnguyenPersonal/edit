@@ -315,14 +315,14 @@ bool isRowInVisual(State* state, int row) { return ((int)state->visual.row <= ro
 unsigned int renderAutoComplete(State* state, unsigned int renderRow, unsigned int renderCol) {
     if (state->mode == TYPING || state->mode == MULTICURSOR) {
         std::string completion = autocomplete(state, getCurrentWord(state));
-        if (state->data[state->row].substr(state->col, completion.length()) != completion) {
+        if (state->col + 1 >= state->data[state->row].length() || state->data[state->row][state->col] == ' ') {
             for (unsigned int i = 0; i < completion.length(); i++) {
                 printChar(state, renderRow, renderCol + i, completion[i], GREY);
             }
-            return renderCol + completion.length();
+            return completion.length();
         }
     }
-    return renderCol;
+    return 0;
 }
 
 void renderGrepOutput(State* state) {
@@ -440,6 +440,7 @@ int printLineContent(State* state, int row, int renderRow, Cursor* cursor) {
         bool isComment = false;
         char stringType;
         unsigned int col = 0;
+        unsigned int completionLength = 0;
         while (col < state->data[row].length()) {
             if (state->showGrep) {
                 if (searchCounter == 0 && isInQuery(state, row, col, state->grep.query)) {
@@ -505,10 +506,17 @@ int printLineContent(State* state, int row, int renderRow, Cursor* cursor) {
                     if (state->row == (unsigned int)row && state->col == col) {
                         cursor->row = renderRow - 1;
                         cursor->col = renderCol;
+                        if (completionLength != 0) {
+                            renderCol += completionLength;
+                            completionLength = 0;
+                        }
                     }
                     printChar(state, renderRow, renderCol, state->data[row][col], color);
                     advancePosition(state, renderRow, renderCol);
                     col++;
+                    if (state->row == (unsigned int)row && state->col == col) {
+                        completionLength = renderAutoComplete(state, renderRow, renderCol);
+                    }
                 }
             } else {
                 col++;
