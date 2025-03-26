@@ -36,8 +36,8 @@
 #define ORANGE 10
 #define DARKGREEN 11
 
-#define LEFT_STATUS_BORDER 25
-#define RIGHT_STATUS_BORDER 25
+#define LEFT_STATUS_BORDER 10
+#define RIGHT_STATUS_BORDER 20
 
 int invertColor(int color) { return color + 11; }
 
@@ -128,6 +128,21 @@ int renderStatusBar(State* state) {
         mvprintw_color(0, offset + 2, "%s", state->findFile.query.c_str(), state->selectAll ? invertColor(YELLOW) : YELLOW);
         offset += state->findFile.cursor + 2;
         renderNumMatches(state->findFile.query.length() + 4, state->findFile.selection + 1, state->findFileOutput.size());
+        return offset;
+    } else if (state->mode == SEARCH) {
+        std::string displayQuery = state->search.query;
+        for (size_t i = 0; i < displayQuery.length(); ++i) {
+            if (displayQuery[i] == '\n') {
+                displayQuery.replace(i, 1, "\\n");
+                i++;
+            }
+        }
+        mvprintw_color(0, offset, "/%s", displayQuery.c_str(), state->searchFail ? RED : GREEN);
+        offset += displayQuery.length() + 1;
+        if (state->replacing) {
+            mvprintw_color(0, offset, "/%s", state->replace.query.c_str(), MAGENTA);
+            offset += state->replace.query.length() + 1;
+        }
         return offset;
     } else {
         if (state->harpoonIndex < state->harpoonFiles.size()) {
@@ -476,8 +491,8 @@ int printLineContent(State* state, int row, int renderRow, Cursor* cursor) {
                     for (unsigned int i = 0; i < state->replace.query.length(); i++) {
                         printChar(state, renderRow, renderCol, state->replace.query[i], getSearchColor(state, row, startOfSearch, state->search.query, false));
                         advancePosition(state, renderRow, renderCol);
-                        col++;
                     }
+                    col += state->search.query.length();
                     searchCounter = 0;
                 } else {
                     // TODO make this a getColor function();, lots of logic in here that's messy
