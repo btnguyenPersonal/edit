@@ -315,7 +315,7 @@ bool isRowInVisual(State* state, int row) { return ((int)state->visual.row <= ro
 unsigned int renderAutoComplete(State* state, unsigned int renderRow, unsigned int renderCol) {
     if (state->mode == TYPING || state->mode == MULTICURSOR) {
         std::string completion = autocomplete(state, getCurrentWord(state));
-        if (state->col + 1 >= state->data[state->row].length() || state->data[state->row][state->col] == ' ') {
+        if (state->col + 1 >= state->data[state->row].length() || !isAlphanumeric(state->data[state->row][state->col])) {
             for (unsigned int i = 0; i < completion.length(); i++) {
                 printChar(state, renderRow, renderCol + i, completion[i], GREY);
             }
