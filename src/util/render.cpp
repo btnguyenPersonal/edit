@@ -480,6 +480,7 @@ int printLineContent(State* state, int row, int renderRow, Cursor* cursor) {
                     }
                     searchCounter = 0;
                 } else {
+                    // TODO make this a getColor function();, lots of logic in here that's messy
                     int color;
                     if (state->matching.row == (unsigned int)row && state->matching.col == col && (state->matching.row != state->row || state->matching.col != state->col)) {
                         color = invertColor(GREY);
