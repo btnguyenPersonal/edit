@@ -3,7 +3,7 @@
 - have configuration file
     - make a state->options object with all of the options, so the state is independant from the options
 
-- use all fixed with ints, will make look more professional, also have NASA asserts
+- put asserts everywhere (make sure state is perfect and i never mess up)
 
 ## BRAINSTORMING
 
