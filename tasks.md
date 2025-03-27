@@ -1,9 +1,7 @@
 ## TODO
 
-- make a state->options object with all of the options, so the state is independant from the options
 - have configuration file
-
-- fix cursor for fileExplorer
+    - make a state->options object with all of the options, so the state is independant from the options
 
 - use all fixed with ints, will make look more professional, also have NASA asserts
 
