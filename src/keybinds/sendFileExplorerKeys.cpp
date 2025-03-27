@@ -13,6 +13,9 @@ void sendFileExplorerKeys(State* state, int c) {
     try {
         if (c == 27) { // ESC
             state->mode = SHORTCUTS;
+            state->fileExplorerOpen = false;
+        } else if (c == ctrl('t')) {
+            state->mode = SHORTCUTS;
         } else if (c == '-') {
             state->fileExplorerWindowLine = 0;
             state->fileExplorerIndex = 0;
@@ -86,9 +89,6 @@ void sendFileExplorerKeys(State* state, int c) {
             // TODO add copy for folders
             auto node = FileExplorerNode::getFileExplorerNode(state->fileExplorer, state->fileExplorerIndex);
             copyFileToClipboard(state, node->path.string());
-        } else if (c == ctrl('t')) {
-            state->mode = SHORTCUTS;
-            state->fileExplorerOpen = false;
         } else if (c == ctrl('u')) {
             for (unsigned int i = 0; i < state->maxY / 2; i++) {
                 if (state->fileExplorerIndex > 0) {
