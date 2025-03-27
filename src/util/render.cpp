@@ -268,11 +268,32 @@ void printChar(State* state, int row, int col, char c, int color) {
     if (' ' <= c && c <= '~') {
         mvaddch_color(row, col + getLineNumberOffset(state), c, color);
     } else if (c == '\t') {
-        mvaddch_color(row, col + getLineNumberOffset(state), ' ', invertColor(RED));
+        for (unsigned int i = 0; i < state->indent; i++) {
+            mvaddch_color(row, col + getLineNumberOffset(state), ' ', color);
+        }
     } else if (' ' <= unctrl(c) && unctrl(c) <= '~') {
         mvaddch_color(row, col + getLineNumberOffset(state), unctrl(c), invertColor(MAGENTA));
     } else {
         mvaddch_color(row, col + getLineNumberOffset(state), ' ', invertColor(MAGENTA));
+    }
+}
+
+void printChar(State* state, int& row, int& col, char c, int color, bool advance) {
+    if (' ' <= c && c <= '~') {
+        mvaddch_color(row, col + getLineNumberOffset(state), c, color);
+    } else if (c == '\t') {
+        for (unsigned int i = 0; i < state->indent; i++) {
+            mvaddch_color(row, col + getLineNumberOffset(state), ' ', color);
+            advancePosition(state, row, col);
+        }
+        return;
+    } else if (' ' <= unctrl(c) && unctrl(c) <= '~') {
+        mvaddch_color(row, col + getLineNumberOffset(state), unctrl(c), invertColor(MAGENTA));
+    } else {
+        mvaddch_color(row, col + getLineNumberOffset(state), ' ', invertColor(MAGENTA));
+    }
+    if (advance) {
+        advancePosition(state, row, col);
     }
 }
 
@@ -489,8 +510,7 @@ int printLineContent(State* state, int row, int renderRow, Cursor* cursor) {
             if (col >= state->windowPosition.col) {
                 if (state->replacing && searchCounter != 0) {
                     for (unsigned int i = 0; i < state->replace.query.length(); i++) {
-                        printChar(state, renderRow, renderCol, state->replace.query[i], getSearchColor(state, row, startOfSearch, state->search.query, false));
-                        advancePosition(state, renderRow, renderCol);
+                        printChar(state, renderRow, renderCol, state->replace.query[i], getSearchColor(state, row, startOfSearch, state->search.query, false), true);
                     }
                     col += state->search.query.length();
                     searchCounter = 0;
@@ -527,8 +547,7 @@ int printLineContent(State* state, int row, int renderRow, Cursor* cursor) {
                             completionLength = 0;
                         }
                     }
-                    printChar(state, renderRow, renderCol, state->data[row][col], color);
-                    advancePosition(state, renderRow, renderCol);
+                    printChar(state, renderRow, renderCol, state->data[row][col], color, true);
                     col++;
                     if (state->row == (unsigned int)row && state->col == col) {
                         completionLength = renderAutoComplete(state, renderRow, renderCol);
