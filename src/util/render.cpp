@@ -570,17 +570,17 @@ int printLineContent(State* state, int row, int renderRow, Cursor* cursor) {
     return renderRow + 1;
 }
 
-void moveCursor(State* state, int cursorOnStatusBar, Cursor editorCursor) {
+void moveCursor(State* state, int cursorOnStatusBar, Cursor editorCursor, Cursor fileExplorerCursor) {
     if (cursorOnStatusBar != -1) {
         move(0, cursorOnStatusBar);
     } else if (state->mode == FILEEXPLORER) {
-        move(state->fileExplorerIndex + 1 - state->fileExplorerWindowLine, 0);
+        move(fileExplorerCursor.row, fileExplorerCursor.col);
     } else {
         move(editorCursor.row + 1, editorCursor.col + getLineNumberOffset(state));
     }
 }
 
-int renderFileExplorerNode(FileExplorerNode* node, int r, int selectedRow, std::string startingSpaces, bool isFileExplorerOpen, int fileExplorerWindowLine, int fileExplorerSize) {
+int renderFileExplorerNode(FileExplorerNode* node, int r, int selectedRow, std::string startingSpaces, bool isFileExplorerOpen, int fileExplorerWindowLine, int fileExplorerSize, Cursor &cursor) {
     int color;
     if (shouldIgnoreFile(node->path)) {
         color = GREY;
@@ -599,10 +599,11 @@ int renderFileExplorerNode(FileExplorerNode* node, int r, int selectedRow, std::
             mvprintw_color(displayRow, offset, "%s", node->isOpen ? "v" : ">", GREY);
             offset += 1;
         }
-        if (selectedRow == r) {
-            mvprintw_color(displayRow, offset, "%s", "[", isFileExplorerOpen ? RED : YELLOW);
-        }
         offset += 1;
+        if (selectedRow == r) {
+            cursor.row = displayRow;
+            cursor.col = offset;
+        }
         mvprintw_color(
             displayRow,
             offset,
@@ -613,20 +614,19 @@ int renderFileExplorerNode(FileExplorerNode* node, int r, int selectedRow, std::
             color
         );
         offset += node->name.substr(0, fileExplorerSize - offset - 1).length();
-        if (selectedRow == r) {
-            mvprintw_color(displayRow, offset, "%s", "]", isFileExplorerOpen ? RED : YELLOW);
-        }
     }
     if (node->isOpen) {
         for(unsigned int i = 0; i < node->children.size(); i++) {
-            row = renderFileExplorerNode(&node->children[i], row, selectedRow, startingSpaces + "  ", isFileExplorerOpen, fileExplorerWindowLine, fileExplorerSize);
+            row = renderFileExplorerNode(&node->children[i], row, selectedRow, startingSpaces + "  ", isFileExplorerOpen, fileExplorerWindowLine, fileExplorerSize, cursor);
         }
     }
     return row;
 }
 
-void renderFileExplorer(State* state) {
-    renderFileExplorerNode(state->fileExplorer, 0, state->fileExplorerIndex, std::string(""), state->mode == FILEEXPLORER, state->fileExplorerWindowLine, state->fileExplorerSize);
+Cursor renderFileExplorer(State* state) {
+    Cursor cursor{-1, -1};
+    renderFileExplorerNode(state->fileExplorer, 0, state->fileExplorerIndex, std::string(""), state->mode == FILEEXPLORER, state->fileExplorerWindowLine, state->fileExplorerSize, cursor);
+    return cursor;
 }
 
 void renderScreen(State* state, bool fullRedraw) {
@@ -636,7 +636,7 @@ void renderScreen(State* state, bool fullRedraw) {
 
 void renderScreen(State* state) {
     erase();
-    Cursor editorCursor;
+    Cursor editorCursor, fileExplorerCursor;
     if (state->mode == FINDFILE) {
         renderFindFileOutput(state);
     } else if (state->mode == GREP) {
@@ -644,11 +644,11 @@ void renderScreen(State* state) {
     } else {
         editorCursor = renderVisibleLines(state);
         if (state->fileExplorerOpen) {
-            renderFileExplorer(state);
+            fileExplorerCursor = renderFileExplorer(state);
         }
     }
     int cursorOnStatusBar = renderStatusBar(state);
-    moveCursor(state, cursorOnStatusBar, editorCursor);
+    moveCursor(state, cursorOnStatusBar, editorCursor, fileExplorerCursor);
     wnoutrefresh(stdscr);
     doupdate();
 }

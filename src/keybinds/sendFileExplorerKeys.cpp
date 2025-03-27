@@ -35,8 +35,8 @@ void sendFileExplorerKeys(State* state, int c) {
                 rename(state, node->path, name);
                 node->parent->refresh();
                 state->changeFile((node->path.parent_path() / name).string());
+                refocusFileExplorer(state, true);
             }
-            refocusFileExplorer(state, true);
         } else if (c == 'X') {
             auto node = FileExplorerNode::getFileExplorerNode(state->fileExplorer, state->fileExplorerIndex);
             if (node->parent != nullptr) {
@@ -71,8 +71,8 @@ void sendFileExplorerKeys(State* state, int c) {
                     node->parent->refresh();
                     state->changeFile((node->path.parent_path() / name).string());
                 }
+                refocusFileExplorer(state, true);
             }
-            refocusFileExplorer(state, true);
         } else if (c == 'p' || c == 'P') {
             auto node = FileExplorerNode::getFileExplorerNode(state->fileExplorer, state->fileExplorerIndex);
             if (node->isFolder) {
@@ -135,6 +135,7 @@ void sendFileExplorerKeys(State* state, int c) {
                 auto baseDir = std::filesystem::current_path();
                 auto relativePath = std::filesystem::relative(node->path.string(), baseDir);
                 state->changeFile(relativePath);
+                state->fileExplorerOpen = false;
             }
         } else {
             return;
