@@ -1,3 +1,4 @@
 build/
 test.js
 fuzzer/results
+longtest.js
