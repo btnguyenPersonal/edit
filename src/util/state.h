@@ -9,42 +9,42 @@
 
 struct buildError {
     std::string filename;
-    int row;
-    int col;
+    int32_t row;
+    int32_t col;
     std::string msg;
 };
 
 struct grepMatch {
     std::filesystem::path path;
-    int lineNum;
+    int32_t lineNum;
     std::string line;
 
-    grepMatch(const std::filesystem::path& p, int num, const std::string& l) : path(p), lineNum(num), line(l) {}
+    grepMatch(const std::filesystem::path& p, int32_t num, const std::string& l) : path(p), lineNum(num), line(l) {}
 };
 
 struct diffLine {
-    unsigned int lineNum;
+    uint32_t lineNum;
     bool add; // true for add, false for delete
     std::string line;
 };
 
 struct Position {
-    unsigned int row;
-    unsigned int col;
+    uint32_t row;
+    uint32_t col;
 };
 
 struct WordPosition {
-    unsigned int min;
-    unsigned int max;
+    uint32_t min;
+    uint32_t max;
 };
 
 struct Mark {
     std::string filename;
-    unsigned int mark;
+    uint32_t mark;
 };
 
 struct Jumplist {
-    unsigned int index;
+    uint32_t index;
     std::vector<Position> list;
 };
 
@@ -52,17 +52,17 @@ struct Archive {
     std::string filename;
     std::vector<std::string> previousState;
     std::vector<std::vector<diffLine>> history;
-    int historyPosition;
+    int32_t historyPosition;
     struct Position windowPosition;
-    unsigned int row;
-    unsigned int col;
+    uint32_t row;
+    uint32_t col;
     Jumplist jumplist;
 };
 
 struct Query {
     std::string query;
-    unsigned int cursor;
-    unsigned int selection;
+    uint32_t cursor;
+    uint32_t selection;
 };
 
 class State {
@@ -70,38 +70,38 @@ public:
     bool showGrep;
     bool wordwrap;
     bool fileExplorerOpen;
-    int fileExplorerSize;
-    int fileExplorerIndex;
-    int fileExplorerWindowLine;
+    int32_t fileExplorerSize;
+    int32_t fileExplorerIndex;
+    int32_t fileExplorerWindowLine;
     Position matching;
     bool autosave;
     bool searchFail;
     Jumplist jumplist;
     std::vector<Archive> archives;
-    int buildErrorIndex;
+    int32_t buildErrorIndex;
     std::vector<std::string> buildErrors;
     std::vector<std::string> blame;
     std::vector<std::string> harpoonFiles;
-    unsigned int harpoonIndex;
+    uint32_t harpoonIndex;
     std::string buildDir;
     std::string filename;
     std::vector<std::string> data;
     std::vector<std::string> previousState;
     std::vector<std::string> fileStack;
-    unsigned int fileStackIndex;
+    uint32_t fileStackIndex;
     std::vector<std::vector<diffLine>> history;
-    int historyPosition;
+    int32_t historyPosition;
     bool searching;
     bool replacing;
-    unsigned int indent;
+    uint32_t indent;
     Mark mark;
     struct Position windowPosition;
-    static unsigned int maxX;
-    static unsigned int maxY;
+    static uint32_t maxX;
+    static uint32_t maxY;
     VisualType visualType;
     struct Position visual;
-    unsigned int row;
-    unsigned int col;
+    uint32_t row;
+    uint32_t col;
     std::string commentSymbol;
     Query name;
     Query search;
@@ -131,5 +131,5 @@ public:
     void resetState(std::string filename);
     void pushFileStack(std::string filename);
     void changeFile(std::string filename);
-    static void setMaxYX(int y, int x);
+    static void setMaxYX(int32_t y, int32_t x);
 };

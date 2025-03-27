@@ -1,8 +1,10 @@
+#include <cstdint>
+
 #pragma once
 
 struct Bounds {
-    unsigned int minR;
-    unsigned int maxR;
-    unsigned int minC;
-    unsigned int maxC;
+    uint32_t minR;
+    uint32_t maxR;
+    uint32_t minC;
+    uint32_t maxC;
 };

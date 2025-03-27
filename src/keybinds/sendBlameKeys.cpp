@@ -6,7 +6,7 @@
 #include <string>
 #include <vector>
 
-void sendBlameKeys(State* state, int c) {
+void sendBlameKeys(State* state, int32_t c) {
     if (c == 27) { // ESC
         state->mode = SHORTCUTS;
     } else if (c == 'k') {

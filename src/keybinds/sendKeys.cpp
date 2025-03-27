@@ -15,7 +15,7 @@
 #include "sendVisualKeys.h"
 #include <ncurses.h>
 
-void sendKeys(State* state, int c) {
+void sendKeys(State* state, int32_t c) {
     state->showGrep = false;
     state->status = std::string("");
     if (!state->autosave) {
@@ -69,11 +69,11 @@ void sendKeys(State* state, int c) {
                 }
                 state->previousState = state->data;
                 if (c != ctrl('r') && c != 'u') {
-                    if (state->historyPosition < (int)state->history.size()) {
+                    if (state->historyPosition < (int32_t)state->history.size()) {
                         state->history.erase(state->history.begin() + state->historyPosition + 1, state->history.end());
                     }
                     state->history.push_back(diff);
-                    state->historyPosition = (int)state->history.size() - 1;
+                    state->historyPosition = (int32_t)state->history.size() - 1;
                 }
             }
         }
@@ -91,7 +91,7 @@ void sendKeys(State* state, int c) {
                 state->jumplist.index = state->jumplist.list.size() - 1;
             }
         }
-        for (unsigned int i = 0; i < state->harpoonFiles.size(); i++) {
+        for (uint32_t i = 0; i < state->harpoonFiles.size(); i++) {
             if (state->harpoonFiles[i] == state->filename) {
                 state->harpoonIndex = i;
             }

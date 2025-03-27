@@ -55,7 +55,7 @@ void evaluateCommandLineQuery(State* state) {
             std::getline(iss, s, ';');
         } while (!iss.eof());
     } else if (is_number(state->commandLine.query)) {
-        unsigned int number = stoul(state->commandLine.query);
+        uint32_t number = stoul(state->commandLine.query);
         if (number > 0) {
             state->row = number - 1;
         } else {
@@ -64,7 +64,7 @@ void evaluateCommandLineQuery(State* state) {
     }
 }
 
-void sendCommandLineKeys(State* state, int c) {
+void sendCommandLineKeys(State* state, int32_t c) {
     if (c == 27) { // ESC
         backspaceAll(&state->commandLine);
         state->mode = SHORTCUTS;

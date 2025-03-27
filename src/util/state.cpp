@@ -8,13 +8,13 @@
 #include <string>
 #include <vector>
 
-unsigned int State::maxX = 0;
-unsigned int State::maxY = 0;
+uint32_t State::maxX = 0;
+uint32_t State::maxY = 0;
 
 void State::changeFile(std::string filename) {
     auto normalizedFilename = normalizeFilename(filename);
     bool found = false;
-    for (unsigned int i = 0; i < this->archives.size(); i++) {
+    for (uint32_t i = 0; i < this->archives.size(); i++) {
         if (this->archives[i].filename == this->filename) {
             this->archives[i].previousState = this->previousState;
             this->archives[i].history = this->history;
@@ -39,7 +39,7 @@ void State::changeFile(std::string filename) {
             this->jumplist,
         });
     }
-    for (unsigned int i = 0; i < this->archives.size(); i++) {
+    for (uint32_t i = 0; i < this->archives.size(); i++) {
         if (this->archives[i].filename == normalizedFilename) {
             auto archive = this->archives[i];
             this->filename = normalizedFilename;
@@ -193,7 +193,7 @@ State::State(std::string filename) : State() {
     refocusFileExplorer(this, false);
 }
 
-void State::setMaxYX(int y, int x) {
-    State::maxY = (unsigned int)y;
-    State::maxX = (unsigned int)x;
+void State::setMaxYX(int32_t y, int32_t x) {
+    State::maxY = (uint32_t)y;
+    State::maxX = (uint32_t)x;
 }

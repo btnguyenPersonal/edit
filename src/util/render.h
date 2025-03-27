@@ -5,24 +5,24 @@
 #include <string>
 
 struct Cursor {
-    int row;
-    int col;
+    int32_t row;
+    int32_t col;
 };
 
 std::string minimize_filename(const std::string& filename);
-int invertColor(int color);
+int32_t invertColor(int32_t color);
 void initColors();
-int renderStatusBar(State* state);
+int32_t renderStatusBar(State* state);
 Cursor renderVisibleLines(State* state);
 void renderScreen(State* state);
 void renderScreen(State* state, bool fullRedraw);
 void initTerminal();
 void advancePosition(State* state, int& renderRow, int& renderCol);
-void printChar(State* state, int row, int col, char c, int color);
-void printChar(State* state, int& row, int& col, char c, int color, bool advance);
-int getSearchColor(State* state, int row, unsigned int startOfSearch);
-unsigned int renderAutoComplete(State* state, int row, unsigned int col, unsigned int renderCol);
+void printChar(State* state, int32_t row, int32_t col, char c, int32_t color);
+void printChar(State* state, int& row, int& col, char c, int32_t color, bool advance);
+int32_t getSearchColor(State* state, int32_t row, uint32_t startOfSearch);
+uint32_t renderAutoComplete(State* state, int32_t row, uint32_t col, uint32_t renderCol);
 std::string getRenderBlameString(State* state);
-void printLineNumber(State* state, int row, int renderRow);
-int printLineContent(State* state, int row, int renderRow, Cursor* cursor);
-bool isRowColInVisual(State* state, unsigned int i, unsigned int j);
+void printLineNumber(State* state, int32_t row, int32_t renderRow);
+int32_t printLineContent(State* state, int32_t row, int32_t renderRow, Cursor* cursor);
+bool isRowColInVisual(State* state, uint32_t i, uint32_t j);

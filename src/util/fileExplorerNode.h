@@ -18,9 +18,9 @@ public:
     FileExplorerNode();
     FileExplorerNode(const std::filesystem::path& path);
     FileExplorerNode(const std::filesystem::path& path, FileExplorerNode* parent);
-    static FileExplorerNode* getFileExplorerNode(FileExplorerNode* node, int index);
-    int getTotalChildren();
-    int expand(std::string input);
+    static FileExplorerNode* getFileExplorerNode(FileExplorerNode* node, int32_t index);
+    int32_t getTotalChildren();
+    int32_t expand(std::string input);
     void remove();
     void open();
     void refresh();

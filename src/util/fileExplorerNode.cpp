@@ -10,7 +10,7 @@ void FileExplorerNode::close() {
     }
 }
 
-int FileExplorerNode::expand(std::string input) {
+int32_t FileExplorerNode::expand(std::string input) {
     std::stringstream ss(input);
     std::string line;
     std::vector<std::string> path;
@@ -19,11 +19,11 @@ int FileExplorerNode::expand(std::string input) {
     }
     FileExplorerNode* current = this;
     bool found = false;
-    int output = 0;
-    for (unsigned int i = 0; i < path.size(); i++) {
+    int32_t output = 0;
+    for (uint32_t i = 0; i < path.size(); i++) {
         current->open();
         found = false;
-        for (unsigned int j = 0; j < current->children.size(); j++) {
+        for (uint32_t j = 0; j < current->children.size(); j++) {
             if (current->children[j].name == path[i]) {
                 current = &current->children[j];
                 found = true;
@@ -40,10 +40,10 @@ int FileExplorerNode::expand(std::string input) {
     return output;
 }
 
-int FileExplorerNode::getTotalChildren() {
-    int total = 1;
+int32_t FileExplorerNode::getTotalChildren() {
+    int32_t total = 1;
     if (this->isOpen) {
-        for (unsigned int i = 0; i < this->children.size(); i++) {
+        for (uint32_t i = 0; i < this->children.size(); i++) {
             total += this->children[i].getTotalChildren();
         }
     }
@@ -57,7 +57,7 @@ void FileExplorerNode::refresh() {
         bool found = false;
         for (const auto & entry : std::filesystem::directory_iterator(this->path)) {
             found = false;
-            for (unsigned int i = 0; i < this->children.size(); i++) {
+            for (uint32_t i = 0; i < this->children.size(); i++) {
                 if (this->children[i].path == entry.path()) {
                     newChildren.push_back(this->children[i]);
                     found = true;
@@ -103,13 +103,13 @@ void FileExplorerNode::open() {
     }
 }
 
-FileExplorerNode* FileExplorerNode::getFileExplorerNode(FileExplorerNode* node, int n) {
+FileExplorerNode* FileExplorerNode::getFileExplorerNode(FileExplorerNode* node, int32_t n) {
     if (n < 0 || !node) {
         return nullptr;
     }
     std::stack<FileExplorerNode*> stack;
     stack.push(node);
-    int count = 0;
+    int32_t count = 0;
     while (!stack.empty()) {
         FileExplorerNode* current = stack.top();
         stack.pop();

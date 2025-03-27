@@ -9,7 +9,7 @@
 #include <string>
 #include <vector>
 
-void sendGrepKeys(State* state, int c) {
+void sendGrepKeys(State* state, int32_t c) {
     if (c == 27) { // ESC
         state->mode = SHORTCUTS;
     } else if (' ' <= c && c <= '~') {
@@ -27,13 +27,13 @@ void sendGrepKeys(State* state, int c) {
     } else if (c == ctrl('l')) {
         backspaceAll(&state->grep);
     } else if (c == ctrl('d')) {
-        for (unsigned int i = 0; i < state->maxY; i++) {
+        for (uint32_t i = 0; i < state->maxY; i++) {
             if (state->grep.selection + 1 < state->grepOutput.size()) {
                 state->grep.selection += 1;
             }
         }
     } else if (c == ctrl('u')) {
-        for (unsigned int i = 0; i < state->maxY; i++) {
+        for (uint32_t i = 0; i < state->maxY; i++) {
             if (state->grep.selection > 0) {
                 state->grep.selection -= 1;
             }
@@ -65,7 +65,7 @@ void sendGrepKeys(State* state, int c) {
     } else if (c == ctrl('w')) {
         state->grep.selection = 0;
     } else if (c == ctrl('e')) {
-        for (unsigned int i = 0; i < state->grepOutput.size(); i++) {
+        for (uint32_t i = 0; i < state->grepOutput.size(); i++) {
             if (state->grep.selection + 1 < state->grepOutput.size()) {
                 state->grep.selection += 1;
             }

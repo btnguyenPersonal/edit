@@ -38,7 +38,7 @@ std::string getLoggingRegex(State* state) {
 void removeAllLoggingCode(State* state) {
     std::string logPattern = getLoggingRegex(state);
     if (logPattern != "") {
-        for (int i = state->data.size() - 1; i >= 0; i--) {
+        for (int32_t i = state->data.size() - 1; i >= 0; i--) {
             if (std::regex_search(state->data[i], std::regex(logPattern))) {
                 state->data.erase(state->data.begin() + i);
             }
@@ -55,7 +55,7 @@ std::string replaceAll(std::string str, const std::string& from, const std::stri
     return str;
 }
 
-std::string getLoggingCode(State* state, unsigned int row, std::string variableName, bool showValue) {
+std::string getLoggingCode(State* state, uint32_t row, std::string variableName, bool showValue) {
     std::string extension = getExtension(state->filename);
     std::string rowStr = std::to_string(row + 1);
     if (extension == "cpp") {

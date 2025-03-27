@@ -9,7 +9,7 @@
 #include <string>
 #include <vector>
 
-void sendFindFileKeys(State* state, int c) {
+void sendFindFileKeys(State* state, int32_t c) {
     if (c == 27) { // ESC
         state->selectAll = false;
         state->mode = SHORTCUTS;
@@ -43,13 +43,13 @@ void sendFindFileKeys(State* state, int c) {
         backspaceAll(&state->findFile);
         state->findFile.selection = 0;
     } else if (c == ctrl('d')) {
-        for (unsigned int i = 0; i < state->maxY; i++) {
+        for (uint32_t i = 0; i < state->maxY; i++) {
             if (state->findFile.selection + 1 < state->findFileOutput.size()) {
                 state->findFile.selection += 1;
             }
         }
     } else if (c == ctrl('u')) {
-        for (unsigned int i = 0; i < state->maxY; i++) {
+        for (uint32_t i = 0; i < state->maxY; i++) {
             if (state->findFile.selection > 0) {
                 state->findFile.selection -= 1;
             }
@@ -88,7 +88,7 @@ void sendFindFileKeys(State* state, int c) {
     } else if (c == ctrl('w')) {
         state->findFile.selection = 0;
     } else if (c == ctrl('e')) {
-        for (unsigned int i = 0; i < state->findFileOutput.size(); i++) {
+        for (uint32_t i = 0; i < state->findFileOutput.size(); i++) {
             if (state->findFile.selection + 1 < state->findFileOutput.size()) {
                 state->findFile.selection += 1;
             }

@@ -16,14 +16,14 @@
 #include <string>
 #include <vector>
 
-void jumpToHarpoon(State* state, unsigned int num) {
+void jumpToHarpoon(State* state, uint32_t num) {
     if (0 < num && num <= state->harpoonFiles.size()) {
         state->harpoonIndex = num - 1;
         state->resetState(state->harpoonFiles[state->harpoonIndex]);
     }
 }
 
-std::string setStringToLength(const std::string& s, unsigned int length) {
+std::string setStringToLength(const std::string& s, uint32_t length) {
     if (s.length() <= length) {
         return s;
     } else {
@@ -55,7 +55,7 @@ void rename(State* state, const std::filesystem::path& oldPath, const std::strin
     }
 
     auto relativePath = std::filesystem::relative(oldPath, std::filesystem::current_path()).string();
-    for(unsigned int i = 0; i < state->harpoonFiles.size(); i++) {
+    for(uint32_t i = 0; i < state->harpoonFiles.size(); i++) {
         if (state->harpoonFiles[i] == relativePath) {
             state->harpoonFiles[i] = newPath.string();
             break;
@@ -75,7 +75,7 @@ std::filesystem::path getUniqueFilePath(const std::filesystem::path& basePath) {
     std::filesystem::path extension = basePath.extension();
     std::filesystem::path directory = basePath.parent_path();
 
-    for (int i = 1; ; ++i) {
+    for (int32_t i = 1; ; ++i) {
         std::filesystem::path newPath = directory / (stem.string() + " (" + std::to_string(i) + ")" + extension.string());
         if (!std::filesystem::exists(newPath)) {
             return newPath;
@@ -101,7 +101,7 @@ void createFile(State* state, std::filesystem::path path, std::string name) {
 void changeToGrepFile(State* state) {
     if (state->grep.selection < state->grepOutput.size()) {
         std::filesystem::path selectedFile = state->grepOutput[state->grep.selection].path;
-        int lineNum = state->grepOutput[state->grep.selection].lineNum;
+        int32_t lineNum = state->grepOutput[state->grep.selection].lineNum;
         state->resetState(selectedFile);
         state->row = lineNum - 1;
         setSearchResultCurrentLine(state, state->grep.query);
@@ -127,7 +127,7 @@ bool isFunctionLine(std::string line, std::string s, std::string extension) {
             {"", "("},
         };
     }
-    for (unsigned int i = 0; i < functionStrings.size(); i++) {
+    for (uint32_t i = 0; i < functionStrings.size(); i++) {
         if (line.find(functionStrings[i][0] + " " + s + functionStrings[i][1]) != std::string::npos) {
             return true;
         }
@@ -137,7 +137,7 @@ bool isFunctionLine(std::string line, std::string s, std::string extension) {
 
 void findDefinitionFromGrepOutput(State* state, std::string s) {
     std::string extension = getExtension(state->filename);
-    for (unsigned int i = 0; i < state->grepOutput.size(); i++) {
+    for (uint32_t i = 0; i < state->grepOutput.size(); i++) {
         if (state->grepOutput[i].line.back() == '(' || state->grepOutput[i].line.back() == '{') {
             if (isFunctionLine(state->grepOutput[i].line, s, extension)) {
                 state->grep.selection = i;
@@ -168,9 +168,9 @@ void refocusFileExplorer(State* state, bool changeMode) {
 }
 
 void centerFileExplorer(State* state) {
-    if ((state->fileExplorerIndex - ((int)state->maxY / 2)) > 0) {
-        if (state->fileExplorer->getTotalChildren() > ((int)state->maxY)) {
-            state->fileExplorerWindowLine = (state->fileExplorerIndex - ((int)state->maxY / 2));
+    if ((state->fileExplorerIndex - ((int32_t)state->maxY / 2)) > 0) {
+        if (state->fileExplorer->getTotalChildren() > ((int32_t)state->maxY)) {
+            state->fileExplorerWindowLine = (state->fileExplorerIndex - ((int32_t)state->maxY / 2));
         }
     } else {
         state->fileExplorerWindowLine = 0;
@@ -200,11 +200,11 @@ char getCorrespondingParen(char c) {
 
 Position matchIt(State* state) {
     char firstParen = state->data[state->row][state->col];
-    int stack = 0;
+    int32_t stack = 0;
     if (isOpenParen(firstParen)) {
         char secondParen = getCorrespondingParen(firstParen);
-        unsigned int col = state->col;
-        for (unsigned int row = state->row; row < state->data.size(); row++) {
+        uint32_t col = state->col;
+        for (uint32_t row = state->row; row < state->data.size(); row++) {
             while (col < state->data[row].size()) {
                 if (state->data[row][col] == secondParen) {
                     if (stack == 1) {
@@ -221,16 +221,16 @@ Position matchIt(State* state) {
         }
     } else if (isCloseParen(firstParen)) {
         char secondParen = getCorrespondingParen(firstParen);
-        int col = (int)state->col;
+        int32_t col = (int32_t)state->col;
         bool first = true;
-        for (int row = (int)state->row; row >= 0; row--) {
+        for (int32_t row = (int32_t)state->row; row >= 0; row--) {
             if (!first) {
                 col = state->data[row].length() > 0 ? state->data[row].length() - 1 : 0;
             }
             while (col >= 0) {
                 if (state->data[row][col] == secondParen) {
                     if (stack == 1) {
-                        return {(unsigned int)row, (unsigned int)col};
+                        return {(uint32_t)row, (uint32_t)col};
                     } else {
                         stack--;
                     }
@@ -259,12 +259,12 @@ std::string safeSubstring(const std::string& str, std::size_t pos) {
     return str.substr(pos);
 }
 
-void getAndAddNumber(State* state, unsigned int row, unsigned int col, int num) {
+void getAndAddNumber(State* state, uint32_t row, uint32_t col, int32_t num) {
     std::string number;
-    int startPos = col;
+    int32_t startPos = col;
     if (std::isdigit(state->data[row][col])) {
         number += state->data[row][col];
-        for (int i = (int)col - 1; i >= 0; i--) {
+        for (int32_t i = (int32_t)col - 1; i >= 0; i--) {
             if (std::isdigit(state->data[row][i])) {
                 number = state->data[row][i] + number;
                 startPos = i;
@@ -272,7 +272,7 @@ void getAndAddNumber(State* state, unsigned int row, unsigned int col, int num) 
                 break;
             }
         }
-        for (unsigned int i = col + 1; i < state->data[row].length(); i++) {
+        for (uint32_t i = col + 1; i < state->data[row].length(); i++) {
             if (std::isdigit(state->data[row][i])) {
                 number += state->data[row][i];
             } else {
@@ -318,8 +318,8 @@ std::string getCommentSymbol(const std::string& filename) {
 
 bool isAlphanumeric(char c) { return std::isalnum(c) || c == '_' ? 1 : 0; }
 
-unsigned int findNextChar(State* state, char c) {
-    for (unsigned int i = state->col; i < state->data[state->row].length(); i++) {
+uint32_t findNextChar(State* state, char c) {
+    for (uint32_t i = state->col; i < state->data[state->row].length(); i++) {
         if (state->data[state->row][i] == c) {
             return i;
         }
@@ -327,9 +327,9 @@ unsigned int findNextChar(State* state, char c) {
     return state->col;
 }
 
-unsigned int toNextChar(State* state, char c) {
-    unsigned int index = state->col;
-    for (unsigned int i = state->col; i < state->data[state->row].length(); i++) {
+uint32_t toNextChar(State* state, char c) {
+    uint32_t index = state->col;
+    for (uint32_t i = state->col; i < state->data[state->row].length(); i++) {
         if (state->data[state->row][i] == c) {
             return index;
         } else {
@@ -341,7 +341,7 @@ unsigned int toNextChar(State* state, char c) {
 
 std::string getGitHash(State* state) {
     std::stringstream command;
-    command << "git blame -l -L " << state->row + 1 << ",+1 " << state->filename << " | awk '{print $1}'";
+    command << "git blame -l -L " << state->row + 1 << ",+1 " << state->filename << " | awk '{print32_t $1}'";
     std::unique_ptr<FILE, int(*)(FILE*)> pipe(popen(command.str().c_str(), "r"), pclose);
     if (!pipe) {
         state->status = "popen() failed!";
@@ -363,7 +363,7 @@ std::string getGitHash(State* state) {
 std::vector<std::string> getGitBlame(const std::string& filename) {
     std::vector<std::string> blameLines;
     try {
-        std::string command = "git --no-pager blame ./" + filename + " --date=short 2>/dev/null | awk '{print $1, $2, $3, $4, \")\"}'";
+        std::string command = "git --no-pager blame ./" + filename + " --date=short 2>/dev/null | awk '{print32_t $1, $2, $3, $4, \")\"}'";
         std::unique_ptr<FILE, int(*)(FILE*)> pipe(popen(command.c_str(), "r"), pclose);
         if (!pipe) {
             throw std::runtime_error("popen() failed!");
@@ -388,8 +388,8 @@ std::vector<std::string> getGitBlame(const std::string& filename) {
     return blameLines;
 }
 
-unsigned int getLineNumberOffset(State* state) {
-    unsigned int offset = 6;
+uint32_t getLineNumberOffset(State* state) {
+    uint32_t offset = 6;
     if (state->mode == BLAME) {
         offset += 65;
     }
@@ -428,7 +428,7 @@ void moveHarpoonLeft(State* state) {
 }
 
 void trimTrailingWhitespace(State* state) {
-    for (unsigned int i = 0; i < state->data.size(); i++) {
+    for (uint32_t i = 0; i < state->data.size(); i++) {
         rtrim(state->data[i]);
     }
 }
@@ -443,7 +443,7 @@ void ltrim(std::string& s) {
 
 std::string getCurrentWord(State* state) {
     std::string currentWord = "";
-    for (int i = (int)state->col - 1; i >= 0; i--) {
+    for (int32_t i = (int32_t)state->col - 1; i >= 0; i--) {
         if (isAlphanumeric(state->data[state->row][i])) {
             currentWord = state->data[state->row][i] + currentWord;
         } else {
@@ -461,7 +461,7 @@ std::string autocomplete(State* state, const std::string& query) {
     for (std::string line : state->data) {
         line += ' ';
         std::string word = "";
-        for (unsigned int i = 0; i < line.length(); i++) {
+        for (uint32_t i = 0; i < line.length(); i++) {
             if (isAlphanumeric(line[i])) {
                 word += line[i];
             } else {
@@ -476,7 +476,7 @@ std::string autocomplete(State* state, const std::string& query) {
         }
     }
     std::string mostCommonWord = "";
-    int maxCount = 0;
+    int32_t maxCount = 0;
     for (const auto& pair : wordCounts) {
         if (pair.second > maxCount && pair.first != query) {
             mostCommonWord = pair.first;
@@ -504,7 +504,7 @@ void replaceCurrentLine(State* state, const std::string& query, const std::strin
 void runCommand(State* state, const std::string& command) {
     try {
         std::string prompt = std::string("bash -ic '") + (command + " >/dev/null 2>/dev/null") + "'";
-        int returnValue = std::system(prompt.c_str());
+        int32_t returnValue = std::system(prompt.c_str());
         if (returnValue != 0) {
             throw std::exception();
         }
@@ -524,7 +524,7 @@ void replaceAllGlobally(State* state, const std::string& query, const std::strin
 #else
 #error "Platform not supported"
 #endif
-        int returnValue = std::system(command.c_str());
+        int32_t returnValue = std::system(command.c_str());
         if (returnValue != 0) {
             throw std::exception();
         }
@@ -535,7 +535,7 @@ void replaceAllGlobally(State* state, const std::string& query, const std::strin
 }
 
 void replaceAll(State* state, const std::string& query, const std::string& replace) {
-    for (unsigned int i = 0; i < state->data.size(); i++) {
+    for (uint32_t i = 0; i < state->data.size(); i++) {
         if (query.empty()) {
             return;
         }
@@ -549,17 +549,17 @@ void replaceAll(State* state, const std::string& query, const std::string& repla
 
 bool setSearchResultReverse(State* state) {
     fixColOverMax(state);
-    unsigned int initialCol = state->col;
-    unsigned int initialRow = state->row;
-    unsigned int col = initialCol;
-    unsigned int row = initialRow;
+    uint32_t initialCol = state->col;
+    uint32_t initialRow = state->row;
+    uint32_t col = initialCol;
+    uint32_t row = initialRow;
     bool isFirst = true;
     do {
         std::string line = isFirst ? state->data[row].substr(0, col) : state->data[row];
         size_t index = line.rfind(state->search.query);
         if (index != std::string::npos) {
             state->row = row;
-            state->col = static_cast<unsigned int>(index);
+            state->col = static_cast<uint32_t>(index);
             return true;
         }
         if (row == 0) {
@@ -574,18 +574,18 @@ bool setSearchResultReverse(State* state) {
     size_t index = line.rfind(state->search.query);
     if (index != std::string::npos) {
         state->row = row;
-        state->col = static_cast<unsigned int>(index);
+        state->col = static_cast<uint32_t>(index);
         return true;
     }
     return false;
 }
 
 bool searchFromTop(State* state) {
-    for (unsigned int i = 0; i < state->data.size(); i++) {
+    for (uint32_t i = 0; i < state->data.size(); i++) {
         size_t index = state->data[i].rfind(state->search.query);
         if (index != std::string::npos) {
             state->row = i;
-            state->col = static_cast<unsigned int>(index);
+            state->col = static_cast<uint32_t>(index);
             return true;
         }
     }
@@ -596,7 +596,7 @@ bool setSearchResultCurrentLine(State* state, const std::string& query) {
     std::string line = state->data[state->row];
     size_t index = line.find(query);
     if (index != std::string::npos) {
-        state->col = static_cast<unsigned int>(index);
+        state->col = static_cast<uint32_t>(index);
         return true;
     }
     return false;
@@ -604,16 +604,16 @@ bool setSearchResultCurrentLine(State* state, const std::string& query) {
 
 bool setSearchResult(State* state) {
     fixColOverMax(state);
-    unsigned int initialCol = state->col;
-    unsigned int initialRow = state->row;
-    unsigned int col = initialCol;
-    unsigned int row = initialRow;
+    uint32_t initialCol = state->col;
+    uint32_t initialRow = state->row;
+    uint32_t col = initialCol;
+    uint32_t row = initialRow;
     do {
         std::string line = state->data[row].substr(col);
         size_t index = line.find(state->search.query);
         if (index != std::string::npos) {
             state->row = row;
-            state->col = static_cast<unsigned int>(index) + col;
+            state->col = static_cast<uint32_t>(index) + col;
             return true;
         }
         row = (row + 1) % state->data.size();
@@ -624,7 +624,7 @@ bool setSearchResult(State* state) {
     size_t index = line.find(state->search.query);
     if (index != std::string::npos) {
         state->row = row;
-        state->col = static_cast<unsigned int>(index) + col;
+        state->col = static_cast<uint32_t>(index) + col;
         return true;
     }
     return false;
@@ -652,8 +652,8 @@ char ctrl(char c) { return c - 'a' + 1; }
 
 char unctrl(char c) { return c + 'a' - 1; }
 
-unsigned int getIndent(const std::string& str) {
-    for (unsigned int i = 0; i < str.length(); i++) {
+uint32_t getIndent(const std::string& str) {
+    for (uint32_t i = 0; i < str.length(); i++) {
         if (str[i] != ' ') {
             return i;
         }
@@ -661,9 +661,9 @@ unsigned int getIndent(const std::string& str) {
     return 0;
 }
 
-unsigned int getPrevEmptyLine(State* state) {
+uint32_t getPrevEmptyLine(State* state) {
     bool hitNonEmpty = false;
-    for (int i = (int)state->row; i >= 0; i--) {
+    for (int32_t i = (int32_t)state->row; i >= 0; i--) {
         if (state->data[i] != "") {
             hitNonEmpty = true;
         } else if (hitNonEmpty && state->data[i] == "") {
@@ -673,9 +673,9 @@ unsigned int getPrevEmptyLine(State* state) {
     return state->row;
 }
 
-unsigned int getNextEmptyLine(State* state) {
+uint32_t getNextEmptyLine(State* state) {
     bool hitNonEmpty = false;
-    for (unsigned int i = state->row; i < state->data.size(); i++) {
+    for (uint32_t i = state->row; i < state->data.size(); i++) {
         if (state->data[i] != "") {
             hitNonEmpty = true;
         } else if (hitNonEmpty && state->data[i] == "") {
@@ -685,9 +685,9 @@ unsigned int getNextEmptyLine(State* state) {
     return state->row;
 }
 
-unsigned int getPrevLineSameIndent(State* state) {
-    unsigned int current = getIndent(trimLeadingComment(state, state->data[state->row]));
-    for (int i = (int)state->row - 1; i >= 0; i--) {
+uint32_t getPrevLineSameIndent(State* state) {
+    uint32_t current = getIndent(trimLeadingComment(state, state->data[state->row]));
+    for (int32_t i = (int32_t)state->row - 1; i >= 0; i--) {
         if (current == getIndent(trimLeadingComment(state, state->data[i])) && state->data[i] != "") {
             return i;
         }
@@ -695,9 +695,9 @@ unsigned int getPrevLineSameIndent(State* state) {
     return state->row;
 }
 
-unsigned int getNextLineSameIndent(State* state) {
-    unsigned int current = getIndent(trimLeadingComment(state, state->data[state->row]));
-    for (unsigned int i = state->row + 1; i < state->data.size(); i++) {
+uint32_t getNextLineSameIndent(State* state) {
+    uint32_t current = getIndent(trimLeadingComment(state, state->data[state->row]));
+    for (uint32_t i = state->row + 1; i < state->data.size(); i++) {
         if (current == getIndent(trimLeadingComment(state, state->data[i])) && state->data[i] != "") {
             return i;
         }
@@ -705,17 +705,17 @@ unsigned int getNextLineSameIndent(State* state) {
     return state->row;
 }
 
-WordPosition findQuoteBounds(const std::string& str, char quoteChar, unsigned int cursor, bool includeQuote) {
-    int lastQuoteIndex = -1;
-    for (unsigned int i = 0; i <= cursor; i++) {
+WordPosition findQuoteBounds(const std::string& str, char quoteChar, uint32_t cursor, bool includeQuote) {
+    int32_t lastQuoteIndex = -1;
+    for (uint32_t i = 0; i <= cursor; i++) {
         if (str[i] == quoteChar) {
             lastQuoteIndex = i;
         }
     }
-    unsigned int i;
+    uint32_t i;
     for (i = cursor + 1; i < str.length(); i++) {
         if (str[i] == quoteChar) {
-            if (lastQuoteIndex != -1 && lastQuoteIndex < (int)cursor) {
+            if (lastQuoteIndex != -1 && lastQuoteIndex < (int32_t)cursor) {
                 break;
             } else {
                 if (lastQuoteIndex == -1) {
@@ -728,20 +728,20 @@ WordPosition findQuoteBounds(const std::string& str, char quoteChar, unsigned in
     }
     if (i != str.length()) {
         if (i - lastQuoteIndex == 1 || includeQuote) {
-            return {(unsigned int)lastQuoteIndex, (unsigned int)i};
+            return {(uint32_t)lastQuoteIndex, (uint32_t)i};
         } else {
-            return {(unsigned int)lastQuoteIndex + 1, (unsigned int)i - 1};
+            return {(uint32_t)lastQuoteIndex + 1, (uint32_t)i - 1};
         }
     } else {
         return {0, 0};
     }
 }
 
-WordPosition findParentheses(const std::string& str, char openParen, char closeParen, unsigned int cursor, bool includeParen) {
-    int balance = 0;
-    int openParenIndex = -1;
+WordPosition findParentheses(const std::string& str, char openParen, char closeParen, uint32_t cursor, bool includeParen) {
+    int32_t balance = 0;
+    int32_t openParenIndex = -1;
     // look back for openParen
-    for (int i = cursor; i >= 0; i--) {
+    for (int32_t i = cursor; i >= 0; i--) {
         if (str[i] == openParen) {
             if (balance == 0) {
                 openParenIndex = i;
@@ -749,14 +749,14 @@ WordPosition findParentheses(const std::string& str, char openParen, char closeP
             } else {
                 balance--;
             }
-        } else if (str[i] == closeParen && i != (int)cursor) {
+        } else if (str[i] == closeParen && i != (int32_t)cursor) {
             balance++;
         }
     }
     balance = 0;
     // if haven't found yet look forward for openParen
     if (openParenIndex == -1) {
-        for (int i = cursor; i < (int)str.length(); i++) {
+        for (int32_t i = cursor; i < (int32_t)str.length(); i++) {
             if (str[i] == openParen) {
                 if (balance == 0) {
                     openParenIndex = i;
@@ -774,15 +774,15 @@ WordPosition findParentheses(const std::string& str, char openParen, char closeP
     if (openParenIndex == -1) {
         return {0, 0};
     }
-    for (int i = openParenIndex + 1; i < (int)str.length(); i++) {
+    for (int32_t i = openParenIndex + 1; i < (int32_t)str.length(); i++) {
         if (str[i] == openParen) {
             balance--;
         } else if (str[i] == closeParen) {
             if (balance == 0) {
                 if (i - openParenIndex == 1 || includeParen) {
-                    return {(unsigned int)openParenIndex, (unsigned int)i};
+                    return {(uint32_t)openParenIndex, (uint32_t)i};
                 } else {
-                    return {(unsigned int)openParenIndex + 1, (unsigned int)i - 1};
+                    return {(uint32_t)openParenIndex + 1, (uint32_t)i - 1};
                 }
             } else {
                 balance++;
@@ -792,7 +792,7 @@ WordPosition findParentheses(const std::string& str, char openParen, char closeP
     return {0, 0};
 }
 
-WordPosition getBigWordPosition(const std::string& str, unsigned int cursor) {
+WordPosition getBigWordPosition(const std::string& str, uint32_t cursor) {
     if (cursor >= str.size()) {
         return {0, 0};
     }
@@ -811,8 +811,8 @@ WordPosition getBigWordPosition(const std::string& str, unsigned int cursor) {
         return {0, 0};
     }
     // Find the end of the chunk
-    unsigned int start = cursor;
-    unsigned int end = start;
+    uint32_t start = cursor;
+    uint32_t end = start;
     while (end < str.size() && str[end] != ' ') {
         end++;
     }
@@ -820,7 +820,7 @@ WordPosition getBigWordPosition(const std::string& str, unsigned int cursor) {
     return {start, end - 1};
 }
 
-WordPosition getWordPosition(const std::string& str, unsigned int cursor) {
+WordPosition getWordPosition(const std::string& str, uint32_t cursor) {
     if (cursor >= str.size()) {
         return {0, 0};
     }
@@ -839,8 +839,8 @@ WordPosition getWordPosition(const std::string& str, unsigned int cursor) {
         return {0, 0};
     }
     // Find the end of the chunk
-    unsigned int start = cursor;
-    unsigned int end = start;
+    uint32_t start = cursor;
+    uint32_t end = start;
     while (end < str.size() && str[end] != ' ' && (isAlphanumeric(str[start]) == isAlphanumeric(str[end]))) {
         end++;
     }
@@ -857,7 +857,7 @@ bool isAllLowercase(const std::string& str) {
     return true;
 }
 
-int maxConsecutiveMatch(const std::filesystem::path& filePath, const std::string& query) {
+int32_t maxConsecutiveMatch(const std::filesystem::path& filePath, const std::string& query) {
     std::string filePathStr = filePath.string();
     std::string queryLower = query;
 
@@ -866,8 +866,8 @@ int maxConsecutiveMatch(const std::filesystem::path& filePath, const std::string
         std::transform(queryLower.begin(), queryLower.end(), queryLower.begin(), [](unsigned char c) { return std::tolower(c); });
     }
 
-    int maxLength = 0;
-    int currentLength = 0;
+    int32_t maxLength = 0;
+    int32_t currentLength = 0;
     for (size_t i = 0, j = 0; i < filePathStr.size();) {
         if (filePathStr[i] == queryLower[j]) {
             currentLength++;
@@ -907,8 +907,8 @@ bool filePathContainsSubstring(const std::filesystem::path& filePath, const std:
         std::transform(queryLower.begin(), queryLower.end(), queryLower.begin(), [](unsigned char c) { return std::tolower(c); });
     }
 
-    unsigned int filePathIndex = 0;
-    unsigned int queryIndex = 0;
+    uint32_t filePathIndex = 0;
+    uint32_t queryIndex = 0;
     while (queryIndex < queryLower.length() && filePathIndex < filePathStr.length()) {
         if (filePathStr[filePathIndex] == queryLower[queryIndex]) {
             filePathIndex++;
@@ -928,7 +928,7 @@ bool shouldIgnoreFile(const std::filesystem::path& path) {
         ".gitconfig",
         ".gitignore"
     };
-    for (unsigned int i = 0; i < allowList.size(); i++) {
+    for (uint32_t i = 0; i < allowList.size(); i++) {
         if (path.string().find(allowList[i]) != std::string::npos) {
             return false;
         }
@@ -949,7 +949,7 @@ bool shouldIgnoreFile(const std::filesystem::path& path) {
         "package-lock.json",
         ".eslintcache"
     };
-    for (unsigned int i = 0; i < ignoreList.size(); i++) {
+    for (uint32_t i = 0; i < ignoreList.size(); i++) {
         if (path.string().find(ignoreList[i]) != std::string::npos) {
             return true;
         }
@@ -962,7 +962,7 @@ std::vector<grepMatch> grepFile(const std::filesystem::path& file_path, const st
     std::vector<grepMatch> matches;
     std::ifstream file(file_path);
     std::string line;
-    int lineNumber = 0;
+    int32_t lineNumber = 0;
     while (std::getline(file, line)) {
         lineNumber++;
         if (line.find(query) != std::string::npos) {
@@ -1020,8 +1020,8 @@ std::vector<std::filesystem::path> findFiles(const std::filesystem::path& dir_pa
         }
     }
     std::sort(matching_files.begin(), matching_files.end(), [&](const std::filesystem::path& a, const std::filesystem::path& b) {
-        int matchA = maxConsecutiveMatch(a, query);
-        int matchB = maxConsecutiveMatch(b, query);
+        int32_t matchA = maxConsecutiveMatch(a, query);
+        int32_t matchB = maxConsecutiveMatch(b, query);
         if (matchA == matchB) {
             if (isTestFile(a.string()) && !isTestFile(b.string())) {
                 return false;
@@ -1053,9 +1053,9 @@ void generateGrepOutput(State* state) {
 
 void generateFindFileOutput(State* state) { state->findFileOutput = findFiles(std::filesystem::current_path(), state->findFile.query); }
 
-unsigned int w(State* state) {
+uint32_t w(State* state) {
     bool space = state->data[state->row][state->col] == ' ';
-    for (unsigned int i = state->col + 1; i < state->data[state->row].size(); i += 1) {
+    for (uint32_t i = state->col + 1; i < state->data[state->row].size(); i += 1) {
         if (state->data[state->row][i] == ' ') {
             space = true;
         } else if (space && state->data[state->row][i] != ' ') {
@@ -1067,10 +1067,10 @@ unsigned int w(State* state) {
     return state->col;
 }
 
-unsigned int b(State* state) {
+uint32_t b(State* state) {
     if (state->col == 0 || state->data[state->row].empty())
         return 0;
-    int i = state->col - 1;
+    int32_t i = state->col - 1;
     while (i >= 0 && state->data[state->row][i] == ' ')
         i--;
     if (i < 0)
@@ -1111,7 +1111,7 @@ std::vector<std::string> readFile(const std::string& filename) {
 
 bool isWindowPositionInvalid(State* state) {
     bool isColTooSmall = state->col < state->windowPosition.col;
-    bool isColTooBig = (int)state->col - (int)state->windowPosition.col > (int)state->maxX - (int)getLineNumberOffset(state) - 1;
+    bool isColTooBig = (int32_t)state->col - (int32_t)state->windowPosition.col > (int32_t)state->maxX - (int32_t)getLineNumberOffset(state) - 1;
     if (isOffScreenVertical(state)) {
         return true;
     } else if (!state->wordwrap && (isColTooSmall || isColTooBig)) {
@@ -1124,8 +1124,8 @@ bool isOffScreenVertical(State* state) {
     if (state->row < state->windowPosition.row) {
         return true;
     }
-    unsigned int windowRow = state->windowPosition.row;
-    unsigned int rowsBelow = 0;
+    uint32_t windowRow = state->windowPosition.row;
+    uint32_t rowsBelow = 0;
     while (windowRow < state->data.size() && rowsBelow + 1 < state->maxY) {
         if (state->row == windowRow) {
             return false;
@@ -1136,9 +1136,9 @@ bool isOffScreenVertical(State* state) {
     return true;
 }
 
-unsigned int getCenteredWindowPosition(State* state) {
-    unsigned int windowRow = state->row;
-    unsigned int rowsAbove = getDisplayRows(state, state->row, state->col);
+uint32_t getCenteredWindowPosition(State* state) {
+    uint32_t windowRow = state->row;
+    uint32_t rowsAbove = getDisplayRows(state, state->row, state->col);
     while (windowRow > 0 && rowsAbove < state->maxY / 2) {
         windowRow--;
         rowsAbove += getDisplayRows(state, windowRow);
@@ -1146,7 +1146,7 @@ unsigned int getCenteredWindowPosition(State* state) {
     return windowRow;
 }
 
-unsigned int getDisplayRows(State* state, unsigned int r, unsigned int c) {
+uint32_t getDisplayRows(State* state, uint32_t r, uint32_t c) {
     if (!state->wordwrap) {
         return 1;
     }
@@ -1154,7 +1154,7 @@ unsigned int getDisplayRows(State* state, unsigned int r, unsigned int c) {
     return 1 + physicalCol / (state->maxX - getLineNumberOffset(state));
 }
 
-unsigned int getDisplayRows(State* state, unsigned int r) {
+uint32_t getDisplayRows(State* state, uint32_t r) {
     if (!state->wordwrap) {
         return 1;
     }
@@ -1187,7 +1187,7 @@ void downScreen(State* state) {
 }
 
 void upHalfScreen(State* state) {
-    for (unsigned int i = 0; i < state->maxY / 2; i++) {
+    for (uint32_t i = 0; i < state->maxY / 2; i++) {
         if (state->row > 0) {
             state->row -= 1;
             state->windowPosition.row -= 1;
@@ -1196,7 +1196,7 @@ void upHalfScreen(State* state) {
 }
 
 void downHalfScreen(State* state) {
-    for (unsigned int i = 0; i < state->maxY / 2; i++) {
+    for (uint32_t i = 0; i < state->maxY / 2; i++) {
         if (state->row < state->data.size() - 1) {
             state->row += 1;
             state->windowPosition.row += 1;
@@ -1241,22 +1241,22 @@ void right(State* state) {
 }
 
 void indent(State* state) {
-    for (unsigned int i = 0; i < state->indent; i++) {
+    for (uint32_t i = 0; i < state->indent; i++) {
         state->data[state->row] = " " + state->data[state->row];
     }
 }
 
 void deindent(State* state) {
-    for (unsigned int i = 0; i < state->indent; i++) {
+    for (uint32_t i = 0; i < state->indent; i++) {
         if (state->data[state->row].substr(0, 1) == " ") {
             state->data[state->row] = state->data[state->row].substr(1);
         }
     }
 }
 
-int getIndexFirstNonSpace(State* state) {
-    int i;
-    for (i = 0; i < (int)state->data[state->row].length(); i++) {
+int32_t getIndexFirstNonSpace(State* state) {
+    int32_t i;
+    for (i = 0; i < (int32_t)state->data[state->row].length(); i++) {
         if (state->data[state->row][i] != ' ') {
             return i;
         }
@@ -1265,7 +1265,7 @@ int getIndexFirstNonSpace(State* state) {
 }
 
 void calcWindowBounds() {
-    int y, x;
+    int32_t y, x;
     getmaxyx(stdscr, y, x);
     State::setMaxYX(y, x);
 }
@@ -1274,7 +1274,7 @@ void insertEmptyLineBelow(State* state) { state->data.insert(state->data.begin()
 
 void insertEmptyLine(State* state) { state->data.insert(state->data.begin() + state->row, ""); }
 
-int maximum(int a, int b) {
+int32_t maximum(int32_t a, int32_t b) {
     if (a > b) {
         return a;
     } else {
@@ -1282,7 +1282,7 @@ int maximum(int a, int b) {
     }
 }
 
-int minimum(int a, int b) {
+int32_t minimum(int32_t a, int32_t b) {
     if (a <= b) {
         return a;
     } else {

@@ -18,7 +18,7 @@
 #include <string>
 #include <vector>
 
-void sendShortcutKeys(State* state, int c) {
+void sendShortcutKeys(State* state, int32_t c) {
     if (c == 27) { // ESC
         state->prevKeys = "";
         state->motion = "";
@@ -35,8 +35,8 @@ void sendShortcutKeys(State* state, int c) {
         state->dotCommand = "r" + c;
         state->prevKeys = "";
     } else if ((state->prevKeys[0] == 'y' || state->prevKeys[0] == 'd' || state->prevKeys[0] == 'c') && state->prevKeys.length() == 2) {
-        unsigned int tempRow = state->row;
-        unsigned int tempCol = state->col;
+        uint32_t tempRow = state->row;
+        uint32_t tempCol = state->col;
         char command0 = state->prevKeys[0];
         char command1 = state->prevKeys[1];
         state->prevKeys = "";
@@ -58,8 +58,8 @@ void sendShortcutKeys(State* state, int c) {
         if (c == 'i' || c == 'a' || c == 'f' || c == 't') {
             state->prevKeys += c;
         } else {
-            unsigned int tempRow = state->row;
-            unsigned int tempCol = state->col;
+            uint32_t tempRow = state->row;
+            uint32_t tempCol = state->col;
             char command = state->prevKeys[0];
             state->prevKeys = "";
             state->motion = "v";
@@ -134,7 +134,7 @@ void sendShortcutKeys(State* state, int c) {
             state->historyPosition--;
         }
     } else if (!state->recording && c == ctrl('r')) {
-        if (state->historyPosition < ((int)state->history.size()) - 1) {
+        if (state->historyPosition < ((int32_t)state->history.size()) - 1) {
             state->row = applyDiff(state, state->history[state->historyPosition + 1], false);
             state->historyPosition++;
         }
@@ -195,8 +195,8 @@ void sendShortcutKeys(State* state, int c) {
         setQuery(&state->search, getInVisual(state));
         state->searching = true;
         state->col += 1;
-        unsigned int temp_col = state->col;
-        unsigned int temp_row = state->row;
+        uint32_t temp_col = state->col;
+        uint32_t temp_row = state->row;
         bool result = setSearchResult(state);
         if (result == false) {
             state->row = temp_row;
@@ -276,8 +276,8 @@ void sendShortcutKeys(State* state, int c) {
     } else if (c == 'n') {
         state->searching = true;
         state->col += 1;
-        unsigned int temp_col = state->col;
-        unsigned int temp_row = state->row;
+        uint32_t temp_col = state->col;
+        uint32_t temp_row = state->row;
         bool result = setSearchResult(state);
         if (result == false) {
             state->searchFail = true;
@@ -287,14 +287,14 @@ void sendShortcutKeys(State* state, int c) {
         centerScreen(state);
     } else if (c == '.') {
         resetValidCursorState(state);
-        for (unsigned int i = 0; i < state->dotCommand.length(); i++) {
+        for (uint32_t i = 0; i < state->dotCommand.length(); i++) {
             state->dontRecordKey = true;
             sendKeys(state, state->dotCommand[i]);
         }
         state->dontRecordKey = true;
     } else if (c == ',' && state->recording == false) {
         resetValidCursorState(state);
-        for (unsigned int i = 0; i < state->macroCommand.length(); i++) {
+        for (uint32_t i = 0; i < state->macroCommand.length(); i++) {
             state->dontRecordKey = true;
             sendKeys(state, state->macroCommand[i]);
         }

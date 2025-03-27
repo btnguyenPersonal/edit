@@ -9,7 +9,7 @@
 #include <string>
 #include <vector>
 
-void sendFileExplorerKeys(State* state, int c) {
+void sendFileExplorerKeys(State* state, int32_t c) {
     try {
         if (c == 27) { // ESC
             state->mode = SHORTCUTS;
@@ -90,7 +90,7 @@ void sendFileExplorerKeys(State* state, int c) {
             auto node = FileExplorerNode::getFileExplorerNode(state->fileExplorer, state->fileExplorerIndex);
             copyFileToClipboard(state, node->path.string());
         } else if (c == ctrl('u')) {
-            for (unsigned int i = 0; i < state->maxY / 2; i++) {
+            for (uint32_t i = 0; i < state->maxY / 2; i++) {
                 if (state->fileExplorerIndex > 0) {
                     state->fileExplorerIndex--;
                 }
@@ -100,7 +100,7 @@ void sendFileExplorerKeys(State* state, int c) {
                 state->fileExplorerIndex--;
             }
         } else if (c == ctrl('d')) {
-            for (unsigned int i = 0; i < state->maxY / 2; i++) {
+            for (uint32_t i = 0; i < state->maxY / 2; i++) {
                 if (state->fileExplorerIndex + 1 < state->fileExplorer->getTotalChildren()) {
                     state->fileExplorerIndex++;
                 }

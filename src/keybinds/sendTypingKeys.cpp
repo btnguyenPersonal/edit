@@ -13,7 +13,7 @@ void insertNewline(State* state) {
     state->data.insert(state->data.begin() + state->row + 1, current.substr(state->col));
 }
 
-void sendTypingKeys(State* state, int c) {
+void sendTypingKeys(State* state, int32_t c) {
     if (!state->dontRecordKey) {
         state->motion += c;
     }
@@ -33,7 +33,7 @@ void sendTypingKeys(State* state, int c) {
         } else {
             std::string current = state->data[state->row];
             state->data[state->row] = current.substr(0, state->col) + (char)c + current.substr(state->col);
-            if ((int)state->col == getIndexFirstNonSpace(state)) {
+            if ((int32_t)state->col == getIndexFirstNonSpace(state)) {
                 indentLine(state);
                 state->col = getIndexFirstNonSpace(state);
             }
@@ -56,13 +56,13 @@ void sendTypingKeys(State* state, int c) {
         }
     } else if (c == ctrl('w')) {
         std::string current = state->data[state->row];
-        unsigned int index = b(state);
+        uint32_t index = b(state);
         state->data[state->row] = current.substr(0, index) + current.substr(state->col);
         state->col = index;
     } else if (' ' <= c && c <= '~') {
         std::string current = state->data[state->row];
         state->data[state->row] = current.substr(0, state->col) + (char)c + current.substr(state->col);
-        if ((int)state->col == getIndexFirstNonSpace(state)) {
+        if ((int32_t)state->col == getIndexFirstNonSpace(state)) {
             indentLine(state);
             state->col = getIndexFirstNonSpace(state);
         }

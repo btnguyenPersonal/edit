@@ -34,11 +34,11 @@ Bounds getBounds(State* state) {
     return bounds;
 }
 
-void replaceAllWithChar(State* state, int c) {
+void replaceAllWithChar(State* state, int32_t c) {
     Bounds bounds = getBounds(state);
     if (state->visualType == NORMAL) {
-        unsigned int col = bounds.minC;
-        for (unsigned int row = bounds.minR; row < bounds.maxR; row++) {
+        uint32_t col = bounds.minC;
+        for (uint32_t row = bounds.minR; row < bounds.maxR; row++) {
             while (col < state->data[row].size()) {
                 state->data[row][col] = c;
                 col++;
@@ -50,18 +50,18 @@ void replaceAllWithChar(State* state, int c) {
             col++;
         }
     } else if (state->visualType == BLOCK) {
-        unsigned int min = std::min(bounds.minC, bounds.maxC);
-        unsigned int max = std::max(bounds.minC, bounds.maxC);
-        for (unsigned int row = bounds.minR; row <= bounds.maxR; row++) {
-            for (unsigned int col = min; col <= max; col++) {
+        uint32_t min = std::min(bounds.minC, bounds.maxC);
+        uint32_t max = std::max(bounds.minC, bounds.maxC);
+        for (uint32_t row = bounds.minR; row <= bounds.maxR; row++) {
+            for (uint32_t col = min; col <= max; col++) {
                 if (col < state->data[row].size()) {
                     state->data[row][col] = c;
                 }
             }
         }
     } else if (state->visualType == LINE) {
-        for (unsigned int row = bounds.minR; row <= bounds.maxR; row++) {
-            for (unsigned int col = 0; col < state->data[row].size(); col++) {
+        for (uint32_t row = bounds.minR; row <= bounds.maxR; row++) {
+            for (uint32_t col = 0; col < state->data[row].size(); col++) {
                 state->data[row][col] = c;
             }
         }
@@ -71,8 +71,8 @@ void replaceAllWithChar(State* state, int c) {
 void changeCaseVisual(State* state, bool upper) {
     Bounds bounds = getBounds(state);
     if (state->visualType == NORMAL) {
-        unsigned int col = bounds.minC;
-        for (unsigned int row = bounds.minR; row < bounds.maxR; row++) {
+        uint32_t col = bounds.minC;
+        for (uint32_t row = bounds.minR; row < bounds.maxR; row++) {
             while (col < state->data[row].size()) {
                 if (upper) {
                     state->data[row][col] = std::toupper(state->data[row][col]);
@@ -92,10 +92,10 @@ void changeCaseVisual(State* state, bool upper) {
             col++;
         }
     } else if (state->visualType == BLOCK) {
-        unsigned int min = std::min(bounds.minC, bounds.maxC);
-        unsigned int max = std::max(bounds.minC, bounds.maxC);
-        for (unsigned int row = bounds.minR; row <= bounds.maxR; row++) {
-            for (unsigned int col = min; col <= max; col++) {
+        uint32_t min = std::min(bounds.minC, bounds.maxC);
+        uint32_t max = std::max(bounds.minC, bounds.maxC);
+        for (uint32_t row = bounds.minR; row <= bounds.maxR; row++) {
+            for (uint32_t col = min; col <= max; col++) {
                 if (upper) {
                     state->data[row][col] = std::toupper(state->data[row][col]);
                 } else {
@@ -104,8 +104,8 @@ void changeCaseVisual(State* state, bool upper) {
             }
         }
     } else if (state->visualType == LINE) {
-        for (unsigned int row = bounds.minR; row <= bounds.maxR; row++) {
-            for (unsigned int col = 0; col < state->data[row].size(); col++) {
+        for (uint32_t row = bounds.minR; row <= bounds.maxR; row++) {
+            for (uint32_t col = 0; col < state->data[row].size(); col++) {
                 if (upper) {
                     state->data[row][col] = std::toupper(state->data[row][col]);
                 } else {
@@ -119,12 +119,12 @@ void changeCaseVisual(State* state, bool upper) {
 void sortLines(State* state) {
     Bounds bounds = getBounds(state);
     std::vector<std::string> lines;
-    for (unsigned int i = bounds.minR; i <= bounds.maxR; i++) {
+    for (uint32_t i = bounds.minR; i <= bounds.maxR; i++) {
         lines.push_back(state->data[i]);
     }
     std::sort(lines.begin(), lines.end());
-    int index = 0;
-    for (unsigned int i = bounds.minR; i <= bounds.maxR; i++) {
+    int32_t index = 0;
+    for (uint32_t i = bounds.minR; i <= bounds.maxR; i++) {
         state->data[i] = lines[index];
         index++;
     }
@@ -140,7 +140,7 @@ void setStateFromWordPosition(State* state, WordPosition pos) {
 
 void surroundParagraph(State* state, bool includeLastLine) {
     auto start = state->row;
-    for (int i = (int)start; i >= 0; i--) {
+    for (int32_t i = (int32_t)start; i >= 0; i--) {
         if (state->data[i] == "") {
             break;
         } else {
@@ -149,7 +149,7 @@ void surroundParagraph(State* state, bool includeLastLine) {
     }
     state->visual.row = start;
     auto end = state->row;
-    for (unsigned int i = state->row; i < state->data.size(); i++) {
+    for (uint32_t i = state->row; i < state->data.size(); i++) {
         if (state->data[i] == "") {
             if (includeLastLine) {
                 end = i;
@@ -163,8 +163,8 @@ void surroundParagraph(State* state, bool includeLastLine) {
 }
 
 bool isValidMoveableChunk(State* state, Bounds bounds) {
-    int start = getNumLeadingSpaces(state->data[bounds.minR]);
-    for (unsigned int i = bounds.minR + 1; i <= bounds.maxR; i++) {
+    int32_t start = getNumLeadingSpaces(state->data[bounds.minR]);
+    for (uint32_t i = bounds.minR + 1; i <= bounds.maxR; i++) {
         if (getNumLeadingSpaces(state->data[i]) < start && state->data[i] != "") {
             return false;
         }
@@ -174,7 +174,7 @@ bool isValidMoveableChunk(State* state, Bounds bounds) {
 
 bool visualBlockValid(State* state) {
     Bounds bounds = getBounds(state);
-    for (unsigned int i = bounds.minR; i <= bounds.maxR; i++) {
+    for (uint32_t i = bounds.minR; i <= bounds.maxR; i++) {
         if (bounds.maxC >= state->data[i].length()) {
             return false;
         }
@@ -186,9 +186,9 @@ std::string getInVisual(State* state) {
     Bounds bounds = getBounds(state);
     std::string clip = "";
     if (state->visualType == BLOCK) {
-        unsigned int min = std::min(bounds.minC, bounds.maxC);
-        unsigned int max = std::max(bounds.minC, bounds.maxC);
-        for (unsigned int i = bounds.minR; i <= bounds.maxR; i++) {
+        uint32_t min = std::min(bounds.minC, bounds.maxC);
+        uint32_t max = std::max(bounds.minC, bounds.maxC);
+        for (uint32_t i = bounds.minR; i <= bounds.maxR; i++) {
             clip += safeSubstring(state->data[i], min, max + 1 - min) + "\n";
         }
     } else if (state->visualType == LINE) {
@@ -196,7 +196,7 @@ std::string getInVisual(State* state) {
             clip += state->data[i] + "\n";
         }
     } else if (state->visualType == NORMAL) {
-        unsigned int index = bounds.minC;
+        uint32_t index = bounds.minC;
         for (size_t i = bounds.minR; i < bounds.maxR; i++) {
             while (index < state->data[i].size()) {
                 clip += state->data[i][index];
@@ -220,7 +220,7 @@ Position changeInVisual(State* state) {
         state->data[bounds.minR] = std::string("");
     } else if (state->visualType == BLOCK) {
         deleteInVisual(state);
-        unsigned int min = std::min(bounds.minC, bounds.maxC);
+        uint32_t min = std::min(bounds.minC, bounds.maxC);
         pos.col = min;
     } else if (state->visualType == NORMAL) {
         std::string firstPart = "";
@@ -254,9 +254,9 @@ Position deleteInVisual(State* state) {
     if (state->visualType == LINE) {
         state->data.erase(state->data.begin() + bounds.minR, state->data.begin() + bounds.maxR + 1);
     } else if (state->visualType == BLOCK) {
-        unsigned int min = std::min(bounds.minC, bounds.maxC);
-        unsigned int max = std::max(bounds.minC, bounds.maxC);
-        for (unsigned int i = bounds.minR; i <= bounds.maxR; i++) {
+        uint32_t min = std::min(bounds.minC, bounds.maxC);
+        uint32_t max = std::max(bounds.minC, bounds.maxC);
+        for (uint32_t i = bounds.minR; i <= bounds.maxR; i++) {
             std::string firstPart = safeSubstring(state->data[i], 0, min);
             std::string secondPart = safeSubstring(state->data[i], max + 1);
             state->data[i] = firstPart + secondPart;
@@ -360,16 +360,16 @@ bool sendVisualKeys(State* state, char c, bool onlyMotions) {
         state->prevKeys = "";
     } else if (!onlyMotions && state->visualType == BLOCK && state->prevKeys == "g" && c == ctrl('s')) {
         Bounds bounds = getBounds(state);
-        int iterations = 1;
-        for (unsigned int i = bounds.minR; i <= bounds.maxR; i++) {
+        int32_t iterations = 1;
+        for (uint32_t i = bounds.minR; i <= bounds.maxR; i++) {
             getAndAddNumber(state, i, state->col, -1 * iterations);
             iterations++;
         }
         state->prevKeys = "";
     } else if (!onlyMotions && state->visualType == BLOCK && state->prevKeys == "g" && c == ctrl('a')) {
         Bounds bounds = getBounds(state);
-        int iterations = 1;
-        for (unsigned int i = bounds.minR; i <= bounds.maxR; i++) {
+        int32_t iterations = 1;
+        for (uint32_t i = bounds.minR; i <= bounds.maxR; i++) {
             getAndAddNumber(state, i, state->col, iterations);
             iterations++;
         }
@@ -384,7 +384,7 @@ bool sendVisualKeys(State* state, char c, bool onlyMotions) {
     } else if (!onlyMotions && state->prevKeys == "g" && c == 'f') {
         if (state->visualType == NORMAL) {
             std::vector<std::string> extensions = {"", ".js", ".jsx", ".ts", ".tsx"};
-            for (unsigned int i = 0; i < extensions.size(); i++) {
+            for (uint32_t i = 0; i < extensions.size(); i++) {
                 try {
                     std::filesystem::path filePath(state->filename);
                     std::filesystem::path dir = filePath.parent_path();
@@ -421,12 +421,12 @@ bool sendVisualKeys(State* state, char c, bool onlyMotions) {
         state->prevKeys += c;
     } else if (!onlyMotions && state->visualType == BLOCK && c == ctrl('s')) {
         Bounds bounds = getBounds(state);
-        for (unsigned int i = bounds.minR; i <= bounds.maxR; i++) {
+        for (uint32_t i = bounds.minR; i <= bounds.maxR; i++) {
             getAndAddNumber(state, i, state->col, -1);
         }
     } else if (!onlyMotions && state->visualType == BLOCK && c == ctrl('a')) {
         Bounds bounds = getBounds(state);
-        for (unsigned int i = bounds.minR; i <= bounds.maxR; i++) {
+        for (uint32_t i = bounds.minR; i <= bounds.maxR; i++) {
             getAndAddNumber(state, i, state->col, 1);
         }
     } else if (!onlyMotions && c == 'm') {
@@ -538,7 +538,7 @@ bool sendVisualKeys(State* state, char c, bool onlyMotions) {
         state->row = state->data.size() - 1;
     } else if (!onlyMotions && c == '=') {
         Bounds bounds = getBounds(state);
-        for (int i = bounds.minR; i <= (int)bounds.maxR; i++) {
+        for (int32_t i = bounds.minR; i <= (int32_t)bounds.maxR; i++) {
             indentLine(state, i);
         }
         state->row = bounds.minR;
@@ -560,8 +560,8 @@ bool sendVisualKeys(State* state, char c, bool onlyMotions) {
     } else if (c == 'n') {
         state->searching = true;
         state->col += 1;
-        unsigned int temp_col = state->col;
-        unsigned int temp_row = state->row;
+        uint32_t temp_col = state->col;
+        uint32_t temp_row = state->row;
         bool result = setSearchResult(state);
         if (result == false) {
             state->searchFail = true;
@@ -572,7 +572,7 @@ bool sendVisualKeys(State* state, char c, bool onlyMotions) {
     } else if (!onlyMotions && c == '<') {
         Bounds bounds = getBounds(state);
         state->row = bounds.minR;
-        for (unsigned int i = bounds.minR; i <= bounds.maxR; i++) {
+        for (uint32_t i = bounds.minR; i <= bounds.maxR; i++) {
             deindent(state);
             state->row += 1;
         }
@@ -584,7 +584,7 @@ bool sendVisualKeys(State* state, char c, bool onlyMotions) {
     } else if (!onlyMotions && c == '>') {
         Bounds bounds = getBounds(state);
         state->row = bounds.minR;
-        for (unsigned int i = bounds.minR; i <= bounds.maxR; i++) {
+        for (uint32_t i = bounds.minR; i <= bounds.maxR; i++) {
             indent(state);
             state->row += 1;
         }

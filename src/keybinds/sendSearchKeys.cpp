@@ -7,7 +7,7 @@
 #include <climits>
 #include <ncurses.h>
 
-void sendSearchKeys(State* state, int c) {
+void sendSearchKeys(State* state, int32_t c) {
     if (c == 27) { // ESC
         state->replacing = false;
         state->mode = SHORTCUTS;

@@ -6,7 +6,7 @@ std::string inputName(State* state, std::string startingValue) {
     backspaceAll(&state->name);
     setQuery(&state->name, startingValue);
     renderScreen(state);
-    int c;
+    int32_t c;
     while (true) {
         c = getch();
         if (c != ERR) {

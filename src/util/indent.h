@@ -4,9 +4,9 @@
 #include <string>
 #include <vector>
 
-int getNumLeadingSpaces(std::string s);
-std::string getPrevLine(State* state, unsigned int row);
-int getIndentLevel(State* state, unsigned int row);
-void indentLine(State* state, unsigned int row);
+int32_t getNumLeadingSpaces(std::string s);
+std::string getPrevLine(State* state, uint32_t row);
+int32_t getIndentLevel(State* state, uint32_t row);
+void indentLine(State* state, uint32_t row);
 void indentLine(State* state);
 void indentRange(State* state);

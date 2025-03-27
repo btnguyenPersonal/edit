@@ -43,10 +43,10 @@ std::string trimComment(State* state, std::string line) {
 
 void toggleComment(State* state) { toggleCommentHelper(state, state->row, -1); }
 
-void toggleCommentHelper(State* state, unsigned int row, int commentIndex) {
+void toggleCommentHelper(State* state, uint32_t row, int32_t commentIndex) {
     std::string line = state->data[row];
     if (commentIndex == -1) {
-        int i = getNumLeadingSpaces(line);
+        int32_t i = getNumLeadingSpaces(line);
         if (isCommentWithSpace(state, line)) {
             state->data[row] = line.substr(0, i) + line.substr(i + state->commentSymbol.length() + 1);
             return;
@@ -56,7 +56,7 @@ void toggleCommentHelper(State* state, unsigned int row, int commentIndex) {
         }
     }
     if (line.length() != 0) {
-        int spaces = commentIndex != -1 ? commentIndex : getNumLeadingSpaces(line);
+        int32_t spaces = commentIndex != -1 ? commentIndex : getNumLeadingSpaces(line);
         state->data[row] = line.substr(0, spaces) + state->commentSymbol + ' ' + line.substr(spaces);
     }
 }
@@ -79,11 +79,11 @@ void toggleCommentLines(State* state, Bounds bounds) {
             break;
         }
     }
-    int minIndentLevel = -1;
+    int32_t minIndentLevel = -1;
     if (foundNonComment) {
         minIndentLevel = INT_MAX;
         for (size_t i = bounds.minR; i <= bounds.maxR; i++) {
-            int indent = getNumLeadingSpaces(state->data[i]);
+            int32_t indent = getNumLeadingSpaces(state->data[i]);
             if (indent < minIndentLevel && state->data[i] != "") {
                 minIndentLevel = indent;
             }
@@ -100,14 +100,14 @@ void unCommentBlock(State* state) {
     bounds.minC = 0;
     bounds.maxC = 0;
     if (isComment(state, state->data[state->row])) {
-        for (int i = (int)state->row; i >= 0; i--) {
+        for (int32_t i = (int32_t)state->row; i >= 0; i--) {
             if (!isComment(state, state->data[i])) {
                 state->row = i;
                 break;
             }
         }
     }
-    for (unsigned int i = state->row; i < state->data.size(); i++) {
+    for (uint32_t i = state->row; i < state->data.size(); i++) {
         if (!foundComment) {
             if (isComment(state, state->data[i])) {
                 foundComment = true;
