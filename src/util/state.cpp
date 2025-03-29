@@ -22,7 +22,7 @@ void State::readConfigLine(std::string optionLine) {
     if (optionLine == "wordwrap") {
         this->options.wordwrap = true;
     } else if (optionLine == "autosave") {
-        this->options.wordwrap = true;
+        this->options.autosave = true;
     } else if (safeSubstring(optionLine, 0, std::string("indent ").length()) == "indent ") {
         this->options.indent = std::stoi(safeSubstring(optionLine, std::string("indent ").length()));
     }
@@ -182,28 +182,18 @@ State::State() {
     this->lastLoggingVar = std::string("");
     this->motion = std::string("");
     this->setDefaultOptions();
-    this->loadConfigFile(std::string(getenv("HOME")) + "/.erc");
-}
-
-State::State(std::vector<std::string> data) : State() {
-    this->filename = std::string("test");
-    this->data = data;
-    this->previousState = data;
-    this->commentSymbol = "";
-    this->mode = SHORTCUTS;
-    this->fileStack = {filename};
-    this->fileStackIndex = 0;
-    this->dontSave = true;
+    this->loadConfigFile(std::string(getenv("HOME")) + "/.editorconfig");
 }
 
 State::State(std::string filename) : State() {
     auto normalizedFilename = normalizeFilename(filename);
-    if (!std::filesystem::is_regular_file(normalizedFilename.c_str())) {
-        endwin();
-        std::cout << "file not found: " << normalizedFilename << std::endl;
-        exit(1);
+    this->unsavedFile = !std::filesystem::is_regular_file(normalizedFilename.c_str());
+    std::vector<std::string> data;
+    if (this->unsavedFile) {
+        data = {""};
+    } else {
+        data = readFile(normalizedFilename.c_str());
     }
-    auto data = readFile(normalizedFilename.c_str());
     this->filename = std::string(normalizedFilename);
     this->data = data;
     this->previousState = data;

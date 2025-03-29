@@ -1091,6 +1091,7 @@ uint32_t b(State* state) {
 }
 
 void saveFile(State* state) {
+    state->unsavedFile = false;
     if (!state->dontSave) {
         std::ofstream file(state->filename);
         if (!state->data.empty()) {

@@ -1,11 +1,10 @@
 ## TODO
 
-- way to create new file on startup
-
 - some way to fuzz again
 
 - have configuration file
     - make a state->options object with all of the options, so the state is independant from the options
+    - project based .editorconfig?? for different indent levels (and also using tabs instead of spaces)
 
 - put asserts everywhere (make sure state is perfect and i never mess up)
 

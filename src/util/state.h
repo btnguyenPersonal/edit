@@ -74,6 +74,7 @@ struct Options {
 class State {
 public:
     Options options;
+    bool unsavedFile;
     bool showGrep;
     bool fileExplorerOpen;
     int32_t fileExplorerSize;
@@ -131,7 +132,6 @@ public:
     Mode mode;
     State();
     State(std::string filename);
-    State(std::vector<std::string> data);
     void resetState(std::string filename);
     void pushFileStack(std::string filename);
     void changeFile(std::string filename);

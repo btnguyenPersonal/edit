@@ -207,7 +207,7 @@ int32_t renderStatusBar(State* state) {
         }
     } else {
         auto displayFileName = setStringToLength(state->filename, RIGHT_STATUS_BORDER);
-        mvprintw_color(0, state->maxX - (displayFileName.length() + 2), "\"%s\"", displayFileName.c_str(), WHITE);
+        mvprintw_color(0, state->maxX - (displayFileName.length() + 2), "\"%s\"", displayFileName.c_str(), state->unsavedFile ? GREY : WHITE);
     }
     return cursor;
 }

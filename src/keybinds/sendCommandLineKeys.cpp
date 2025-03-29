@@ -11,9 +11,16 @@
 #include <vector>
 
 void evaluateCommandLineQuery(State* state) {
-    if (state->commandLine.query == "q") {
+    if (state->commandLine.query == "q!") {
         endwin();
         exit(0);
+    } else if (state->commandLine.query == "q") {
+        if (state->unsavedFile && state->historyPosition != -1) {
+            state->status = "unsaved changes for new file: " + state->filename;
+        } else {
+            endwin();
+            exit(0);
+        }
     } else if (state->commandLine.query == "a") {
         state->options.autosave = !state->options.autosave;
         if (state->options.autosave) {

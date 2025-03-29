@@ -61,7 +61,7 @@ void sendKeys(State* state, int32_t c) {
         if (state->recording == false && state->mode == SHORTCUTS) {
             std::vector<diffLine> diff = generateDiff(state->previousState, state->data);
             if (diff.size() != 0) {
-                if (state->options.autosave) {
+                if (state->options.autosave && !state->unsavedFile) {
                     saveFile(state);
                 }
                 state->previousState = state->data;
