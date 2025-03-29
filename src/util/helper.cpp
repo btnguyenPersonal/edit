@@ -936,7 +936,8 @@ bool shouldIgnoreFile(const std::filesystem::path& path) {
     std::vector<std::string> ignoreList = {
         "nyc_output",
         "results",
-        "resources",
+        "/target",
+        "/resources",
         ".git",
         "node_modules",
         "build",
@@ -945,6 +946,9 @@ bool shouldIgnoreFile(const std::filesystem::path& path) {
         ".next",
         "tmp",
         "coverage",
+        ".jar",
+        ".jpg",
+        ".jpeg",
         ".png",
         "package-lock.json",
         ".eslintcache"

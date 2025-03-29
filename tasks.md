@@ -1,5 +1,7 @@
 ## TODO
 
+- some way to fuzz again
+
 - have configuration file
     - make a state->options object with all of the options, so the state is independant from the options
 
