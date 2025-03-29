@@ -84,7 +84,7 @@ int32_t getIndentLevel(State* state, uint32_t row) {
             }
         }
         if (tagType == OPEN || tagStack > 0) {
-            indentLevel += state->indent;
+            indentLevel += state->options.indent;
         }
     } else {
         for (uint32_t i = 0; i < prevLine.length(); i++) {
@@ -92,7 +92,7 @@ int32_t getIndentLevel(State* state, uint32_t row) {
                 break;
             } else if (prevLine[i] == '(' || prevLine[i] == '{' || prevLine[i] == '[') {
                 if (i + 1 == prevLine.length()) {
-                    indentLevel += state->indent;
+                    indentLevel += state->options.indent;
                 }
             }
         }
@@ -121,7 +121,7 @@ int32_t getIndentLevel(State* state, uint32_t row) {
             }
         }
         if (tagType == CLOSE || tagStack < 0) {
-            indentLevel -= state->indent;
+            indentLevel -= state->options.indent;
         }
     } else {
         for (uint32_t i = 0; i < currLine.length(); i++) {
@@ -129,7 +129,7 @@ int32_t getIndentLevel(State* state, uint32_t row) {
                 break;
             } else if (currLine[i] == ')' || currLine[i] == '}' || currLine[i] == ']') {
                 if (i == 0) {
-                    indentLevel -= state->indent;
+                    indentLevel -= state->options.indent;
                 }
             }
         }

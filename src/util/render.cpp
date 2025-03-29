@@ -268,7 +268,7 @@ void printChar(State* state, int32_t row, int32_t col, char c, int32_t color) {
     if (' ' <= c && c <= '~') {
         mvaddch_color(row, col + getLineNumberOffset(state), c, color);
     } else if (c == '\t') {
-        for (uint32_t i = 0; i < state->indent; i++) {
+        for (uint32_t i = 0; i < state->options.indent; i++) {
             mvaddch_color(row, col + getLineNumberOffset(state), ' ', color);
         }
     } else if (' ' <= unctrl(c) && unctrl(c) <= '~') {
@@ -282,7 +282,7 @@ void printChar(State* state, int& row, int& col, char c, int32_t color, bool adv
     if (' ' <= c && c <= '~') {
         mvaddch_color(row, col + getLineNumberOffset(state), c, color);
     } else if (c == '\t') {
-        for (uint32_t i = 0; i < state->indent; i++) {
+        for (uint32_t i = 0; i < state->options.indent; i++) {
             mvaddch_color(row, col + getLineNumberOffset(state), ' ', color);
             advancePosition(state, row, col);
         }
@@ -452,7 +452,7 @@ void printLineNumber(State* state, int32_t row, int32_t renderRow) {
 }
 
 void advancePosition(State* state, int& renderRow, int& renderCol) {
-    if (state->wordwrap && (uint32_t)renderCol + 1 >= state->maxX - getLineNumberOffset(state)) {
+    if (state->options.wordwrap && (uint32_t)renderCol + 1 >= state->maxX - getLineNumberOffset(state)) {
         renderRow++;
         renderCol = 0;
     } else {

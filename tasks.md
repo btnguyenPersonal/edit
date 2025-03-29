@@ -1,5 +1,7 @@
 ## TODO
 
+- way to create new file on startup
+
 - some way to fuzz again
 
 - have configuration file

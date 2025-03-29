@@ -18,9 +18,6 @@
 void sendKeys(State* state, int32_t c) {
     state->showGrep = false;
     state->status = std::string("");
-    if (!state->autosave) {
-        state->status = "AUTOSAVE OFF";
-    }
     state->searchFail = false;
     state->showFileStack = false;
     state->dontRecordKey = false;
@@ -64,7 +61,7 @@ void sendKeys(State* state, int32_t c) {
         if (state->recording == false && state->mode == SHORTCUTS) {
             std::vector<diffLine> diff = generateDiff(state->previousState, state->data);
             if (diff.size() != 0) {
-                if (state->autosave) {
+                if (state->options.autosave) {
                     saveFile(state);
                 }
                 state->previousState = state->data;

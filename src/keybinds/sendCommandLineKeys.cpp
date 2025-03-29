@@ -15,11 +15,18 @@ void evaluateCommandLineQuery(State* state) {
         endwin();
         exit(0);
     } else if (state->commandLine.query == "a") {
-        state->autosave = !state->autosave;
-        if (state->autosave) {
-            state->status = "AUTOSAVE ON";
+        state->options.autosave = !state->options.autosave;
+        if (state->options.autosave) {
+            state->status = "autosave on";
         } else {
-            state->status = "AUTOSAVE OFF";
+            state->status = "autosave off";
+        }
+    } else if (state->commandLine.query == "wordwrap") {
+        state->options.wordwrap = !state->options.wordwrap;
+        if (state->options.wordwrap) {
+            state->status = "wordwrap on";
+        } else {
+            state->status = "wordwrap off";
         }
     } else if (state->commandLine.query == "w") {
         trimTrailingWhitespace(state);

@@ -65,16 +65,21 @@ struct Query {
     uint32_t selection;
 };
 
+struct Options {
+    bool wordwrap;
+    bool autosave;
+    uint32_t indent;
+};
+
 class State {
 public:
+    Options options;
     bool showGrep;
-    bool wordwrap;
     bool fileExplorerOpen;
     int32_t fileExplorerSize;
     int32_t fileExplorerIndex;
     int32_t fileExplorerWindowLine;
     Position matching;
-    bool autosave;
     bool searchFail;
     Jumplist jumplist;
     std::vector<Archive> archives;
@@ -93,7 +98,6 @@ public:
     int32_t historyPosition;
     bool searching;
     bool replacing;
-    uint32_t indent;
     Mark mark;
     struct Position windowPosition;
     static uint32_t maxX;
@@ -131,5 +135,8 @@ public:
     void resetState(std::string filename);
     void pushFileStack(std::string filename);
     void changeFile(std::string filename);
+    void loadConfigFile(std::string fileLocation);
+    void readConfigLine(std::string optionLine);
+    void setDefaultOptions();
     static void setMaxYX(int32_t y, int32_t x);
 };

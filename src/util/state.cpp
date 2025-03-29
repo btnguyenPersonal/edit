@@ -11,6 +11,29 @@
 uint32_t State::maxX = 0;
 uint32_t State::maxY = 0;
 
+void State::loadConfigFile(std::string fileLocation) {
+    auto config = readFile(fileLocation.c_str());
+    for (uint32_t i = 0; i < config.size(); i++) {
+        readConfigLine(config[i]);
+    }
+}
+
+void State::readConfigLine(std::string optionLine) {
+    if (optionLine == "wordwrap") {
+        this->options.wordwrap = true;
+    } else if (optionLine == "autosave") {
+        this->options.wordwrap = true;
+    } else if (safeSubstring(optionLine, 0, std::string("indent ").length()) == "indent ") {
+        this->options.indent = std::stoi(safeSubstring(optionLine, std::string("indent ").length()));
+    }
+}
+
+void State::setDefaultOptions() {
+    this->options.autosave = false;
+    this->options.wordwrap = false;
+    this->options.indent = 4;
+}
+
 void State::changeFile(std::string filename) {
     auto normalizedFilename = normalizeFilename(filename);
     bool found = false;
@@ -70,7 +93,6 @@ void State::changeFile(std::string filename) {
     this->visual.col = 0;
     this->row = 0;
     this->col = 0;
-    this->indent = 4;
     this->commandLine.query = std::string("");
     this->selectAll = false;
     this->prevKeys = std::string("");
@@ -107,15 +129,13 @@ void State::resetState(std::string filename) {
 }
 
 State::State() {
+    this->showGrep = false;
     this->fileExplorer = new FileExplorerNode(std::filesystem::current_path());
     this->fileExplorer->open();
-    this->showGrep = false;
-    this->wordwrap = true;
     this->fileExplorerOpen = false;
     this->fileExplorerSize = 40;
     this->fileExplorerWindowLine = 0;
     this->fileExplorerIndex = 0;
-    this->autosave = true;
     this->buildDir = ".";
     this->mark = {"", 0};
     this->matching = {0, 0};
@@ -141,7 +161,6 @@ State::State() {
     this->visual.col = 0;
     this->row = 0;
     this->col = 0;
-    this->indent = 4;
     this->search = {std::string(""), 0, 0};
     this->replace = {std::string(""), 0, 0};
     this->commandLine = {std::string(""), 0, 0};
@@ -162,6 +181,8 @@ State::State() {
     this->fileStackIndex = 0;
     this->lastLoggingVar = std::string("");
     this->motion = std::string("");
+    this->setDefaultOptions();
+    this->loadConfigFile(std::string(getenv("HOME")) + "/.erc");
 }
 
 State::State(std::vector<std::string> data) : State() {

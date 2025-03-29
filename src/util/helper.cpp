@@ -1118,7 +1118,7 @@ bool isWindowPositionInvalid(State* state) {
     bool isColTooBig = (int32_t)state->col - (int32_t)state->windowPosition.col > (int32_t)state->maxX - (int32_t)getLineNumberOffset(state) - 1;
     if (isOffScreenVertical(state)) {
         return true;
-    } else if (!state->wordwrap && (isColTooSmall || isColTooBig)) {
+    } else if (!state->options.wordwrap && (isColTooSmall || isColTooBig)) {
         return true;
     }
     return false;
@@ -1151,7 +1151,7 @@ uint32_t getCenteredWindowPosition(State* state) {
 }
 
 uint32_t getDisplayRows(State* state, uint32_t r, uint32_t c) {
-    if (!state->wordwrap) {
+    if (!state->options.wordwrap) {
         return 1;
     }
     auto physicalCol = state->data[r].length() < c ? state->data[r].length() : c;
@@ -1159,7 +1159,7 @@ uint32_t getDisplayRows(State* state, uint32_t r, uint32_t c) {
 }
 
 uint32_t getDisplayRows(State* state, uint32_t r) {
-    if (!state->wordwrap) {
+    if (!state->options.wordwrap) {
         return 1;
     }
     return 1 + state->data[r].length() / (state->maxX - getLineNumberOffset(state));
@@ -1167,7 +1167,7 @@ uint32_t getDisplayRows(State* state, uint32_t r) {
 
 void centerScreen(State* state) {
     state->windowPosition.row = getCenteredWindowPosition(state);
-    if (!state->wordwrap) {
+    if (!state->options.wordwrap) {
         if (state->col < state->windowPosition.col) {
             state->windowPosition.col = state->col;
         } else if (state->col > state->windowPosition.col + (state->maxX - getLineNumberOffset(state) - 1)) {
@@ -1245,13 +1245,13 @@ void right(State* state) {
 }
 
 void indent(State* state) {
-    for (uint32_t i = 0; i < state->indent; i++) {
+    for (uint32_t i = 0; i < state->options.indent; i++) {
         state->data[state->row] = " " + state->data[state->row];
     }
 }
 
 void deindent(State* state) {
-    for (uint32_t i = 0; i < state->indent; i++) {
+    for (uint32_t i = 0; i < state->options.indent; i++) {
         if (state->data[state->row].substr(0, 1) == " ") {
             state->data[state->row] = state->data[state->row].substr(1);
         }
