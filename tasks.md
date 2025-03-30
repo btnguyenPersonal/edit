@@ -1,6 +1,11 @@
 ## TODO
 
+- make status bar based on % of maxX
+
+- have two status bars?? one for file name and search, other for tabs (also could have a button that shows the name, and also only show the search when showSearch is on
+
 - fix backspace weird stuff with dotCommand
+    - maybe fixed? let's see
 
 - some way to fuzz again
 
