@@ -32,7 +32,7 @@ void sendShortcutKeys(State* state, int32_t c) {
         if (state->col < state->data[state->row].length() && ' ' <= c && c <= '~') {
             state->data[state->row] = safeSubstring(state->data[state->row], 0, state->col) + (char)c + safeSubstring(state->data[state->row], state->col + 1);
         }
-        state->dotCommand = "r" + c;
+        setDotCommand(state, "r" + c);
         state->prevKeys = "";
     } else if ((state->prevKeys[0] == 'y' || state->prevKeys[0] == 'd' || state->prevKeys[0] == 'c') && state->prevKeys.length() == 2) {
         uint32_t tempRow = state->row;
@@ -99,7 +99,7 @@ void sendShortcutKeys(State* state, int32_t c) {
     } else if (state->prevKeys == "g" && c == 'e') {
         unCommentBlock(state);
         state->prevKeys = "";
-        state->dotCommand = "ge";
+        setDotCommand(state, "ge");
     } else if (state->prevKeys == "g" && c == 't') {
         trimTrailingWhitespace(state);
         state->prevKeys = "";
@@ -123,11 +123,11 @@ void sendShortcutKeys(State* state, int32_t c) {
     } else if (c == '<') {
         deindent(state);
         state->col = getIndexFirstNonSpace(state);
-        state->dotCommand = "<";
+        setDotCommand(state, "<");
     } else if (c == '>') {
         indent(state);
         state->col = getIndexFirstNonSpace(state);
-        state->dotCommand = ">";
+        setDotCommand(state, ">");
     } else if (!state->recording && c == 'u') {
         if (state->historyPosition >= 0) {
             state->row = applyDiff(state, state->history[state->historyPosition], true);
@@ -312,7 +312,7 @@ void sendShortcutKeys(State* state, int32_t c) {
             state->data[state->row] += " " + state->data[state->row + 1];
             state->data.erase(state->data.begin() + state->row + 1);
         }
-        state->dotCommand = c;
+        setDotCommand(state, c);
     } else if (c == 'J') {
         state->col = state->data[state->row].length();
         if (state->row + 1 < state->data.size()) {
@@ -320,7 +320,7 @@ void sendShortcutKeys(State* state, int32_t c) {
             state->data[state->row] += state->data[state->row + 1];
             state->data.erase(state->data.begin() + state->row + 1);
         }
-        state->dotCommand = c;
+        setDotCommand(state, c);
     } else if (c == '/') {
         backspaceAll(&state->search);
         state->mode = SEARCH;
@@ -349,7 +349,7 @@ void sendShortcutKeys(State* state, int32_t c) {
             copyToClipboard(state->data[state->row].substr(state->col, 1));
             state->data[state->row] = state->data[state->row].substr(0, state->col) + state->data[state->row].substr(state->col + 1);
         }
-        state->dotCommand = c;
+        setDotCommand(state, c);
     } else if (!state->recording && (c == ctrl('h') || c == KEY_BACKSPACE)) {
         if (state->harpoonFiles.size() > 0) {
             moveHarpoonLeft(state);
@@ -403,10 +403,10 @@ void sendShortcutKeys(State* state, int32_t c) {
         renderScreen(state, true);
     } else if (c == 'P') {
         pasteFromClipboard(state);
-        state->dotCommand = c;
+        setDotCommand(state, c);
     } else if (c == 'p') {
         pasteFromClipboardAfter(state);
-        state->dotCommand = c;
+        setDotCommand(state, c);
     } else if (!state->recording && c == ctrl('x')) {
         if (state->harpoonFiles.size() > 0) {
             state->harpoonFiles.erase(state->harpoonFiles.begin() + state->harpoonIndex);
@@ -430,13 +430,13 @@ void sendShortcutKeys(State* state, int32_t c) {
         state->col = getIndexFirstNonSpace(state);
     } else if (c == 'Q') {
         removeAllLoggingCode(state);
-        state->dotCommand = c;
+        setDotCommand(state, c);
     } else if (c == 'm') {
         initVisual(state, NORMAL);
         setStateFromWordPosition(state, getWordPosition(state->data[state->row], state->col));
         toggleLoggingCode(state, getInVisual(state), true);
         state->mode = SHORTCUTS;
-        state->dotCommand = c;
+        setDotCommand(state, c);
     } else if (!state->recording && c == ctrl('e')) {
         if (state->harpoonFiles.size() > 0) {
             if (state->harpoonIndex + 1 < state->harpoonFiles.size()) {

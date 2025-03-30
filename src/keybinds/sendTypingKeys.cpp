@@ -14,13 +14,11 @@ void insertNewline(State* state) {
 }
 
 void sendTypingKeys(State* state, int32_t c) {
-    if (!state->dontRecordKey) {
-        state->motion += c;
-    }
+    recordMotion(state, c);
     if (c == 27) { // ESC
         left(state);
         state->mode = SHORTCUTS;
-        state->dotCommand = state->motion;
+        setDotCommand(state, state->motion);
         state->motion = "";
         state->prevKeys = "";
         return;

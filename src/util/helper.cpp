@@ -16,6 +16,28 @@
 #include <string>
 #include <vector>
 
+void recordMotion(State* state, int32_t c) {
+    if (c == KEY_BACKSPACE) {
+        state->motion += 127;
+    } else {
+        state->motion += c;
+    }
+}
+
+void setDotCommand(State* state, int32_t c) {
+    std::string s;
+    s.push_back(c);
+    if (!state->dontRecordKey) {
+        state->dotCommand = s;
+    }
+}
+
+void setDotCommand(State* state, std::string s) {
+    if (!state->dontRecordKey) {
+        state->dotCommand = s;
+    }
+}
+
 void jumpToHarpoon(State* state, uint32_t num) {
     if (0 < num && num <= state->harpoonFiles.size()) {
         state->harpoonIndex = num - 1;

@@ -9,14 +9,12 @@
 #include <vector>
 
 void sendMultiCursorKeys(State* state, int32_t c) {
-    if (!state->dontRecordKey) {
-        state->motion += c;
-    }
+    recordMotion(state, c);
     Bounds bounds = getBounds(state);
     if (c == 27) { // ESC
         left(state);
         state->mode = SHORTCUTS;
-        state->dotCommand = state->motion;
+        setDotCommand(state, state->motion);
         state->motion = "";
         return;
     } else if (c == KEY_BACKSPACE || c == 127) {

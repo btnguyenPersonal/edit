@@ -278,15 +278,13 @@ Position deleteInVisual(State* state) {
 }
 
 void logDotCommand(State* state) {
-    state->dotCommand = state->motion;
+    setDotCommand(state, state->motion);
     state->prevKeys = "";
     state->motion = "";
 }
 
 bool sendVisualKeys(State* state, char c, bool onlyMotions) {
-    if (!state->dontRecordKey) {
-        state->motion += c;
-    }
+    recordMotion(state, c);
     if (c == 27) { // ESC
         state->mode = SHORTCUTS;
         logDotCommand(state);
