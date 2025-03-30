@@ -1,7 +1,6 @@
 #include "state.h"
 #include "helper.h"
 #include "modes.h"
-#include "state.h"
 #include "visualType.h"
 #include <iostream>
 #include <ncurses.h>

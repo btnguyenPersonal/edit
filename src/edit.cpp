@@ -4,8 +4,8 @@
 #include "util/state.h"
 #include <cstdint>
 
-int32_t main(int32_t argc, char* argv[]) {
-    int32_t c;
+int main(int argc, char* argv[]) {
+    int c;
     State* state;
     std::string filename;
     if (argc == 2) {

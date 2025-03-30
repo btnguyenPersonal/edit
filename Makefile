@@ -12,7 +12,7 @@ KEYBINDS_DIR = $(SRC_DIR)/keybinds
 UTIL_DIR = $(SRC_DIR)/util
 BUILD_DIR = build
 
-SOURCES := $(SRC_DIR)/edit.cpp \
+COMMON_SOURCES := \
           $(UTIL_DIR)/helper.cpp \
           $(UTIL_DIR)/render.cpp \
           $(UTIL_DIR)/fileExplorerNode.cpp \
@@ -36,18 +36,31 @@ SOURCES := $(SRC_DIR)/edit.cpp \
           $(KEYBINDS_DIR)/sendMultiCursorKeys.cpp \
           $(KEYBINDS_DIR)/sendTypingKeys.cpp
 
-OBJECTS := $(SOURCES:$(SRC_DIR)/%.cpp=$(BUILD_DIR)/%.o)
-DEPS := $(OBJECTS:.o=.d)
-EXECUTABLE := $(BUILD_DIR)/e
+MAIN_SOURCES := $(SRC_DIR)/edit.cpp $(COMMON_SOURCES)
+FUZZ_SOURCES := $(SRC_DIR)/fuzzer/fuzzer.cpp $(COMMON_SOURCES)
 
-.PHONY: all clean
-all: $(BUILD_DIR) $(EXECUTABLE)
+MAIN_OBJECTS := $(MAIN_SOURCES:$(SRC_DIR)/%.cpp=$(BUILD_DIR)/%.o)
+FUZZ_OBJECTS := $(FUZZ_SOURCES:$(SRC_DIR)/%.cpp=$(BUILD_DIR)/%.o)
+
+DEPS := $(MAIN_OBJECTS:.o=.d) $(FUZZ_OBJECTS:.o=.d)
+
+MAIN_EXECUTABLE := $(BUILD_DIR)/e
+FUZZ_EXECUTABLE := $(BUILD_DIR)/fuzz
+
+.PHONY: all clean fuzz
+
+all: $(BUILD_DIR) $(MAIN_EXECUTABLE)
+
+fuzz: $(BUILD_DIR) $(FUZZ_EXECUTABLE)
 
 $(BUILD_DIR):
-	mkdir -p $(BUILD_DIR)/util $(BUILD_DIR)/keybinds
+	mkdir -p $(BUILD_DIR)/util $(BUILD_DIR)/fuzzer $(BUILD_DIR)/keybinds
 
-$(EXECUTABLE): $(OBJECTS)
-	$(CC) $^ -o $@ $(LDFLAGS) $(CFLAGS)
+$(MAIN_EXECUTABLE): $(MAIN_OBJECTS) | $(BUILD_DIR)
+	$(CC) $(MAIN_OBJECTS) -o $@ $(LDFLAGS) $(CFLAGS)
+
+$(FUZZ_EXECUTABLE): $(FUZZ_OBJECTS) | $(BUILD_DIR)
+	$(CC) $(FUZZ_OBJECTS) -o $@ $(LDFLAGS) $(CFLAGS)
 
 $(BUILD_DIR)/%.o: $(SRC_DIR)/%.cpp
 	$(CC) -c $< -o $@ $(CFLAGS) $(DEPFLAGS)
@@ -57,6 +70,9 @@ format:
 
 test:
 	make all && build/e longtest.js
+
+fuzzing:
+	make fuzz && build/fuzz
 
 install:
 	make all && sudo mv build/e /usr/local/bin

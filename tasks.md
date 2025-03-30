@@ -1,5 +1,7 @@
 ## TODO
 
+- fix backspace weird stuff with dotCommand
+
 - some way to fuzz again
 
 - have configuration file
