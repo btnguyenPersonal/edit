@@ -1,17 +1,22 @@
 ## TODO
 
+- fix case: indentation
+
+- expand current file name all the way?? experiment with how tabs are shown, maybe all i need are numbers??
+
+- grepindex not set to 0 after every recalc
+
+- fix blame getting calculated every render
+
+- project based .editorconfig
+
+- config based on filetype (would probably have to re-interpret config every file change bleh)
+
+- indent_style tab or space
+
 - make status bar based on % of maxX
 
 - have two status bars?? one for file name and search, other for tabs (also could have a button that shows the name, and also only show the search when showSearch is on
-
-- fix backspace weird stuff with dotCommand
-    - maybe fixed? let's see
-
-- some way to fuzz again
-
-- have configuration file
-    - make a state->options object with all of the options, so the state is independant from the options
-    - project based .editorconfig?? for different indent levels (and also using tabs instead of spaces)
 
 - put asserts everywhere (make sure state is perfect and i never mess up)
 

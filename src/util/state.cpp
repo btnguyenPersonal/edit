@@ -22,8 +22,8 @@ void State::readConfigLine(std::string optionLine) {
         this->options.wordwrap = true;
     } else if (optionLine == "autosave") {
         this->options.autosave = true;
-    } else if (safeSubstring(optionLine, 0, std::string("indent ").length()) == "indent ") {
-        this->options.indent = std::stoi(safeSubstring(optionLine, std::string("indent ").length()));
+    } else if (safeSubstring(optionLine, 0, std::string("indent_size ").length()) == "indent_size ") {
+        this->options.indent = std::stoi(safeSubstring(optionLine, std::string("indent_size ").length()));
     }
 }
 
