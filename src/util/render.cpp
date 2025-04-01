@@ -138,12 +138,12 @@ int32_t renderStatusBar(State* state) {
             }
         }
         mvprintw_color(0, offset, "/%s", displayQuery.c_str(), state->searchFail ? RED : GREEN);
-        offset += displayQuery.length() + 1;
         if (state->replacing) {
+            offset += displayQuery.length() + 1;
             mvprintw_color(0, offset, "/%s", state->replace.query.c_str(), MAGENTA);
-            offset += state->replace.query.length() + 1;
+            return offset + state->replace.cursor + 1;
         }
-        return offset;
+        return offset + state->search.cursor + 1;
     } else {
         if (state->harpoonIndex < state->harpoonFiles.size()) {
             auto min_name = minimize_filename(state->harpoonFiles[state->harpoonIndex]);
