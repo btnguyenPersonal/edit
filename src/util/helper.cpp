@@ -1062,18 +1062,14 @@ std::vector<std::filesystem::path> findFiles(const std::filesystem::path& dir_pa
     return matching_files;
 }
 
-void generateGrepOutput(State* state) {
+void generateGrepOutput(State* state, bool resetCursor) {
     if (state->grep.query == "") {
         state->grepOutput.clear();
     } else {
         state->grepOutput = grepFiles(std::filesystem::current_path(), state->grep.query);
     }
-    if (state->grep.selection >= state->grepOutput.size()) {
-        if (state->grepOutput.size() > 0) {
-            state->grep.selection = state->grepOutput.size() - 1;
-        } else {
-            state->grep.selection = 0;
-        }
+    if (resetCursor) {
+        state->grep.selection = 0;
     }
 }
 

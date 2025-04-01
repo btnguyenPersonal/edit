@@ -92,7 +92,7 @@ void sendShortcutKeys(State* state, int32_t c) {
         initVisual(state, NORMAL);
         setStateFromWordPosition(state, getWordPosition(state->data[state->row], state->col));
         setQuery(&state->grep, getInVisual(state));
-        generateGrepOutput(state);
+        generateGrepOutput(state, true);
         findDefinitionFromGrepOutput(state, getInVisual(state));
         centerScreen(state);
         state->prevKeys = "";
@@ -186,9 +186,8 @@ void sendShortcutKeys(State* state, int32_t c) {
         initVisual(state, NORMAL);
         setStateFromWordPosition(state, getWordPosition(state->data[state->row], state->col));
         setQuery(&state->grep, getInVisual(state));
-        state->grep.selection = 0;
         state->mode = GREP;
-        generateGrepOutput(state);
+        generateGrepOutput(state, true);
     } else if (c == '*') {
         initVisual(state, NORMAL);
         setStateFromWordPosition(state, getWordPosition(state->data[state->row], state->col));
@@ -205,7 +204,7 @@ void sendShortcutKeys(State* state, int32_t c) {
         centerScreen(state);
     } else if (c == ctrl('g')) {
         state->mode = GREP;
-        generateGrepOutput(state);
+        generateGrepOutput(state, false);
     } else if (c == ctrl('p')) {
         state->mode = FINDFILE;
         state->selectAll = true;
