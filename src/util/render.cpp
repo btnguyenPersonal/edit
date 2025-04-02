@@ -145,7 +145,7 @@ int32_t renderStatusBar(State* state) {
         if (state->harpoonIndex < state->harpoonFiles.size()) {
             int32_t left = 0;
             for (uint32_t i = 0; i < state->harpoonFiles.size(); i++) {
-                std::string s = "  " + getHarpoonName(state, i);
+                std::string s = "[" + getHarpoonName(state, i) + "]";
                 mvprintw_color(0, left, "%s", s.c_str(), state->harpoonFiles[state->harpoonIndex] == state->filename && state->harpoonIndex == i ? YELLOW : GREY);
                 left += s.length();
             }
