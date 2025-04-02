@@ -20,6 +20,8 @@ void State::loadConfigFile(std::string fileLocation) {
 void State::readConfigLine(std::string optionLine) {
     if (optionLine == "wordwrap") {
         this->options.wordwrap = true;
+    } else if (optionLine == "harpoonNum") {
+        this->options.harpoonNum = true;
     } else if (optionLine == "autosave") {
         this->options.autosave = true;
     } else if (safeSubstring(optionLine, 0, std::string("indent_size ").length()) == "indent_size ") {
@@ -28,6 +30,7 @@ void State::readConfigLine(std::string optionLine) {
 }
 
 void State::setDefaultOptions() {
+    this->options.harpoonNum = false;
     this->options.autosave = false;
     this->options.wordwrap = false;
     this->options.indent = 4;

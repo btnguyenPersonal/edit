@@ -66,6 +66,7 @@ struct Query {
 };
 
 struct Options {
+    bool harpoonNum;
     bool wordwrap;
     bool autosave;
     uint32_t indent;

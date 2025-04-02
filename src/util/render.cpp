@@ -36,9 +36,6 @@
 #define ORANGE 10
 #define DARKGREEN 11
 
-#define LEFT_STATUS_BORDER 10
-#define RIGHT_STATUS_BORDER 20
-
 int32_t invertColor(int32_t color) { return color + 11; }
 
 // is there a better way for arg passing?
@@ -146,53 +143,12 @@ int32_t renderStatusBar(State* state) {
         return offset + state->search.cursor + 1;
     } else {
         if (state->harpoonIndex < state->harpoonFiles.size()) {
-            auto min_name = minimize_filename(state->harpoonFiles[state->harpoonIndex]);
-            int32_t left = (state->maxX / 2) - (min_name.length() / 2);
-            int32_t right = left + min_name.length();
-            mvprintw_color(0, left, "%s", min_name.c_str(), state->harpoonFiles[state->harpoonIndex] == state->filename ? YELLOW : GREY);
-            std::string renderString = "";
-            for (uint32_t i = state->harpoonIndex + 1; i < state->harpoonFiles.size(); i++) {
-                min_name = minimize_filename(state->harpoonFiles[i]);
-                renderString += "  " + min_name;
+            int32_t left = 0;
+            for (uint32_t i = 0; i < state->harpoonFiles.size(); i++) {
+                std::string s = "  " + getHarpoonName(state, i);
+                mvprintw_color(0, left, "%s", s.c_str(), state->harpoonFiles[state->harpoonIndex] == state->filename && state->harpoonIndex == i ? YELLOW : GREY);
+                left += s.length();
             }
-            size_t rightBorder = (static_cast<size_t>(state->maxX - RIGHT_STATUS_BORDER) > static_cast<size_t>(right)) ? state->maxX - RIGHT_STATUS_BORDER - right : 0;
-            if (renderString.length() > rightBorder && rightBorder > 0) {
-                renderString = safeSubstring(renderString, 0, rightBorder);
-            }
-            mvprintw_color(0, right, "%s", renderString.c_str(), GREY);
-            renderString = "";
-            for (int32_t i = state->harpoonIndex - 1; i >= 0; i--) {
-                min_name = minimize_filename(state->harpoonFiles[i]);
-                renderString = min_name + "  " + renderString;
-            }
-            size_t leftBorder = (left > LEFT_STATUS_BORDER) ? left - LEFT_STATUS_BORDER : 0;
-            if (renderString.length() > leftBorder && leftBorder > 0) {
-                renderString = safeSubstring(renderString, renderString.length() - leftBorder, leftBorder);
-            }
-            mvprintw_color(0, left - renderString.length(), "%s", renderString.c_str(), GREY);
-        }
-
-        std::string displayQuery = state->search.query;
-        for (size_t i = 0; i < displayQuery.length(); ++i) {
-            if (displayQuery[i] == '\n') {
-                displayQuery.replace(i, 1, "\\n");
-                i++;
-            }
-        }
-        if (displayQuery.length() > LEFT_STATUS_BORDER) {
-            displayQuery = safeSubstring(displayQuery, 0, LEFT_STATUS_BORDER);
-            displayQuery += "...";
-        }
-        mvprintw_color(0, offset, "/%s", displayQuery.c_str(), state->searchFail ? RED : GREEN);
-        offset += displayQuery.length() + 1;
-        if (state->replacing) {
-            mvprintw_color(0, offset, "/%s", state->replace.query.c_str(), MAGENTA);
-            offset += state->replace.query.length() + 1;
-        }
-        if (state->replacing) {
-            cursor = state->search.query.length() + state->replace.cursor + 2;
-        } else if (state->mode == SEARCH) {
-            cursor = state->search.cursor + 1;
         }
     }
     if (state->showFileStack == true) {
@@ -206,10 +162,18 @@ int32_t renderStatusBar(State* state) {
             );
         }
     } else {
-        auto displayFileName = setStringToLength(state->filename, RIGHT_STATUS_BORDER);
+        auto displayFileName = setStringToLength(state->filename, state->maxX / 2);
         mvprintw_color(0, state->maxX - (displayFileName.length() + 2), "\"%s\"", displayFileName.c_str(), state->unsavedFile ? GREY : WHITE);
     }
     return cursor;
+}
+
+std::string getHarpoonName(State* state, uint32_t index) {
+    if (state->options.harpoonNum) {
+        return std::to_string(index + 1);
+    } else {
+        return minimize_filename(state->harpoonFiles[index]);
+    }
 }
 
 std::string minimize_filename(const std::string& filename) {
