@@ -6,6 +6,7 @@
 #include <ncurses.h>
 #include <string>
 #include <vector>
+#include <map>
 
 uint32_t State::maxX = 0;
 uint32_t State::maxY = 0;
@@ -148,7 +149,7 @@ State::State() {
     this->buildErrorIndex = 0;
     this->buildErrors = std::vector<std::string>();
     this->blame = std::vector<std::string>();
-    this->harpoonFiles = std::vector<std::string>();
+    this->harpoonFiles = std::map<uint32_t, std::string>();
     this->harpoonIndex = 0;
     this->data = std::vector<std::string>();
     this->previousState = std::vector<std::string>();

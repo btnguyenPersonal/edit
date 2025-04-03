@@ -350,13 +350,13 @@ void sendShortcutKeys(State* state, int32_t c) {
         }
         setDotCommand(state, c);
     } else if (!state->recording && (c == ctrl('h') || c == KEY_BACKSPACE)) {
-        if (state->harpoonFiles.size() > 0) {
-            moveHarpoonLeft(state);
-        }
+        // if (state->harpoonFiles.size() > 0) {
+        //     moveHarpoonLeft(state);
+        // }
     } else if (!state->recording && c == ctrl('l')) {
-        if (state->harpoonFiles.size() > 0) {
-            moveHarpoonRight(state);
-        }
+        // if (state->harpoonFiles.size() > 0) {
+        //     moveHarpoonRight(state);
+        // }
     } else if (c == ctrl('y')) {
         state->col = 0;
         state->mode = BLAME;
@@ -406,18 +406,18 @@ void sendShortcutKeys(State* state, int32_t c) {
     } else if (c == 'p') {
         pasteFromClipboardAfter(state);
         setDotCommand(state, c);
-    } else if (!state->recording && c == ctrl('x')) {
-        if (state->harpoonFiles.size() > 0) {
-            state->harpoonFiles.erase(state->harpoonFiles.begin() + state->harpoonIndex);
-            if (state->harpoonFiles.size() == 0) {
-                state->harpoonIndex = 0;
-            } else if (state->harpoonIndex >= state->harpoonFiles.size()) {
-                state->harpoonIndex = state->harpoonFiles.size() - 1;
-            }
-            if (state->harpoonFiles.size() > 0) {
-                state->resetState(state->harpoonFiles[state->harpoonIndex]);
-            }
-        }
+    // } else if (!state->recording && c == ctrl('x')) {
+    //     if (state->harpoonFiles.size() > 0) {
+    //         state->harpoonFiles.erase(state->harpoonFiles.begin() + state->harpoonIndex);
+    //         if (state->harpoonFiles.size() == 0) {
+    //             state->harpoonIndex = 0;
+    //         } else if (state->harpoonIndex >= state->harpoonFiles.size()) {
+    //             state->harpoonIndex = state->harpoonFiles.size() - 1;
+    //         }
+    //         if (state->harpoonFiles.size() > 0) {
+    //             state->resetState(state->harpoonFiles[state->harpoonIndex]);
+    //         }
+    //     }
     } else if (!state->recording && c == 'X') {
         state->harpoonIndex = 0;
         state->harpoonFiles.clear();
@@ -436,60 +436,60 @@ void sendShortcutKeys(State* state, int32_t c) {
         toggleLoggingCode(state, getInVisual(state), true);
         state->mode = SHORTCUTS;
         setDotCommand(state, c);
-    } else if (!state->recording && c == ctrl('e')) {
-        if (state->harpoonFiles.size() > 0) {
-            if (state->harpoonIndex + 1 < state->harpoonFiles.size()) {
-                if (std::filesystem::is_regular_file(state->harpoonFiles[state->harpoonIndex + 1].c_str())) {
-                    state->harpoonIndex += 1;
-                    state->resetState(state->harpoonFiles[state->harpoonIndex]);
-                } else {
-                    state->status = "file not found";
-                    state->harpoonFiles.erase(state->harpoonFiles.begin() + state->harpoonIndex + 1);
-                }
-            } else {
-                if (std::filesystem::is_regular_file(state->harpoonFiles[state->harpoonIndex].c_str())) {
-                    state->resetState(state->harpoonFiles[state->harpoonIndex]);
-                }
-            }
-        }
-    } else if (!state->recording && c == ctrl('w')) {
-        if (state->harpoonFiles.size() > 0) {
-            if (state->harpoonIndex > 0) {
-                if (std::filesystem::is_regular_file(state->harpoonFiles[state->harpoonIndex - 1].c_str())) {
-                    state->harpoonIndex -= 1;
-                    state->resetState(state->harpoonFiles[state->harpoonIndex]);
-                } else {
-                    state->status = "file not found";
-                    state->harpoonFiles.erase(state->harpoonFiles.begin() + state->harpoonIndex - 1);
-                    state->harpoonIndex -= 1;
-                }
-            } else {
-                if (std::filesystem::is_regular_file(state->harpoonFiles[state->harpoonIndex].c_str())) {
-                    state->resetState(state->harpoonFiles[state->harpoonIndex]);
-                }
-            }
-        }
+    // } else if (!state->recording && c == ctrl('e')) {
+    //     if (state->harpoonFiles.size() > 0) {
+    //         if (state->harpoonIndex + 1 < state->harpoonFiles.size()) {
+    //             if (std::filesystem::is_regular_file(state->harpoonFiles[state->harpoonIndex + 1].c_str())) {
+    //                 state->harpoonIndex += 1;
+    //                 state->resetState(state->harpoonFiles[state->harpoonIndex]);
+    //             } else {
+    //                 state->status = "file not found";
+    //                 state->harpoonFiles.erase(state->harpoonFiles.begin() + state->harpoonIndex + 1);
+    //             }
+    //         } else {
+    //             if (std::filesystem::is_regular_file(state->harpoonFiles[state->harpoonIndex].c_str())) {
+    //                 state->resetState(state->harpoonFiles[state->harpoonIndex]);
+    //             }
+    //         }
+    //     }
+    // } else if (!state->recording && c == ctrl('w')) {
+    //     if (state->harpoonFiles.size() > 0) {
+    //         if (state->harpoonIndex > 0) {
+    //             if (std::filesystem::is_regular_file(state->harpoonFiles[state->harpoonIndex - 1].c_str())) {
+    //                 state->harpoonIndex -= 1;
+    //                 state->resetState(state->harpoonFiles[state->harpoonIndex]);
+    //             } else {
+    //                 state->status = "file not found";
+    //                 state->harpoonFiles.erase(state->harpoonFiles.begin() + state->harpoonIndex - 1);
+    //                 state->harpoonIndex -= 1;
+    //             }
+    //         } else {
+    //             if (std::filesystem::is_regular_file(state->harpoonFiles[state->harpoonIndex].c_str())) {
+    //                 state->resetState(state->harpoonFiles[state->harpoonIndex]);
+    //             }
+    //         }
+    //     }
     } else if (c == '%') {
         auto pos = matchIt(state);
         state->row = pos.row;
         state->col = pos.col;
     } else if (c == '\\') {
         state->changeFile(state->filename);
-    } else if (!state->recording && c == ' ') {
-        bool found = false;
-        for (auto it = state->harpoonFiles.begin(); it != state->harpoonFiles.end();) {
-            if (*it == state->filename) {
-                it = state->harpoonFiles.erase(it);
-                found = true;
-                break;
-            } else {
-                it++;
-            }
-        }
-        if (!found) {
-            state->harpoonFiles.push_back(state->filename);
-        }
-        state->harpoonIndex = state->harpoonFiles.size() - 1;
+    // } else if (!state->recording && c == ' ') {
+    //     bool found = false;
+    //     for (auto it = state->harpoonFiles.begin(); it != state->harpoonFiles.end();) {
+    //         if (*it == state->filename) {
+    //             it = state->harpoonFiles.erase(it);
+    //             found = true;
+    //             break;
+    //         } else {
+    //             it++;
+    //         }
+    //     }
+    //     if (!found) {
+    //         state->harpoonFiles.push_back(state->filename);
+    //     }
+    //     state->harpoonIndex = state->harpoonFiles.size() - 1;
     } else if (c == 'G') {
         state->row = state->data.size() - 1;
     } else if (c == ctrl('z')) {

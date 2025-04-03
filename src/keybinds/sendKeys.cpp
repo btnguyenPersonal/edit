@@ -88,7 +88,7 @@ void sendKeys(State* state, int32_t c) {
                 state->jumplist.index = state->jumplist.list.size() - 1;
             }
         }
-        for (uint32_t i = 0; i < state->harpoonFiles.size(); i++) {
+        for (uint32_t i = 0; i < 10; i++) {
             if (state->harpoonFiles[i] == state->filename) {
                 state->harpoonIndex = i;
             }

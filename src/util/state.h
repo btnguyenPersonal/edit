@@ -6,6 +6,7 @@
 #include <filesystem>
 #include <string>
 #include <vector>
+#include <map>
 
 struct buildError {
     std::string filename;
@@ -88,7 +89,7 @@ public:
     int32_t buildErrorIndex;
     std::vector<std::string> buildErrors;
     std::vector<std::string> blame;
-    std::vector<std::string> harpoonFiles;
+    std::map<uint32_t, std::string> harpoonFiles;
     uint32_t harpoonIndex;
     std::string buildDir;
     std::string filename;
