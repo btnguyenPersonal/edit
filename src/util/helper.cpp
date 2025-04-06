@@ -38,11 +38,68 @@ void setDotCommand(State* state, std::string s) {
     }
 }
 
-void jumpToHarpoon(State* state, uint32_t num) {
-    // if (0 < num && num <= state->harpoonFiles.size()) {
-    //     state->harpoonIndex = num - 1;
-    //     state->resetState(state->harpoonFiles[state->harpoonIndex]);
-    // }
+int32_t contains(const std::map<uint32_t, std::string>& myMap, const std::string& s) {
+    for (const auto& pair : myMap) {
+        if (pair.second == s) {
+            return pair.first;
+        }
+    }
+    return -1;
+}
+
+void jumpToPrevHarpoon(State* state) {
+    for (int32_t i = state->harpoonIndex - 1; i >= 0; i--) {
+        if (jumpToHarpoon(state, i + 1)) {
+            return;
+        }
+    }
+}
+
+void jumpToNextHarpoon(State* state) {
+    for (int32_t i = state->harpoonIndex + 1; i < 10; i++) {
+        if (jumpToHarpoon(state, i + 1)) {
+            return;
+        }
+    }
+}
+
+bool createNewestHarpoon(State* state) {
+    for (int32_t num = 1; num <= 10; num++) {
+        int32_t index = contains(state->harpoonFiles, state->filename);
+        if (index == -1 && state->harpoonFiles.count(num - 1) == 0) {
+            state->harpoonIndex = num - 1;
+            state->harpoonFiles[state->harpoonIndex] = state->filename;
+            state->prevKeys = "";
+            return true;
+        }
+    }
+    return false;
+}
+
+bool jumpToHarpoon(State* state, uint32_t num) {
+    if (num > 0) {
+        if (state->prevKeys == " ") {
+            int32_t index = contains(state->harpoonFiles, state->filename);
+            std::string temp = "";
+            if (index != -1) {
+                state->harpoonFiles.erase(index);
+                if (state->harpoonFiles.count(num - 1) > 0) {
+                    temp = state->harpoonFiles[num - 1];
+                }
+            }
+            state->harpoonFiles[num - 1] = state->filename;
+            state->prevKeys = "";
+            if (temp != "") {
+                state->harpoonFiles[state->harpoonIndex] = temp;
+            }
+            state->harpoonIndex = num - 1;
+        } else if (state->harpoonFiles.count(num - 1) > 0) {
+            state->harpoonIndex = num - 1;
+            state->resetState(state->harpoonFiles[state->harpoonIndex]);
+            return true;
+        }
+    }
+    return false;
 }
 
 std::string setStringToLength(const std::string& s, uint32_t length) {

@@ -89,7 +89,7 @@ void sendKeys(State* state, int32_t c) {
             }
         }
         for (uint32_t i = 0; i < 10; i++) {
-            if (state->harpoonFiles[i] == state->filename) {
+            if (state->harpoonFiles.count(i) > 0 && state->harpoonFiles[i] == state->filename) {
                 state->harpoonIndex = i;
             }
         }

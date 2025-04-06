@@ -145,12 +145,18 @@ int32_t renderStatusBar(State* state) {
         int32_t left = 0;
         for (uint32_t i = 0; i < 10; i++) {
             std::string s;
-            if (state->harpoonFiles.find(i) != state->harpoonFiles.end()) {
+            if (state->harpoonFiles.count(i) > 0) {
                 s = "[" + getHarpoonName(state, i) + "]";
             } else {
                 s = "   ";
             }
-            mvprintw_color(0, left, "%s", s.c_str(), state->harpoonFiles[state->harpoonIndex] == state->filename && state->harpoonIndex == i ? YELLOW : GREY);
+            int color;
+            if (state->harpoonFiles.count(i) > 0) {
+                color = state->harpoonFiles[i] == state->filename && state->harpoonIndex == i ? YELLOW : GREY;
+            } else {
+                color = GREY;
+            }
+            mvprintw_color(0, left, "%s", s.c_str(), color);
             left += s.length();
         }
     }

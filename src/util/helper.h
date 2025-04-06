@@ -10,7 +10,10 @@
 void recordMotion(State* state, int32_t c);
 void setDotCommand(State* state, int32_t c);
 void setDotCommand(State* state, std::string s);
-void jumpToHarpoon(State* state, uint32_t num);
+bool createNewestHarpoon(State* state);
+void jumpToPrevHarpoon(State* state);
+void jumpToNextHarpoon(State* state);
+bool jumpToHarpoon(State* state, uint32_t num);
 bool isAlphanumeric(char c);
 bool isOffScreenVertical(State* state);
 uint32_t getCenteredWindowPosition(State* state);
