@@ -162,7 +162,7 @@ void sendShortcutKeys(State* state, int32_t c) {
             state->row = applyDiff(state, state->history[state->historyPosition + 1], false);
             state->historyPosition++;
         }
-    } else if (!state->recording && c == ctrl('i')) {
+    } else if (c == ctrl('i')) {
         if (state->fileStack.size() > 0) {
             if (state->fileStackIndex + 1 < state->fileStack.size()) {
                 state->fileStackIndex += 1;
@@ -175,7 +175,7 @@ void sendShortcutKeys(State* state, int32_t c) {
                 state->fileStack.erase(state->fileStack.begin() + state->fileStackIndex);
             }
         }
-    } else if (!state->recording && c == ctrl('o')) {
+    } else if (c == ctrl('o')) {
         if (state->fileStack.size() > 0) {
             if (state->fileStackIndex > 0) {
                 state->fileStackIndex -= 1;

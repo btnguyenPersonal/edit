@@ -37,7 +37,7 @@ void sendFileExplorerKeys(State* state, int32_t c) {
             if (name != "") {
                 rename(state, node->path, name);
                 node->parent->refresh();
-                state->changeFile((node->path.parent_path() / name).string());
+                state->resetState((node->path.parent_path() / name).string());
                 refocusFileExplorer(state, true);
             }
         } else if (c == 'X') {
@@ -72,7 +72,7 @@ void sendFileExplorerKeys(State* state, int32_t c) {
                 } else {
                     createFile(state, node->path.parent_path().string(), name);
                     node->parent->refresh();
-                    state->changeFile((node->path.parent_path() / name).string());
+                    state->resetState((node->path.parent_path() / name).string());
                 }
                 refocusFileExplorer(state, true);
             }
@@ -120,7 +120,7 @@ void sendFileExplorerKeys(State* state, int32_t c) {
             } else {
                 auto baseDir = std::filesystem::current_path();
                 auto relativePath = std::filesystem::relative(node->path.string(), baseDir);
-                state->changeFile(relativePath);
+                state->resetState(relativePath);
             }
             state->mode = FILEEXPLORER;
         } else if (c == '\n') {
@@ -134,7 +134,7 @@ void sendFileExplorerKeys(State* state, int32_t c) {
             } else {
                 auto baseDir = std::filesystem::current_path();
                 auto relativePath = std::filesystem::relative(node->path.string(), baseDir);
-                state->changeFile(relativePath);
+                state->resetState(relativePath);
                 state->fileExplorerOpen = false;
             }
         } else {
