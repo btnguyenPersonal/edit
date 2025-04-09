@@ -22,8 +22,10 @@ void sendFindFileKeys(State* state, int32_t c) {
         add(&state->findFile, c);
         state->findFile.selection = 0;
     } else if (c == KEY_LEFT) {
+        state->selectAll = false;
         moveCursorLeft(&state->findFile);
     } else if (c == KEY_RIGHT) {
+        state->selectAll = false;
         moveCursorRight(&state->findFile);
     } else if (c == KEY_BACKSPACE || c == 127) {
         if (state->selectAll == true) {
@@ -55,10 +57,12 @@ void sendFindFileKeys(State* state, int32_t c) {
             }
         }
     } else if (c == KEY_DOWN || c == ctrl('n')) {
+        state->selectAll = false;
         if (state->findFile.selection + 1 < state->findFileOutput.size()) {
             state->findFile.selection += 1;
         }
     } else if (c == KEY_UP || c == ctrl('p')) {
+        state->selectAll = false;
         if (state->findFile.selection > 0) {
             state->findFile.selection -= 1;
         }
@@ -86,8 +90,10 @@ void sendFindFileKeys(State* state, int32_t c) {
         }
         addFromClipboard(&state->findFile);
     } else if (c == ctrl('w')) {
+        state->selectAll = false;
         state->findFile.selection = 0;
     } else if (c == ctrl('e')) {
+        state->selectAll = false;
         for (uint32_t i = 0; i < state->findFileOutput.size(); i++) {
             if (state->findFile.selection + 1 < state->findFileOutput.size()) {
                 state->findFile.selection += 1;
