@@ -489,21 +489,25 @@ std::string getExtension(const std::string& filename) {
 }
 
 void moveHarpoonRight(State* state) {
-    // if (state->harpoonIndex + 1 < state->harpoonFiles.size()) {
-    //     std::string temp = state->harpoonFiles[state->harpoonIndex];
-    //     state->harpoonFiles[state->harpoonIndex] = state->harpoonFiles[state->harpoonIndex + 1];
-    //     state->harpoonFiles[state->harpoonIndex + 1] = temp;
-    //     state->harpoonIndex += 1;
-    // }
+    if (state->harpoonIndex + 1 < 9) {
+        std::string temp = state->harpoonFiles[state->harpoonIndex];
+        state->harpoonFiles.erase(state->harpoonIndex);
+        if (state->harpoonFiles.count(state->harpoonIndex + 1) > 0) {
+            state->harpoonFiles[state->harpoonIndex] = state->harpoonFiles[state->harpoonIndex + 1];
+        }
+        state->harpoonFiles[state->harpoonIndex + 1] = temp;
+    }
 }
 
 void moveHarpoonLeft(State* state) {
-    // if (state->harpoonIndex > 0) {
-    //     std::string temp = state->harpoonFiles[state->harpoonIndex];
-    //     state->harpoonFiles[state->harpoonIndex] = state->harpoonFiles[state->harpoonIndex - 1];
-    //     state->harpoonFiles[state->harpoonIndex - 1] = temp;
-    //     state->harpoonIndex -= 1;
-    // }
+    if (state->harpoonIndex > 0) {
+        std::string temp = state->harpoonFiles[state->harpoonIndex];
+        state->harpoonFiles.erase(state->harpoonIndex);
+        if (state->harpoonFiles.count(state->harpoonIndex - 1) > 0) {
+            state->harpoonFiles[state->harpoonIndex] = state->harpoonFiles[state->harpoonIndex - 1];
+        }
+        state->harpoonFiles[state->harpoonIndex - 1] = temp;
+    }
 }
 
 void trimTrailingWhitespace(State* state) {

@@ -404,6 +404,10 @@ void sendShortcutKeys(State* state, int32_t c) {
     } else if (c == 'p') {
         pasteFromClipboardAfter(state);
         setDotCommand(state, c);
+    } else if (c == ctrl('l')) {
+        moveHarpoonRight(state);
+    } else if (c == ctrl('h')) {
+        moveHarpoonLeft(state);
     } else if (c == ctrl('x')) {
         if (state->harpoonFiles.count(state->harpoonIndex) > 0) {
             state->harpoonFiles.erase(state->harpoonIndex);
