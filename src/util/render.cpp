@@ -171,18 +171,14 @@ int32_t renderStatusBar(State* state) {
             );
         }
     } else {
-        auto displayFileName = setStringToLength(state->filename, state->maxX / 2);
+        auto displayFileName = setStringToLength(state->filename, state->maxX - 30);
         mvprintw_color(0, state->maxX - (displayFileName.length() + 2), "\"%s\"", displayFileName.c_str(), state->unsavedFile ? GREY : WHITE);
     }
     return cursor;
 }
 
 std::string getHarpoonName(State* state, uint32_t index) {
-    if (state->options.harpoonNum) {
-        return std::to_string(index + 1);
-    } else {
-        return minimize_filename(state->harpoonFiles[index]);
-    }
+    return std::to_string(index + 1);
 }
 
 std::string minimize_filename(const std::string& filename) {
