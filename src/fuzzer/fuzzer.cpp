@@ -102,11 +102,11 @@ void fuzzSendKeys(int testnum, int iterations = 1000) {
     auto start = std::chrono::high_resolution_clock::now();
 
     try {
-        std::cout << "Test #" << testnum << ": ";
+        std::cout << "Test #" << testnum << ":\n";
         for (int i = 0; i < iterations; i++) {
             char randomKey = keypresses[dis(gen)];
 
-            std::cout << getEscapedChar(randomKey) << std::endl;
+            std::cout << state->mode << "  " << getEscapedChar(randomKey) << std::endl;
             sendKeys(state, randomKey);
         }
     }
