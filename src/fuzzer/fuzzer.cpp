@@ -106,7 +106,7 @@ void fuzzSendKeys(int testnum, int iterations = 1000) {
         for (int i = 0; i < iterations; i++) {
             char randomKey = keypresses[dis(gen)];
 
-            std::cout << getEscapedChar(randomKey) << " ";
+            std::cout << getEscapedChar(randomKey) << std::endl;
             sendKeys(state, randomKey);
         }
     }
