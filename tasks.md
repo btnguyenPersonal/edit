@@ -2,10 +2,6 @@
 
 - fix case: indentation
 
-- expand current file name all the way?? experiment with how tabs are shown, maybe all i need are numbers??
-
-- grepindex not set to 0 after every recalc
-
 - fix blame getting calculated every render
 
 - project based .editorconfig

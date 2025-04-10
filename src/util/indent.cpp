@@ -90,7 +90,7 @@ int32_t getIndentLevel(State* state, uint32_t row) {
         for (uint32_t i = 0; i < prevLine.length(); i++) {
             if (prevLine.substr(i, state->commentSymbol.length()) == state->commentSymbol) {
                 break;
-            } else if (prevLine[i] == '(' || prevLine[i] == '{' || prevLine[i] == '[') {
+            } else if (prevLine[i] == '(' || prevLine[i] == '{' || prevLine[i] == '[' || prevLine[i] == ':') {
                 if (i + 1 == prevLine.length()) {
                     indentLevel += state->options.indent;
                 }
@@ -127,6 +127,14 @@ int32_t getIndentLevel(State* state, uint32_t row) {
         for (uint32_t i = 0; i < currLine.length(); i++) {
             if (currLine.substr(i, state->commentSymbol.length()) == state->commentSymbol) {
                 break;
+            } else if (currLine.substr(i, std::string("default:").length()) == "default:") {
+                if (i == 0) {
+                    indentLevel -= state->options.indent;
+                }
+            } else if (currLine.substr(i, std::string("case ").length()) == "case ") {
+                if (i == 0) {
+                    indentLevel -= state->options.indent;
+                }
             } else if (currLine[i] == ')' || currLine[i] == '}' || currLine[i] == ']') {
                 if (i == 0) {
                     indentLevel -= state->options.indent;
