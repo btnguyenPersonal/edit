@@ -1,18 +1,11 @@
 ## TODO
 
-- fix case: indentation
-
-- fix blame getting calculated every render
-
-- project based .editorconfig
+- fix blame getting calculated every render (slowing down fuzzing a lot)
 
 - config based on filetype (would probably have to re-interpret config every file change bleh)
 
 - indent_style tab or space
-
-- make status bar based on % of maxX
-
-- have two status bars?? one for file name and search, other for tabs (also could have a button that shows the name, and also only show the search when showSearch is on
+    - would probably need a :retab command
 
 - put asserts everywhere (make sure state is perfect and i never mess up)
 
