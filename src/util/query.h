@@ -9,5 +9,6 @@ void addFromClipboard(Query* input);
 void moveCursorLeft(Query* input);
 void moveCursorRight(Query* input);
 void setQuery(Query* input, std::string s);
+void backspaceWord(Query* input);
 void backspace(Query* input);
 void backspaceAll(Query* input);

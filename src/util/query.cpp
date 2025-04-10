@@ -30,6 +30,16 @@ void moveCursorRight(Query* input) {
     }
 }
 
+void backspaceWord(Query* input) {
+    while (input->cursor > 0) {
+        backspace(input);
+        if (input->cursor == 0 || input->query[input->cursor - 1] == ' ') {
+            backspace(input);
+            return;
+        }
+    }
+}
+
 void backspace(Query* input) {
     if (input->query.length() > 0 && input->cursor > 0) {
         input->query.erase(input->cursor - 1, 1);

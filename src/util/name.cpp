@@ -24,6 +24,8 @@ std::string inputName(State* state, std::string startingValue) {
                 backspace(&state->name);
             } else if (c == ctrl('l')) {
                 backspaceAll(&state->name);
+            } else if (c == ctrl('w')) {
+                backspaceWord(&state->name);
             } else if (c == ctrl('v')) {
                 addFromClipboard(&state->name);
             } else if (c == '\n') {

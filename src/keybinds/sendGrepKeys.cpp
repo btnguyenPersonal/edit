@@ -63,17 +63,7 @@ void sendGrepKeys(State* state, int32_t c) {
     } else if (c == ctrl('v')) {
         addFromClipboard(&state->grep);
     } else if (c == ctrl('w')) {
-        state->grep.selection = 0;
-    } else if (c == ctrl('e')) {
-        for (uint32_t i = 0; i < state->grepOutput.size(); i++) {
-            if (state->grep.selection + 1 < state->grepOutput.size()) {
-                state->grep.selection += 1;
-            }
-            auto selectedFile = state->grepOutput[state->grep.selection].path.string();
-            if (isTestFile(selectedFile)) {
-                break;
-            }
-        }
+        backspaceWord(&state->grep);
     } else if (c == '\n') {
         changeToGrepFile(state);
         state->showGrep = true;

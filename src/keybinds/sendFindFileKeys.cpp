@@ -90,19 +90,7 @@ void sendFindFileKeys(State* state, int32_t c) {
         }
         addFromClipboard(&state->findFile);
     } else if (c == ctrl('w')) {
-        state->selectAll = false;
-        state->findFile.selection = 0;
-    } else if (c == ctrl('e')) {
-        state->selectAll = false;
-        for (uint32_t i = 0; i < state->findFileOutput.size(); i++) {
-            if (state->findFile.selection + 1 < state->findFileOutput.size()) {
-                state->findFile.selection += 1;
-            }
-            auto selectedFile = state->findFileOutput[state->findFile.selection].string();
-            if (isTestFile(selectedFile)) {
-                break;
-            }
-        }
+        backspaceWord(&state->findFile);
     } else if (c == '\n') {
         if (state->findFile.selection < state->findFileOutput.size()) {
             state->selectAll = false;
