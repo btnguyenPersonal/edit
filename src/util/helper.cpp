@@ -1351,6 +1351,12 @@ int32_t getIndexFirstNonSpace(State* state) {
 void calcWindowBounds() {
     int32_t y, x;
     getmaxyx(stdscr, y, x);
+    if (y == -1) {
+        y = 30;
+    }
+    if (x == -1) {
+        x = 100;
+    }
     State::setMaxYX(y, x);
 }
 

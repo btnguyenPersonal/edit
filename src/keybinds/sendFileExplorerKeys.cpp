@@ -100,8 +100,9 @@ void sendFileExplorerKeys(State* state, int32_t c) {
                 state->fileExplorerIndex--;
             }
         } else if (c == ctrl('d')) {
+            auto children = state->fileExplorer->getTotalChildren();
             for (uint32_t i = 0; i < state->maxY / 2; i++) {
-                if (state->fileExplorerIndex + 1 < state->fileExplorer->getTotalChildren()) {
+                if (state->fileExplorerIndex + 1 < children) {
                     state->fileExplorerIndex++;
                 }
             }
