@@ -116,9 +116,16 @@ int32_t renderStatusBar(State* state) {
         offset += state->commandLine.cursor + 1;
         return offset;
     } else if (state->mode == GREP) {
+        std::string gPath;
+        if (state->grepPath != "") {
+            gPath = state->grepPath;
+            mvprintw_color(0, offset, "%s", gPath.c_str(), GREEN);
+        }
+        offset += gPath.length();
         mvprintw_color(0, offset, "> %s", state->grep.query.c_str(), GREEN);
-        offset += state->grep.cursor + 2;
-        renderNumMatches(state->grep.query.length() + 4, state->grep.selection + 1, state->grepOutput.size());
+        offset += state->grep.cursor;
+        renderNumMatches(offset + 4, state->grep.selection + 1, state->grepOutput.size());
+        offset += 2;
         return offset;
     } else if (state->mode == FINDFILE) {
         mvprintw_color(0, offset, "> ", "", YELLOW);

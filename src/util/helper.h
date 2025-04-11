@@ -74,7 +74,7 @@ uint32_t getNextLineSameIndent(State* state);
 uint32_t getPrevLineSameIndent(State* state);
 WordPosition getBigWordPosition(const std::string& str, uint32_t cursor);
 WordPosition getWordPosition(const std::string& str, uint32_t cursor);
-std::vector<grepMatch> grepFiles(const std::filesystem::path& dir_path, const std::string& query);
+std::vector<grepMatch> grepFiles(const std::filesystem::path& dir_path, const std::string& query, bool allowAllFiles);
 void generateGrepOutput(State* state, bool resetCursor);
 bool filePathContainsSubstring(const std::filesystem::path& filePath, const std::string& query);
 bool shouldIgnoreFile(const std::filesystem::path& path);

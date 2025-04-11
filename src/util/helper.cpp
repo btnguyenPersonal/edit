@@ -180,6 +180,9 @@ void createFile(State* state, std::filesystem::path path, std::string name) {
 void changeToGrepFile(State* state) {
     if (state->grep.selection < state->grepOutput.size()) {
         std::filesystem::path selectedFile = state->grepOutput[state->grep.selection].path;
+        if (state->grepPath != "") {
+            selectedFile = state->grepPath / selectedFile;
+        }
         int32_t lineNum = state->grepOutput[state->grep.selection].lineNum;
         state->resetState(selectedFile);
         state->row = lineNum - 1;
@@ -1075,10 +1078,10 @@ bool sortByFileType(const grepMatch& first, const grepMatch& second) {
     return firstFile < secondFile;
 }
 
-std::vector<grepMatch> grepFiles(const std::filesystem::path& dir_path, const std::string& query) {
+std::vector<grepMatch> grepFiles(const std::filesystem::path& dir_path, const std::string& query, bool allowAllFiles) {
     std::vector<std::future<std::vector<grepMatch>>> futures;
     for (auto it = std::filesystem::recursive_directory_iterator(dir_path); it != std::filesystem::recursive_directory_iterator(); ++it) {
-        if (shouldIgnoreFile(it->path())) {
+        if (!allowAllFiles && shouldIgnoreFile(it->path())) {
             it.disable_recursion_pending();
             continue;
         }
@@ -1131,7 +1134,7 @@ void generateGrepOutput(State* state, bool resetCursor) {
     if (state->grep.query == "") {
         state->grepOutput.clear();
     } else {
-        state->grepOutput = grepFiles(std::filesystem::current_path(), state->grep.query);
+        state->grepOutput = grepFiles(state->grepPath == "" ? std::filesystem::current_path() : std::filesystem::path(state->grepPath), state->grep.query, state->grepPath != "");
     }
     if (resetCursor) {
         state->grep.selection = 0;

@@ -121,6 +121,7 @@ public:
     bool dontRecordKey;
     Query findFile;
     std::vector<std::filesystem::path> findFileOutput;
+    std::string grepPath;
     Query grep;
     std::vector<grepMatch> grepOutput;
     std::string prevKeys;

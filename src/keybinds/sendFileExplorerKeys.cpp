@@ -50,6 +50,14 @@ void sendFileExplorerKeys(State* state, int32_t c) {
                     state->status = "remove failed";
                 }
             }
+        } else if (c == ctrl('g')) {
+            auto node = FileExplorerNode::getFileExplorerNode(state->fileExplorer, state->fileExplorerIndex);
+            if (node->isFolder) {
+                state->fileExplorerOpen = false;
+                state->grepPath = node->path;
+                state->mode = GREP;
+                generateGrepOutput(state, true);
+            }
         } else if (c == 'N') {
             std::string name = inputName(state, "");
             if (name != "") {

@@ -375,6 +375,7 @@ bool sendVisualKeys(State* state, char c, bool onlyMotions) {
     } else if (!onlyMotions && state->prevKeys == "g" && c == 'r') {
         if (state->visualType == NORMAL) {
             setQuery(&state->grep, getInVisual(state));
+            state->grepPath = "";
             generateGrepOutput(state, true);
             findDefinitionFromGrepOutput(state, getInVisual(state));
         }
@@ -491,6 +492,7 @@ bool sendVisualKeys(State* state, char c, bool onlyMotions) {
     } else if (!onlyMotions && c == '#') {
         setQuery(&state->grep, getInVisual(state));
         state->mode = GREP;
+        state->grepPath = "";
         generateGrepOutput(state, true);
     } else if (c == 'l') {
         right(state);

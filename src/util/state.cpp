@@ -5,6 +5,7 @@
 #include <iostream>
 #include <ncurses.h>
 #include <string>
+#include <filesystem>
 #include <vector>
 #include <map>
 
@@ -165,6 +166,7 @@ State::State() {
     this->replace = {std::string(""), 0, 0};
     this->commandLine = {std::string(""), 0, 0};
     this->findFile = {std::string(""), 0, 0};
+    this->grepPath = "";
     this->grep = {std::string(""), 0, 0};
     this->prevKeys = std::string("");
     this->status = std::string("");

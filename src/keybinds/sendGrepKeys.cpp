@@ -11,7 +11,11 @@
 
 void sendGrepKeys(State* state, int32_t c) {
     if (c == 27) { // ESC
-        state->mode = SHORTCUTS;
+        if (state->grepPath != "") {
+            state->grepPath = "";
+        } else {
+            state->mode = SHORTCUTS;
+        }
     } else if (' ' <= c && c <= '~') {
         add(&state->grep, c);
         state->grep.selection = 0;
