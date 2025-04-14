@@ -1,0 +1,147 @@
+diff --git a/src/util/helper.cpp b/src/util/helper.cpp
+index 2a83710..fea11e5 100644
+--- a/src/util/helper.cpp
++++ b/src/util/helper.cpp
+@@ -523,10 +523,12 @@ void trimTrailingWhitespace(State* state) {
+     }
+ }
+ 
++// TODO also work with tabs
+ void rtrim(std::string& s) {
+     s.erase(std::find_if(s.rbegin(), s.rend(), [](unsigned char ch) { return !std::isspace(ch); }).base(), s.end());
+ }
+ 
++// TODO also work with tabs
+ void ltrim(std::string& s) {
+     s.erase(s.begin(), std::find_if(s.begin(), s.end(), [](unsigned char ch) { return !std::isspace(ch); }));
+ }
+diff --git a/src/util/indent.cpp b/src/util/indent.cpp
+index 7420e52..522c979 100644
+--- a/src/util/indent.cpp
++++ b/src/util/indent.cpp
+@@ -177,6 +177,7 @@ void indentRange(State* state) {
+     int32_t indentDifference = getIndentLevel(state, state->row) - getNumLeadingSpaces(state->data[firstNonEmptyRow]);
+     if (indentDifference > 0) {
+         for (int32_t i = state->row; i <= (int32_t)state->visual.row; i++) {
++            // TODO turn below into helper function that takes into account the indentStyle
+             if (state->data[i] != "") {
+                 for (int32_t j = 0; j < indentDifference; j++) {
+                     state->data[i] = ' ' + state->data[i];
+diff --git a/src/util/render.cpp b/src/util/render.cpp
+index 14eccf2..e2a491f 100644
+--- a/src/util/render.cpp
++++ b/src/util/render.cpp
+@@ -133,7 +133,7 @@ int32_t renderStatusBar(State* state) {
+         offset += state->findFile.cursor + 2;
+         renderNumMatches(state->findFile.query.length() + 4, state->findFile.selection + 1, state->findFileOutput.size());
+         return offset;
+-    } else if (state->mode == SEARCH) {
++    } else if (state->searching || state->mode == SEARCH) {
+         std::string displayQuery = state->search.query;
+         for (size_t i = 0; i < displayQuery.length(); ++i) {
+             if (displayQuery[i] == '\n') {
+@@ -147,7 +147,9 @@ int32_t renderStatusBar(State* state) {
+             mvprintw_color(0, offset, "/%s", state->replace.query.c_str(), MAGENTA);
+             return offset + state->replace.cursor + 1;
+         }
+-        return offset + state->search.cursor + 1;
++        if (state->mode == SEARCH) {
++            return offset + state->search.cursor + 1;
++        }
+     } else {
+         int32_t left = 0;
+         for (uint32_t i = 0; i < 10; i++) {
+diff --git a/src/util/state.cpp b/src/util/state.cpp
+index 37b2e21..95a3765 100644
+--- a/src/util/state.cpp
++++ b/src/util/state.cpp
+@@ -24,7 +24,9 @@ void State::readConfigLine(std::string optionLine) {
+         this->options.wordwrap = true;
+     } else if (optionLine == "autosave") {
+         this->options.autosave = true;
+-    } else if (safeSubstring(optionLine, 0, std::string("indent_size = ").length()) == "indent_size ") {
++    } else if (safeSubstring(optionLine, 0, std::string("indent_style = ").length()) == "indent_style = ") {
++        this->options.indentStyle = safeSubstring(optionLine, std::string("indent_style = ").length());
++    } else if (safeSubstring(optionLine, 0, std::string("indent_size = ").length()) == "indent_size = ") {
+         this->options.indent = std::stoi(safeSubstring(optionLine, std::string("indent_size = ").length()));
+     }
+ }
+@@ -33,10 +35,15 @@ void State::setDefaultOptions() {
+     this->options.autosave = false;
+     this->options.wordwrap = false;
+     this->options.indent = 4;
++    this->options.indentStyle = "space";
+ }
+ 
+ void State::changeFile(std::string filename) {
+     auto normalizedFilename = normalizeFilename(filename);
++    if (!std::filesystem::is_regular_file(normalizedFilename)) {
++        this->status = "file not found: " + normalizedFilename;
++        return;
++    }
+     bool found = false;
+     for (uint32_t i = 0; i < this->archives.size(); i++) {
+         if (this->archives[i].filename == this->filename) {
+@@ -122,10 +129,6 @@ void State::resetState(std::string filename) {
+     this->pushFileStack(this->filename);
+     this->pushFileStack(normalizedFilename);
+     this->fileStackIndex = this->fileStack.size() - 1;
+-    if (!std::filesystem::is_regular_file(normalizedFilename.c_str())) {
+-        this->status = "file not found: " + normalizedFilename;
+-        exit(1);
+-    }
+     this->changeFile(normalizedFilename);
+ }
+ 
+diff --git a/src/util/state.h b/src/util/state.h
+index 47beeef..5ef61cc 100644
+--- a/src/util/state.h
++++ b/src/util/state.h
+@@ -70,6 +70,7 @@ struct Options {
+     bool wordwrap;
+     bool autosave;
+     uint32_t indent;
++    std::string indentStyle;
+ };
+ 
+ class State {
+diff --git a/tasks.md b/tasks.md
+index f8bb054..4f54938 100644
+--- a/tasks.md
++++ b/tasks.md
+@@ -9,6 +9,34 @@
+ 
+ - put asserts everywhere (make sure state is perfect and i never mess up)
+ 
++- change jumpList to last edit instead of last jump??
++
+ ## BRAINSTORMING
+ 
+-- try out having 1=9 as the only hotkeys??, maybe that's better to have it just show which ones are bound?? example: 1 . 2 . 4 5 . . . . so I know that 1, 2, 4, 5 are just bound. brainstorming hotkeys: X still clears all, g1-9 creates?? I'd love if shift+num could create just like starcraft but that clashes with every hotkey ever?? would clear up ctrl e, ctrl w, space, ctrl h, ctrl l. Would also break @ # $ % ^ * ( ) _. DEFINITELY DON"T BREAK MUSCLE MEMORY RIGHT NOW
++- what about ertwq as camera keys?? they could be the exact same as starcraft, maybe?? would be able to get rid of completely all parody, think about consequences:
++    q - macro
++        - ez replace w/ anything
++    w - forward word
++        - hardest one to remap by far
++        - ideas?:
++            - could try just using f keys
++            - W?
++            - also want this to be a one-button guy
++    e - comment
++        - could muscle memory to ; ?? gc?? E?? really want this to be a one button no modifiers key
++        - dash key?? (-)
++    r - replace word
++        - could muscle memory to vrX
++    t - forward to x
++        - don't use really in normal mode
++
++    ctrl q - undo jumpList
++        - didn't even remember this was a thing
++    ctrl w - backwards harpoon
++        - will be unnecessary
++    ctrl e - forwards harpoon
++        - will be unnecessary
++    ctrl r - redo
++        - hard to rebind honestly, maybe ctrl y? ctrl l? U? <- remember to fix all the special ctrl('r') logic
++    ctrl t - fileexplorer
++        - will also be hard to rebind (ctrl h or ctrl l??) < prob ctrl h
