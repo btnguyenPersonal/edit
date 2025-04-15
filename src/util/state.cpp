@@ -24,7 +24,9 @@ void State::readConfigLine(std::string optionLine) {
         this->options.wordwrap = true;
     } else if (optionLine == "autosave") {
         this->options.autosave = true;
-    } else if (safeSubstring(optionLine, 0, std::string("indent_size = ").length()) == "indent_size ") {
+    } else if (safeSubstring(optionLine, 0, std::string("indent_style = ").length()) == "indent_style = ") {
+        this->options.indentStyle = safeSubstring(optionLine, std::string("indent_style = ").length());
+    } else if (safeSubstring(optionLine, 0, std::string("indent_size = ").length()) == "indent_size = ") {
         this->options.indent = std::stoi(safeSubstring(optionLine, std::string("indent_size = ").length()));
     }
 }
@@ -33,10 +35,15 @@ void State::setDefaultOptions() {
     this->options.autosave = false;
     this->options.wordwrap = false;
     this->options.indent = 4;
+    this->options.indentStyle = "space";
 }
 
 void State::changeFile(std::string filename) {
     auto normalizedFilename = normalizeFilename(filename);
+    if (!std::filesystem::is_regular_file(normalizedFilename)) {
+        this->status = "file not found: " + normalizedFilename;
+        return;
+    }
     bool found = false;
     for (uint32_t i = 0; i < this->archives.size(); i++) {
         if (this->archives[i].filename == this->filename) {
@@ -117,16 +124,17 @@ void State::pushFileStack(std::string filename) {
     }
 }
 
-void State::resetState(std::string filename) {
+bool State::resetState(std::string filename) {
     auto normalizedFilename = normalizeFilename(filename);
+    if (!std::filesystem::is_regular_file(normalizedFilename.c_str())) {
+        this->status = "file not found: " + normalizedFilename;
+        return false;
+    }
     this->pushFileStack(this->filename);
     this->pushFileStack(normalizedFilename);
     this->fileStackIndex = this->fileStack.size() - 1;
-    if (!std::filesystem::is_regular_file(normalizedFilename.c_str())) {
-        this->status = "file not found: " + normalizedFilename;
-        exit(1);
-    }
     this->changeFile(normalizedFilename);
+    return true;
 }
 
 State::State() {

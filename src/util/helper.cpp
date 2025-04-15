@@ -94,8 +94,11 @@ bool jumpToHarpoon(State* state, uint32_t num) {
             }
             state->harpoonIndex = num - 1;
         } else if (state->harpoonFiles.count(num - 1) > 0) {
+            if (!state->resetState(state->harpoonFiles[num - 1])) {
+                state->harpoonFiles.erase(num - 1);
+                return false;
+            }
             state->harpoonIndex = num - 1;
-            state->resetState(state->harpoonFiles[state->harpoonIndex]);
             return true;
         }
     }
@@ -523,10 +526,12 @@ void trimTrailingWhitespace(State* state) {
     }
 }
 
+// TODO also work with tabs
 void rtrim(std::string& s) {
     s.erase(std::find_if(s.rbegin(), s.rend(), [](unsigned char ch) { return !std::isspace(ch); }).base(), s.end());
 }
 
+// TODO also work with tabs
 void ltrim(std::string& s) {
     s.erase(s.begin(), std::find_if(s.begin(), s.end(), [](unsigned char ch) { return !std::isspace(ch); }));
 }

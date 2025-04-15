@@ -70,6 +70,7 @@ struct Options {
     bool wordwrap;
     bool autosave;
     uint32_t indent;
+    std::string indentStyle;
 };
 
 class State {
@@ -134,7 +135,7 @@ public:
     Mode mode;
     State();
     State(std::string filename);
-    void resetState(std::string filename);
+    bool resetState(std::string filename);
     void pushFileStack(std::string filename);
     void changeFile(std::string filename);
     void loadConfigFile(std::string fileLocation);

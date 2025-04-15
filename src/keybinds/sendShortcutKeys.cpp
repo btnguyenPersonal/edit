@@ -172,7 +172,7 @@ void sendShortcutKeys(State* state, int32_t c) {
                 state->changeFile(state->fileStack[state->fileStackIndex]);
                 state->showFileStack = true;
             } else {
-                state->status = "file not found";
+                state->status = "file not found: " + state->fileStack[state->fileStackIndex];
                 state->fileStack.erase(state->fileStack.begin() + state->fileStackIndex);
             }
         }
@@ -185,7 +185,7 @@ void sendShortcutKeys(State* state, int32_t c) {
                 state->changeFile(state->fileStack[state->fileStackIndex]);
                 state->showFileStack = true;
             } else {
-                state->status = "file not found";
+                state->status = "file not found: " + state->fileStack[state->fileStackIndex];
                 state->fileStack.erase(state->fileStack.begin() + state->fileStackIndex);
             }
         }

@@ -177,6 +177,7 @@ void indentRange(State* state) {
     int32_t indentDifference = getIndentLevel(state, state->row) - getNumLeadingSpaces(state->data[firstNonEmptyRow]);
     if (indentDifference > 0) {
         for (int32_t i = state->row; i <= (int32_t)state->visual.row; i++) {
+            // TODO turn below into helper function that takes into account the indentStyle
             if (state->data[i] != "") {
                 for (int32_t j = 0; j < indentDifference; j++) {
                     state->data[i] = ' ' + state->data[i];

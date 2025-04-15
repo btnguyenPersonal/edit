@@ -103,10 +103,6 @@ int32_t renderStatusBar(State* state) {
     int32_t cursor = -1;
     int32_t offset = 0;
 
-    if (state->status.length() > 0) {
-        mvprintw_color(0, (state->maxX / 2) - (state->status.length() / 2), "%s", state->status.c_str(), RED);
-        return cursor;
-    }
     if (state->mode == NAMING) {
         mvprintw_color(0, offset, "name: %s", state->name.query.c_str(), WHITE);
         offset += state->name.cursor + 6;
@@ -133,7 +129,7 @@ int32_t renderStatusBar(State* state) {
         offset += state->findFile.cursor + 2;
         renderNumMatches(state->findFile.query.length() + 4, state->findFile.selection + 1, state->findFileOutput.size());
         return offset;
-    } else if (state->mode == SEARCH) {
+    } else if (state->searching || state->mode == SEARCH) {
         std::string displayQuery = state->search.query;
         for (size_t i = 0; i < displayQuery.length(); ++i) {
             if (displayQuery[i] == '\n') {
@@ -147,7 +143,9 @@ int32_t renderStatusBar(State* state) {
             mvprintw_color(0, offset, "/%s", state->replace.query.c_str(), MAGENTA);
             return offset + state->replace.cursor + 1;
         }
-        return offset + state->search.cursor + 1;
+        if (state->mode == SEARCH) {
+            return offset + state->search.cursor + 1;
+        }
     } else {
         int32_t left = 0;
         for (uint32_t i = 0; i < 10; i++) {
@@ -180,6 +178,9 @@ int32_t renderStatusBar(State* state) {
     } else {
         auto displayFileName = setStringToLength(state->filename, state->maxX - 30);
         mvprintw_color(0, state->maxX - (displayFileName.length() + 2), "\"%s\"", displayFileName.c_str(), state->unsavedFile ? GREY : WHITE);
+    }
+    if (state->status.length() > 0) {
+        mvprintw_color(0, (state->maxX / 2) - (state->status.length() / 2), "%s", state->status.c_str(), RED);
     }
     return cursor;
 }
