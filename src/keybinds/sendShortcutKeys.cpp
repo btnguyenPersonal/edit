@@ -10,6 +10,7 @@
 #include "../util/query.h"
 #include "../util/state.h"
 #include "../util/visualType.h"
+#include "../util/expect.h"
 #include "sendKeys.h"
 #include "sendVisualKeys.h"
 #include <algorithm>

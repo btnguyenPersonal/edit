@@ -1,5 +1,6 @@
 #include "sendKeys.h"
 #include "../util/helper.h"
+#include "../util/expect.h"
 #include "../util/history.h"
 #include "../util/modes.h"
 #include "../util/state.h"
@@ -48,11 +49,16 @@ void sendKeys(State* state, int32_t c) {
         endwin();
         exit(0);
     } else if (state->filename != "") {
+        expect(std::filesystem::is_regular_file(state->filename));
         sanityCheckDocumentEmpty(state);
         sanityCheckRowColOutOfBounds(state);
+        expect(state->data[state->row].length() >= 0);
+        // TODO check off by one window, if yes just shift up/down one
         if (isWindowPositionInvalid(state)) {
             centerScreen(state);
         }
+        expect(state->windowPosition.row <= state->row);
+        expect(state->windowPosition.row + state->maxY > state->row);
         if (state->recording == true && state->dontRecordKey == false) {
             if (!(c == ',' && state->mode == SHORTCUTS)) {
                 state->macroCommand += c;
@@ -61,6 +67,20 @@ void sendKeys(State* state, int32_t c) {
         if (state->recording == false && state->mode == SHORTCUTS) {
             std::vector<diffLine> diff = generateDiff(state->previousState, state->data);
             if (diff.size() != 0) {
+                // TODO helper function for recording jumplist
+                if (state->mode == SHORTCUTS && c != ctrl('z') && c != ctrl('q')) {
+                    if (state->jumplist.list.size() > 0) {
+                        auto pos = state->jumplist.list.back();
+                        if (pos.row != state->row || pos.col != state->col) {
+                            state->jumplist.list.erase(state->jumplist.list.begin() + state->jumplist.index + 1, state->jumplist.list.end());
+                            state->jumplist.list.push_back({state->row, state->col});
+                            state->jumplist.index = state->jumplist.list.size() - 1;
+                        }
+                    } else {
+                        state->jumplist.list.push_back({state->row, state->col});
+                        state->jumplist.index = state->jumplist.list.size() - 1;
+                    }
+                }
                 if (state->options.autosave && !state->unsavedFile) {
                     saveFile(state);
                 }
@@ -71,23 +91,11 @@ void sendKeys(State* state, int32_t c) {
                     }
                     state->history.push_back(diff);
                     state->historyPosition = (int32_t)state->history.size() - 1;
+                    expect(state->historyPosition >= 0);
                 }
             }
         }
         state->matching = matchIt(state);
-        if (state->mode == SHORTCUTS && c != ctrl('z') && c != ctrl('q')) {
-            if (state->jumplist.list.size() > 0) {
-                auto pos = state->jumplist.list.back();
-                if (pos.row != state->row || pos.col != state->col) {
-                    state->jumplist.list.erase(state->jumplist.list.begin() + state->jumplist.index + 1, state->jumplist.list.end());
-                    state->jumplist.list.push_back({state->row, state->col});
-                    state->jumplist.index = state->jumplist.list.size() - 1;
-                }
-            } else {
-                state->jumplist.list.push_back({state->row, state->col});
-                state->jumplist.index = state->jumplist.list.size() - 1;
-            }
-        }
         for (uint32_t i = 0; i < 10; i++) {
             if (state->harpoonFiles.count(i) > 0 && state->harpoonFiles[i] == state->filename) {
                 state->harpoonIndex = i;

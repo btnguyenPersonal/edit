@@ -11,6 +11,12 @@
 
 - change jumpList to last edit instead of last jump??
 
+- fix centering screen when j or k on wrapped line
+
+- fix visual going up and indenting repeated
+
+- fix diff function for huge files (look at vim, rope, other stuff)
+
 ## BRAINSTORMING
 
 - what about ertwq as camera keys?? they could be the exact same as starcraft, maybe?? would be able to get rid of completely all parody, think about consequences:

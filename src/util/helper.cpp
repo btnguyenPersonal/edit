@@ -2,6 +2,7 @@
 #include "comment.h"
 #include "state.h"
 #include "visualType.h"
+#include "expect.h"
 #include <algorithm>
 #include <climits>
 #include <cstdio>
@@ -1191,6 +1192,7 @@ void saveFile(State* state) {
             }
             file << state->data.back();
         }
+        file.close();
     }
 }
 
