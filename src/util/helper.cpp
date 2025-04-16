@@ -1204,6 +1204,7 @@ std::vector<std::string> readFile(const std::string& filename) {
         std::getline(file, str);
         file_contents.push_back(str);
     }
+    file.close();
     return file_contents;
 }
 
