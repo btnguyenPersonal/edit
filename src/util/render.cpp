@@ -172,7 +172,7 @@ int32_t renderStatusBar(State* state) {
                 state->maxX - state->fileStack[i].length() - 2,
                 "\"%s\"",
                 state->fileStack[i].c_str(),
-                i == (int32_t)state->fileStackIndex ? RED : WHITE
+                i == (int32_t)state->fileStackIndex ? RED : YELLOW
             );
         }
     } else {
