@@ -49,7 +49,6 @@ void sendKeys(State* state, int32_t c) {
         endwin();
         exit(0);
     } else if (state->filename != "") {
-        expect(std::filesystem::is_regular_file(state->filename));
         sanityCheckDocumentEmpty(state);
         sanityCheckRowColOutOfBounds(state);
         expect(state->data[state->row].length() >= 0);
