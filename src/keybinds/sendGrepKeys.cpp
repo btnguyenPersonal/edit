@@ -73,7 +73,15 @@ void sendGrepKeys(State* state, int32_t c) {
         state->showGrep = true;
         centerScreen(state);
     }
-    if (state->mode == GREP && c != ctrl('u') && c != ctrl('d') && c != ctrl('p') && c != ctrl('n')) {
+    if (
+        state->mode == GREP
+        && c != ctrl('u')
+        && c != ctrl('d')
+        && c != ctrl('p')
+        && c != ctrl('n')
+        && c != KEY_UP
+        && c != KEY_DOWN
+    ) {
         renderScreen(state);
         generateGrepOutput(state, true);
     }
