@@ -97,7 +97,8 @@ void fuzzSendKeys(int testnum, int iterations = 1000) {
     };
 
     std::uniform_int_distribution<> dis(0, keypresses.size() - 1);
-    State* state = new State("longtest.js");
+    State* state = new State("src/util/helper.cpp");
+    state->dontSave = true;
 
     auto start = std::chrono::high_resolution_clock::now();
 
@@ -123,7 +124,7 @@ void fuzzSendKeys(int testnum, int iterations = 1000) {
 
 int main() {
     for (int i = 1; i <= 100000; i++) {
-        fuzzSendKeys(i, 20);
+        fuzzSendKeys(i, 50);
     }
     return 0;
 }
