@@ -1320,7 +1320,6 @@ void upVisual(State* state) {
     if (visualCol < state->maxX - getLineNumberOffset(state)) {
         up(state);
     } else {
-        state->status="hi";
         state->col -= state->maxX - getLineNumberOffset(state);
     }
 }
