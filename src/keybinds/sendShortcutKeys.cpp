@@ -112,6 +112,12 @@ void sendShortcutKeys(State* state, int32_t c) {
     } else if (state->prevKeys == "g" && c == 'g') {
         state->row = 0;
         state->prevKeys = "";
+    } else if (state->prevKeys == "g" && (c == 'k' || c == KEY_UP)) {
+        upVisual(state);
+        state->prevKeys = "";
+    } else if (state->prevKeys == "g" && (c == 'j' || c == KEY_DOWN)) {
+        downVisual(state);
+        state->prevKeys = "";
     } else if (c == ' ') {
         if (state->prevKeys == " ") {
             createNewestHarpoon(state);

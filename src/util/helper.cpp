@@ -1312,12 +1312,33 @@ void up(State* state) {
     }
 }
 
+void upVisual(State* state) {
+    auto visualCol = state->col;
+    if (visualCol > state->data[state->row].length()) {
+        visualCol = state->data[state->row].length();
+    }
+    if (visualCol < state->maxX - getLineNumberOffset(state)) {
+        up(state);
+    } else {
+        state->status="hi";
+        state->col -= state->maxX - getLineNumberOffset(state);
+    }
+}
+
 void down(State* state) {
     if (state->row < state->data.size() - 1) {
         state->row += 1;
     }
     if (isOffScreenVertical(state)) {
         state->windowPosition.row += 1;
+    }
+}
+
+void downVisual(State* state) {
+    if (state->col + state->maxX - getLineNumberOffset(state) > state->data[state->row].length()) {
+        down(state);
+    } else {
+        state->col += state->maxX - getLineNumberOffset(state);
     }
 }
 
