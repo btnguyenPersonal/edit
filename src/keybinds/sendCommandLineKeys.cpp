@@ -28,6 +28,8 @@ void evaluateCommandLineQuery(State* state) {
         } else {
             state->status = "autosave off";
         }
+    } else if (safeSubstring(state->commandLine.query, 0, 3) == "ts=") {
+        state->options.indent = stoul(safeSubstring(state->commandLine.query, 3));
     } else if (state->commandLine.query == "wordwrap") {
         state->options.wordwrap = !state->options.wordwrap;
         if (state->options.wordwrap) {
