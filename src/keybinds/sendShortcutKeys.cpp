@@ -119,11 +119,7 @@ void sendShortcutKeys(State* state, int32_t c) {
         downVisual(state);
         state->prevKeys = "";
     } else if (c == ' ') {
-        if (state->prevKeys == " ") {
-            createNewestHarpoon(state);
-        } else {
-            state->prevKeys = c;
-        }
+        createNewestHarpoon(state);
     } else if (c == '1') {
         jumpToHarpoon(state, 1);
     } else if (c == '2') {
@@ -417,7 +413,7 @@ void sendShortcutKeys(State* state, int32_t c) {
         setDotCommand(state, c);
     } else if (c == ctrl('l')) {
         moveHarpoonRight(state);
-    } else if (c == ctrl('h')) {
+    } else if (c == KEY_BACKSPACE || c == ctrl('h')) {
         moveHarpoonLeft(state);
     } else if (c == ctrl('x')) {
         if (state->harpoonFiles.count(state->harpoonIndex) > 0) {

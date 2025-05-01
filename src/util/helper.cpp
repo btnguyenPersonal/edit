@@ -54,6 +54,7 @@ void jumpToPrevHarpoon(State* state) {
             return;
         }
     }
+    jumpToHarpoon(state, 1);
 }
 
 void jumpToNextHarpoon(State* state) {
@@ -62,6 +63,7 @@ void jumpToNextHarpoon(State* state) {
             return;
         }
     }
+    jumpToHarpoon(state, 9);
 }
 
 bool createNewestHarpoon(State* state) {
@@ -79,7 +81,7 @@ bool createNewestHarpoon(State* state) {
 
 bool jumpToHarpoon(State* state, uint32_t num) {
     if (num > 0) {
-        if (state->prevKeys == " ") {
+        if (state->prevKeys == "g") {
             int32_t index = contains(state->harpoonFiles, state->filename);
             std::string temp = "";
             if (index != -1) {
