@@ -100,20 +100,26 @@ void renderNumMatches(int32_t offset, int32_t selection, int32_t total) {
 }
 
 void renderFileStack(State* state) {
-    for (int32_t i = (int32_t)(state->fileStack.size() - 1); i >= 0; i--) {
+    int32_t start = state->fileStack.size() - 1;
+    if (state->fileStackIndex < start - state->maxY / 2) {
+        start = state->fileStackIndex + state->maxY / 2;
+    }
+    uint32_t renderIndex = 1;
+    for (int32_t i = start; i >= 0; i--) {
         std::string filename = minimize_filename(state->fileStack[i]);
         if (state->maxX / 2 > filename.length()) {
             filename += std::string(state->maxX / 2 - filename.length() - 1, ' ');
         }
         mvprintw_color(
-            state->fileStack.size() - i,
+            renderIndex,
             state->maxX / 2,
             "|%s",
             filename.c_str(),
             i == (int32_t)state->fileStackIndex ? invertColor(YELLOW) : GREY
         );
+        renderIndex++;
     }
-    for (int32_t i = state->fileStack.size() + 1; i <= state->maxY; i++) {
+    for (int32_t i = renderIndex; i <= (int32_t)state->maxY; i++) {
         mvprintw_color(
             i,
             state->maxX / 2,
@@ -121,6 +127,7 @@ void renderFileStack(State* state) {
             std::string(state->maxX / 2, ' ').c_str(),
             GREY
         );
+        renderIndex++;
     }
 }
 
