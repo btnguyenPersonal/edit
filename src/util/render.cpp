@@ -99,6 +99,31 @@ void renderNumMatches(int32_t offset, int32_t selection, int32_t total) {
     index += std::to_string(total).length();
 }
 
+void renderFileStack(State* state) {
+    for (int32_t i = (int32_t)(state->fileStack.size() - 1); i >= 0; i--) {
+        std::string filename = minimize_filename(state->fileStack[i]);
+        if (state->maxX / 2 > filename.length()) {
+            filename += std::string(state->maxX / 2 - filename.length() - 1, ' ');
+        }
+        mvprintw_color(
+            state->fileStack.size() - i,
+            state->maxX / 2,
+            "|%s",
+            filename.c_str(),
+            i == (int32_t)state->fileStackIndex ? invertColor(YELLOW) : GREY
+        );
+    }
+    for (int32_t i = state->fileStack.size() + 1; i <= state->maxY; i++) {
+        mvprintw_color(
+            i,
+            state->maxX / 2,
+            "|%s",
+            std::string(state->maxX / 2, ' ').c_str(),
+            GREY
+        );
+    }
+}
+
 int32_t renderStatusBar(State* state) {
     int32_t cursor = -1;
     int32_t offset = 0;
@@ -165,20 +190,8 @@ int32_t renderStatusBar(State* state) {
             left += s.length();
         }
     }
-    if (state->showFileStack == true) {
-        for (int32_t i = (int32_t)(state->fileStack.size() - 1); i >= 0; i--) {
-            mvprintw_color(
-                state->fileStack.size() - i - 1,
-                state->maxX - state->fileStack[i].length() - 2,
-                "\"%s\"",
-                state->fileStack[i].c_str(),
-                i == (int32_t)state->fileStackIndex ? RED : YELLOW
-            );
-        }
-    } else {
-        auto displayFileName = setStringToLength(state->filename, state->maxX - 30);
-        mvprintw_color(0, state->maxX - (displayFileName.length() + 2), "\"%s\"", displayFileName.c_str(), state->unsavedFile ? GREY : WHITE);
-    }
+    auto displayFileName = setStringToLength(state->filename, state->maxX - 30);
+    mvprintw_color(0, state->maxX - (displayFileName.length() + 2), "\"%s\"", displayFileName.c_str(), state->unsavedFile ? GREY : WHITE);
     if (state->status.length() > 0) {
         mvprintw_color(0, (state->maxX / 2) - (state->status.length() / 2), "%s", state->status.c_str(), RED);
     }
@@ -623,6 +636,9 @@ void renderScreen(State* state) {
         if (state->fileExplorerOpen) {
             fileExplorerCursor = renderFileExplorer(state);
         }
+    }
+    if (state->showFileStack) {
+        renderFileStack(state);
     }
     int32_t cursorOnStatusBar = renderStatusBar(state);
     moveCursor(state, cursorOnStatusBar, editorCursor, fileExplorerCursor);
