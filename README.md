@@ -1,12 +1,6 @@
-# edit
-A term based ide with
-- only keyboard
-- a million shortcuts
-- vim based
-
 # setup
 
-requires g++|13
+requires g++-13
 requires xclip (on linux)
 
 ```
