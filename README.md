@@ -18,6 +18,7 @@ i spend 80% of my time in this mode.
 
 |key|description|
 |:---:|:---:|
+| escape | cancel multi-key shortcut, or if not in shortcut mode go back to shortcut mode |
 | h or left | move left |
 | l or right | move right |
 | j or down | move down |
@@ -38,6 +39,7 @@ i spend 80% of my time in this mode.
 | 0 | jump to start of line |
 | $ | jump to end of line |
 | z | center screen |
+| % | jump to matching brace works with (){}[] |
 
 ### delete keys
 
@@ -137,7 +139,6 @@ i spend 80% of my time in this mode.
 
 |key|description|
 |:---:|:---:|
-| escape | cancel multi-key shortcut |
 | u | undo |
 | ctrl r | redo |
 | ctrl g | open grep search |
@@ -165,7 +166,7 @@ i spend 80% of my time in this mode.
 | P | paste from clipboard before cursor |
 | ctrl a | increment current number under cursor |
 | ctrl s | decrement current number under cursor |
-| ctrl y | toggle show git blame for current file |
+| ctrl y | toggle show git blame for current file (ctrl y again copies git hash to clipboard) |
 | ctrl f | change to replace mode |
 | s | delete current character under cursor and change to typing mode |
 | x | delete current character under cursor and copy to clipboard |
@@ -173,7 +174,6 @@ i spend 80% of my time in this mode.
 | \/ | enter search mode |
 | m | toggle logging for current variable |
 | Q | clear all logging variables in current file |
-| % | jump to matching brace works with (){}[] |
 | \\ | refresh current file (TODO pull in external changes automatically) |
 | = | indent current line |
 | e | toggle comment on current line |
@@ -184,8 +184,8 @@ i spend 80% of my time in this mode.
 | g + y | copy current file path to clipboard |
 | g + k | go up one line visually (treat wrapped lines as code lines) |
 | g + j | go down one line visually (treat wrapped lines as code lines) |
-| ctrl + z | go backwards through everywhere the cursor has been in current file |
-| ctrl + q | go forwards through everywhere the cursor has been in current file |
+| ctrl z | go backwards through everywhere the cursor has been in current file |
+| ctrl q | go forwards through everywhere the cursor has been in current file |
 | ~ | switch upper/lower case of current character |
 | : | enter commandline mode |
 | < | de-indent current line |
@@ -215,8 +215,11 @@ typing mode is the mode that acts like a normal keyboard.
 
 ## command mode
 
+mode for settings or saving or quitting.
+
 |key|description|
 |:---:|:---:|
+| escape | go back to shortcuts mode |
 | :q | quit |
 | :wq or :x | save and quit |
 | :q! | force quit |
@@ -224,6 +227,64 @@ typing mode is the mode that acts like a normal keyboard.
 | :a | toggle autosave |
 | :wordwrap | toggle wordwrap |
 | :ts=any number | set your indent_size to number |
+
+## visual mode, visual line mode, visual block mode
+
+mode for highlighting text.
+visual mode is normal editor highlighting.
+visual line mode highlights full lines.
+visual block mode highlightes in blocks.
+
+(all movement keys work in this mode)
+
+|key|description|
+|:---:|:---:|
+| x | delete highlighted text and don't copy to clipboard |
+| d | delete highlighted text |
+| p | replace highlighted text with clipboard |
+| c | delete highlighted text and move to typing mode |
+| e | comment highlighted text |
+| o | swap cursor with starting position |
+| g + r | jump to definition of highlighted text |
+| g + f | treat highlighted text as filepath and try to jump to file |
+| g + U | change highlighted text to uppercase |
+| g + u | change highlighted text to lower |
+| r + any character | replace every character in highlighted text with character |
+| * | search highlighted text |
+| \# | grep search highlighted text |
+| = | fix indent of highlighted text |
+| K | move highlighted text up one line |
+| J | move highlighted text down one line |
+| < | deindent highlighted text |
+| > | indent highlighted text |
+| I | multi-cursor mode at start of block (visual block mode only) |
+| A | multi-cursor mode at end of block (visual block mode only) |
+
+## file explorer mode
+
+(this kinda sucks i need to fix up the rough edges)
+
+|key|description|
+|:---:|:---:|
+| escape | go back to shortcuts mode |
+| k or ctrl p | up |
+| j or ctrl n | down |
+| enter | open file, or toggle folder open/closed |
+| ctrl u | up half screen |
+| ctrl d | down half screen |
+| p | paste file |
+| y | copy file (TODO add copy folders) |
+| n | create new file |
+| N | create new folder |
+| X | delete file |
+| R | rename file |
+| r | refresh file explorer |
+| ctrl h | make file explorer smaller |
+| ctrl l | make file explorer bigger |
+| ctrl t | go back to shortcuts mode while keeping file explorer open |
+| f | open file in background |
+| - | collapse all |
+| ctrl g | grep at filepath |
 
 # config file (~/.editorconfig)
 
@@ -235,7 +296,7 @@ wordwrap
 indent_size = 4
 ```
 
-# FAQ
+# faq
 
 how to get rid of delay when using escape key?
 
