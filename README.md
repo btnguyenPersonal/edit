@@ -24,16 +24,16 @@ shortcut mode is the starting mode. every key is a shortcut.
 #### movement
 
 |:---:|:---:|
-h or left | move left
-l or right | move right
-j or down | move down
-k or up | move up
-ctrl u | move up half screen
-ctrl d | move down half screen
-w | move forward one word
-b | move backward one word
-f + any character | move onto character
-t + any character | move to one before character
+| h or left | move left
+| l or right | move right
+| j or down | move down
+| k or up | move up
+| ctrl u | move up half screen
+| ctrl d | move down half screen
+| w | move forward one word
+| b | move backward one word
+| f + any character | move onto character
+| t + any character | move to one before character
 
 # FAQ
 
