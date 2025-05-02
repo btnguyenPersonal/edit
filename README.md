@@ -51,6 +51,9 @@ shortcut mode is the starting mode. every key is a shortcut.
 | d + d | delete current line |
 
 ### file bookmark keys
+
+|key|description|
+|:---:|:---:|
 | space | bookmark current file |
 | ctrl h | move bookmark left one space |
 | ctrl l | move bookmark right one space |
