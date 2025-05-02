@@ -23,6 +23,7 @@ shortcut mode is the starting mode. every key is a shortcut.
 
 #### movement
 
+|key|description|
 |:---:|:---:|
 | h or left | move left |
 | l or right | move right |
