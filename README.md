@@ -37,6 +37,12 @@ shortcut mode is the starting mode. every key is a shortcut.
 | } | go to previous empty line |
 | [ | go to next line with the same indent level |
 | ] | go to previous line with the same indent level |
+| g + g | jump to top of file |
+| G | jump to bottom of file |
+| ^ | jump to first word on current line |
+| 0 | jump to start of line |
+| $ | jump to end of line |
+| z | center screen |
 
 ### delete keys
 
@@ -44,13 +50,27 @@ shortcut mode is the starting mode. every key is a shortcut.
 |:---:|:---:|
 | d + d | delete current line |
 
+### file bookmark keys
+| space | bookmark current file |
+| ctrl h | move bookmark left one space |
+| ctrl l | move bookmark right one space |
+| ctrl x | delete current bookmark |
+| ctrl w | switch to left bookmark |
+| ctrl e | switch to right bookmark |
+| X | clear all bookmarks |
+| 1 2 3 4 5 6 7 8 9 | jump to number bookmark |
+| g + 1 2 3 4 5 6 7 8 9 | reassign to number bookmark |
+
 ### misc keys
 
 |key|description|
 |:---:|:---:|
 | escape | cancel multi-key shortcut |
+| u | undo |
+| ctrl r | redo |
 | ctrl g | open grep search |
 | ctrl p | open file search |
+| ctrl t | open file explorer |
 | ctrl v | enter visual block mode |
 | v | enter visual mode |
 | V | enter visual line mode |
@@ -62,21 +82,38 @@ shortcut mode is the starting mode. every key is a shortcut.
 | A | enter typing mode and go to end of line |
 | M | mark current position |
 | ' | jump to marked position |
-| u | undo |
-| r | redo |
+| n | jump to next search result |
+| N | jump to previous search result |
+| . | repeat previous shortcut |
+| q | toggle recording macro |
+| , | repeat previous macro |
+| J | join next line with current line |
+| K | join next line with current line with a space in between |
+| p | paste from clipboard after cursor |
+| P | paste from clipboard before cursor |
+| ctrl a | increment current number under cursor |
+| ctrl s | decrement current number under cursor |
+| ctrl y | toggle show git blame for current file |
+| ctrl f | change to replace mode |
+| s | delete current character under cursor and change to typing mode |
+| x | delete current character under cursor and copy to clipboard |
 | r + any character | replace current character |
 | \/ | enter search mode |
+| m | toggle logging for current variable |
+| Q | clear all logging variables in current file |
+| % | jump to matching brace works with (){}[] |
+| \\ | refresh current file (TODO pull in external changes automatically) |
+| = | indent current line |
+| e | toggle comment on current line |
 | g + \/ | enter search mode without clearing current search |
 | g + r | navigate to definition of current word (buggy) |
 | g + e | find next commented block of code and uncomment it |
 | g + t | trim all trailing whitespace in current file |
 | g + y | copy current file path to clipboard |
-| g + g | jump to top of file |
 | g + k | go up one line visually (treat wrapped lines as code lines) |
 | g + j | go down one line visually (treat wrapped lines as code lines) |
-| space | bookmark current file |
-| 1 2 3 4 5 6 7 8 9 | jump to number bookmark |
-| g + 1 2 3 4 5 6 7 8 9 | reassign to number bookmark |
+| ctrl + z | go backwards through everywhere the cursor has been in current file |
+| ctrl + q | go forwards through everywhere the cursor has been in current file |
 | ~ | switch upper/lower case of current character |
 | : | enter commandline mode |
 | < | de-indent current line |
