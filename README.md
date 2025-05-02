@@ -46,9 +46,27 @@ shortcut mode is the starting mode. every key is a shortcut.
 
 ### delete keys
 
+(all of these keys copy the deleted text to clipboard)
+
+(all of the d + i commands also work with d + a to delete everything **including** the surrounding characters)
+
 |key|description|
 |:---:|:---:|
 | d + d | delete current line |
+| d + j | delete current line and next line |
+| d + k | delete current line and previous line |
+| d + i + w | delete current word |
+| d + i + ' | delete everything inside of '' quotes |
+| d + i + " | delete everything inside of "" quotes |
+| d + i + \` | delete everything inside of \`\` quotes |
+| d + i + b or d + i + ( | delete everything inside of () brackets |
+| d + i + B or d + i + { | delete everything inside of {} brackets |
+| d + i + d or d + i + [ | delete everything inside of [] brackets |
+| d + t + any character | delete everything until one before character |
+| d + f + any character | delete everything until character |
+| D | delete until end of line |
+| d + w | delete forward to next word |
+| d + b | delete forward to next word |
 
 ### file bookmark keys
 
