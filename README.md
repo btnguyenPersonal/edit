@@ -1,19 +1,41 @@
 # edit
-A term-based ide with
-- only keyboard
-- a million shortcuts
-- vim based
+A term|based ide with
+| only keyboard
+| a million shortcuts
+| vim based
 
-### setup
+# setup
 
-requires g++-13
+requires g++|13
 requires xclip (on linux)
 
 ```
 sudo make install
 ```
 
-### FAQ
+# documentation
+
+## shortcut mode
+
+shortcut mode is the starting mode. every key is a shortcut.
+
+### keys
+
+#### movement
+
+|:---:|:---:|
+h or left | move left
+l or right | move right
+j or down | move down
+k or up | move up
+ctrl u | move up half screen
+ctrl d | move down half screen
+w | move forward one word
+b | move backward one word
+f + any character | move onto character
+t + any character | move to one before character
+
+# FAQ
 
 how to get rid of delay when using escape key?
 
