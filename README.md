@@ -58,11 +58,65 @@ shortcut mode is the starting mode. every key is a shortcut.
 | d + i + d or d + i + [ | delete everything inside of [] brackets |
 | d + i + t | delete everything inside of <> brackets |
 | d + i + T | delete everything inside of <></> brackets |
+| d + i + W | delete current word (includes special characters) |
+| d + i + p | delete current paragraph (surrounded by empty lines) |
 | d + t + any character | delete everything until one before character |
 | d + f + any character | delete everything until character |
 | D | delete until end of line |
 | d + w | delete forward to next word |
 | d + b | delete forward to next word |
+
+### copy keys
+
+(all of the y + i commands also work with y + a to copy everything **including** the surrounding characters)
+
+|key|description|
+|:---:|:---:|
+| y + y | copy current line |
+| y + j | copy current line and next line |
+| y + k | copy current line and previous line |
+| y + i + w | copy current word |
+| y + i + ' | copy everything inside of '' quotes |
+| y + i + " | copy everything inside of "" quotes |
+| y + i + \` | copy everything inside of \`\` quotes |
+| y + i + b or d + i + ( | copy everything inside of () brackets |
+| y + i + B or d + i + { | copy everything inside of {} brackets |
+| y + i + d or d + i + [ | copy everything inside of [] brackets |
+| y + i + t | copy everything inside of <> brackets |
+| y + i + T | copy everything inside of <></> brackets |
+| y + i + W | copy current word (includes special characters) |
+| y + i + p | copy current paragraph (surrounded by empty lines) |
+| y + t + any character | copy everything until one before character |
+| y + f + any character | copy everything until character |
+| Y | copy until end of line |
+| y + w | copy forward to next word |
+| y + b | copy forward to next word |
+
+### change keys
+
+(all of the c + i commands also work with c + a to copy everything **including** the surrounding characters)
+
+|key|description|
+|:---:|:---:|
+| c + c | delete current line and change to typing mode |
+| c + j | delete current line and next line and change to typing mode |
+| c + k | delete current line and previous line and change to typing mode |
+| c + i + w | delete current word and change to typing mode |
+| c + i + ' | delete everything inside of '' quotes and change to typing mode |
+| c + i + " | delete everything inside of "" quotes and change to typing mode |
+| c + i + \` | delete everything inside of \`\` quotes and change to typing mode |
+| c + i + b or d + i + ( | delete everything inside of () brackets and change to typing mode |
+| c + i + B or d + i + { | delete everything inside of {} brackets and change to typing mode |
+| c + i + d or d + i + [ | delete everything inside of [] brackets and change to typing mode |
+| c + i + t | delete everything inside of <> brackets and change to typing mode |
+| c + i + T | delete everything inside of <></> brackets and change to typing mode |
+| c + i + W | delete current word (includes special characters) and change to typing mode |
+| c + i + p | delete current paragraph (surrounded by empty lines) and change to typing mode |
+| c + t + any character | delete everything until one before character and change to typing mode |
+| c + f + any character | delete everything until character and change to typing mode |
+| C | delete until end of line and change to typing mode |
+| c + w | delete forward to next word and change to typing mode |
+| c + b | delete forward to next word and change to typing mode |
 
 ### file bookmark keys
 
