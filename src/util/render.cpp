@@ -100,9 +100,9 @@ void renderNumMatches(int32_t offset, int32_t selection, int32_t total) {
 }
 
 void renderFileStack(State* state) {
-    int32_t start = state->fileStack.size() - 1;
-    if (state->fileStackIndex < start - state->maxY / 2) {
-        start = state->fileStackIndex + state->maxY / 2;
+    int32_t start = (int32_t)state->fileStack.size() - 1;
+    if ((int32_t)state->fileStackIndex < start - (int32_t)state->maxY / 2) {
+        start = (int32_t)state->fileStackIndex + (int32_t)state->maxY / 2;
     }
     uint32_t renderIndex = 1;
     for (int32_t i = start; i >= 0; i--) {
