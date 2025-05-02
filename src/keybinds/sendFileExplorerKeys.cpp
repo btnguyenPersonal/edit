@@ -37,8 +37,10 @@ void sendFileExplorerKeys(State* state, int32_t c) {
             if (name != "") {
                 rename(state, node->path, name);
                 node->parent->refresh();
-                state->resetState((node->path.parent_path() / name).string());
-                refocusFileExplorer(state, true);
+                if (!node->isFolder) {
+                    state->resetState((node->path.parent_path() / name).string());
+                    refocusFileExplorer(state, true);
+                }
             }
         } else if (c == 'X') {
             auto node = FileExplorerNode::getFileExplorerNode(state->fileExplorer, state->fileExplorerIndex);
