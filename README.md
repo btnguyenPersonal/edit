@@ -56,6 +56,8 @@ shortcut mode is the starting mode. every key is a shortcut.
 | d + i + b or d + i + ( | delete everything inside of () brackets |
 | d + i + B or d + i + { | delete everything inside of {} brackets |
 | d + i + d or d + i + [ | delete everything inside of [] brackets |
+| d + i + t | delete everything inside of <> brackets |
+| d + i + T | delete everything inside of <></> brackets |
 | d + t + any character | delete everything until one before character |
 | d + f + any character | delete everything until character |
 | D | delete until end of line |
