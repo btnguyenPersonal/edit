@@ -12,6 +12,7 @@ sudo make install
 ## shortcut mode
 
 shortcut mode is the starting mode. every key is a shortcut.
+i spend 80% of my time in this mode.
 
 ### movement keys
 
@@ -193,6 +194,46 @@ shortcut mode is the starting mode. every key is a shortcut.
 | ctrl i | go forward in recent file stack |
 | \# | grep search current word |
 | * | search current word |
+
+## typing mode
+
+typing mode is the mode that acts like a normal keyboard.
+
+|key|description|
+|:---:|:---:|
+| escape | go back to shortcuts mode |
+| any character | insert character |
+| backspace | delete one character backwards |
+| ctrl w | delete one word backwards |
+| ctrl t | insert tab |
+| ctrl v + any character | insert ctrl version of character |
+| TAB | autocomplete |
+| left | move left |
+| right | move right |
+| up | move up |
+| down | move down |
+
+## command mode
+
+|key|description|
+|:---:|:---:|
+| :q | quit |
+| :wq or :x | save and quit |
+| :q! | force quit |
+| :w | save |
+| :a | toggle autosave |
+| :wordwrap | toggle wordwrap |
+| :ts=any number | set your indent_size to number |
+
+# config file (~/.editorconfig)
+
+.editorconfig
+```
+# turn on word wrap
+wordwrap
+# set indent_size to 4
+indent_size = 4
+```
 
 # FAQ
 

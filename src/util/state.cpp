@@ -32,7 +32,7 @@ void State::readConfigLine(std::string optionLine) {
 }
 
 void State::setDefaultOptions() {
-    this->options.autosave = false;
+    this->options.autosave = true;
     this->options.wordwrap = false;
     this->options.indent = 4;
     this->options.indentStyle = "space";
