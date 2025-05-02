@@ -19,9 +19,7 @@ sudo make install
 
 shortcut mode is the starting mode. every key is a shortcut.
 
-### keys
-
-#### movement
+### movement keys
 
 |key|description|
 |:---:|:---:|
@@ -35,6 +33,14 @@ shortcut mode is the starting mode. every key is a shortcut.
 | b | move backward one word |
 | f + any character | move onto character |
 | t + any character | move to one before character |
+
+### misc keys
+
+|key|description|
+|:---:|:---:|
+| escape | cancel multi-key shortcut |
+| r + any character | replace current character |
+| \/ | enter search mode |
 
 # FAQ
 
