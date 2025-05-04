@@ -131,6 +131,22 @@ void renderFileStack(State* state) {
     }
 }
 
+int32_t getFilenameColor(State* state) {
+    if (state->mode == TYPING) {
+        return MAGENTA;
+    } else if (state->mode == FILEEXPLORER) {
+        return CYAN;
+    } else if (state->mode == GREP) {
+        return GREEN;
+    } else if (state->mode == FINDFILE) {
+        return YELLOW;
+    } else if (state->mode == VISUAL) {
+        return ORANGE;
+    } else {
+        return WHITE;
+    }
+}
+
 int32_t renderStatusBar(State* state) {
     int32_t cursor = -1;
     int32_t offset = 0;
@@ -198,7 +214,7 @@ int32_t renderStatusBar(State* state) {
         }
     }
     auto displayFileName = setStringToLength(state->filename, state->maxX - 30);
-    mvprintw_color(0, state->maxX - (displayFileName.length() + 2), "\"%s\"", displayFileName.c_str(), state->unsavedFile ? GREY : WHITE);
+    mvprintw_color(0, state->maxX - (displayFileName.length() + 2), "\"%s\"", displayFileName.c_str(), state->unsavedFile ? GREY : getFilenameColor(state));
     if (state->status.length() > 0) {
         mvprintw_color(0, (state->maxX / 2) - (state->status.length() / 2), "%s", state->status.c_str(), RED);
     }

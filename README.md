@@ -7,12 +7,45 @@ requires xclip (on linux)
 sudo make install
 ```
 
+#### why do you use this?
+
+I wanted to have every single shortcut I could ever want within 1-3 keypresses so I can code FASTER THAN THE SPEED OF LIGHT
+
+I also wanted every common action I make to be repeatable easily with the "." command
+    - example: I want to replace a comma to a semicolon to the end of a line, I can use some shortcuts to do it, then repeat for the next 3 lines `A backspace ; escape j . j . j .`.
+
+The philosophy behind this editor is that I spend much more time editing code than adding new code, so I have optimized for editing over adding.
+
+This editor has many different "modes" that you switch between based on what type of actions you are doing to the code, here are the main ones:
+    - shortcut mode: this is the main mode for editing code, you can move around the document, search text, copy and paste text, all using every key as a shortcut (for example: d for delete or p for paste)
+        - the whole aim of this is so you don't need to reach for the arrow keys (SLOW), and don't have to use ctrl + shift + alt + f and destroy your wrists
+    - typing mode: this is where the keyboard becomes just like normal for typing in text
+    - visual mode: this is the mode for highlighting text, it lets you use all the movement keys in shortcut mode for selecting blocks of text, or doing shortcuts on entire blocks of text at once
+
+When everything you do is through the keyboard instead of the mouse, muscle memory will let you spend 0 brainpower on the action, and your fingers will move for you.
+
+An example i see all the time is you have a function that you want to duplicate, and instead of have your cursor anywhere inside of the function and typing in 4 keys (y a p P), you have to drag your mouse from the exact start of the function to the very bottom of the function, ctrl c, click again to stop highlighting, press enter twice, ctrl v, now the indentation is all messed up so you have to fix all that again, then the cursor is at the bottom of the function so you have to click again at the top to change the function name. This is INSANITY!
+
+How do I keep track of all the commands?
+
+almost all of the important edit commands follow this formula:
+    - `action` + `movement` + `subject`
+    - `d` (delete) + `i` (inside of) + `'` (single quote string)
+    - `y` (copy) + `a` (around) + `(` (parenthesis)
+    - `c` (change) + `i` (inside of) + `w` (word)
+    - `v` (highlight) + `i` (inside of) + `p` (paragraph)
+    - `d` (delete) + `f` (until on top of) + ` ` (space)
+    - `y` (copy) + `t` (until in front of) + `;` (semicolon)
+    - `c` (change) + `i` (inside of) + `{` (curly braces)
+
 # documentation
 
 ## shortcut mode
 
-shortcut mode is the starting mode. every key is a shortcut.
-i spend 80% of my time in this mode.
+Shortcut mode is the starting mode. every key is a shortcut.
+I spend 80% of my time in this mode.
+
+The reason why i use hjkl for moving in cardinal directions instead of arrow keys is because such a common action should be right on the home row, even if it is foreign.
 
 ### movement keys
 
@@ -141,6 +174,9 @@ i spend 80% of my time in this mode.
 |:---:|:---:|
 | u | undo |
 | ctrl r | redo |
+| = | indent current line |
+| e | toggle comment on current line |
+| g + e | find next commented block of code and uncomment it |
 | ctrl g | open grep search |
 | ctrl p | open file search |
 | ctrl t | open file explorer |
@@ -175,11 +211,8 @@ i spend 80% of my time in this mode.
 | m | toggle logging for current variable |
 | Q | clear all logging variables in current file |
 | \\ | refresh current file (TODO pull in external changes automatically) |
-| = | indent current line |
-| e | toggle comment on current line |
 | g + \/ | enter search mode without clearing current search |
 | g + r | navigate to definition of current word (buggy) |
-| g + e | find next commented block of code and uncomment it |
 | g + t | trim all trailing whitespace in current file |
 | g + y | copy current file path to clipboard |
 | g + k | go up one line visually (treat wrapped lines as code lines) |
@@ -197,7 +230,7 @@ i spend 80% of my time in this mode.
 
 ## typing mode
 
-typing mode is the mode that acts like a normal keyboard.
+Typing mode is the mode that acts like a normal keyboard.
 
 |key|description|
 |:---:|:---:|
@@ -215,7 +248,7 @@ typing mode is the mode that acts like a normal keyboard.
 
 ## command mode
 
-mode for settings or saving or quitting.
+Mode for settings or saving or quitting.
 
 |key|description|
 |:---:|:---:|
@@ -230,10 +263,9 @@ mode for settings or saving or quitting.
 
 ## visual mode, visual line mode, visual block mode
 
-mode for highlighting text.
-visual mode is normal editor highlighting.
-visual line mode highlights full lines.
-visual block mode highlightes in blocks.
+Visual mode is normal editor highlighting.
+Visual line mode highlights full lines.
+Visual block mode highlightes in blocks.
 
 (all movement keys work in this mode)
 
@@ -261,8 +293,6 @@ visual block mode highlightes in blocks.
 | A | multi-cursor mode at end of block (visual block mode only) |
 
 ## file explorer mode
-
-(this kinda sucks i need to fix up the rough edges)
 
 |key|description|
 |:---:|:---:|
