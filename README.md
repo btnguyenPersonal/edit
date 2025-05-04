@@ -31,14 +31,14 @@ An example i see all the time is you have a function that you want to duplicate
 How do I keep track of all the commands?
 
 almost all of the important edit commands follow this formula:
-    - `action` + `movement` + `subject`
-    - `d` (delete) + `i` (inside of) + `'` (single quote string)
-    - `y` (copy) + `a` (around) + `(` (parenthesis)
-    - `c` (change) + `i` (inside of) + `w` (word)
-    - `v` (highlight) + `i` (inside of) + `p` (paragraph)
-    - `d` (delete) + `f` (until on top of) + ` ` (space)
-    - `y` (copy) + `t` (until in front of) + `;` (semicolon)
-    - `c` (change) + `i` (inside of) + `{` (curly braces)
+- `action` + `movement` + `subject`
+- `d` (delete) + `i` (inside of) + `'` (single quote string)
+- `y` (copy) + `a` (around) + `(` (parenthesis)
+- `c` (change) + `i` (inside of) + `w` (word)
+- `v` (highlight) + `i` (inside of) + `p` (paragraph)
+- `d` (delete) + `f` (until on top of) + ` ` (space)
+- `y` (copy) + `t` (until in front of) + `;` (semicolon)
+- `c` (change) + `i` (inside of) + `{` (curly braces)
 
 # documentation
 
