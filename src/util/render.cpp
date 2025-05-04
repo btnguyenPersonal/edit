@@ -144,8 +144,12 @@ int32_t getModeColor(State* state) {
 }
 
 std::string getDisplayModeName(State* state) {
-    if (state->mode == VISUAL) {
+    if (state->mode == VISUAL && state->visualType == NORMAL) {
         return "VISUAL";
+    } else if (state->mode == VISUAL && state->visualType == BLOCK) {
+        return "VISUALBLOCK";
+    } else if (state->mode == VISUAL && state->visualType == LINE) {
+        return "VISUALLINE";
     } else if (state->mode == COMMANDLINE) {
         return "COMMANDLINE";
     } else if (state->mode == TYPING) {
