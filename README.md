@@ -12,15 +12,15 @@ sudo make install
 I wanted to have every single shortcut I could ever want within 1-3 keypresses so I can code FASTER THAN THE SPEED OF LIGHT
 
 I also wanted every common action I make to be repeatable easily with the "." command
-    - example: I want to replace a comma to a semicolon to the end of a line, I can use some shortcuts to do it, then repeat for the next 3 lines `A backspace ; escape j . j . j .`.
+- example: I want to replace a comma to a semicolon to the end of a line, I can use some shortcuts to do it, then repeat for the next 3 lines `A backspace ; escape j . j . j .`
 
 The philosophy behind this editor is that I spend much more time editing code than adding new code, so I have optimized for editing over adding.
 
 This editor has many different "modes" that you switch between based on what type of actions you are doing to the code, here are the main ones:
-    - shortcut mode: this is the main mode for editing code, you can move around the document, search text, copy and paste text, all using every key as a shortcut (for example: d for delete or p for paste)
-        - the whole aim of this is so you don't need to reach for the arrow keys (SLOW), and don't have to use ctrl + shift + alt + f and destroy your wrists
-    - typing mode: this is where the keyboard becomes just like normal for typing in text
-    - visual mode: this is the mode for highlighting text, it lets you use all the movement keys in shortcut mode for selecting blocks of text, or doing shortcuts on entire blocks of text at once
+- shortcut mode: this is the main mode for editing code, you can move around the document, search text, copy and paste text, all using every key as a shortcut (for example: d for delete or p for paste)
+  - the whole aim of this is so you don't need to reach for the arrow keys (SLOW), and don't have to use ctrl + shift + alt + f and destroy your wrists
+- typing mode: this is where the keyboard becomes just like normal for typing in text
+- visual mode: this is the mode for highlighting text, it lets you use all the movement keys in shortcut mode for selecting blocks of text, or doing shortcuts on entire blocks of text at once
 
 When everything you do is through the keyboard instead of the mouse, muscle memory will let you spend 0 brainpower on the action, and your fingers will move for you.
 
