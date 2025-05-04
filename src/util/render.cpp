@@ -155,7 +155,7 @@ std::string getDisplayModeName(State* state) {
     } else if (state->mode == TYPING) {
         return "TYPING";
     } else if (state->mode == SHORTCUTS) {
-        return "SHORTCUTS";
+        return "SHORTCUT";
     } else if (state->mode == FINDFILE) {
         return "FINDFILE";
     } else if (state->mode == GREP) {
