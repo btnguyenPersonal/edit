@@ -22,7 +22,7 @@ void State::loadConfigFile(std::string fileLocation) {
 void State::readConfigLine(std::string optionLine) {
     if (optionLine == "wordwrap on") {
         this->options.wordwrap = true;
-    if (optionLine == "wordwrap off") {
+    } else if (optionLine == "wordwrap off") {
         this->options.wordwrap = false;
     } else if (optionLine == "showmode on") {
         this->options.showmode = true;
