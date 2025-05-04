@@ -323,7 +323,9 @@ Visual block mode highlightes in blocks.
 .editorconfig
 ```
 # turn on word wrap
-wordwrap
+wordwrap on
+# turn on show mode
+showmode on
 # set indent_size to 4
 indent_size = 4
 ```

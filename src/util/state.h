@@ -68,6 +68,7 @@ struct Query {
 
 struct Options {
     bool wordwrap;
+    bool showmode;
     bool autosave;
     uint32_t indent;
     std::string indentStyle;

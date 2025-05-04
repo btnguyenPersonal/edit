@@ -20,10 +20,18 @@ void State::loadConfigFile(std::string fileLocation) {
 }
 
 void State::readConfigLine(std::string optionLine) {
-    if (optionLine == "wordwrap") {
+    if (optionLine == "wordwrap on") {
         this->options.wordwrap = true;
-    } else if (optionLine == "autosave") {
+    if (optionLine == "wordwrap off") {
+        this->options.wordwrap = false;
+    } else if (optionLine == "showmode on") {
+        this->options.showmode = true;
+    } else if (optionLine == "showmode off") {
+        this->options.showmode = false;
+    } else if (optionLine == "autosave on") {
         this->options.autosave = true;
+    } else if (optionLine == "autosave off") {
+        this->options.autosave = false;
     } else if (safeSubstring(optionLine, 0, std::string("indent_style = ").length()) == "indent_style = ") {
         this->options.indentStyle = safeSubstring(optionLine, std::string("indent_style = ").length());
     } else if (safeSubstring(optionLine, 0, std::string("indent_size = ").length()) == "indent_size = ") {
@@ -34,6 +42,7 @@ void State::readConfigLine(std::string optionLine) {
 void State::setDefaultOptions() {
     this->options.autosave = true;
     this->options.wordwrap = false;
+    this->options.showmode = true;
     this->options.indent = 4;
     this->options.indentStyle = "space";
 }

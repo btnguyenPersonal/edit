@@ -131,20 +131,43 @@ void renderFileStack(State* state) {
     }
 }
 
-int32_t getFilenameColor(State* state) {
+int32_t getModeColor(State* state) {
     if (state->mode == TYPING) {
         return MAGENTA;
     } else if (state->mode == FILEEXPLORER) {
         return CYAN;
-    } else if (state->mode == GREP) {
-        return GREEN;
-    } else if (state->mode == FINDFILE) {
-        return YELLOW;
     } else if (state->mode == VISUAL) {
         return ORANGE;
     } else {
-        return WHITE;
+        return GREEN;
     }
+}
+
+std::string getDisplayModeName(State* state) {
+    if (state->mode == VISUAL) {
+        return "VISUAL";
+    } else if (state->mode == COMMANDLINE) {
+        return "COMMANDLINE";
+    } else if (state->mode == TYPING) {
+        return "TYPING";
+    } else if (state->mode == SHORTCUTS) {
+        return "SHORTCUTS";
+    } else if (state->mode == FINDFILE) {
+        return "FINDFILE";
+    } else if (state->mode == GREP) {
+        return "GREP";
+    } else if (state->mode == BLAME) {
+        return "BLAME";
+    } else if (state->mode == MULTICURSOR) {
+        return "MULTICURSOR";
+    } else if (state->mode == SEARCH) {
+        return "SEARCH";
+    } else if (state->mode == FILEEXPLORER) {
+        return "FILEEXPLORER";
+    } else if (state->mode == NAMING) {
+        return "NAMING";
+    }
+    return "ERROR";
 }
 
 int32_t renderStatusBar(State* state) {
@@ -175,7 +198,7 @@ int32_t renderStatusBar(State* state) {
         mvprintw_color(0, offset, "> ", "", YELLOW);
         mvprintw_color(0, offset + 2, "%s", state->findFile.query.c_str(), state->selectAll ? invertColor(YELLOW) : YELLOW);
         offset += state->findFile.cursor + 2;
-        renderNumMatches(state->findFile.query.length() + 4, state->findFile.selection + 1, state->findFileOutput.size());
+        renderNumMatches(offset + 2, state->findFile.selection + 1, state->findFileOutput.size());
         return offset;
     } else if (state->searching || state->mode == SEARCH) {
         std::string displayQuery = state->search.query;
@@ -195,7 +218,7 @@ int32_t renderStatusBar(State* state) {
             return offset + state->search.cursor + 1;
         }
     } else {
-        int32_t left = 0;
+        int32_t left = offset;
         for (uint32_t i = 0; i < 10; i++) {
             std::string s;
             if (state->harpoonFiles.count(i) > 0) {
@@ -211,13 +234,23 @@ int32_t renderStatusBar(State* state) {
             }
             mvprintw_color(0, left, "%s", s.c_str(), color);
             left += s.length();
+            if (s != "   ") {
+                offset = left;
+            }
         }
     }
     auto displayFileName = setStringToLength(state->filename, state->maxX - 30);
-    mvprintw_color(0, state->maxX - (displayFileName.length() + 2), "\"%s\"", displayFileName.c_str(), state->unsavedFile ? GREY : getFilenameColor(state));
+    mvprintw_color(0, state->maxX - (displayFileName.length() + 2), "\"%s\"", displayFileName.c_str(), state->unsavedFile ? GREY : WHITE);
     if (state->status.length() > 0) {
         mvprintw_color(0, (state->maxX / 2) - (state->status.length() / 2), "%s", state->status.c_str(), RED);
     }
+
+    if (state->options.showmode) {
+        std::string modename = getDisplayModeName(state);
+        mvprintw_color(0, offset, " --%s-- ", modename.c_str(), getModeColor(state));
+        offset += modename.length() + 6;
+    }
+
     return cursor;
 }
 
