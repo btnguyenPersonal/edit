@@ -7,7 +7,7 @@ requires xclip (on linux)
 sudo make install
 ```
 
-#### why do you use this?
+# why do you use this?
 
 I wanted to have every single shortcut I could ever want within 1-3 keypresses so I can code FASTER THAN THE SPEED OF LIGHT
 
@@ -17,14 +17,16 @@ I also wanted every common action I make to be repeatable easily with the "." co
 The philosophy behind this editor is that I spend much more time editing code than adding new code, so I have optimized for editing over adding.
 
 This editor has many different "modes" that you switch between based on what type of actions you are doing to the code, here are the main ones:
-- shortcut mode: this is the main mode for editing code, you can move around the document, search text, copy and paste text, all using every key as a shortcut (for example: d for delete or p for paste)
+- `shortcut mode`: this is the main mode for editing code, you can move around the document, search text, copy and paste text, all using every key as a shortcut (for example: d for delete or p for paste)
   - the whole aim of this is so you don't need to reach for the arrow keys (SLOW), and don't have to use ctrl + shift + alt + f and destroy your wrists
-- typing mode: this is where the keyboard becomes just like normal for typing in text
-- visual mode: this is the mode for highlighting text, it lets you use all the movement keys in shortcut mode for selecting blocks of text, or doing shortcuts on entire blocks of text at once
+- `typing mode`: this is where the keyboard becomes just like normal for typing in text
+- `visual mode`: this is the mode for highlighting text, it lets you use all the movement keys in shortcut mode for selecting blocks of text, or doing shortcuts on entire blocks of text at once
 
 When everything you do is through the keyboard instead of the mouse, muscle memory will let you spend 0 brainpower on the action, and your fingers will move for you.
 
-An example i see all the time is you have a function that you want to duplicate, and instead of have your cursor anywhere inside of the function and typing in 4 keys (y a p P), you have to drag your mouse from the exact start of the function to the very bottom of the function, ctrl c, click again to stop highlighting, press enter twice, ctrl v, now the indentation is all messed up so you have to fix all that again, then the cursor is at the bottom of the function so you have to click again at the top to change the function name. This is INSANITY!
+An example i see all the time is you have a function that you want to duplicate
+- in my editor you just put your cursor anywhere inside of the function and typing in 4 keys (y a p P)
+- in other editors you have to drag your mouse from the exact start of the function to the very bottom of the function, ctrl c, click again to stop highlighting, press enter twice, ctrl v, now the indentation is all messed up so you have to fix all that again, then the cursor is at the bottom of the function so you have to click again at the top to change the function name. This is INSANITY!
 
 How do I keep track of all the commands?
 
