@@ -218,7 +218,7 @@ int32_t renderStatusBar(State* state) {
             mvprintw_color(0, offset, "/%s", state->replace.query.c_str(), MAGENTA);
             return offset + state->replace.cursor + 1;
         }
-        if (state->mode == SEARCH) {
+        if (state->searching || state->mode == SEARCH) {
             return offset + state->search.cursor + 1;
         }
     } else {
