@@ -320,13 +320,11 @@ Visual block mode highlightes in blocks.
 
 # config file (~/.editorconfig)
 
-.editorconfig
+.editorconfig (default settings)
 ```
-# turn on word wrap
-wordwrap on
-# turn on show mode
+wordwrap off
 showmode on
-# set indent_size to 4
+autosave on
 indent_size = 4
 ```
 
@@ -334,7 +332,7 @@ indent_size = 4
 
 how to get rid of delay when using escape key?
 
-put this in ~/.bashrc
+put this in ~/.bashrc or ~/.zshrc
 
 ```
 export ESCDELAY=0
