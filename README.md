@@ -47,7 +47,7 @@ almost all of the important edit commands follow this formula:
 Shortcut mode is the starting mode. every key is a shortcut.
 I spend 80% of my time in this mode.
 
-The reason why i use hjkl for moving in cardinal directions instead of arrow keys is because such a common action should be right on the home row, even if it is foreign.
+The reason why i use hjkl for moving in cardinal directions instead of arrow keys is because such a common action should be right on the home row.
 
 ### movement keys
 
