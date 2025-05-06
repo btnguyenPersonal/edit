@@ -17,6 +17,32 @@
 #include <string>
 #include <vector>
 
+std::string getRelativeToLastAndRoute(State* state) {
+    if (state->fileStackIndex - 1 < 0) {
+        return "";
+    }
+    std::string lastFile = state->fileStack[state->fileStackIndex - 1];
+    std::filesystem::path lastDir = std::filesystem::path(std::string("./") + lastFile).parent_path();
+    std::filesystem::path currentDir = std::filesystem::path(std::string("./") + state->filename).parent_path();
+    auto relativePath = std::filesystem::relative(state->filename, lastDir).string();
+    if (std::filesystem::is_regular_file(lastFile.c_str())) {
+        state->changeFile(lastFile);
+    }
+    if (safeSubstring(relativePath, 0, 3) != "../") {
+        relativePath = "./" + relativePath;
+    }
+    return relativePath;
+}
+
+std::string getRelativeToCurrent(State* state, std::string p) {
+    std::filesystem::path currentDir = std::filesystem::path(std::string("./") + state->filename).parent_path();
+    auto relativePath = std::filesystem::relative(p, currentDir).string();
+    if (safeSubstring(relativePath, 0, 3) != "../") {
+        relativePath = "./" + relativePath;
+    }
+    return relativePath;
+}
+
 void recordMotion(State* state, int32_t c) {
     if (c == KEY_BACKSPACE) {
         state->motion += 127;

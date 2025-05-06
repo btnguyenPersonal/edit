@@ -118,6 +118,11 @@ void sendShortcutKeys(State* state, int32_t c) {
     } else if (state->prevKeys == "g" && (c == 'j' || c == KEY_DOWN)) {
         downVisual(state);
         state->prevKeys = "";
+    } else if (state->prevKeys == "g" && c == ctrl('r')) {
+        std::string path = getRelativeToLastAndRoute(state);
+        state->status = path;
+        copyToClipboard(path);
+        state->prevKeys = "";
     } else if (c == ' ') {
         createNewestHarpoon(state);
     } else if (c == '1') {

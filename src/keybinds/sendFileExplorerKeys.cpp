@@ -120,6 +120,13 @@ void sendFileExplorerKeys(State* state, int32_t c) {
             if (state->fileExplorerIndex + 1 < state->fileExplorer->getTotalChildren()) {
                 state->fileExplorerIndex++;
             }
+        } else if (c == ctrl('r')) {
+            auto node = FileExplorerNode::getFileExplorerNode(state->fileExplorer, state->fileExplorerIndex);
+            auto relativePath = getRelativeToCurrent(state, node->path.string());
+            state->status = relativePath;
+            copyToClipboard(relativePath);
+            state->fileExplorerOpen = false;
+            state->mode = SHORTCUTS;
         } else if (c == 'f') {
             auto node = FileExplorerNode::getFileExplorerNode(state->fileExplorer, state->fileExplorerIndex);
             if (node->isFolder) {
