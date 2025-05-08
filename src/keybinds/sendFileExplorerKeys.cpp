@@ -155,6 +155,9 @@ void sendFileExplorerKeys(State* state, int32_t c) {
         if (state->fileExplorerIndex >= state->fileExplorer->getTotalChildren()) {
             state->fileExplorerIndex = state->fileExplorer->getTotalChildren() - 1;
         }
+        if (state->fileExplorerIndex < 0) {
+            state->fileExplorerIndex = 0;
+        }
         centerFileExplorer(state);
     } catch (const std::exception& e) {
         state->status = "something went wrong with fileExplorer" + std::string(e.what());
