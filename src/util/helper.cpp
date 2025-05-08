@@ -155,6 +155,7 @@ bool isTestFile(const std::string& filepath) {
 void rename(State* state, const std::filesystem::path& oldPath, const std::string& newName) {
     if (!std::filesystem::exists(oldPath)) {
         state->status = "path does not exist";
+        return;
     }
 
     std::filesystem::path newPath = std::filesystem::relative(oldPath.parent_path() / newName, std::filesystem::current_path());
@@ -166,12 +167,6 @@ void rename(State* state, const std::filesystem::path& oldPath, const std::strin
     }
 
     auto relativePath = std::filesystem::relative(oldPath, std::filesystem::current_path()).string();
-    // for(uint32_t i = 0; i < state->harpoonFiles.size(); i++) {
-    //     if (state->harpoonFiles[i] == relativePath) {
-    //         state->harpoonFiles[i] = newPath.string();
-    //         break;
-    //     }
-    // }
     if (state->filename == relativePath) {
         state->filename = newPath.string();
     }

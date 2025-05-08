@@ -15,14 +15,24 @@ int32_t FileExplorerNode::expand(std::string input) {
     std::string line;
     std::vector<std::string> path;
     while (getline(ss, line, '/')) {
-        path.push_back(line);
+        if (!line.empty()) {
+            path.push_back(line);
+        }
+    }
+    if (path.empty()) {
+        return 0;
     }
     FileExplorerNode* current = this;
     bool found = false;
     int32_t output = 0;
     for (uint32_t i = 0; i < path.size(); i++) {
-        current->open();
+        if (!current.isOpen()) {
+            current->open();
+        }
         found = false;
+        if (current->children.empty()) {
+            return 0;
+        }
         for (uint32_t j = 0; j < current->children.size(); j++) {
             if (current->children[j].name == path[i]) {
                 current = &current->children[j];
