@@ -194,15 +194,15 @@ int32_t renderStatusBar(State* state) {
         }
         offset += gPath.length();
         mvprintw_color(0, offset, "> %s", state->grep.query.c_str(), GREEN);
+        renderNumMatches(offset + state->grep.query.length() + 4, state->grep.selection + 1, state->grepOutput.size());
         offset += state->grep.cursor;
-        renderNumMatches(offset + 4, state->grep.selection + 1, state->grepOutput.size());
         offset += 2;
         return offset;
     } else if (state->mode == FINDFILE) {
         mvprintw_color(0, offset, "> ", "", YELLOW);
         mvprintw_color(0, offset + 2, "%s", state->findFile.query.c_str(), state->selectAll ? invertColor(YELLOW) : YELLOW);
+        renderNumMatches(offset + state->findFile.query.length() + 4, state->findFile.selection + 1, state->findFileOutput.size());
         offset += state->findFile.cursor + 2;
-        renderNumMatches(offset + 2, state->findFile.selection + 1, state->findFileOutput.size());
         return offset;
     } else if (state->searching || state->mode == SEARCH) {
         std::string displayQuery = state->search.query;
