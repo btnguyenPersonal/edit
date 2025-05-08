@@ -18,7 +18,7 @@
 #include <vector>
 
 std::string getRelativeToLastAndRoute(State* state) {
-    if (state->fileStackIndex - 1 < 0) {
+    if (state->fileStackIndex == 0) {
         return "";
     }
     std::string lastFile = state->fileStack[state->fileStackIndex - 1];
