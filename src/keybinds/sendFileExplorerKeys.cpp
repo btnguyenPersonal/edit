@@ -37,10 +37,6 @@ void sendFileExplorerKeys(State* state, int32_t c) {
             if (name != "") {
                 rename(state, node->path, name);
                 node->parent->refresh();
-                if (!node->isFolder) {
-                    state->resetState((node->path.parent_path() / name).string());
-                    refocusFileExplorer(state, true);
-                }
             }
         } else if (c == 'X') {
             auto node = FileExplorerNode::getFileExplorerNode(state->fileExplorer, state->fileExplorerIndex);
@@ -82,7 +78,6 @@ void sendFileExplorerKeys(State* state, int32_t c) {
                 } else {
                     createFile(state, node->path.parent_path().string(), name);
                     node->parent->refresh();
-                    state->resetState((node->path.parent_path() / name).string());
                 }
                 refocusFileExplorer(state, true);
             }
@@ -96,9 +91,8 @@ void sendFileExplorerKeys(State* state, int32_t c) {
                 node->parent->refresh();
             }
         } else if (c == 'y') {
-            // TODO add copy for folders
             auto node = FileExplorerNode::getFileExplorerNode(state->fileExplorer, state->fileExplorerIndex);
-            copyFileToClipboard(state, node->path.string());
+            copyPathToClipboard(state, node->path.string());
         } else if (c == ctrl('u')) {
             for (uint32_t i = 0; i < state->maxY / 2; i++) {
                 if (state->fileExplorerIndex > 0) {

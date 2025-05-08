@@ -117,7 +117,17 @@ void pasteFileFromClipboard(State* state, const std::string& destFolder) {
     }
 }
 
-void copyFileToClipboard(State* state, const std::string& filePath) {
+void copyPathToClipboard(State* state, const std::string& filePath) {
+    std::filesystem::path fsPath(filePath);
+    if (!std::filesystem::exists(fsPath)) {
+        state->status = "Path does not exist: " + filePath;
+        return;
+    }
+    if (!std::filesystem::is_regular_file(fsPath) && !std::filesystem::is_directory(fsPath)) {
+        state->status = "Path is neither a file nor a directory: " + filePath;
+        return;
+    }
+
 #ifdef __APPLE__
     std::string command = "osascript -e 'set the clipboard to POSIX file \"" + escapeForShell(filePath) + "\"'";
 #elif defined(__linux__)

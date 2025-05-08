@@ -304,8 +304,8 @@ Visual block mode highlightes in blocks.
 | enter | open file, or toggle folder open/closed |
 | ctrl u | up half screen |
 | ctrl d | down half screen |
-| p | paste file |
-| y | copy file (TODO add copy folders) |
+| p | paste |
+| y | copy |
 | n | create new file |
 | N | create new folder |
 | X | delete file |
