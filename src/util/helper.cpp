@@ -1346,7 +1346,13 @@ void upVisual(State* state) {
         visualCol = state->data[state->row].length();
     }
     if (visualCol < state->maxX - getLineNumberOffset(state)) {
-        up(state);
+        if (state->row > 0) {
+            state->row -= 1;
+            state->col += (state->maxX - getLineNumberOffset(state)) * (state->data[state->row].length() / (state->maxX - getLineNumberOffset(state)));
+        }
+        if (isOffScreenVertical(state)) {
+            state->windowPosition.row -= 1;
+        }
     } else {
         state->col -= state->maxX - getLineNumberOffset(state);
     }
@@ -1361,9 +1367,20 @@ void down(State* state) {
     }
 }
 
+bool isOnLastVisualLine(State* state) {
+    auto lastLineStarts = (state->maxX - getLineNumberOffset(state)) * (state->data[state->row].length() / (state->maxX - getLineNumberOffset(state)));
+    return state->col > lastLineStarts;
+}
+
 void downVisual(State* state) {
-    if (state->col + state->maxX - getLineNumberOffset(state) > state->data[state->row].length()) {
-        down(state);
+    if (isOnLastVisualLine(state)) {
+        if (state->row < state->data.size() - 1) {
+            state->row += 1;
+            state->col = state->col % (state->maxX - getLineNumberOffset(state));
+        }
+        if (isOffScreenVertical(state)) {
+            state->windowPosition.row += 1;
+        }
     } else {
         state->col += state->maxX - getLineNumberOffset(state);
     }

@@ -424,6 +424,7 @@ void sendShortcutKeys(State* state, int32_t c) {
         if (state->harpoonFiles.count(state->harpoonIndex) > 0) {
             state->harpoonFiles.erase(state->harpoonIndex);
         }
+        jumpToPrevHarpoon(state);
     } else if (c == 'X') {
         state->harpoonIndex = 0;
         state->harpoonFiles.clear();
