@@ -26,7 +26,7 @@ int32_t FileExplorerNode::expand(std::string input) {
     bool found = false;
     int32_t output = 0;
     for (uint32_t i = 0; i < path.size(); i++) {
-        if (!current.isOpen()) {
+        if (!current->isOpen) {
             current->open();
         }
         found = false;
