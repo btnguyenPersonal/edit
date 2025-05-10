@@ -21,7 +21,6 @@ void sendKeys(State* state, int32_t c) {
     state->status = std::string("");
     state->searchFail = false;
     state->showFileStack = false;
-    state->dontRecordKey = false;
     state->searching = state->mode == SEARCH;
     calcWindowBounds();
     if (state->mode == SHORTCUTS) {
@@ -52,7 +51,6 @@ void sendKeys(State* state, int32_t c) {
         sanityCheckDocumentEmpty(state);
         sanityCheckRowColOutOfBounds(state);
         expect(state->data[state->row].length() >= 0);
-        // TODO check off by one window, if yes just shift up/down one
         if (isWindowPositionInvalid(state)) {
             centerScreen(state);
         }
@@ -101,4 +99,5 @@ void sendKeys(State* state, int32_t c) {
             }
         }
     }
+    state->dontRecordKey = false;
 }

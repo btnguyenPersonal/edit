@@ -44,17 +44,19 @@ std::string getRelativeToCurrent(State* state, std::string p) {
 }
 
 void recordMotion(State* state, int32_t c) {
-    if (c == KEY_BACKSPACE) {
-        state->motion += 127;
-    } else {
-        state->motion += c;
+    if (!state->dontRecordKey) {
+        if (c == KEY_BACKSPACE) {
+            state->motion += 127;
+        } else {
+            state->motion += c;
+        }
     }
 }
 
 void setDotCommand(State* state, int32_t c) {
-    std::string s;
-    s.push_back(c);
     if (!state->dontRecordKey) {
+        std::string s;
+        s.push_back(c);
         state->dotCommand = s;
     }
 }
