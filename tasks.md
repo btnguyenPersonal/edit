@@ -1,7 +1,5 @@
 ## TODO
 
-- fix blame getting calculated every render (slowing down fuzzing a lot)
-
 - config based on filetype
   - would probably have to re-interpret config every file change bleh
   - also needs to add glob matching and the entire spec gross
@@ -10,8 +8,6 @@
     - would probably need a :retab command (find all preceding spaces of state->indent length and convert to tab)
 
 - put asserts everywhere (make sure state is perfect and i never mess up)
-
-- fix centering screen when j or k on wrapped line
 
 - fix visual going up and indenting repeated
 

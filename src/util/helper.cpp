@@ -1358,7 +1358,9 @@ void down(State* state) {
         state->row += 1;
     }
     if (isOffScreenVertical(state)) {
-        state->windowPosition.row += 1;
+        while (isOffScreenVertical(state) && state->windowPosition.row <= state->data.size()) {
+            state->windowPosition.row += 1;
+        }
     }
 }
 
