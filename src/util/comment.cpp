@@ -74,7 +74,7 @@ bool isComment(State* state, std::string line) {
 void toggleCommentLines(State* state, Bounds bounds) {
     bool foundNonComment = false;
     for (size_t i = bounds.minR; i <= bounds.maxR; i++) {
-        if (!isComment(state, state->data[i])) {
+        if (!isComment(state, state->data[i]) && state->data[i] != "") {
             foundNonComment = true;
             break;
         }
