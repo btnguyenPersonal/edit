@@ -1408,14 +1408,30 @@ void right(State* state) {
     }
 }
 
+uint32_t getIndentSize(State* state) {
+    std::string extension = getExtension(state->filename);
+    std::vector<std::string> indentOverrides = {
+        "toml",
+        "tml",
+        "yml",
+        "yaml"
+    };
+    for (uint32_t i = 0; i < indentOverrides.size(); i++) {
+        if (extension == indentOverrides[i]) {
+            return 2;
+        }
+    }
+    return state->options.indent;
+}
+
 void indent(State* state) {
-    for (uint32_t i = 0; i < state->options.indent; i++) {
+    for (uint32_t i = 0; i < getIndentSize(state); i++) {
         state->data[state->row] = " " + state->data[state->row];
     }
 }
 
 void deindent(State* state) {
-    for (uint32_t i = 0; i < state->options.indent; i++) {
+    for (uint32_t i = 0; i < getIndentSize(state); i++) {
         if (state->data[state->row].substr(0, 1) == " ") {
             state->data[state->row] = state->data[state->row].substr(1);
         }

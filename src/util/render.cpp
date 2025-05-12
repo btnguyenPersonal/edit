@@ -320,7 +320,7 @@ void printChar(State* state, int32_t row, int32_t col, char c, int32_t color) {
     if (' ' <= c && c <= '~') {
         mvaddch_color(row, col + getLineNumberOffset(state), c, color);
     } else if (c == '\t') {
-        for (uint32_t i = 0; i < state->options.indent; i++) {
+        for (uint32_t i = 0; i < getIndentSize(state); i++) {
             mvaddch_color(row, col + getLineNumberOffset(state), ' ', color);
         }
     } else if (' ' <= unctrl(c) && unctrl(c) <= '~') {
@@ -334,7 +334,7 @@ void printChar(State* state, int& row, int& col, char c, int32_t color, bool adv
     if (' ' <= c && c <= '~') {
         mvaddch_color(row, col + getLineNumberOffset(state), c, color);
     } else if (c == '\t') {
-        for (uint32_t i = 0; i < state->options.indent; i++) {
+        for (uint32_t i = 0; i < getIndentSize(state); i++) {
             mvaddch_color(row, col + getLineNumberOffset(state), ' ', color);
             advancePosition(state, row, col);
         }

@@ -57,6 +57,7 @@ int32_t getIndentLevel(State* state, uint32_t row) {
     std::string currLine = state->data[row];
     ltrim(currLine);
     int32_t indentLevel = getNumLeadingSpaces(prevLine);
+    uint32_t indentSize = getIndentSize(state);
 
     if (hasHTML(prevLine, getExtension(state->filename))) {
         int32_t tagType = EMPTY;
@@ -84,7 +85,7 @@ int32_t getIndentLevel(State* state, uint32_t row) {
             }
         }
         if (tagType == OPEN || tagStack > 0) {
-            indentLevel += state->options.indent;
+            indentLevel += indentSize;
         }
     } else {
         for (uint32_t i = 0; i < prevLine.length(); i++) {
@@ -92,7 +93,7 @@ int32_t getIndentLevel(State* state, uint32_t row) {
                 break;
             } else if (prevLine[i] == '(' || prevLine[i] == '{' || prevLine[i] == '[' || prevLine[i] == ':') {
                 if (i + 1 == prevLine.length()) {
-                    indentLevel += state->options.indent;
+                    indentLevel += indentSize;
                 }
             }
         }
@@ -121,7 +122,7 @@ int32_t getIndentLevel(State* state, uint32_t row) {
             }
         }
         if (tagType == CLOSE || tagStack < 0) {
-            indentLevel -= state->options.indent;
+            indentLevel -= indentSize;
         }
     } else {
         for (uint32_t i = 0; i < currLine.length(); i++) {
@@ -129,15 +130,15 @@ int32_t getIndentLevel(State* state, uint32_t row) {
                 break;
             } else if (currLine.substr(i, std::string("default:").length()) == "default:") {
                 if (i == 0) {
-                    indentLevel -= state->options.indent;
+                    indentLevel -= indentSize;
                 }
             } else if (currLine.substr(i, std::string("case ").length()) == "case ") {
                 if (i == 0) {
-                    indentLevel -= state->options.indent;
+                    indentLevel -= indentSize;
                 }
             } else if (currLine[i] == ')' || currLine[i] == '}' || currLine[i] == ']') {
                 if (i == 0) {
-                    indentLevel -= state->options.indent;
+                    indentLevel -= indentSize;
                 }
             }
         }
