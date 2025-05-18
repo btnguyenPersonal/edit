@@ -4,6 +4,13 @@
 #include <string>
 #include <vector>
 
+bool autoIndentDisabledFileType(std::string filename) {
+    if (getExtension(filename) == ".py") {
+        return true;
+    }
+    return false;
+}
+
 int32_t getNumLeadingSpaces(std::string s) {
     int32_t numSpaces = 0;
     for (uint32_t i = 0; i < s.length(); i++) {

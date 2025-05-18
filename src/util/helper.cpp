@@ -1411,6 +1411,7 @@ void right(State* state) {
 uint32_t getIndentSize(State* state) {
     std::string extension = getExtension(state->filename);
     std::vector<std::string> indentOverrides = {
+        "py",
         "toml",
         "tml",
         "yml",

@@ -13,6 +13,15 @@ void insertNewline(State* state) {
     state->data.insert(state->data.begin() + state->row + 1, current.substr(state->col));
 }
 
+void indentLineWhenTypingFirstChar(State* state) {
+    if (autoIndentDisabledFileType(state->filename)) {
+        if ((int32_t)state->col == getIndexFirstNonSpace(state)) {
+            indentLine(state);
+            state->col = getIndexFirstNonSpace(state);
+        }
+    }
+}
+
 void sendTypingKeys(State* state, int32_t c) {
     recordMotion(state, c);
     if (c == 27) { // ESC
@@ -27,14 +36,11 @@ void sendTypingKeys(State* state, int32_t c) {
         if (c == '\n') {
             insertNewline(state);
             state->row += 1;
+            indentLineWhenTypingFirstChar(state);
             state->col = 0;
         } else {
             std::string current = state->data[state->row];
             state->data[state->row] = current.substr(0, state->col) + (char)c + current.substr(state->col);
-            if ((int32_t)state->col == getIndexFirstNonSpace(state)) {
-                indentLine(state);
-                state->col = getIndexFirstNonSpace(state);
-            }
             state->col += 1;
         }
     } else if (c == '\n') {
@@ -60,10 +66,7 @@ void sendTypingKeys(State* state, int32_t c) {
     } else if (' ' <= c && c <= '~') {
         std::string current = state->data[state->row];
         state->data[state->row] = current.substr(0, state->col) + (char)c + current.substr(state->col);
-        if ((int32_t)state->col == getIndexFirstNonSpace(state)) {
-            indentLine(state);
-            state->col = getIndexFirstNonSpace(state);
-        }
+        indentLineWhenTypingFirstChar(state);
         state->col += 1;
     } else if (c == ctrl('t')) {
         std::string current = state->data[state->row];
