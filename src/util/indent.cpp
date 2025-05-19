@@ -5,7 +5,7 @@
 #include <vector>
 
 bool autoIndentDisabledFileType(std::string filename) {
-    if (getExtension(filename) == ".py") {
+    if (getExtension(filename) == "py") {
         return true;
     }
     return false;

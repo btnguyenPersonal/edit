@@ -190,10 +190,10 @@ int32_t renderStatusBar(State* state) {
         std::string gPath;
         if (state->grepPath != "") {
             gPath = state->grepPath;
-            mvprintw_color(0, offset, "%s", gPath.c_str(), GREEN);
+            mvprintw_color(0, offset, "%s", gPath.c_str(), state->showAllGrep ? DARKGREEN : GREEN);
         }
         offset += gPath.length();
-        mvprintw_color(0, offset, "> %s", state->grep.query.c_str(), GREEN);
+        mvprintw_color(0, offset, "> %s", state->grep.query.c_str(), state->showAllGrep ? DARKGREEN : GREEN);
         renderNumMatches(offset + state->grep.query.length() + 4, state->grep.selection + 1, state->grepOutput.size());
         offset += state->grep.cursor;
         offset += 2;

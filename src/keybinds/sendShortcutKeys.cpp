@@ -93,7 +93,6 @@ void sendShortcutKeys(State* state, int32_t c) {
         initVisual(state, NORMAL);
         setStateFromWordPosition(state, getWordPosition(state->data[state->row], state->col));
         setQuery(&state->grep, getInVisual(state));
-        state->grepPath = "";
         generateGrepOutput(state, true);
         findDefinitionFromGrepOutput(state, getInVisual(state));
         centerScreen(state);
@@ -222,7 +221,7 @@ void sendShortcutKeys(State* state, int32_t c) {
         setStateFromWordPosition(state, getWordPosition(state->data[state->row], state->col));
         setQuery(&state->grep, getInVisual(state));
         state->mode = GREP;
-        state->grepPath = "";
+        state->showAllGrep = false;
         generateGrepOutput(state, true);
     } else if (c == '*') {
         initVisual(state, NORMAL);
@@ -239,6 +238,7 @@ void sendShortcutKeys(State* state, int32_t c) {
         }
         centerScreen(state);
     } else if (c == ctrl('g')) {
+        state->showAllGrep = false;
         state->mode = GREP;
         generateGrepOutput(state, false);
     } else if (c == ctrl('p')) {

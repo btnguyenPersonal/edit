@@ -125,6 +125,7 @@ public:
     std::vector<std::filesystem::path> findFileOutput;
     std::string grepPath;
     Query grep;
+    bool showAllGrep;
     std::vector<grepMatch> grepOutput;
     std::string prevKeys;
     std::string lastLoggingVar;

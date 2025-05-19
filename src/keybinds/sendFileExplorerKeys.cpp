@@ -54,6 +54,7 @@ void sendFileExplorerKeys(State* state, int32_t c) {
                 state->fileExplorerOpen = false;
                 state->grepPath = node->path;
                 state->mode = GREP;
+                state->showAllGrep = false;
                 generateGrepOutput(state, true);
             }
         } else if (c == 'N') {

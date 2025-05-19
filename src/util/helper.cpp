@@ -1170,7 +1170,7 @@ void generateGrepOutput(State* state, bool resetCursor) {
     if (state->grep.query == "") {
         state->grepOutput.clear();
     } else {
-        state->grepOutput = grepFiles(state->grepPath == "" ? std::filesystem::current_path() : std::filesystem::path(state->grepPath), state->grep.query, state->grepPath != "");
+        state->grepOutput = grepFiles(state->grepPath == "" ? std::filesystem::current_path() : std::filesystem::path(state->grepPath), state->grep.query, state->showAllGrep);
     }
     if (resetCursor) {
         state->grep.selection = 0;

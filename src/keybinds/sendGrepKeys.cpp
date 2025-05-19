@@ -11,11 +11,9 @@
 
 void sendGrepKeys(State* state, int32_t c) {
     if (c == 27) { // ESC
-        if (state->grepPath != "") {
-            state->grepPath = "";
-        } else {
-            state->mode = SHORTCUTS;
-        }
+        state->mode = SHORTCUTS;
+    } else if (c == ctrl('y')) {
+        state->grepPath = "";
     } else if (' ' <= c && c <= '~') {
         add(&state->grep, c);
         state->grep.selection = 0;
@@ -28,6 +26,8 @@ void sendGrepKeys(State* state, int32_t c) {
         state->grep.selection = 0;
     } else if (c == ctrl('g')) {
         state->mode = FINDFILE;
+    } else if (c == ctrl('e')) {
+        state->showAllGrep = !state->showAllGrep;
     } else if (c == ctrl('l')) {
         backspaceAll(&state->grep);
     } else if (c == ctrl('d')) {

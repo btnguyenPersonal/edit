@@ -112,6 +112,7 @@ void State::changeFile(std::string filename) {
     this->col = 0;
     this->commandLine.query = std::string("");
     this->selectAll = false;
+    this->showAllGrep = false;
     this->prevKeys = std::string("");
     this->status = std::string("");
     this->searchFail = false;
