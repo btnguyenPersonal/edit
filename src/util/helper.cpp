@@ -552,14 +552,34 @@ void trimTrailingWhitespace(State* state) {
     }
 }
 
-// TODO also work with tabs
-void rtrim(std::string& s) {
-    s.erase(std::find_if(s.rbegin(), s.rend(), [](unsigned char ch) { return !std::isspace(ch); }).base(), s.end());
+bool isWhitespace(char c) {
+    return std::isspace(c) || c == '\t';
 }
 
-// TODO also work with tabs
+void rtrim(std::string& s) {
+    s.erase(
+        std::find_if(
+            s.rbegin(),
+            s.rend(),
+            [](unsigned char ch) {
+                return !isWhitespace(ch);
+            }
+        ).base(),
+        s.end()
+    );
+}
+
 void ltrim(std::string& s) {
-    s.erase(s.begin(), std::find_if(s.begin(), s.end(), [](unsigned char ch) { return !std::isspace(ch); }));
+    s.erase(
+        s.begin(),
+        std::find_if(
+            s.begin(),
+            s.end(),
+            [](unsigned char ch) {
+                return !isWhitespace(ch);
+            }
+        )
+    );
 }
 
 std::string getCurrentWord(State* state) {
@@ -574,6 +594,7 @@ std::string getCurrentWord(State* state) {
     return currentWord;
 }
 
+// TODO clean up gpt garbage
 std::string autocomplete(State* state, const std::string& query) {
     if (query == "") {
         return "";
@@ -1423,18 +1444,30 @@ uint32_t getIndentSize(State* state) {
             return 2;
         }
     }
+    if (state->options.indentStyle == "tab") {
+        return 1;
+    }
     return state->options.indent;
+}
+
+char getIndentCharacter(State* state) {
+    if (state->options.indentStyle == "tab") {
+        return '\t';
+    } else if (state->options.indentStyle == "space") {
+        return ' ';
+    }
+    return 'E';
 }
 
 void indent(State* state) {
     for (uint32_t i = 0; i < getIndentSize(state); i++) {
-        state->data[state->row] = " " + state->data[state->row];
+        state->data[state->row] = getIndentCharacter(state) + state->data[state->row];
     }
 }
 
 void deindent(State* state) {
     for (uint32_t i = 0; i < getIndentSize(state); i++) {
-        if (state->data[state->row].substr(0, 1) == " ") {
+        if (state->data[state->row].substr(0, 1) == std::string("") + getIndentCharacter(state)) {
             state->data[state->row] = state->data[state->row].substr(1);
         }
     }
@@ -1443,7 +1476,7 @@ void deindent(State* state) {
 int32_t getIndexFirstNonSpace(State* state) {
     int32_t i;
     for (i = 0; i < (int32_t)state->data[state->row].length(); i++) {
-        if (state->data[state->row][i] != ' ') {
+        if (state->data[state->row][i] != getIndentCharacter(state)) {
             return i;
         }
     }

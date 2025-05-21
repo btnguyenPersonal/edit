@@ -11,16 +11,16 @@ bool autoIndentDisabledFileType(std::string filename) {
     return false;
 }
 
-int32_t getNumLeadingSpaces(std::string s) {
-    int32_t numSpaces = 0;
+int32_t getNumLeadingIndentCharacters(State* state, std::string s) {
+    int32_t num = 0;
     for (uint32_t i = 0; i < s.length(); i++) {
-        if (s[i] == ' ') {
-            numSpaces++;
+        if (s[i] == getIndentCharacter(state)) {
+            num++;
         } else {
             break;
         }
     }
-    return numSpaces;
+    return num;
 }
 
 std::string getPrevLine(State* state, uint32_t row) {
@@ -47,6 +47,9 @@ bool hasHTML(std::string line, std::string extension) {
         if (trimmed.empty()) {
             return false;
         }
+        if (safeSubstring(trimmed, 0, std::string("#include ").length()) == "#include ") {
+            return false;
+        }
         return trimmed.front() == '<' || trimmed.back() == '>' || trimmed.front() == '>' || trimmed.back() == '<';
     }
     return false;
@@ -63,7 +66,7 @@ int32_t getIndentLevel(State* state, uint32_t row) {
     prevLine = trimComment(state, prevLine);
     std::string currLine = state->data[row];
     ltrim(currLine);
-    int32_t indentLevel = getNumLeadingSpaces(prevLine);
+    int32_t indentLevel = getNumLeadingIndentCharacters(state, prevLine);
     uint32_t indentSize = getIndentSize(state);
 
     if (hasHTML(prevLine, getExtension(state->filename))) {
@@ -159,7 +162,7 @@ void indentLine(State* state, uint32_t row) {
     if (state->data[row].length() != 0) {
         int32_t indentLevel = getIndentLevel(state, row);
         for (int32_t i = 0; i < indentLevel; i++) {
-            state->data[row] = ' ' + state->data[row];
+            state->data[row] = getIndentCharacter(state) + state->data[row];
         }
     }
 }
@@ -169,7 +172,7 @@ void indentLine(State* state) {
     if (state->data[state->row].length() != 0) {
         int32_t indentLevel = getIndentLevel(state, state->row);
         for (int32_t i = 0; i < indentLevel; i++) {
-            state->data[state->row] = ' ' + state->data[state->row];
+            state->data[state->row] = getIndentCharacter(state) + state->data[state->row];
         }
     }
 }
@@ -182,13 +185,13 @@ void indentRange(State* state) {
             break;
         }
     }
-    int32_t indentDifference = getIndentLevel(state, state->row) - getNumLeadingSpaces(state->data[firstNonEmptyRow]);
+    int32_t indentDifference = getIndentLevel(state, state->row) - getNumLeadingIndentCharacters(state, state->data[firstNonEmptyRow]);
     if (indentDifference > 0) {
         for (int32_t i = state->row; i <= (int32_t)state->visual.row; i++) {
             // TODO turn below into helper function that takes into account the indentStyle
             if (state->data[i] != "") {
                 for (int32_t j = 0; j < indentDifference; j++) {
-                    state->data[i] = ' ' + state->data[i];
+                    state->data[i] = getIndentCharacter(state) + state->data[i];
                 }
             }
         }
@@ -196,7 +199,7 @@ void indentRange(State* state) {
         for (int32_t i = state->row; i <= (int32_t)state->visual.row; i++) {
             if (state->data[i] != "") {
                 for (int32_t j = 0; j < -1 * indentDifference; j++) {
-                    if (state->data[i].length() > 0 && state->data[i][0] == ' ') {
+                    if (state->data[i].length() > 0 && state->data[i][0] == getIndentCharacter(state)) {
                         state->data[i] = safeSubstring(state->data[i], 1);
                     }
                 }

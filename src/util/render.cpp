@@ -316,26 +316,12 @@ bool isMergeConflict(const std::string& str) {
     return false;
 }
 
-void printChar(State* state, int32_t row, int32_t col, char c, int32_t color) {
-    if (' ' <= c && c <= '~') {
-        mvaddch_color(row, col + getLineNumberOffset(state), c, color);
-    } else if (c == '\t') {
-        for (uint32_t i = 0; i < getIndentSize(state); i++) {
-            mvaddch_color(row, col + getLineNumberOffset(state), ' ', color);
-        }
-    } else if (' ' <= unctrl(c) && unctrl(c) <= '~') {
-        mvaddch_color(row, col + getLineNumberOffset(state), unctrl(c), invertColor(MAGENTA));
-    } else {
-        mvaddch_color(row, col + getLineNumberOffset(state), ' ', invertColor(MAGENTA));
-    }
-}
-
 void printChar(State* state, int& row, int& col, char c, int32_t color, bool advance) {
     if (' ' <= c && c <= '~') {
         mvaddch_color(row, col + getLineNumberOffset(state), c, color);
     } else if (c == '\t') {
-        for (uint32_t i = 0; i < getIndentSize(state); i++) {
-            mvaddch_color(row, col + getLineNumberOffset(state), ' ', color);
+        for (uint32_t i = 0; i < state->options.indent; i++) {
+            mvaddch_color(row, col + getLineNumberOffset(state), '.', color == WHITE ? GREY : color);
             advancePosition(state, row, col);
         }
         return;
@@ -347,6 +333,10 @@ void printChar(State* state, int& row, int& col, char c, int32_t color, bool adv
     if (advance) {
         advancePosition(state, row, col);
     }
+}
+
+void printChar(State* state, int32_t row, int32_t col, char c, int32_t color) {
+    printChar(state, row, col, c, color, false);
 }
 
 bool isRowColInVisual(State* state, uint32_t i, uint32_t j) {

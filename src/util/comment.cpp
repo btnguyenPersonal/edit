@@ -46,7 +46,7 @@ void toggleComment(State* state) { toggleCommentHelper(state, state->row, -1); }
 void toggleCommentHelper(State* state, uint32_t row, int32_t commentIndex) {
     std::string line = state->data[row];
     if (commentIndex == -1) {
-        int32_t i = getNumLeadingSpaces(line);
+        int32_t i = getNumLeadingIndentCharacters(state, line);
         if (isCommentWithSpace(state, line)) {
             state->data[row] = line.substr(0, i) + line.substr(i + state->commentSymbol.length() + 1);
             return;
@@ -56,7 +56,7 @@ void toggleCommentHelper(State* state, uint32_t row, int32_t commentIndex) {
         }
     }
     if (line.length() != 0) {
-        int32_t spaces = commentIndex != -1 ? commentIndex : getNumLeadingSpaces(line);
+        int32_t spaces = commentIndex != -1 ? commentIndex : getNumLeadingIndentCharacters(state, line);
         state->data[row] = line.substr(0, spaces) + state->commentSymbol + ' ' + line.substr(spaces);
     }
 }
@@ -83,7 +83,7 @@ void toggleCommentLines(State* state, Bounds bounds) {
     if (foundNonComment) {
         minIndentLevel = INT_MAX;
         for (size_t i = bounds.minR; i <= bounds.maxR; i++) {
-            int32_t indent = getNumLeadingSpaces(state->data[i]);
+            int32_t indent = getNumLeadingIndentCharacters(state, state->data[i]);
             if (indent < minIndentLevel && state->data[i] != "") {
                 minIndentLevel = indent;
             }

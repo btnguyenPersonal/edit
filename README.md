@@ -326,6 +326,7 @@ wordwrap off
 showmode on
 autosave on
 indent_size = 4
+indent_style = space
 ```
 
 # faq

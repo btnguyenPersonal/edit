@@ -163,9 +163,9 @@ void surroundParagraph(State* state, bool includeLastLine) {
 }
 
 bool isValidMoveableChunk(State* state, Bounds bounds) {
-    int32_t start = getNumLeadingSpaces(state->data[bounds.minR]);
+    int32_t start = getNumLeadingIndentCharacters(state, state->data[bounds.minR]);
     for (uint32_t i = bounds.minR + 1; i <= bounds.maxR; i++) {
-        if (getNumLeadingSpaces(state->data[i]) < start && state->data[i] != "") {
+        if (getNumLeadingIndentCharacters(state, state->data[i]) < start && state->data[i] != "") {
             return false;
         }
     }

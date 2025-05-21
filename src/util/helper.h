@@ -7,6 +7,7 @@
 #include <string>
 #include <vector>
 
+char getIndentCharacter(State* state);
 uint32_t getIndentSize(State* state);
 std::string getRelativeToLastAndRoute(State* state);
 std::string getRelativeToCurrent(State* state, std::string p);
