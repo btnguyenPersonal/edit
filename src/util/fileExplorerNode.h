@@ -21,6 +21,7 @@ public:
     static FileExplorerNode* getFileExplorerNode(FileExplorerNode* node, int32_t index);
     int32_t getTotalChildren();
     int32_t expand(std::string input);
+    int32_t getChildIndex(FileExplorerNode* node);
     void remove();
     void open();
     void refresh();

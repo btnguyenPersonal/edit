@@ -25,6 +25,9 @@ void sendGrepKeys(State* state, int32_t c) {
         backspace(&state->grep);
         state->grep.selection = 0;
     } else if (c == ctrl('g')) {
+        backspaceAll(&state->findFile);
+        state->findFile.selection = 0;
+        state->selectAll = false;
         state->mode = FINDFILE;
     } else if (c == ctrl('e')) {
         state->showAllGrep = !state->showAllGrep;
@@ -50,6 +53,8 @@ void sendGrepKeys(State* state, int32_t c) {
         if (state->grep.selection > 0) {
             state->grep.selection -= 1;
         }
+    } else if (c == ctrl('q')) {
+        state->grepPath = "";
     } else if (c == ctrl('r')) {
         if (state->grep.selection < state->grepOutput.size()) {
             std::filesystem::path selectedFile = state->grepOutput[state->grep.selection].path.string();

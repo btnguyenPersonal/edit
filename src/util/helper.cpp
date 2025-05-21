@@ -1055,6 +1055,7 @@ bool shouldIgnoreFile(const std::filesystem::path& path) {
         }
     }
     std::vector<std::string> ignoreList = {
+        ".nx/",
         "nyc_output/",
         "results/",
         "target/",

@@ -1,4 +1,5 @@
 #include "fileExplorerNode.h"
+#include "helper.h"
 
 FileExplorerNode::FileExplorerNode() {
 }
@@ -8,6 +9,20 @@ void FileExplorerNode::close() {
         this->isOpen = false;
         this->children.clear();
     }
+}
+
+int32_t FileExplorerNode::getChildIndex(FileExplorerNode* node) {
+    FileExplorerNode* current = this;
+    int32_t output = 0;
+    for (uint32_t j = 0; j < current->children.size(); j++) {
+        auto s = current->children[j].path.string();
+        if (s == safeSubstring(node->path.string(), 0, s.length())) {
+            return output + 1;
+        } else {
+            output += current->children[j].getTotalChildren();
+        }
+    }
+    return output;
 }
 
 int32_t FileExplorerNode::expand(std::string input) {

@@ -39,6 +39,9 @@ void sendFindFileKeys(State* state, int32_t c) {
     } else if (c == ctrl('a')) {
         state->selectAll = !state->selectAll;
     } else if (c == ctrl('g')) {
+        backspaceAll(&state->grep);
+        state->grep.selection = 0;
+        state->selectAll = false;
         state->mode = GREP;
     } else if (c == ctrl('l')) {
         state->selectAll = false;

@@ -56,6 +56,9 @@ void sendFileExplorerKeys(State* state, int32_t c) {
                 state->mode = GREP;
                 state->showAllGrep = false;
                 generateGrepOutput(state, true);
+            } else {
+                auto node = FileExplorerNode::getFileExplorerNode(state->fileExplorer, state->fileExplorerIndex);
+                state->fileExplorerIndex = state->fileExplorer->getChildIndex(node);
             }
         } else if (c == 'N') {
             std::string name = inputName(state, "");
