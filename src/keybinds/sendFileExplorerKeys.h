@@ -2,4 +2,4 @@
 
 #include "../util/state.h"
 
-void sendFileExplorerKeys(State* state, int32_t c);
+void sendFileExplorerKeys(State *state, int32_t c);

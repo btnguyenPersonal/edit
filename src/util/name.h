@@ -6,4 +6,4 @@
 #include "helper.h"
 #include "modes.h"
 
-std::string inputName(State* state, std::string startingValue);
+std::string inputName(State *state, std::string startingValue);

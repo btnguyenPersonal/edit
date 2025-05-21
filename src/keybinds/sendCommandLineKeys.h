@@ -2,4 +2,4 @@
 
 #include "../util/state.h"
 
-void sendCommandLineKeys(State* state, int32_t c);
+void sendCommandLineKeys(State *state, int32_t c);
