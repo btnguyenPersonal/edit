@@ -59,8 +59,7 @@ int32_t FileExplorerNode::expand(std::string input)
 				output++;
 				break;
 			} else {
-				output +=
-					current->children[j].getTotalChildren();
+				output += current->children[j].getTotalChildren();
 			}
 		}
 		if (!found) {
@@ -87,26 +86,22 @@ void FileExplorerNode::refresh()
 		this->isOpen = true;
 		std::vector<FileExplorerNode> newChildren;
 		bool found = false;
-		for (const auto &entry :
-		     std::filesystem::directory_iterator(this->path)) {
+		for (const auto &entry : std::filesystem::directory_iterator(this->path)) {
 			found = false;
 			for (uint32_t i = 0; i < this->children.size(); i++) {
 				if (this->children[i].path == entry.path()) {
-					newChildren.push_back(
-						this->children[i]);
+					newChildren.push_back(this->children[i]);
 					found = true;
 					break;
 				}
 			}
 			if (!found) {
-				newChildren.push_back(
-					FileExplorerNode(entry.path(), this));
+				newChildren.push_back(FileExplorerNode(entry.path(), this));
 			}
 		}
 		this->children = newChildren;
 		std::sort(this->children.begin(), this->children.end(),
-			  [](const FileExplorerNode a,
-			     const FileExplorerNode b) {
+			  [](const FileExplorerNode a, const FileExplorerNode b) {
 				  if (a.isFolder && !b.isFolder) {
 					  return true;
 				  } else if (!a.isFolder && b.isFolder) {
@@ -128,14 +123,11 @@ void FileExplorerNode::open()
 {
 	if (this->isFolder && !this->isOpen) {
 		this->isOpen = true;
-		for (const auto &entry :
-		     std::filesystem::directory_iterator(this->path)) {
-			this->children.push_back(
-				FileExplorerNode(entry.path(), this));
+		for (const auto &entry : std::filesystem::directory_iterator(this->path)) {
+			this->children.push_back(FileExplorerNode(entry.path(), this));
 		}
 		std::sort(this->children.begin(), this->children.end(),
-			  [](const FileExplorerNode a,
-			     const FileExplorerNode b) {
+			  [](const FileExplorerNode a, const FileExplorerNode b) {
 				  if (a.isFolder && !b.isFolder) {
 					  return true;
 				  } else if (!a.isFolder && b.isFolder) {
@@ -146,8 +138,7 @@ void FileExplorerNode::open()
 	}
 }
 
-FileExplorerNode *FileExplorerNode::getFileExplorerNode(FileExplorerNode *node,
-							int32_t n)
+FileExplorerNode *FileExplorerNode::getFileExplorerNode(FileExplorerNode *node, int32_t n)
 {
 	if (n < 0 || !node) {
 		return nullptr;
@@ -162,8 +153,7 @@ FileExplorerNode *FileExplorerNode::getFileExplorerNode(FileExplorerNode *node,
 			return current;
 		}
 		count++;
-		for (auto it = current->children.rbegin();
-		     it != current->children.rend(); ++it) {
+		for (auto it = current->children.rbegin(); it != current->children.rend(); ++it) {
 			stack.push(&(*it));
 		}
 	}
@@ -179,8 +169,7 @@ FileExplorerNode::FileExplorerNode(const std::filesystem::path &path)
 	this->children = std::vector<FileExplorerNode>();
 }
 
-FileExplorerNode::FileExplorerNode(const std::filesystem::path &path,
-				   FileExplorerNode *parent)
+FileExplorerNode::FileExplorerNode(const std::filesystem::path &path, FileExplorerNode *parent)
 {
 	this->path = path;
 	this->name = path.filename();

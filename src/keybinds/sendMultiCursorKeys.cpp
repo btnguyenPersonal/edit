@@ -22,38 +22,29 @@ void sendMultiCursorKeys(State *state, int32_t c)
 		if (state->col > 0) {
 			for (uint32_t i = bounds.minR; i <= bounds.maxR; i++) {
 				std::string current = state->data[i];
-				state->data[i] =
-					current.substr(0, state->col - 1) +
-					safeSubstring(current, state->col);
+				state->data[i] = current.substr(0, state->col - 1) + safeSubstring(current, state->col);
 			}
 			state->col -= 1;
 		}
 	} else if (' ' <= c && c <= '~') {
 		for (uint32_t i = bounds.minR; i <= bounds.maxR; i++) {
 			std::string current = state->data[i];
-			state->data[i] = current.substr(0, state->col) +
-					 (char)c +
-					 safeSubstring(current, state->col);
+			state->data[i] = current.substr(0, state->col) + (char)c + safeSubstring(current, state->col);
 		}
 		state->col += 1;
 	} else if (c == ctrl('t')) {
 		for (uint32_t i = bounds.minR; i <= bounds.maxR; i++) {
 			std::string current = state->data[i];
-			state->data[i] = current.substr(0, state->col) + '\t' +
-					 safeSubstring(current, state->col);
+			state->data[i] = current.substr(0, state->col) + '\t' + safeSubstring(current, state->col);
 		}
 		state->col += 1;
 	} else if (c == ctrl('i')) { // TAB
-		std::string completion =
-			autocomplete(state, getCurrentWord(state));
-		if (state->data[state->row].substr(
-			    state->col, completion.length()) != completion) {
+		std::string completion = autocomplete(state, getCurrentWord(state));
+		if (state->data[state->row].substr(state->col, completion.length()) != completion) {
 			for (uint32_t i = bounds.minR; i <= bounds.maxR; i++) {
 				std::string current = state->data[i];
 				state->data[i] =
-					current.substr(0, state->col) +
-					completion +
-					safeSubstring(current, state->col);
+					current.substr(0, state->col) + completion + safeSubstring(current, state->col);
 			}
 			state->col += completion.length();
 		}

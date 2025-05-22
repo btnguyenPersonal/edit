@@ -7,11 +7,9 @@
 #include <string>
 #include <vector>
 
-std::string replaceAll(std::string str, const std::string &from,
-		       const std::string &to);
+std::string replaceAll(std::string str, const std::string &from, const std::string &to);
 bool isLineFileRegex(const std::string &line);
-bool matchesEditorConfigGlob(const std::string &pattern,
-			     const std::string &filepath);
+bool matchesEditorConfigGlob(const std::string &pattern, const std::string &filepath);
 char getIndentCharacter(State *state);
 uint32_t getIndentSize(State *state);
 std::string getRelativeToLastAndRoute(State *state);
@@ -33,8 +31,7 @@ std::string normalizeFilename(std::string filename);
 std::string setStringToLength(const std::string &s, uint32_t length);
 bool isInt(const std::string &s);
 bool isTestFile(const std::string &filepath);
-void rename(State *state, const std::filesystem::path &oldPath,
-	    const std::string &newName);
+void rename(State *state, const std::filesystem::path &oldPath, const std::string &newName);
 void createFolder(State *state, std::filesystem::path path, std::string name);
 std::filesystem::path getUniqueFilePath(const std::filesystem::path &basePath);
 void createFile(State *state, std::filesystem::path path, std::string name);
@@ -48,8 +45,7 @@ bool setSearchResultCurrentLine(State *state, const std::string &query);
 Position matchIt(State *state);
 bool searchFromTop(State *state);
 void getAndAddNumber(State *state, uint32_t row, uint32_t col, int32_t num);
-std::string safeSubstring(const std::string &str, std::size_t pos,
-			  std::size_t len);
+std::string safeSubstring(const std::string &str, std::size_t pos, std::size_t len);
 std::string safeSubstring(const std::string &str, std::size_t pos);
 bool isAllLowercase(const std::string &str);
 uint32_t findNextChar(State *state, char c);
@@ -60,10 +56,8 @@ std::string getGitHash(State *state);
 std::vector<std::string> getGitBlame(const std::string &filename);
 uint32_t getLineNumberOffset(State *state);
 void runCommand(State *state, const std::string &command);
-void replaceAllGlobally(State *state, const std::string &query,
-			const std::string &replace);
-void replaceCurrentLine(State *state, const std::string &query,
-			const std::string &replace);
+void replaceAllGlobally(State *state, const std::string &query, const std::string &replace);
+void replaceCurrentLine(State *state, const std::string &query, const std::string &replace);
 std::string getCurrentWord(State *state);
 std::string autocomplete(State *state, const std::string &query);
 std::string getCommentSymbol(const std::string &filename);
@@ -73,32 +67,26 @@ void moveHarpoonRight(State *state);
 bool isWindowPositionHorizontalInvalid(State *state);
 void ltrim(std::string &s);
 void rtrim(std::string &s);
-void replaceAll(State *state, const std::string &query,
-		const std::string &replace);
+void replaceAll(State *state, const std::string &query, const std::string &replace);
 bool setSearchResultReverse(State *state);
 void fixColOverMax(State *state);
-WordPosition findQuoteBounds(const std::string &str, char quoteChar,
-			     uint32_t cursor, bool includeQuote);
+WordPosition findQuoteBounds(const std::string &str, char quoteChar, uint32_t cursor, bool includeQuote);
 bool setSearchResult(State *state);
 void setPosition(State *state, Position pos);
 void initVisual(State *state, VisualType visualType);
 bool is_number(const std::string &s);
-WordPosition findParentheses(const std::string &str, char openParen,
-			     char closeParen, uint32_t cursor,
+WordPosition findParentheses(const std::string &str, char openParen, char closeParen, uint32_t cursor,
 			     bool includeParen);
 uint32_t getIndent(const std::string &str);
 uint32_t getNextLineSameIndent(State *state);
 uint32_t getPrevLineSameIndent(State *state);
 WordPosition getBigWordPosition(const std::string &str, uint32_t cursor);
 WordPosition getWordPosition(const std::string &str, uint32_t cursor);
-std::vector<grepMatch> grepFiles(const std::filesystem::path &dir_path,
-				 const std::string &query, bool allowAllFiles);
+std::vector<grepMatch> grepFiles(const std::filesystem::path &dir_path, const std::string &query, bool allowAllFiles);
 void generateGrepOutput(State *state, bool resetCursor);
-bool filePathContainsSubstring(const std::filesystem::path &filePath,
-			       const std::string &query);
+bool filePathContainsSubstring(const std::filesystem::path &filePath, const std::string &query);
 bool shouldIgnoreFile(const std::filesystem::path &path);
-std::vector<std::filesystem::path>
-findFiles(const std::filesystem::path &dir_path, const std::string &query);
+std::vector<std::filesystem::path> findFiles(const std::filesystem::path &dir_path, const std::string &query);
 void generateFindFileOutput(State *state);
 uint32_t w(State *state);
 uint32_t b(State *state);

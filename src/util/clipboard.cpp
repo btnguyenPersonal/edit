@@ -54,12 +54,9 @@ std::string escapeForShell(const std::string &s)
 std::string getFileFromClipboard()
 {
 #ifdef __APPLE__
-	FILE *pipe = popen(
-		"osascript -e 'POSIX path of (the clipboard as «class furl»)'",
-		"r");
+	FILE *pipe = popen("osascript -e 'POSIX path of (the clipboard as «class furl»)'", "r");
 #elif defined(__linux__)
-	FILE *pipe =
-		popen("xclip -selection clipboard -o -t text/uri-list", "r");
+	FILE *pipe = popen("xclip -selection clipboard -o -t text/uri-list", "r");
 #else
 #error "Platform not supported"
 #endif
@@ -76,7 +73,6 @@ std::string getFileFromClipboard()
 	}
 	pclose(pipe);
 
-	// Remove any trailing newline
 	if (!result.empty() && result[result.length() - 1] == '\n') {
 		result.erase(result.length() - 1);
 	}
@@ -97,25 +93,17 @@ void pasteFileFromClipboard(State *state, const std::string &destFolder)
 #error "Platform not supported"
 #endif
 		if (!std::filesystem::exists(sourcePath)) {
-			state->status =
-				std::string("Error: file does not exist: ") +
-				sourcePath.string();
+			state->status = std::string("Error: file does not exist: ") + sourcePath.string();
 			return;
 		}
 
-		std::filesystem::path destPath =
-			std::filesystem::path(destFolder) /
-			sourcePath.filename();
+		std::filesystem::path destPath = std::filesystem::path(destFolder) / sourcePath.filename();
 
 		if (std::filesystem::is_directory(sourcePath)) {
-			std::filesystem::path canonicalSrc =
-				std::filesystem::canonical(sourcePath);
-			std::filesystem::path canonicalDest =
-				std::filesystem::canonical(destFolder);
-			if (canonicalDest.string().find(
-				    canonicalSrc.string()) == 0) {
-				state->status =
-					"Error: Cannot paste a folder into itself or its subdirectories";
+			std::filesystem::path canonicalSrc = std::filesystem::canonical(sourcePath);
+			std::filesystem::path canonicalDest = std::filesystem::canonical(destFolder);
+			if (canonicalDest.string().find(canonicalSrc.string()) == 0) {
+				state->status = "Error: Cannot paste a folder into itself or its subdirectories";
 				return;
 			}
 		}
@@ -123,15 +111,11 @@ void pasteFileFromClipboard(State *state, const std::string &destFolder)
 		destPath = getUniqueFilePath(destPath);
 
 		if (std::filesystem::is_directory(sourcePath)) {
-			std::filesystem::copy(
-				sourcePath, destPath,
-				std::filesystem::copy_options::recursive |
-					std::filesystem::copy_options::
-						overwrite_existing);
-		} else {
 			std::filesystem::copy(sourcePath, destPath,
-					      std::filesystem::copy_options::
-						      overwrite_existing);
+					      std::filesystem::copy_options::recursive |
+						      std::filesystem::copy_options::overwrite_existing);
+		} else {
+			std::filesystem::copy(sourcePath, destPath, std::filesystem::copy_options::overwrite_existing);
 		}
 	} catch (const std::exception &e) {
 		state->status = "File paste failed: " + std::string(e.what());
@@ -145,17 +129,13 @@ void copyPathToClipboard(State *state, const std::string &filePath)
 		state->status = "Path does not exist: " + filePath;
 		return;
 	}
-	if (!std::filesystem::is_regular_file(fsPath) &&
-	    !std::filesystem::is_directory(fsPath)) {
-		state->status =
-			"Path is neither a file nor a directory: " + filePath;
+	if (!std::filesystem::is_regular_file(fsPath) && !std::filesystem::is_directory(fsPath)) {
+		state->status = "Path is neither a file nor a directory: " + filePath;
 		return;
 	}
 
 #ifdef __APPLE__
-	std::string command =
-		"osascript -e 'set the clipboard to POSIX file \"" +
-		escapeForShell(filePath) + "\"'";
+	std::string command = "osascript -e 'set the clipboard to POSIX file \"" + escapeForShell(filePath) + "\"'";
 #elif defined(__linux__)
 	auto path = std::string("file://") + escapeForShell(filePath);
 	std::string command = "xclip -selection clipboard -t text/uri-list";
@@ -199,8 +179,7 @@ void pasteFromClipboardVisual(State *state)
 		state->col = pos.col;
 		std::string current = state->data[state->row];
 		state->data[state->row] = current.substr(0, state->col);
-		state->data.insert(state->data.begin() + state->row + 1,
-				   current.substr(state->col));
+		state->data.insert(state->data.begin() + state->row + 1, current.substr(state->col));
 		state->row += 1;
 		state->col = 0;
 		indentLine(state);
@@ -216,8 +195,7 @@ void pasteFromClipboardVisual(State *state)
 		}
 	} else if (!result.empty() && result.back() == '\n') {
 		for (int32_t i = 0; i < (int32_t)clip.size(); i++) {
-			state->data.insert(state->data.begin() + i + state->row,
-					   clip[i]);
+			state->data.insert(state->data.begin() + i + state->row, clip[i]);
 		}
 	} else if (clip.size() > 0) {
 		std::string current = state->data[state->row];
@@ -249,8 +227,7 @@ void pasteFromClipboard(State *state)
 		}
 	} else if (!result.empty() && result.back() == '\n') {
 		for (int32_t i = 0; i < (int32_t)clip.size(); i++) {
-			state->data.insert(state->data.begin() + i + state->row,
-					   clip[i]);
+			state->data.insert(state->data.begin() + i + state->row, clip[i]);
 		}
 	} else if (clip.size() > 0) {
 		std::string current = state->data[state->row];
@@ -278,9 +255,7 @@ void pasteFromClipboardAfter(State *state)
 	}
 	if (!result.empty() && result.back() == '\n') {
 		for (int32_t i = 0; i < (int32_t)clip.size(); i++) {
-			state->data.insert(state->data.begin() + i +
-						   state->row + 1,
-					   clip[i]);
+			state->data.insert(state->data.begin() + i + state->row + 1, clip[i]);
 		}
 	} else if (clip.size() > 0) {
 		std::string current = state->data[state->row];

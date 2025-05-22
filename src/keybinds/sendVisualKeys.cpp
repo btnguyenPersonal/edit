@@ -47,8 +47,7 @@ void replaceAllWithChar(State *state, int32_t c)
 			}
 			col = 0;
 		}
-		while (col <= bounds.maxC &&
-		       col < state->data[bounds.maxR].size()) {
+		while (col <= bounds.maxC && col < state->data[bounds.maxR].size()) {
 			state->data[bounds.maxR][col] = c;
 			col++;
 		}
@@ -64,8 +63,7 @@ void replaceAllWithChar(State *state, int32_t c)
 		}
 	} else if (state->visualType == LINE) {
 		for (uint32_t row = bounds.minR; row <= bounds.maxR; row++) {
-			for (uint32_t col = 0; col < state->data[row].size();
-			     col++) {
+			for (uint32_t col = 0; col < state->data[row].size(); col++) {
 				state->data[row][col] = c;
 			}
 		}
@@ -80,11 +78,9 @@ void changeCaseVisual(State *state, bool upper)
 		for (uint32_t row = bounds.minR; row < bounds.maxR; row++) {
 			while (col < state->data[row].size()) {
 				if (upper) {
-					state->data[row][col] = std::toupper(
-						state->data[row][col]);
+					state->data[row][col] = std::toupper(state->data[row][col]);
 				} else {
-					state->data[row][col] = std::tolower(
-						state->data[row][col]);
+					state->data[row][col] = std::tolower(state->data[row][col]);
 				}
 				col++;
 			}
@@ -92,11 +88,9 @@ void changeCaseVisual(State *state, bool upper)
 		}
 		while (col <= bounds.maxC) {
 			if (upper) {
-				state->data[bounds.maxR][col] = std::toupper(
-					state->data[bounds.maxR][col]);
+				state->data[bounds.maxR][col] = std::toupper(state->data[bounds.maxR][col]);
 			} else {
-				state->data[bounds.maxR][col] = std::tolower(
-					state->data[bounds.maxR][col]);
+				state->data[bounds.maxR][col] = std::tolower(state->data[bounds.maxR][col]);
 			}
 			col++;
 		}
@@ -106,24 +100,19 @@ void changeCaseVisual(State *state, bool upper)
 		for (uint32_t row = bounds.minR; row <= bounds.maxR; row++) {
 			for (uint32_t col = min; col <= max; col++) {
 				if (upper) {
-					state->data[row][col] = std::toupper(
-						state->data[row][col]);
+					state->data[row][col] = std::toupper(state->data[row][col]);
 				} else {
-					state->data[row][col] = std::tolower(
-						state->data[row][col]);
+					state->data[row][col] = std::tolower(state->data[row][col]);
 				}
 			}
 		}
 	} else if (state->visualType == LINE) {
 		for (uint32_t row = bounds.minR; row <= bounds.maxR; row++) {
-			for (uint32_t col = 0; col < state->data[row].size();
-			     col++) {
+			for (uint32_t col = 0; col < state->data[row].size(); col++) {
 				if (upper) {
-					state->data[row][col] = std::toupper(
-						state->data[row][col]);
+					state->data[row][col] = std::toupper(state->data[row][col]);
 				} else {
-					state->data[row][col] = std::tolower(
-						state->data[row][col]);
+					state->data[row][col] = std::tolower(state->data[row][col]);
 				}
 			}
 		}
@@ -181,12 +170,9 @@ void surroundParagraph(State *state, bool includeLastLine)
 
 bool isValidMoveableChunk(State *state, Bounds bounds)
 {
-	int32_t start =
-		getNumLeadingIndentCharacters(state, state->data[bounds.minR]);
+	int32_t start = getNumLeadingIndentCharacters(state, state->data[bounds.minR]);
 	for (uint32_t i = bounds.minR + 1; i <= bounds.maxR; i++) {
-		if (getNumLeadingIndentCharacters(state, state->data[i]) <
-			    start &&
-		    state->data[i] != "") {
+		if (getNumLeadingIndentCharacters(state, state->data[i]) < start && state->data[i] != "") {
 			return false;
 		}
 	}
@@ -212,9 +198,7 @@ std::string getInVisual(State *state)
 		uint32_t min = std::min(bounds.minC, bounds.maxC);
 		uint32_t max = std::max(bounds.minC, bounds.maxC);
 		for (uint32_t i = bounds.minR; i <= bounds.maxR; i++) {
-			clip += safeSubstring(state->data[i], min,
-					      max + 1 - min) +
-				"\n";
+			clip += safeSubstring(state->data[i], min, max + 1 - min) + "\n";
 		}
 	} else if (state->visualType == LINE) {
 		for (size_t i = bounds.minR; i <= bounds.maxR; i++) {
@@ -230,8 +214,7 @@ std::string getInVisual(State *state)
 			index = 0;
 			clip += '\n';
 		}
-		clip += safeSubstring(state->data[bounds.maxR], index,
-				      bounds.maxC - index + 1);
+		clip += safeSubstring(state->data[bounds.maxR], index, bounds.maxC - index + 1);
 	}
 	return clip;
 }
@@ -243,8 +226,7 @@ Position changeInVisual(State *state)
 	pos.row = bounds.minR;
 	pos.col = bounds.minC;
 	if (state->visualType == LINE) {
-		state->data.erase(state->data.begin() + bounds.minR,
-				  state->data.begin() + bounds.maxR);
+		state->data.erase(state->data.begin() + bounds.minR, state->data.begin() + bounds.maxR);
 		state->data[bounds.minR] = std::string("");
 	} else if (state->visualType == BLOCK) {
 		deleteInVisual(state);
@@ -254,16 +236,13 @@ Position changeInVisual(State *state)
 		std::string firstPart = "";
 		std::string secondPart = "";
 		if (bounds.minC <= state->data[bounds.minR].length()) {
-			firstPart = safeSubstring(state->data[bounds.minR], 0,
-						  bounds.minC);
+			firstPart = safeSubstring(state->data[bounds.minR], 0, bounds.minC);
 		}
 		if (bounds.maxC < state->data[bounds.maxR].length()) {
-			secondPart = safeSubstring(state->data[bounds.maxR],
-						   bounds.maxC + 1);
+			secondPart = safeSubstring(state->data[bounds.maxR], bounds.maxC + 1);
 		}
 		state->data[bounds.minR] = firstPart + secondPart;
-		state->data.erase(state->data.begin() + bounds.minR + 1,
-				  state->data.begin() + bounds.maxR + 1);
+		state->data.erase(state->data.begin() + bounds.minR + 1, state->data.begin() + bounds.maxR + 1);
 	}
 	return pos;
 }
@@ -285,16 +264,13 @@ Position deleteInVisual(State *state)
 	pos.row = bounds.minR;
 	pos.col = bounds.minC;
 	if (state->visualType == LINE) {
-		state->data.erase(state->data.begin() + bounds.minR,
-				  state->data.begin() + bounds.maxR + 1);
+		state->data.erase(state->data.begin() + bounds.minR, state->data.begin() + bounds.maxR + 1);
 	} else if (state->visualType == BLOCK) {
 		uint32_t min = std::min(bounds.minC, bounds.maxC);
 		uint32_t max = std::max(bounds.minC, bounds.maxC);
 		for (uint32_t i = bounds.minR; i <= bounds.maxR; i++) {
-			std::string firstPart =
-				safeSubstring(state->data[i], 0, min);
-			std::string secondPart =
-				safeSubstring(state->data[i], max + 1);
+			std::string firstPart = safeSubstring(state->data[i], 0, min);
+			std::string secondPart = safeSubstring(state->data[i], max + 1);
 			state->data[i] = firstPart + secondPart;
 		}
 		pos.col = min;
@@ -302,16 +278,13 @@ Position deleteInVisual(State *state)
 		std::string firstPart = "";
 		std::string secondPart = "";
 		if (bounds.minC <= state->data[bounds.minR].length()) {
-			firstPart = safeSubstring(state->data[bounds.minR], 0,
-						  bounds.minC);
+			firstPart = safeSubstring(state->data[bounds.minR], 0, bounds.minC);
 		}
 		if (bounds.maxC < state->data[bounds.maxR].length()) {
-			secondPart = safeSubstring(state->data[bounds.maxR],
-						   bounds.maxC + 1);
+			secondPart = safeSubstring(state->data[bounds.maxR], bounds.maxC + 1);
 		}
 		state->data[bounds.minR] = firstPart + secondPart;
-		state->data.erase(state->data.begin() + bounds.minR + 1,
-				  state->data.begin() + bounds.maxR + 1);
+		state->data.erase(state->data.begin() + bounds.minR + 1, state->data.begin() + bounds.maxR + 1);
 	}
 	return pos;
 }
@@ -353,94 +326,58 @@ bool sendVisualKeys(State *state, char c, bool onlyMotions)
 		state->col = findNextChar(state, c);
 		state->prevKeys = "";
 	} else if (state->prevKeys == "i" && c == '`') {
-		setStateFromWordPosition(
-			state, findQuoteBounds(state->data[state->row], '`',
-					       state->col, false));
+		setStateFromWordPosition(state, findQuoteBounds(state->data[state->row], '`', state->col, false));
 		state->prevKeys = "";
 	} else if (state->prevKeys == "a" && c == '`') {
-		setStateFromWordPosition(
-			state, findQuoteBounds(state->data[state->row], '`',
-					       state->col, true));
+		setStateFromWordPosition(state, findQuoteBounds(state->data[state->row], '`', state->col, true));
 		state->prevKeys = "";
 	} else if (state->prevKeys == "i" && c == '"') {
-		setStateFromWordPosition(
-			state, findQuoteBounds(state->data[state->row], '"',
-					       state->col, false));
+		setStateFromWordPosition(state, findQuoteBounds(state->data[state->row], '"', state->col, false));
 		state->prevKeys = "";
 	} else if (state->prevKeys == "a" && c == '"') {
-		setStateFromWordPosition(
-			state, findQuoteBounds(state->data[state->row], '"',
-					       state->col, true));
+		setStateFromWordPosition(state, findQuoteBounds(state->data[state->row], '"', state->col, true));
 		state->prevKeys = "";
 	} else if (state->prevKeys == "i" && c == '\'') {
-		setStateFromWordPosition(
-			state, findQuoteBounds(state->data[state->row], '\'',
-					       state->col, false));
+		setStateFromWordPosition(state, findQuoteBounds(state->data[state->row], '\'', state->col, false));
 		state->prevKeys = "";
 	} else if (state->prevKeys == "a" && c == '\'') {
-		setStateFromWordPosition(
-			state, findQuoteBounds(state->data[state->row], '\'',
-					       state->col, true));
+		setStateFromWordPosition(state, findQuoteBounds(state->data[state->row], '\'', state->col, true));
 		state->prevKeys = "";
 	} else if (state->prevKeys == "a" && c == 't') {
-		setStateFromWordPosition(
-			state, findParentheses(state->data[state->row], '>',
-					       '<', state->col, true));
+		setStateFromWordPosition(state, findParentheses(state->data[state->row], '>', '<', state->col, true));
 		state->prevKeys = "";
 	} else if (state->prevKeys == "a" && c == 'T') {
-		setStateFromWordPosition(
-			state, findParentheses(state->data[state->row], '<',
-					       '>', state->col, true));
+		setStateFromWordPosition(state, findParentheses(state->data[state->row], '<', '>', state->col, true));
 		state->prevKeys = "";
 	} else if (state->prevKeys == "a" && c == 'd') {
-		setStateFromWordPosition(
-			state, findParentheses(state->data[state->row], '[',
-					       ']', state->col, true));
+		setStateFromWordPosition(state, findParentheses(state->data[state->row], '[', ']', state->col, true));
 		state->prevKeys = "";
 	} else if (state->prevKeys == "a" && c == 'B') {
-		setStateFromWordPosition(
-			state, findParentheses(state->data[state->row], '{',
-					       '}', state->col, true));
+		setStateFromWordPosition(state, findParentheses(state->data[state->row], '{', '}', state->col, true));
 		state->prevKeys = "";
 	} else if (state->prevKeys == "a" && c == 'b') {
-		setStateFromWordPosition(
-			state, findParentheses(state->data[state->row], '(',
-					       ')', state->col, true));
+		setStateFromWordPosition(state, findParentheses(state->data[state->row], '(', ')', state->col, true));
 		state->prevKeys = "";
 	} else if (state->prevKeys == "i" && c == 't') {
-		setStateFromWordPosition(
-			state, findParentheses(state->data[state->row], '>',
-					       '<', state->col, false));
+		setStateFromWordPosition(state, findParentheses(state->data[state->row], '>', '<', state->col, false));
 		state->prevKeys = "";
 	} else if (state->prevKeys == "i" && c == 'T') {
-		setStateFromWordPosition(
-			state, findParentheses(state->data[state->row], '<',
-					       '>', state->col, false));
+		setStateFromWordPosition(state, findParentheses(state->data[state->row], '<', '>', state->col, false));
 		state->prevKeys = "";
 	} else if (state->prevKeys == "i" && c == 'd') {
-		setStateFromWordPosition(
-			state, findParentheses(state->data[state->row], '[',
-					       ']', state->col, false));
+		setStateFromWordPosition(state, findParentheses(state->data[state->row], '[', ']', state->col, false));
 		state->prevKeys = "";
 	} else if (state->prevKeys == "i" && c == 'B') {
-		setStateFromWordPosition(
-			state, findParentheses(state->data[state->row], '{',
-					       '}', state->col, false));
+		setStateFromWordPosition(state, findParentheses(state->data[state->row], '{', '}', state->col, false));
 		state->prevKeys = "";
 	} else if (state->prevKeys == "i" && c == 'b') {
-		setStateFromWordPosition(
-			state, findParentheses(state->data[state->row], '(',
-					       ')', state->col, false));
+		setStateFromWordPosition(state, findParentheses(state->data[state->row], '(', ')', state->col, false));
 		state->prevKeys = "";
 	} else if (state->prevKeys == "i" && c == 'w') {
-		setStateFromWordPosition(
-			state,
-			getWordPosition(state->data[state->row], state->col));
+		setStateFromWordPosition(state, getWordPosition(state->data[state->row], state->col));
 		state->prevKeys = "";
 	} else if (state->prevKeys == "i" && c == 'W') {
-		setStateFromWordPosition(
-			state, getBigWordPosition(state->data[state->row],
-						  state->col));
+		setStateFromWordPosition(state, getBigWordPosition(state->data[state->row], state->col));
 		state->prevKeys = "";
 	} else if (state->prevKeys == "i" && c == 'p') {
 		state->visualType = LINE;
@@ -450,8 +387,7 @@ bool sendVisualKeys(State *state, char c, bool onlyMotions)
 		state->visualType = LINE;
 		surroundParagraph(state, true);
 		state->prevKeys = "";
-	} else if (!onlyMotions && state->visualType == BLOCK &&
-		   state->prevKeys == "g" && c == ctrl('s')) {
+	} else if (!onlyMotions && state->visualType == BLOCK && state->prevKeys == "g" && c == ctrl('s')) {
 		Bounds bounds = getBounds(state);
 		int32_t iterations = 1;
 		for (uint32_t i = bounds.minR; i <= bounds.maxR; i++) {
@@ -459,8 +395,7 @@ bool sendVisualKeys(State *state, char c, bool onlyMotions)
 			iterations++;
 		}
 		state->prevKeys = "";
-	} else if (!onlyMotions && state->visualType == BLOCK &&
-		   state->prevKeys == "g" && c == ctrl('a')) {
+	} else if (!onlyMotions && state->visualType == BLOCK && state->prevKeys == "g" && c == ctrl('a')) {
 		Bounds bounds = getBounds(state);
 		int32_t iterations = 1;
 		for (uint32_t i = bounds.minR; i <= bounds.maxR; i++) {
@@ -477,32 +412,19 @@ bool sendVisualKeys(State *state, char c, bool onlyMotions)
 		state->prevKeys = "";
 	} else if (!onlyMotions && state->prevKeys == "g" && c == 'f') {
 		if (state->visualType == NORMAL) {
-			std::vector<std::string> extensions = { "", ".js",
-								".jsx", ".ts",
-								".tsx" };
+			std::vector<std::string> extensions = { "", ".js", ".jsx", ".ts", ".tsx" };
 			for (uint32_t i = 0; i < extensions.size(); i++) {
 				try {
-					std::filesystem::path filePath(
-						state->filename);
-					std::filesystem::path dir =
-						filePath.parent_path();
-					auto newFilePath =
-						dir / (getInVisual(state) +
-						       extensions[i]);
-					if (std::filesystem::is_regular_file(
-						    newFilePath.c_str())) {
-						auto baseDir = std::filesystem::
-							current_path();
-						auto relativePath =
-							std::filesystem::relative(
-								newFilePath,
-								baseDir);
-						state->resetState(
-							relativePath.string());
+					std::filesystem::path filePath(state->filename);
+					std::filesystem::path dir = filePath.parent_path();
+					auto newFilePath = dir / (getInVisual(state) + extensions[i]);
+					if (std::filesystem::is_regular_file(newFilePath.c_str())) {
+						auto baseDir = std::filesystem::current_path();
+						auto relativePath = std::filesystem::relative(newFilePath, baseDir);
+						state->resetState(relativePath.string());
 						break;
 					}
-				} catch (const std::filesystem::filesystem_error
-						 &e) {
+				} catch (const std::filesystem::filesystem_error &e) {
 				}
 			}
 		}
@@ -526,14 +448,12 @@ bool sendVisualKeys(State *state, char c, bool onlyMotions)
 		state->prevKeys = "";
 	} else if (c == 'g' || c == 'i' || c == 'a' || c == 'r') {
 		state->prevKeys += c;
-	} else if (!onlyMotions && state->visualType == BLOCK &&
-		   c == ctrl('s')) {
+	} else if (!onlyMotions && state->visualType == BLOCK && c == ctrl('s')) {
 		Bounds bounds = getBounds(state);
 		for (uint32_t i = bounds.minR; i <= bounds.maxR; i++) {
 			getAndAddNumber(state, i, state->col, -1);
 		}
-	} else if (!onlyMotions && state->visualType == BLOCK &&
-		   c == ctrl('a')) {
+	} else if (!onlyMotions && state->visualType == BLOCK && c == ctrl('a')) {
 		Bounds bounds = getBounds(state);
 		for (uint32_t i = bounds.minR; i <= bounds.maxR; i++) {
 			getAndAddNumber(state, i, state->col, 1);
@@ -546,10 +466,8 @@ bool sendVisualKeys(State *state, char c, bool onlyMotions)
 		state->mode = SHORTCUTS;
 	} else if (!onlyMotions && c == ':') {
 		if (state->visualType == NORMAL) {
-			state->commandLine.query =
-				"gs/" + getInVisual(state) + "/";
-			state->commandLine.cursor =
-				3 + getInVisual(state).length() + 1;
+			state->commandLine.query = "gs/" + getInVisual(state) + "/";
+			state->commandLine.cursor = 3 + getInVisual(state).length() + 1;
 			state->mode = COMMANDLINE;
 		}
 	} else if (c == '^') {
@@ -613,11 +531,8 @@ bool sendVisualKeys(State *state, char c, bool onlyMotions)
 		if (bounds.minR > 0) {
 			if (isValidMoveableChunk(state, bounds)) {
 				auto temp = state->data[bounds.minR - 1];
-				state->data.erase(state->data.begin() +
-						  bounds.minR - 1);
-				state->data.insert(state->data.begin() +
-							   bounds.maxR,
-						   temp);
+				state->data.erase(state->data.begin() + bounds.minR - 1);
+				state->data.insert(state->data.begin() + bounds.maxR, temp);
 				state->row = bounds.minR - 1;
 				state->visual.row = bounds.maxR - 1;
 				indentRange(state);
@@ -631,11 +546,8 @@ bool sendVisualKeys(State *state, char c, bool onlyMotions)
 		if (bounds.maxR + 1 < state->data.size()) {
 			if (isValidMoveableChunk(state, bounds)) {
 				auto temp = state->data[bounds.maxR + 1];
-				state->data.erase(state->data.begin() +
-						  bounds.maxR + 1);
-				state->data.insert(state->data.begin() +
-							   bounds.minR,
-						   temp);
+				state->data.erase(state->data.begin() + bounds.maxR + 1);
+				state->data.insert(state->data.begin() + bounds.minR, temp);
 				state->row = bounds.minR + 1;
 				state->visual.row = bounds.maxR + 1;
 				indentRange(state);
@@ -772,18 +684,14 @@ bool sendVisualKeys(State *state, char c, bool onlyMotions)
 	} else if (c == ctrl('z')) {
 		if (state->jumplist.index > 0) {
 			state->jumplist.index--;
-			state->row =
-				state->jumplist.list[state->jumplist.index].row;
-			state->col =
-				state->jumplist.list[state->jumplist.index].col;
+			state->row = state->jumplist.list[state->jumplist.index].row;
+			state->col = state->jumplist.list[state->jumplist.index].col;
 		}
 	} else if (c == ctrl('q')) {
 		if (state->jumplist.index + 1 < state->jumplist.list.size()) {
 			state->jumplist.index++;
-			state->row =
-				state->jumplist.list[state->jumplist.index].row;
-			state->col =
-				state->jumplist.list[state->jumplist.index].col;
+			state->row = state->jumplist.list[state->jumplist.index].row;
+			state->col = state->jumplist.list[state->jumplist.index].col;
 		}
 	} else {
 		return false;

@@ -39,8 +39,7 @@ void backspaceWord(Query *input)
 {
 	while (input->cursor > 0) {
 		backspace(input);
-		if (input->cursor == 0 ||
-		    input->query[input->cursor - 1] == ' ') {
+		if (input->cursor == 0 || input->query[input->cursor - 1] == ' ') {
 			backspace(input);
 			return;
 		}

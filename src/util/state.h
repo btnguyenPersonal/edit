@@ -20,8 +20,7 @@ struct grepMatch {
 	int32_t lineNum;
 	std::string line;
 
-	grepMatch(const std::filesystem::path &p, int32_t num,
-		  const std::string &l)
+	grepMatch(const std::filesystem::path &p, int32_t num, const std::string &l)
 		: path(p)
 		, lineNum(num)
 		, line(l)

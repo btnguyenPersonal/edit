@@ -87,23 +87,17 @@ void fuzzSendKeys(int testnum, int iterations = 1000)
 	std::mt19937 gen(rd());
 
 	std::vector<char> keypresses = {
-		'a',	'b',	'c',	'd',	'e',	'f',	'g',	'h',
-		'i',	'j',	'k',	'l',	'm',	'n',	'o',	'p',
-		'q',	'r',	's',	't',	'u',	'v',	'w',	'x',
-		'y',	'z',	'A',	'B',	'C',	'D',	'E',	'F',
-		'G',	'H',	'I',	'J',	'K',	'L',	'M',	'N',
-		'O',	'P',	'Q',	'R',	'S',	'T',	'U',	'V',
-		'W',	'X',	'Y',	'Z',	'0',	'1',	'2',	'3',
-		'4',	'5',	'6',	'7',	'8',	'9',	' ',	'\b',
-		'\n',	'\t',	'\x00', '\x01', '\x02', '\x03', '\x04', '\x05',
-		'\x06', '\x07', '\x08', '\x09', '\x0A', '\x0B', '\x0C', '\x0D',
-		'\x0E', '\x0F', '\x10', '\x11', '\x12', '\x13', '\x14', '\x15',
-		'\x16', '\x17', '\x18', '\x19', '\x1A', '\x1B', '\x1C', '\x1D',
-		'\x1E', '\x1F', '\x7F', '!',	'@',	'#',	'$',	'%',
-		'^',	'&',	'*',	'(',	')',	'\'',	'"',	'`',
-		'~',	';',	':',	'[',	']',	'{',	'}',	',',
-		'<',	'.',	'>',	'/',	'?',	'|',	'\\',	'-',
-		'_',	'+',	'='
+		'a',	'b',	'c',	'd',	'e',	'f',	'g',	'h',	'i',	'j',	'k',	'l',
+		'm',	'n',	'o',	'p',	'q',	'r',	's',	't',	'u',	'v',	'w',	'x',
+		'y',	'z',	'A',	'B',	'C',	'D',	'E',	'F',	'G',	'H',	'I',	'J',
+		'K',	'L',	'M',	'N',	'O',	'P',	'Q',	'R',	'S',	'T',	'U',	'V',
+		'W',	'X',	'Y',	'Z',	'0',	'1',	'2',	'3',	'4',	'5',	'6',	'7',
+		'8',	'9',	' ',	'\b',	'\n',	'\t',	'\x00', '\x01', '\x02', '\x03', '\x04', '\x05',
+		'\x06', '\x07', '\x08', '\x09', '\x0A', '\x0B', '\x0C', '\x0D', '\x0E', '\x0F', '\x10', '\x11',
+		'\x12', '\x13', '\x14', '\x15', '\x16', '\x17', '\x18', '\x19', '\x1A', '\x1B', '\x1C', '\x1D',
+		'\x1E', '\x1F', '\x7F', '!',	'@',	'#',	'$',	'%',	'^',	'&',	'*',	'(',
+		')',	'\'',	'"',	'`',	'~',	';',	':',	'[',	']',	'{',	'}',	',',
+		'<',	'.',	'>',	'/',	'?',	'|',	'\\',	'-',	'_',	'+',	'='
 	};
 
 	std::uniform_int_distribution<> dis(0, keypresses.size() - 1);
@@ -117,8 +111,7 @@ void fuzzSendKeys(int testnum, int iterations = 1000)
 		for (int i = 0; i < iterations; i++) {
 			char randomKey = keypresses[dis(gen)];
 
-			std::cout << state->mode << "  "
-				  << getEscapedChar(randomKey) << std::endl;
+			std::cout << state->mode << "  " << getEscapedChar(randomKey) << std::endl;
 			sendKeys(state, randomKey);
 		}
 	} catch (const std::exception &e) {
@@ -126,8 +119,7 @@ void fuzzSendKeys(int testnum, int iterations = 1000)
 	}
 
 	auto end = std::chrono::high_resolution_clock::now();
-	auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(
-		end - start);
+	auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
 
 	std::cout << duration.count() << "ms" << std::endl;
 }

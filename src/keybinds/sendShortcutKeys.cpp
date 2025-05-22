@@ -31,19 +31,13 @@ void sendShortcutKeys(State *state, int32_t c)
 		state->col = findNextChar(state, c);
 		state->prevKeys = "";
 	} else if (state->prevKeys == "r") {
-		if (state->col < state->data[state->row].length() && ' ' <= c &&
-		    c <= '~') {
-			state->data[state->row] =
-				safeSubstring(state->data[state->row], 0,
-					      state->col) +
-				(char)c +
-				safeSubstring(state->data[state->row],
-					      state->col + 1);
+		if (state->col < state->data[state->row].length() && ' ' <= c && c <= '~') {
+			state->data[state->row] = safeSubstring(state->data[state->row], 0, state->col) + (char)c +
+						  safeSubstring(state->data[state->row], state->col + 1);
 		}
 		setDotCommand(state, "r" + c);
 		state->prevKeys = "";
-	} else if ((state->prevKeys[0] == 'y' || state->prevKeys[0] == 'd' ||
-		    state->prevKeys[0] == 'c') &&
+	} else if ((state->prevKeys[0] == 'y' || state->prevKeys[0] == 'd' || state->prevKeys[0] == 'c') &&
 		   state->prevKeys.length() == 2) {
 		uint32_t tempRow = state->row;
 		uint32_t tempCol = state->col;
@@ -54,8 +48,7 @@ void sendShortcutKeys(State *state, int32_t c)
 		initVisual(state, NORMAL);
 		sendVisualKeys(state, command1, true);
 		sendVisualKeys(state, c, true);
-		if (state->row != state->visual.row ||
-		    state->col != state->visual.col) {
+		if (state->row != state->visual.row || state->col != state->visual.col) {
 			sendVisualKeys(state, command0, false);
 		} else {
 			state->prevKeys = "";
@@ -65,8 +58,7 @@ void sendShortcutKeys(State *state, int32_t c)
 			state->mode = SHORTCUTS;
 		}
 		return;
-	} else if (state->prevKeys == "y" || state->prevKeys == "d" ||
-		   state->prevKeys == "c") {
+	} else if (state->prevKeys == "y" || state->prevKeys == "d" || state->prevKeys == "c") {
 		if (c == 'i' || c == 'a' || c == 'f' || c == 't') {
 			state->prevKeys += c;
 		} else {
@@ -81,14 +73,11 @@ void sendShortcutKeys(State *state, int32_t c)
 				success = sendVisualKeys(state, c, true);
 				if (state->row != state->visual.row) {
 					state->visualType = LINE;
-					state->motion =
-						"V" +
-						safeSubstring(state->motion, 1);
+					state->motion = "V" + safeSubstring(state->motion, 1);
 				}
 			} else {
 				state->visualType = LINE;
-				state->motion =
-					"V" + safeSubstring(state->motion, 1);
+				state->motion = "V" + safeSubstring(state->motion, 1);
 			}
 			if (success) {
 				sendVisualKeys(state, command, false);
@@ -105,9 +94,7 @@ void sendShortcutKeys(State *state, int32_t c)
 		state->mode = SEARCH;
 	} else if (state->prevKeys == "g" && c == 'r') {
 		initVisual(state, NORMAL);
-		setStateFromWordPosition(
-			state,
-			getWordPosition(state->data[state->row], state->col));
+		setStateFromWordPosition(state, getWordPosition(state->data[state->row], state->col));
 		setQuery(&state->grep, getInVisual(state));
 		generateGrepOutput(state, true);
 		findDefinitionFromGrepOutput(state, getInVisual(state));
@@ -163,13 +150,9 @@ void sendShortcutKeys(State *state, int32_t c)
 	} else if (c == '~') {
 		if (state->col < state->data[state->row].length()) {
 			if (isupper(state->data[state->row][state->col])) {
-				state->data[state->row][state->col] =
-					std::tolower(state->data[state->row]
-								[state->col]);
+				state->data[state->row][state->col] = std::tolower(state->data[state->row][state->col]);
 			} else if (islower(state->data[state->row][state->col])) {
-				state->data[state->row][state->col] =
-					std::toupper(state->data[state->row]
-								[state->col]);
+				state->data[state->row][state->col] = std::toupper(state->data[state->row][state->col]);
 			}
 		}
 	} else if (c == ':') {
@@ -184,39 +167,25 @@ void sendShortcutKeys(State *state, int32_t c)
 		setDotCommand(state, ">");
 	} else if (!state->recording && c == 'u') {
 		if (state->historyPosition >= 0) {
-			state->row = applyDiff(
-				state, state->history[state->historyPosition],
-				true);
+			state->row = applyDiff(state, state->history[state->historyPosition], true);
 			state->historyPosition--;
 		}
 	} else if (!state->recording && c == ctrl('r')) {
-		if (state->historyPosition <
-		    ((int32_t)state->history.size()) - 1) {
-			state->row = applyDiff(
-				state,
-				state->history[state->historyPosition + 1],
-				false);
+		if (state->historyPosition < ((int32_t)state->history.size()) - 1) {
+			state->row = applyDiff(state, state->history[state->historyPosition + 1], false);
 			state->historyPosition++;
 		}
 	} else if (c == ctrl('i')) {
 		if (state->fileStack.size() > 0) {
-			if (state->fileStackIndex + 1 <
-			    state->fileStack.size()) {
+			if (state->fileStackIndex + 1 < state->fileStack.size()) {
 				state->fileStackIndex += 1;
 			}
-			if (std::filesystem::is_regular_file(
-				    state->fileStack[state->fileStackIndex]
-					    .c_str())) {
-				state->changeFile(
-					state->fileStack[state->fileStackIndex]);
+			if (std::filesystem::is_regular_file(state->fileStack[state->fileStackIndex].c_str())) {
+				state->changeFile(state->fileStack[state->fileStackIndex]);
 				state->showFileStack = true;
 			} else {
-				state->status =
-					"file not found: " +
-					state->fileStack[state->fileStackIndex];
-				state->fileStack.erase(
-					state->fileStack.begin() +
-					state->fileStackIndex);
+				state->status = "file not found: " + state->fileStack[state->fileStackIndex];
+				state->fileStack.erase(state->fileStack.begin() + state->fileStackIndex);
 			}
 		}
 	} else if (c == ctrl('o')) {
@@ -224,23 +193,15 @@ void sendShortcutKeys(State *state, int32_t c)
 			if (state->fileStackIndex > 0) {
 				state->fileStackIndex -= 1;
 			}
-			if (std::filesystem::is_regular_file(
-				    state->fileStack[state->fileStackIndex]
-					    .c_str())) {
-				state->changeFile(
-					state->fileStack[state->fileStackIndex]);
+			if (std::filesystem::is_regular_file(state->fileStack[state->fileStackIndex].c_str())) {
+				state->changeFile(state->fileStack[state->fileStackIndex]);
 				state->showFileStack = true;
 			} else {
-				state->status =
-					"file not found: " +
-					state->fileStack[state->fileStackIndex];
-				state->fileStack.erase(
-					state->fileStack.begin() +
-					state->fileStackIndex);
+				state->status = "file not found: " + state->fileStack[state->fileStackIndex];
+				state->fileStack.erase(state->fileStack.begin() + state->fileStackIndex);
 			}
 		}
-	} else if (c == 'r' || c == 'g' || c == 'c' || c == 'd' || c == 'y' ||
-		   c == 'f' || c == 't') {
+	} else if (c == 'r' || c == 'g' || c == 'c' || c == 'd' || c == 'y' || c == 'f' || c == 't') {
 		state->prevKeys = c;
 	} else if (c == 'h' || c == KEY_LEFT) {
 		left(state);
@@ -260,18 +221,14 @@ void sendShortcutKeys(State *state, int32_t c)
 		state->row = getNextLineSameIndent(state);
 	} else if (c == '#') {
 		initVisual(state, NORMAL);
-		setStateFromWordPosition(
-			state,
-			getWordPosition(state->data[state->row], state->col));
+		setStateFromWordPosition(state, getWordPosition(state->data[state->row], state->col));
 		setQuery(&state->grep, getInVisual(state));
 		state->mode = GREP;
 		state->showAllGrep = false;
 		generateGrepOutput(state, true);
 	} else if (c == '*') {
 		initVisual(state, NORMAL);
-		setStateFromWordPosition(
-			state,
-			getWordPosition(state->data[state->row], state->col));
+		setStateFromWordPosition(state, getWordPosition(state->data[state->row], state->col));
 		setQuery(&state->search, getInVisual(state));
 		state->searching = true;
 		state->col += 1;
@@ -328,13 +285,11 @@ void sendShortcutKeys(State *state, int32_t c)
 	} else if (c == 'D') {
 		fixColOverMax(state);
 		copyToClipboard(state->data[state->row].substr(state->col));
-		state->data[state->row] =
-			state->data[state->row].substr(0, state->col);
+		state->data[state->row] = state->data[state->row].substr(0, state->col);
 	} else if (c == 'C') {
 		fixColOverMax(state);
 		copyToClipboard(state->data[state->row].substr(state->col));
-		state->data[state->row] =
-			state->data[state->row].substr(0, state->col);
+		state->data[state->row] = state->data[state->row].substr(0, state->col);
 		state->mode = TYPING;
 	} else if (c == 'I') {
 		state->col = getIndexFirstNonSpace(state);
@@ -392,8 +347,7 @@ void sendShortcutKeys(State *state, int32_t c)
 		state->col = state->data[state->row].length();
 		if (state->row + 1 < state->data.size()) {
 			ltrim(state->data[state->row + 1]);
-			state->data[state->row] +=
-				" " + state->data[state->row + 1];
+			state->data[state->row] += " " + state->data[state->row + 1];
 			state->data.erase(state->data.begin() + state->row + 1);
 		}
 		setDotCommand(state, c);
@@ -414,9 +368,7 @@ void sendShortcutKeys(State *state, int32_t c)
 		if (!state->dontSave) {
 			state->mode = FILEEXPLORER;
 			if (!state->fileExplorerOpen) {
-				state->fileExplorerIndex =
-					state->fileExplorer->expand(
-						state->filename);
+				state->fileExplorerIndex = state->fileExplorer->expand(state->filename);
 				centerFileExplorer(state);
 			}
 			state->fileExplorerOpen = true;
@@ -427,18 +379,15 @@ void sendShortcutKeys(State *state, int32_t c)
 		getAndAddNumber(state, state->row, state->col, 1);
 	} else if (c == 's') {
 		if (state->col < state->data[state->row].length()) {
-			state->data[state->row] =
-				state->data[state->row].substr(0, state->col) +
-				state->data[state->row].substr(state->col + 1);
+			state->data[state->row] = state->data[state->row].substr(0, state->col) +
+						  state->data[state->row].substr(state->col + 1);
 			state->mode = TYPING;
 		}
 	} else if (c == 'x') {
 		if (state->col < state->data[state->row].length()) {
-			copyToClipboard(
-				state->data[state->row].substr(state->col, 1));
-			state->data[state->row] =
-				state->data[state->row].substr(0, state->col) +
-				state->data[state->row].substr(state->col + 1);
+			copyToClipboard(state->data[state->row].substr(state->col, 1));
+			state->data[state->row] = state->data[state->row].substr(0, state->col) +
+						  state->data[state->row].substr(state->col + 1);
 		}
 		setDotCommand(state, c);
 	} else if (c == ctrl('y')) {
@@ -495,9 +444,7 @@ void sendShortcutKeys(State *state, int32_t c)
 		setDotCommand(state, c);
 	} else if (c == 'm') {
 		initVisual(state, NORMAL);
-		setStateFromWordPosition(
-			state,
-			getWordPosition(state->data[state->row], state->col));
+		setStateFromWordPosition(state, getWordPosition(state->data[state->row], state->col));
 		toggleLoggingCode(state, getInVisual(state), true);
 		state->mode = SHORTCUTS;
 		setDotCommand(state, c);
@@ -516,18 +463,14 @@ void sendShortcutKeys(State *state, int32_t c)
 	} else if (c == ctrl('z')) {
 		if (state->jumplist.index > 0) {
 			state->jumplist.index--;
-			state->row =
-				state->jumplist.list[state->jumplist.index].row;
-			state->col =
-				state->jumplist.list[state->jumplist.index].col;
+			state->row = state->jumplist.list[state->jumplist.index].row;
+			state->col = state->jumplist.list[state->jumplist.index].col;
 		}
 	} else if (c == ctrl('q')) {
 		if (state->jumplist.index + 1 < state->jumplist.list.size()) {
 			state->jumplist.index++;
-			state->row =
-				state->jumplist.list[state->jumplist.index].row;
-			state->col =
-				state->jumplist.list[state->jumplist.index].col;
+			state->row = state->jumplist.list[state->jumplist.index].row;
+			state->col = state->jumplist.list[state->jumplist.index].col;
 		}
 	}
 	if (state->mode != SHORTCUTS) {

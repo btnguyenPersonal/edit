@@ -23,8 +23,7 @@ void State::loadConfigFile(std::string fileLocation)
 			} else {
 				readConfigLine(config[i]);
 			}
-		} else if (!found && isLineFileRegex(config[i]) &&
-			   matchesEditorConfigGlob(config[i], this->filename)) {
+		} else if (!found && isLineFileRegex(config[i]) && matchesEditorConfigGlob(config[i], this->filename)) {
 			found = true;
 		}
 	}
@@ -44,16 +43,10 @@ void State::readConfigLine(std::string optionLine)
 		this->options.autosave = true;
 	} else if (optionLine == "autosave off") {
 		this->options.autosave = false;
-	} else if (safeSubstring(optionLine, 0,
-				 std::string("indent_style = ").length()) ==
-		   "indent_style = ") {
-		this->options.indentStyle = safeSubstring(
-			optionLine, std::string("indent_style = ").length());
-	} else if (safeSubstring(optionLine, 0,
-				 std::string("indent_size = ").length()) ==
-		   "indent_size = ") {
-		this->options.indent = std::stoi(safeSubstring(
-			optionLine, std::string("indent_size = ").length()));
+	} else if (safeSubstring(optionLine, 0, std::string("indent_style = ").length()) == "indent_style = ") {
+		this->options.indentStyle = safeSubstring(optionLine, std::string("indent_style = ").length());
+	} else if (safeSubstring(optionLine, 0, std::string("indent_size = ").length()) == "indent_size = ") {
+		this->options.indent = std::stoi(safeSubstring(optionLine, std::string("indent_size = ").length()));
 	}
 }
 
@@ -78,8 +71,7 @@ void State::changeFile(std::string filename)
 		if (this->archives[i].filename == this->filename) {
 			this->archives[i].previousState = this->previousState;
 			this->archives[i].history = this->history;
-			this->archives[i].historyPosition =
-				this->historyPosition;
+			this->archives[i].historyPosition = this->historyPosition;
 			this->archives[i].windowPosition = this->windowPosition;
 			this->archives[i].row = this->row;
 			this->archives[i].col = this->col;
@@ -105,8 +97,7 @@ void State::changeFile(std::string filename)
 			auto archive = this->archives[i];
 			this->filename = normalizedFilename;
 			this->data = readFile(normalizedFilename);
-			this->commentSymbol =
-				getCommentSymbol(normalizedFilename);
+			this->commentSymbol = getCommentSymbol(normalizedFilename);
 			this->previousState = archive.previousState;
 			this->history = archive.history;
 			this->historyPosition = archive.historyPosition;
@@ -148,8 +139,7 @@ void State::changeFile(std::string filename)
 void State::pushFileStack(std::string filename)
 {
 	if (filename != "") {
-		for (auto it = this->fileStack.begin();
-		     it != this->fileStack.end();) {
+		for (auto it = this->fileStack.begin(); it != this->fileStack.end();) {
 			if (*it == filename) {
 				it = this->fileStack.erase(it);
 			} else {
@@ -177,8 +167,7 @@ bool State::resetState(std::string filename)
 State::State()
 {
 	this->showGrep = false;
-	this->fileExplorer =
-		new FileExplorerNode(std::filesystem::current_path());
+	this->fileExplorer = new FileExplorerNode(std::filesystem::current_path());
 	this->fileExplorer->open();
 	this->fileExplorerOpen = false;
 	this->fileExplorerSize = 40;
@@ -239,8 +228,7 @@ State::State(std::string filename)
 	: State()
 {
 	auto normalizedFilename = normalizeFilename(filename);
-	this->unsavedFile =
-		!std::filesystem::is_regular_file(normalizedFilename.c_str());
+	this->unsavedFile = !std::filesystem::is_regular_file(normalizedFilename.c_str());
 	std::vector<std::string> data;
 	if (this->unsavedFile) {
 		data = { "" };

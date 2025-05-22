@@ -36,8 +36,7 @@ void sendGrepKeys(State *state, int32_t c)
 		backspaceAll(&state->grep);
 	} else if (c == ctrl('d')) {
 		for (uint32_t i = 0; i < state->maxY; i++) {
-			if (state->grep.selection + 1 <
-			    state->grepOutput.size()) {
+			if (state->grep.selection + 1 < state->grepOutput.size()) {
 				state->grep.selection += 1;
 			}
 		}
@@ -59,23 +58,15 @@ void sendGrepKeys(State *state, int32_t c)
 		state->grepPath = "";
 	} else if (c == ctrl('r')) {
 		if (state->grep.selection < state->grepOutput.size()) {
-			std::filesystem::path selectedFile =
-				state->grepOutput[state->grep.selection]
-					.path.string();
-			std::filesystem::path currentDir =
-				((std::filesystem::path)state->filename)
-					.parent_path();
-			std::filesystem::path relativePath =
-				std::filesystem::relative(selectedFile,
-							  currentDir);
+			std::filesystem::path selectedFile = state->grepOutput[state->grep.selection].path.string();
+			std::filesystem::path currentDir = ((std::filesystem::path)state->filename).parent_path();
+			std::filesystem::path relativePath = std::filesystem::relative(selectedFile, currentDir);
 			copyToClipboard(relativePath.string());
 			state->mode = SHORTCUTS;
 		}
 	} else if (c == ctrl('y')) {
 		if (state->grep.selection < state->grepOutput.size()) {
-			std::filesystem::path selectedFile =
-				state->grepOutput[state->grep.selection]
-					.path.string();
+			std::filesystem::path selectedFile = state->grepOutput[state->grep.selection].path.string();
 			copyToClipboard(selectedFile);
 			state->mode = SHORTCUTS;
 		}
@@ -88,8 +79,8 @@ void sendGrepKeys(State *state, int32_t c)
 		state->showGrep = true;
 		centerScreen(state);
 	}
-	if (state->mode == GREP && c != ctrl('u') && c != ctrl('d') &&
-	    c != ctrl('p') && c != ctrl('n') && c != KEY_UP && c != KEY_DOWN) {
+	if (state->mode == GREP && c != ctrl('u') && c != ctrl('d') && c != ctrl('p') && c != ctrl('n') &&
+	    c != KEY_UP && c != KEY_DOWN) {
 		renderScreen(state);
 		generateGrepOutput(state, true);
 	}

@@ -71,8 +71,7 @@ void sendSearchKeys(State *state, int32_t c)
 		}
 	} else if (c == '\n') {
 		if (state->replacing) {
-			replaceAll(state, state->search.query,
-				   state->replace.query);
+			replaceAll(state, state->search.query, state->replace.query);
 		}
 		state->replacing = false;
 		state->mode = SHORTCUTS;

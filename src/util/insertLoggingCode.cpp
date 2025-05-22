@@ -9,8 +9,7 @@ void toggleLoggingCode(State *state, std::string variableName, bool showValue)
 {
 	state->lastLoggingVar = variableName;
 	std::string current = state->data[state->row];
-	std::string loggingCode =
-		getLoggingCode(state, state->row, variableName, showValue);
+	std::string loggingCode = getLoggingCode(state, state->row, variableName, showValue);
 	if (loggingCode == "") {
 		return;
 	}
@@ -43,30 +42,26 @@ void removeAllLoggingCode(State *state)
 	std::string logPattern = getLoggingRegex(state);
 	if (logPattern != "") {
 		for (int32_t i = state->data.size() - 1; i >= 0; i--) {
-			if (std::regex_search(state->data[i],
-					      std::regex(logPattern))) {
+			if (std::regex_search(state->data[i], std::regex(logPattern))) {
 				state->data.erase(state->data.begin() + i);
 			}
 		}
 	}
 }
 
-std::string getLoggingCode(State *state, uint32_t row, std::string variableName,
-			   bool showValue)
+std::string getLoggingCode(State *state, uint32_t row, std::string variableName, bool showValue)
 {
 	std::string extension = getExtension(state->filename);
 	std::string rowStr = std::to_string(row + 1);
 	if (extension == "cpp") {
-		std::string s =
-			"std::cout << \"" + rowStr + " " + variableName + "\"";
+		std::string s = "std::cout << \"" + rowStr + " " + variableName + "\"";
 		if (showValue) {
 			s += " << " + variableName;
 		}
 		s += " << std::endl;";
 		return s;
 	} else {
-		std::string s = "console.log('" + rowStr + "', " + "'" +
-				replaceAll(variableName, "'", "\\'") + "'";
+		std::string s = "console.log('" + rowStr + "', " + "'" + replaceAll(variableName, "'", "\\'") + "'";
 		if (showValue) {
 			s += ", " + variableName;
 		}

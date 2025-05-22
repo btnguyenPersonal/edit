@@ -50,8 +50,7 @@ void sendFindFileKeys(State *state, int32_t c)
 		state->findFile.selection = 0;
 	} else if (c == ctrl('d')) {
 		for (uint32_t i = 0; i < state->maxY; i++) {
-			if (state->findFile.selection + 1 <
-			    state->findFileOutput.size()) {
+			if (state->findFile.selection + 1 < state->findFileOutput.size()) {
 				state->findFile.selection += 1;
 			}
 		}
@@ -63,8 +62,7 @@ void sendFindFileKeys(State *state, int32_t c)
 		}
 	} else if (c == KEY_DOWN || c == ctrl('n')) {
 		state->selectAll = false;
-		if (state->findFile.selection + 1 <
-		    state->findFileOutput.size()) {
+		if (state->findFile.selection + 1 < state->findFileOutput.size()) {
 			state->findFile.selection += 1;
 		}
 	} else if (c == KEY_UP || c == ctrl('p')) {
@@ -75,24 +73,16 @@ void sendFindFileKeys(State *state, int32_t c)
 	} else if (c == ctrl('r')) {
 		if (state->findFile.selection < state->findFileOutput.size()) {
 			state->selectAll = false;
-			auto selectedFile =
-				state->findFileOutput[state->findFile.selection]
-					.string();
-			std::filesystem::path currentDir =
-				((std::filesystem::path)state->filename)
-					.parent_path();
-			std::filesystem::path relativePath =
-				std::filesystem::relative(selectedFile,
-							  currentDir);
+			auto selectedFile = state->findFileOutput[state->findFile.selection].string();
+			std::filesystem::path currentDir = ((std::filesystem::path)state->filename).parent_path();
+			std::filesystem::path relativePath = std::filesystem::relative(selectedFile, currentDir);
 			copyToClipboard(relativePath.string());
 			state->mode = SHORTCUTS;
 		}
 	} else if (c == ctrl('y')) {
 		if (state->findFile.selection < state->findFileOutput.size()) {
 			state->selectAll = false;
-			auto selectedFile =
-				state->findFileOutput[state->findFile.selection]
-					.string();
+			auto selectedFile = state->findFileOutput[state->findFile.selection].string();
 			copyToClipboard(selectedFile);
 			state->mode = SHORTCUTS;
 		}
@@ -108,14 +98,11 @@ void sendFindFileKeys(State *state, int32_t c)
 	} else if (c == '\n') {
 		if (state->findFile.selection < state->findFileOutput.size()) {
 			state->selectAll = false;
-			auto selectedFile =
-				state->findFileOutput[state->findFile.selection]
-					.string();
+			auto selectedFile = state->findFileOutput[state->findFile.selection].string();
 			state->resetState(selectedFile);
 		}
 	}
-	if (state->mode == FINDFILE && c != ctrl('u') && c != ctrl('d') &&
-	    c != ctrl('p') && c != ctrl('n')) {
+	if (state->mode == FINDFILE && c != ctrl('u') && c != ctrl('d') && c != ctrl('p') && c != ctrl('n')) {
 		renderScreen(state);
 		generateFindFileOutput(state);
 	}

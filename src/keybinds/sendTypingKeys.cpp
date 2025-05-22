@@ -11,8 +11,7 @@ void insertNewline(State *state)
 {
 	std::string current = state->data[state->row];
 	state->data[state->row] = current.substr(0, state->col);
-	state->data.insert(state->data.begin() + state->row + 1,
-			   current.substr(state->col));
+	state->data.insert(state->data.begin() + state->row + 1, current.substr(state->col));
 }
 
 void indentLineWhenTypingFirstChar(State *state)
@@ -44,9 +43,7 @@ void sendTypingKeys(State *state, int32_t c)
 			state->col = 0;
 		} else {
 			std::string current = state->data[state->row];
-			state->data[state->row] =
-				current.substr(0, state->col) + (char)c +
-				current.substr(state->col);
+			state->data[state->row] = current.substr(0, state->col) + (char)c + current.substr(state->col);
 			state->col += 1;
 		}
 	} else if (c == '\n') {
@@ -56,9 +53,7 @@ void sendTypingKeys(State *state, int32_t c)
 	} else if (c == KEY_BACKSPACE || c == 127) {
 		if (state->col > 0) {
 			std::string current = state->data[state->row];
-			state->data[state->row] =
-				current.substr(0, state->col - 1) +
-				current.substr(state->col);
+			state->data[state->row] = current.substr(0, state->col - 1) + current.substr(state->col);
 			state->col -= 1;
 		} else if (state->row > 0) {
 			state->col = state->data[state->row - 1].length();
@@ -69,31 +64,25 @@ void sendTypingKeys(State *state, int32_t c)
 	} else if (c == ctrl('w')) {
 		std::string current = state->data[state->row];
 		uint32_t index = b(state);
-		state->data[state->row] =
-			current.substr(0, index) + current.substr(state->col);
+		state->data[state->row] = current.substr(0, index) + current.substr(state->col);
 		state->col = index;
 	} else if (' ' <= c && c <= '~') {
 		std::string current = state->data[state->row];
-		state->data[state->row] = current.substr(0, state->col) +
-					  (char)c + current.substr(state->col);
+		state->data[state->row] = current.substr(0, state->col) + (char)c + current.substr(state->col);
 		indentLineWhenTypingFirstChar(state);
 		state->col += 1;
 	} else if (c == ctrl('t')) {
 		std::string current = state->data[state->row];
-		state->data[state->row] = current.substr(0, state->col) + '\t' +
-					  current.substr(state->col);
+		state->data[state->row] = current.substr(0, state->col) + '\t' + current.substr(state->col);
 		state->col += 1;
 	} else if (c == ctrl('v')) {
 		state->prevKeys = 'v';
 	} else if (c == ctrl('i')) { // TAB
-		std::string completion =
-			autocomplete(state, getCurrentWord(state));
-		if (state->data[state->row].substr(
-			    state->col, completion.length()) != completion) {
+		std::string completion = autocomplete(state, getCurrentWord(state));
+		if (state->data[state->row].substr(state->col, completion.length()) != completion) {
 			std::string current = state->data[state->row];
 			state->data[state->row] =
-				current.substr(0, state->col) + completion +
-				current.substr(state->col);
+				current.substr(0, state->col) + completion + current.substr(state->col);
 			state->col += completion.length();
 		}
 	} else if (c == KEY_LEFT) {
