@@ -19,7 +19,7 @@ void State::loadConfigFile(std::string fileLocation)
 	for (uint32_t i = 0; i < config.size(); i++) {
 		if (found) {
 			if (isLineFileRegex(config[i])) {
-				return;
+				found = false;
 			} else {
 				readConfigLine(config[i]);
 			}
