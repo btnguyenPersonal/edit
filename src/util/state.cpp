@@ -111,8 +111,6 @@ void State::changeFile(std::string filename)
 	}
 	auto data = readFile(normalizedFilename);
 	this->filename = normalizedFilename;
-	this->loadConfigFile(std::string(getenv("HOME")) + "/.editorconfig");
-	this->loadConfigFile("./.editorconfig");
 	this->data = data;
 	this->previousState = data;
 	this->commentSymbol = getCommentSymbol(normalizedFilename);
@@ -134,6 +132,8 @@ void State::changeFile(std::string filename)
 	this->motion = std::string("");
 	this->mode = SHORTCUTS;
 	refocusFileExplorer(this, false);
+	this->loadConfigFile(std::string(getenv("HOME")) + "/.editorconfig");
+	this->loadConfigFile("./.editorconfig");
 }
 
 void State::pushFileStack(std::string filename)
