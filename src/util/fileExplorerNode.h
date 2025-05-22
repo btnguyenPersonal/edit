@@ -18,7 +18,7 @@ class FileExplorerNode {
 	FileExplorerNode();
 	FileExplorerNode(const std::filesystem::path &path);
 	FileExplorerNode(const std::filesystem::path &path, FileExplorerNode *parent);
-	static FileExplorerNode *getFileExplorerNode(FileExplorerNode *node, int32_t index);
+	FileExplorerNode *getNode(int32_t n);
 	int32_t getTotalChildren();
 	int32_t expand(std::string input);
 	int32_t getChildIndex(FileExplorerNode *node);

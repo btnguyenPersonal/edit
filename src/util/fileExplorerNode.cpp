@@ -138,13 +138,13 @@ void FileExplorerNode::open()
 	}
 }
 
-FileExplorerNode *FileExplorerNode::getFileExplorerNode(FileExplorerNode *node, int32_t n)
+FileExplorerNode *FileExplorerNode::getNode(int32_t n)
 {
-	if (n < 0 || !node) {
+	if (n < 0) {
 		return nullptr;
 	}
 	std::stack<FileExplorerNode *> stack;
-	stack.push(node);
+	stack.push(this);
 	int32_t count = 0;
 	while (!stack.empty()) {
 		FileExplorerNode *current = stack.top();
