@@ -170,31 +170,9 @@ void sendShortcutKeys(State *state, int32_t c)
 			state->historyPosition++;
 		}
 	} else if (c == ctrl('i')) {
-		if (state->fileStack.size() > 0) {
-			if (state->fileStackIndex + 1 < state->fileStack.size()) {
-				state->fileStackIndex += 1;
-			}
-			if (std::filesystem::is_regular_file(state->fileStack[state->fileStackIndex].c_str())) {
-				state->changeFile(state->fileStack[state->fileStackIndex]);
-				state->showFileStack = true;
-			} else {
-				state->status = "file not found: " + state->fileStack[state->fileStackIndex];
-				state->fileStack.erase(state->fileStack.begin() + state->fileStackIndex);
-			}
-		}
+		forwardFileStack(state);
 	} else if (c == ctrl('o')) {
-		if (state->fileStack.size() > 0) {
-			if (state->fileStackIndex > 0) {
-				state->fileStackIndex -= 1;
-			}
-			if (std::filesystem::is_regular_file(state->fileStack[state->fileStackIndex].c_str())) {
-				state->changeFile(state->fileStack[state->fileStackIndex]);
-				state->showFileStack = true;
-			} else {
-				state->status = "file not found: " + state->fileStack[state->fileStackIndex];
-				state->fileStack.erase(state->fileStack.begin() + state->fileStackIndex);
-			}
-		}
+		backwardFileStack(state);
 	} else if (c == 'r' || c == 'g' || c == 'c' || c == 'd' || c == 'y' || c == 'f' || c == 't') {
 		state->prevKeys = c;
 	} else if (c == 'h' || c == KEY_LEFT) {
@@ -251,9 +229,6 @@ void sendShortcutKeys(State *state, int32_t c)
 		state->mode = VISUAL;
 		initVisual(state, LINE);
 	} else if (c == 'b') {
-		if (state->col >= state->data[state->row].length()) {
-			state->col = state->data[state->row].length();
-		}
 		state->col = b(state);
 	} else if (c == 'w') {
 		state->col = w(state);

@@ -18,6 +18,38 @@
 #include <vector>
 #include <regex>
 
+void forwardFileStack(State *state)
+{
+	if (state->fileStack.size() > 0) {
+		if (state->fileStackIndex + 1 < state->fileStack.size()) {
+			state->fileStackIndex += 1;
+		}
+		if (std::filesystem::is_regular_file(state->fileStack[state->fileStackIndex].c_str())) {
+			state->changeFile(state->fileStack[state->fileStackIndex]);
+			state->showFileStack = true;
+		} else {
+			state->status = "file not found: " + state->fileStack[state->fileStackIndex];
+			state->fileStack.erase(state->fileStack.begin() + state->fileStackIndex);
+		}
+	}
+}
+
+void backwardFileStack(State *state)
+{
+	if (state->fileStack.size() > 0) {
+		if (state->fileStackIndex > 0) {
+			state->fileStackIndex -= 1;
+		}
+		if (std::filesystem::is_regular_file(state->fileStack[state->fileStackIndex].c_str())) {
+			state->changeFile(state->fileStack[state->fileStackIndex]);
+			state->showFileStack = true;
+		} else {
+			state->status = "file not found: " + state->fileStack[state->fileStackIndex];
+			state->fileStack.erase(state->fileStack.begin() + state->fileStackIndex);
+		}
+	}
+}
+
 void swapCase(State *state, uint32_t r, uint32_t c)
 {
 	if (c < state->data[r].length()) {
@@ -1373,6 +1405,7 @@ void generateFindFileOutput(State *state)
 
 uint32_t w(State *state)
 {
+	fixColOverMax(state);
 	bool space = state->data[state->row][state->col] == ' ';
 	for (uint32_t i = state->col + 1; i < state->data[state->row].size(); i += 1) {
 		if (state->data[state->row][i] == ' ') {
@@ -1389,13 +1422,17 @@ uint32_t w(State *state)
 
 uint32_t b(State *state)
 {
-	if (state->col == 0 || state->data[state->row].empty())
+	fixColOverMax(state);
+	if (state->col == 0 || state->data[state->row].empty()) {
 		return 0;
+	}
 	int32_t i = state->col - 1;
-	while (i >= 0 && state->data[state->row][i] == ' ')
+	while (i >= 0 && state->data[state->row][i] == ' ') {
 		i--;
-	if (i < 0)
+	}
+	if (i < 0) {
 		return 0;
+	}
 	bool isAlnum = isAlphanumeric(state->data[state->row][i]);
 	for (i -= 1; i >= 0; i--) {
 		if (state->data[state->row][i] == ' ') {
@@ -1607,9 +1644,7 @@ void downVisual(State *state)
 
 void left(State *state)
 {
-	if (state->col >= state->data[state->row].length()) {
-		state->col = state->data[state->row].length();
-	}
+	fixColOverMax(state);
 	if (state->col > 0) {
 		state->col -= 1;
 	}
@@ -1617,9 +1652,7 @@ void left(State *state)
 
 void right(State *state)
 {
-	if (state->col >= state->data[state->row].length()) {
-		state->col = state->data[state->row].length();
-	}
+	fixColOverMax(state);
 	if (state->col < state->data[state->row].length()) {
 		state->col += 1;
 	}

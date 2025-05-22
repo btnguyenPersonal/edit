@@ -7,6 +7,8 @@
 #include <string>
 #include <vector>
 
+void forwardFileStack(State *state);
+void backwardFileStack(State *state);
 void swapCase(State *state, uint32_t r, uint32_t c);
 void focusHarpoon(State *state);
 void recordHistory(State *state, std::vector<diffLine> diff);
