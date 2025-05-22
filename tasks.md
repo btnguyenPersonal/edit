@@ -1,5 +1,7 @@
 ## TODO
 
+- fix tabs length % indent_size when tabs arent at start
+
 - add cleanup file to end of sendKeys
 
 - :retab command (find all preceding spaces of state->indent length and convert to tab)
