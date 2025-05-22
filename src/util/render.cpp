@@ -79,7 +79,7 @@ void mvaddch_color(int32_t r, int32_t c, char ch, int32_t color)
 std::vector<Pixel> toPixels(std::string s, int32_t color)
 {
 	std::vector<Pixel> pixels = std::vector<Pixel>();
-	for (char c: s) {
+	for (char c : s) {
 		pixels.push_back({ c, color });
 	}
 	return pixels;
@@ -88,12 +88,18 @@ std::vector<Pixel> toPixels(std::string s, int32_t color)
 void renderPixels(int32_t r, std::vector<Pixel> pixels)
 {
 	int32_t c = 0;
-	for (Pixel p: pixels) {
+	for (Pixel p : pixels) {
 		attron(COLOR_PAIR(p.color));
 		mvaddch(r, c, p.c);
 		attroff(COLOR_PAIR(p.color));
 		c++;
 	}
+}
+
+void insertPixels(std::vector<Pixel> *pixels, std::string s, int32_t color)
+{
+	std::vector<Pixel> tmp = toPixels(s, color);
+	pixels->insert(std::end(*pixels), std::begin(tmp), std::end(tmp));
 }
 
 void initColors()
@@ -208,27 +214,26 @@ int32_t renderStatusBar(State *state)
 
 	std::vector<Pixel> pixels = std::vector<Pixel>();
 	if (state->mode == NAMING) {
-		auto tmp = toPixels(std::string("name: ") + state->name.query, WHITE);
-		pixels.insert(std::end(pixels), std::begin(tmp), std::end(tmp));
+		std::string prefix = "name: ";
+		insertPixels(&pixels, prefix + state->name.query, WHITE);
 		renderPixels(0, pixels);
-		offset += pixels.size();
+		offset += prefix.length() + state->name.cursor;
 		return offset;
 	} else if (state->mode == COMMANDLINE) {
-		mvprintw_color(0, offset, ":%s", state->commandLine.query.c_str(), WHITE);
-		offset += state->commandLine.cursor + 1;
+		std::string prefix = ":";
+		insertPixels(&pixels, prefix + state->commandLine.query, WHITE);
+		renderPixels(0, pixels);
+		offset += prefix.length() + state->commandLine.cursor;
 		return offset;
 	} else if (state->mode == GREP) {
-		std::string gPath;
-		if (state->grepPath != "") {
-			gPath = state->grepPath;
-			mvprintw_color(0, offset, "%s", gPath.c_str(), state->showAllGrep ? DARKGREEN : GREEN);
-		}
-		offset += gPath.length();
-		mvprintw_color(0, offset, "> %s", state->grep.query.c_str(), state->showAllGrep ? DARKGREEN : GREEN);
-		renderNumMatches(offset + state->grep.query.length() + 4, state->grep.selection + 1,
-				 state->grepOutput.size());
-		offset += state->grep.cursor;
-		offset += 2;
+		std::string prefix = state->grepPath + "> ";
+		insertPixels(&pixels, prefix + state->grep.query, state->showAllGrep ? DARKGREEN : GREEN);
+		insertPixels(&pixels, "  ", WHITE);
+		insertPixels(&pixels, std::to_string(state->grep.selection + 1), WHITE);
+		insertPixels(&pixels, " of ", WHITE);
+		insertPixels(&pixels, std::to_string(state->grepOutput.size()), WHITE);
+		renderPixels(0, pixels);
+		offset += prefix.length() + state->grep.cursor;
 		return offset;
 	} else if (state->mode == FINDFILE) {
 		mvprintw_color(0, offset, "> ", "", YELLOW);
