@@ -89,6 +89,7 @@ void State::readConfigLine(std::string line)
 
 void State::setDefaultOptions()
 {
+	this->options.insert_final_newline = false;
 	this->options.autosave = true;
 	this->options.wordwrap = false;
 	this->options.showmode = true;
