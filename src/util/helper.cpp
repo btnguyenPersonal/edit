@@ -18,6 +18,46 @@
 #include <vector>
 #include <regex>
 
+void focusHarpoon(State *state)
+{
+	for (uint32_t i = 0; i < 10; i++) {
+		if (state->harpoonFiles.count(i) > 0 && state->harpoonFiles[i] == state->filename) {
+			state->harpoonIndex = i;
+		}
+	}
+}
+
+void recordHistory(State *state, std::vector<diffLine> diff)
+{
+	if (state->historyPosition < (int32_t)state->history.size()) {
+		state->history.erase(state->history.begin() + state->historyPosition + 1, state->history.end());
+	}
+	state->history.push_back(diff);
+	state->historyPosition = (int32_t)state->history.size() - 1;
+	expect(state->historyPosition >= 0);
+}
+
+void recordJumpList(State *state)
+{
+	if (state->jumplist.list.size() > 0) {
+		auto pos = state->jumplist.list.back();
+		if (pos.row != state->row || pos.col != state->col) {
+			state->jumplist.list.erase(state->jumplist.list.begin() + state->jumplist.index + 1,
+						   state->jumplist.list.end());
+			state->jumplist.list.push_back({ state->row, state->col });
+			state->jumplist.index = state->jumplist.list.size() - 1;
+		}
+	} else {
+		state->jumplist.list.push_back({ state->row, state->col });
+		state->jumplist.index = state->jumplist.list.size() - 1;
+	}
+}
+
+void recordMacroCommand(State *state, char c)
+{
+	state->macroCommand += c;
+}
+
 void insertFinalEmptyNewline(State *state)
 {
 	if (state->data.size() > 0 && state->data[state->data.size() - 1] != "") {

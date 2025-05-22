@@ -2,6 +2,7 @@
 #include "util/helper.h"
 #include "util/render.h"
 #include "util/state.h"
+#include "util/cleanup.h"
 #include <cstdint>
 
 int32_t main(int32_t argc, char *argv[])
@@ -26,6 +27,7 @@ int32_t main(int32_t argc, char *argv[])
 		c = getch();
 		if (c != ERR) {
 			sendKeys(state, c);
+			cleanup(state, c);
 			renderScreen(state);
 		}
 	}

@@ -7,6 +7,10 @@
 #include <string>
 #include <vector>
 
+void focusHarpoon(State *state);
+void recordHistory(State *state, std::vector<diffLine> diff);
+void recordJumpList(State *state);
+void recordMacroCommand(State *state, char c);
 void insertFinalEmptyNewline(State *state);
 std::string replaceAll(std::string str, const std::string &from, const std::string &to);
 bool isLineFileRegex(const std::string &line);
