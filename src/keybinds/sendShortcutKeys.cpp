@@ -148,13 +148,7 @@ void sendShortcutKeys(State *state, int32_t c)
 	} else if (state->prevKeys != "") {
 		state->prevKeys = "";
 	} else if (c == '~') {
-		if (state->col < state->data[state->row].length()) {
-			if (isupper(state->data[state->row][state->col])) {
-				state->data[state->row][state->col] = std::tolower(state->data[state->row][state->col]);
-			} else if (islower(state->data[state->row][state->col])) {
-				state->data[state->row][state->col] = std::toupper(state->data[state->row][state->col]);
-			}
-		}
+		swapCase(state, state->row, state->col);
 	} else if (c == ':') {
 		state->mode = COMMANDLINE;
 	} else if (c == '<') {

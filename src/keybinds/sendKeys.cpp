@@ -52,5 +52,8 @@ void sendKeys(State *state, int32_t c)
 	case MULTICURSOR:
 		sendMultiCursorKeys(state, c);
 		break;
+	case NAMING:
+		state->status = "Error: in NAMING mode outside of naming loop";
+		break;
 	}
 }

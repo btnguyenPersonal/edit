@@ -18,6 +18,18 @@
 #include <vector>
 #include <regex>
 
+void swapCase(State *state, uint32_t r, uint32_t c)
+{
+	if (c < state->data[r].length()) {
+		char tmp = state->data[r][c];
+		if (isupper(tmp)) {
+			state->data[r][c] = std::tolower(tmp);
+		} else if (islower(tmp)) {
+			state->data[r][c] = std::tolower(tmp);
+		}
+	}
+}
+
 void focusHarpoon(State *state)
 {
 	for (uint32_t i = 0; i < 10; i++) {

@@ -7,6 +7,7 @@
 #include <string>
 #include <vector>
 
+void swapCase(State *state, uint32_t r, uint32_t c);
 void focusHarpoon(State *state);
 void recordHistory(State *state, std::vector<diffLine> diff);
 void recordJumpList(State *state);
