@@ -11,7 +11,7 @@ std::string trimLeadingComment(State *state, std::string line)
 {
 	std::string outputLine = line;
 	for (size_t i = 0; i < line.length(); i++) {
-		if (line[i] != ' ') {
+		if (line[i] != getIndentCharacter(state)) {
 			if (line.substr(i, state->commentSymbol.length()) ==
 			    state->commentSymbol) {
 				if (line.substr(i,

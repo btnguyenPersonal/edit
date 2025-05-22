@@ -16,6 +16,35 @@
 #include <stdexcept>
 #include <string>
 #include <vector>
+#include <regex>
+
+std::string replaceAll(std::string str, const std::string &from,
+		       const std::string &to)
+{
+	size_t pos = 0;
+	while ((pos = str.find(from, pos)) != std::string::npos) {
+		str.replace(pos, from.length(), to);
+		pos += to.length();
+	}
+	return str;
+}
+
+bool isLineFileRegex(const std::string &line)
+{
+	return line.front() == '[' && line.back() == ']';
+}
+
+bool matchesEditorConfigGlob(const std::string& pattern, const std::string& filepath)
+{
+    auto cleanPattern = safeSubstring(pattern, 1, pattern.length() - 2);
+    cleanPattern = replaceAll(cleanPattern, "*", ".*");
+
+    try {
+        return std::regex_search(filepath, std::regex(cleanPattern));
+	} catch (const std::exception &e) {
+        return false;
+    }
+}
 
 std::string getRelativeToLastAndRoute(State *state)
 {
@@ -926,10 +955,10 @@ char unctrl(char c)
 	return c + 'a' - 1;
 }
 
-uint32_t getIndent(const std::string &str)
+uint32_t getIndent(State* state, const std::string &str)
 {
 	for (uint32_t i = 0; i < str.length(); i++) {
-		if (str[i] != ' ') {
+		if (str[i] != getIndentCharacter(state)) {
 			return i;
 		}
 	}
@@ -965,9 +994,9 @@ uint32_t getNextEmptyLine(State *state)
 uint32_t getPrevLineSameIndent(State *state)
 {
 	uint32_t current =
-		getIndent(trimLeadingComment(state, state->data[state->row]));
+		getIndent(state, trimLeadingComment(state, state->data[state->row]));
 	for (int32_t i = (int32_t)state->row - 1; i >= 0; i--) {
-		if (current == getIndent(trimLeadingComment(state,
+		if (current == getIndent(state, trimLeadingComment(state,
 							    state->data[i])) &&
 		    state->data[i] != "") {
 			return i;
@@ -979,9 +1008,9 @@ uint32_t getPrevLineSameIndent(State *state)
 uint32_t getNextLineSameIndent(State *state)
 {
 	uint32_t current =
-		getIndent(trimLeadingComment(state, state->data[state->row]));
+		getIndent(state, trimLeadingComment(state, state->data[state->row]));
 	for (uint32_t i = state->row + 1; i < state->data.size(); i++) {
-		if (current == getIndent(trimLeadingComment(state,
+		if (current == getIndent(state, trimLeadingComment(state,
 							    state->data[i])) &&
 		    state->data[i] != "") {
 			return i;
