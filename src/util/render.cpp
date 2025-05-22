@@ -36,6 +36,11 @@
 #define ORANGE 10
 #define DARKGREEN 11
 
+struct Pixel {
+	char c;
+	int32_t color;
+};
+
 int32_t invertColor(int32_t color)
 {
 	return color + 11;
@@ -69,6 +74,26 @@ void mvaddch_color(int32_t r, int32_t c, char ch, int32_t color)
 	attron(COLOR_PAIR(color));
 	mvaddch(r, c, ch);
 	attroff(COLOR_PAIR(color));
+}
+
+std::vector<Pixel> toPixels(std::string s, int32_t color)
+{
+	std::vector<Pixel> pixels = std::vector<Pixel>();
+	for (char c: s) {
+		pixels.push_back({ c, color });
+	}
+	return pixels;
+}
+
+void renderPixels(int32_t r, std::vector<Pixel> pixels)
+{
+	int32_t c = 0;
+	for (Pixel p: pixels) {
+		attron(COLOR_PAIR(p.color));
+		mvaddch(r, c, p.c);
+		attroff(COLOR_PAIR(p.color));
+		c++;
+	}
 }
 
 void initColors()
@@ -181,9 +206,12 @@ int32_t renderStatusBar(State *state)
 	int32_t cursor = -1;
 	int32_t offset = 0;
 
+	std::vector<Pixel> pixels = std::vector<Pixel>();
 	if (state->mode == NAMING) {
-		mvprintw_color(0, offset, "name: %s", state->name.query.c_str(), WHITE);
-		offset += state->name.cursor + 6;
+		auto tmp = toPixels(std::string("name: ") + state->name.query, WHITE);
+		pixels.insert(std::end(pixels), std::begin(tmp), std::end(tmp));
+		renderPixels(0, pixels);
+		offset += pixels.size();
 		return offset;
 	} else if (state->mode == COMMANDLINE) {
 		mvprintw_color(0, offset, ":%s", state->commandLine.query.c_str(), WHITE);
