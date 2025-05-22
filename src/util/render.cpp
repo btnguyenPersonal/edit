@@ -129,17 +129,6 @@ void initColors()
 	init_pair(invertColor(DARKGREEN), _COLOR_BLACK, _COLOR_DARKGREEN);
 }
 
-void renderNumMatches(int32_t offset, int32_t selection, int32_t total)
-{
-	int32_t index = offset;
-	mvprintw_color(0, index, "%d", selection, WHITE);
-	index += std::to_string(selection).length();
-	mvprintw_color(0, index, " of ", "", WHITE);
-	index += 4;
-	mvprintw_color(0, index, "%d", total, WHITE);
-	index += std::to_string(total).length();
-}
-
 void renderFileStack(State *state)
 {
 	int32_t start = (int32_t)state->fileStack.size() - 1;
@@ -209,41 +198,46 @@ std::string getDisplayModeName(State *state)
 
 int32_t renderStatusBar(State *state)
 {
-	int32_t cursor = -1;
-	int32_t offset = 0;
-
+	std::string prefix;
 	std::vector<Pixel> pixels = std::vector<Pixel>();
+
+	if (state->status.length() > 0) {
+		prefix = "status: ";
+		insertPixels(&pixels, prefix + state->name.query, RED);
+		renderPixels(0, pixels);
+	}
+
 	if (state->mode == NAMING) {
-		std::string prefix = "name: ";
+		prefix = "name: ";
 		insertPixels(&pixels, prefix + state->name.query, WHITE);
 		renderPixels(0, pixels);
-		offset += prefix.length() + state->name.cursor;
-		return offset;
+		return prefix.length() + state->name.cursor;
 	} else if (state->mode == COMMANDLINE) {
 		std::string prefix = ":";
 		insertPixels(&pixels, prefix + state->commandLine.query, WHITE);
 		renderPixels(0, pixels);
-		offset += prefix.length() + state->commandLine.cursor;
-		return offset;
+		return prefix.length() + state->commandLine.cursor;
 	} else if (state->mode == GREP) {
-		std::string prefix = state->grepPath + "> ";
+		prefix = state->grepPath + "> ";
 		insertPixels(&pixels, prefix + state->grep.query, state->showAllGrep ? DARKGREEN : GREEN);
 		insertPixels(&pixels, "  ", WHITE);
 		insertPixels(&pixels, std::to_string(state->grep.selection + 1), WHITE);
 		insertPixels(&pixels, " of ", WHITE);
 		insertPixels(&pixels, std::to_string(state->grepOutput.size()), WHITE);
 		renderPixels(0, pixels);
-		offset += prefix.length() + state->grep.cursor;
-		return offset;
+		return prefix.length() + state->grep.cursor;
 	} else if (state->mode == FINDFILE) {
-		mvprintw_color(0, offset, "> ", "", YELLOW);
-		mvprintw_color(0, offset + 2, "%s", state->findFile.query.c_str(),
-			       state->selectAll ? invertColor(YELLOW) : YELLOW);
-		renderNumMatches(offset + state->findFile.query.length() + 4, state->findFile.selection + 1,
-				 state->findFileOutput.size());
-		offset += state->findFile.cursor + 2;
-		return offset;
+		prefix = "> ";
+		insertPixels(&pixels, prefix, YELLOW);
+		insertPixels(&pixels, state->findFile.query, state->selectAll ? invertColor(YELLOW) : YELLOW);
+		insertPixels(&pixels, "  ", WHITE);
+		insertPixels(&pixels, std::to_string(state->findFile.selection + 1), WHITE);
+		insertPixels(&pixels, " of ", WHITE);
+		insertPixels(&pixels, std::to_string(state->findFileOutput.size()), WHITE);
+		renderPixels(0, pixels);
+		return prefix.length() + state->findFile.cursor;
 	} else if (state->searching || state->mode == SEARCH) {
+		prefix = "/";
 		std::string displayQuery = state->search.query;
 		for (size_t i = 0; i < displayQuery.length(); ++i) {
 			if (displayQuery[i] == '\n') {
@@ -251,59 +245,44 @@ int32_t renderStatusBar(State *state)
 				i++;
 			}
 		}
-		mvprintw_color(0, offset, "/%s", displayQuery.c_str(), state->searchFail ? RED : GREEN);
+		insertPixels(&pixels, prefix + displayQuery, state->searchFail ? RED : GREEN);
 		if (state->replacing) {
-			offset += displayQuery.length() + 1;
-			mvprintw_color(0, offset, "/%s", state->replace.query.c_str(), MAGENTA);
-			return offset + state->replace.cursor + 1;
+			insertPixels(&pixels, prefix + state->replace.query, MAGENTA);
+			renderPixels(0, pixels);
+			return prefix.length() * 2 + displayQuery.length() + state->replace.cursor;
 		}
 		if (state->mode == SEARCH) {
-			return offset + state->search.cursor + 1;
-		} else if (state->searching) {
-			offset += state->search.cursor + 1;
+			renderPixels(0, pixels);
+			return prefix.length() + state->search.cursor;
 		}
 	} else {
-		int32_t left = offset;
 		for (uint32_t i = 0; i < 10; i++) {
 			std::string s;
 			if (state->harpoonFiles.count(i) > 0) {
-				s = "[" + getHarpoonName(state, i) + "]";
+				s = "[" + std::to_string(i + 1) + "]";
+				bool currentSelected = state->harpoonFiles[i] == state->filename &&
+						       state->harpoonIndex == i;
+				insertPixels(&pixels, s, currentSelected ? YELLOW : GREY);
 			} else {
-				s = "   ";
-			}
-			int color;
-			if (state->harpoonFiles.count(i) > 0) {
-				color = state->harpoonFiles[i] == state->filename && state->harpoonIndex == i ? YELLOW :
-														GREY;
-			} else {
-				color = GREY;
-			}
-			mvprintw_color(0, left, "%s", s.c_str(), color);
-			left += s.length();
-			if (s != "   ") {
-				offset = left;
+				insertPixels(&pixels, "   ", GREY);
 			}
 		}
 	}
-	auto displayFileName = setStringToLength(state->filename, state->maxX - 30);
-	mvprintw_color(0, state->maxX - (displayFileName.length() + 2), "\"%s\"", displayFileName.c_str(),
-		       state->unsavedFile ? GREY : WHITE);
-	if (state->status.length() > 0) {
-		mvprintw_color(0, (state->maxX / 2) - (state->status.length() / 2), "%s", state->status.c_str(), RED);
-	}
+
+	auto displayFileName = "\"" + setStringToLength(state->filename, state->maxX - 30) + "\"";
+	auto tmp = displayFileName.length() + pixels.size();
+	auto len = state->maxX > tmp ? state->maxX - tmp : 0;
+	prefix = std::string(len, ' ');
+	insertPixels(&pixels, prefix + displayFileName, state->unsavedFile ? GREY : WHITE);
 
 	if (state->options.showmode) {
+		std::string prefix = " --%s-- ";
 		std::string modename = getDisplayModeName(state);
-		mvprintw_color(0, offset, " --%s-- ", modename.c_str(), getModeColor(state));
-		offset += modename.length() + 6;
+		insertPixels(&pixels, modename, getModeColor(state));
 	}
 
-	return cursor;
-}
-
-std::string getHarpoonName(State *state, uint32_t index)
-{
-	return std::to_string(index + 1);
+	renderPixels(0, pixels);
+	return -1;
 }
 
 std::string minimize_filename(const std::string &filename)
@@ -369,8 +348,7 @@ void printChar(State *state, int &row, int &col, char c, int32_t color, bool adv
 		mvaddch_color(row, col + getLineNumberOffset(state), c, color);
 	} else if (c == '\t') {
 		for (uint32_t i = 0; i < state->options.indent; i++) {
-			mvaddch_color(row, col + getLineNumberOffset(state), i == 0 ? '>' : '-',
-				      color == WHITE ? GREY : color);
+			mvaddch_color(row, col + getLineNumberOffset(state), ' ', color == WHITE ? GREY : color);
 			advancePosition(state, row, col);
 		}
 		return;
