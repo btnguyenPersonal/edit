@@ -145,6 +145,7 @@ class State {
 	bool resetState(std::string filename);
 	void pushFileStack(std::string filename);
 	void changeFile(std::string filename);
+	void loadAllConfigFiles();
 	void loadConfigFile(std::string fileLocation);
 	void readConfigLine(std::string optionLine);
 	void setDefaultOptions();

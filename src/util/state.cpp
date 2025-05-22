@@ -12,6 +12,25 @@
 uint32_t State::maxX = 0;
 uint32_t State::maxY = 0;
 
+void State::loadAllConfigFiles()
+{
+	std::filesystem::path home = std::filesystem::absolute(getenv("HOME"));
+	std::filesystem::path current = std::filesystem::absolute(std::filesystem::current_path());
+
+	this->loadConfigFile(home.string() + "/.editorconfig");
+
+	std::vector<std::filesystem::path> dirs;
+	for (std::filesystem::path p = current; p != home && p != p.parent_path(); p = p.parent_path()) {
+		dirs.push_back(p);
+	}
+
+	for (auto it = dirs.rbegin(); it != dirs.rend(); ++it) {
+		this->loadConfigFile(it->string() + "/.editorconfig");
+	}
+
+	this->loadConfigFile("./.editorconfig");
+}
+
 void State::loadConfigFile(std::string fileLocation)
 {
 	auto config = readFile(fileLocation.c_str());
@@ -132,8 +151,7 @@ void State::changeFile(std::string filename)
 	this->motion = std::string("");
 	this->mode = SHORTCUTS;
 	refocusFileExplorer(this, false);
-	this->loadConfigFile(std::string(getenv("HOME")) + "/.editorconfig");
-	this->loadConfigFile("./.editorconfig");
+	this->loadAllConfigFiles();
 }
 
 void State::pushFileStack(std::string filename)
@@ -220,8 +238,7 @@ State::State()
 	this->lastLoggingVar = std::string("");
 	this->motion = std::string("");
 	this->setDefaultOptions();
-	this->loadConfigFile(std::string(getenv("HOME")) + "/.editorconfig");
-	this->loadConfigFile("./.editorconfig");
+	this->loadAllConfigFiles();
 }
 
 State::State(std::string filename)

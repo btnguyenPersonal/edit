@@ -203,7 +203,7 @@ int32_t renderStatusBar(State *state)
 
 	if (state->status.length() > 0) {
 		prefix = "status: ";
-		insertPixels(&pixels, prefix + state->name.query, RED);
+		insertPixels(&pixels, prefix + state->status, RED);
 		renderPixels(0, pixels);
 	}
 
