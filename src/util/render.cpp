@@ -347,7 +347,7 @@ void printChar(State *state, int &row, int &col, char c, int32_t color, bool adv
 	if (' ' <= c && c <= '~') {
 		mvaddch_color(row, col + getLineNumberOffset(state), c, color);
 	} else if (c == '\t') {
-		for (uint32_t i = 0; i < state->options.indent_size; i++) {
+		for (uint32_t i = col % state->options.indent_size; i < state->options.indent_size; i++) {
 			mvaddch_color(row, col + getLineNumberOffset(state), ' ', color == WHITE ? GREY : color);
 			advancePosition(state, row, col);
 		}
