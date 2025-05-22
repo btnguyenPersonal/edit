@@ -1568,13 +1568,6 @@ void right(State *state)
 
 uint32_t getIndentSize(State *state)
 {
-	std::string extension = getExtension(state->filename);
-	std::vector<std::string> indentOverrides = { "py", "toml", "tml", "yml", "yaml" };
-	for (uint32_t i = 0; i < indentOverrides.size(); i++) {
-		if (extension == indentOverrides[i]) {
-			return 2;
-		}
-	}
 	if (state->options.indentStyle == "tab") {
 		return 1;
 	}
