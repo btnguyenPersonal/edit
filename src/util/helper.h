@@ -7,6 +7,7 @@
 #include <string>
 #include <vector>
 
+void insertFinalEmptyNewline(State *state);
 std::string replaceAll(std::string str, const std::string &from, const std::string &to);
 bool isLineFileRegex(const std::string &line);
 bool matchesEditorConfigGlob(const std::string &pattern, const std::string &filepath);

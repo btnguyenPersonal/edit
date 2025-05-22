@@ -18,6 +18,13 @@
 #include <vector>
 #include <regex>
 
+void insertFinalEmptyNewline(State *state)
+{
+	if (state->data.size() > 0 && state->data[state->data.size() - 1] != "") {
+		state->data.push_back("");
+	}
+}
+
 std::string replaceAll(std::string str, const std::string &from, const std::string &to)
 {
 	size_t pos = 0;
@@ -1568,17 +1575,17 @@ void right(State *state)
 
 uint32_t getIndentSize(State *state)
 {
-	if (state->options.indentStyle == "tab") {
+	if (state->options.indent_style == "tab") {
 		return 1;
 	}
-	return state->options.indent;
+	return state->options.indent_size;
 }
 
 char getIndentCharacter(State *state)
 {
-	if (state->options.indentStyle == "tab") {
+	if (state->options.indent_style == "tab") {
 		return '\t';
-	} else if (state->options.indentStyle == "space") {
+	} else if (state->options.indent_style == "space") {
 		return ' ';
 	}
 	return 'E';

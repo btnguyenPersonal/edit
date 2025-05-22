@@ -75,8 +75,9 @@ struct Options {
 	bool wordwrap;
 	bool showmode;
 	bool autosave;
-	uint32_t indent;
-	std::string indentStyle;
+	bool insert_final_newline;
+	uint32_t indent_size;
+	std::string indent_style;
 };
 
 class State {
@@ -145,6 +146,9 @@ class State {
 	bool resetState(std::string filename);
 	void pushFileStack(std::string filename);
 	void changeFile(std::string filename);
+	void readStringConfigValue(std::string &option, std::string configValue, std::string line);
+	void readUintConfigValue(uint32_t &option, std::string configValue, std::string line);
+	void readBoolConfigValue(bool &option, std::string configValue, std::string line);
 	void loadAllConfigFiles();
 	void loadConfigFile(std::string fileLocation);
 	void readConfigLine(std::string optionLine);

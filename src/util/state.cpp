@@ -48,25 +48,43 @@ void State::loadConfigFile(std::string fileLocation)
 	}
 }
 
-void State::readConfigLine(std::string optionLine)
+void State::readStringConfigValue(std::string &option, std::string configValue, std::string line)
 {
-	if (optionLine == "wordwrap on") {
-		this->options.wordwrap = true;
-	} else if (optionLine == "wordwrap off") {
-		this->options.wordwrap = false;
-	} else if (optionLine == "showmode on") {
-		this->options.showmode = true;
-	} else if (optionLine == "showmode off") {
-		this->options.showmode = false;
-	} else if (optionLine == "autosave on") {
-		this->options.autosave = true;
-	} else if (optionLine == "autosave off") {
-		this->options.autosave = false;
-	} else if (safeSubstring(optionLine, 0, std::string("indent_style = ").length()) == "indent_style = ") {
-		this->options.indentStyle = safeSubstring(optionLine, std::string("indent_style = ").length());
-	} else if (safeSubstring(optionLine, 0, std::string("indent_size = ").length()) == "indent_size = ") {
-		this->options.indent = std::stoi(safeSubstring(optionLine, std::string("indent_size = ").length()));
+	std::string prefix = configValue + " = ";
+	if (safeSubstring(line, 0, prefix.length()) == prefix) {
+		option = safeSubstring(line, prefix.length());
 	}
+}
+
+void State::readUintConfigValue(uint32_t &option, std::string configValue, std::string line)
+{
+	std::string prefix = configValue + " = ";
+	if (safeSubstring(line, 0, prefix.length()) == prefix) {
+		option = stoi(safeSubstring(line, prefix.length()));
+	}
+}
+
+void State::readBoolConfigValue(bool &option, std::string configValue, std::string line)
+{
+	std::string prefix = configValue + " = ";
+	if (safeSubstring(line, 0, prefix.length()) == prefix) {
+		std::string s = safeSubstring(line, prefix.length());
+		if (s == "true") {
+			option = true;
+		} else if (s == "false") {
+			option = false;
+		}
+	}
+}
+
+void State::readConfigLine(std::string line)
+{
+	this->readBoolConfigValue(this->options.autosave, "autosave", line);
+	this->readBoolConfigValue(this->options.wordwrap, "wordwrap", line);
+	this->readBoolConfigValue(this->options.showmode, "showmode", line);
+	this->readBoolConfigValue(this->options.insert_final_newline, "insert_final_newline", line);
+	this->readStringConfigValue(this->options.indent_style, "indent_style", line);
+	this->readUintConfigValue(this->options.indent_size, "indent_size", line);
 }
 
 void State::setDefaultOptions()
@@ -74,8 +92,8 @@ void State::setDefaultOptions()
 	this->options.autosave = true;
 	this->options.wordwrap = false;
 	this->options.showmode = true;
-	this->options.indent = 4;
-	this->options.indentStyle = "space";
+	this->options.indent_size = 4;
+	this->options.indent_style = "space";
 }
 
 void State::changeFile(std::string filename)

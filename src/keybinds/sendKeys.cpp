@@ -52,6 +52,9 @@ void sendKeys(State *state, int32_t c)
 		sanityCheckDocumentEmpty(state);
 		sanityCheckRowColOutOfBounds(state);
 		expect(state->data[state->row].length() >= 0);
+		if (state->options.insert_final_newline) {
+			insertFinalEmptyNewline(state);
+		}
 		if (isWindowPositionInvalid(state)) {
 			centerScreen(state);
 		}

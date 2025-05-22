@@ -30,7 +30,7 @@ void evaluateCommandLineQuery(State *state)
 			state->status = "autosave off";
 		}
 	} else if (safeSubstring(state->commandLine.query, 0, 3) == "ts=") {
-		state->options.indent = stoul(safeSubstring(state->commandLine.query, 3));
+		state->options.indent_size = stoul(safeSubstring(state->commandLine.query, 3));
 	} else if (state->commandLine.query == "wordwrap") {
 		state->options.wordwrap = !state->options.wordwrap;
 		if (state->options.wordwrap) {
