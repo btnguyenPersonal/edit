@@ -22,22 +22,6 @@ void evaluateCommandLineQuery(State *state)
 			endwin();
 			exit(0);
 		}
-	} else if (state->commandLine.query == "a") {
-		state->options.autosave = !state->options.autosave;
-		if (state->options.autosave) {
-			state->status = "autosave on";
-		} else {
-			state->status = "autosave off";
-		}
-	} else if (safeSubstring(state->commandLine.query, 0, 3) == "ts=") {
-		state->options.indent_size = stoul(safeSubstring(state->commandLine.query, 3));
-	} else if (state->commandLine.query == "wordwrap") {
-		state->options.wordwrap = !state->options.wordwrap;
-		if (state->options.wordwrap) {
-			state->status = "wordwrap on";
-		} else {
-			state->status = "wordwrap off";
-		}
 	} else if (state->commandLine.query == "w") {
 		trimTrailingWhitespace(state);
 		saveFile(state);
@@ -79,6 +63,8 @@ void evaluateCommandLineQuery(State *state)
 		} else {
 			state->row = 0;
 		}
+	} else {
+		state->readConfigLine(state->commandLine.query);
 	}
 }
 
