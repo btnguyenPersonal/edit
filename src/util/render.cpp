@@ -85,14 +85,14 @@ std::vector<Pixel> toPixels(std::string s, int32_t color)
 	return pixels;
 }
 
-void renderPixels(int32_t r, std::vector<Pixel> pixels)
+void renderPixels(int32_t r, int32_t c, std::vector<Pixel> pixels)
 {
-	int32_t c = 0;
+	int32_t i = c;
 	for (Pixel p : pixels) {
 		attron(COLOR_PAIR(p.color));
-		mvaddch(r, c, p.c);
+		mvaddch(r, i, p.c);
 		attroff(COLOR_PAIR(p.color));
-		c++;
+		i++;
 	}
 }
 
@@ -204,18 +204,18 @@ int32_t renderStatusBar(State *state)
 	if (state->status.length() > 0) {
 		prefix = "";
 		insertPixels(&pixels, prefix + state->status, RED);
-		renderPixels(0, pixels);
+		renderPixels(0, 0, pixels);
 	}
 
 	if (state->mode == NAMING) {
 		prefix = "name: ";
 		insertPixels(&pixels, prefix + state->name.query, WHITE);
-		renderPixels(0, pixels);
+		renderPixels(0, 0, pixels);
 		return prefix.length() + state->name.cursor;
 	} else if (state->mode == COMMANDLINE) {
 		std::string prefix = ":";
 		insertPixels(&pixels, prefix + state->commandLine.query, WHITE);
-		renderPixels(0, pixels);
+		renderPixels(0, 0, pixels);
 		return prefix.length() + state->commandLine.cursor;
 	} else if (state->mode == GREP) {
 		prefix = state->grepPath + "> ";
@@ -224,7 +224,7 @@ int32_t renderStatusBar(State *state)
 		insertPixels(&pixels, std::to_string(state->grep.selection + 1), WHITE);
 		insertPixels(&pixels, " of ", WHITE);
 		insertPixels(&pixels, std::to_string(state->grepOutput.size()), WHITE);
-		renderPixels(0, pixels);
+		renderPixels(0, 0, pixels);
 		return prefix.length() + state->grep.cursor;
 	} else if (state->mode == FINDFILE) {
 		prefix = "> ";
@@ -234,7 +234,7 @@ int32_t renderStatusBar(State *state)
 		insertPixels(&pixels, std::to_string(state->findFile.selection + 1), WHITE);
 		insertPixels(&pixels, " of ", WHITE);
 		insertPixels(&pixels, std::to_string(state->findFileOutput.size()), WHITE);
-		renderPixels(0, pixels);
+		renderPixels(0, 0, pixels);
 		return prefix.length() + state->findFile.cursor;
 	} else if (state->searching || state->mode == SEARCH) {
 		prefix = "/";
@@ -248,11 +248,11 @@ int32_t renderStatusBar(State *state)
 		insertPixels(&pixels, prefix + displayQuery, state->searchFail ? RED : GREEN);
 		if (state->replacing) {
 			insertPixels(&pixels, prefix + state->replace.query, MAGENTA);
-			renderPixels(0, pixels);
+			renderPixels(0, 0, pixels);
 			return prefix.length() * 2 + displayQuery.length() + state->replace.cursor;
 		}
 		if (state->mode == SEARCH) {
-			renderPixels(0, pixels);
+			renderPixels(0, 0, pixels);
 			return prefix.length() + state->search.cursor;
 		}
 	} else {
@@ -281,7 +281,7 @@ int32_t renderStatusBar(State *state)
 		insertPixels(&pixels, modename, getModeColor(state));
 	}
 
-	renderPixels(0, pixels);
+	renderPixels(0, 0, pixels);
 	return -1;
 }
 
