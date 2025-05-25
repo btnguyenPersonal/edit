@@ -7,6 +7,7 @@
 #include <string>
 #include <vector>
 
+std::string padTo(std::string str, const uint32_t num, const char paddingChar);
 void forwardFileStack(State *state);
 void backwardFileStack(State *state);
 void swapCase(State *state, uint32_t r, uint32_t c);

@@ -41,6 +41,7 @@ void sendFindFileKeys(State *state, int32_t c)
 		state->selectAll = !state->selectAll;
 	} else if (c == ctrl('g')) {
 		backspaceAll(&state->grep);
+		generateGrepOutput(state, true);
 		state->grep.selection = 0;
 		state->selectAll = false;
 		state->mode = GREP;

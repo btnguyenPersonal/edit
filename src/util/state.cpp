@@ -207,6 +207,7 @@ State::State()
 	this->fileExplorer = new FileExplorerNode(std::filesystem::current_path());
 	this->fileExplorer->open();
 	this->fileExplorerOpen = false;
+	this->lineNumSize = 5;
 	this->fileExplorerSize = 40;
 	this->fileExplorerWindowLine = 0;
 	this->fileExplorerIndex = 0;
@@ -219,6 +220,7 @@ State::State()
 	this->jumplist = { 0, std::vector<Position>() };
 	this->buildErrorIndex = 0;
 	this->buildErrors = std::vector<std::string>();
+	this->blameSize = 65;
 	this->blame = std::vector<std::string>();
 	this->harpoonFiles = std::map<uint32_t, std::string>();
 	this->harpoonIndex = 0;

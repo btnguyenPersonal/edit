@@ -18,6 +18,16 @@
 #include <vector>
 #include <regex>
 
+std::string padTo(std::string str, const uint32_t num, const char paddingChar)
+{
+	auto tmp = str;
+	if(num > str.size()) {
+		tmp.insert(0, num - str.size(), paddingChar);
+	}
+	return tmp;
+}
+
+
 void forwardFileStack(State *state)
 {
 	if (state->fileStack.size() > 0) {
@@ -663,9 +673,9 @@ std::vector<std::string> getGitBlame(const std::string &filename)
 
 uint32_t getLineNumberOffset(State *state)
 {
-	uint32_t offset = 6;
+	uint32_t offset = state->lineNumSize + 1;
 	if (state->mode == BLAME) {
-		offset += 65;
+		offset += state->blameSize;
 	}
 	if (state->fileExplorerOpen) {
 		offset += state->fileExplorerSize;

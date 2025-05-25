@@ -85,6 +85,7 @@ class State {
 	Options options;
 	bool unsavedFile;
 	bool showGrep;
+	uint32_t lineNumSize;
 	bool fileExplorerOpen;
 	int32_t fileExplorerSize;
 	int32_t fileExplorerIndex;
@@ -95,6 +96,7 @@ class State {
 	std::vector<Archive> archives;
 	int32_t buildErrorIndex;
 	std::vector<std::string> buildErrors;
+	int32_t blameSize;
 	std::vector<std::string> blame;
 	std::map<uint32_t, std::string> harpoonFiles;
 	uint32_t harpoonIndex;

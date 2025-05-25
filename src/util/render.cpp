@@ -476,10 +476,10 @@ void renderFindFileOutput(State *state)
 	}
 }
 
-std::string getRenderBlameString(State *state, int32_t i)
+std::string getBlame(State *state, int32_t i)
 {
 	if (state->mode == BLAME && state->blame.size() >= state->data.size() && i < (int32_t)state->data.size()) {
-		return state->blame[i];
+		return safeSubstring(state->blame[i], 0, state->blameSize);
 	} else {
 		return "";
 	}
@@ -497,33 +497,56 @@ Cursor renderVisibleLines(State *state)
 	return cursor;
 }
 
-void printLineNumber(State *state, int32_t row, int32_t renderRow)
+int32_t getLineNumberColor(State *state, int32_t row)
 {
-	int32_t border = state->fileExplorerOpen ? state->fileExplorerSize : 0;
 	if (row == (int32_t)state->row) {
-		mvprintw_color(renderRow, border, "%5d", row + 1, WHITE);
+		return WHITE;
 	} else if (state->recording) {
-		mvprintw_color(renderRow, border, "%5d", row + 1, RED);
+		return RED;
 	} else {
-		mvprintw_color(renderRow, border, "%5d", row + 1, GREY);
+		return GREY;
 	}
-	bool isLogging = getLoggingRegex(state) != "" &&
-			 std::regex_search(state->data[row], std::regex(getLoggingRegex(state)));
+}
+
+int32_t getMarkColor(State *state, int32_t row)
+{
+	bool logging = std::regex_search(state->data[row], std::regex(getLoggingRegex(state)));
 	bool endsWithSpace = state->data[row].back() == ' ';
 	bool isOnMark = (int32_t)state->mark.mark == row && state->mark.filename == state->filename;
-	int32_t color = BLACK;
 	if (endsWithSpace && state->mode != TYPING) {
-		color = RED;
-	} else if (isLogging) {
-		color = YELLOW;
+		return RED;
+	} else if (getLoggingRegex(state) != "" && logging) {
+		return YELLOW;
 	} else if (isOnMark) {
-		color = CYAN;
+		return CYAN;
+	} else {
+		return BLACK;
 	}
-	mvprintw_color(renderRow, border + 5, "%c", '|', color);
+}
+
+int32_t getBlameColor(State *state, int32_t row)
+{
+	if (row == (int32_t)state->row) {
+		return invertColor(WHITE);
+	} else {
+		return WHITE;
+	}
+}
+
+void printLineNumber(State *state, int32_t row, int32_t renderRow)
+{
+	std::vector<Pixel> pixels = std::vector<Pixel>();
+
+	insertPixels(&pixels, padTo(std::to_string(row + 1), state->lineNumSize, ' '), getLineNumberColor(state, row));
+
+	insertPixels(&pixels, "|", getMarkColor(state, row));
+
 	if (state->mode == BLAME) {
-		mvprintw_color(renderRow, border + 6, "%-65s", getRenderBlameString(state, row).substr(0, 65).c_str(),
-			       row == (int32_t)state->row ? invertColor(WHITE) : WHITE);
+		insertPixels(&pixels, getBlame(state, row), getBlameColor(state, row));
 	}
+
+	int32_t border = state->fileExplorerOpen ? state->fileExplorerSize : 0;
+	renderPixels(renderRow, border, pixels);
 }
 
 void advancePosition(State *state, int &renderRow, int &renderCol)
