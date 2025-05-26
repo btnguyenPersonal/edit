@@ -7,6 +7,7 @@
 #include <string>
 #include <vector>
 
+std::string minimize_filename(const std::string &filename);
 std::string padTo(std::string str, const uint32_t num, const char paddingChar);
 void forwardFileStack(State *state);
 void backwardFileStack(State *state);

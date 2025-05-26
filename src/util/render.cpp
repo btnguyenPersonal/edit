@@ -131,23 +131,27 @@ void initColors()
 
 void renderFileStack(State *state)
 {
+	std::vector<Pixel> pixels = std::vector<Pixel>();
+
 	int32_t start = (int32_t)state->fileStack.size() - 1;
 	if ((int32_t)state->fileStackIndex < start - (int32_t)state->maxY / 2) {
 		start = (int32_t)state->fileStackIndex + (int32_t)state->maxY / 2;
 	}
-	uint32_t renderIndex = 1;
+	uint32_t renderRow = 1;
 	for (int32_t i = start; i >= 0; i--) {
 		std::string filename = minimize_filename(state->fileStack[i]);
 		if (state->maxX / 2 > filename.length()) {
-			filename += std::string(state->maxX / 2 - filename.length() - 1, ' ');
+			filename += std::string(state->maxX / 2 - filename.length(), ' ');
 		}
-		mvprintw_color(renderIndex, state->maxX / 2, "|%s", filename.c_str(),
-			       i == (int32_t)state->fileStackIndex ? invertColor(YELLOW) : GREY);
-		renderIndex++;
+		int32_t color = i == (int32_t)state->fileStackIndex ? invertColor(YELLOW) : GREY;
+		insertPixels(&pixels, "|" + filename, color);
+		renderPixels(renderRow++, state->maxX / 2, pixels);
+		pixels.clear();
 	}
-	for (int32_t i = renderIndex; i <= (int32_t)state->maxY; i++) {
-		mvprintw_color(i, state->maxX / 2, "|%s", std::string(state->maxX / 2, ' ').c_str(), GREY);
-		renderIndex++;
+	for (int32_t i = renderRow; i <= (int32_t)state->maxY; i++) {
+		insertPixels(&pixels, "|" + std::string(state->maxX / 2, ' '), GREY);
+		renderPixels(renderRow++, state->maxX / 2, pixels);
+		pixels.clear();
 	}
 }
 
@@ -283,25 +287,6 @@ int32_t renderStatusBar(State *state)
 
 	renderPixels(0, 0, pixels);
 	return -1;
-}
-
-std::string minimize_filename(const std::string &filename)
-{
-	std::vector<std::string> parts;
-	std::stringstream ss(filename);
-	std::string part;
-	std::string minimized;
-	while (std::getline(ss, part, '/')) {
-		parts.push_back(part);
-	}
-	for (size_t i = 0; i < parts.size() - 1; ++i) {
-		if (!parts[i].empty()) {
-			minimized += parts[i][0];
-			minimized += '/';
-		}
-	}
-	minimized += parts.back();
-	return minimized;
 }
 
 int32_t getColorFromChar(char c)

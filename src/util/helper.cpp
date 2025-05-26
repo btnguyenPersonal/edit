@@ -18,15 +18,33 @@
 #include <vector>
 #include <regex>
 
+std::string minimize_filename(const std::string &filename)
+{
+	std::vector<std::string> parts;
+	std::stringstream ss(filename);
+	std::string part;
+	std::string minimized;
+	while (std::getline(ss, part, '/')) {
+		parts.push_back(part);
+	}
+	for (size_t i = 0; i < parts.size() - 1; ++i) {
+		if (!parts[i].empty()) {
+			minimized += parts[i][0];
+			minimized += '/';
+		}
+	}
+	minimized += parts.back();
+	return minimized;
+}
+
 std::string padTo(std::string str, const uint32_t num, const char paddingChar)
 {
 	auto tmp = str;
-	if(num > str.size()) {
+	if (num > str.size()) {
 		tmp.insert(0, num - str.size(), paddingChar);
 	}
 	return tmp;
 }
-
 
 void forwardFileStack(State *state)
 {
