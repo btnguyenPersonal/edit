@@ -76,11 +76,21 @@ void mvaddch_color(int32_t r, int32_t c, char ch, int32_t color)
 	attroff(COLOR_PAIR(color));
 }
 
-std::vector<Pixel> toPixels(std::string s, int32_t color)
+std::vector<Pixel> toPixels(State *state, std::string s, int32_t color, uint32_t size)
 {
 	std::vector<Pixel> pixels = std::vector<Pixel>();
 	for (char c : s) {
-		pixels.push_back({ c, color });
+		if (' ' <= c && c <= '~') {
+			pixels.push_back({ c, color });
+		} else if (c == '\t') {
+			for (uint32_t i = size + pixels.size() % state->options.indent_size; i < state->options.indent_size; i++) {
+				pixels.push_back({ ' ', color == WHITE ? GREY : color });
+			}
+		} else if (' ' <= unctrl(c) && unctrl(c) <= '~') {
+			pixels.push_back({ unctrl(c), invertColor(MAGENTA) });
+		} else {
+			pixels.push_back({ ' ', invertColor(MAGENTA) });
+		}
 	}
 	return pixels;
 }
@@ -96,10 +106,15 @@ void renderPixels(int32_t r, int32_t c, std::vector<Pixel> pixels)
 	}
 }
 
-void insertPixels(std::vector<Pixel> *pixels, std::string s, int32_t color)
+void insertPixels(State *state, std::vector<Pixel> *pixels, std::string s, int32_t color)
 {
-	std::vector<Pixel> tmp = toPixels(s, color);
+	std::vector<Pixel> tmp = toPixels(state, s, color, pixels->size());
 	pixels->insert(std::end(*pixels), std::begin(tmp), std::end(tmp));
+}
+
+void insertPixels(State *state, std::vector<Pixel> *pixels, char c, int32_t color)
+{
+	insertPixels(state, pixels, std::string("") + c, color);
 }
 
 void initColors()
@@ -144,12 +159,12 @@ void renderFileStack(State *state)
 			filename += std::string(state->maxX / 2 - filename.length(), ' ');
 		}
 		int32_t color = i == (int32_t)state->fileStackIndex ? invertColor(YELLOW) : GREY;
-		insertPixels(&pixels, "|" + filename, color);
+		insertPixels(state, &pixels, "|" + filename, color);
 		renderPixels(renderRow++, state->maxX / 2, pixels);
 		pixels.clear();
 	}
 	for (int32_t i = renderRow; i <= (int32_t)state->maxY; i++) {
-		insertPixels(&pixels, "|" + std::string(state->maxX / 2, ' '), GREY);
+		insertPixels(state, &pixels, "|" + std::string(state->maxX / 2, ' '), GREY);
 		renderPixels(renderRow++, state->maxX / 2, pixels);
 		pixels.clear();
 	}
@@ -207,37 +222,37 @@ int32_t renderStatusBar(State *state)
 
 	if (state->status.length() > 0) {
 		prefix = "";
-		insertPixels(&pixels, prefix + state->status, RED);
+		insertPixels(state, &pixels, prefix + state->status, RED);
 		renderPixels(0, 0, pixels);
 	}
 
 	if (state->mode == NAMING) {
 		prefix = "name: ";
-		insertPixels(&pixels, prefix + state->name.query, WHITE);
+		insertPixels(state, &pixels, prefix + state->name.query, WHITE);
 		renderPixels(0, 0, pixels);
 		return prefix.length() + state->name.cursor;
 	} else if (state->mode == COMMANDLINE) {
 		std::string prefix = ":";
-		insertPixels(&pixels, prefix + state->commandLine.query, WHITE);
+		insertPixels(state, &pixels, prefix + state->commandLine.query, WHITE);
 		renderPixels(0, 0, pixels);
 		return prefix.length() + state->commandLine.cursor;
 	} else if (state->mode == GREP) {
 		prefix = state->grepPath + "> ";
-		insertPixels(&pixels, prefix + state->grep.query, state->showAllGrep ? DARKGREEN : GREEN);
-		insertPixels(&pixels, "  ", WHITE);
-		insertPixels(&pixels, std::to_string(state->grep.selection + 1), WHITE);
-		insertPixels(&pixels, " of ", WHITE);
-		insertPixels(&pixels, std::to_string(state->grepOutput.size()), WHITE);
+		insertPixels(state, &pixels, prefix + state->grep.query, state->showAllGrep ? DARKGREEN : GREEN);
+		insertPixels(state, &pixels, "  ", WHITE);
+		insertPixels(state, &pixels, std::to_string(state->grep.selection + 1), WHITE);
+		insertPixels(state, &pixels, " of ", WHITE);
+		insertPixels(state, &pixels, std::to_string(state->grepOutput.size()), WHITE);
 		renderPixels(0, 0, pixels);
 		return prefix.length() + state->grep.cursor;
 	} else if (state->mode == FINDFILE) {
 		prefix = "> ";
-		insertPixels(&pixels, prefix, YELLOW);
-		insertPixels(&pixels, state->findFile.query, state->selectAll ? invertColor(YELLOW) : YELLOW);
-		insertPixels(&pixels, "  ", WHITE);
-		insertPixels(&pixels, std::to_string(state->findFile.selection + 1), WHITE);
-		insertPixels(&pixels, " of ", WHITE);
-		insertPixels(&pixels, std::to_string(state->findFileOutput.size()), WHITE);
+		insertPixels(state, &pixels, prefix, YELLOW);
+		insertPixels(state, &pixels, state->findFile.query, state->selectAll ? invertColor(YELLOW) : YELLOW);
+		insertPixels(state, &pixels, "  ", WHITE);
+		insertPixels(state, &pixels, std::to_string(state->findFile.selection + 1), WHITE);
+		insertPixels(state, &pixels, " of ", WHITE);
+		insertPixels(state, &pixels, std::to_string(state->findFileOutput.size()), WHITE);
 		renderPixels(0, 0, pixels);
 		return prefix.length() + state->findFile.cursor;
 	} else if (state->searching || state->mode == SEARCH) {
@@ -249,9 +264,9 @@ int32_t renderStatusBar(State *state)
 				i++;
 			}
 		}
-		insertPixels(&pixels, prefix + displayQuery, state->searchFail ? RED : GREEN);
+		insertPixels(state, &pixels, prefix + displayQuery, state->searchFail ? RED : GREEN);
 		if (state->replacing) {
-			insertPixels(&pixels, prefix + state->replace.query, MAGENTA);
+			insertPixels(state, &pixels, prefix + state->replace.query, MAGENTA);
 			renderPixels(0, 0, pixels);
 			return prefix.length() * 2 + displayQuery.length() + state->replace.cursor;
 		}
@@ -266,9 +281,9 @@ int32_t renderStatusBar(State *state)
 				s = "[" + std::to_string(i + 1) + "]";
 				bool currentSelected = state->harpoonFiles[i] == state->filename &&
 						       state->harpoonIndex == i;
-				insertPixels(&pixels, s, currentSelected ? YELLOW : GREY);
+				insertPixels(state, &pixels, s, currentSelected ? YELLOW : GREY);
 			} else {
-				insertPixels(&pixels, "   ", GREY);
+				insertPixels(state, &pixels, "   ", GREY);
 			}
 		}
 	}
@@ -277,12 +292,12 @@ int32_t renderStatusBar(State *state)
 	auto tmp = displayFileName.length() + pixels.size();
 	auto len = state->maxX > tmp ? state->maxX - tmp : 0;
 	prefix = std::string(len, ' ');
-	insertPixels(&pixels, prefix + displayFileName, state->unsavedFile ? GREY : WHITE);
+	insertPixels(state, &pixels, prefix + displayFileName, state->unsavedFile ? GREY : WHITE);
 
 	if (state->options.showmode) {
 		std::string prefix = " --%s-- ";
 		std::string modename = getDisplayModeName(state);
-		insertPixels(&pixels, modename, getModeColor(state));
+		insertPixels(state, &pixels, modename, getModeColor(state));
 	}
 
 	renderPixels(0, 0, pixels);
@@ -409,19 +424,16 @@ bool isRowInVisual(State *state, int32_t row)
 	       ((int32_t)state->row <= row && row <= (int32_t)state->visual.row);
 }
 
-uint32_t renderAutoComplete(State *state, uint32_t renderRow, uint32_t renderCol)
+std::vector<Pixel> getAutoComplete(State *state)
 {
+	std::vector<Pixel> pixels = std::vector<Pixel>();
 	if (state->mode == TYPING || state->mode == MULTICURSOR) {
-		std::string completion = autocomplete(state, getCurrentWord(state));
 		if (state->col + 1 >= state->data[state->row].length() ||
 		    !isAlphanumeric(state->data[state->row][state->col])) {
-			for (uint32_t i = 0; i < completion.length(); i++) {
-				printChar(state, renderRow, renderCol + i, completion[i], GREY);
-			}
-			return completion.length();
+			insertPixels(state, &pixels, autocomplete(state, getCurrentWord(state)), GREY);
 		}
 	}
-	return 0;
+	return pixels;
 }
 
 void renderGrepOutput(State *state)
@@ -476,8 +488,8 @@ Cursor renderVisibleLines(State *state)
 	int32_t currentRenderRow = 1;
 	for (int32_t i = state->windowPosition.row;
 	     i < (int32_t)state->data.size() && i < (int32_t)(state->maxY + state->windowPosition.row) - 1; i++) {
-		printLineNumber(state, i, currentRenderRow);
-		currentRenderRow = printLineContent(state, i, currentRenderRow, &cursor);
+		renderLineNumber(state, i, currentRenderRow);
+		currentRenderRow = renderLineContent(state, i, currentRenderRow, &cursor);
 	}
 	return cursor;
 }
@@ -518,16 +530,16 @@ int32_t getBlameColor(State *state, int32_t row)
 	}
 }
 
-void printLineNumber(State *state, int32_t row, int32_t renderRow)
+void renderLineNumber(State *state, int32_t row, int32_t renderRow)
 {
 	std::vector<Pixel> pixels = std::vector<Pixel>();
 
-	insertPixels(&pixels, padTo(std::to_string(row + 1), state->lineNumSize, ' '), getLineNumberColor(state, row));
+	insertPixels(state, &pixels, padTo(std::to_string(row + 1), state->lineNumSize, ' '), getLineNumberColor(state, row));
 
-	insertPixels(&pixels, "|", getMarkColor(state, row));
+	insertPixels(state, &pixels, "|", getMarkColor(state, row));
 
 	if (state->mode == BLAME) {
-		insertPixels(&pixels, getBlame(state, row), getBlameColor(state, row));
+		insertPixels(state, &pixels, getBlame(state, row), getBlameColor(state, row));
 	}
 
 	int32_t border = state->fileExplorerOpen ? state->fileExplorerSize : 0;
@@ -544,125 +556,151 @@ void advancePosition(State *state, int &renderRow, int &renderCol)
 	}
 }
 
-int32_t printLineContent(State *state, int32_t row, int32_t renderRow, Cursor *cursor)
+int32_t renderLineContent(State *state, int32_t row, int32_t renderRow, Cursor *cursor)
 {
-	if (isRowColInVisual(state, row, 0) == true && state->data[row].length() == 0) {
-		printChar(state, renderRow, 0, ' ', invertColor(WHITE));
+	std::vector<Pixel> pixels = std::vector<Pixel>();
+
+	if (isRowColInVisual(state, row, 0) && state->data[row].length() == 0) {
+		insertPixels(state, &pixels, " ", invertColor(WHITE));
 		if (state->row == (uint32_t)row) {
 			cursor->row = renderRow - 1;
 			cursor->col = 0;
 		}
 	} else {
-		bool isInString = false;
+		bool inString = false;
 		bool skipNext = false;
-		uint32_t searchCounter = 0;
-		int32_t renderCol = 0;
-		uint32_t startOfSearch = 0;
-		bool isComment = false;
 		char stringType;
-		uint32_t col = 0;
-		uint32_t completionLength = 0;
-		while (col < state->data[row].length()) {
-			if (state->showGrep) {
-				if (searchCounter == 0 && isInQuery(state, row, col, state->grep.query)) {
-					searchCounter = state->grep.query.length();
-					startOfSearch = col;
-				}
-			} else {
-				if (searchCounter == 0 && isInQuery(state, row, col, state->search.query)) {
-					searchCounter = state->search.query.length();
-					startOfSearch = col;
-				}
-			}
-			if (skipNext == false) {
-				char current = state->data[row][col];
-				if (isInString && current == '\\') {
-					skipNext = true;
-				} else {
-					if (isInString == false &&
-					    (current == '"' || current == '`' || current == '\'')) {
-						isInString = true;
-						stringType = current;
-					} else if (isInString == true && current == stringType) {
-						isInString = false;
-					}
-				}
-			} else {
+
+		for (uint32_t col = 0; col < state->data[row].length(); col++) {
+			char c = state->data[row][col];
+
+			if (skipNext) {
 				skipNext = false;
+			} else if (inString && c == '\\') {
+				skipNext = true;
+			} else if (!inString && (c == '"' || c == '`' || c == '\'')) {
+				inString = true;
+				stringType = c;
+			} else if (inString && c == stringType) {
+				inString = false;
 			}
-			if (!isInString &&
-			    state->data[row].substr(col, state->commentSymbol.length()) == state->commentSymbol &&
-			    state->commentSymbol != "") {
-				isComment = true;
+
+			int32_t color = getColorFromChar(c);
+			if (inString) {
+				color = CYAN;
 			}
+
 			if (col >= state->windowPosition.col) {
-				if (state->replacing && searchCounter != 0) {
-					for (uint32_t i = 0; i < state->replace.query.length(); i++) {
-						printChar(state, renderRow, renderCol, state->replace.query[i],
-							  getSearchColor(state, row, startOfSearch, state->search.query,
-									 false),
-							  true);
-					}
-					col += state->search.query.length();
-					searchCounter = 0;
-				} else {
-					// TODO make this a getColor function();, lots of logic in here that's messy
-					int32_t color;
-					if (state->matching.row == (uint32_t)row && state->matching.col == col &&
-					    (state->matching.row != state->row || state->matching.col != state->col)) {
-						color = invertColor(GREY);
-					} else {
-						if (state->showGrep && searchCounter != 0) {
-							color = getSearchColor(state, row, startOfSearch,
-									       state->grep.query, true);
-						} else if (searchCounter != 0 && state->searching == true) {
-							color = getSearchColor(state, row, startOfSearch,
-									       state->search.query, false);
-						} else {
-							if (isMergeConflict(state->data[row])) {
-								color = RED;
-							} else if (isComment) {
-								color = GREEN;
-							} else if (isInString == true &&
-								   getExtension(state->filename) != "md" &&
-								   getExtension(state->filename) != "txt") {
-								color = CYAN;
-							} else {
-								color = getColorFromChar(state->data[row][col]);
-							}
-							if (isRowColInVisual(state, row, col)) {
-								color = invertColor(color);
-							}
-						}
-					}
-					if (state->row == (uint32_t)row && state->col == col) {
-						cursor->row = renderRow - 1;
-						cursor->col = renderCol;
-						if (completionLength != 0) {
-							renderCol += completionLength;
-							completionLength = 0;
-						}
-					}
-					printChar(state, renderRow, renderCol, state->data[row][col], color, true);
-					col++;
-					if (state->row == (uint32_t)row && state->col == col) {
-						completionLength = renderAutoComplete(state, renderRow, renderCol);
-					}
-				}
-			} else {
-				col++;
+				insertPixels(state, &pixels, c, color);
 			}
-			if (searchCounter != 0) {
-				searchCounter -= 1;
+
+			if (state->row == (uint32_t)row && state->col == col) {
+				cursor->row = renderRow - 1;
+				cursor->col = pixels.size() > 0 ? pixels.size() - 1 : 0;
 			}
 		}
-		if (state->col >= state->data[row].length()) {
-			if (state->row == (uint32_t)row) {
+		// bool isInString = false;
+		// bool skipNext = false;
+		// uint32_t searchCounter = 0;
+		// uint32_t startOfSearch = 0;
+		// bool isComment = false;
+		// char stringType;
+		// uint32_t col = 0;
+		// uint32_t completionLength = 0;
+		// while (col < state->data[row].length()) {
+		// 	if (state->showGrep) {
+		// 		if (searchCounter == 0 && isInQuery(state, row, col, state->grep.query)) {
+		// 			searchCounter = state->grep.query.length();
+		// 			startOfSearch = col;
+		// 		}
+		// 	} else {
+		// 		if (searchCounter == 0 && isInQuery(state, row, col, state->search.query)) {
+		// 			searchCounter = state->search.query.length();
+		// 			startOfSearch = col;
+		// 		}
+		// 	}
+		// 	if (skipNext == false) {
+		// 		char current = state->data[row][col];
+		// 		if (isInString && current == '\\') {
+		// 			skipNext = true;
+		// 		} else {
+		// 			if (isInString == false &&
+		// 			    (current == '"' || current == '`' || current == '\'')) {
+		// 				isInString = true;
+		// 				stringType = current;
+		// 			} else if (isInString == true && current == stringType) {
+		// 				isInString = false;
+		// 			}
+		// 		}
+		// 	} else {
+		// 		skipNext = false;
+		// 	}
+		// 	if (!isInString &&
+		// 	    state->data[row].substr(col, state->commentSymbol.length()) == state->commentSymbol &&
+		// 	    state->commentSymbol != "") {
+		// 		isComment = true;
+		// 	}
+		// 	if (col >= state->windowPosition.col) {
+		// 		if (state->replacing && searchCounter != 0) {
+		// 			for (uint32_t i = 0; i < state->replace.query.length(); i++) {
+		// 				printChar(state, renderRow, renderCol, state->replace.query[i],
+		// 					  getSearchColor(state, row, startOfSearch, state->search.query,
+		// 							 false),
+		// 					  true);
+		// 			}
+		// 			col += state->search.query.length();
+		// 			searchCounter = 0;
+		// 		} else {
+		// 			// TODO make this a getColor function();, lots of logic in here that's messy
+		// 			int32_t color;
+		// 			if (state->matching.row == (uint32_t)row && state->matching.col == col &&
+		// 			    (state->matching.row != state->row || state->matching.col != state->col)) {
+		// 				color = invertColor(GREY);
+		// 			} else {
+		// 				if (state->showGrep && searchCounter != 0) {
+		// 					color = getSearchColor(state, row, startOfSearch,
+		// 							       state->grep.query, true);
+		// 				} else if (searchCounter != 0 && state->searching == true) {
+		// 					color = getSearchColor(state, row, startOfSearch,
+		// 							       state->search.query, false);
+		// 				} else {
+		// 					if (isMergeConflict(state->data[row])) {
+		// 						color = RED;
+		// 					} else if (isComment) {
+		// 						color = GREEN;
+		// 					} else if (isInString == true &&
+		// 						   getExtension(state->filename) != "md" &&
+		// 						   getExtension(state->filename) != "txt") {
+		// 						color = CYAN;
+		// 					} else {
+		// 						color = getColorFromChar(state->data[row][col]);
+		// 					}
+		// 					if (isRowColInVisual(state, row, col)) {
+		// 						color = invertColor(color);
+		// 					}
+		// 				}
+		// 			}
+		// 			printChar(state, renderRow, renderCol, state->data[row][col], color, true);
+		// 			col++;
+		// 			if (state->row == (uint32_t)row && state->col == col) {
+		// 				auto completion = getAutoComplete(state);
+		// 			}
+		// 		}
+		// 	} else {
+		// 		col++;
+		// 	}
+		// 	if (searchCounter != 0) {
+		// 		searchCounter -= 1;
+		// 	}
+		// }
+		if (state->row == (uint32_t)row) {
+			if (state->col >= state->data[row].length()) {
 				cursor->row = renderRow - 1;
-				cursor->col = renderCol;
+				cursor->col = state->data[row].length();
 			}
 		}
 	}
+	renderPixels(renderRow, getLineNumberOffset(state), pixels);
 	return renderRow + 1;
 }
 

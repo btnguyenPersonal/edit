@@ -24,6 +24,6 @@ void printChar(State *state, int &row, int &col, char c, int32_t color, bool adv
 int32_t getSearchColor(State *state, int32_t row, uint32_t startOfSearch);
 uint32_t renderAutoComplete(State *state, int32_t row, uint32_t col, uint32_t renderCol);
 std::string getRenderBlameString(State *state);
-void printLineNumber(State *state, int32_t row, int32_t renderRow);
-int32_t printLineContent(State *state, int32_t row, int32_t renderRow, Cursor *cursor);
+void renderLineNumber(State *state, int32_t row, int32_t renderRow);
+int32_t renderLineContent(State *state, int32_t row, int32_t renderRow, Cursor *cursor);
 bool isRowColInVisual(State *state, uint32_t i, uint32_t j);
