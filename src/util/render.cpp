@@ -574,6 +574,7 @@ int32_t renderLineContent(State *state, int32_t row, int32_t renderRow, Cursor *
 		for (uint32_t col = 0; col < state->data[row].length(); col++) {
 			char c = state->data[row][col];
 
+			// TODO skip if non-code file
 			if (skipNext) {
 				skipNext = false;
 			} else if (inString && c == '\\') {
@@ -586,12 +587,21 @@ int32_t renderLineContent(State *state, int32_t row, int32_t renderRow, Cursor *
 			}
 
 			int32_t color = getColorFromChar(c);
+			// matching color
+			// showGrep color
+			// showSearch color
+			// mergeConflict
+			// comment color
 			if (inString) {
 				color = CYAN;
 			}
+			// visual invertColor(color)
 
 			if (col >= state->windowPosition.col) {
+				// search/replacing
 				insertPixels(state, &pixels, c, color);
+				// autocomplete pixels
+				// check if wordwrap and renderPixels && reset col && renderRow++
 			}
 
 			if (state->row == (uint32_t)row && state->col == col) {
@@ -619,27 +629,13 @@ int32_t renderLineContent(State *state, int32_t row, int32_t renderRow, Cursor *
 		// 			startOfSearch = col;
 		// 		}
 		// 	}
-		// 	if (skipNext == false) {
-		// 		char current = state->data[row][col];
-		// 		if (isInString && current == '\\') {
-		// 			skipNext = true;
-		// 		} else {
-		// 			if (isInString == false &&
-		// 			    (current == '"' || current == '`' || current == '\'')) {
-		// 				isInString = true;
-		// 				stringType = current;
-		// 			} else if (isInString == true && current == stringType) {
-		// 				isInString = false;
-		// 			}
-		// 		}
-		// 	} else {
-		// 		skipNext = false;
-		// 	}
+
 		// 	if (!isInString &&
 		// 	    state->data[row].substr(col, state->commentSymbol.length()) == state->commentSymbol &&
 		// 	    state->commentSymbol != "") {
 		// 		isComment = true;
 		// 	}
+
 		// 	if (col >= state->windowPosition.col) {
 		// 		if (state->replacing && searchCounter != 0) {
 		// 			for (uint32_t i = 0; i < state->replace.query.length(); i++) {
