@@ -46,36 +46,6 @@ int32_t invertColor(int32_t color)
 	return color + 11;
 }
 
-// is there a better way for arg passing?
-void mvprintw_color(int32_t r, int32_t c, const char *formatString, const char *cstring1, int32_t num,
-		    const char *cstring2, int32_t color)
-{
-	attron(COLOR_PAIR(color));
-	mvprintw(r, c, formatString, cstring1, num, cstring2);
-	attroff(COLOR_PAIR(color));
-}
-
-void mvprintw_color(int32_t r, int32_t c, const char *formatString, int32_t num, int32_t color)
-{
-	attron(COLOR_PAIR(color));
-	mvprintw(r, c, formatString, num);
-	attroff(COLOR_PAIR(color));
-}
-
-void mvprintw_color(int32_t r, int32_t c, const char *formatString, const char *cstring, int32_t color)
-{
-	attron(COLOR_PAIR(color));
-	mvprintw(r, c, formatString, cstring);
-	attroff(COLOR_PAIR(color));
-}
-
-void mvaddch_color(int32_t r, int32_t c, char ch, int32_t color)
-{
-	attron(COLOR_PAIR(color));
-	mvaddch(r, c, ch);
-	attroff(COLOR_PAIR(color));
-}
-
 std::vector<Pixel> toPixels(State *state, std::string s, int32_t color, uint32_t size)
 {
 	std::vector<Pixel> pixels = std::vector<Pixel>();
@@ -672,9 +642,7 @@ void moveCursor(State *state, int32_t cursorOnStatusBar, Cursor editorCursor, Cu
 	}
 }
 
-int32_t renderFileExplorerNode(FileExplorerNode *node, int32_t r, int32_t selectedRow, std::string startingSpaces,
-			       bool isFileExplorerOpen, int32_t fileExplorerWindowLine, int32_t fileExplorerSize,
-			       Cursor &cursor)
+int32_t renderFileExplorerNode(State *state, FileExplorerNode *node, int32_t r, std::string startingSpaces, Cursor &cursor)
 {
 	int32_t color;
 	if (shouldIgnoreFile(node->path)) {
@@ -685,34 +653,31 @@ int32_t renderFileExplorerNode(FileExplorerNode *node, int32_t r, int32_t select
 		color = WHITE;
 	}
 	int32_t row = r + 1;
-	int32_t offset = 0;
-	if (row - fileExplorerWindowLine > 0) {
-		auto displayRow = row - fileExplorerWindowLine;
-		mvprintw_color(displayRow, offset, "%s", startingSpaces.c_str(), WHITE);
-		offset += startingSpaces.length();
+	std::vector<Pixel> pixels = std::vector<Pixel>();
+	if (row - state->fileExplorerWindowLine > 0) {
+		auto displayRow = row - state-> fileExplorerWindowLine;
+		insertPixels(state, &pixels, startingSpaces, GREY);
 		if (node->isFolder) {
-			mvprintw_color(displayRow, offset, "%s", node->isOpen ? "v" : ">", GREY);
-			offset += 1;
+			insertPixels(state, &pixels, node->isOpen ? 'v' : '>', GREY);
+			insertPixels(state, &pixels, ' ', GREY);
 		}
-		offset += 1;
-		if (selectedRow == r) {
+		if (state->fileExplorerIndex == r) {
 			cursor.row = displayRow;
-			cursor.col = offset;
+			cursor.col = pixels.size();
 		}
-		mvprintw_color(
-			displayRow, offset,
-			(std::string("%-") + std::to_string(fileExplorerSize - offset - 1) + std::string("s")).c_str(),
-			(int32_t)node->name.length() >= fileExplorerSize - offset - 1 ?
-				(node->name.substr(0, fileExplorerSize - 3 - offset - 1) + "...").c_str() :
-				node->name.substr(0, fileExplorerSize - offset - 1).c_str(),
-			color);
-		offset += node->name.substr(0, fileExplorerSize - offset - 1).length();
+		insertPixels(state, &pixels, node->name, color);
+		if (pixels.size() > state->fileExplorerSize) {
+			auto size = pixels.size();
+			for (uint32_t i = state->fileExplorerSize; i < size + 3; i++) {
+				pixels.pop_back();
+			}
+			insertPixels(state, &pixels, "...", color);
+		}
+		renderPixels(state, displayRow, 0, pixels);
 	}
 	if (node->isOpen) {
 		for (uint32_t i = 0; i < node->children.size(); i++) {
-			row = renderFileExplorerNode(&node->children[i], row, selectedRow, startingSpaces + "  ",
-						     isFileExplorerOpen, fileExplorerWindowLine, fileExplorerSize,
-						     cursor);
+			row = renderFileExplorerNode(state, &node->children[i], row, startingSpaces + "  ", cursor);
 		}
 	}
 	return row;
@@ -721,9 +686,7 @@ int32_t renderFileExplorerNode(FileExplorerNode *node, int32_t r, int32_t select
 Cursor renderFileExplorer(State *state)
 {
 	Cursor cursor{ -1, -1 };
-	renderFileExplorerNode(state->fileExplorer, 0, state->fileExplorerIndex, std::string(""),
-			       state->mode == FILEEXPLORER, state->fileExplorerWindowLine, state->fileExplorerSize,
-			       cursor);
+	renderFileExplorerNode(state, state->fileExplorer, 0, std::string(""), cursor);
 	return cursor;
 }
 

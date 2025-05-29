@@ -87,7 +87,7 @@ class State {
 	bool showGrep;
 	uint32_t lineNumSize;
 	bool fileExplorerOpen;
-	int32_t fileExplorerSize;
+	uint32_t fileExplorerSize;
 	int32_t fileExplorerIndex;
 	int32_t fileExplorerWindowLine;
 	Position matching;
