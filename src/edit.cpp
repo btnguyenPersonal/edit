@@ -10,7 +10,7 @@ int32_t main(int32_t argc, char *argv[])
 	int32_t c;
 	State *state;
 	std::string filename;
-	if (argc == 2) {
+	if (argc >= 2) {
 		filename = argv[1];
 	}
 	if (!filename.empty()) {
