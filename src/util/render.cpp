@@ -378,7 +378,7 @@ bool isRowInVisual(State *state, int32_t row)
 
 void renderGrepOutput(State *state)
 {
-	uint32_t index = state->grep.selection;
+	uint32_t index;
 	if ((int32_t)state->grep.selection - ((int32_t)state->maxY / 2) > 0) {
 		index = state->grep.selection - state->maxY / 2;
 	} else {
