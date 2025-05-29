@@ -596,6 +596,10 @@ int32_t renderLineContent(State *state, int32_t row, int32_t renderRow, Cursor *
 				} else {
 					insertPixels(state, &pixels, c, color);
 				}
+				if (state->row == (uint32_t)row && state->col == col) {
+					cursor->row = renderRow;
+					cursor->col = pixels.size() > 0 ? pixels.size() - 1 : 0;
+				}
 				if (state->row == (uint32_t)row && state->col == col + 1) {
 					if (state->mode == TYPING || state->mode == MULTICURSOR) {
 						if (state->col + 1 >= state->data[state->row].length() ||
@@ -607,10 +611,6 @@ int32_t renderLineContent(State *state, int32_t row, int32_t renderRow, Cursor *
 				}
 			}
 
-			if (state->row == (uint32_t)row && state->col == col) {
-				cursor->row = renderRow;
-				cursor->col = pixels.size() > 0 ? pixels.size() - 1 : 0;
-			}
 			if (searchCounter != 0) {
 				searchCounter -= 1;
 			}
@@ -633,12 +633,13 @@ void moveCursor(State *state, int32_t cursorOnStatusBar, Cursor editorCursor, Cu
 		move(fileExplorerCursor.row, fileExplorerCursor.col);
 	} else {
 		auto row = editorCursor.row;
-		auto col = editorCursor.col + getLineNumberOffset(state);
-		if (state->options.wordwrap && (uint32_t)col + 1 >= state->maxX) {
-			row += col / (state->maxX - getLineNumberOffset(state));
-			col %= state->maxX - getLineNumberOffset(state);
+		auto col = editorCursor.col;
+		uint32_t len = state->maxX - getLineNumberOffset(state);
+		if (state->options.wordwrap && (uint32_t)col + 1 >= len) {
+			row += col / len;
+			col %= len;
 		}
-		move(row, col);
+		move(row, col + getLineNumberOffset(state));
 	}
 }
 
