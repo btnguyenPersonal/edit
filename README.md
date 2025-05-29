@@ -1,8 +1,8 @@
 # setup
 
-requires g++-13
-requires xclip (on linux)
+MACOS AND LINUX ONLY
 
+install g++-13 (and xclip on linux)
 ```
 sudo make install
 ```
