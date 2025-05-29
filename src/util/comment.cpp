@@ -36,7 +36,7 @@ std::string trimComment(State *state, std::string line)
 				outputLine = line.substr(0, i);
 			}
 			break;
-		} else if (line[i] != ' ') {
+		} else if (line[i] != getIndentCharacter(state)) {
 			foundNonSpace = true;
 		}
 	}

@@ -424,18 +424,6 @@ bool isRowInVisual(State *state, int32_t row)
 	       ((int32_t)state->row <= row && row <= (int32_t)state->visual.row);
 }
 
-std::vector<Pixel> getAutoComplete(State *state)
-{
-	std::vector<Pixel> pixels = std::vector<Pixel>();
-	if (state->mode == TYPING || state->mode == MULTICURSOR) {
-		if (state->col + 1 >= state->data[state->row].length() ||
-		    !isAlphanumeric(state->data[state->row][state->col])) {
-			insertPixels(state, &pixels, autocomplete(state, getCurrentWord(state)), GREY);
-		}
-	}
-	return pixels;
-}
-
 void renderGrepOutput(State *state)
 {
 	uint32_t index;
@@ -570,11 +558,13 @@ int32_t renderLineContent(State *state, int32_t row, int32_t renderRow, Cursor *
 		bool inString = false;
 		bool skipNext = false;
 		char stringType;
+		uint32_t searchCounter = 0;
+		uint32_t startOfSearch = 0;
+		bool isComment = false;
 
 		for (uint32_t col = 0; col < state->data[row].length(); col++) {
 			char c = state->data[row][col];
 
-			// TODO skip if non-code file
 			if (skipNext) {
 				skipNext = false;
 			} else if (inString && c == '\\') {
@@ -586,109 +576,79 @@ int32_t renderLineContent(State *state, int32_t row, int32_t renderRow, Cursor *
 				inString = false;
 			}
 
-			int32_t color = getColorFromChar(c);
-			// matching color
-			// showGrep color
-			// showSearch color
-			// mergeConflict
-			// comment color
-			if (inString) {
-				color = CYAN;
+			if (state->showGrep) {
+				if (searchCounter == 0 && isInQuery(state, row, col, state->grep.query)) {
+					searchCounter = state->grep.query.length();
+					startOfSearch = col;
+				}
+			} else {
+				if (searchCounter == 0 && isInQuery(state, row, col, state->search.query)) {
+					searchCounter = state->search.query.length();
+					startOfSearch = col;
+				}
 			}
-			// visual invertColor(color)
+
+			if (!inString &&
+			    state->data[row].substr(col, state->commentSymbol.length()) == state->commentSymbol &&
+			    state->commentSymbol != "") {
+				isComment = true;
+			}
+
+			int32_t color = getColorFromChar(c);
+			if (state->matching.row == (uint32_t)row && state->matching.col == col &&
+			(state->matching.row != state->row || state->matching.col != state->col)) {
+				color = invertColor(GREY);
+			} else {
+				if (state->showGrep && searchCounter != 0) {
+					color = getSearchColor(state, row, startOfSearch,
+					state->grep.query, true);
+				} else if (searchCounter != 0 && (state->searching || state->replacing)) {
+					color = getSearchColor(state, row, startOfSearch,
+					state->search.query, false);
+				} else {
+					if (isMergeConflict(state->data[row])) {
+						color = RED;
+					} else if (isComment) {
+						color = GREEN;
+					} else if (inString &&
+					getExtension(state->filename) != "md" &&
+					getExtension(state->filename) != "txt") {
+						color = CYAN;
+					} else {
+						color = getColorFromChar(state->data[row][col]);
+					}
+					if (isRowColInVisual(state, row, col)) {
+						color = invertColor(color);
+					}
+				}
+			}
 
 			if (col >= state->windowPosition.col) {
-				// search/replacing
-				insertPixels(state, &pixels, c, color);
-				// autocomplete pixels
-				// check if wordwrap and renderPixels && reset col && renderRow++
+				if (state->replacing && searchCounter != 0) {
+					insertPixels(state, &pixels, state->replace.query, color);
+					col += state->search.query.length();
+					searchCounter = 0;
+				} else {
+					insertPixels(state, &pixels, c, color);
+				}
+				if (state->row == (uint32_t)row && state->col == col + 1) {
+					if (state->mode == TYPING || state->mode == MULTICURSOR) {
+						if (state->col + 1 >= state->data[state->row].length() ||
+						!isAlphanumeric(state->data[state->row][state->col])) {
+							insertPixels(state, &pixels, autocomplete(state, getCurrentWord(state)), GREY);
+						}
+					}
+				}
 			}
 
 			if (state->row == (uint32_t)row && state->col == col) {
 				cursor->row = renderRow - 1;
 				cursor->col = pixels.size() > 0 ? pixels.size() - 1 : 0;
 			}
+			if (searchCounter != 0) {
+				searchCounter -= 1;
+			}
 		}
-		// bool isInString = false;
-		// bool skipNext = false;
-		// uint32_t searchCounter = 0;
-		// uint32_t startOfSearch = 0;
-		// bool isComment = false;
-		// char stringType;
-		// uint32_t col = 0;
-		// uint32_t completionLength = 0;
-		// while (col < state->data[row].length()) {
-		// 	if (state->showGrep) {
-		// 		if (searchCounter == 0 && isInQuery(state, row, col, state->grep.query)) {
-		// 			searchCounter = state->grep.query.length();
-		// 			startOfSearch = col;
-		// 		}
-		// 	} else {
-		// 		if (searchCounter == 0 && isInQuery(state, row, col, state->search.query)) {
-		// 			searchCounter = state->search.query.length();
-		// 			startOfSearch = col;
-		// 		}
-		// 	}
-
-		// 	if (!isInString &&
-		// 	    state->data[row].substr(col, state->commentSymbol.length()) == state->commentSymbol &&
-		// 	    state->commentSymbol != "") {
-		// 		isComment = true;
-		// 	}
-
-		// 	if (col >= state->windowPosition.col) {
-		// 		if (state->replacing && searchCounter != 0) {
-		// 			for (uint32_t i = 0; i < state->replace.query.length(); i++) {
-		// 				printChar(state, renderRow, renderCol, state->replace.query[i],
-		// 					  getSearchColor(state, row, startOfSearch, state->search.query,
-		// 							 false),
-		// 					  true);
-		// 			}
-		// 			col += state->search.query.length();
-		// 			searchCounter = 0;
-		// 		} else {
-		// 			// TODO make this a getColor function();, lots of logic in here that's messy
-		// 			int32_t color;
-		// 			if (state->matching.row == (uint32_t)row && state->matching.col == col &&
-		// 			    (state->matching.row != state->row || state->matching.col != state->col)) {
-		// 				color = invertColor(GREY);
-		// 			} else {
-		// 				if (state->showGrep && searchCounter != 0) {
-		// 					color = getSearchColor(state, row, startOfSearch,
-		// 							       state->grep.query, true);
-		// 				} else if (searchCounter != 0 && state->searching == true) {
-		// 					color = getSearchColor(state, row, startOfSearch,
-		// 							       state->search.query, false);
-		// 				} else {
-		// 					if (isMergeConflict(state->data[row])) {
-		// 						color = RED;
-		// 					} else if (isComment) {
-		// 						color = GREEN;
-		// 					} else if (isInString == true &&
-		// 						   getExtension(state->filename) != "md" &&
-		// 						   getExtension(state->filename) != "txt") {
-		// 						color = CYAN;
-		// 					} else {
-		// 						color = getColorFromChar(state->data[row][col]);
-		// 					}
-		// 					if (isRowColInVisual(state, row, col)) {
-		// 						color = invertColor(color);
-		// 					}
-		// 				}
-		// 			}
-		// 			printChar(state, renderRow, renderCol, state->data[row][col], color, true);
-		// 			col++;
-		// 			if (state->row == (uint32_t)row && state->col == col) {
-		// 				auto completion = getAutoComplete(state);
-		// 			}
-		// 		}
-		// 	} else {
-		// 		col++;
-		// 	}
-		// 	if (searchCounter != 0) {
-		// 		searchCounter -= 1;
-		// 	}
-		// }
 		if (state->row == (uint32_t)row) {
 			if (state->col >= state->data[row].length()) {
 				cursor->row = renderRow - 1;
@@ -696,6 +656,9 @@ int32_t renderLineContent(State *state, int32_t row, int32_t renderRow, Cursor *
 			}
 		}
 	}
+	// TODO check if wordwrap and renderPixels && reset col && renderRow++
+	// if (state->options.wordwrap) {
+	// }
 	renderPixels(renderRow, getLineNumberOffset(state), pixels);
 	return renderRow + 1;
 }
