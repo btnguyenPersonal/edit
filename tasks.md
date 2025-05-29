@@ -8,8 +8,6 @@
 
 - add all editorconfig settings
 
-- change all of render to pixels
-
 - put asserts everywhere (make sure state is perfect and i never mess up)
 
 - change keybinds to how dwm does it
