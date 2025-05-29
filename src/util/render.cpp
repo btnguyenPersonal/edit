@@ -349,31 +349,6 @@ bool isMergeConflict(const std::string &str)
 	return false;
 }
 
-void printChar(State *state, int &row, int &col, char c, int32_t color, bool advance)
-{
-	if (' ' <= c && c <= '~') {
-		mvaddch_color(row, col + getLineNumberOffset(state), c, color);
-	} else if (c == '\t') {
-		for (uint32_t i = col % state->options.indent_size; i < state->options.indent_size; i++) {
-			mvaddch_color(row, col + getLineNumberOffset(state), ' ', color == WHITE ? GREY : color);
-			advancePosition(state, row, col);
-		}
-		return;
-	} else if (' ' <= unctrl(c) && unctrl(c) <= '~') {
-		mvaddch_color(row, col + getLineNumberOffset(state), unctrl(c), invertColor(MAGENTA));
-	} else {
-		mvaddch_color(row, col + getLineNumberOffset(state), ' ', invertColor(MAGENTA));
-	}
-	if (advance) {
-		advancePosition(state, row, col);
-	}
-}
-
-void printChar(State *state, int32_t row, int32_t col, char c, int32_t color)
-{
-	printChar(state, row, col, c, color, false);
-}
-
 bool isRowColInVisual(State *state, uint32_t i, uint32_t j)
 {
 	if (state->mode == VISUAL) {
@@ -433,7 +408,7 @@ bool isRowInVisual(State *state, int32_t row)
 
 void renderGrepOutput(State *state)
 {
-	uint32_t index;
+	uint32_t index = state->grep.selection;
 	if ((int32_t)state->grep.selection - ((int32_t)state->maxY / 2) > 0) {
 		index = state->grep.selection - state->maxY / 2;
 	} else {
@@ -442,10 +417,19 @@ void renderGrepOutput(State *state)
 	uint32_t renderIndex = 1;
 	int32_t color;
 	for (uint32_t i = index; i < state->grepOutput.size() && i < index + state->maxY; i++) {
+		std::vector<Pixel> pixels = std::vector<Pixel>();
 		color = isTestFile(state->grepOutput[i].path.string()) ? ORANGE : WHITE;
-		mvprintw_color(renderIndex, 0, "%s:%d %s\n", state->grepOutput[i].path.c_str(),
-			       state->grepOutput[i].lineNum, state->grepOutput[i].line.c_str(),
-			       i == state->grep.selection ? invertColor(color) : color);
+		if (i == state->grep.selection) {
+			color = invertColor(color);
+		}
+		std::string line = state->grepOutput[i].path.string();
+		line += ":";
+		line += std::to_string(state->grepOutput[i].lineNum);
+		line += " ";
+		line += state->grepOutput[i].line;
+		line = safeSubstring(line, 0, state->maxX);
+		insertPixels(state, &pixels, line, color);
+		renderPixels(state, renderIndex, 0, pixels);
 		renderIndex++;
 	}
 }
@@ -461,9 +445,14 @@ void renderFindFileOutput(State *state)
 	uint32_t renderIndex = 1;
 	int32_t color;
 	for (uint32_t i = index; i < state->findFileOutput.size() && i < index + state->maxY; i++) {
+		std::vector<Pixel> pixels = std::vector<Pixel>();
 		color = isTestFile(state->findFileOutput[i]) ? ORANGE : WHITE;
-		mvprintw_color(renderIndex, 0, "%s\n", state->findFileOutput[i].c_str(),
-			       i == state->findFile.selection ? invertColor(color) : color);
+		if (i == state->findFile.selection) {
+			color = invertColor(color);
+		}
+		std::string line = safeSubstring(state->findFileOutput[i], 0, state->maxX);
+		insertPixels(state, &pixels, line, color);
+		renderPixels(state, renderIndex, 0, pixels);
 		renderIndex++;
 	}
 }
