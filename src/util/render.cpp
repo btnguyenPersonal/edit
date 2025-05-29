@@ -95,15 +95,22 @@ std::vector<Pixel> toPixels(State *state, std::string s, int32_t color, uint32_t
 	return pixels;
 }
 
-void renderPixels(int32_t r, int32_t c, std::vector<Pixel> pixels)
+int32_t renderPixels(State *state, int32_t r, int32_t c, std::vector<Pixel> pixels)
 {
-	int32_t i = c;
+	int32_t row = r;
+	int32_t col = c;
 	for (Pixel p : pixels) {
 		attron(COLOR_PAIR(p.color));
-		mvaddch(r, i, p.c);
+		mvaddch(row, col, p.c);
 		attroff(COLOR_PAIR(p.color));
-		i++;
+		if (state->options.wordwrap && (uint32_t)col + 1 >= state->maxX) {
+			row++;
+			col = getLineNumberOffset(state);
+		} else {
+			col++;
+		}
 	}
+	return row - r + 1;
 }
 
 void insertPixels(State *state, std::vector<Pixel> *pixels, std::string s, int32_t color)
@@ -160,12 +167,12 @@ void renderFileStack(State *state)
 		}
 		int32_t color = i == (int32_t)state->fileStackIndex ? invertColor(YELLOW) : GREY;
 		insertPixels(state, &pixels, "|" + filename, color);
-		renderPixels(renderRow++, state->maxX / 2, pixels);
+		renderPixels(state, renderRow++, state->maxX / 2, pixels);
 		pixels.clear();
 	}
 	for (int32_t i = renderRow; i <= (int32_t)state->maxY; i++) {
 		insertPixels(state, &pixels, "|" + std::string(state->maxX / 2, ' '), GREY);
-		renderPixels(renderRow++, state->maxX / 2, pixels);
+		renderPixels(state, renderRow++, state->maxX / 2, pixels);
 		pixels.clear();
 	}
 }
@@ -223,18 +230,18 @@ int32_t renderStatusBar(State *state)
 	if (state->status.length() > 0) {
 		prefix = "";
 		insertPixels(state, &pixels, prefix + state->status, RED);
-		renderPixels(0, 0, pixels);
+		renderPixels(state, 0, 0, pixels);
 	}
 
 	if (state->mode == NAMING) {
 		prefix = "name: ";
 		insertPixels(state, &pixels, prefix + state->name.query, WHITE);
-		renderPixels(0, 0, pixels);
+		renderPixels(state, 0, 0, pixels);
 		return prefix.length() + state->name.cursor;
 	} else if (state->mode == COMMANDLINE) {
 		std::string prefix = ":";
 		insertPixels(state, &pixels, prefix + state->commandLine.query, WHITE);
-		renderPixels(0, 0, pixels);
+		renderPixels(state, 0, 0, pixels);
 		return prefix.length() + state->commandLine.cursor;
 	} else if (state->mode == GREP) {
 		prefix = state->grepPath + "> ";
@@ -243,7 +250,7 @@ int32_t renderStatusBar(State *state)
 		insertPixels(state, &pixels, std::to_string(state->grep.selection + 1), WHITE);
 		insertPixels(state, &pixels, " of ", WHITE);
 		insertPixels(state, &pixels, std::to_string(state->grepOutput.size()), WHITE);
-		renderPixels(0, 0, pixels);
+		renderPixels(state, 0, 0, pixels);
 		return prefix.length() + state->grep.cursor;
 	} else if (state->mode == FINDFILE) {
 		prefix = "> ";
@@ -253,7 +260,7 @@ int32_t renderStatusBar(State *state)
 		insertPixels(state, &pixels, std::to_string(state->findFile.selection + 1), WHITE);
 		insertPixels(state, &pixels, " of ", WHITE);
 		insertPixels(state, &pixels, std::to_string(state->findFileOutput.size()), WHITE);
-		renderPixels(0, 0, pixels);
+		renderPixels(state, 0, 0, pixels);
 		return prefix.length() + state->findFile.cursor;
 	} else if (state->searching || state->mode == SEARCH) {
 		prefix = "/";
@@ -267,11 +274,11 @@ int32_t renderStatusBar(State *state)
 		insertPixels(state, &pixels, prefix + displayQuery, state->searchFail ? RED : GREEN);
 		if (state->replacing) {
 			insertPixels(state, &pixels, prefix + state->replace.query, MAGENTA);
-			renderPixels(0, 0, pixels);
+			renderPixels(state, 0, 0, pixels);
 			return prefix.length() * 2 + displayQuery.length() + state->replace.cursor;
 		}
 		if (state->mode == SEARCH) {
-			renderPixels(0, 0, pixels);
+			renderPixels(state, 0, 0, pixels);
 			return prefix.length() + state->search.cursor;
 		}
 	} else {
@@ -300,7 +307,7 @@ int32_t renderStatusBar(State *state)
 		insertPixels(state, &pixels, modename, getModeColor(state));
 	}
 
-	renderPixels(0, 0, pixels);
+	renderPixels(state, 0, 0, pixels);
 	return -1;
 }
 
@@ -531,7 +538,7 @@ void renderLineNumber(State *state, int32_t row, int32_t renderRow)
 	}
 
 	int32_t border = state->fileExplorerOpen ? state->fileExplorerSize : 0;
-	renderPixels(renderRow, border, pixels);
+	renderPixels(state, renderRow, border, pixels);
 }
 
 void advancePosition(State *state, int &renderRow, int &renderCol)
@@ -642,7 +649,7 @@ int32_t renderLineContent(State *state, int32_t row, int32_t renderRow, Cursor *
 			}
 
 			if (state->row == (uint32_t)row && state->col == col) {
-				cursor->row = renderRow - 1;
+				cursor->row = renderRow;
 				cursor->col = pixels.size() > 0 ? pixels.size() - 1 : 0;
 			}
 			if (searchCounter != 0) {
@@ -651,16 +658,12 @@ int32_t renderLineContent(State *state, int32_t row, int32_t renderRow, Cursor *
 		}
 		if (state->row == (uint32_t)row) {
 			if (state->col >= state->data[row].length()) {
-				cursor->row = renderRow - 1;
+				cursor->row = renderRow;
 				cursor->col = state->data[row].length();
 			}
 		}
 	}
-	// TODO check if wordwrap and renderPixels && reset col && renderRow++
-	// if (state->options.wordwrap) {
-	// }
-	renderPixels(renderRow, getLineNumberOffset(state), pixels);
-	return renderRow + 1;
+	return renderRow + renderPixels(state, renderRow, getLineNumberOffset(state), pixels);
 }
 
 void moveCursor(State *state, int32_t cursorOnStatusBar, Cursor editorCursor, Cursor fileExplorerCursor)
@@ -670,7 +673,13 @@ void moveCursor(State *state, int32_t cursorOnStatusBar, Cursor editorCursor, Cu
 	} else if (state->mode == FILEEXPLORER) {
 		move(fileExplorerCursor.row, fileExplorerCursor.col);
 	} else {
-		move(editorCursor.row + 1, editorCursor.col + getLineNumberOffset(state));
+		auto row = editorCursor.row;
+		auto col = editorCursor.col + getLineNumberOffset(state);
+		if (state->options.wordwrap && (uint32_t)col + 1 >= state->maxX) {
+			row += col / (state->maxX - getLineNumberOffset(state));
+			col %= state->maxX - getLineNumberOffset(state);
+		}
+		move(row, col);
 	}
 }
 
