@@ -618,7 +618,7 @@ int32_t renderLineContent(State *state, int32_t row, int32_t renderRow, Cursor *
 		if (state->row == (uint32_t)row) {
 			if (state->col >= state->data[row].length()) {
 				cursor->row = renderRow;
-				cursor->col = state->data[row].length();
+				cursor->col = getDisplayLength(state, state->data[row]);
 			}
 		}
 	}
