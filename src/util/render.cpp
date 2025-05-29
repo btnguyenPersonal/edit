@@ -670,10 +670,10 @@ int32_t renderFileExplorerNode(State *state, FileExplorerNode *node, int32_t r, 
 		insertPixels(state, &pixels, node->name, color);
 		if (pixels.size() > state->fileExplorerSize) {
 			auto size = pixels.size();
-			for (uint32_t i = state->fileExplorerSize; i < size + 3; i++) {
+			for (uint32_t i = state->fileExplorerSize; i < size + 1; i++) {
 				pixels.pop_back();
 			}
-			insertPixels(state, &pixels, "...", color);
+			insertPixels(state, &pixels, "~", color);
 		}
 		renderPixels(state, displayRow, 0, pixels);
 	}
