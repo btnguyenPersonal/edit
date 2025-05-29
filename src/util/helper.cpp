@@ -1541,6 +1541,23 @@ uint32_t getCenteredWindowPosition(State *state)
 	return windowRow;
 }
 
+uint32_t getDisplayLength(State *state, std::string s)
+{
+	if (state->options.indent_style == "tab") {
+		uint32_t output = 0;
+		for (uint32_t i = 0; i < s.length(); i++) {
+			if (s[i] == '\t') {
+				output += state->options.indent_size;
+			} else {
+				output++;
+			}
+		}
+		return output;
+	} else {
+		return s.length();
+	}
+}
+
 uint32_t getDisplayRows(State *state, uint32_t r, uint32_t c)
 {
 	if (!state->options.wordwrap) {
@@ -1555,7 +1572,7 @@ uint32_t getDisplayRows(State *state, uint32_t r)
 	if (!state->options.wordwrap) {
 		return 1;
 	}
-	return 1 + state->data[r].length() / (state->maxX - getLineNumberOffset(state));
+	return 1 + getDisplayLength(state, state->data[r]) / (state->maxX - getLineNumberOffset(state));
 }
 
 void centerScreen(State *state)

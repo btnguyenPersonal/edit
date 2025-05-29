@@ -1,14 +1,12 @@
 ## TODO
 
-- add gitlab and local server as mirror
+- add args
 
-- add cleanup file to end of sendKeys
+- add gitlab and local server as mirror
 
 - :retab command (find all preceding spaces of state->indent length and convert to tab)
 
 - add all editorconfig settings
-
-- change all of render to pixels
 
 - put asserts everywhere (make sure state is perfect and i never mess up)
 
