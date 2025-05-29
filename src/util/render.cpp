@@ -53,7 +53,8 @@ std::vector<Pixel> toPixels(State *state, std::string s, int32_t color, uint32_t
 		if (' ' <= c && c <= '~') {
 			pixels.push_back({ c, color });
 		} else if (c == '\t') {
-			for (uint32_t i = (size + pixels.size()) % state->options.indent_size; i < state->options.indent_size; i++) {
+			for (uint32_t i = (size + pixels.size()) % state->options.indent_size;
+			     i < state->options.indent_size; i++) {
 				pixels.push_back({ ' ', color == WHITE ? GREY : color });
 			}
 		} else if (' ' <= unctrl(c) && unctrl(c) <= '~') {
@@ -488,7 +489,8 @@ void renderLineNumber(State *state, int32_t row, int32_t renderRow)
 {
 	std::vector<Pixel> pixels = std::vector<Pixel>();
 
-	insertPixels(state, &pixels, padTo(std::to_string(row + 1), state->lineNumSize, ' '), getLineNumberColor(state, row));
+	insertPixels(state, &pixels, padTo(std::to_string(row + 1), state->lineNumSize, ' '),
+		     getLineNumberColor(state, row));
 
 	insertPixels(state, &pixels, "|", getMarkColor(state, row));
 
@@ -562,23 +564,20 @@ int32_t renderLineContent(State *state, int32_t row, int32_t renderRow, Cursor *
 
 			int32_t color = getColorFromChar(c);
 			if (state->matching.row == (uint32_t)row && state->matching.col == col &&
-			(state->matching.row != state->row || state->matching.col != state->col)) {
+			    (state->matching.row != state->row || state->matching.col != state->col)) {
 				color = invertColor(GREY);
 			} else {
 				if (state->showGrep && searchCounter != 0) {
-					color = getSearchColor(state, row, startOfSearch,
-					state->grep.query, true);
+					color = getSearchColor(state, row, startOfSearch, state->grep.query, true);
 				} else if (searchCounter != 0 && (state->searching || state->replacing)) {
-					color = getSearchColor(state, row, startOfSearch,
-					state->search.query, false);
+					color = getSearchColor(state, row, startOfSearch, state->search.query, false);
 				} else {
 					if (isMergeConflict(state->data[row])) {
 						color = RED;
 					} else if (isComment) {
 						color = GREEN;
-					} else if (inString &&
-					getExtension(state->filename) != "md" &&
-					getExtension(state->filename) != "txt") {
+					} else if (inString && getExtension(state->filename) != "md" &&
+						   getExtension(state->filename) != "txt") {
 						color = CYAN;
 					} else {
 						color = getColorFromChar(state->data[row][col]);
@@ -600,8 +599,9 @@ int32_t renderLineContent(State *state, int32_t row, int32_t renderRow, Cursor *
 				if (state->row == (uint32_t)row && state->col == col + 1) {
 					if (state->mode == TYPING || state->mode == MULTICURSOR) {
 						if (state->col + 1 >= state->data[state->row].length() ||
-						!isAlphanumeric(state->data[state->row][state->col])) {
-							insertPixels(state, &pixels, autocomplete(state, getCurrentWord(state)), GREY);
+						    !isAlphanumeric(state->data[state->row][state->col])) {
+							insertPixels(state, &pixels,
+								     autocomplete(state, getCurrentWord(state)), GREY);
 						}
 					}
 				}
@@ -642,7 +642,8 @@ void moveCursor(State *state, int32_t cursorOnStatusBar, Cursor editorCursor, Cu
 	}
 }
 
-int32_t renderFileExplorerNode(State *state, FileExplorerNode *node, int32_t r, std::string startingSpaces, Cursor &cursor)
+int32_t renderFileExplorerNode(State *state, FileExplorerNode *node, int32_t r, std::string startingSpaces,
+			       Cursor &cursor)
 {
 	int32_t color;
 	if (shouldIgnoreFile(node->path)) {
@@ -655,7 +656,7 @@ int32_t renderFileExplorerNode(State *state, FileExplorerNode *node, int32_t r, 
 	int32_t row = r + 1;
 	std::vector<Pixel> pixels = std::vector<Pixel>();
 	if (row - state->fileExplorerWindowLine > 0) {
-		auto displayRow = row - state-> fileExplorerWindowLine;
+		auto displayRow = row - state->fileExplorerWindowLine;
 		insertPixels(state, &pixels, startingSpaces, GREY);
 		if (node->isFolder) {
 			insertPixels(state, &pixels, node->isOpen ? 'v' : '>', GREY);
