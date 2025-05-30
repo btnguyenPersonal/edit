@@ -22,7 +22,7 @@ void cleanup(State *state, char c)
 		}
 		expect(state->windowPosition.row <= state->row);
 		expect(state->windowPosition.row + state->maxY > state->row);
-		if (state->recording && state->dontRecordKey == false) {
+		if (state->recording && !state->dontRecordKey) {
 			if (!(c == ',' && state->mode == SHORTCUTS)) {
 				recordMacroCommand(state, c);
 			}
@@ -30,7 +30,7 @@ void cleanup(State *state, char c)
 		if (c != ctrl('z') && c != ctrl('q')) {
 			recordJumpList(state);
 		}
-		if (!state->recording && state->mode == SHORTCUTS) {
+		if (state->mode == SHORTCUTS) {
 			std::vector<diffLine> diff = generateDiff(state->previousState, state->data);
 			if (diff.size() != 0) {
 				if (state->options.autosave && !state->unsavedFile) {

@@ -198,12 +198,10 @@ std::string getRelativeToCurrent(State *state, std::string p)
 
 void recordMotion(State *state, int32_t c)
 {
-	if (!state->dontRecordKey) {
-		if (c == KEY_BACKSPACE) {
-			state->motion += 127;
-		} else {
-			state->motion += c;
-		}
+	if (c == KEY_BACKSPACE) {
+		state->motion += 127;
+	} else {
+		state->motion += c;
 	}
 }
 

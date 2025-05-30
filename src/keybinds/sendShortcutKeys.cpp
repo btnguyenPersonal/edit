@@ -307,7 +307,7 @@ void sendShortcutKeys(State *state, int32_t c)
 		}
 		state->dontRecordKey = true;
 	} else if (c == 'q') {
-		if (state->recording == false) {
+		if (!state->recording) {
 			state->macroCommand = "";
 		}
 		state->recording = !state->recording;
