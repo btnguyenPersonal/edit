@@ -322,9 +322,9 @@ Visual block mode highlightes in blocks.
 
 .editorconfig (default settings)
 ```
-wordwrap off
-showmode on
-autosave on
+wordwrap = true
+showmode = true
+autosave = true
 indent_size = 4
 indent_style = space
 ```

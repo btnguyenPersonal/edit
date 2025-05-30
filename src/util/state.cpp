@@ -91,7 +91,7 @@ void State::setDefaultOptions()
 {
 	this->options.insert_final_newline = false;
 	this->options.autosave = true;
-	this->options.wordwrap = false;
+	this->options.wordwrap = true;
 	this->options.showmode = true;
 	this->options.indent_size = 4;
 	this->options.indent_style = "space";
