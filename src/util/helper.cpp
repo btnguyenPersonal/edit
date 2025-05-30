@@ -1500,14 +1500,24 @@ std::vector<std::string> readFile(const std::string &filename)
 	return file_contents;
 }
 
+bool isColTooSmall(State *state)
+{
+	uint32_t col = getDisplayCol(state);
+	return col < state->windowPosition.col;
+}
+
+bool isColTooBig(State *state)
+{
+	uint32_t col = getDisplayCol(state);
+	return (int32_t)col - (int32_t)state->windowPosition.col >
+			   (int32_t)state->maxX - (int32_t)getLineNumberOffset(state) - 1;
+}
+
 bool isWindowPositionInvalid(State *state)
 {
-	bool isColTooSmall = state->col < state->windowPosition.col;
-	bool isColTooBig = (int32_t)state->col - (int32_t)state->windowPosition.col >
-			   (int32_t)state->maxX - (int32_t)getLineNumberOffset(state) - 1;
 	if (isOffScreenVertical(state)) {
 		return true;
-	} else if (!state->options.wordwrap && (isColTooSmall || isColTooBig)) {
+	} else if (!state->options.wordwrap && (isColTooSmall(state) || isColTooBig(state))) {
 		return true;
 	}
 	return false;
@@ -1528,6 +1538,23 @@ bool isOffScreenVertical(State *state)
 		windowRow++;
 	}
 	return true;
+}
+
+uint32_t getDisplayCol(State* state)
+{
+	if (state->options.indent_style == "tab") {
+		uint32_t sum = 0;
+		for (uint32_t i = 0; i < state->col; i++) {
+			if (state->data[state->row][i] == '\t') {
+				sum += state->options.indent_size;
+			} else {
+				sum++;
+			}
+		}
+		return sum;
+	} else {
+		return state->col;
+	}
 }
 
 uint32_t getCenteredWindowPosition(State *state)
@@ -1578,11 +1605,12 @@ uint32_t getDisplayRows(State *state, uint32_t r)
 void centerScreen(State *state)
 {
 	state->windowPosition.row = getCenteredWindowPosition(state);
+	uint32_t col = getDisplayCol(state);
 	if (!state->options.wordwrap) {
-		if (state->col < state->windowPosition.col) {
-			state->windowPosition.col = state->col;
-		} else if (state->col > state->windowPosition.col + (state->maxX - getLineNumberOffset(state) - 1)) {
-			state->windowPosition.col = state->col + getLineNumberOffset(state) + 1 - state->maxX;
+		if (isColTooSmall(state)) {
+			state->windowPosition.col = col;
+		} else if (isColTooBig(state)) {
+			state->windowPosition.col = col + getLineNumberOffset(state) + 1 - state->maxX;
 		}
 	}
 }

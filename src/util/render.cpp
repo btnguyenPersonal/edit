@@ -531,6 +531,8 @@ int32_t renderLineContent(State *state, int32_t row, int32_t renderRow, Cursor *
 		bool isComment = false;
 		bool foundCursor = false;
 
+		// TODO just search replace tab with spaces then don't need weird workarounds
+		// will need to add to cursor as well
 		for (uint32_t col = 0; col < state->data[row].length(); col++) {
 			char c = state->data[row][col];
 

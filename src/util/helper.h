@@ -7,6 +7,9 @@
 #include <string>
 #include <vector>
 
+bool isColTooSmall(State *state);
+bool isColTooBig(State *state);
+uint32_t getDisplayCol(State *state);
 uint32_t getDisplayLength(State *state, std::string s);
 std::string minimize_filename(const std::string &filename);
 std::string padTo(std::string str, const uint32_t num, const char paddingChar);
