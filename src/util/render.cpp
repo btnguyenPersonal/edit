@@ -53,8 +53,12 @@ std::vector<Pixel> toPixels(State *state, std::string s, int32_t color, uint32_t
 		if (' ' <= c && c <= '~') {
 			pixels.push_back({ c, color });
 		} else if (c == '\t') {
-			for (uint32_t i = (size + pixels.size()) % state->options.indent_size;
-			     i < state->options.indent_size; i++) {
+			if (state->options.indent_style == "tab") {
+				for (uint32_t i = (size + pixels.size()) % state->options.indent_size;
+				     i < state->options.indent_size; i++) {
+					pixels.push_back({ ' ', color == WHITE ? GREY : color });
+				}
+			} else {
 				pixels.push_back({ ' ', color == WHITE ? GREY : color });
 			}
 		} else if (' ' <= unctrl(c) && unctrl(c) <= '~') {

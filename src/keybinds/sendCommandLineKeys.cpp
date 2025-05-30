@@ -82,6 +82,8 @@ void sendCommandLineKeys(State *state, int32_t c)
 		state->mode = SHORTCUTS;
 	} else if (' ' <= c && c <= '~') {
 		add(&state->commandLine, c);
+	} else if (c == ctrl('t')) {
+		add(&state->commandLine, '\t');
 	} else if (c == KEY_LEFT) {
 		moveCursorLeft(&state->commandLine);
 	} else if (c == KEY_RIGHT) {

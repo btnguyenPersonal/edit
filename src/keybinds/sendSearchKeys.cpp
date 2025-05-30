@@ -13,6 +13,12 @@ void sendSearchKeys(State *state, int32_t c)
 		state->searching = false;
 		state->replacing = false;
 		state->mode = SHORTCUTS;
+	} else if (c == ctrl('t')) {
+		if (state->replacing) {
+			add(&state->replace, '\t');
+		} else {
+			add(&state->search, '\t');
+		}
 	} else if (' ' <= c && c <= '~') {
 		if (state->replacing) {
 			add(&state->replace, c);
