@@ -607,8 +607,7 @@ int32_t renderLineContent(State *state, int32_t row, int32_t renderRow, Cursor *
 						if (state->col + 1 >= state->data[state->row].length() ||
 						    !isAlphanumeric(state->data[state->row][state->col])) {
 							cursor->row = renderRow;
-							cursor->col = pixels.size() > 0 ? pixels.size() - 1 : 0;
-							cursor->col++;
+							cursor->col = pixels.size() > 0 ? pixels.size() : 0;
 							foundCursor = true;
 							insertPixels(state, &pixels,
 								     autocomplete(state, getCurrentWord(state)), GREY);
