@@ -529,6 +529,7 @@ int32_t renderLineContent(State *state, int32_t row, int32_t renderRow, Cursor *
 		uint32_t searchCounter = 0;
 		uint32_t startOfSearch = 0;
 		bool isComment = false;
+		bool foundCursor = false;
 
 		for (uint32_t col = 0; col < state->data[row].length(); col++) {
 			char c = state->data[row][col];
@@ -596,14 +597,19 @@ int32_t renderLineContent(State *state, int32_t row, int32_t renderRow, Cursor *
 				} else {
 					insertPixels(state, &pixels, c, color);
 				}
-				if (state->row == (uint32_t)row && state->col == col) {
+				if (!foundCursor && state->row == (uint32_t)row && state->col == col) {
 					cursor->row = renderRow;
 					cursor->col = pixels.size() > 0 ? pixels.size() - 1 : 0;
+					foundCursor = true;
 				}
 				if (state->row == (uint32_t)row && state->col == col + 1) {
 					if (state->mode == TYPING || state->mode == MULTICURSOR) {
 						if (state->col + 1 >= state->data[state->row].length() ||
 						    !isAlphanumeric(state->data[state->row][state->col])) {
+							cursor->row = renderRow;
+							cursor->col = pixels.size() > 0 ? pixels.size() - 1 : 0;
+							cursor->col++;
+							foundCursor = true;
 							insertPixels(state, &pixels,
 								     autocomplete(state, getCurrentWord(state)), GREY);
 						}
@@ -616,9 +622,10 @@ int32_t renderLineContent(State *state, int32_t row, int32_t renderRow, Cursor *
 			}
 		}
 		if (state->row == (uint32_t)row) {
-			if (state->col >= state->data[row].length()) {
+			if (!foundCursor && state->col >= state->data[row].length()) {
 				cursor->row = renderRow;
 				cursor->col = getDisplayLength(state, state->data[row]);
+				foundCursor = true;
 			}
 		}
 	}
