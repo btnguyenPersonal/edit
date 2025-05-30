@@ -207,18 +207,14 @@ void recordMotion(State *state, int32_t c)
 
 void setDotCommand(State *state, int32_t c)
 {
-	if (!state->dontRecordKey) {
-		std::string s;
-		s.push_back(c);
-		state->dotCommand = s;
-	}
+	std::string s;
+	s.push_back(c);
+	state->dotCommand = s;
 }
 
 void setDotCommand(State *state, std::string s)
 {
-	if (!state->dontRecordKey) {
-		state->dotCommand = s;
-	}
+	state->dotCommand = s;
 }
 
 int32_t contains(const std::map<uint32_t, std::string> &myMap, const std::string &s)

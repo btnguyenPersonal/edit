@@ -159,12 +159,12 @@ void sendShortcutKeys(State *state, int32_t c)
 		indent(state);
 		state->col = getIndexFirstNonSpace(state);
 		setDotCommand(state, ">");
-	} else if (!state->recording && c == 'u') {
+	} else if (c == 'u') {
 		if (state->historyPosition >= 0) {
 			state->row = applyDiff(state, state->history[state->historyPosition], true);
 			state->historyPosition--;
 		}
-	} else if (!state->recording && c == ctrl('r')) {
+	} else if (c == ctrl('r')) {
 		if (state->historyPosition < ((int32_t)state->history.size()) - 1) {
 			state->row = applyDiff(state, state->history[state->historyPosition + 1], false);
 			state->historyPosition++;
@@ -299,7 +299,7 @@ void sendShortcutKeys(State *state, int32_t c)
 			sendKeys(state, state->dotCommand[i]);
 		}
 		state->dontRecordKey = true;
-	} else if (c == ',' && state->recording == false) {
+	} else if (c == ',') {
 		resetValidCursorState(state);
 		for (uint32_t i = 0; i < state->macroCommand.length(); i++) {
 			state->dontRecordKey = true;
