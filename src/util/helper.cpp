@@ -1510,7 +1510,7 @@ bool isColTooBig(State *state)
 {
 	uint32_t col = getDisplayCol(state);
 	return (int32_t)col - (int32_t)state->windowPosition.col >
-			   (int32_t)state->maxX - (int32_t)getLineNumberOffset(state) - 1;
+	       (int32_t)state->maxX - (int32_t)getLineNumberOffset(state) - 1;
 }
 
 bool isWindowPositionInvalid(State *state)
@@ -1540,7 +1540,7 @@ bool isOffScreenVertical(State *state)
 	return true;
 }
 
-uint32_t getDisplayCol(State* state)
+uint32_t getDisplayCol(State *state)
 {
 	if (state->options.indent_style == "tab") {
 		uint32_t sum = 0;
