@@ -11,6 +11,7 @@
 #include "../util/state.h"
 #include "../util/visualType.h"
 #include "../util/expect.h"
+#include "../util/cleanup.h"
 #include "sendKeys.h"
 #include "sendVisualKeys.h"
 #include <algorithm>
@@ -297,6 +298,7 @@ void sendShortcutKeys(State *state, int32_t c)
 		for (uint32_t i = 0; i < state->dotCommand.length(); i++) {
 			state->dontRecordKey = true;
 			sendKeys(state, state->dotCommand[i]);
+			cleanup(state, c);
 		}
 		state->dontRecordKey = true;
 	} else if (c == ',') {
@@ -304,6 +306,7 @@ void sendShortcutKeys(State *state, int32_t c)
 		for (uint32_t i = 0; i < state->macroCommand.length(); i++) {
 			state->dontRecordKey = true;
 			sendKeys(state, state->macroCommand[i]);
+			cleanup(state, c);
 		}
 		state->dontRecordKey = true;
 	} else if (c == 'q') {
