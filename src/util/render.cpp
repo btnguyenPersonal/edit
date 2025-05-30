@@ -592,7 +592,7 @@ int32_t renderLineContent(State *state, int32_t row, int32_t renderRow, Cursor *
 			if (col >= state->windowPosition.col) {
 				if (state->replacing && searchCounter != 0) {
 					insertPixels(state, &pixels, state->replace.query, color);
-					col += state->search.query.length();
+					col += state->search.query.length() - 1;
 					searchCounter = 0;
 				} else {
 					insertPixels(state, &pixels, c, color);

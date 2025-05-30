@@ -1,6 +1,9 @@
 ## TODO
 
 - add args
+	-c "commands" (need to make parser for <c-h> <cr> etc)
+	--help
+	-h
 
 - add gitlab and local server as mirror
 

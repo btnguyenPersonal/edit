@@ -56,6 +56,13 @@ void evaluateCommandLineQuery(State *state)
 			}
 			std::getline(iss, s, ';');
 		} while (!iss.eof());
+	} else if (state->commandLine.query == "retab") {
+		if (state->options.indent_style == "tab") {
+			// TODO get from real
+			replaceAll(state, "    ", "\t");
+		} else {
+			replaceAll(state, "\t", std::string(state->options.indent_size, ' '));
+		}
 	} else if (is_number(state->commandLine.query)) {
 		uint32_t number = stoul(state->commandLine.query);
 		if (number > 0) {
