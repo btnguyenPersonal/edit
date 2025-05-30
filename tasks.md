@@ -1,5 +1,7 @@
 ## TODO
 
+showmode = true bricking everything
+
 - add args
 	-c "commands" (need to make parser for <c-h> <cr> etc)
 	--help
