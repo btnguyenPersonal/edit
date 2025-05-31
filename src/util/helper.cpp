@@ -1285,6 +1285,8 @@ bool shouldIgnoreFile(const std::filesystem::path &path)
 		}
 	}
 	std::vector<std::string> ignoreList = { ".nx/",
+						".mozilla/",
+						".vim/",
 						"nyc_output/",
 						"results/",
 						"target/",
@@ -1307,6 +1309,7 @@ bool shouldIgnoreFile(const std::filesystem::path &path)
 						".png",
 						".pdf",
 						"package-lock.json",
+						".cache/",
 						".eslintcache" };
 	for (uint32_t i = 0; i < ignoreList.size(); i++) {
 		if (path.string().find(ignoreList[i]) != std::string::npos) {

@@ -81,7 +81,6 @@ void State::readConfigLine(std::string line)
 {
 	this->readBoolConfigValue(this->options.autosave, "autosave", line);
 	this->readBoolConfigValue(this->options.wordwrap, "wordwrap", line);
-	this->readBoolConfigValue(this->options.showmode, "showmode", line);
 	this->readBoolConfigValue(this->options.insert_final_newline, "insert_final_newline", line);
 	this->readStringConfigValue(this->options.indent_style, "indent_style", line);
 	this->readUintConfigValue(this->options.indent_size, "indent_size", line);
@@ -92,7 +91,6 @@ void State::setDefaultOptions()
 	this->options.insert_final_newline = false;
 	this->options.autosave = true;
 	this->options.wordwrap = true;
-	this->options.showmode = true;
 	this->options.indent_size = 4;
 	this->options.indent_style = "space";
 }
@@ -155,6 +153,7 @@ void State::changeFile(std::string filename)
 	this->history = std::vector<std::vector<diffLine> >();
 	this->historyPosition = -1;
 	this->windowPosition.row = 0;
+	this->unsavedFile = false;
 	this->windowPosition.col = 0;
 	this->visualType = NORMAL;
 	this->visual.row = 0;

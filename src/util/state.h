@@ -73,7 +73,6 @@ struct Query {
 
 struct Options {
 	bool wordwrap;
-	bool showmode;
 	bool autosave;
 	bool insert_final_newline;
 	uint32_t indent_size;

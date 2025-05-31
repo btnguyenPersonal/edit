@@ -270,17 +270,11 @@ int32_t renderStatusBar(State *state)
 		}
 	}
 
-	auto displayFileName = "\"" + setStringToLength(state->filename, state->maxX - 30) + "\"";
+	auto displayFileName = "\"" + setStringToLength(state->filename, state->maxX - 32) + "\"";
 	auto tmp = displayFileName.length() + pixels.size();
 	auto len = state->maxX > tmp ? state->maxX - tmp : 0;
 	prefix = std::string(len, ' ');
 	insertPixels(state, &pixels, prefix + displayFileName, state->unsavedFile ? GREY : WHITE);
-
-	if (state->options.showmode) {
-		std::string prefix = " --%s-- ";
-		std::string modename = getDisplayModeName(state);
-		insertPixels(state, &pixels, modename, getModeColor(state));
-	}
 
 	renderPixels(state, 0, 0, pixels);
 	return -1;
@@ -523,7 +517,7 @@ int32_t renderLineContent(State *state, int32_t row, int32_t renderRow, Cursor *
 	if (isRowColInVisual(state, row, 0) && state->data[row].length() == 0) {
 		insertPixels(state, &pixels, " ", invertColor(WHITE));
 		if (state->row == (uint32_t)row) {
-			cursor->row = renderRow - 1;
+			cursor->row = renderRow;
 			cursor->col = 0;
 		}
 	} else {
