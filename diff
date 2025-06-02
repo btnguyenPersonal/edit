@@ -1,0 +1,66 @@
+diff --git a/README.md b/README.md
+index 7bbd25d..aeb05a2 100644
+--- a/README.md
++++ b/README.md
+@@ -212,7 +212,7 @@ The reason why i use hjkl for moving in cardinal directions instead of arrow key
+ | \/ | enter search mode |
+ | m | toggle logging for current variable |
+ | Q | clear all logging variables in current file |
+-| \\ | refresh current file (TODO pull in external changes automatically) |
++| \\ | refresh current file |
+ | g + \/ | enter search mode without clearing current search |
+ | g + r | navigate to definition of current word (buggy) |
+ | g + t | trim all trailing whitespace in current file |
+diff --git a/src/util/indent.cpp b/src/util/indent.cpp
+index ecf4b7e..2d6f19b 100644
+--- a/src/util/indent.cpp
++++ b/src/util/indent.cpp
+@@ -200,7 +200,6 @@ void indentRange(State *state)
+ 		getIndentLevel(state, state->row) - getNumLeadingIndentCharacters(state, state->data[firstNonEmptyRow]);
+ 	if (indentDifference > 0) {
+ 		for (int32_t i = state->row; i <= (int32_t)state->visual.row; i++) {
+-			// TODO turn below into helper function that takes into account the indentStyle
+ 			if (state->data[i] != "") {
+ 				for (int32_t j = 0; j < indentDifference; j++) {
+ 					state->data[i] = getIndentCharacter(state) + state->data[i];
+diff --git a/tasks.md b/tasks.md
+index f925ade..0838d1c 100644
+--- a/tasks.md
++++ b/tasks.md
+@@ -1,20 +1,29 @@
+ ## TODO
+ 
++- lock down changing files flag
++	- turn on when unsaved??
++
++- look at how hard it would be to have an icon at top to say there are new changes available?
++	- each action check? if new changes happen have a popup like vim??
++
++- fix gj gk same as vim
++
++- use as mutt email maker (figure out how that works)
++	- also remember to add muttrc to dotfiles
++
+ - add args
++	- turn off autosave cmd
+ 	-c "commands" (need to make parser for <c-h> <cr> etc)
+ 	--help
+ 	-h
+ 
+ - add gitlab and local server as mirror
+ 
+-- :retab command (find all preceding spaces of state->indent length and convert to tab)
+-
+-- add all editorconfig settings
++- fix editorconfig filename parser
+ 
+ - put asserts everywhere (make sure state is perfect and i never mess up)
+ 
+-- change keybinds to how dwm does it
+-
+ - fix diff function for huge files (look at vim, rope, other stuff)
+-
+-- go line by line, and do a code review of everything on github (especially the llm crap i have in here)
++	- futures api probably bad, use <pthread> semaphores and locks
++	- do this with tests!!
++	- have specific timestamps, and make a logging function that shows what happened when (with locks)
