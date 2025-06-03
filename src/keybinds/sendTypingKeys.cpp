@@ -27,14 +27,7 @@ void indentLineWhenTypingFirstChar(State *state)
 void sendTypingKeys(State *state, int32_t c)
 {
 	recordMotion(state, c);
-	if (c == 27) { // ESC
-		left(state);
-		state->mode = SHORTCUTS;
-		setDotCommand(state, state->motion);
-		state->motion = "";
-		state->prevKeys = "";
-		return;
-	} else if (state->prevKeys == "v") {
+	if (state->prevKeys == "v") {
 		state->prevKeys = "";
 		if (c == '\n') {
 			insertNewline(state);
@@ -46,6 +39,13 @@ void sendTypingKeys(State *state, int32_t c)
 			state->data[state->row] = current.substr(0, state->col) + (char)c + current.substr(state->col);
 			state->col += 1;
 		}
+	} else if (c == 27) { // ESC
+		left(state);
+		state->mode = SHORTCUTS;
+		setDotCommand(state, state->motion);
+		state->motion = "";
+		state->prevKeys = "";
+		return;
 	} else if (c == '\n') {
 		insertNewline(state);
 		state->row += 1;
