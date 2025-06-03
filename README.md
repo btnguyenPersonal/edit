@@ -212,7 +212,7 @@ The reason why i use hjkl for moving in cardinal directions instead of arrow key
 | \/ | enter search mode |
 | m | toggle logging for current variable |
 | Q | clear all logging variables in current file |
-| \\ | refresh current file (TODO pull in external changes automatically) |
+| \\ | refresh current file |
 | g + \/ | enter search mode without clearing current search |
 | g + r | navigate to definition of current word (buggy) |
 | g + t | trim all trailing whitespace in current file |
