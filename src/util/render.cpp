@@ -362,7 +362,7 @@ bool isRowColInVisual(State *state, uint32_t i, uint32_t j)
 bool isInQuery(State *state, uint32_t row, uint32_t col, std::string query)
 {
 	if (query != "" && col + query.length() <= state->data[row].length()) {
-		if (query == state->data[row].substr(col, query.length())) {
+		if (query == safeSubstring(state->data[row], col, query.length())) {
 			return true;
 		}
 	}
@@ -558,7 +558,7 @@ int32_t renderLineContent(State *state, int32_t row, int32_t renderRow, Cursor *
 			}
 
 			if (!inString &&
-			    state->data[row].substr(col, state->commentSymbol.length()) == state->commentSymbol &&
+			    safeSubstring(state->data[row], col, state->commentSymbol.length()) == state->commentSymbol &&
 			    state->commentSymbol != "") {
 				isComment = true;
 			}
