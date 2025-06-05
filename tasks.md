@@ -1,5 +1,7 @@
 ## TODO
 
+- fileExplorer issues
+
 - lock down changing files flag
 	- turn on when unsaved??
 
