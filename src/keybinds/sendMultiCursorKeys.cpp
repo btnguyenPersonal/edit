@@ -40,7 +40,7 @@ void sendMultiCursorKeys(State *state, int32_t c)
 		state->col += 1;
 	} else if (c == ctrl('i')) { // TAB
 		std::string completion = autocomplete(state, getCurrentWord(state));
-		if (state->data[state->row].substr(state->col, completion.length()) != completion) {
+		if (safeSubstring(state->data[state->row], state->col, completion.length()) != completion) {
 			for (uint32_t i = bounds.minR; i <= bounds.maxR; i++) {
 				std::string current = state->data[i];
 				state->data[i] =
