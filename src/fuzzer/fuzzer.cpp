@@ -81,7 +81,7 @@ char getUnEscapedChar(std::string s)
 	}
 }
 
-std::string getEscapedChar(char c)
+std::string getEscapedChar(char c, bool space)
 {
 	switch (c) {
 	case '\x00':
@@ -151,9 +151,17 @@ std::string getEscapedChar(char c)
 	case '\x7F':
 		return "Del";
 	case '\\':
-		return " \\\\";
+		if (space) {
+			return " \\\\";
+		} else {
+			return "\\\\";
+		}
 	default:
-		return std::string("  ") + c;
+		if (space) {
+			return std::string("") + c;
+		} else {
+			return std::string("") + c;
+		}
 	}
 }
 
@@ -207,15 +215,15 @@ void fuzzSendKeys(int testnum, int iterations = 1000)
 			char randomKey = keypresses[dis(gen)];
 
 			ret += "\"";
-			ret += getEscapedChar(randomKey);
+			ret += getEscapedChar(randomKey, false);
 			ret += "\"";
-			std::cout << getMode(state->mode) << "  " << getEscapedChar(randomKey) << std::endl;
+			std::cout << getMode(state->mode) << " " << getEscapedChar(randomKey, true) << std::endl;
 			sendKeys(state, randomKey);
 			cleanup(state, randomKey);
 			ret += ",";
 		}
 	} catch (const std::exception &e) {
-		std::cerr << "Error during fuzzing: " << e.what();
+		std::cerr << "Error during fuzzing: " << e.what() << std::endl;
 		std::cout << ret << "}" << std::endl;
 		exit(1);
 	}
@@ -236,7 +244,7 @@ void testValues(std::vector<std::string> v) {
 			ret += "\"";
 			ret += v[i];
 			ret += "\"";
-			std::cout << getMode(state->mode) << "  " << getEscapedChar(randomKey) << std::endl;
+			std::cout << getMode(state->mode) << " " << getEscapedChar(randomKey, true) << std::endl;
 			sendKeys(state, randomKey);
 			cleanup(state, randomKey);
 			ret += ",";
@@ -250,6 +258,8 @@ void testValues(std::vector<std::string> v) {
 
 int main()
 {
+
+	testValues({"=","*","}","C-B","C-S"," \\","0","E","C-M","C-@","C-]","C-V","R","d","C-]","v","`","a","`","Del","B","C-W","2","$",";","/","C-I","C-_","[","D","P","."});
 	// testValues({"Q", "k", "C-I", "Esc", "C-T", "C-M", "F", "D", "C-_", "{", "f", "b", "=", "k", "S", "C-W", "C-V", "A", "C-I"});
 	for (int i = 1; i <= 100000; i++) {
 		fuzzSendKeys(i, 50);

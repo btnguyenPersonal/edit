@@ -251,14 +251,14 @@ void sendShortcutKeys(State *state, int32_t c)
 		state->mode = TYPING;
 	} else if (c == 'Y') {
 		fixColOverMax(state);
-		copyToClipboard(state->data[state->row].substr(state->col));
+		copyToClipboard(safeSubstring(state->data[state->row], state->col));
 	} else if (c == 'D') {
 		fixColOverMax(state);
-		copyToClipboard(state->data[state->row].substr(state->col));
+		copyToClipboard(safeSubstring(state->data[state->row], state->col));
 		state->data[state->row] = state->data[state->row].substr(0, state->col);
 	} else if (c == 'C') {
 		fixColOverMax(state);
-		copyToClipboard(state->data[state->row].substr(state->col));
+		copyToClipboard(safeSubstring(state->data[state->row], state->col));
 		state->data[state->row] = state->data[state->row].substr(0, state->col);
 		state->mode = TYPING;
 	} else if (c == 'I') {
