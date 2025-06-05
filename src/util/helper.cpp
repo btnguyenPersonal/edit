@@ -1070,7 +1070,7 @@ WordPosition findQuoteBounds(const std::string &str, char quoteChar, uint32_t cu
 	}
 	if (i != str.length()) {
 		if (i - lastQuoteIndex == 1 || includeQuote) {
-			return { (uint32_t)lastQuoteIndex, (uint32_t)i };
+			return { (uint32_t)(lastQuoteIndex < 0 ? 0 : lastQuoteIndex), (uint32_t)i };
 		} else {
 			return { (uint32_t)lastQuoteIndex + 1, (uint32_t)i - 1 };
 		}
