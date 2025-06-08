@@ -1,5 +1,7 @@
 ## TODO
 
+- make all shortcuts start as [ ] instead of empty
+
 - fileExplorer issues
 
 - lock down changing files flag

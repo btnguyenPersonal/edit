@@ -167,6 +167,7 @@ void pasteFromClipboardVisual(State *state)
 	while (std::getline(ss, line)) {
 		clip.push_back(line);
 	}
+	fixColOverMax(state);
 	bool isClipLine = !result.empty() && result.back() == '\n';
 	if (state->visualType == LINE && !isClipLine) {
 		auto pos = deleteInVisual(state);
@@ -188,7 +189,6 @@ void pasteFromClipboardVisual(State *state)
 		state->row = pos.row;
 		state->col = pos.col;
 	}
-	fixColOverMax(state);
 	if (state->data.size() == 0) {
 		for (uint32_t i = 0; i < clip.size(); i++) {
 			state->data.push_back(clip[i]);
