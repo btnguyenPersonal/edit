@@ -42,7 +42,7 @@ uint32_t getDisplayRows(State *state, uint32_t r, uint32_t c);
 uint32_t getDisplayRows(State *state, uint32_t r);
 void refocusFileExplorer(State *state, bool changeMode);
 std::string normalizeFilename(std::string filename);
-std::string setStringToLength(const std::string &s, uint32_t length);
+std::string setStringToLength(const std::string &s, uint32_t length, bool showTilde);
 bool isInt(const std::string &s);
 bool isTestFile(const std::string &filepath);
 void rename(State *state, const std::filesystem::path &oldPath, const std::string &newName);

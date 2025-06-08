@@ -291,13 +291,15 @@ bool jumpToHarpoon(State *state, uint32_t num)
 	return false;
 }
 
-std::string setStringToLength(const std::string &s, uint32_t length)
+std::string setStringToLength(const std::string &s, uint32_t length, bool showTilde)
 {
 	if (s.length() <= length) {
 		return s;
 	} else {
 		std::string output = safeSubstring(s, s.length() - length, length);
-		output[0] = '~';
+		if (showTilde) {
+			output[0] = '~';
+		}
 		return output;
 	}
 }

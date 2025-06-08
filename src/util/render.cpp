@@ -250,7 +250,7 @@ int32_t renderStatusBar(State *state)
 			}
 		}
 		insertPixels(state, &pixels, ' ', WHITE);
-		insertPixels(state, &pixels, setStringToLength(state->keys, 15), WHITE);
+		insertPixels(state, &pixels, setStringToLength(state->keys, 15, false), WHITE);
 		insertPixels(state, &pixels, ' ', WHITE);
 		prefix = "/";
 		std::string displayQuery = state->search.query;
@@ -270,7 +270,7 @@ int32_t renderStatusBar(State *state)
 		}
 	}
 
-	auto displayFileName = "\"" + setStringToLength(state->filename, state->maxX - (pixels.size() + 2)) + "\"";
+	auto displayFileName = "\"" + setStringToLength(state->filename, state->maxX - (pixels.size() + 2), true) + "\"";
 	auto tmp = displayFileName.length() + pixels.size();
 	auto len = state->maxX > tmp ? state->maxX - tmp : 0;
 	prefix = std::string(len, ' ');
