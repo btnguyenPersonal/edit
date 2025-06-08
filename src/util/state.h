@@ -134,6 +134,7 @@ class State {
 	Query grep;
 	bool showAllGrep;
 	std::vector<grepMatch> grepOutput;
+	std::string keys;
 	std::string prevKeys;
 	std::string lastLoggingVar;
 	std::string status;

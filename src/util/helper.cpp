@@ -297,9 +297,7 @@ std::string setStringToLength(const std::string &s, uint32_t length)
 		return s;
 	} else {
 		std::string output = safeSubstring(s, s.length() - length, length);
-		output[0] = '.';
-		output[1] = '.';
-		output[2] = '.';
+		output[0] = '~';
 		return output;
 	}
 }
@@ -1284,33 +1282,14 @@ bool shouldIgnoreFile(const std::filesystem::path &path)
 			return false;
 		}
 	}
-	std::vector<std::string> ignoreList = { ".nx/",
-						".mozilla/",
-						".vim/",
-						"nyc_output/",
-						"results/",
-						"target/",
-						"resources/",
-						".git",
-						"node_modules/",
-						"build/",
-						"dist/",
-						"cdk.out/",
-						".next/",
-						"tmp/",
-						"__pycache__/",
-						"autogen/",
-						"coverage/",
-						"assets/",
-						"extra/",
-						".jar",
-						".jpg",
-						".jpeg",
-						".png",
-						".pdf",
-						"package-lock.json",
-						".cache/",
-						".eslintcache" };
+	std::vector<std::string> ignoreList = {
+		".nx/",	    ".mozilla/",   ".vim/",   "nyc_output/",   "results/",
+		"target/",  "resources/",  ".git",    "node_modules/", "build/",
+		"dist/",    "cdk.out/",	   ".next/",  "tmp/",	       "__pycache__/",
+		"autogen/", "coverage/",   "assets/", "extra/",	       ".jar",
+		".jpg",	    ".jpeg",	   ".png",    ".pdf",	       "package-lock.json",
+		".cache/",  ".eslintcache"
+	};
 	for (uint32_t i = 0; i < ignoreList.size(); i++) {
 		if (path.string().find(ignoreList[i]) != std::string::npos) {
 			return true;

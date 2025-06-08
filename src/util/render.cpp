@@ -237,7 +237,21 @@ int32_t renderStatusBar(State *state)
 		insertPixels(state, &pixels, std::to_string(state->findFileOutput.size()), WHITE);
 		renderPixels(state, 0, 0, pixels);
 		return prefix.length() + state->findFile.cursor;
-	} else if (state->searching || state->mode == SEARCH) {
+	} else {
+		for (uint32_t i = 0; i < 10; i++) {
+			std::string s;
+			if (state->harpoonFiles.count(i) > 0) {
+				bool current = state->harpoonFiles[i] == state->filename && state->harpoonIndex == i;
+				insertPixels(state, &pixels, '[', current ? WHITE : GREY);
+				insertPixels(state, &pixels, std::to_string(i + 1), current ? RED : GREY);
+				insertPixels(state, &pixels, ']', current ? WHITE : GREY);
+			} else {
+				insertPixels(state, &pixels, "[ ]", GREY);
+			}
+		}
+		insertPixels(state, &pixels, ' ', WHITE);
+		insertPixels(state, &pixels, setStringToLength(state->keys, 15), WHITE);
+		insertPixels(state, &pixels, ' ', WHITE);
 		prefix = "/";
 		std::string displayQuery = state->search.query;
 		for (size_t i = 0; i < displayQuery.length(); ++i) {
@@ -250,27 +264,13 @@ int32_t renderStatusBar(State *state)
 		if (state->replacing) {
 			insertPixels(state, &pixels, prefix + state->replace.query, MAGENTA);
 			renderPixels(state, 0, 0, pixels);
-			return prefix.length() * 2 + displayQuery.length() + state->replace.cursor;
 		}
 		if (state->mode == SEARCH) {
 			renderPixels(state, 0, 0, pixels);
-			return prefix.length() + state->search.cursor;
-		}
-	} else {
-		for (uint32_t i = 0; i < 10; i++) {
-			std::string s;
-			if (state->harpoonFiles.count(i) > 0) {
-				s = "[" + std::to_string(i + 1) + "]";
-				bool currentSelected = state->harpoonFiles[i] == state->filename &&
-						       state->harpoonIndex == i;
-				insertPixels(state, &pixels, s, currentSelected ? YELLOW : GREY);
-			} else {
-				insertPixels(state, &pixels, "   ", GREY);
-			}
 		}
 	}
 
-	auto displayFileName = "\"" + setStringToLength(state->filename, state->maxX - 32) + "\"";
+	auto displayFileName = "\"" + setStringToLength(state->filename, state->maxX - (pixels.size() + 2)) + "\"";
 	auto tmp = displayFileName.length() + pixels.size();
 	auto len = state->maxX > tmp ? state->maxX - tmp : 0;
 	prefix = std::string(len, ' ');
@@ -558,7 +558,8 @@ int32_t renderLineContent(State *state, int32_t row, int32_t renderRow, Cursor *
 			}
 
 			if (!inString &&
-			    safeSubstring(state->data[row], col, state->commentSymbol.length()) == state->commentSymbol &&
+			    safeSubstring(state->data[row], col, state->commentSymbol.length()) ==
+				    state->commentSymbol &&
 			    state->commentSymbol != "") {
 				isComment = true;
 			}

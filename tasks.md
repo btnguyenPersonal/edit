@@ -4,6 +4,8 @@
 
 - fileExplorer issues
 
+- fix tab rendering with non wordwrap
+
 - lock down changing files flag
 	- turn on when unsaved??
 

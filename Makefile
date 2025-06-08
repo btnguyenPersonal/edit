@@ -25,6 +25,7 @@ COMMON_SOURCES := \
           $(UTIL_DIR)/query.cpp \
           $(UTIL_DIR)/name.cpp \
           $(UTIL_DIR)/cleanup.cpp \
+          $(UTIL_DIR)/keys.cpp \
           $(KEYBINDS_DIR)/sendKeys.cpp \
           $(KEYBINDS_DIR)/sendVisualKeys.cpp \
           $(KEYBINDS_DIR)/sendBlameKeys.cpp \

@@ -2,6 +2,7 @@
 #include "../util/helper.h"
 #include "../util/modes.h"
 #include "../util/state.h"
+#include "../util/keys.h"
 #include "sendBlameKeys.h"
 #include "sendFileExplorerKeys.h"
 #include "sendCommandLineKeys.h"
@@ -15,6 +16,7 @@
 
 void sendKeys(State *state, int32_t c)
 {
+	state->keys += getEscapedChar(c, false);
 	state->showGrep = false;
 	state->status = std::string("");
 	state->searchFail = false;
