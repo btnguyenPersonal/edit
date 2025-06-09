@@ -456,7 +456,9 @@ Cursor renderVisibleLines(State *state)
 
 int32_t getLineNumberColor(State *state, int32_t row)
 {
-	if (row == (int32_t)state->row) {
+	if (state->runningAsRoot) {
+		return RED;
+	} else if (row == (int32_t)state->row) {
 		return WHITE;
 	} else {
 		return GREY;

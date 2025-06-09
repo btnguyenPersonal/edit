@@ -8,6 +8,7 @@
 #include <filesystem>
 #include <vector>
 #include <map>
+#include <unistd.h>
 
 uint32_t State::maxX = 0;
 uint32_t State::maxY = 0;
@@ -203,6 +204,7 @@ bool State::resetState(std::string filename)
 
 State::State()
 {
+	this->runningAsRoot = geteuid() == 0;
 	this->showGrep = false;
 	this->fileExplorer = new FileExplorerNode(std::filesystem::current_path());
 	this->fileExplorer->open();

@@ -1,5 +1,6 @@
 ## tasks
-- auto-detect sudo
+- fix issue with going up not saving col (tabs counting as 1)
+- fix non-autosave detecting if file is saved or not
 - better replace all (interactive mode and better command mode)
 - highlight entire tab
 - retab auto-detect indentation

@@ -83,6 +83,7 @@ struct Options {
 class State {
     public:
 	Options options;
+	bool runningAsRoot;
 	bool unsavedFile;
 	bool showGrep;
 	uint32_t lineNumSize;

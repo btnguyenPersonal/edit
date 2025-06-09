@@ -4,6 +4,7 @@
 #include "util/state.h"
 #include "util/cleanup.h"
 #include <cstdint>
+#include <iostream>
 
 int32_t main(int32_t argc, char *argv[])
 {
@@ -17,6 +18,10 @@ int32_t main(int32_t argc, char *argv[])
 		state = new State(filename);
 	} else {
 		state = new State();
+		if (state->runningAsRoot) {
+			std::cerr << "no file specified when running as root" << std::endl;
+			exit(1);
+		}
 		generateFindFileOutput(state);
 	}
 	initTerminal();
