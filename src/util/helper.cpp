@@ -1,3 +1,4 @@
+#include "keys.h"
 #include "helper.h"
 #include "comment.h"
 #include "state.h"
@@ -127,7 +128,7 @@ void recordJumpList(State *state)
 
 void recordMacroCommand(State *state, char c)
 {
-	state->macroCommand += c;
+	state->macroCommand.push_back(getEscapedChar(c));
 }
 
 void insertFinalEmptyNewline(State *state)
@@ -198,23 +199,21 @@ std::string getRelativeToCurrent(State *state, std::string p)
 
 void recordMotion(State *state, int32_t c)
 {
-	if (c == KEY_BACKSPACE) {
-		state->motion += 127;
-	} else {
-		state->motion += c;
-	}
+	state->motion.push_back(c);
 }
 
 void setDotCommand(State *state, int32_t c)
 {
-	std::string s;
-	s.push_back(c);
-	state->dotCommand = s;
+	state->dotCommand.clear();
+	state->dotCommand.push_back(getEscapedChar(c));
 }
 
-void setDotCommand(State *state, std::string s)
+void setDotCommand(State *state, std::vector<int32_t> s)
 {
-	state->dotCommand = s;
+	state->dotCommand.clear();
+	for (uint32_t i = 0; i < s.size(); i++) {
+		state->dotCommand.push_back(getEscapedChar(s[i]));
+	}
 }
 
 int32_t contains(const std::map<uint32_t, std::string> &myMap, const std::string &s)
@@ -769,7 +768,6 @@ std::string getCurrentWord(State *state)
 	return currentWord;
 }
 
-// TODO clean up gpt garbage
 std::string autocomplete(State *state, const std::string &query)
 {
 	if (query == "") {

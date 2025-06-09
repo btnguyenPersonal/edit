@@ -289,13 +289,13 @@ Position deleteInVisual(State *state)
 	return pos;
 }
 
-void swapChars(std::string &str, char x, char y)
+void swapChars(std::vector<int32_t> &v, int32_t x, int32_t y)
 {
-	for (char &c : str) {
-		if (c == x) {
-			c = y;
-		} else if (c == y) {
-			c = x;
+	for (uint32_t i = 0; i < v.size(); i++) {
+		if (v[i] == x) {
+			v[i] = y;
+		} else if (v[i] == y) {
+			v[i] = x;
 		}
 	}
 }
@@ -310,7 +310,7 @@ void logDotCommand(State *state)
 	}
 	setDotCommand(state, state->motion);
 	state->prevKeys = "";
-	state->motion = "";
+	state->motion.clear();
 }
 
 bool sendVisualKeys(State *state, char c, bool onlyMotions)

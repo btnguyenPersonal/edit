@@ -78,6 +78,11 @@ char getUnEscapedChar(std::string s)
 	}
 }
 
+std::string getEscapedChar(char c)
+{
+	return getEscapedChar(c, false);
+}
+
 std::string getEscapedChar(char c, bool space)
 {
 	switch (c) {

@@ -16,7 +16,7 @@ void sendMultiCursorKeys(State *state, int32_t c)
 		left(state);
 		state->mode = SHORTCUTS;
 		setDotCommand(state, state->motion);
-		state->motion = "";
+		state->motion.clear();
 		return;
 	} else if (c == KEY_BACKSPACE || c == 127) {
 		if (state->col > 0) {

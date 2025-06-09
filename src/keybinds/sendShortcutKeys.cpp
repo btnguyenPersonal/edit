@@ -12,6 +12,7 @@
 #include "../util/visualType.h"
 #include "../util/expect.h"
 #include "../util/cleanup.h"
+#include "../util/keys.h"
 #include "sendKeys.h"
 #include "sendVisualKeys.h"
 #include <algorithm>
@@ -24,7 +25,7 @@ void sendShortcutKeys(State *state, int32_t c)
 {
 	if (c == 27) { // ESC
 		state->prevKeys = "";
-		state->motion = "";
+		state->motion.clear();
 	} else if (state->prevKeys == "t") {
 		state->col = toNextChar(state, c);
 		state->prevKeys = "";
@@ -36,7 +37,7 @@ void sendShortcutKeys(State *state, int32_t c)
 			state->data[state->row] = safeSubstring(state->data[state->row], 0, state->col) + (char)c +
 						  safeSubstring(state->data[state->row], state->col + 1);
 		}
-		setDotCommand(state, "r" + c);
+		setDotCommand(state, {'r', c});
 		state->prevKeys = "";
 	} else if ((state->prevKeys[0] == 'y' || state->prevKeys[0] == 'd' || state->prevKeys[0] == 'c') &&
 		   state->prevKeys.length() == 2) {
@@ -45,7 +46,8 @@ void sendShortcutKeys(State *state, int32_t c)
 		char command0 = state->prevKeys[0];
 		char command1 = state->prevKeys[1];
 		state->prevKeys = "";
-		state->motion = "v";
+		state->motion.clear();
+		recordMotion(state, c);
 		initVisual(state, NORMAL);
 		sendVisualKeys(state, command1, true);
 		sendVisualKeys(state, c, true);
@@ -53,7 +55,7 @@ void sendShortcutKeys(State *state, int32_t c)
 			sendVisualKeys(state, command0, false);
 		} else {
 			state->prevKeys = "";
-			state->motion = "";
+			state->motion.clear();
 			state->row = tempRow;
 			state->col = tempCol;
 			state->mode = SHORTCUTS;
@@ -67,24 +69,25 @@ void sendShortcutKeys(State *state, int32_t c)
 			uint32_t tempCol = state->col;
 			char command = state->prevKeys[0];
 			state->prevKeys = "";
-			state->motion = "v";
+			state->motion.clear();
+			recordMotion(state, c);
 			bool success = true;
 			initVisual(state, NORMAL);
 			if (c != command) {
 				success = sendVisualKeys(state, c, true);
 				if (state->row != state->visual.row) {
 					state->visualType = LINE;
-					state->motion = "V" + safeSubstring(state->motion, 1);
+					state->motion[0] = 'V';
 				}
 			} else {
 				state->visualType = LINE;
-				state->motion = "V" + safeSubstring(state->motion, 1);
+				state->motion[0] = 'V';
 			}
 			if (success) {
 				sendVisualKeys(state, command, false);
 			} else {
 				state->prevKeys = "";
-				state->motion = "";
+				state->motion.clear();
 				state->row = tempRow;
 				state->col = tempCol;
 				state->mode = SHORTCUTS;
@@ -104,7 +107,7 @@ void sendShortcutKeys(State *state, int32_t c)
 	} else if (state->prevKeys == "g" && c == 'e') {
 		unCommentBlock(state);
 		state->prevKeys = "";
-		setDotCommand(state, "ge");
+		setDotCommand(state, {'g', c});
 	} else if (state->prevKeys == "g" && c == 't') {
 		trimTrailingWhitespace(state);
 		state->prevKeys = "";
@@ -155,11 +158,11 @@ void sendShortcutKeys(State *state, int32_t c)
 	} else if (c == '<') {
 		deindent(state);
 		state->col = getIndexFirstNonSpace(state);
-		setDotCommand(state, "<");
+		setDotCommand(state, c);
 	} else if (c == '>') {
 		indent(state);
 		state->col = getIndexFirstNonSpace(state);
-		setDotCommand(state, ">");
+		setDotCommand(state, c);
 	} else if (c == 'u') {
 		if (state->historyPosition >= 0) {
 			state->row = applyDiff(state, state->history[state->historyPosition], true);
@@ -295,23 +298,23 @@ void sendShortcutKeys(State *state, int32_t c)
 		centerScreen(state);
 	} else if (c == '.') {
 		resetValidCursorState(state);
-		for (uint32_t i = 0; i < state->dotCommand.length(); i++) {
+		for (uint32_t i = 0; i < state->dotCommand.size(); i++) {
 			state->dontRecordKey = true;
-			sendKeys(state, state->dotCommand[i]);
+			sendKeys(state, getUnEscapedChar(state->dotCommand[i]));
 			cleanup(state, c);
 		}
 		state->dontRecordKey = true;
 	} else if (c == ',') {
 		resetValidCursorState(state);
-		for (uint32_t i = 0; i < state->macroCommand.length(); i++) {
+		for (uint32_t i = 0; i < state->macroCommand.size(); i++) {
 			state->dontRecordKey = true;
-			sendKeys(state, state->macroCommand[i]);
+			sendKeys(state, getUnEscapedChar(state->macroCommand[i]));
 			cleanup(state, c);
 		}
 		state->dontRecordKey = true;
 	} else if (c == 'q') {
 		if (!state->recording) {
-			state->macroCommand = "";
+			state->macroCommand.clear();
 		}
 		state->recording = !state->recording;
 		state->dontRecordKey = true;
@@ -446,6 +449,7 @@ void sendShortcutKeys(State *state, int32_t c)
 		}
 	}
 	if (state->mode != SHORTCUTS) {
-		state->motion = c;
+		state->motion.clear();
+		recordMotion(state, c);
 	}
 }

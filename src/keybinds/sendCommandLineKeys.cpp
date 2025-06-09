@@ -37,7 +37,6 @@ void evaluateCommandLineQuery(State *state)
 			replaceCurrentLine(state, first, second);
 		}
 	} else if (state->commandLine.query.substr(0, 2) == "gs") {
-		// TODO super buggy for some reason
 		std::istringstream iss(state->commandLine.query);
 		std::string s, first, second, g;
 		if (std::getline(iss, s, '/') && std::getline(iss, first, '/') && std::getline(iss, second, '/')) {
@@ -58,7 +57,6 @@ void evaluateCommandLineQuery(State *state)
 		} while (!iss.eof());
 	} else if (state->commandLine.query == "retab") {
 		if (state->options.indent_style == "tab") {
-			// TODO get from real
 			replaceAll(state, "    ", "\t");
 		} else {
 			replaceAll(state, "\t", std::string(state->options.indent_size, ' '));

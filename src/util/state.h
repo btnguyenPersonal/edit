@@ -122,10 +122,10 @@ class State {
 	Query search;
 	Query replace;
 	Query commandLine;
-	std::string dotCommand;
-	std::string macroCommand;
+	std::vector<std::string> dotCommand;
+	std::vector<std::string> macroCommand;
 	bool playingCommand;
-	std::string motion;
+	std::vector<int32_t> motion;
 	bool recording;
 	bool dontRecordKey;
 	Query findFile;

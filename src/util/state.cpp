@@ -166,7 +166,7 @@ void State::changeFile(std::string filename)
 	this->prevKeys = std::string("");
 	this->status = std::string("");
 	this->searchFail = false;
-	this->motion = std::string("");
+	this->motion = std::vector<int32_t>();
 	this->mode = SHORTCUTS;
 	refocusFileExplorer(this, false);
 	this->loadAllConfigFiles();
@@ -246,8 +246,8 @@ State::State()
 	this->status = std::string("");
 	this->searchFail = false;
 	this->mode = FINDFILE;
-	this->dotCommand = std::string("");
-	this->macroCommand = std::string("");
+	this->dotCommand = std::vector<std::string>();
+	this->macroCommand = std::vector<std::string>();
 	this->playingCommand = false;
 	this->recording = false;
 	this->selectAll = false;
@@ -256,7 +256,7 @@ State::State()
 	this->showFileStack = false;
 	this->fileStackIndex = 0;
 	this->lastLoggingVar = std::string("");
-	this->motion = std::string("");
+	this->motion = std::vector<int32_t>();
 	this->setDefaultOptions();
 	this->loadAllConfigFiles();
 }

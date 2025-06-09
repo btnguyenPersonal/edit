@@ -43,7 +43,7 @@ void sendTypingKeys(State *state, int32_t c)
 		left(state);
 		state->mode = SHORTCUTS;
 		setDotCommand(state, state->motion);
-		state->motion = "";
+		state->motion.clear();
 		state->prevKeys = "";
 		return;
 	} else if (c == '\n') {
