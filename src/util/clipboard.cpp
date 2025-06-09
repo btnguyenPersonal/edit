@@ -13,9 +13,9 @@ std::string getFromClipboard()
 {
 	std::string command;
 #ifdef __APPLE__
-	command = "pbpaste";
+	command = "pbpaste 2>/dev/null";
 #elif defined(__linux__)
-	command = "xclip -selection clipboard -o";
+	command = "xclip -selection clipboard -o 2>/dev/null";
 #else
 #error "Platform not supported"
 #endif
