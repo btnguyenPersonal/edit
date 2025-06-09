@@ -33,12 +33,12 @@ void cleanup(State *state, char c)
 		if (state->mode == SHORTCUTS) {
 			std::vector<diffLine> diff = generateDiff(state->previousState, state->data);
 			if (diff.size() != 0) {
-				if (state->options.autosave && !state->unsavedFile && !state->runningAsRoot) {
-					saveFile(state);
-				}
 				state->previousState = state->data;
 				if (c != ctrl('r') && c != 'u') {
 					recordHistory(state, diff);
+				}
+				if (state->options.autosave && !state->runningAsRoot) {
+					saveFile(state);
 				}
 			}
 		}

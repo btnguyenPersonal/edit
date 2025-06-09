@@ -16,8 +16,8 @@ void evaluateCommandLineQuery(State *state)
 		endwin();
 		exit(0);
 	} else if (state->commandLine.query == "q") {
-		if (state->unsavedFile && state->historyPosition != -1) {
-			state->status = "unsaved changes for new file: " + state->filename;
+		if (state->lastSave != state->historyPosition) {
+			state->status = "unsaved changes for file: " + state->filename;
 		} else {
 			endwin();
 			exit(0);

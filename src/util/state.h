@@ -84,7 +84,7 @@ class State {
     public:
 	Options options;
 	bool runningAsRoot;
-	bool unsavedFile;
+	int32_t lastSave;
 	bool showGrep;
 	uint32_t lineNumSize;
 	bool fileExplorerOpen;

@@ -155,7 +155,6 @@ void State::changeFile(std::string filename)
 	this->history = std::vector<std::vector<diffLine> >();
 	this->historyPosition = -1;
 	this->windowPosition.row = 0;
-	this->unsavedFile = false;
 	this->windowPosition.col = 0;
 	this->visualType = NORMAL;
 	this->visual.row = 0;
@@ -232,6 +231,7 @@ State::State()
 	this->grepOutput = std::vector<grepMatch>();
 	this->findFileOutput = std::vector<std::filesystem::path>();
 	this->historyPosition = -1;
+	this->lastSave = -1;
 	this->windowPosition.row = 0;
 	this->windowPosition.col = 0;
 	this->visualType = NORMAL;
@@ -268,9 +268,8 @@ State::State(std::string filename)
 	: State()
 {
 	auto normalizedFilename = normalizeFilename(filename);
-	this->unsavedFile = !std::filesystem::is_regular_file(normalizedFilename.c_str());
 	std::vector<std::string> data;
-	if (this->unsavedFile) {
+	if (!std::filesystem::is_regular_file(normalizedFilename.c_str())) {
 		data = { "" };
 	} else {
 		data = readFile(normalizedFilename.c_str());
