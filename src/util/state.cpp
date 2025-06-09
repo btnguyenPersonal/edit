@@ -90,6 +90,7 @@ void State::setDefaultOptions()
 {
 	this->options.insert_final_newline = false;
 	this->options.autosave = true;
+	this->options.maxHarpoon = 100;
 	this->options.wordwrap = true;
 	this->options.indent_size = 4;
 	this->options.indent_style = "space";

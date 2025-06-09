@@ -6,7 +6,6 @@
 - make dw work correctly
 - make b work with "../"
 - make dotCommand and macroCommand store vector
-- uncap harpoon & set initial length to 5
 - fileExplorer issues
 - fix tab rendering with non wordwrap state->windowPosition.col > 0
 - lock down changing files flag

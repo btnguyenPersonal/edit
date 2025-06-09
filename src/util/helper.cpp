@@ -238,17 +238,17 @@ void jumpToPrevHarpoon(State *state)
 
 void jumpToNextHarpoon(State *state)
 {
-	for (int32_t i = state->harpoonIndex + 1; i < 10; i++) {
+	for (int32_t i = state->harpoonIndex + 1; i < state->options.maxHarpoon; i++) {
 		if (jumpToHarpoon(state, i + 1)) {
 			return;
 		}
 	}
-	jumpToHarpoon(state, 9);
+	jumpToHarpoon(state, state->options.maxHarpoon);
 }
 
 bool createNewestHarpoon(State *state)
 {
-	for (int32_t num = 1; num <= 10; num++) {
+	for (int32_t num = 1; num <= state->options.maxHarpoon; num++) {
 		int32_t index = contains(state->harpoonFiles, state->filename);
 		if (index == -1 && state->harpoonFiles.count(num - 1) == 0) {
 			state->harpoonIndex = num - 1;

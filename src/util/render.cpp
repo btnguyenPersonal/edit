@@ -238,7 +238,13 @@ int32_t renderStatusBar(State *state)
 		renderPixels(state, 0, 0, pixels);
 		return prefix.length() + state->findFile.cursor;
 	} else {
-		for (uint32_t i = 0; i < 10; i++) {
+		uint32_t i = 0;
+		uint32_t limit = 5;
+		if (state->harpoonIndex >= 5) {
+			i = state->harpoonIndex - 2;
+			limit = state->harpoonIndex + 3;
+		}
+		for (; i < limit; i++) {
 			std::string s;
 			if (state->harpoonFiles.count(i) > 0) {
 				bool current = state->harpoonFiles[i] == state->filename && state->harpoonIndex == i;

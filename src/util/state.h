@@ -74,6 +74,7 @@ struct Query {
 struct Options {
 	bool wordwrap;
 	bool autosave;
+	int32_t maxHarpoon;
 	bool insert_final_newline;
 	uint32_t indent_size;
 	std::string indent_style;
