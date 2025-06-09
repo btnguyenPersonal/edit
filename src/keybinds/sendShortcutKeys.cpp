@@ -37,7 +37,7 @@ void sendShortcutKeys(State *state, int32_t c)
 			state->data[state->row] = safeSubstring(state->data[state->row], 0, state->col) + (char)c +
 						  safeSubstring(state->data[state->row], state->col + 1);
 		}
-		setDotCommand(state, {'r', c});
+		setDotCommand(state, { 'r', c });
 		state->prevKeys = "";
 	} else if ((state->prevKeys[0] == 'y' || state->prevKeys[0] == 'd' || state->prevKeys[0] == 'c') &&
 		   state->prevKeys.length() == 2) {
@@ -107,7 +107,7 @@ void sendShortcutKeys(State *state, int32_t c)
 	} else if (state->prevKeys == "g" && c == 'e') {
 		unCommentBlock(state);
 		state->prevKeys = "";
-		setDotCommand(state, {'g', c});
+		setDotCommand(state, { 'g', c });
 	} else if (state->prevKeys == "g" && c == 't') {
 		trimTrailingWhitespace(state);
 		state->prevKeys = "";

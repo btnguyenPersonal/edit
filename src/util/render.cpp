@@ -256,7 +256,7 @@ int32_t renderStatusBar(State *state)
 			}
 		}
 		insertPixels(state, &pixels, ' ', WHITE);
-		insertPixels(state, &pixels, setStringToLength(state->keys, 15, false), WHITE);
+		insertPixels(state, &pixels, setStringToLength(state->keys, 15, false), state->recording ? RED : WHITE);
 		insertPixels(state, &pixels, ' ', WHITE);
 		prefix = "/";
 		std::string displayQuery = state->search.query;
@@ -276,7 +276,8 @@ int32_t renderStatusBar(State *state)
 		}
 	}
 
-	auto displayFileName = "\"" + setStringToLength(state->filename, state->maxX - (pixels.size() + 2), true) + "\"";
+	auto displayFileName =
+		"\"" + setStringToLength(state->filename, state->maxX - (pixels.size() + 2), true) + "\"";
 	auto tmp = displayFileName.length() + pixels.size();
 	auto len = state->maxX > tmp ? state->maxX - tmp : 0;
 	prefix = std::string(len, ' ');
@@ -457,8 +458,6 @@ int32_t getLineNumberColor(State *state, int32_t row)
 {
 	if (row == (int32_t)state->row) {
 		return WHITE;
-	} else if (state->recording) {
-		return RED;
 	} else {
 		return GREY;
 	}

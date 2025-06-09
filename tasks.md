@@ -1,4 +1,5 @@
 ## tasks
+- auto-detect sudo
 - better replace all (interactive mode and better command mode)
 - highlight entire tab
 - retab auto-detect indentation
