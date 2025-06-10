@@ -1,8 +1,17 @@
 diff --git a/src/keybinds/sendShortcutKeys.cpp b/src/keybinds/sendShortcutKeys.cpp
-index 056265b..abfcc7b 100644
+index 056265b..c989384 100644
 --- a/src/keybinds/sendShortcutKeys.cpp
 +++ b/src/keybinds/sendShortcutKeys.cpp
-@@ -65,6 +65,7 @@ void sendShortcutKeys(State *state, int32_t c)
+@@ -47,7 +47,7 @@ void sendShortcutKeys(State *state, int32_t c)
+ 		char command1 = state->prevKeys[1];
+ 		state->prevKeys = "";
+ 		state->motion.clear();
+-		recordMotion(state, c);
++		recordMotion(state, 'v');
+ 		initVisual(state, NORMAL);
+ 		sendVisualKeys(state, command1, true);
+ 		sendVisualKeys(state, c, true);
+@@ -65,25 +65,29 @@ void sendShortcutKeys(State *state, int32_t c)
  		if (c == 'i' || c == 'a' || c == 'f' || c == 't') {
  			state->prevKeys += c;
  		} else {
@@ -10,8 +19,24 @@ index 056265b..abfcc7b 100644
  			uint32_t tempRow = state->row;
  			uint32_t tempCol = state->col;
  			char command = state->prevKeys[0];
-@@ -84,6 +85,9 @@ void sendShortcutKeys(State *state, int32_t c)
- 				state->motion[0] = 'V';
+ 			state->prevKeys = "";
+-			state->motion.clear();
+-			recordMotion(state, c);
+ 			bool success = true;
+ 			initVisual(state, NORMAL);
+ 			if (c != command) {
+ 				success = sendVisualKeys(state, c, true);
+ 				if (state->row != state->visual.row) {
+ 					state->visualType = LINE;
+-					state->motion[0] = 'V';
++					state->motion.insert(state->motion.begin(), 1, 'V');
++				} else {
++					state->motion.insert(state->motion.begin(), 1, 'v');
+ 				}
+ 			} else {
+ 				state->visualType = LINE;
+-				state->motion[0] = 'V';
++				state->motion.insert(state->motion.begin(), 1, 'V');
  			}
  			if (success) {
 +				if (specialWOrLOnlyCase) {
@@ -36,6 +61,19 @@ index 056265b..abfcc7b 100644
  			state->data[state->row] = state->data[state->row].substr(0, state->col) +
  						  state->data[state->row].substr(state->col + 1);
  			state->mode = TYPING;
+diff --git a/src/util/helper.cpp b/src/util/helper.cpp
+index ec57ba4..1d75b6c 100644
+--- a/src/util/helper.cpp
++++ b/src/util/helper.cpp
+@@ -1288,7 +1288,7 @@ bool shouldIgnoreFile(const std::filesystem::path &path)
+ 		"dist/",    "cdk.out/",	   ".next/",  "tmp/",	       "__pycache__/",
+ 		"autogen/", "coverage/",   "assets/", "extra/",	       ".jar",
+ 		".jpg",	    ".jpeg",	   ".png",    ".pdf",	       "package-lock.json",
+-		".cache/",  ".eslintcache"
++		".cache/",  ".eslintcache", ".DS_Store"
+ 	};
+ 	for (uint32_t i = 0; i < ignoreList.size(); i++) {
+ 		if (path.string().find(ignoreList[i]) != std::string::npos) {
 diff --git a/src/util/helper.h b/src/util/helper.h
 index 10b660c..2adf9ea 100644
 --- a/src/util/helper.h
@@ -49,9 +87,32 @@ index 10b660c..2adf9ea 100644
  uint32_t getDisplayCol(State *state);
  uint32_t getDisplayLength(State *state, std::string s);
 diff --git a/src/util/render.cpp b/src/util/render.cpp
-index 044f317..1ac043f 100644
+index 044f317..1fb9bfc 100644
 --- a/src/util/render.cpp
 +++ b/src/util/render.cpp
+@@ -137,17 +137,17 @@ void renderFileStack(State *state)
+ 	uint32_t renderRow = 1;
+ 	for (int32_t i = start; i >= 0; i--) {
+ 		std::string filename = minimize_filename(state->fileStack[i]);
+-		if (state->maxX / 2 > filename.length()) {
+-			filename += std::string(state->maxX / 2 - filename.length(), ' ');
++		if (state->maxX / 4 > filename.length()) {
++			filename += std::string(state->maxX / 4 - filename.length(), ' ');
+ 		}
+ 		int32_t color = i == (int32_t)state->fileStackIndex ? invertColor(YELLOW) : GREY;
+ 		insertPixels(state, &pixels, "|" + filename, color);
+-		renderPixels(state, renderRow++, state->maxX / 2, pixels);
++		renderPixels(state, renderRow++, (3 * state->maxX) / 4, pixels);
+ 		pixels.clear();
+ 	}
+ 	for (int32_t i = renderRow; i <= (int32_t)state->maxY; i++) {
+-		insertPixels(state, &pixels, "|" + std::string(state->maxX / 2, ' '), GREY);
+-		renderPixels(state, renderRow++, state->maxX / 2, pixels);
++		insertPixels(state, &pixels, "|" + std::string(state->maxX / 4, ' '), GREY);
++		renderPixels(state, renderRow++, (3 * state->maxX) / 4, pixels);
+ 		pixels.clear();
+ 	}
+ }
 @@ -256,7 +256,15 @@ int32_t renderStatusBar(State *state)
  			}
  		}
@@ -79,10 +140,34 @@ index 044f317..1ac043f 100644
  	if (endsWithSpace && state->mode != TYPING) {
  		return RED;
 diff --git a/src/util/state.cpp b/src/util/state.cpp
-index bb901b2..74f605d 100644
+index bb901b2..a7b0532 100644
 --- a/src/util/state.cpp
 +++ b/src/util/state.cpp
-@@ -154,6 +154,7 @@ void State::changeFile(std::string filename)
+@@ -110,6 +110,7 @@ void State::changeFile(std::string filename)
+ 			this->archives[i].previousState = this->previousState;
+ 			this->archives[i].history = this->history;
+ 			this->archives[i].historyPosition = this->historyPosition;
++			this->archives[i].lastSave = this->lastSave;
+ 			this->archives[i].windowPosition = this->windowPosition;
+ 			this->archives[i].row = this->row;
+ 			this->archives[i].col = this->col;
+@@ -124,6 +125,7 @@ void State::changeFile(std::string filename)
+ 			this->previousState,
+ 			this->history,
+ 			this->historyPosition,
++			this->lastSave,
+ 			this->windowPosition,
+ 			this->row,
+ 			this->col,
+@@ -139,6 +141,7 @@ void State::changeFile(std::string filename)
+ 			this->previousState = archive.previousState;
+ 			this->history = archive.history;
+ 			this->historyPosition = archive.historyPosition;
++			this->lastSave = archive.lastSave;
+ 			this->windowPosition = archive.windowPosition;
+ 			this->row = archive.row;
+ 			this->col = archive.col;
+@@ -154,6 +157,7 @@ void State::changeFile(std::string filename)
  	this->commentSymbol = getCommentSymbol(normalizedFilename);
  	this->history = std::vector<std::vector<diffLine> >();
  	this->historyPosition = -1;
@@ -90,13 +175,28 @@ index bb901b2..74f605d 100644
  	this->windowPosition.row = 0;
  	this->windowPosition.col = 0;
  	this->visualType = NORMAL;
+diff --git a/src/util/state.h b/src/util/state.h
+index 805541c..5c7ed6d 100644
+--- a/src/util/state.h
++++ b/src/util/state.h
+@@ -59,6 +59,7 @@ struct Archive {
+ 	std::vector<std::string> previousState;
+ 	std::vector<std::vector<diffLine> > history;
+ 	int32_t historyPosition;
++	int32_t lastSave;
+ 	struct Position windowPosition;
+ 	uint32_t row;
+ 	uint32_t col;
 diff --git a/tasks.md b/tasks.md
-index 90c0090..b1eabf9 100644
+index 90c0090..cdf2082 100644
 --- a/tasks.md
 +++ b/tasks.md
-@@ -1,13 +1,10 @@
+@@ -1,13 +1,13 @@
  ## tasks
 -- fix issue with going up not saving col (tabs counting as 1)
++- make make ctrl i o half as big and an option
++- make keys bigger and an option
++- fix cursor on search replace
 +- fix issue with going up not saving col (tabs counting as 1 instead of 8)
  - better replace all (interactive mode and better command mode)
  - highlight entire tab
@@ -109,7 +209,7 @@ index 90c0090..b1eabf9 100644
  - fileExplorer issues
  - fix tab rendering with non wordwrap state->windowPosition.col > 0
  - lock down changing files flag
-@@ -24,7 +21,6 @@
+@@ -24,7 +24,6 @@
    -h
  - add gitlab and local server as mirror
  - fix editorconfig filename parser
