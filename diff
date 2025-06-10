@@ -188,7 +188,7 @@ index 805541c..5c7ed6d 100644
  	uint32_t row;
  	uint32_t col;
 diff --git a/tasks.md b/tasks.md
-index 90c0090..cdf2082 100644
+index 90c0090..54b0119 100644
 --- a/tasks.md
 +++ b/tasks.md
 @@ -1,13 +1,13 @@
@@ -209,11 +209,12 @@ index 90c0090..cdf2082 100644
  - fileExplorer issues
  - fix tab rendering with non wordwrap state->windowPosition.col > 0
  - lock down changing files flag
-@@ -24,7 +24,6 @@
+@@ -24,7 +24,7 @@
    -h
  - add gitlab and local server as mirror
  - fix editorconfig filename parser
 -- put asserts everywhere (make sure state is perfect and i never mess up)
++- speed up grep to as fast as rg with their wizard magic
  - fix diff function for huge files (look at vim, rope, other stuff)
    - futures api probably bad, use <pthread> semaphores and locks
    - do this with tests!!
