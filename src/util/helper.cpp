@@ -1288,7 +1288,7 @@ bool shouldIgnoreFile(const std::filesystem::path &path)
 		"dist/",    "cdk.out/",	   ".next/",  "tmp/",	       "__pycache__/",
 		"autogen/", "coverage/",   "assets/", "extra/",	       ".jar",
 		".jpg",	    ".jpeg",	   ".png",    ".pdf",	       "package-lock.json",
-		".cache/",  ".eslintcache"
+		".cache/",  ".eslintcache", ".DS_Store"
 	};
 	for (uint32_t i = 0; i < ignoreList.size(); i++) {
 		if (path.string().find(ignoreList[i]) != std::string::npos) {

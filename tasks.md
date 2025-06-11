@@ -1,13 +1,24 @@
 ## tasks
-- fix issue with going up not saving col (tabs counting as 1)
+- inspect memory leaks using new
+```
+    Object * object1 = new Object(); //A new object is allocated on the heap
+    Object * object2 = new Object(); //Another new object is allocated on the heap
+    delete object1;
+
+    // Since C++ does not have a garbage collector, if we don't do that, the next line would
+    // cause a "memory leak", i.e. a piece of claimed memory that the app cannot use
+    // and that we have no way to reclaim...
+    object1 = object2; //Same as Java, object1 points to object2.
+```
+- make make ctrl i o half as big and an option
+- make keys bigger and an option
+- fix cursor on search replace
+- fix issue with going up not saving col (tabs counting as 1 instead of 8)
 - better replace all (interactive mode and better command mode)
 - highlight entire tab
 - retab auto-detect indentation
 - make gs///g respect ignoreFiles
-- make s copy
-- make dw work correctly
 - make b work with "../"
-- make dotCommand and macroCommand store vector
 - fileExplorer issues
 - fix tab rendering with non wordwrap state->windowPosition.col > 0
 - lock down changing files flag
@@ -24,7 +35,7 @@
   -h
 - add gitlab and local server as mirror
 - fix editorconfig filename parser
-- put asserts everywhere (make sure state is perfect and i never mess up)
+- speed up grep to as fast as rg with their wizard magic
 - fix diff function for huge files (look at vim, rope, other stuff)
   - futures api probably bad, use <pthread> semaphores and locks
   - do this with tests!!

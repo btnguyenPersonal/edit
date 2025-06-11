@@ -8,6 +8,7 @@
 #include <vector>
 
 bool isColTooSmall(State *state);
+bool isWhitespace(char c);
 bool isColTooBig(State *state);
 uint32_t getDisplayCol(State *state);
 uint32_t getDisplayLength(State *state, std::string s);

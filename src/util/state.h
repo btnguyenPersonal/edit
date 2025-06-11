@@ -59,6 +59,7 @@ struct Archive {
 	std::vector<std::string> previousState;
 	std::vector<std::vector<diffLine> > history;
 	int32_t historyPosition;
+	int32_t lastSave;
 	struct Position windowPosition;
 	uint32_t row;
 	uint32_t col;

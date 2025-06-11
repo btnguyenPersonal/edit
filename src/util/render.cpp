@@ -137,17 +137,17 @@ void renderFileStack(State *state)
 	uint32_t renderRow = 1;
 	for (int32_t i = start; i >= 0; i--) {
 		std::string filename = minimize_filename(state->fileStack[i]);
-		if (state->maxX / 2 > filename.length()) {
-			filename += std::string(state->maxX / 2 - filename.length(), ' ');
+		if (state->maxX / 4 > filename.length()) {
+			filename += std::string(state->maxX / 4 - filename.length(), ' ');
 		}
 		int32_t color = i == (int32_t)state->fileStackIndex ? invertColor(YELLOW) : GREY;
 		insertPixels(state, &pixels, "|" + filename, color);
-		renderPixels(state, renderRow++, state->maxX / 2, pixels);
+		renderPixels(state, renderRow++, (3 * state->maxX) / 4, pixels);
 		pixels.clear();
 	}
 	for (int32_t i = renderRow; i <= (int32_t)state->maxY; i++) {
-		insertPixels(state, &pixels, "|" + std::string(state->maxX / 2, ' '), GREY);
-		renderPixels(state, renderRow++, state->maxX / 2, pixels);
+		insertPixels(state, &pixels, "|" + std::string(state->maxX / 4, ' '), GREY);
+		renderPixels(state, renderRow++, (3 * state->maxX) / 4, pixels);
 		pixels.clear();
 	}
 }
@@ -256,7 +256,15 @@ int32_t renderStatusBar(State *state)
 			}
 		}
 		insertPixels(state, &pixels, ' ', WHITE);
-		insertPixels(state, &pixels, setStringToLength(state->keys, 15, false), state->recording ? RED : WHITE);
+		if (state->recording) {
+			std::string s;
+			for (uint32_t i = 0; i < state->macroCommand.size(); i++) {
+				s += state->macroCommand[i];
+			}
+			insertPixels(state, &pixels, setStringToLength(s, 60, true), RED);
+		} else {
+			insertPixels(state, &pixels, setStringToLength(state->keys, 15, false), WHITE);
+		}
 		insertPixels(state, &pixels, ' ', WHITE);
 		prefix = "/";
 		std::string displayQuery = state->search.query;
@@ -468,7 +476,7 @@ int32_t getLineNumberColor(State *state, int32_t row)
 int32_t getMarkColor(State *state, int32_t row)
 {
 	bool logging = std::regex_search(state->data[row], std::regex(getLoggingRegex(state)));
-	bool endsWithSpace = state->data[row].back() == ' ';
+	bool endsWithSpace = isWhitespace(state->data[row].back());
 	bool isOnMark = (int32_t)state->mark.mark == row && state->mark.filename == state->filename;
 	if (endsWithSpace && state->mode != TYPING) {
 		return RED;

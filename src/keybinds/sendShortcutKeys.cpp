@@ -47,7 +47,7 @@ void sendShortcutKeys(State *state, int32_t c)
 		char command1 = state->prevKeys[1];
 		state->prevKeys = "";
 		state->motion.clear();
-		recordMotion(state, c);
+		recordMotion(state, 'v');
 		initVisual(state, NORMAL);
 		sendVisualKeys(state, command1, true);
 		sendVisualKeys(state, c, true);
@@ -65,25 +65,29 @@ void sendShortcutKeys(State *state, int32_t c)
 		if (c == 'i' || c == 'a' || c == 'f' || c == 't') {
 			state->prevKeys += c;
 		} else {
+			bool specialWOrLOnlyCase = state->prevKeys.length() == 1 && (c == 'w' || c == 'l');
 			uint32_t tempRow = state->row;
 			uint32_t tempCol = state->col;
 			char command = state->prevKeys[0];
 			state->prevKeys = "";
-			state->motion.clear();
-			recordMotion(state, c);
 			bool success = true;
 			initVisual(state, NORMAL);
 			if (c != command) {
 				success = sendVisualKeys(state, c, true);
 				if (state->row != state->visual.row) {
 					state->visualType = LINE;
-					state->motion[0] = 'V';
+					state->motion.insert(state->motion.begin(), 1, 'V');
+				} else {
+					state->motion.insert(state->motion.begin(), 1, 'v');
 				}
 			} else {
 				state->visualType = LINE;
-				state->motion[0] = 'V';
+				state->motion.insert(state->motion.begin(), 1, 'V');
 			}
 			if (success) {
+				if (specialWOrLOnlyCase) {
+					sendVisualKeys(state, 'h', true);
+				}
 				sendVisualKeys(state, command, false);
 			} else {
 				state->prevKeys = "";
@@ -311,6 +315,7 @@ void sendShortcutKeys(State *state, int32_t c)
 			sendKeys(state, getUnEscapedChar(state->macroCommand[i]));
 			cleanup(state, c);
 		}
+		centerScreen(state);
 		state->dontRecordKey = true;
 	} else if (c == 'q') {
 		if (!state->recording) {
@@ -354,6 +359,7 @@ void sendShortcutKeys(State *state, int32_t c)
 		getAndAddNumber(state, state->row, state->col, 1);
 	} else if (c == 's') {
 		if (state->col < state->data[state->row].length()) {
+			copyToClipboard(state->data[state->row].substr(state->col, 1));
 			state->data[state->row] = state->data[state->row].substr(0, state->col) +
 						  state->data[state->row].substr(state->col + 1);
 			state->mode = TYPING;

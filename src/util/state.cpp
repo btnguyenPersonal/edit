@@ -110,6 +110,7 @@ void State::changeFile(std::string filename)
 			this->archives[i].previousState = this->previousState;
 			this->archives[i].history = this->history;
 			this->archives[i].historyPosition = this->historyPosition;
+			this->archives[i].lastSave = this->lastSave;
 			this->archives[i].windowPosition = this->windowPosition;
 			this->archives[i].row = this->row;
 			this->archives[i].col = this->col;
@@ -124,6 +125,7 @@ void State::changeFile(std::string filename)
 			this->previousState,
 			this->history,
 			this->historyPosition,
+			this->lastSave,
 			this->windowPosition,
 			this->row,
 			this->col,
@@ -139,6 +141,7 @@ void State::changeFile(std::string filename)
 			this->previousState = archive.previousState;
 			this->history = archive.history;
 			this->historyPosition = archive.historyPosition;
+			this->lastSave = archive.lastSave;
 			this->windowPosition = archive.windowPosition;
 			this->row = archive.row;
 			this->col = archive.col;
@@ -154,6 +157,7 @@ void State::changeFile(std::string filename)
 	this->commentSymbol = getCommentSymbol(normalizedFilename);
 	this->history = std::vector<std::vector<diffLine> >();
 	this->historyPosition = -1;
+	this->lastSave = -1;
 	this->windowPosition.row = 0;
 	this->windowPosition.col = 0;
 	this->visualType = NORMAL;
