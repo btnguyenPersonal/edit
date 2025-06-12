@@ -123,7 +123,6 @@ class State {
 	std::string filename;
 	std::string grepPath;
 	std::string keys;
-	std::string lastLoggingVar;
 	std::string prevKeys;
 	std::string status;
 	std::vector<Archive> archives;

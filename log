@@ -1,3 +1,18 @@
+blameSize 65
+buildErrorIndex 0
+fileExplorerIndex 0
+fileExplorerWindowLine 0
+historyPosition 2
+lastSave 2
+maxY 30
+maxX 100
+buildDir .
+commentSymbol //
+filename longtest.js
+grepPath 
+keys :12<C-J>ddPP
+prevKeys 
+status 
 motion []
 findFileOutput []
 blame []
@@ -13,6 +28,7 @@ data [
     static const int topbar             = 1;        /* 0 means bottom bar */
     static const char *fonts[]          = { "DejaVuSansM Nerd Font:size=16" };
     static const char dmenufont[]       = "DejaVuSansM Nerd Font:size=16";
+    static const char col_gray1[]       = "#222222";
     static const char col_gray1[]       = "#222222";
     static const char col_gray1[]       = "#222222";
     static const char col_gray1[]       = "#222222";
@@ -153,6 +169,7 @@ previousState [
     static const char col_gray1[]       = "#222222";
     static const char col_gray1[]       = "#222222";
     static const char col_gray1[]       = "#222222";
+    static const char col_gray1[]       = "#222222";
     static const char col_gray2[]       = "#444444";
     static const char col_gray3[]       = "#bbbbbb";
     static const char col_gray4[]       = "#eeeeee";
@@ -270,13 +287,13 @@ previousState [
 ]
 history [
     [
-        12 -static const char col_gray1[]       = "#222222";
-    ]
-    [
-        12 +static const char col_gray1[]       = "#222222";
+        13 -static const char col_gray1[]       = "#222222";
     ]
     [
         13 +static const char col_gray1[]       = "#222222";
+    ]
+    [
+        14 +static const char col_gray1[]       = "#222222";
     ]
 ]
 visual.row 11

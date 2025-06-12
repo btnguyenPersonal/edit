@@ -263,7 +263,7 @@ int32_t renderStatusBar(State *state)
 			}
 			insertPixels(state, &pixels, setStringToLength(s, 60, true), RED);
 		} else {
-			insertPixels(state, &pixels, setStringToLength(state->keys, 15, false), WHITE);
+			insertPixels(state, &pixels, setStringToLength(state->keys, 30, false), WHITE);
 		}
 		insertPixels(state, &pixels, ' ', WHITE);
 		prefix = "/";

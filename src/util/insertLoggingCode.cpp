@@ -7,7 +7,6 @@
 
 void toggleLoggingCode(State *state, std::string variableName, bool showValue)
 {
-	state->lastLoggingVar = variableName;
 	std::string current = state->data[state->row];
 	std::string loggingCode = getLoggingCode(state, state->row, variableName, showValue);
 	if (loggingCode == "") {

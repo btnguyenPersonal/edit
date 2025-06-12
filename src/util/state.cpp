@@ -129,8 +129,7 @@ void printHistory(std::ofstream &out, std::vector<std::vector<diffLine> > vec, s
 	for (uint32_t i = 0; i < vec.size(); i++) {
 		out << "    [" << std::endl;
 		for (uint32_t j = 0; j < vec[i].size(); j++) {
-			out << "        " << std::to_string(vec[i][j].lineNum) << " "
-			    << std::string(vec[i][j].add ? "+" : "-") << vec[i][j].line << std::endl;
+			out << "        " << std::to_string(vec[i][j].lineNum) << " " << std::string(vec[i][j].add ? "+" : "-") << vec[i][j].line << std::endl;
 		}
 		out << "    ]" << std::endl;
 	}
@@ -192,19 +191,22 @@ void State::print(std::string filename, bool printGrep, bool printArchives)
 	// int32_t fileExplorerWindowLine;
 	// int32_t historyPosition;
 	// int32_t lastSave;
-	// static uint32_t maxX;
-	// static uint32_t maxY;
-	// std::map<uint32_t, std::string> harpoonFiles;
-	// std::string buildDir;
-	// std::string commentSymbol;
-	// std::string filename;
-	// std::string grepPath;
-	// std::string keys;
-	// std::string lastLoggingVar;
-	// std::string prevKeys;
-	// std::string status;
-	// std::vector<Archive> archives;
-
+	out << "blameSize " << this->blameSize << std::endl;
+	out << "buildErrorIndex " << this->buildErrorIndex << std::endl;
+	out << "fileExplorerIndex " << this->fileExplorerIndex << std::endl;
+	out << "fileExplorerWindowLine " << this->fileExplorerWindowLine << std::endl;
+	out << "historyPosition " << this->historyPosition << std::endl;
+	out << "lastSave " << this->lastSave << std::endl;
+	out << "maxY " << this->maxY << std::endl;
+	out << "maxX " << this->maxX << std::endl;
+	// TODO std::map<uint32_t, std::string> harpoonFiles;
+	out << "buildDir " << this->buildDir << std::endl;
+	out << "commentSymbol " << this->commentSymbol << std::endl;
+	out << "filename " << this->filename << std::endl;
+	out << "grepPath " << this->grepPath << std::endl;
+	out << "keys " << this->keys << std::endl;
+	out << "prevKeys " << this->prevKeys << std::endl;
+	out << "status " << this->status << std::endl;
 	if (printArchives) {
 		// TODO
 		// printArchives(out, this->archives, std::string("archives"));
@@ -417,7 +419,6 @@ State::State()
 	this->fileStack = std::vector<std::string>();
 	this->showFileStack = false;
 	this->fileStackIndex = 0;
-	this->lastLoggingVar = std::string("");
 	this->motion = std::vector<int32_t>();
 	this->setDefaultOptions();
 	this->loadAllConfigFiles();
