@@ -1,3 +1,47 @@
+commandLine {
+    
+    0
+    0
+}
+findFile {
+    
+    0
+    0
+}
+grep {
+    
+    0
+    0
+}
+name {
+    
+    0
+    0
+}
+replace {
+    
+    0
+    0
+}
+search {
+    
+    0
+    0
+}
+visualType 0
+dontRecordKey 0
+dontSave 0
+fileExplorerOpen 0
+playingCommand 0
+recording 0
+replacing 0
+runningAsRoot 0
+searchFail 0
+searching 0
+selectAll 0
+showAllGrep 0
+showFileStack 0
+showGrep 0
 blameSize 65
 buildErrorIndex 0
 fileExplorerIndex 0
@@ -28,6 +72,12 @@ data [
     static const int topbar             = 1;        /* 0 means bottom bar */
     static const char *fonts[]          = { "DejaVuSansM Nerd Font:size=16" };
     static const char dmenufont[]       = "DejaVuSansM Nerd Font:size=16";
+    static const char col_gray1[]       = "#222222";
+    static const char col_gray1[]       = "#222222";
+    static const char col_gray1[]       = "#222222";
+    static const char col_gray1[]       = "#222222";
+    static const char col_gray1[]       = "#222222";
+    static const char col_gray1[]       = "#222222";
     static const char col_gray1[]       = "#222222";
     static const char col_gray1[]       = "#222222";
     static const char col_gray1[]       = "#222222";
@@ -176,6 +226,12 @@ previousState [
     static const char col_gray1[]       = "#222222";
     static const char col_gray1[]       = "#222222";
     static const char col_gray1[]       = "#222222";
+    static const char col_gray1[]       = "#222222";
+    static const char col_gray1[]       = "#222222";
+    static const char col_gray1[]       = "#222222";
+    static const char col_gray1[]       = "#222222";
+    static const char col_gray1[]       = "#222222";
+    static const char col_gray1[]       = "#222222";
     static const char col_gray2[]       = "#444444";
     static const char col_gray3[]       = "#bbbbbb";
     static const char col_gray4[]       = "#eeeeee";
@@ -293,13 +349,13 @@ previousState [
 ]
 history [
     [
-        16 -static const char col_gray1[]       = "#222222";
+        22 -static const char col_gray1[]       = "#222222";
     ]
     [
-        16 +static const char col_gray1[]       = "#222222";
+        22 +static const char col_gray1[]       = "#222222";
     ]
     [
-        17 +static const char col_gray1[]       = "#222222";
+        23 +static const char col_gray1[]       = "#222222";
     ]
 ]
 visual.row 11

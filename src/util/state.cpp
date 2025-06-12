@@ -152,45 +152,48 @@ void printGrepOutput(std::ofstream &out, std::vector<grepMatch> vec, std::string
 	out << "]" << std::endl;
 }
 
+void printQuery(std::ofstream &out, Query q, std::string name)
+{
+	out << name << " {" << std::endl;
+	out << "    " << q.query << std::endl;
+	out << "    " << std::to_string(q.cursor) << std::endl;
+	out << "    " << std::to_string(q.selection) << std::endl;
+	out << "}" << std::endl;
+}
+
 void State::print(std::string filename, bool printGrep, bool printArchives)
 {
 	std::ofstream out(filename);
 	if (!out.is_open()) {
 		this->status = "Error printing to file";
 	}
-	// history
 	// FileExplorerNode *fileExplorer;
 	// Jumplist jumplist;
 	// Mark mark;
 	// Mode mode;
 	// Options options;
-	// Position matching;
-	// Query commandLine;
-	// Query findFile;
-	// Query grep;
-	// Query name;
-	// Query replace;
-	// Query search;
-	// VisualType visualType;
-	// bool dontRecordKey;
-	// bool dontSave;
-	// bool fileExplorerOpen;
-	// bool playingCommand;
-	// bool recording;
-	// bool replacing;
-	// bool runningAsRoot;
-	// bool searchFail;
-	// bool searching;
-	// bool selectAll;
-	// bool showAllGrep;
-	// bool showFileStack;
-	// bool showGrep;
-	// int32_t blameSize;
-	// int32_t buildErrorIndex;
-	// int32_t fileExplorerIndex;
-	// int32_t fileExplorerWindowLine;
-	// int32_t historyPosition;
-	// int32_t lastSave;
+	out << "matching.row " << std::to_string(this->matching.row) << std::endl;
+	out << "matching.col " << std::to_string(this->matching.col) << std::endl;
+	printQuery(out, this->commandLine, "commandLine");
+	printQuery(out, this->findFile, "findFile");
+	printQuery(out, this->grep, "grep");
+	printQuery(out, this->name, "name");
+	printQuery(out, this->replace, "replace");
+	printQuery(out, this->search, "search");
+	out << "visualType " << this->visualType << std::endl;
+	out << "dontRecordKey " << this->dontRecordKey << std::endl;
+	out << "dontSave " << this->dontSave << std::endl;
+	out << "fileExplorerOpen " << this->fileExplorerOpen << std::endl;
+	out << "playingCommand " << this->playingCommand << std::endl;
+	out << "recording " << this->recording << std::endl;
+	out << "replacing " << this->replacing << std::endl;
+	out << "runningAsRoot " << this->runningAsRoot << std::endl;
+	out << "searchFail " << this->searchFail << std::endl;
+	out << "searching " << this->searching << std::endl;
+	out << "selectAll " << this->selectAll << std::endl;
+	out << "showAllGrep " << this->showAllGrep << std::endl;
+	out << "showFileStack " << this->showFileStack << std::endl;
+	out << "showGrep " << this->showGrep << std::endl;
 	out << "blameSize " << this->blameSize << std::endl;
 	out << "buildErrorIndex " << this->buildErrorIndex << std::endl;
 	out << "fileExplorerIndex " << this->fileExplorerIndex << std::endl;
