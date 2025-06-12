@@ -32,6 +32,9 @@ data [
     static const char col_gray1[]       = "#222222";
     static const char col_gray1[]       = "#222222";
     static const char col_gray1[]       = "#222222";
+    static const char col_gray1[]       = "#222222";
+    static const char col_gray1[]       = "#222222";
+    static const char col_gray1[]       = "#222222";
     static const char col_gray2[]       = "#444444";
     static const char col_gray3[]       = "#bbbbbb";
     static const char col_gray4[]       = "#eeeeee";
@@ -170,6 +173,9 @@ previousState [
     static const char col_gray1[]       = "#222222";
     static const char col_gray1[]       = "#222222";
     static const char col_gray1[]       = "#222222";
+    static const char col_gray1[]       = "#222222";
+    static const char col_gray1[]       = "#222222";
+    static const char col_gray1[]       = "#222222";
     static const char col_gray2[]       = "#444444";
     static const char col_gray3[]       = "#bbbbbb";
     static const char col_gray4[]       = "#eeeeee";
@@ -287,13 +293,13 @@ previousState [
 ]
 history [
     [
-        13 -static const char col_gray1[]       = "#222222";
+        16 -static const char col_gray1[]       = "#222222";
     ]
     [
-        13 +static const char col_gray1[]       = "#222222";
+        16 +static const char col_gray1[]       = "#222222";
     ]
     [
-        14 +static const char col_gray1[]       = "#222222";
+        17 +static const char col_gray1[]       = "#222222";
     ]
 ]
 visual.row 11

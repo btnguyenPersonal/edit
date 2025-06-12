@@ -13,10 +13,16 @@
 #include "sendShortcutKeys.h"
 #include "sendTypingKeys.h"
 #include "sendVisualKeys.h"
+#include <ncurses.h>
 
 void sendKeys(State *state, int32_t c)
 {
-	state->keys += getEscapedChar(c, false);
+
+	if (c == KEY_BACKSPACE) {
+		state->keys += getEscapedChar(127, false);
+	} else {
+		state->keys += getEscapedChar(c, false);
+	}
 	state->showGrep = false;
 	state->status = std::string("");
 	state->searchFail = false;

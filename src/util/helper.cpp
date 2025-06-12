@@ -199,7 +199,11 @@ std::string getRelativeToCurrent(State *state, std::string p)
 
 void recordMotion(State *state, int32_t c)
 {
-	state->motion.push_back(c);
+	if (c == KEY_BACKSPACE) {
+		state->motion.push_back(127);
+	} else {
+		state->motion.push_back(c);
+	}
 }
 
 void setDotCommand(State *state, int32_t c)
