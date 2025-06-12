@@ -289,7 +289,8 @@ int32_t renderStatusBar(State *state)
 	auto tmp = displayFileName.length() + pixels.size();
 	auto len = state->maxX > tmp ? state->maxX - tmp : 0;
 	prefix = std::string(len, ' ');
-	insertPixels(state, &pixels, prefix + displayFileName, state->lastSave != state->historyPosition ? GREY : WHITE);
+	insertPixels(state, &pixels, prefix + displayFileName,
+		     state->lastSave != state->historyPosition ? GREY : WHITE);
 
 	renderPixels(state, 0, 0, pixels);
 	return -1;

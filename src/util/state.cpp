@@ -2,6 +2,7 @@
 #include "helper.h"
 #include "modes.h"
 #include "visualType.h"
+#include "keys.h"
 #include <iostream>
 #include <ncurses.h>
 #include <string>
@@ -9,6 +10,7 @@
 #include <vector>
 #include <map>
 #include <unistd.h>
+#include <fstream>
 
 uint32_t State::maxX = 0;
 uint32_t State::maxY = 0;
@@ -76,6 +78,160 @@ void State::readBoolConfigValue(bool &option, std::string configValue, std::stri
 			option = false;
 		}
 	}
+}
+
+void printVec(std::ofstream &out, std::vector<std::string> vec, std::string name)
+{
+	if (vec.size() == 0) {
+		out << name << " []" << std::endl;
+		return;
+	}
+	out << name << " [" << std::endl;
+	for (uint32_t i = 0; i < vec.size(); i++) {
+		out << "    " << vec[i] << std::endl;
+	}
+	out << "]" << std::endl;
+}
+
+void printVecChar(std::ofstream &out, std::vector<int32_t> vec, std::string name)
+{
+	if (vec.size() == 0) {
+		out << name << " []" << std::endl;
+		return;
+	}
+	out << name << " [" << std::endl;
+	for (uint32_t i = 0; i < vec.size(); i++) {
+		out << "    " << getEscapedChar(vec[i]) << std::endl;
+	}
+	out << "]" << std::endl;
+}
+
+void printVecPath(std::ofstream &out, std::vector<std::filesystem::path> vec, std::string name)
+{
+	if (vec.size() == 0) {
+		out << name << " []" << std::endl;
+		return;
+	}
+	out << name << " [" << std::endl;
+	for (uint32_t i = 0; i < vec.size(); i++) {
+		out << "    " << vec[i].string() << std::endl;
+	}
+	out << "]" << std::endl;
+}
+
+void printHistory(std::ofstream &out, std::vector<std::vector<diffLine> > vec, std::string name)
+{
+	if (vec.size() == 0) {
+		out << name << " []" << std::endl;
+		return;
+	}
+	out << name << " [" << std::endl;
+	for (uint32_t i = 0; i < vec.size(); i++) {
+		out << "    [" << std::endl;
+		for (uint32_t j = 0; j < vec[i].size(); j++) {
+			out << "        " << std::to_string(vec[i][j].lineNum) << " "
+			    << std::string(vec[i][j].add ? "+" : "-") << vec[i][j].line << std::endl;
+		}
+		out << "    ]" << std::endl;
+	}
+	out << "]" << std::endl;
+}
+
+void printGrepOutput(std::ofstream &out, std::vector<grepMatch> vec, std::string name)
+{
+	if (vec.size() == 0) {
+		out << name << " []" << std::endl;
+		return;
+	}
+	out << name << " [" << std::endl;
+	for (uint32_t i = 0; i < vec.size(); i++) {
+		out << "    {" << std::endl;
+		out << "        " << vec[i].path.string() << ":" << std::to_string(vec[i].lineNum) << std::endl;
+		out << "        " << vec[i].line << std::endl;
+		out << "    }" << std::endl;
+	}
+	out << "]" << std::endl;
+}
+
+void State::print(std::string filename, bool printGrep, bool printArchives)
+{
+	std::ofstream out(filename);
+	if (!out.is_open()) {
+		this->status = "Error printing to file";
+	}
+	// history
+	// FileExplorerNode *fileExplorer;
+	// Jumplist jumplist;
+	// Mark mark;
+	// Mode mode;
+	// Options options;
+	// Position matching;
+	// Query commandLine;
+	// Query findFile;
+	// Query grep;
+	// Query name;
+	// Query replace;
+	// Query search;
+	// VisualType visualType;
+	// bool dontRecordKey;
+	// bool dontSave;
+	// bool fileExplorerOpen;
+	// bool playingCommand;
+	// bool recording;
+	// bool replacing;
+	// bool runningAsRoot;
+	// bool searchFail;
+	// bool searching;
+	// bool selectAll;
+	// bool showAllGrep;
+	// bool showFileStack;
+	// bool showGrep;
+	// int32_t blameSize;
+	// int32_t buildErrorIndex;
+	// int32_t fileExplorerIndex;
+	// int32_t fileExplorerWindowLine;
+	// int32_t historyPosition;
+	// int32_t lastSave;
+	// static uint32_t maxX;
+	// static uint32_t maxY;
+	// std::map<uint32_t, std::string> harpoonFiles;
+	// std::string buildDir;
+	// std::string commentSymbol;
+	// std::string filename;
+	// std::string grepPath;
+	// std::string keys;
+	// std::string lastLoggingVar;
+	// std::string prevKeys;
+	// std::string status;
+	// std::vector<Archive> archives;
+
+	if (printArchives) {
+		// TODO
+		// printArchives(out, this->archives, std::string("archives"));
+	}
+	if (printGrep) {
+		printGrepOutput(out, this->grepOutput, std::string("grepOutput"));
+	}
+	printVecChar(out, this->motion, std::string("motion"));
+	printVecPath(out, this->findFileOutput, std::string("findFileOutput"));
+	printVec(out, this->blame, std::string("blame"));
+	printVec(out, this->data, std::string("data"));
+	printVec(out, this->dotCommand, std::string("dotCommand"));
+	printVec(out, this->fileStack, std::string("fileStack"));
+	printVec(out, this->macroCommand, std::string("macroCommand"));
+	printVec(out, this->previousState, std::string("previousState"));
+	printHistory(out, this->history, std::string("history"));
+	out << "visual.row " << std::to_string(this->visual.row) << std::endl;
+	out << "visual.col " << std::to_string(this->visual.col) << std::endl;
+	out << "windowPosition.row " << std::to_string(this->windowPosition.row) << std::endl;
+	out << "windowPosition.col " << std::to_string(this->windowPosition.col) << std::endl;
+	out << "col " << std::to_string(this->col) << std::endl;
+	out << "fileExplorerSize " << std::to_string(this->fileExplorerSize) << std::endl;
+	out << "fileStackIndex " << std::to_string(this->fileStackIndex) << std::endl;
+	out << "harpoonIndex " << std::to_string(this->harpoonIndex) << std::endl;
+	out << "lineNumSize " << std::to_string(this->lineNumSize) << std::endl;
+	out << "row " << std::to_string(this->row) << std::endl;
+	out.close();
 }
 
 void State::readConfigLine(std::string line)
@@ -224,7 +380,6 @@ State::State()
 	this->replacing = false;
 	this->jumplist = { 0, std::vector<Position>() };
 	this->buildErrorIndex = 0;
-	this->buildErrors = std::vector<std::string>();
 	this->blameSize = 65;
 	this->blame = std::vector<std::string>();
 	this->harpoonFiles = std::map<uint32_t, std::string>();
