@@ -129,7 +129,8 @@ void printHistory(std::ofstream &out, std::vector<std::vector<diffLine> > vec, s
 	for (uint32_t i = 0; i < vec.size(); i++) {
 		out << "    [" << std::endl;
 		for (uint32_t j = 0; j < vec[i].size(); j++) {
-			out << "        " << std::to_string(vec[i][j].lineNum) << " " << std::string(vec[i][j].add ? "+" : "-") << vec[i][j].line << std::endl;
+			out << "        " << std::to_string(vec[i][j].lineNum) << " "
+			    << std::string(vec[i][j].add ? "+" : "-") << vec[i][j].line << std::endl;
 		}
 		out << "    ]" << std::endl;
 	}

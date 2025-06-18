@@ -252,7 +252,8 @@ int32_t renderStatusBar(State *state)
 			if (state->harpoonFiles.count(i) > 0) {
 				bool current = state->harpoonFiles[i] == state->filename && state->harpoonIndex == i;
 				insertPixels(state, &pixels, '[', current ? invertColor(WHITE) : GREY);
-				insertPixels(state, &pixels, std::to_string(i + 1), current ? invertColor(WHITE) : WHITE);
+				insertPixels(state, &pixels, std::to_string(i + 1),
+					     current ? invertColor(WHITE) : WHITE);
 				insertPixels(state, &pixels, ']', current ? invertColor(WHITE) : GREY);
 			} else {
 				insertPixels(state, &pixels, "[ ]", GREY);

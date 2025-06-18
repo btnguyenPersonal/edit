@@ -17,7 +17,6 @@
 
 void sendKeys(State *state, int32_t c)
 {
-
 	if (c == KEY_BACKSPACE) {
 		state->keys += getEscapedChar(127, false);
 	} else {
