@@ -199,6 +199,7 @@ std::string getDisplayModeName(State *state)
 
 int32_t renderStatusBar(State *state)
 {
+	int32_t cursor = -1;
 	std::string prefix;
 	std::vector<Pixel> pixels = std::vector<Pixel>();
 
@@ -248,9 +249,9 @@ int32_t renderStatusBar(State *state)
 			std::string s;
 			if (state->harpoonFiles.count(i) > 0) {
 				bool current = state->harpoonFiles[i] == state->filename && state->harpoonIndex == i;
-				insertPixels(state, &pixels, '[', current ? ORANGE : GREY);
-				insertPixels(state, &pixels, std::to_string(i + 1), current ? YELLOW : WHITE);
-				insertPixels(state, &pixels, ']', current ? ORANGE : GREY);
+				insertPixels(state, &pixels, '[', current ? invertColor(WHITE) : GREY);
+				insertPixels(state, &pixels, std::to_string(i + 1), current ? invertColor(WHITE) : WHITE);
+				insertPixels(state, &pixels, ']', current ? invertColor(WHITE) : GREY);
 			} else {
 				insertPixels(state, &pixels, "[ ]", GREY);
 			}
@@ -261,13 +262,16 @@ int32_t renderStatusBar(State *state)
 			for (uint32_t i = 0; i < state->macroCommand.size(); i++) {
 				s += state->macroCommand[i];
 			}
-			insertPixels(state, &pixels, setStringToLength(s, 60, true), RED);
+			insertPixels(state, &pixels, std::string("recording: ") + setStringToLength(s, 60, true), RED);
 		} else {
-			insertPixels(state, &pixels, setStringToLength(state->keys, 30, false), WHITE);
+			insertPixels(state, &pixels, setStringToLength(state->keys, 30, false), GREY);
 		}
 		insertPixels(state, &pixels, ' ', WHITE);
 		prefix = "/";
 		std::string displayQuery = state->search.query;
+		if (state->mode == SEARCH) {
+			cursor = prefix.length() + pixels.size() + state->search.cursor;
+		}
 		for (size_t i = 0; i < displayQuery.length(); ++i) {
 			if (displayQuery[i] == '\n') {
 				displayQuery.replace(i, 1, "\\n");
@@ -276,6 +280,7 @@ int32_t renderStatusBar(State *state)
 		}
 		insertPixels(state, &pixels, prefix + displayQuery, state->searchFail ? RED : GREEN);
 		if (state->replacing) {
+			cursor = prefix.length() + pixels.size() + state->replace.cursor;
 			insertPixels(state, &pixels, prefix + state->replace.query, MAGENTA);
 			renderPixels(state, 0, 0, pixels);
 		}
@@ -293,7 +298,7 @@ int32_t renderStatusBar(State *state)
 		     state->lastSave != state->historyPosition ? GREY : WHITE);
 
 	renderPixels(state, 0, 0, pixels);
-	return -1;
+	return cursor;
 }
 
 int32_t getColorFromChar(char c)
