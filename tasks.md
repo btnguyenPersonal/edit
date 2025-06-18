@@ -1,4 +1,7 @@
 ## tasks
+	// add crash reports
+	// std::filesystem::path home = std::filesystem::absolute(getenv("HOME"));
+	// state->print(home.string() + "/.crashreport");
 - grep when ctrl g, not checking before for valid ones
 - fix expand file not there anymore
 - check file not there for every thing ctrl g, etc.

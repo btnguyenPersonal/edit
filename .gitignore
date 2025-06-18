@@ -1,5 +1,3 @@
 build/
-log
-test.js
+test-file.h
 fuzzer/results
-longtest.js

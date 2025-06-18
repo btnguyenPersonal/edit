@@ -1,4 +1,5 @@
 #include <iostream>
+#include <stdlib.h>
 #include "../src/keybinds/sendKeys.h"
 #include "../src/util/state.h"
 #include "../src/util/keys.h"
@@ -11,25 +12,34 @@ void send(State *state, std::string ch)
 	cleanup(state, c);
 }
 
+State * beforeEach() {
+	system("cp example-file.h test-file.h");
+	return new State("test-file.h");
+}
+
+void afterEach(State *state, std::vector<std::string> keys) {
+	std::string filename = "";
+	for (uint32_t i = 0; i < keys.size(); i++) {
+		filename += keys[i];
+	}
+	state->print(std::string("snapshots/") + filename, false, false);
+	delete state;
+}
+
+int32_t snapshotTest(std::vector<std::string> keys) {
+	auto state = beforeEach();
+	for (uint32_t i = 0; i < keys.size(); i++) {
+		send(state, keys[i]);
+	}
+	afterEach(state, keys);
+	return 0;
+}
+
 int main()
 {
-	// set file to X code
-	// print state to a file
-	// compare /tmp/file to /snapshot/file
-
-	// add crash reports
-	// std::filesystem::path home = std::filesystem::absolute(getenv("HOME"));
-	// state->print(home.string() + "/.crashreport");
-
-	State *state = new State("longtest.js");
-
-	send(state, ":");
-	send(state, "1");
-	send(state, "2");
-	send(state, "<C-J>");
-	send(state, "d");
-	send(state, "d");
-	send(state, "P");
-	send(state, "P");
-	state->print("log", false, false);
+	snapshotTest({"d", "d"});
+	snapshotTest({"G", "V", "g", "g", "d", "P"});
+	snapshotTest({":", "4", "0", "<C-J>", "d", "d", "d", "d", "c", "c", "<Esc>", "u", "u", "u"});
+	snapshotTest({":", "4", "5", "<C-J>", "d", "j", "k", "k", "x", "u", "u", "u"});
+	snapshotTest({":", "4", "5", "<C-J>", "d", "j", "k", "w", "d", "i", "w", "u", "u", "u"});
 }

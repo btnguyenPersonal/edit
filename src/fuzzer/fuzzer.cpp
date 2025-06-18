@@ -58,7 +58,7 @@ void fuzzSendKeys(int testnum, int iterations = 1000)
 	};
 
 	std::uniform_int_distribution<> dis(0, keypresses.size() - 1);
-	State *state = new State("src/util/helper.cpp");
+	State *state = new State("longtest.js");
 	state->dontSave = true;
 
 	auto start = std::chrono::high_resolution_clock::now();
