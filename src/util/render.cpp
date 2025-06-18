@@ -70,7 +70,7 @@ std::vector<Pixel> toPixels(State *state, std::string s, int32_t color, uint32_t
 	return pixels;
 }
 
-int32_t renderPixels(State *state, int32_t r, int32_t c, std::vector<Pixel> pixels)
+int32_t renderPixels(State *state, int32_t r, int32_t c, std::vector<Pixel> pixels, bool wrap)
 {
 	int32_t row = r;
 	int32_t col = c;
@@ -78,9 +78,11 @@ int32_t renderPixels(State *state, int32_t r, int32_t c, std::vector<Pixel> pixe
 		attron(COLOR_PAIR(p.color));
 		mvaddch(row, col, p.c);
 		attroff(COLOR_PAIR(p.color));
-		if (state->options.wordwrap && (uint32_t)col + 1 >= state->maxX) {
-			row++;
-			col = getLineNumberOffset(state);
+		if ((uint32_t)col + 1 >= state->maxX) {
+			if (wrap && state->options.wordwrap) {
+				row++;
+				col = getLineNumberOffset(state);
+			}
 		} else {
 			col++;
 		}
@@ -142,12 +144,12 @@ void renderFileStack(State *state)
 		}
 		int32_t color = i == (int32_t)state->fileStackIndex ? invertColor(YELLOW) : GREY;
 		insertPixels(state, &pixels, "|" + filename, color);
-		renderPixels(state, renderRow++, (3 * state->maxX) / 4, pixels);
+		renderPixels(state, renderRow++, (3 * state->maxX) / 4, pixels, false);
 		pixels.clear();
 	}
 	for (int32_t i = renderRow; i <= (int32_t)state->maxY; i++) {
 		insertPixels(state, &pixels, "|" + std::string(state->maxX / 4, ' '), GREY);
-		renderPixels(state, renderRow++, (3 * state->maxX) / 4, pixels);
+		renderPixels(state, renderRow++, (3 * state->maxX) / 4, pixels, false);
 		pixels.clear();
 	}
 }
@@ -206,18 +208,18 @@ int32_t renderStatusBar(State *state)
 	if (state->status.length() > 0) {
 		prefix = "";
 		insertPixels(state, &pixels, prefix + state->status, RED);
-		renderPixels(state, 0, 0, pixels);
+		renderPixels(state, 0, 0, pixels, false);
 	}
 
 	if (state->mode == NAMING) {
 		prefix = "name: ";
 		insertPixels(state, &pixels, prefix + state->name.query, WHITE);
-		renderPixels(state, 0, 0, pixels);
+		renderPixels(state, 0, 0, pixels, false);
 		return prefix.length() + state->name.cursor;
 	} else if (state->mode == COMMANDLINE) {
 		std::string prefix = ":";
 		insertPixels(state, &pixels, prefix + state->commandLine.query, WHITE);
-		renderPixels(state, 0, 0, pixels);
+		renderPixels(state, 0, 0, pixels, false);
 		return prefix.length() + state->commandLine.cursor;
 	} else if (state->mode == GREP) {
 		prefix = state->grepPath + "> ";
@@ -226,7 +228,7 @@ int32_t renderStatusBar(State *state)
 		insertPixels(state, &pixels, std::to_string(state->grep.selection + 1), WHITE);
 		insertPixels(state, &pixels, " of ", WHITE);
 		insertPixels(state, &pixels, std::to_string(state->grepOutput.size()), WHITE);
-		renderPixels(state, 0, 0, pixels);
+		renderPixels(state, 0, 0, pixels, false);
 		return prefix.length() + state->grep.cursor;
 	} else if (state->mode == FINDFILE) {
 		prefix = "> ";
@@ -236,7 +238,7 @@ int32_t renderStatusBar(State *state)
 		insertPixels(state, &pixels, std::to_string(state->findFile.selection + 1), WHITE);
 		insertPixels(state, &pixels, " of ", WHITE);
 		insertPixels(state, &pixels, std::to_string(state->findFileOutput.size()), WHITE);
-		renderPixels(state, 0, 0, pixels);
+		renderPixels(state, 0, 0, pixels, false);
 		return prefix.length() + state->findFile.cursor;
 	} else {
 		uint32_t i = 0;
@@ -282,10 +284,10 @@ int32_t renderStatusBar(State *state)
 		if (state->replacing) {
 			cursor = prefix.length() + pixels.size() + state->replace.cursor;
 			insertPixels(state, &pixels, prefix + state->replace.query, MAGENTA);
-			renderPixels(state, 0, 0, pixels);
+			renderPixels(state, 0, 0, pixels, false);
 		}
 		if (state->mode == SEARCH) {
-			renderPixels(state, 0, 0, pixels);
+			renderPixels(state, 0, 0, pixels, false);
 		}
 	}
 
@@ -297,7 +299,7 @@ int32_t renderStatusBar(State *state)
 	insertPixels(state, &pixels, prefix + displayFileName,
 		     state->lastSave != state->historyPosition ? GREY : WHITE);
 
-	renderPixels(state, 0, 0, pixels);
+	renderPixels(state, 0, 0, pixels, false);
 	return cursor;
 }
 
@@ -419,7 +421,7 @@ void renderGrepOutput(State *state)
 		line += state->grepOutput[i].line;
 		line = safeSubstring(line, 0, state->maxX);
 		insertPixels(state, &pixels, line, color);
-		renderPixels(state, renderIndex, 0, pixels);
+		renderPixels(state, renderIndex, 0, pixels, false);
 		renderIndex++;
 	}
 }
@@ -442,7 +444,7 @@ void renderFindFileOutput(State *state)
 		}
 		std::string line = safeSubstring(state->findFileOutput[i], 0, state->maxX);
 		insertPixels(state, &pixels, line, color);
-		renderPixels(state, renderIndex, 0, pixels);
+		renderPixels(state, renderIndex, 0, pixels, false);
 		renderIndex++;
 	}
 }
@@ -518,7 +520,7 @@ void renderLineNumber(State *state, int32_t row, int32_t renderRow)
 	}
 
 	int32_t border = state->fileExplorerOpen ? state->fileExplorerSize : 0;
-	renderPixels(state, renderRow, border, pixels);
+	renderPixels(state, renderRow, border, pixels, false);
 }
 
 void advancePosition(State *state, int &renderRow, int &renderCol)
@@ -650,7 +652,7 @@ int32_t renderLineContent(State *state, int32_t row, int32_t renderRow, Cursor *
 			}
 		}
 	}
-	return renderRow + renderPixels(state, renderRow, getLineNumberOffset(state), pixels);
+	return renderRow + renderPixels(state, renderRow, getLineNumberOffset(state), pixels, true);
 }
 
 void moveCursor(State *state, int32_t cursorOnStatusBar, Cursor editorCursor, Cursor fileExplorerCursor)
@@ -703,7 +705,7 @@ int32_t renderFileExplorerNode(State *state, FileExplorerNode *node, int32_t r, 
 			}
 			insertPixels(state, &pixels, "~", color);
 		}
-		renderPixels(state, displayRow, 0, pixels);
+		renderPixels(state, displayRow, 0, pixels, false);
 	}
 	if (node->isOpen) {
 		for (uint32_t i = 0; i < node->children.size(); i++) {

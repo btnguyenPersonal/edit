@@ -1,8 +1,7 @@
 ## tasks
-- have a cutoff version for renderPixels (use for fileStack)
 - grep when ctrl g, not checking before for valid ones
 - fix expand file not there anymore
-- add recording prefix
+- check file not there for every thing ctrl g, etc.
 - color keys based on mode
 - inspect memory leaks using new
 ```
