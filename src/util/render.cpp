@@ -284,8 +284,7 @@ int32_t renderStatusBar(State *state)
 				insertPixels(state, &tempPixels, state->keys[i].key,
 					     getDisplayModeColor(state->keys[i].mode));
 			}
-			uint32_t keysSize = 30;
-			for (uint32_t i = tempPixels.size() > keysSize ? tempPixels.size() - keysSize : 0;
+			for (uint32_t i = tempPixels.size() > state->options.keysSize ? tempPixels.size() - state->options.keysSize : 0;
 			     i < tempPixels.size(); i++) {
 				pixels.push_back(tempPixels[i]);
 			}

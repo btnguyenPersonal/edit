@@ -2,10 +2,7 @@
 	// add crash reports
 	// std::filesystem::path home = std::filesystem::absolute(getenv("HOME"));
 	// state->print(home.string() + "/.crashreport");
-- grep when ctrl g, not checking before for valid ones
 - fix expand file not there anymore
-- check file not there for every thing ctrl g, etc.
-- color keys based on mode
 - inspect memory leaks using new
 ```
     Object * object1 = new Object(); //A new object is allocated on the heap
@@ -17,8 +14,6 @@
     // and that we have no way to reclaim...
     object1 = object2; //Same as Java, object1 points to object2.
 ```
-- make make ctrl i o half as big and an option
-- make keys bigger and an option
 - fix cursor on search replace
 - fix issue with going up not saving col (tabs counting as 1 instead of 8)
 - better replace all (interactive mode and better command mode)

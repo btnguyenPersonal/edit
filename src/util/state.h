@@ -80,6 +80,7 @@ struct Query {
 struct Options {
 	bool wordwrap;
 	bool autosave;
+	uint32_t keysSize;
 	int32_t maxHarpoon;
 	bool insert_final_newline;
 	uint32_t indent_size;
