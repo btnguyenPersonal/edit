@@ -173,7 +173,7 @@ int32_t getDisplayModeColor(Mode m)
 		return GREEN;
 	} else if (m == SHORTCUTS) {
 		return CYAN;
-	} else if (m == SHORTCUTS) {
+	} else if (m == VISUAL) {
 		return RED;
 	} else {
 		return ORANGE;
@@ -288,8 +288,7 @@ int32_t renderStatusBar(State *state)
 				}
 				if (i >= 0) {
 					for (; i < (int32_t)state->keys.size(); i++) {
-						insertPixels(state, &pixels, state->keys[i].key,
-							     getDisplayModeColor(state->keys[i].mode));
+						insertPixels(state, &pixels, state->keys[i].key, getDisplayModeColor(state->keys[i].mode));
 					}
 				}
 			}
