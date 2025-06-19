@@ -7,6 +7,7 @@
 #include <string>
 #include <vector>
 
+std::string getMode(uint32_t mode);
 bool isColTooSmall(State *state);
 bool isWhitespace(char c);
 bool isColTooBig(State *state);

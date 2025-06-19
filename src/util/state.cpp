@@ -106,6 +106,19 @@ void printVecChar(std::ofstream &out, std::vector<int32_t> vec, std::string name
 	out << "]" << std::endl;
 }
 
+void printVecKeys(std::ofstream &out, std::vector<ModeKey> vec, std::string name)
+{
+	if (vec.size() == 0) {
+		out << name << " []" << std::endl;
+		return;
+	}
+	out << name << " [" << std::endl;
+	for (uint32_t i = 0; i < vec.size(); i++) {
+		out << "    { key: " << vec[i].key << " mode: " << getMode(vec[i].mode) << " }" << std::endl;
+	}
+	out << "]" << std::endl;
+}
+
 void printVecPath(std::ofstream &out, std::vector<std::filesystem::path> vec, std::string name)
 {
 	if (vec.size() == 0) {
@@ -208,8 +221,7 @@ void State::print(std::string filename, bool printGrep, bool printArchives)
 	out << "commentSymbol " << this->commentSymbol << std::endl;
 	out << "filename " << this->filename << std::endl;
 	out << "grepPath " << this->grepPath << std::endl;
-	// TODO keys
-	// out << "keys " << this->keys << std::endl;
+	printVecKeys(out, this->keys, std::string("keys"));
 	out << "prevKeys " << this->prevKeys << std::endl;
 	out << "status " << this->status << std::endl;
 	if (printArchives) {
