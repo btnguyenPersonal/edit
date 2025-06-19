@@ -18,9 +18,9 @@
 void sendKeys(State *state, int32_t c)
 {
 	if (c == KEY_BACKSPACE) {
-		state->keys += getEscapedChar(127, false);
+		state->keys.push_back({ state->mode, getEscapedChar(127, false) });
 	} else {
-		state->keys += getEscapedChar(c, false);
+		state->keys.push_back({ state->mode, getEscapedChar(c, false) });
 	}
 	state->showGrep = false;
 	state->status = std::string("");

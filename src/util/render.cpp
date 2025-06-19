@@ -167,6 +167,18 @@ int32_t getModeColor(State *state)
 	}
 }
 
+int32_t getDisplayModeColor(Mode m)
+{
+	if (m == TYPING) {
+		return GREEN;
+	} else if (m == SHORTCUTS) {
+		return CYAN;
+	} else if (m == SHORTCUTS) {
+		return RED;
+	} else {
+		return ORANGE;
+	}
+}
 std::string getDisplayModeName(State *state)
 {
 	if (state->mode == VISUAL && state->visualType == NORMAL) {
@@ -267,7 +279,20 @@ int32_t renderStatusBar(State *state)
 			}
 			insertPixels(state, &pixels, std::string("recording: ") + setStringToLength(s, 60, true), RED);
 		} else {
-			insertPixels(state, &pixels, setStringToLength(state->keys, 30, false), GREY);
+			if (state->keys.size() > 0) {
+				auto startingSize = pixels.size();
+				int32_t i = state->keys.size() - 1;
+				int32_t j = 0;
+				for (; i > 0 && pixels.size() + j <= startingSize + 30; i--) {
+					j += state->keys[i].key.length();
+				}
+				if (i >= 0) {
+					for (; i < (int32_t)state->keys.size(); i++) {
+						insertPixels(state, &pixels, state->keys[i].key,
+							     getDisplayModeColor(state->keys[i].mode));
+					}
+				}
+			}
 		}
 		insertPixels(state, &pixels, ' ', WHITE);
 		prefix = "/";

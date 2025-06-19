@@ -34,6 +34,11 @@ struct diffLine {
 	std::string line;
 };
 
+struct ModeKey {
+	Mode mode;
+	std::string key;
+};
+
 struct Position {
 	uint32_t row;
 	uint32_t col;
@@ -123,7 +128,6 @@ class State {
 	std::string commentSymbol;
 	std::string filename;
 	std::string grepPath;
-	std::string keys;
 	std::string prevKeys;
 	std::string status;
 	std::vector<Archive> archives;
@@ -137,6 +141,7 @@ class State {
 	std::vector<std::string> macroCommand;
 	std::vector<std::string> previousState;
 	std::vector<std::vector<diffLine> > history;
+	std::vector<ModeKey> keys;
 	struct Position visual;
 	struct Position windowPosition;
 	uint32_t col;

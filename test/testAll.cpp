@@ -12,12 +12,14 @@ void send(State *state, std::string ch)
 	cleanup(state, c);
 }
 
-State * beforeEach() {
+State *beforeEach()
+{
 	system("cp example-file.h test-file.h");
 	return new State("test-file.h");
 }
 
-void afterEach(State *state, std::vector<std::string> keys) {
+void afterEach(State *state, std::vector<std::string> keys)
+{
 	std::string filename = "";
 	for (uint32_t i = 0; i < keys.size(); i++) {
 		filename += keys[i];
@@ -26,7 +28,8 @@ void afterEach(State *state, std::vector<std::string> keys) {
 	delete state;
 }
 
-int32_t snapshotTest(std::vector<std::string> keys) {
+int32_t snapshotTest(std::vector<std::string> keys)
+{
 	auto state = beforeEach();
 	for (uint32_t i = 0; i < keys.size(); i++) {
 		send(state, keys[i]);
@@ -37,13 +40,11 @@ int32_t snapshotTest(std::vector<std::string> keys) {
 
 int main()
 {
-	snapshotTest({"d", "d"});
-	snapshotTest({"G", "V", "g", "g", "d", "P"});
-	snapshotTest({":", "4", "0", "<C-J>", "d", "d", "d", "d", "c", "c", "<Esc>", "u", "u", "u"});
-	snapshotTest({":", "4", "5", "<C-J>", "d", "j", "k", "k", "x", "u", "u", "u"});
-	snapshotTest({":", "4", "5", "<C-J>", "d", "j", "k", "w", "d", "i", "w", "u", "u", "u"});
-	snapshotTest({
-		"J", "J", "J", "J", "J", "J", "J", "J", "J", "J", "J", "J", "J", "J", "J", "J",
-		"u", "u", "u", "u", "u", "u", "u", "u", "u", "u", "u", "u", "u", "u", "u", "u"
-	});
+	snapshotTest({ "d", "d" });
+	snapshotTest({ "G", "V", "g", "g", "d", "P" });
+	snapshotTest({ ":", "4", "0", "<C-J>", "d", "d", "d", "d", "c", "c", "<Esc>", "u", "u", "u" });
+	snapshotTest({ ":", "4", "5", "<C-J>", "d", "j", "k", "k", "x", "u", "u", "u" });
+	snapshotTest({ ":", "4", "5", "<C-J>", "d", "j", "k", "w", "d", "i", "w", "u", "u", "u" });
+	snapshotTest({ "J", "J", "J", "J", "J", "J", "J", "J", "J", "J", "J", "J", "J", "J", "J", "J",
+		       "u", "u", "u", "u", "u", "u", "u", "u", "u", "u", "u", "u", "u", "u", "u", "u" });
 }

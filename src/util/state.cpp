@@ -208,7 +208,8 @@ void State::print(std::string filename, bool printGrep, bool printArchives)
 	out << "commentSymbol " << this->commentSymbol << std::endl;
 	out << "filename " << this->filename << std::endl;
 	out << "grepPath " << this->grepPath << std::endl;
-	out << "keys " << this->keys << std::endl;
+	// TODO keys
+	// out << "keys " << this->keys << std::endl;
 	out << "prevKeys " << this->prevKeys << std::endl;
 	out << "status " << this->status << std::endl;
 	if (printArchives) {
