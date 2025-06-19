@@ -279,18 +279,15 @@ int32_t renderStatusBar(State *state)
 			}
 			insertPixels(state, &pixels, std::string("recording: ") + setStringToLength(s, 60, true), RED);
 		} else {
-			if (state->keys.size() > 0) {
-				auto startingSize = pixels.size();
-				int32_t i = state->keys.size() - 1;
-				int32_t j = 0;
-				for (; i > 0 && pixels.size() + j <= startingSize + 30; i--) {
-					j += state->keys[i].key.length();
-				}
-				if (i >= 0) {
-					for (; i < (int32_t)state->keys.size(); i++) {
-						insertPixels(state, &pixels, state->keys[i].key, getDisplayModeColor(state->keys[i].mode));
-					}
-				}
+			std::vector<Pixel> tempPixels = std::vector<Pixel>();
+			for (uint32_t i = 0; i < state->keys.size(); i++) {
+				insertPixels(state, &tempPixels, state->keys[i].key,
+					     getDisplayModeColor(state->keys[i].mode));
+			}
+			uint32_t keysSize = 30;
+			for (uint32_t i = tempPixels.size() > keysSize ? tempPixels.size() - keysSize : 0;
+			     i < tempPixels.size(); i++) {
+				pixels.push_back(tempPixels[i]);
 			}
 		}
 		insertPixels(state, &pixels, ' ', WHITE);
