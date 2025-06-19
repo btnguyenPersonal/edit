@@ -126,6 +126,8 @@ char ctrl(char c);
 char unctrl(char c);
 void calcWindowBounds();
 int32_t getIndexFirstNonSpace(State *state);
+void sanityCheckGrepSelection(State *state);
+void sanityCheckFindFileSelection(State *state);
 void sanityCheckRowColOutOfBounds(State *state);
 void sanityCheckDocumentEmpty(State *state);
 int32_t minimum(int32_t a, int32_t b);

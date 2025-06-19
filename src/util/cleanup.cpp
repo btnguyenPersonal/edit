@@ -11,6 +11,8 @@ void cleanup(State *state, char c)
 		endwin();
 		exit(0);
 	} else if (state->filename != "") {
+		sanityCheckGrepSelection(state);
+		sanityCheckFindFileSelection(state);
 		sanityCheckDocumentEmpty(state);
 		sanityCheckRowColOutOfBounds(state);
 		expect(state->data[state->row].length() >= 0);

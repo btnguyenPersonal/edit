@@ -1797,6 +1797,28 @@ int32_t minimum(int32_t a, int32_t b)
 	}
 }
 
+void sanityCheckGrepSelection(State *state)
+{
+	if (state->mode == GREP && state->grep.selection >= state->grepOutput.size()) {
+		if (state->grepOutput.size() > 0) {
+			state->grep.selection = state->grepOutput.size() - 1;
+		} else {
+			state->grep.selection = 0;
+		}
+	}
+}
+
+void sanityCheckFindFileSelection(State *state)
+{
+	if (state->mode == FINDFILE && state->findFile.selection >= state->findFileOutput.size()) {
+		if (state->findFileOutput.size() > 0) {
+			state->findFile.selection = state->findFileOutput.size() - 1;
+		} else {
+			state->findFile.selection = 0;
+		}
+	}
+}
+
 void sanityCheckDocumentEmpty(State *state)
 {
 	if (state->data.size() == 0) {
