@@ -117,7 +117,7 @@ void sendShortcutKeys(State *state, int32_t c)
 		state->prevKeys = "";
 	} else if (state->prevKeys == "g" && c == 'y') {
 		state->status = state->filename;
-		copyToClipboard(state->filename);
+		copyToClipboard(state, state->filename);
 		state->prevKeys = "";
 	} else if (state->prevKeys == "g" && c == 'g') {
 		state->row = 0;
@@ -131,7 +131,7 @@ void sendShortcutKeys(State *state, int32_t c)
 	} else if (state->prevKeys == "g" && c == ctrl('r')) {
 		std::string path = getRelativeToLastAndRoute(state);
 		state->status = path;
-		copyToClipboard(path);
+		copyToClipboard(state, path);
 		state->prevKeys = "";
 	} else if (c == ' ') {
 		createNewestHarpoon(state);
@@ -258,14 +258,14 @@ void sendShortcutKeys(State *state, int32_t c)
 		state->mode = TYPING;
 	} else if (c == 'Y') {
 		fixColOverMax(state);
-		copyToClipboard(safeSubstring(state->data[state->row], state->col));
+		copyToClipboard(state, safeSubstring(state->data[state->row], state->col));
 	} else if (c == 'D') {
 		fixColOverMax(state);
-		copyToClipboard(safeSubstring(state->data[state->row], state->col));
+		copyToClipboard(state, safeSubstring(state->data[state->row], state->col));
 		state->data[state->row] = state->data[state->row].substr(0, state->col);
 	} else if (c == 'C') {
 		fixColOverMax(state);
-		copyToClipboard(safeSubstring(state->data[state->row], state->col));
+		copyToClipboard(state, safeSubstring(state->data[state->row], state->col));
 		state->data[state->row] = state->data[state->row].substr(0, state->col);
 		state->mode = TYPING;
 	} else if (c == 'I') {
@@ -359,14 +359,14 @@ void sendShortcutKeys(State *state, int32_t c)
 		getAndAddNumber(state, state->row, state->col, 1);
 	} else if (c == 's') {
 		if (state->col < state->data[state->row].length()) {
-			copyToClipboard(state->data[state->row].substr(state->col, 1));
+			copyToClipboard(state, state->data[state->row].substr(state->col, 1));
 			state->data[state->row] = state->data[state->row].substr(0, state->col) +
 						  state->data[state->row].substr(state->col + 1);
 			state->mode = TYPING;
 		}
 	} else if (c == 'x') {
 		if (state->col < state->data[state->row].length()) {
-			copyToClipboard(state->data[state->row].substr(state->col, 1));
+			copyToClipboard(state, state->data[state->row].substr(state->col, 1));
 			state->data[state->row] = state->data[state->row].substr(0, state->col) +
 						  state->data[state->row].substr(state->col + 1);
 		}

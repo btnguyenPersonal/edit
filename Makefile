@@ -94,7 +94,7 @@ format:
 	find . -iname "*.cpp" -o -iname "*.h" | xargs clang-format -i
 
 dev:
-	make all && $(MAIN_EXECUTABLE) longtest.js
+	make all && $(MAIN_EXECUTABLE) test-file.h
 
 fuzzing:
 	make fuzz && $(FUZZ_EXECUTABLE)

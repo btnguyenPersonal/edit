@@ -77,14 +77,14 @@ void sendFindFileKeys(State *state, int32_t c)
 			auto selectedFile = state->findFileOutput[state->findFile.selection].string();
 			std::filesystem::path currentDir = ((std::filesystem::path)state->filename).parent_path();
 			std::filesystem::path relativePath = std::filesystem::relative(selectedFile, currentDir);
-			copyToClipboard(relativePath.string());
+			copyToClipboard(state, relativePath.string());
 			state->mode = SHORTCUTS;
 		}
 	} else if (c == ctrl('y')) {
 		if (state->findFile.selection < state->findFileOutput.size()) {
 			state->selectAll = false;
 			auto selectedFile = state->findFileOutput[state->findFile.selection].string();
-			copyToClipboard(selectedFile);
+			copyToClipboard(state, selectedFile);
 			state->mode = SHORTCUTS;
 		}
 	} else if (c == ctrl('v')) {

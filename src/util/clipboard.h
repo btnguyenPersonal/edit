@@ -6,7 +6,7 @@
 
 void pasteFileFromClipboard(State *state, const std::string &destFolder);
 void copyPathToClipboard(State *state, const std::string &filePath);
-void copyToClipboard(const std::string &originalString);
+void copyToClipboard(State *state, const std::string &originalString);
 std::string getFromClipboard();
 void pasteFromClipboardVisual(State *state);
 void pasteFromClipboard(State *state);

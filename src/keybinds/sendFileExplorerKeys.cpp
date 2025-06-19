@@ -123,7 +123,7 @@ void sendFileExplorerKeys(State *state, int32_t c)
 			auto node = state->fileExplorer->getNode(state->fileExplorerIndex);
 			auto relativePath = getRelativeToCurrent(state, node->path.string());
 			state->status = relativePath;
-			copyToClipboard(relativePath);
+			copyToClipboard(state, relativePath);
 			state->fileExplorerOpen = false;
 			state->mode = SHORTCUTS;
 		} else if (c == 'f') {

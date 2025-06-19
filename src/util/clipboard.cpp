@@ -225,6 +225,15 @@ void pasteFromClipboard(State *state)
 		for (uint32_t i = 0; i < clip.size(); i++) {
 			state->data.push_back(clip[i]);
 		}
+	} else if (!result.empty() && state->pasteAsBlock) {
+		for (int32_t i = 0; i < (int32_t)clip.size(); i++) {
+			if (state->row + i >= state->data.size()) {
+				state->data.push_back("");
+			}
+			std::string front = safeSubstring(state->data[state->row + i], 0, state->col);
+			std::string back = safeSubstring(state->data[state->row + i], state->col);
+			state->data[state->row + i] = front + clip[i] + back;
+		}
 	} else if (!result.empty() && result.back() == '\n') {
 		for (int32_t i = 0; i < (int32_t)clip.size(); i++) {
 			state->data.insert(state->data.begin() + i + state->row, clip[i]);
@@ -253,7 +262,16 @@ void pasteFromClipboardAfter(State *state)
 	while (std::getline(ss, line)) {
 		clip.push_back(line);
 	}
-	if (!result.empty() && result.back() == '\n') {
+	if (!result.empty() && state->pasteAsBlock) {
+		for (int32_t i = 0; i < (int32_t)clip.size(); i++) {
+			if (state->row + i >= state->data.size()) {
+				state->data.push_back("");
+			}
+			std::string front = safeSubstring(state->data[state->row + i], 0, state->col + 1);
+			std::string back = safeSubstring(state->data[state->row + i], state->col + 1);
+			state->data[state->row + i] = front + clip[i] + back;
+		}
+	} else if (!result.empty() && result.back() == '\n') {
 		for (int32_t i = 0; i < (int32_t)clip.size(); i++) {
 			state->data.insert(state->data.begin() + i + state->row + 1, clip[i]);
 		}
@@ -275,7 +293,7 @@ void pasteFromClipboardAfter(State *state)
 	}
 }
 
-void copyToClipboard(const std::string &clip)
+void copyToClipboard(State *state, const std::string &clip)
 {
 #ifdef __APPLE__
 	FILE *pipe = popen("pbcopy", "w");
@@ -288,4 +306,5 @@ void copyToClipboard(const std::string &clip)
 		fwrite(clip.c_str(), sizeof(char), clip.size(), pipe);
 		pclose(pipe);
 	}
+	state->pasteAsBlock = false;
 }

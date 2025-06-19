@@ -96,6 +96,7 @@ class State {
 	Query replace;
 	Query search;
 	VisualType visualType;
+	bool pasteAsBlock;
 	bool dontRecordKey;
 	bool dontSave;
 	bool fileExplorerOpen;

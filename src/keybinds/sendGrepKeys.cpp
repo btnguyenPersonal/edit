@@ -62,13 +62,13 @@ void sendGrepKeys(State *state, int32_t c)
 			std::filesystem::path selectedFile = state->grepOutput[state->grep.selection].path.string();
 			std::filesystem::path currentDir = ((std::filesystem::path)state->filename).parent_path();
 			std::filesystem::path relativePath = std::filesystem::relative(selectedFile, currentDir);
-			copyToClipboard(relativePath.string());
+			copyToClipboard(state, relativePath.string());
 			state->mode = SHORTCUTS;
 		}
 	} else if (c == ctrl('y')) {
 		if (state->grep.selection < state->grepOutput.size()) {
 			std::filesystem::path selectedFile = state->grepOutput[state->grep.selection].path.string();
-			copyToClipboard(selectedFile);
+			copyToClipboard(state, selectedFile);
 			state->mode = SHORTCUTS;
 		}
 	} else if (c == ctrl('v')) {
