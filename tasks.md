@@ -14,9 +14,9 @@
     // and that we have no way to reclaim...
     object1 = object2; //Same as Java, object1 points to object2.
 ```
-- fix cursor on search replace
 - fix issue with going up not saving col (tabs counting as 1 instead of 8)
-- better replace all (interactive mode and better command mode)
+- better replace all in project (interactive mode and better command mode)
+- make indentation work not on type, but always, and just trim extra newlines when whole row is empty on escape of typing
 - highlight entire tab
 - retab auto-detect indentation
 - make gs///g respect ignoreFiles
