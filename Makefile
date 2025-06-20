@@ -100,7 +100,7 @@ fuzzing:
 	make fuzz && $(FUZZ_EXECUTABLE)
 
 install:
-	make all && sudo cp $(MAIN_EXECUTABLE) /usr/local/bin
+	make all && sudo mv $(MAIN_EXECUTABLE) /usr/local/bin
 
 clean:
 	rm -rf $(BUILD_DIR)
