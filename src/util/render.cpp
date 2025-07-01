@@ -567,7 +567,7 @@ int32_t renderLineContent(State *state, int32_t row, int32_t renderRow, Cursor *
 	} else {
 		bool inString = false;
 		bool skipNext = false;
-		char stringType = '(';
+		char stringType = 'E';
 		uint32_t searchCounter = 0;
 		uint32_t startOfSearch = 0;
 		bool isComment = false;
