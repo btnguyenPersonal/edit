@@ -1,4 +1,4 @@
-CC = g++-13
+CC = cc
 
 NPROCS := $(shell nproc 2>/dev/null || sysctl -n hw.logicalcpu)
 MAKEFLAGS += --jobs=$(NPROCS)
