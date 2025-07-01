@@ -28,7 +28,11 @@ void sendShortcutKeys(State *state, int32_t c)
 		if(getmouse(&event) == OK) {
 			if (event.bstate & BUTTON4_PRESSED) {
 				upScreen(state);
+#ifdef __APPLE__
+			} else if (event.bstate & 0x8000000) {
+#else
 			} else if (event.bstate & BUTTON5_PRESSED) {
+#endif
 				downScreen(state);
 			}
 		}
