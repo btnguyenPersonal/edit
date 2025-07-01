@@ -172,7 +172,7 @@ int32_t getDisplayModeColor(Mode m)
 	if (m == TYPING) {
 		return GREEN;
 	} else if (m == SHORTCUTS) {
-		return CYAN;
+		return YELLOW;
 	} else if (m == VISUAL) {
 		return RED;
 	} else {
@@ -621,7 +621,7 @@ int32_t renderLineContent(State *state, int32_t row, int32_t renderRow, Cursor *
 					if (isMergeConflict(state->data[row])) {
 						color = RED;
 					} else if (isComment) {
-						color = GREEN;
+						color = GREY;
 					} else if (inString && getExtension(state->filename) != "md" &&
 						   getExtension(state->filename) != "txt") {
 						color = CYAN;
