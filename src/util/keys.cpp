@@ -1,5 +1,6 @@
 #include "keys.h"
 #include <string>
+#include <ncurses.h>
 
 char getUnEscapedChar(std::string s)
 {
@@ -86,6 +87,8 @@ std::string getEscapedChar(char c)
 std::string getEscapedChar(char c, bool space)
 {
 	switch (c) {
+	case '\xFF': // KEY_MOUSE
+		return "";
 	case '\x00':
 		return "<C-@>";
 	case '\x01':
