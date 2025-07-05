@@ -617,6 +617,8 @@ int32_t renderLineContent(State *state, int32_t row, int32_t renderRow, Cursor *
 					color = getSearchColor(state, row, startOfSearch, state->grep.query, true);
 				} else if (searchCounter != 0 && (state->searching || state->replacing)) {
 					color = getSearchColor(state, row, startOfSearch, state->search.query, false);
+				} else if ((int32_t)state->row == row && state->col == col && col < state->data[row].length() && state->data[row][col] == '\t') {
+					color = invertColor(WHITE);
 				} else {
 					if (isMergeConflict(state->data[row])) {
 						color = RED;
