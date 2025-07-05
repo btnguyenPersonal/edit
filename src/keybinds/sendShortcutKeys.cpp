@@ -168,8 +168,6 @@ void sendShortcutKeys(State *state, int32_t c)
 		jumpToHarpoon(state, 9);
 	} else if (state->prevKeys != "") {
 		state->prevKeys = "";
-	} else if (c == '~') {
-		swapCase(state, state->row, state->col);
 	} else if (c == ':') {
 		state->mode = COMMANDLINE;
 	} else if (c == '<') {
@@ -212,6 +210,9 @@ void sendShortcutKeys(State *state, int32_t c)
 		state->row = getPrevLineSameIndent(state);
 	} else if (c == ']') {
 		state->row = getNextLineSameIndent(state);
+	} else if (c == '~') {
+		swapCase(state, state->row, state->col);
+		right(state);
 	} else if (c == '#') {
 		initVisual(state, NORMAL);
 		setStateFromWordPosition(state, getWordPosition(state->data[state->row], state->col));

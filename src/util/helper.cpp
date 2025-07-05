@@ -116,7 +116,7 @@ void swapCase(State *state, uint32_t r, uint32_t c)
 		if (isupper(tmp)) {
 			state->data[r][c] = std::tolower(tmp);
 		} else if (islower(tmp)) {
-			state->data[r][c] = std::tolower(tmp);
+			state->data[r][c] = std::toupper(tmp);
 		}
 	}
 }
