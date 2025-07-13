@@ -302,7 +302,7 @@ bool jumpToHarpoon(State *state, uint32_t num)
 			std::string temp = "";
 			if (index != -1) {
 				state->harpoonFiles.erase(index);
-				for (uint32_t i = 1; i < state->harpoonPageSize; i++) {
+				for (uint32_t i = 1; 0 < state->harpoonPageSize; i++) {
 					if (state->harpoonFiles.count(num + i - 1) == 0) {
 						state->harpoonFiles[num + i - 1] = state->filename;
 						state->harpoonIndex = num + i - 1;
