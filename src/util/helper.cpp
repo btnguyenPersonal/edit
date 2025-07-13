@@ -282,7 +282,7 @@ void jumpToNextHarpoon(State *state)
 
 bool createNewestHarpoon(State *state)
 {
-	for (int32_t num = 1; num <= state->options.maxHarpoon; num++) {
+	for (int32_t num = state->harpoonIndex + 1; num <= state->options.maxHarpoon; num++) {
 		int32_t index = contains(state->harpoonFiles, state->filename);
 		if (index == -1 && state->harpoonFiles.count(num - 1) == 0) {
 			state->harpoonIndex = num - 1;
@@ -302,16 +302,18 @@ bool jumpToHarpoon(State *state, uint32_t num)
 			std::string temp = "";
 			if (index != -1) {
 				state->harpoonFiles.erase(index);
-				if (state->harpoonFiles.count(num - 1) > 0) {
-					temp = state->harpoonFiles[num - 1];
+				for (uint32_t i = 1; i < state->harpoonPageSize; i++) {
+					if (state->harpoonFiles.count(num + i - 1) == 0) {
+						state->harpoonFiles[num + i - 1] = state->filename;
+						state->harpoonIndex = num + i - 1;
+						break;
+					}
 				}
+			} else {
+				state->harpoonFiles[num - 1] = state->filename;
+				state->harpoonIndex = num - 1;
 			}
-			state->harpoonFiles[num - 1] = state->filename;
 			state->prevKeys = "";
-			if (temp != "") {
-				state->harpoonFiles[state->harpoonIndex] = temp;
-			}
-			state->harpoonIndex = num - 1;
 		} else if (state->harpoonFiles.count(num - 1) > 0) {
 			if (!state->resetState(state->harpoonFiles[num - 1])) {
 				state->harpoonFiles.erase(num - 1);
@@ -1540,7 +1542,7 @@ bool isOffScreenVertical(State *state)
 	}
 	uint32_t windowRow = state->windowPosition.row;
 	uint32_t rowsBelow = 0;
-	while (windowRow < state->data.size() && rowsBelow + 1 < state->maxY) {
+	while (windowRow < state->data.size() && rowsBelow + 2 < state->maxY) {
 		if (state->row == windowRow) {
 			return false;
 		}

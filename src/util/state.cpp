@@ -405,6 +405,7 @@ State::State()
 	this->blame = std::vector<std::string>();
 	this->harpoonFiles = std::map<uint32_t, std::string>();
 	this->harpoonIndex = 0;
+	this->harpoonPageSize = 7;
 	this->data = std::vector<std::string>();
 	this->previousState = std::vector<std::string>();
 	this->history = std::vector<std::vector<diffLine> >();

@@ -138,7 +138,7 @@ void renderFileStack(State *state)
 	if ((int32_t)state->fileStackIndex < start - (int32_t)state->maxY / 2) {
 		start = (int32_t)state->fileStackIndex + (int32_t)state->maxY / 2;
 	}
-	uint32_t renderRow = 1;
+	uint32_t renderRow = 2;
 	for (int32_t i = start; i >= 0; i--) {
 		std::string filename = minimize_filename(state->fileStack[i]);
 		if (state->maxX / 4 > filename.length()) {
@@ -220,11 +220,16 @@ int32_t renderStatusBar(State *state)
 	std::vector<Pixel> pixels = std::vector<Pixel>();
 
 	uint32_t i = 0;
-	uint32_t limit = 7;
+	uint32_t page = 1;
+	uint32_t limit = state->harpoonPageSize;
 	while (state->harpoonIndex >= limit) {
-		i += 7;
-		limit += 7;
+		page++;
+		i += state->harpoonPageSize;
+		limit += state->harpoonPageSize;
 	}
+	insertPixels(state, &pixels, '*', ORANGE);
+	insertPixels(state, &pixels, std::to_string(page), ORANGE);
+	insertPixels(state, &pixels, ' ', WHITE);
 	for (; i < limit; i++) {
 		std::string s;
 		if (state->harpoonFiles.count(i) > 0) {
@@ -713,7 +718,7 @@ int32_t renderFileExplorerNode(State *state, FileExplorerNode *node, int32_t r, 
 	int32_t row = r + 1;
 	std::vector<Pixel> pixels = std::vector<Pixel>();
 	if (row - state->fileExplorerWindowLine > 0) {
-		auto displayRow = row - state->fileExplorerWindowLine;
+		auto displayRow = row - state->fileExplorerWindowLine + 1;
 		insertPixels(state, &pixels, startingSpaces, GREY);
 		if (node->isFolder) {
 			insertPixels(state, &pixels, node->isOpen ? 'v' : '>', GREY);

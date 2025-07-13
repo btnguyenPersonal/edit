@@ -151,21 +151,21 @@ void sendShortcutKeys(State *state, int32_t c)
 	} else if (c == '1') {
 		jumpToHarpoon(state, 1);
 	} else if (c == '2') {
-		jumpToHarpoon(state, 2);
+		jumpToHarpoon(state, 1 + 1 * state->harpoonPageSize);
 	} else if (c == '3') {
-		jumpToHarpoon(state, 3);
+		jumpToHarpoon(state, 1 + 2 * state->harpoonPageSize);
 	} else if (c == '4') {
-		jumpToHarpoon(state, 4);
+		jumpToHarpoon(state, 1 + 3 * state->harpoonPageSize);
 	} else if (c == '5') {
-		jumpToHarpoon(state, 5);
+		jumpToHarpoon(state, 1 + 4 * state->harpoonPageSize);
 	} else if (c == '6') {
-		jumpToHarpoon(state, 6);
+		jumpToHarpoon(state, 1 + 5 * state->harpoonPageSize);
 	} else if (c == '7') {
-		jumpToHarpoon(state, 7);
+		jumpToHarpoon(state, 1 + 6 * state->harpoonPageSize);
 	} else if (c == '8') {
-		jumpToHarpoon(state, 8);
+		jumpToHarpoon(state, 1 + 7 * state->harpoonPageSize);
 	} else if (c == '9') {
-		jumpToHarpoon(state, 9);
+		jumpToHarpoon(state, 1 + 8 * state->harpoonPageSize);
 	} else if (state->prevKeys != "") {
 		state->prevKeys = "";
 	} else if (c == ':') {

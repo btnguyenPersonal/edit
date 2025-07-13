@@ -151,6 +151,7 @@ class State {
 	uint32_t harpoonIndex;
 	uint32_t lineNumSize;
 	uint32_t row;
+	uint32_t harpoonPageSize;
 	State();
 	State(std::string filename);
 	bool resetState(std::string filename);
