@@ -219,20 +219,18 @@ int32_t renderStatusBar(State *state)
 	std::string prefix;
 	std::vector<Pixel> pixels = std::vector<Pixel>();
 
-	// TAB BAR TODO MAKE LOOK BETTER
 	uint32_t i = 0;
-	uint32_t limit = 10;
-	if (state->harpoonIndex >= limit) {
-		i = state->harpoonIndex - 2;
-		limit = state->harpoonIndex + 3;
+	uint32_t limit = 7;
+	while (state->harpoonIndex >= limit) {
+		i += 7;
+		limit += 7;
 	}
 	for (; i < limit; i++) {
 		std::string s;
 		if (state->harpoonFiles.count(i) > 0) {
 			bool current = state->harpoonFiles[i] == state->filename && state->harpoonIndex == i;
-			insertPixels(state, &pixels, '[', current ? invertColor(WHITE) : GREY);
 			insertPixels(state, &pixels, minimize_filename(state->harpoonFiles[i]), current ? invertColor(WHITE) : GREY);
-			insertPixels(state, &pixels, ']', current ? invertColor(WHITE) : GREY);
+			insertPixels(state, &pixels, ' ', WHITE);
 			insertPixels(state, &pixels, ' ', WHITE);
 		}
 	}
