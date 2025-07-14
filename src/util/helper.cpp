@@ -1627,6 +1627,7 @@ void centerScreen(State *state)
 	}
 }
 
+// TODO fix hardCol
 void upScreen(State *state)
 {
 	if (state->row > 0) {
@@ -1635,6 +1636,7 @@ void upScreen(State *state)
 	}
 }
 
+// TODO fix hardCol
 void downScreen(State *state)
 {
 	if (state->row < state->data.size() - 1) {
@@ -1643,6 +1645,7 @@ void downScreen(State *state)
 	}
 }
 
+// TODO fix hardCol
 void upHalfScreen(State *state)
 {
 	for (uint32_t i = 0; i < state->maxY / 2; i++) {
@@ -1653,6 +1656,7 @@ void upHalfScreen(State *state)
 	}
 }
 
+// TODO fix hardCol
 void downHalfScreen(State *state)
 {
 	for (uint32_t i = 0; i < state->maxY / 2; i++) {
@@ -1702,6 +1706,7 @@ void up(State *state)
 	}
 }
 
+// TODO fix hardCol
 void upVisual(State *state)
 {
 	auto visualCol = state->col;
@@ -1743,6 +1748,7 @@ bool isOnLastVisualLine(State *state)
 	return state->col > lastLineStarts;
 }
 
+// TODO fix hardCol
 void downVisual(State *state)
 {
 	if (isOnLastVisualLine(state)) {
