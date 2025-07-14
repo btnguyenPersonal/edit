@@ -1,4 +1,5 @@
 ## tasks
+- server/client interaction, no issues having multiple windows, all will use same one
 - add mouse clicks
 
 - add crash reports
