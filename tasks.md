@@ -1,6 +1,6 @@
-fix off-screen
-
 ## tasks
+- add mouse clicks
+
 - add crash reports
 ```
     std::filesystem::path home = std::filesystem::absolute(getenv("HOME"));
