@@ -2,23 +2,16 @@
 - server/client interaction, no issues having multiple windows, all will use same one
 - add mouse clicks
 
+- use std::filesystem::last_write_time() for updates, put before keys and put warning (with diff!!!!);
+- have diff reader
+
 - add crash reports
 ```
     std::filesystem::path home = std::filesystem::absolute(getenv("HOME"));
     state->print(home.string() + "/.crashreport");
 ```
 - fix expand file not there anymore
-- inspect memory leaks using new
-```
-    Object * object1 = new Object(); //A new object is allocated on the heap
-    Object * object2 = new Object(); //Another new object is allocated on the heap
-    delete object1;
-
-    // Since C++ does not have a garbage collector, if we don't do that, the next line would
-    // cause a "memory leak", i.e. a piece of claimed memory that the app cannot use
-    // and that we have no way to reclaim...
-    object1 = object2; //Same as Java, object1 points to object2.
-```
+	- (check before every operation) and open close
 - fix issue with going up not saving col (tabs counting as 1 instead of 8)
 - better replace all in project (interactive mode and better command mode)
 - make indentation work not on type, but always, and just trim extra newlines when whole row is empty on escape of typing
