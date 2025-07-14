@@ -1668,14 +1668,21 @@ void downHalfScreen(State *state)
 // each time the col has changed manually (maybe in cleanup)
 // have state->col change rapidly, and this be set
 // idk if have a flag when manually changing to keep from changing in cleanup
-uint32_t getNormalizedCol(State* state) {
+uint32_t getNormalizedCol(State* state, uint32_t hardCol)
+{
 	if (state->options.indent_style != "tab") {
 		return state->col;
 	}
+	int32_t tmpHardCol = hardCol;
 	int32_t output = 0;
-	for (uint32_t i = 0; i < state->data[state->row].length() && i < state->col; i++) {
+	for (uint32_t i = 0; i < state->data[state->row].length() && (int32_t) i < tmpHardCol; i++) {
 		if (i < state->data[state->row].length() && state->data[state->row][i] == '\t') {
-			output += state->options.indent_size;
+			tmpHardCol -= 7;
+			if ((int32_t) i < tmpHardCol) {
+				output++;
+			} else {
+				return output;
+			}
 		} else {
 			output++;
 		}
@@ -1687,6 +1694,8 @@ void up(State *state)
 {
 	if (state->row > 0) {
 		state->row -= 1;
+		state->col = getNormalizedCol(state, state->hardCol);
+		state->skipSetHardCol = true;
 	}
 	if (isOffScreenVertical(state)) {
 		state->windowPosition.row -= 1;
@@ -1717,6 +1726,8 @@ void down(State *state)
 {
 	if (state->row < state->data.size() - 1) {
 		state->row += 1;
+		state->col = getNormalizedCol(state, state->hardCol);
+		state->skipSetHardCol = true;
 	}
 	if (isOffScreenVertical(state)) {
 		while (isOffScreenVertical(state) && state->windowPosition.row <= state->data.size()) {

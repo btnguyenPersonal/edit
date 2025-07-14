@@ -11,6 +11,10 @@ void cleanup(State *state, char c)
 		endwin();
 		exit(0);
 	} else if (state->filename != "") {
+		if (!state->skipSetHardCol) {
+			state->hardCol = getDisplayCol(state);
+		}
+		state->skipSetHardCol = false;
 		sanityCheckGrepSelection(state);
 		sanityCheckFindFileSelection(state);
 		sanityCheckDocumentEmpty(state);

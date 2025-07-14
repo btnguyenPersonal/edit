@@ -116,6 +116,7 @@ class State {
 	bool showAllGrep;
 	bool showFileStack;
 	bool showGrep;
+	bool skipSetHardCol;
 	int32_t blameSize;
 	int32_t buildErrorIndex;
 	int32_t fileExplorerIndex;
@@ -145,6 +146,7 @@ class State {
 	std::vector<ModeKey> keys;
 	struct Position visual;
 	struct Position windowPosition;
+	uint32_t hardCol;
 	uint32_t col;
 	uint32_t fileExplorerSize;
 	uint32_t fileStackIndex;

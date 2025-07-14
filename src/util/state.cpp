@@ -341,6 +341,8 @@ void State::changeFile(std::string filename)
 	this->visual.col = 0;
 	this->row = 0;
 	this->col = 0;
+	this->hardCol = 0;
+	this->skipSetHardCol = 0;
 	this->commandLine.query = std::string("");
 	this->selectAll = false;
 	this->showAllGrep = false;
