@@ -290,6 +290,7 @@ void State::changeFile(std::string filename)
 			this->archives[i].windowPosition = this->windowPosition;
 			this->archives[i].row = this->row;
 			this->archives[i].col = this->col;
+			this->archives[i].hardCol = this->hardCol;
 			this->archives[i].jumplist = this->jumplist;
 			found = true;
 			break;
@@ -305,6 +306,7 @@ void State::changeFile(std::string filename)
 			this->windowPosition,
 			this->row,
 			this->col,
+			this->hardCol,
 			this->jumplist,
 		});
 	}
@@ -321,6 +323,7 @@ void State::changeFile(std::string filename)
 			this->windowPosition = archive.windowPosition;
 			this->row = archive.row;
 			this->col = archive.col;
+			this->hardCol = archive.hardCol;
 			this->jumplist = archive.jumplist;
 			this->mode = SHORTCUTS;
 			return;
@@ -341,6 +344,8 @@ void State::changeFile(std::string filename)
 	this->visual.col = 0;
 	this->row = 0;
 	this->col = 0;
+	this->hardCol = 0;
+	this->skipSetHardCol = 0;
 	this->commandLine.query = std::string("");
 	this->selectAll = false;
 	this->showAllGrep = false;
@@ -420,6 +425,7 @@ State::State()
 	this->visual.col = 0;
 	this->row = 0;
 	this->col = 0;
+	this->hardCol = 0;
 	this->search = { std::string(""), 0, 0 };
 	this->replace = { std::string(""), 0, 0 };
 	this->commandLine = { std::string(""), 0, 0 };

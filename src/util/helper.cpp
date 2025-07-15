@@ -1632,6 +1632,8 @@ void upScreen(State *state)
 	if (state->row > 0) {
 		state->row -= 1;
 		state->windowPosition.row -= 1;
+		state->col = getNormalizedCol(state, state->hardCol);
+		state->skipSetHardCol = true;
 	}
 }
 
@@ -1640,6 +1642,8 @@ void downScreen(State *state)
 	if (state->row < state->data.size() - 1) {
 		state->row += 1;
 		state->windowPosition.row += 1;
+		state->col = getNormalizedCol(state, state->hardCol);
+		state->skipSetHardCol = true;
 	}
 }
 
@@ -1651,6 +1655,8 @@ void upHalfScreen(State *state)
 			state->windowPosition.row -= 1;
 		}
 	}
+	state->col = getNormalizedCol(state, state->hardCol);
+	state->skipSetHardCol = true;
 }
 
 void downHalfScreen(State *state)
@@ -1661,12 +1667,38 @@ void downHalfScreen(State *state)
 			state->windowPosition.row += 1;
 		}
 	}
+	state->col = getNormalizedCol(state, state->hardCol);
+	state->skipSetHardCol = true;
+}
+
+uint32_t getNormalizedCol(State* state, uint32_t hardCol)
+{
+	if (state->options.indent_style != "tab") {
+		return state->col;
+	}
+	int32_t tmpHardCol = hardCol;
+	int32_t output = 0;
+	for (uint32_t i = 0; i < state->data[state->row].length() && (int32_t) i < tmpHardCol; i++) {
+		if (i < state->data[state->row].length() && state->data[state->row][i] == '\t') {
+			tmpHardCol -= (state->options.indent_size - 1);
+			if ((int32_t) i < tmpHardCol) {
+				output++;
+			} else {
+				return output;
+			}
+		} else {
+			output++;
+		}
+	}
+	return output;
 }
 
 void up(State *state)
 {
 	if (state->row > 0) {
 		state->row -= 1;
+		state->col = getNormalizedCol(state, state->hardCol);
+		state->skipSetHardCol = true;
 	}
 	if (isOffScreenVertical(state)) {
 		state->windowPosition.row -= 1;
@@ -1682,6 +1714,7 @@ void upVisual(State *state)
 	if (visualCol < state->maxX - getLineNumberOffset(state)) {
 		if (state->row > 0) {
 			state->row -= 1;
+			state->col = getNormalizedCol(state, state->hardCol);
 			state->col += (state->maxX - getLineNumberOffset(state)) *
 				      (state->data[state->row].length() / (state->maxX - getLineNumberOffset(state)));
 		}
@@ -1697,6 +1730,8 @@ void down(State *state)
 {
 	if (state->row < state->data.size() - 1) {
 		state->row += 1;
+		state->col = getNormalizedCol(state, state->hardCol);
+		state->skipSetHardCol = true;
 	}
 	if (isOffScreenVertical(state)) {
 		while (isOffScreenVertical(state) && state->windowPosition.row <= state->data.size()) {
@@ -1717,6 +1752,7 @@ void downVisual(State *state)
 	if (isOnLastVisualLine(state)) {
 		if (state->row < state->data.size() - 1) {
 			state->row += 1;
+			state->col = getNormalizedCol(state, state->hardCol);
 			state->col = state->col % (state->maxX - getLineNumberOffset(state));
 		}
 		if (isOffScreenVertical(state)) {
