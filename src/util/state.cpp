@@ -323,7 +323,7 @@ void State::changeFile(std::string filename)
 			this->windowPosition = archive.windowPosition;
 			this->row = archive.row;
 			this->col = archive.col;
-			this->hardCol = archive.col;
+			this->hardCol = archive.hardCol;
 			this->jumplist = archive.jumplist;
 			this->mode = SHORTCUTS;
 			return;
