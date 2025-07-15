@@ -134,6 +134,8 @@ void sendShortcutKeys(State *state, int32_t c)
 		state->prevKeys = "";
 	} else if (state->prevKeys == "g" && c == 'g') {
 		state->row = 0;
+		state->col = getNormalizedCol(state, state->hardCol);
+		state->skipSetHardCol = true;
 		state->prevKeys = "";
 	} else if (state->prevKeys == "g" && (c == 'k' || c == KEY_UP)) {
 		upVisual(state);
@@ -455,6 +457,8 @@ void sendShortcutKeys(State *state, int32_t c)
 		state->changeFile(state->filename);
 	} else if (c == 'G') {
 		state->row = state->data.size() - 1;
+		state->col = getNormalizedCol(state, state->hardCol);
+		state->skipSetHardCol = true;
 	} else if (c == ctrl('z')) {
 		if (state->jumplist.index > 0) {
 			state->jumplist.index--;

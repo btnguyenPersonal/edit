@@ -1627,25 +1627,26 @@ void centerScreen(State *state)
 	}
 }
 
-// TODO fix hardCol
 void upScreen(State *state)
 {
 	if (state->row > 0) {
 		state->row -= 1;
 		state->windowPosition.row -= 1;
+		state->col = getNormalizedCol(state, state->hardCol);
+		state->skipSetHardCol = true;
 	}
 }
 
-// TODO fix hardCol
 void downScreen(State *state)
 {
 	if (state->row < state->data.size() - 1) {
 		state->row += 1;
 		state->windowPosition.row += 1;
+		state->col = getNormalizedCol(state, state->hardCol);
+		state->skipSetHardCol = true;
 	}
 }
 
-// TODO fix hardCol
 void upHalfScreen(State *state)
 {
 	for (uint32_t i = 0; i < state->maxY / 2; i++) {
@@ -1654,9 +1655,10 @@ void upHalfScreen(State *state)
 			state->windowPosition.row -= 1;
 		}
 	}
+	state->col = getNormalizedCol(state, state->hardCol);
+	state->skipSetHardCol = true;
 }
 
-// TODO fix hardCol
 void downHalfScreen(State *state)
 {
 	for (uint32_t i = 0; i < state->maxY / 2; i++) {
@@ -1665,13 +1667,10 @@ void downHalfScreen(State *state)
 			state->windowPosition.row += 1;
 		}
 	}
+	state->col = getNormalizedCol(state, state->hardCol);
+	state->skipSetHardCol = true;
 }
 
-// TODO make this stored in state and kept between switching archives
-// use this to keep file-global where the cursor should be, this should update
-// each time the col has changed manually (maybe in cleanup)
-// have state->col change rapidly, and this be set
-// idk if have a flag when manually changing to keep from changing in cleanup
 uint32_t getNormalizedCol(State* state, uint32_t hardCol)
 {
 	if (state->options.indent_style != "tab") {
@@ -1681,7 +1680,7 @@ uint32_t getNormalizedCol(State* state, uint32_t hardCol)
 	int32_t output = 0;
 	for (uint32_t i = 0; i < state->data[state->row].length() && (int32_t) i < tmpHardCol; i++) {
 		if (i < state->data[state->row].length() && state->data[state->row][i] == '\t') {
-			tmpHardCol -= 7;
+			tmpHardCol -= (state->options.indent_size - 1);
 			if ((int32_t) i < tmpHardCol) {
 				output++;
 			} else {
@@ -1706,7 +1705,6 @@ void up(State *state)
 	}
 }
 
-// TODO fix hardCol
 void upVisual(State *state)
 {
 	auto visualCol = state->col;
@@ -1716,6 +1714,7 @@ void upVisual(State *state)
 	if (visualCol < state->maxX - getLineNumberOffset(state)) {
 		if (state->row > 0) {
 			state->row -= 1;
+			state->col = getNormalizedCol(state, state->hardCol);
 			state->col += (state->maxX - getLineNumberOffset(state)) *
 				      (state->data[state->row].length() / (state->maxX - getLineNumberOffset(state)));
 		}
@@ -1748,12 +1747,12 @@ bool isOnLastVisualLine(State *state)
 	return state->col > lastLineStarts;
 }
 
-// TODO fix hardCol
 void downVisual(State *state)
 {
 	if (isOnLastVisualLine(state)) {
 		if (state->row < state->data.size() - 1) {
 			state->row += 1;
+			state->col = getNormalizedCol(state, state->hardCol);
 			state->col = state->col % (state->maxX - getLineNumberOffset(state));
 		}
 		if (isOffScreenVertical(state)) {

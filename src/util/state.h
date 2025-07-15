@@ -68,6 +68,7 @@ struct Archive {
 	struct Position windowPosition;
 	uint32_t row;
 	uint32_t col;
+	uint32_t hardCol;
 	Jumplist jumplist;
 };
 
