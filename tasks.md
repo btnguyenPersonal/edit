@@ -1,4 +1,5 @@
 ## tasks
+- ctrl v on search issues crash??
 - server/client interaction, no issues having multiple windows, all will use same one
 - add mouse clicks
 
