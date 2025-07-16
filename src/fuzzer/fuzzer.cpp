@@ -29,6 +29,7 @@ void fuzzSendKeys(int testnum, int iterations = 1000)
 	};
 
 	std::uniform_int_distribution<> dis(0, keypresses.size() - 1);
+	system("cp -v src/util/helper.cpp longtest.js");
 	State *state = new State("longtest.js");
 	state->dontSave = true;
 
