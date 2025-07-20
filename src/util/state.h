@@ -118,6 +118,7 @@ class State {
 	bool showFileStack;
 	bool showGrep;
 	bool skipSetHardCol;
+	bool viewingDiff;
 	int32_t blameSize;
 	int32_t buildErrorIndex;
 	int32_t fileExplorerIndex;
@@ -155,6 +156,7 @@ class State {
 	uint32_t lineNumSize;
 	uint32_t row;
 	uint32_t harpoonPageSize;
+	uint32_t diffIndex;
 	State();
 	State(std::string filename);
 	bool resetState(std::string filename);

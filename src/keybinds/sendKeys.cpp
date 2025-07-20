@@ -13,6 +13,7 @@
 #include "sendShortcutKeys.h"
 #include "sendTypingKeys.h"
 #include "sendVisualKeys.h"
+#include "sendDiffKeys.h"
 #include <ncurses.h>
 
 void sendKeys(State *state, int32_t c)
@@ -60,6 +61,9 @@ void sendKeys(State *state, int32_t c)
 		break;
 	case MULTICURSOR:
 		sendMultiCursorKeys(state, c);
+		break;
+	case DIFF:
+		sendDiffKeys(state, c);
 		break;
 	case NAMING:
 		state->status = "Error: in NAMING mode outside of naming loop";

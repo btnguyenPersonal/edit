@@ -319,6 +319,7 @@ void State::changeFile(std::string filename)
 			this->previousState = archive.previousState;
 			this->history = archive.history;
 			this->historyPosition = archive.historyPosition;
+			this->diffIndex = historyPosition;
 			this->lastSave = archive.lastSave;
 			this->windowPosition = archive.windowPosition;
 			this->row = archive.row;
@@ -335,6 +336,8 @@ void State::changeFile(std::string filename)
 	this->previousState = data;
 	this->commentSymbol = getCommentSymbol(normalizedFilename);
 	this->history = std::vector<std::vector<diffLine> >();
+	this->viewingDiff = false;
+	this->diffIndex = 0;
 	this->historyPosition = -1;
 	this->lastSave = -1;
 	this->windowPosition.row = 0;

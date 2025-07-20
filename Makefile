@@ -38,6 +38,7 @@ COMMON_SOURCES := \
   $(KEYBINDS_DIR)/sendCommandLineKeys.cpp \
   $(KEYBINDS_DIR)/sendShortcutKeys.cpp \
   $(KEYBINDS_DIR)/sendMultiCursorKeys.cpp \
+  $(KEYBINDS_DIR)/sendDiffKeys.cpp \
   $(KEYBINDS_DIR)/sendTypingKeys.cpp
 
 MAIN_SOURCES = $(SRC_DIR)/edit.cpp $(COMMON_SOURCES)

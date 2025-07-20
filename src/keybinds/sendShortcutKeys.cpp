@@ -295,6 +295,8 @@ void sendShortcutKeys(State *state, int32_t c)
 			state->resetState(state->mark.filename);
 			state->row = state->mark.mark;
 		}
+	} else if (c == ctrl('q')) {
+		state->mode = DIFF;
 	} else if (c == 'M') {
 		state->mark = { state->filename, state->row };
 	} else if (c == 'N') {

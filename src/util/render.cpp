@@ -285,18 +285,6 @@ int32_t renderStatusBar(State *state)
 				s += state->macroCommand[i];
 			}
 			insertPixels(state, &pixels, std::string("recording: ") + setStringToLength(s, 60, true), RED);
-		// TODO fix this
-		// } else {
-		// 	std::vector<Pixel> tempPixels = std::vector<Pixel>();
-		// 	for (uint32_t i = 0; i < state->keys.size(); i++) {
-		// 		insertPixels(state, &tempPixels, state->keys[i].key,
-		// 			     getDisplayModeColor(state->keys[i].mode));
-		// 	}
-		// 	for (uint32_t i = tempPixels.size() > state->options.keysSize ? tempPixels.size() - state->options.keysSize : 0;
-		// 	     i < tempPixels.size(); i++) {
-		// 		pixels.push_back(tempPixels[i]);
-		// 	}
-		//      insertPixels(state, &pixels, ' ', WHITE);
 		}
 		prefix = "/";
 		std::string displayQuery = state->search.query;
@@ -562,6 +550,49 @@ void advancePosition(State *state, int &renderRow, int &renderCol)
 	}
 }
 
+void renderDiffSelector(State* state)
+{
+	std::vector<Pixel> pixels = std::vector<Pixel>();
+	uint32_t renderRow = 2;
+	state->status = std::to_string(state->diffIndex);
+	for (int32_t i = state->history.size() - 1; i >= 0; i--) {
+		uint32_t add = 0;
+		uint32_t remove = 0;
+		for (uint32_t j = 0; j < state->history[i].size(); j++) {
+			if (state->history[i][j].add) {
+				add++;
+			} else {
+				remove++;
+			}
+		}
+		insertPixels(state, &pixels, padTo(std::to_string(i), state->lineNumSize, '0'), i == (int32_t)state->diffIndex ? invertColor(WHITE) : WHITE);
+		insertPixels(state, &pixels, ' ', WHITE);
+		insertPixels(state, &pixels, '+', GREEN);
+		insertPixels(state, &pixels, std::to_string(add), GREEN);
+		insertPixels(state, &pixels, ' ', WHITE);
+		insertPixels(state, &pixels, '-', RED);
+		insertPixels(state, &pixels, std::to_string(remove), RED);
+		renderRow += renderPixels(state, renderRow, 0, pixels, true);
+		pixels.clear();
+	}
+}
+
+void renderDiff(State* state, std::vector<diffLine> diff)
+{
+	state->status = std::to_string(diff.size());
+	std::vector<Pixel> pixels = std::vector<Pixel>();
+	uint32_t renderRow = 2;
+	for (uint32_t i = 0; i < diff.size(); i++) {
+		insertPixels(state, &pixels, padTo(std::to_string(diff[i].lineNum), state->lineNumSize, ' '), diff[i].add ? GREEN : RED);
+		insertPixels(state, &pixels, ' ', diff[i].add ? GREEN : RED);
+		insertPixels(state, &pixels, diff[i].add ? '+' : '-', diff[i].add ? GREEN : RED);
+		insertPixels(state, &pixels, ' ', diff[i].add ? GREEN : RED);
+		insertPixels(state, &pixels, diff[i].line, diff[i].add ? GREEN : RED);
+		renderRow += renderPixels(state, renderRow, 0, pixels, true);
+		pixels.clear();
+	}
+}
+
 int32_t renderLineContent(State *state, int32_t row, int32_t renderRow, Cursor *cursor)
 {
 	std::vector<Pixel> pixels = std::vector<Pixel>();
@@ -765,6 +796,12 @@ void renderScreen(State *state)
 	Cursor editorCursor, fileExplorerCursor;
 	if (state->mode == FINDFILE) {
 		renderFindFileOutput(state);
+	} else if (state->mode == DIFF) {
+		if (state->viewingDiff == true) {
+			renderDiff(state, state->history[state->diffIndex]);
+		} else {
+			renderDiffSelector(state);
+		}
 	} else if (state->mode == GREP) {
 		renderGrepOutput(state);
 	} else {

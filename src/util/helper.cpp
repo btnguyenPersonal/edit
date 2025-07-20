@@ -137,6 +137,7 @@ void recordHistory(State *state, std::vector<diffLine> diff)
 	}
 	state->history.push_back(diff);
 	state->historyPosition = (int32_t)state->history.size() - 1;
+	state->diffIndex = state->historyPosition;
 	expect(state->historyPosition >= 0);
 }
 
