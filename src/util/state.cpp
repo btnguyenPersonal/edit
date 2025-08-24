@@ -319,7 +319,6 @@ void State::changeFile(std::string filename)
 			this->previousState = archive.previousState;
 			this->history = archive.history;
 			this->historyPosition = archive.historyPosition;
-			this->diffIndex = historyPosition;
 			this->lastSave = archive.lastSave;
 			this->windowPosition = archive.windowPosition;
 			this->row = archive.row;
@@ -337,6 +336,7 @@ void State::changeFile(std::string filename)
 	this->commentSymbol = getCommentSymbol(normalizedFilename);
 	this->history = std::vector<std::vector<diffLine> >();
 	this->viewingDiff = false;
+	this->logIndex = 0;
 	this->diffIndex = 0;
 	this->historyPosition = -1;
 	this->lastSave = -1;
@@ -410,6 +410,8 @@ State::State()
 	this->jumplist = { 0, std::vector<Position>() };
 	this->buildErrorIndex = 0;
 	this->blameSize = 65;
+	this->diffLines = std::vector<std::string>();
+	this->logLines = std::vector<std::string>();
 	this->blame = std::vector<std::string>();
 	this->harpoonFiles = std::map<uint32_t, std::string>();
 	this->harpoonIndex = 0;

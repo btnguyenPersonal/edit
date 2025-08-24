@@ -138,6 +138,8 @@ class State {
 	std::vector<grepMatch> grepOutput;
 	std::vector<int32_t> motion;
 	std::vector<std::filesystem::path> findFileOutput;
+	std::vector<std::string> diffLines;
+	std::vector<std::string> logLines;
 	std::vector<std::string> blame;
 	std::vector<std::string> data;
 	std::vector<std::string> dotCommand;
@@ -156,6 +158,7 @@ class State {
 	uint32_t lineNumSize;
 	uint32_t row;
 	uint32_t harpoonPageSize;
+	uint32_t logIndex;
 	uint32_t diffIndex;
 	State();
 	State(std::string filename);

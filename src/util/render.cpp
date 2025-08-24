@@ -550,44 +550,29 @@ void advancePosition(State *state, int &renderRow, int &renderCol)
 	}
 }
 
-void renderDiffSelector(State* state)
+void renderLogLines(State* state)
 {
 	std::vector<Pixel> pixels = std::vector<Pixel>();
 	uint32_t renderRow = 2;
-	state->status = std::to_string(state->diffIndex);
-	for (int32_t i = state->history.size() - 1; i >= 0; i--) {
-		uint32_t add = 0;
-		uint32_t remove = 0;
-		for (uint32_t j = 0; j < state->history[i].size(); j++) {
-			if (state->history[i][j].add) {
-				add++;
-			} else {
-				remove++;
-			}
-		}
-		insertPixels(state, &pixels, padTo(std::to_string(i), state->lineNumSize, '0'), i == (int32_t)state->diffIndex ? invertColor(WHITE) : WHITE);
-		insertPixels(state, &pixels, ' ', WHITE);
-		insertPixels(state, &pixels, '+', GREEN);
-		insertPixels(state, &pixels, std::to_string(add), GREEN);
-		insertPixels(state, &pixels, ' ', WHITE);
-		insertPixels(state, &pixels, '-', RED);
-		insertPixels(state, &pixels, std::to_string(remove), RED);
+	for (uint32_t i = 0; i < state->logLines.size(); i++) {
+		insertPixels(state, &pixels, state->logLines[i], i == state->logIndex ? invertColor(WHITE) : WHITE);
 		renderRow += renderPixels(state, renderRow, 0, pixels, true);
 		pixels.clear();
 	}
 }
 
-void renderDiff(State* state, std::vector<diffLine> diff)
+void renderDiff(State* state)
 {
-	state->status = std::to_string(diff.size());
 	std::vector<Pixel> pixels = std::vector<Pixel>();
 	uint32_t renderRow = 2;
-	for (uint32_t i = 0; i < diff.size(); i++) {
-		insertPixels(state, &pixels, padTo(std::to_string(diff[i].lineNum), state->lineNumSize, ' '), diff[i].add ? GREEN : RED);
-		insertPixels(state, &pixels, ' ', diff[i].add ? GREEN : RED);
-		insertPixels(state, &pixels, diff[i].add ? '+' : '-', diff[i].add ? GREEN : RED);
-		insertPixels(state, &pixels, ' ', diff[i].add ? GREEN : RED);
-		insertPixels(state, &pixels, diff[i].line, diff[i].add ? GREEN : RED);
+	for (uint32_t i = 0; i < state->diffLines.size(); i++) {
+		int color = WHITE;
+		if (state->diffLines[i].length() > 0 && state->diffLines[i][0] == '+') {
+			color = GREEN;
+		} else if (state->diffLines[i].length() > 0 && state->diffLines[i][0] == '-') {
+			color = RED;
+		}
+		insertPixels(state, &pixels, state->diffLines[i], i == state->diffIndex ? invertColor(color) : color);
 		renderRow += renderPixels(state, renderRow, 0, pixels, true);
 		pixels.clear();
 	}
@@ -797,10 +782,10 @@ void renderScreen(State *state)
 	if (state->mode == FINDFILE) {
 		renderFindFileOutput(state);
 	} else if (state->mode == DIFF) {
-		if (state->viewingDiff == true) {
-			renderDiff(state, state->history[state->diffIndex]);
+		if (state->viewingDiff) {
+			renderDiff(state);
 		} else {
-			renderDiffSelector(state);
+			renderLogLines(state);
 		}
 	} else if (state->mode == GREP) {
 		renderGrepOutput(state);

@@ -19,6 +19,72 @@
 #include <vector>
 #include <regex>
 
+std::vector<std::string> getLogLines(State* state)
+{
+	std::vector<std::string> gitLogLines = {"current"};
+	try {
+		std::string command = "git log --oneline | cat 2>/dev/null";
+		std::unique_ptr<FILE, int (*)(FILE *)> pipe(popen(command.c_str(), "r"), pclose);
+		if (!pipe) {
+			throw std::runtime_error("popen() failed!");
+		}
+		std::stringstream ss;
+		char *line = nullptr;
+		size_t len = 0;
+		ssize_t read;
+		while ((read = getline(&line, &len, pipe.get())) != -1) {
+			ss << line;
+		}
+		free(line);
+		std::string str;
+		while (std::getline(ss, str)) {
+			if (!str.empty()) {
+				gitLogLines.push_back(str);
+			}
+		}
+	} catch (const std::exception &e) {
+	}
+	return gitLogLines;
+}
+
+std::vector<std::string> getDiffLines(State* state)
+{
+	std::vector<std::string> gitDiffLines;
+	try {
+		std::string hash = "";
+		if (state->logIndex != 0) {
+			for (uint32_t i = 0; i < state->logLines[state->logIndex].length(); i++) {
+				if (state->logLines[state->logIndex][i] != ' ') {
+					hash += state->logLines[state->logIndex][i];
+				} else {
+					break;
+				}
+			}
+		}
+		std::string command = "git show " + hash + " | expand -t " + std::to_string(state->options.indent_size) + " 2>/dev/null";
+		std::unique_ptr<FILE, int (*)(FILE *)> pipe(popen(command.c_str(), "r"), pclose);
+		if (!pipe) {
+			throw std::runtime_error("popen() failed!");
+		}
+		std::stringstream ss;
+		char *line = nullptr;
+		size_t len = 0;
+		ssize_t read;
+		while ((read = getline(&line, &len, pipe.get())) != -1) {
+			ss << line;
+		}
+		free(line);
+		std::string str;
+		while (std::getline(ss, str)) {
+			if (!str.empty()) {
+				gitDiffLines.push_back(str);
+			}
+		}
+	} catch (const std::exception &e) {
+	}
+	return gitDiffLines;
+}
+
 std::string getMode(uint32_t mode)
 {
 	switch (mode) {
