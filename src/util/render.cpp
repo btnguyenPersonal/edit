@@ -138,7 +138,7 @@ void renderFileStack(State *state)
 	if ((int32_t)state->fileStackIndex < start - (int32_t)state->maxY / 2) {
 		start = (int32_t)state->fileStackIndex + (int32_t)state->maxY / 2;
 	}
-	uint32_t renderRow = 2;
+	uint32_t renderRow = STATUS_BAR_LENGTH;
 	for (int32_t i = start; i >= 0; i--) {
 		std::string filename = minimize_filename(state->fileStack[i]);
 		if (state->maxX / 4 > filename.length()) {
@@ -552,9 +552,15 @@ void advancePosition(State *state, int &renderRow, int &renderCol)
 
 void renderLogLines(State* state)
 {
+	uint32_t index;
+	if ((int32_t)state->logIndex - ((int32_t)state->maxY / 2) > 0) {
+		index = state->logIndex - state->maxY / 2;
+	} else {
+		index = 0;
+	}
 	std::vector<Pixel> pixels = std::vector<Pixel>();
-	uint32_t renderRow = 2;
-	for (uint32_t i = 0; i < state->logLines.size(); i++) {
+	uint32_t renderRow = STATUS_BAR_LENGTH;
+	for (uint32_t i = index; i < state->logLines.size() && i < index + state->maxY; i++) {
 		insertPixels(state, &pixels, state->logLines[i], i == state->logIndex ? invertColor(WHITE) : WHITE);
 		renderRow += renderPixels(state, renderRow, 0, pixels, true);
 		pixels.clear();
@@ -563,9 +569,15 @@ void renderLogLines(State* state)
 
 void renderDiff(State* state)
 {
+	uint32_t index;
+	if ((int32_t)state->diffIndex - ((int32_t)state->maxY / 2) > 0) {
+		index = state->diffIndex - state->maxY / 2;
+	} else {
+		index = 0;
+	}
 	std::vector<Pixel> pixels = std::vector<Pixel>();
-	uint32_t renderRow = 2;
-	for (uint32_t i = 0; i < state->diffLines.size(); i++) {
+	uint32_t renderRow = STATUS_BAR_LENGTH;
+	for (uint32_t i = index; i < state->diffLines.size() && i < index + state->maxY; i++) {
 		int color = WHITE;
 		if (state->diffLines[i].length() > 0 && state->diffLines[i][0] == '+') {
 			color = GREEN;
