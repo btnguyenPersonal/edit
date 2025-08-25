@@ -335,7 +335,7 @@ void State::changeFile(std::string filename)
 	this->previousState = data;
 	this->commentSymbol = getCommentSymbol(normalizedFilename);
 	this->history = std::vector<std::vector<diffLine> >();
-	this->viewingDiff = false;
+	this->viewingDiff = true;
 	this->logIndex = 0;
 	this->diffIndex = 0;
 	this->historyPosition = -1;

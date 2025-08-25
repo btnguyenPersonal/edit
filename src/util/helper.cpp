@@ -61,7 +61,12 @@ std::vector<std::string> getDiffLines(State* state)
 				}
 			}
 		}
-		std::string command = "git show " + hash + " | expand -t " + std::to_string(state->options.indent_size) + " 2>/dev/null";
+		std::string command = "";
+		if (hash == "") {
+			command = "git diff | expand -t " + std::to_string(state->options.indent_size) + " 2>/dev/null";
+		} else {
+			command = "git show " + hash + " | expand -t " + std::to_string(state->options.indent_size) + " 2>/dev/null";
+		}
 		std::unique_ptr<FILE, int (*)(FILE *)> pipe(popen(command.c_str(), "r"), pclose);
 		if (!pipe) {
 			throw std::runtime_error("popen() failed!");

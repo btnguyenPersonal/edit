@@ -297,6 +297,8 @@ void sendShortcutKeys(State *state, int32_t c)
 		}
 	} else if (c == ctrl('q')) {
 		state->logLines = getLogLines(state);
+		state->diffLines = getDiffLines(state);
+		state->viewingDiff = true;
 		state->mode = DIFF;
 	} else if (c == 'M') {
 		state->mark = { state->filename, state->row };

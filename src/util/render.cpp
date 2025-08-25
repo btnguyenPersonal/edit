@@ -550,8 +550,9 @@ void advancePosition(State *state, int &renderRow, int &renderCol)
 	}
 }
 
-void renderLogLines(State* state)
+Cursor renderLogLines(State* state)
 {
+	Cursor cursor;
 	uint32_t index;
 	if ((int32_t)state->logIndex - ((int32_t)state->maxY / 2) > 0) {
 		index = state->logIndex - state->maxY / 2;
@@ -561,14 +562,19 @@ void renderLogLines(State* state)
 	std::vector<Pixel> pixels = std::vector<Pixel>();
 	uint32_t renderRow = STATUS_BAR_LENGTH;
 	for (uint32_t i = index; i < state->logLines.size() && i < index + state->maxY; i++) {
-		insertPixels(state, &pixels, state->logLines[i], i == state->logIndex ? invertColor(WHITE) : WHITE);
+		insertPixels(state, &pixels, state->logLines[i], WHITE);
+		if (i == state->logIndex) {
+			cursor = { (int32_t)renderRow, 0 };
+		}
 		renderRow += renderPixels(state, renderRow, 0, pixels, true);
 		pixels.clear();
 	}
+	return cursor;
 }
 
-void renderDiff(State* state)
+Cursor renderDiff(State* state)
 {
+	Cursor cursor = { -1, -1 };
 	uint32_t index;
 	if ((int32_t)state->diffIndex - ((int32_t)state->maxY / 2) > 0) {
 		index = state->diffIndex - state->maxY / 2;
@@ -584,10 +590,14 @@ void renderDiff(State* state)
 		} else if (state->diffLines[i].length() > 0 && state->diffLines[i][0] == '-') {
 			color = RED;
 		}
-		insertPixels(state, &pixels, state->diffLines[i], i == state->diffIndex ? invertColor(color) : color);
+		insertPixels(state, &pixels, state->diffLines[i], color);
+		if (i == state->diffIndex) {
+			cursor = { (int32_t)renderRow, 0 };
+		}
 		renderRow += renderPixels(state, renderRow, 0, pixels, true);
 		pixels.clear();
 	}
+	return cursor;
 }
 
 int32_t renderLineContent(State *state, int32_t row, int32_t renderRow, Cursor *cursor)
@@ -714,7 +724,7 @@ int32_t renderLineContent(State *state, int32_t row, int32_t renderRow, Cursor *
 	return renderRow + renderPixels(state, renderRow, getLineNumberOffset(state), pixels, true);
 }
 
-void moveCursor(State *state, int32_t cursorOnStatusBar, Cursor editorCursor, Cursor fileExplorerCursor)
+void moveCursor(State *state, int32_t cursorOnStatusBar, Cursor editorCursor, Cursor fileExplorerCursor, bool noLineNum)
 {
 	if (cursorOnStatusBar != -1) {
 		move(1, cursorOnStatusBar);
@@ -728,7 +738,11 @@ void moveCursor(State *state, int32_t cursorOnStatusBar, Cursor editorCursor, Cu
 			row += col / len;
 			col %= len;
 		}
-		move(row, col + getLineNumberOffset(state));
+		if (noLineNum) {
+			move(row, col);
+		} else {
+			move(row, col + getLineNumberOffset(state));
+		}
 	}
 }
 
@@ -790,15 +804,17 @@ void renderScreen(State *state, bool fullRedraw)
 void renderScreen(State *state)
 {
 	erase();
+	bool noLineNum = false;
 	Cursor editorCursor, fileExplorerCursor;
 	if (state->mode == FINDFILE) {
 		renderFindFileOutput(state);
 	} else if (state->mode == DIFF) {
 		if (state->viewingDiff) {
-			renderDiff(state);
+			editorCursor = renderDiff(state);
 		} else {
-			renderLogLines(state);
+			editorCursor = renderLogLines(state);
 		}
+		noLineNum = true;
 	} else if (state->mode == GREP) {
 		renderGrepOutput(state);
 	} else {
@@ -811,7 +827,7 @@ void renderScreen(State *state)
 		renderFileStack(state);
 	}
 	int32_t cursorOnStatusBar = renderStatusBar(state);
-	moveCursor(state, cursorOnStatusBar, editorCursor, fileExplorerCursor);
+	moveCursor(state, cursorOnStatusBar, editorCursor, fileExplorerCursor, noLineNum);
 	wnoutrefresh(stdscr);
 	doupdate();
 }
