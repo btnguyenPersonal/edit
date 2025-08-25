@@ -9,7 +9,7 @@ void upLog(State* state)
 
 void downLog(State* state)
 {
-	if (state->logIndex < state->logLines.size()) {
+	if (state->logIndex + 1 < state->logLines.size()) {
 		state->logIndex++;
 	}
 }
@@ -23,7 +23,7 @@ void upDiff(State* state)
 
 void downDiff(State* state)
 {
-	if (state->diffIndex < state->diffLines.size()) {
+	if (state->diffIndex + 1 < state->diffLines.size()) {
 		state->diffIndex++;
 	}
 }

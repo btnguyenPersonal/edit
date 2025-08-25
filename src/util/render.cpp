@@ -585,10 +585,16 @@ Cursor renderDiff(State* state)
 	uint32_t renderRow = STATUS_BAR_LENGTH;
 	for (uint32_t i = index; i < state->diffLines.size() && i < index + state->maxY; i++) {
 		int color = WHITE;
-		if (state->diffLines[i].length() > 0 && state->diffLines[i][0] == '+') {
+		if (state->diffLines[i].length() > 2 && state->diffLines[i][0] == '+' && state->diffLines[i][1] == '+' && state->diffLines[i][2] == '+') {
+			color = WHITE;
+		} else if (state->diffLines[i].length() > 2 && state->diffLines[i][0] == '-' && state->diffLines[i][1] == '-' && state->diffLines[i][2] == '-') {
+			color = WHITE;
+		} else if (state->diffLines[i].length() > 0 && state->diffLines[i][0] == '+') {
 			color = GREEN;
 		} else if (state->diffLines[i].length() > 0 && state->diffLines[i][0] == '-') {
 			color = RED;
+		} else if (state->diffLines[i].length() > 0 && state->diffLines[i][0] == '@') {
+			color = CYAN;
 		}
 		insertPixels(state, &pixels, state->diffLines[i], color);
 		if (i == state->diffIndex) {
