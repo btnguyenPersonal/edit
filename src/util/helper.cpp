@@ -63,7 +63,7 @@ std::vector<std::string> getDiffLines(State* state)
 		}
 		std::string command = "";
 		if (hash == "") {
-			command = "git diff HEAD | expand -t " + std::to_string(state->options.indent_size) + " 2>/dev/null";
+			command = "git add -N :/ && git diff HEAD | expand -t " + std::to_string(state->options.indent_size) + " 2>/dev/null";
 		} else {
 			command = "git show " + hash + " | expand -t " + std::to_string(state->options.indent_size) + " 2>/dev/null";
 		}
