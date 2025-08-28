@@ -50,8 +50,8 @@ std::vector<std::string> getLogLines(State* state)
 std::vector<std::string> getDiffLines(State* state)
 {
 	std::vector<std::string> gitDiffLines;
+	std::string hash = "";
 	try {
-		std::string hash = "";
 		if (state->logIndex != 0) {
 			for (uint32_t i = 0; i < state->logLines[state->logIndex].length(); i++) {
 				if (state->logLines[state->logIndex][i] != ' ') {
@@ -63,7 +63,7 @@ std::vector<std::string> getDiffLines(State* state)
 		}
 		std::string command = "";
 		if (hash == "") {
-			command = "git diff | expand -t " + std::to_string(state->options.indent_size) + " 2>/dev/null";
+			command = "git diff HEAD | expand -t " + std::to_string(state->options.indent_size) + " 2>/dev/null";
 		} else {
 			command = "git show " + hash + " | expand -t " + std::to_string(state->options.indent_size) + " 2>/dev/null";
 		}
@@ -86,6 +86,9 @@ std::vector<std::string> getDiffLines(State* state)
 			}
 		}
 	} catch (const std::exception &e) {
+	}
+	if (hash == "" && gitDiffLines.size() == 0) {
+		return {"No local changes"};
 	}
 	return gitDiffLines;
 }
