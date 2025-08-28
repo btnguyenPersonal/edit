@@ -13,8 +13,6 @@ void sendGrepKeys(State *state, int32_t c)
 {
 	if (c == 27) { // ESC
 		state->mode = SHORTCUTS;
-	} else if (c == ctrl('y')) {
-		state->grepPath = "";
 	} else if (' ' <= c && c <= '~') {
 		add(&state->grep, c);
 		state->grep.selection = 0;
