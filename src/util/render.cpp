@@ -250,7 +250,7 @@ int32_t renderStatusBar(State *state)
 	}
 
 	if (state->mode == NAMING) {
-		prefix = "name: ";
+		prefix = state->namingPrefix + " ";
 		insertPixels(state, &pixels, prefix + state->name.query, WHITE);
 		renderPixels(state, 1, 0, pixels, false);
 		return prefix.length() + state->name.cursor;

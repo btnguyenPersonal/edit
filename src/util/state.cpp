@@ -402,6 +402,7 @@ State::State()
 	this->fileExplorerWindowLine = 0;
 	this->fileExplorerIndex = 0;
 	this->buildDir = ".";
+	this->namingPrefix = "";
 	this->mark = { "", 0 };
 	this->matching = { 0, 0 };
 	this->searching = false;

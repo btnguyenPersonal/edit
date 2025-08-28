@@ -34,6 +34,7 @@ void sendFileExplorerKeys(State *state, int32_t c)
 			node->refresh();
 		} else if (c == 'R') {
 			auto node = state->fileExplorer->getNode(state->fileExplorerIndex);
+			state->namingPrefix = "renaming " + node->name + ":";
 			std::string name = inputName(state, node->name);
 			if (name != "") {
 				rename(state, node->path, name);
@@ -62,9 +63,10 @@ void sendFileExplorerKeys(State *state, int32_t c)
 				state->fileExplorerIndex = state->fileExplorer->getChildIndex(node);
 			}
 		} else if (c == 'N') {
+			auto node = state->fileExplorer->getNode(state->fileExplorerIndex);
+			state->namingPrefix = "new folder:";
 			std::string name = inputName(state, "");
 			if (name != "") {
-				auto node = state->fileExplorer->getNode(state->fileExplorerIndex);
 				if (node->isFolder) {
 					createFolder(state, node->path.string(), name);
 					node->refresh();
@@ -74,9 +76,10 @@ void sendFileExplorerKeys(State *state, int32_t c)
 				}
 			}
 		} else if (c == 'n') {
+			auto node = state->fileExplorer->getNode(state->fileExplorerIndex);
+			state->namingPrefix = "new file:";
 			std::string name = inputName(state, "");
 			if (name != "") {
-				auto node = state->fileExplorer->getNode(state->fileExplorerIndex);
 				if (node->isFolder) {
 					createFile(state, node->path.string(), name);
 					node->refresh();
