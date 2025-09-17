@@ -119,6 +119,21 @@ void changeCaseVisual(State *state, bool upper)
 	}
 }
 
+void sortReverseLines(State *state)
+{
+	Bounds bounds = getBounds(state);
+	std::vector<std::string> lines;
+	for (uint32_t i = bounds.minR; i <= bounds.maxR; i++) {
+		lines.push_back(state->data[i]);
+	}
+	std::sort(lines.begin(), lines.end(), std::greater<>());
+	int32_t index = 0;
+	for (uint32_t i = bounds.minR; i <= bounds.maxR; i++) {
+		state->data[i] = lines[index];
+		index++;
+	}
+}
+
 void sortLines(State *state)
 {
 	Bounds bounds = getBounds(state);
@@ -396,6 +411,14 @@ bool sendVisualKeys(State *state, char c, bool onlyMotions)
 			iterations++;
 		}
 		state->prevKeys = "";
+	} else if (!onlyMotions && state->prevKeys == "" && c == '_') {
+		sortLines(state);
+		state->mode = SHORTCUTS;
+		state->prevKeys = "";
+	} else if (!onlyMotions && state->prevKeys == "g" && c == '_') {
+		sortReverseLines(state);
+		state->mode = SHORTCUTS;
+		state->prevKeys = "";
 	} else if (!onlyMotions && state->visualType == BLOCK && state->prevKeys == "g" && c == ctrl('a')) {
 		Bounds bounds = getBounds(state);
 		int32_t iterations = 1;
@@ -481,9 +504,6 @@ bool sendVisualKeys(State *state, char c, bool onlyMotions)
 		} else {
 			state->col = 0;
 		}
-	} else if (!onlyMotions && c == '_') {
-		sortLines(state);
-		state->mode = SHORTCUTS;
 	} else if (c == 'f') {
 		state->prevKeys = "f";
 	} else if (c == 't') {

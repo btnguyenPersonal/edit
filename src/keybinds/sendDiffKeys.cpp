@@ -83,6 +83,7 @@ void sendDiffKeys(State *state, int32_t c)
 	} else if (c == 'g') {
 		if (state->prevKeys == "g") {
 			state->diffIndex = 0;
+			state->prevKeys = "";
 		} else {
 			state->prevKeys = "g";
 		}
