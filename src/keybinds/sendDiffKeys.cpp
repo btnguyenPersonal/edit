@@ -30,15 +30,12 @@ void downDiff(State* state)
 
 void sendDiffKeys(State *state, int32_t c)
 {
-	if (state->viewingDiff) {
-		state->diffLines = getDiffLines(state);
-	} else {
-		state->logLines = getLogLines(state);
-	}
 	if (c == 'q') {
 		state->mode = SHORTCUTS;
 	} else if (c == 27) { // ESC
-		if (state->viewingDiff) {
+		if (state->prevKeys != "") {
+			state->prevKeys = "";
+		} else if (state->viewingDiff) {
 			state->logLines = getLogLines(state);
 			state->viewingDiff = false;
 			state->diffIndex = 0;
@@ -78,6 +75,16 @@ void sendDiffKeys(State *state, int32_t c)
 			downDiff(state);
 		} else {
 			downLog(state);
+		}
+	} else if (c == 'G') {
+		if (state->diffLines.size() > 0) {
+			state->diffIndex = state->diffLines.size() - 1;
+		}
+	} else if (c == 'g') {
+		if (state->prevKeys == "g") {
+			state->diffIndex = 0;
+		} else {
+			state->prevKeys = "g";
 		}
 	} else if (c == 'k') {
 		if (state->viewingDiff) {
