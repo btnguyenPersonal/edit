@@ -335,9 +335,6 @@ void State::changeFile(std::string filename)
 	this->previousState = data;
 	this->commentSymbol = getCommentSymbol(normalizedFilename);
 	this->history = std::vector<std::vector<diffLine> >();
-	this->viewingDiff = true;
-	this->logIndex = 0;
-	this->diffIndex = 0;
 	this->historyPosition = -1;
 	this->lastSave = -1;
 	this->windowPosition.row = 0;
@@ -393,6 +390,8 @@ State::State()
 {
 	this->runningAsRoot = geteuid() == 0;
 	this->showGrep = false;
+	this->diffIndex = 0;
+	this->logIndex = 0;
 	this->fileExplorer = new FileExplorerNode(std::filesystem::current_path());
 	this->fileExplorer->open();
 	this->fileExplorerOpen = false;
