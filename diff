@@ -1,0 +1,161 @@
+diff --git a/src/util/helper.cpp b/src/util/helper.cpp
+index 7064201..b052502 100644
+--- a/src/util/helper.cpp
++++ b/src/util/helper.cpp
+@@ -3,6 +3,7 @@
+ #include "comment.h"
+ #include "state.h"
+ #include "visualType.h"
++#include "name.h"
+ #include "expect.h"
+ #include <algorithm>
+ #include <climits>
+@@ -1559,18 +1560,54 @@ uint32_t b(State *state)
+ 	return 0;
+ }
+ 
++int32_t getLastModifiedDate(State* state, std::string filename)
++{
++	std::string command;
++#ifdef __APPLE__
++	command = "stat -f %m -t %s " + filename;
++#elif defined(__linux__)
++	command = "stat -c %Y -t %s " + filename;
++#else
++#error "Platform not supported"
++#endif
++	std::unique_ptr<FILE, int (*)(FILE *)> pipe(popen(command.c_str(), "r"), pclose);
++	if (!pipe) {
++		throw std::runtime_error("popen() failed!");
++	}
++	std::stringstream ss;
++	char *line = nullptr;
++	size_t len = 0;
++	ssize_t read;
++	while ((read = getline(&line, &len, pipe.get())) != -1) {
++		ss << line;
++	}
++	free(line);
++	std::string str;
++	std::getline(ss, str);
++	return std::stoi(str);
++}
++
+ void saveFile(State *state)
+ {
+-	state->lastSave = state->historyPosition;
+-	if (!state->dontSave) {
+-		std::ofstream file(state->filename);
+-		if (!state->data.empty()) {
+-			for (size_t i = 0; i < state->data.size() - 1; ++i) {
+-				file << state->data[i] << "\n";
++	bool overwrite = true;
++	if (state->lastModifiedDate < getLastModifiedDate(state, state->filename)) {
++		state->namingPrefix = std::string("new changes found for ") + state->filename + " -> overwrite? (y/n):";
++		std::string prompt = inputName(state, "");
++		overwrite = prompt == "y";
++	}
++	if (overwrite) {
++		state->lastSave = state->historyPosition;
++		if (!state->dontSave) {
++			std::ofstream file(state->filename);
++			if (!state->data.empty()) {
++				for (size_t i = 0; i < state->data.size() - 1; ++i) {
++					file << state->data[i] << "\n";
++				}
++				file << state->data.back();
+ 			}
+-			file << state->data.back();
++			file.close();
++			state->lastModifiedDate = getLastModifiedDate(state, state->filename);
+ 		}
+-		file.close();
+ 	}
+ }
+ 
+diff --git a/src/util/helper.h b/src/util/helper.h
+index 48f21f7..eb700c4 100644
+--- a/src/util/helper.h
++++ b/src/util/helper.h
+@@ -7,6 +7,7 @@
+ #include <string>
+ #include <vector>
+ 
++int32_t getLastModifiedDate(State* state, std::string filename);
+ std::vector<std::string> getDiffLines(State* state);
+ std::vector<std::string> getLogLines(State* state);
+ uint32_t getNormalizedCol(State* state, uint32_t hardCol);
+diff --git a/src/util/state.cpp b/src/util/state.cpp
+index 0a91b62..2812480 100644
+--- a/src/util/state.cpp
++++ b/src/util/state.cpp
+@@ -315,6 +315,7 @@ void State::changeFile(std::string filename)
+ 			auto archive = this->archives[i];
+ 			this->filename = normalizedFilename;
+ 			this->data = readFile(normalizedFilename);
++			this->lastModifiedDate = getLastModifiedDate(this, normalizedFilename);
+ 			this->commentSymbol = getCommentSymbol(normalizedFilename);
+ 			this->previousState = archive.previousState;
+ 			this->history = archive.history;
+@@ -330,6 +331,7 @@ void State::changeFile(std::string filename)
+ 		}
+ 	}
+ 	auto data = readFile(normalizedFilename);
++	this->lastModifiedDate = getLastModifiedDate(this, normalizedFilename);
+ 	this->filename = normalizedFilename;
+ 	this->data = data;
+ 	this->previousState = data;
+@@ -464,6 +466,7 @@ State::State(std::string filename)
+ 		data = { "" };
+ 	} else {
+ 		data = readFile(normalizedFilename.c_str());
++		this->lastModifiedDate = getLastModifiedDate(this, normalizedFilename);
+ 	}
+ 	this->filename = std::string(normalizedFilename);
+ 	this->data = data;
+diff --git a/src/util/state.h b/src/util/state.h
+index 383cc50..eed2a7e 100644
+--- a/src/util/state.h
++++ b/src/util/state.h
+@@ -120,6 +120,7 @@ class State {
+ 	bool skipSetHardCol;
+ 	bool viewingDiff;
+ 	int32_t blameSize;
++	int32_t lastModifiedDate;
+ 	int32_t buildErrorIndex;
+ 	int32_t fileExplorerIndex;
+ 	int32_t fileExplorerWindowLine;
+diff --git a/tasks.md b/tasks.md
+index 1ceebd1..fdb3ba2 100644
+--- a/tasks.md
++++ b/tasks.md
+@@ -1,4 +1,21 @@
+ ## tasks
++- change namingPrefix to prompt and more generic prompt() function
++- harpoon as 2d array of files
++	- each one n long, and each one has a windowLine, and special centering keys and rendering logic (might make rendering modify state yuck)
++	- need X just clear only current tab group, also make key to clear all history (full reset)
++- fix long lines rendering
++
++- look at how hard it would be to have an icon at top to say there are new changes available?
++	- when overwriting, show diff of changed?? need to have cursor or something
++	- for above, does that mean it's easier to have a struct for lines, cursor, windowline?? does that make sense for read-only views??
++
++
++
++
++
++
++
++
+ - ctrl v on search issues crash??
+ - server/client interaction, no issues having multiple windows, all will use same one
+ - add mouse clicks
+@@ -24,7 +41,6 @@
+ - fix tab rendering with non wordwrap state->windowPosition.col > 0
+ - lock down changing files flag
+   - turn on when unsaved??
+-- look at how hard it would be to have an icon at top to say there are new changes available?
+   - each action check? if new changes happen have a popup like vim??
+ - add args
+   - turn off autosave cmd
