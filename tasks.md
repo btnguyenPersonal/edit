@@ -1,4 +1,21 @@
 ## tasks
+- change namingPrefix to prompt and more generic prompt() function
+- harpoon as 2d array of files
+	- each one n long, and each one has a windowLine, and special centering keys and rendering logic (might make rendering modify state yuck)
+	- need X just clear only current tab group, also make key to clear all history (full reset)
+- fix long lines rendering
+
+- look at how hard it would be to have an icon at top to say there are new changes available?
+	- when overwriting, show diff of changed?? need to have cursor or something
+	- for above, does that mean it's easier to have a struct for lines, cursor, windowline?? does that make sense for read-only views??
+
+
+
+
+
+
+
+
 - ctrl v on search issues crash??
 - server/client interaction, no issues having multiple windows, all will use same one
 - add mouse clicks
@@ -24,7 +41,6 @@
 - fix tab rendering with non wordwrap state->windowPosition.col > 0
 - lock down changing files flag
   - turn on when unsaved??
-- look at how hard it would be to have an icon at top to say there are new changes available?
   - each action check? if new changes happen have a popup like vim??
 - add args
   - turn off autosave cmd

@@ -7,6 +7,7 @@
 #include <string>
 #include <vector>
 
+int32_t getLastModifiedDate(State* state, std::string filename);
 std::vector<std::string> getDiffLines(State* state);
 std::vector<std::string> getLogLines(State* state);
 uint32_t getNormalizedCol(State* state, uint32_t hardCol);
