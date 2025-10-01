@@ -1566,7 +1566,7 @@ int32_t getLastModifiedDate(State* state, std::string filename)
 #ifdef __APPLE__
 	command = "stat -f %m -t %s " + filename;
 #elif defined(__linux__)
-	command = "stat -c %Y -t %s " + filename;
+	command = "stat -c %Y " + filename;
 #else
 #error "Platform not supported"
 #endif
