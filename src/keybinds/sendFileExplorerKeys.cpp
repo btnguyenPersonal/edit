@@ -4,7 +4,7 @@
 #include "../util/helper.h"
 #include "../util/modes.h"
 #include "../util/state.h"
-#include "../util/name.h"
+#include "../util/prompt.h"
 #include <ncurses.h>
 #include <string>
 #include <vector>
@@ -34,8 +34,8 @@ void sendFileExplorerKeys(State *state, int32_t c)
 			node->refresh();
 		} else if (c == 'R') {
 			auto node = state->fileExplorer->getNode(state->fileExplorerIndex);
-			state->namingPrefix = "renaming " + node->name + ":";
-			std::string name = inputName(state, node->name);
+			state->prompt = "renaming " + node->name + ":";
+			std::string name = prompt(state, node->name);
 			if (name != "") {
 				rename(state, node->path, name);
 				node->parent->refresh();
@@ -64,8 +64,8 @@ void sendFileExplorerKeys(State *state, int32_t c)
 			}
 		} else if (c == 'N') {
 			auto node = state->fileExplorer->getNode(state->fileExplorerIndex);
-			state->namingPrefix = "new folder:";
-			std::string name = inputName(state, "");
+			state->prompt = "new folder:";
+			std::string name = prompt(state, "");
 			if (name != "") {
 				if (node->isFolder) {
 					createFolder(state, node->path.string(), name);
@@ -77,8 +77,8 @@ void sendFileExplorerKeys(State *state, int32_t c)
 			}
 		} else if (c == 'n') {
 			auto node = state->fileExplorer->getNode(state->fileExplorerIndex);
-			state->namingPrefix = "new file:";
-			std::string name = inputName(state, "");
+			state->prompt = "new file:";
+			std::string name = prompt(state, "");
 			if (name != "") {
 				if (node->isFolder) {
 					createFile(state, node->path.string(), name);

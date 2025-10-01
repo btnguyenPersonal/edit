@@ -3,7 +3,7 @@
 #include "comment.h"
 #include "state.h"
 #include "visualType.h"
-#include "name.h"
+#include "prompt.h"
 #include "expect.h"
 #include <algorithm>
 #include <climits>
@@ -1595,9 +1595,9 @@ void saveFile(State *state)
 {
 	bool overwrite = true;
 	if (state->lastModifiedDate < getLastModifiedDate(state, state->filename)) {
-		state->namingPrefix = std::string("new changes found for ") + state->filename + " -> overwrite? (y/n):";
-		std::string prompt = inputName(state, "");
-		overwrite = prompt == "y";
+		state->prompt = std::string("new changes found for ") + state->filename + " -> overwrite? (y/n):";
+		std::string result = prompt(state, "");
+		overwrite = result == "y";
 	}
 	if (overwrite) {
 		state->lastSave = state->historyPosition;

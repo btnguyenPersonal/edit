@@ -25,7 +25,7 @@ COMMON_SOURCES := \
   $(UTIL_DIR)/comment.cpp \
   $(UTIL_DIR)/insertLoggingCode.cpp \
   $(UTIL_DIR)/query.cpp \
-  $(UTIL_DIR)/name.cpp \
+  $(UTIL_DIR)/prompt.cpp \
   $(UTIL_DIR)/cleanup.cpp \
   $(UTIL_DIR)/keys.cpp \
   $(KEYBINDS_DIR)/sendKeys.cpp \

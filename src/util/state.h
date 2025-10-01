@@ -129,7 +129,7 @@ class State {
 	static uint32_t maxX;
 	static uint32_t maxY;
 	std::map<uint32_t, std::string> harpoonFiles;
-	std::string namingPrefix;
+	std::string prompt;
 	std::string buildDir;
 	std::string commentSymbol;
 	std::string filename;

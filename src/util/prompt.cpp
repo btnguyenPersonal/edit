@@ -1,6 +1,6 @@
-#include "name.h"
+#include "prompt.h"
 
-std::string inputName(State *state, std::string startingValue)
+std::string prompt(State *state, std::string startingValue)
 {
 	auto prevMode = state->mode;
 	state->mode = NAMING;
