@@ -234,7 +234,8 @@ int32_t renderStatusBar(State *state)
 		std::string s;
 		if (state->harpoonFiles.count(i) > 0) {
 			bool current = state->harpoonFiles[i] == state->filename && state->harpoonIndex == i;
-			insertPixels(state, &pixels, minimize_filename(state->harpoonFiles[i]), current ? invertColor(WHITE) : GREY);
+			insertPixels(state, &pixels, minimize_filename(state->harpoonFiles[i]),
+				     current ? invertColor(WHITE) : GREY);
 			insertPixels(state, &pixels, ' ', WHITE);
 			insertPixels(state, &pixels, ' ', WHITE);
 		}
@@ -550,7 +551,7 @@ void advancePosition(State *state, int &renderRow, int &renderCol)
 	}
 }
 
-Cursor renderLogLines(State* state)
+Cursor renderLogLines(State *state)
 {
 	Cursor cursor;
 	uint32_t index;
@@ -572,7 +573,7 @@ Cursor renderLogLines(State* state)
 	return cursor;
 }
 
-Cursor renderDiff(State* state)
+Cursor renderDiff(State *state)
 {
 	Cursor cursor = { -1, -1 };
 	uint32_t index;
@@ -585,9 +586,11 @@ Cursor renderDiff(State* state)
 	uint32_t renderRow = STATUS_BAR_LENGTH;
 	for (uint32_t i = index; i < state->diffLines.size() && i < index + state->maxY; i++) {
 		int color = WHITE;
-		if (state->diffLines[i].length() > 2 && state->diffLines[i][0] == '+' && state->diffLines[i][1] == '+' && state->diffLines[i][2] == '+') {
+		if (state->diffLines[i].length() > 2 && state->diffLines[i][0] == '+' &&
+		    state->diffLines[i][1] == '+' && state->diffLines[i][2] == '+') {
 			color = WHITE;
-		} else if (state->diffLines[i].length() > 2 && state->diffLines[i][0] == '-' && state->diffLines[i][1] == '-' && state->diffLines[i][2] == '-') {
+		} else if (state->diffLines[i].length() > 2 && state->diffLines[i][0] == '-' &&
+			   state->diffLines[i][1] == '-' && state->diffLines[i][2] == '-') {
 			color = WHITE;
 		} else if (state->diffLines[i].length() > 0 && state->diffLines[i][0] == '+') {
 			color = GREEN;
@@ -669,7 +672,8 @@ int32_t renderLineContent(State *state, int32_t row, int32_t renderRow, Cursor *
 					color = getSearchColor(state, row, startOfSearch, state->grep.query, true);
 				} else if (searchCounter != 0 && (state->searching || state->replacing)) {
 					color = getSearchColor(state, row, startOfSearch, state->search.query, false);
-				} else if ((int32_t)state->row == row && state->col == col && col < state->data[row].length() && state->data[row][col] == '\t') {
+				} else if ((int32_t)state->row == row && state->col == col &&
+					   col < state->data[row].length() && state->data[row][col] == '\t') {
 					color = invertColor(WHITE);
 				} else {
 					if (isMergeConflict(state->data[row])) {

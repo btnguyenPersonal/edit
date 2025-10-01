@@ -20,9 +20,9 @@
 #include <vector>
 #include <regex>
 
-std::vector<std::string> getLogLines(State* state)
+std::vector<std::string> getLogLines(State *state)
 {
-	std::vector<std::string> gitLogLines = {"current"};
+	std::vector<std::string> gitLogLines = { "current" };
 	try {
 		std::string command = "git log --oneline | cat 2>/dev/null";
 		std::unique_ptr<FILE, int (*)(FILE *)> pipe(popen(command.c_str(), "r"), pclose);
@@ -48,7 +48,7 @@ std::vector<std::string> getLogLines(State* state)
 	return gitLogLines;
 }
 
-std::vector<std::string> getDiffLines(State* state)
+std::vector<std::string> getDiffLines(State *state)
 {
 	std::vector<std::string> gitDiffLines;
 	std::string hash = "";
@@ -64,9 +64,11 @@ std::vector<std::string> getDiffLines(State* state)
 		}
 		std::string command = "";
 		if (hash == "") {
-			command = "git add -N :/ && git diff HEAD | expand -t " + std::to_string(state->options.indent_size) + " 2>/dev/null";
+			command = "git add -N :/ && git diff HEAD | expand -t " +
+				  std::to_string(state->options.indent_size) + " 2>/dev/null";
 		} else {
-			command = "git show " + hash + " | expand -t " + std::to_string(state->options.indent_size) + " 2>/dev/null";
+			command = "git show " + hash + " | expand -t " + std::to_string(state->options.indent_size) +
+				  " 2>/dev/null";
 		}
 		std::unique_ptr<FILE, int (*)(FILE *)> pipe(popen(command.c_str(), "r"), pclose);
 		if (!pipe) {
@@ -89,7 +91,7 @@ std::vector<std::string> getDiffLines(State* state)
 	} catch (const std::exception &e) {
 	}
 	if (hash == "" && gitDiffLines.size() == 0) {
-		return {"No local changes"};
+		return { "No local changes" };
 	}
 	return gitDiffLines;
 }
@@ -1395,11 +1397,11 @@ bool shouldIgnoreFile(const std::filesystem::path &path)
 		}
 	}
 	std::vector<std::string> ignoreList = {
-		".nx/",	    ".mozilla/",    ".vim/",	"nyc_output/",	 "results/",
-		"target/",  "resources/",   ".git",	"node_modules/", "build/",
-		"dist/",    "cdk.out/",	    ".next/",	"tmp/",		 "__pycache__/",
-		"autogen/", "coverage/",    "assets/",	"extra/",	 ".jar",
-		".jpg",	    ".jpeg",	    ".png",	".pdf",		 "package-lock.json",
+		".nx/",	    ".mozilla/",    ".vim/",	 "nyc_output/",	  "results/",
+		"target/",  "resources/",   ".git",	 "node_modules/", "build/",
+		"dist/",    "cdk.out/",	    ".next/",	 "tmp/",	  "__pycache__/",
+		"autogen/", "coverage/",    "assets/",	 "extra/",	  ".jar",
+		".jpg",	    ".jpeg",	    ".png",	 ".pdf",	  "package-lock.json",
 		".cache/",  ".eslintcache", ".DS_Store", "snapshots/"
 	};
 	for (uint32_t i = 0; i < ignoreList.size(); i++) {
@@ -1560,17 +1562,17 @@ uint32_t b(State *state)
 	return 0;
 }
 
-int32_t getLastModifiedDate(State* state, std::string filename)
+int32_t getLastModifiedDate(State *state, std::string filename)
 {
 	try {
 		std::string command;
-	#ifdef __APPLE__
+#ifdef __APPLE__
 		command = "stat -f %m -t %s " + filename + " 2>/dev/null";
-	#elif defined(__linux__)
+#elif defined(__linux__)
 		command = "stat -c %Y" + filename + " 2>/dev/null";
-	#else
-	#error "Platform not supported"
-	#endif
+#else
+#error "Platform not supported"
+#endif
 		std::unique_ptr<FILE, int (*)(FILE *)> pipe(popen(command.c_str(), "r"), pclose);
 		if (!pipe) {
 			throw std::runtime_error("popen() failed!");
@@ -1787,17 +1789,17 @@ void downHalfScreen(State *state)
 	state->skipSetHardCol = true;
 }
 
-uint32_t getNormalizedCol(State* state, uint32_t hardCol)
+uint32_t getNormalizedCol(State *state, uint32_t hardCol)
 {
 	if (state->options.indent_style != "tab") {
 		return state->col;
 	}
 	int32_t tmpHardCol = hardCol;
 	int32_t output = 0;
-	for (uint32_t i = 0; i < state->data[state->row].length() && (int32_t) i < tmpHardCol; i++) {
+	for (uint32_t i = 0; i < state->data[state->row].length() && (int32_t)i < tmpHardCol; i++) {
 		if (i < state->data[state->row].length() && state->data[state->row][i] == '\t') {
 			tmpHardCol -= (state->options.indent_size - 1);
-			if ((int32_t) i < tmpHardCol) {
+			if ((int32_t)i < tmpHardCol) {
 				output++;
 			} else {
 				return output;

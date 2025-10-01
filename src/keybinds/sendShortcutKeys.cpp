@@ -25,7 +25,7 @@ void sendShortcutKeys(State *state, int32_t c)
 {
 	if (c == KEY_MOUSE) {
 		MEVENT event;
-		if(getmouse(&event) == OK) {
+		if (getmouse(&event) == OK) {
 			if (event.bstate & BUTTON4_PRESSED) {
 				upScreen(state);
 #ifdef __APPLE__
