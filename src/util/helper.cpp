@@ -1562,29 +1562,33 @@ uint32_t b(State *state)
 
 int32_t getLastModifiedDate(State* state, std::string filename)
 {
-	std::string command;
-#ifdef __APPLE__
-	command = "stat -f %m -t %s " + filename;
-#elif defined(__linux__)
-	command = "stat -c %Y " + filename;
-#else
-#error "Platform not supported"
-#endif
-	std::unique_ptr<FILE, int (*)(FILE *)> pipe(popen(command.c_str(), "r"), pclose);
-	if (!pipe) {
-		throw std::runtime_error("popen() failed!");
+	try {
+		std::string command;
+	#ifdef __APPLE__
+		command = "stat -f %m -t %s " + filename + " 2>/dev/null";
+	#elif defined(__linux__)
+		command = "stat -c %Y" + filename + " 2>/dev/null";
+	#else
+	#error "Platform not supported"
+	#endif
+		std::unique_ptr<FILE, int (*)(FILE *)> pipe(popen(command.c_str(), "r"), pclose);
+		if (!pipe) {
+			throw std::runtime_error("popen() failed!");
+		}
+		std::stringstream ss;
+		char *line = nullptr;
+		size_t len = 0;
+		ssize_t read;
+		while ((read = getline(&line, &len, pipe.get())) != -1) {
+			ss << line;
+		}
+		free(line);
+		std::string str;
+		std::getline(ss, str);
+		return std::stoi(str);
+	} catch (const std::exception &e) {
+		return 0;
 	}
-	std::stringstream ss;
-	char *line = nullptr;
-	size_t len = 0;
-	ssize_t read;
-	while ((read = getline(&line, &len, pipe.get())) != -1) {
-		ss << line;
-	}
-	free(line);
-	std::string str;
-	std::getline(ss, str);
-	return std::stoi(str);
 }
 
 void saveFile(State *state)
