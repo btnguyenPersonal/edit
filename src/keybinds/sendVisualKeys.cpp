@@ -437,11 +437,20 @@ bool sendVisualKeys(State *state, char c, bool onlyMotions)
 	} else if (!onlyMotions && state->prevKeys == "g" && c == 'f') {
 		if (state->visualType == NORMAL) {
 			std::vector<std::string> extensions = { "", ".js", ".jsx", ".ts", ".tsx" };
+			std::string vis = getInVisual(state);
+			if (getExtension(vis) == "js") {
+				for (int32_t i = vis.length() - 1; i >= 0; i--) {
+					if (vis[i] == '.') {
+						vis = safeSubstring(vis, 0, i);
+						break;
+					}
+				}
+			}
 			for (uint32_t i = 0; i < extensions.size(); i++) {
 				try {
 					std::filesystem::path filePath(state->filename);
 					std::filesystem::path dir = filePath.parent_path();
-					auto newFilePath = dir / (getInVisual(state) + extensions[i]);
+					auto newFilePath = dir / (vis + extensions[i]);
 					if (std::filesystem::is_regular_file(newFilePath.c_str())) {
 						auto baseDir = std::filesystem::current_path();
 						auto relativePath = std::filesystem::relative(newFilePath, baseDir);
