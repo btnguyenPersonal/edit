@@ -70,28 +70,34 @@ void replaceAllWithChar(State *state, int32_t c)
 	}
 }
 
-void changeCaseVisual(State *state, bool upper)
+char changeCase(char c, bool upper, bool swap)
+{
+	if (swap) {
+		if (std::isupper(c)) {
+			return std::tolower(c);
+		}
+		return std::toupper(c);
+	} else if (upper) {
+		return std::toupper(c);
+	} else {
+		return std::tolower(c);
+	}
+}
+
+void changeCaseVisual(State *state, bool upper, bool swap)
 {
 	Bounds bounds = getBounds(state);
 	if (state->visualType == NORMAL) {
 		uint32_t col = bounds.minC;
 		for (uint32_t row = bounds.minR; row < bounds.maxR; row++) {
 			while (col < state->data[row].size()) {
-				if (upper) {
-					state->data[row][col] = std::toupper(state->data[row][col]);
-				} else {
-					state->data[row][col] = std::tolower(state->data[row][col]);
-				}
+				state->data[row][col] = changeCase(state->data[row][col], upper, swap);
 				col++;
 			}
 			col = 0;
 		}
 		while (col <= bounds.maxC) {
-			if (upper) {
-				state->data[bounds.maxR][col] = std::toupper(state->data[bounds.maxR][col]);
-			} else {
-				state->data[bounds.maxR][col] = std::tolower(state->data[bounds.maxR][col]);
-			}
+			state->data[bounds.maxR][col] = changeCase(state->data[bounds.maxR][col], upper, swap);
 			col++;
 		}
 	} else if (state->visualType == BLOCK) {
@@ -99,21 +105,13 @@ void changeCaseVisual(State *state, bool upper)
 		uint32_t max = std::max(bounds.minC, bounds.maxC);
 		for (uint32_t row = bounds.minR; row <= bounds.maxR; row++) {
 			for (uint32_t col = min; col <= max; col++) {
-				if (upper) {
-					state->data[row][col] = std::toupper(state->data[row][col]);
-				} else {
-					state->data[row][col] = std::tolower(state->data[row][col]);
-				}
+				state->data[row][col] = changeCase(state->data[row][col], upper, swap);
 			}
 		}
 	} else if (state->visualType == LINE) {
 		for (uint32_t row = bounds.minR; row <= bounds.maxR; row++) {
 			for (uint32_t col = 0; col < state->data[row].size(); col++) {
-				if (upper) {
-					state->data[row][col] = std::toupper(state->data[row][col]);
-				} else {
-					state->data[row][col] = std::tolower(state->data[row][col]);
-				}
+				state->data[row][col] = changeCase(state->data[row][col], upper, swap);
 			}
 		}
 	}
@@ -463,7 +461,7 @@ bool sendVisualKeys(State *state, char c, bool onlyMotions)
 		}
 		state->prevKeys = "";
 	} else if (!onlyMotions && state->prevKeys == "g" && c == 'U') {
-		changeCaseVisual(state, true);
+		changeCaseVisual(state, true, false);
 		state->prevKeys = "";
 		state->mode = SHORTCUTS;
 	} else if (!onlyMotions && state->prevKeys == "r") {
@@ -471,7 +469,7 @@ bool sendVisualKeys(State *state, char c, bool onlyMotions)
 		state->prevKeys = "";
 		state->mode = SHORTCUTS;
 	} else if (!onlyMotions && state->prevKeys == "g" && c == 'u') {
-		changeCaseVisual(state, false);
+		changeCaseVisual(state, false, false);
 		state->prevKeys = "";
 		state->mode = SHORTCUTS;
 	} else if (state->prevKeys == "g" && c == 'g') {
@@ -491,6 +489,9 @@ bool sendVisualKeys(State *state, char c, bool onlyMotions)
 		for (uint32_t i = bounds.minR; i <= bounds.maxR; i++) {
 			getAndAddNumber(state, i, state->col, 1);
 		}
+	} else if (!onlyMotions && c == '~') {
+		changeCaseVisual(state, true, true);
+		state->mode = SHORTCUTS;
 	} else if (!onlyMotions && c == 'm') {
 		logDotCommand(state);
 		if (state->visualType == NORMAL) {
