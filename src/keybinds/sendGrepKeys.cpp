@@ -11,11 +11,9 @@
 
 void sendGrepKeys(State *state, int32_t c)
 {
+	std::string cachedGrepString = state->grep.query;
 	if (c == 27) { // ESC
 		state->mode = SHORTCUTS;
-	} else if (' ' <= c && c <= '~') {
-		add(&state->grep, c);
-		state->grep.selection = 0;
 	} else if (c == KEY_LEFT) {
 		moveCursorLeft(&state->grep);
 	} else if (c == KEY_RIGHT) {
@@ -29,10 +27,12 @@ void sendGrepKeys(State *state, int32_t c)
 		state->findFile.selection = 0;
 		state->selectAll = false;
 		state->mode = FINDFILE;
+	} else if (c == ctrl('a')) {
+		moveCursorStart(&state->grep);
 	} else if (c == ctrl('e')) {
+		moveCursorEnd(&state->grep);
+	} else if (c == ctrl('t')) {
 		state->showAllGrep = !state->showAllGrep;
-	} else if (c == ctrl('l')) {
-		backspaceAll(&state->grep);
 	} else if (c == ctrl('d')) {
 		for (uint32_t i = 0; i < state->maxY; i++) {
 			if (state->grep.selection + 1 < state->grepOutput.size()) {
@@ -77,9 +77,13 @@ void sendGrepKeys(State *state, int32_t c)
 		changeToGrepFile(state);
 		state->showGrep = true;
 		centerScreen(state);
+	} else if (c == ctrl('l')) {
+		backspaceAll(&state->grep);
+	} else if (' ' <= c && c <= '~') {
+		add(&state->grep, c);
+		state->grep.selection = 0;
 	}
-	if (state->mode == GREP && c != ctrl('u') && c != ctrl('d') && c != ctrl('p') && c != ctrl('n') &&
-	    c != KEY_UP && c != KEY_DOWN) {
+	if (state->mode == GREP && cachedGrepString != state->grep.query) {
 		renderScreen(state);
 		generateGrepOutput(state, true);
 	}

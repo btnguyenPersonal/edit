@@ -49,15 +49,15 @@ void sendSearchKeys(State *state, int32_t c)
 		}
 	} else if (c == ctrl('e')) {
 		if (state->replacing) {
-			state->replace.cursor = state->replace.query.length();
+			moveCursorEnd(&state->replace);
 		} else {
-			state->search.cursor = state->search.query.length();
+			moveCursorEnd(&state->search);
 		}
 	} else if (c == ctrl('a')) {
 		if (state->replacing) {
-			state->replace.cursor = 0;
+			moveCursorStart(&state->replace);
 		} else {
-			state->search.cursor = 0;
+			moveCursorStart(&state->search);
 		}
 	} else if (c == ctrl('r')) {
 		state->replacing = true;

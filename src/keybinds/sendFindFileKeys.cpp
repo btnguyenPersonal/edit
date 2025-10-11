@@ -11,6 +11,7 @@
 
 void sendFindFileKeys(State *state, int32_t c)
 {
+	std::string cachedFileString = state->findFile.query;
 	if (c == 27) { // ESC
 		state->selectAll = false;
 		state->mode = SHORTCUTS;
@@ -38,7 +39,11 @@ void sendFindFileKeys(State *state, int32_t c)
 			state->findFile.selection = 0;
 		}
 	} else if (c == ctrl('a')) {
-		state->selectAll = !state->selectAll;
+		state->selectAll = false;
+		moveCursorStart(&state->findFile);
+	} else if (c == ctrl('e')) {
+		state->selectAll = false;
+		moveCursorEnd(&state->findFile);
 	} else if (c == ctrl('g')) {
 		backspaceAll(&state->grep);
 		generateGrepOutput(state, true);
@@ -95,6 +100,7 @@ void sendFindFileKeys(State *state, int32_t c)
 		}
 		addFromClipboard(&state->findFile);
 	} else if (c == ctrl('w')) {
+		state->selectAll = false;
 		backspaceWord(&state->findFile);
 	} else if (c == '\n') {
 		if (state->findFile.selection < state->findFileOutput.size()) {
@@ -103,7 +109,7 @@ void sendFindFileKeys(State *state, int32_t c)
 			state->resetState(selectedFile);
 		}
 	}
-	if (state->mode == FINDFILE && c != ctrl('u') && c != ctrl('d') && c != ctrl('p') && c != ctrl('n')) {
+	if (state->mode == FINDFILE && cachedFileString != state->findFile.query) {
 		renderScreen(state);
 		generateFindFileOutput(state);
 	}

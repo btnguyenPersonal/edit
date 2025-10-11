@@ -21,6 +21,16 @@ void setQuery(Query *input, std::string s)
 	input->cursor = s.length();
 }
 
+void moveCursorStart(Query *input)
+{
+	input->cursor = 0;
+}
+
+void moveCursorEnd(Query *input)
+{
+	input->cursor = input->query.length();
+}
+
 void moveCursorLeft(Query *input)
 {
 	if (input->cursor > 0) {
