@@ -414,7 +414,9 @@ State::State()
 	this->logLines = std::vector<std::string>();
 	this->blame = std::vector<std::string>();
 	this->harpoon = std::vector<Harpoon>();
-	this->harpoon.push_back({ 0, std::vector<std::string>() });
+	for (uint32_t i = 0; i < 10; i++) {
+		this->harpoon.push_back({ 0, std::vector<std::string>() });
+	}
 	this->workspace = 0;
 	this->data = std::vector<std::string>();
 	this->previousState = std::vector<std::string>();

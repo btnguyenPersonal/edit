@@ -198,15 +198,6 @@ void swapCase(State *state, uint32_t r, uint32_t c)
 	}
 }
 
-void focusHarpoon(State *state)
-{
-	// for (uint32_t i = 0; i < 10; i++) {
-	// 	if (state->harpoonFiles.count(i) > 0 && state->harpoonFiles[i] == state->filename) {
-	// 		state->harpoonIndex = i;
-	// 	}
-	// }
-}
-
 void recordHistory(State *state, std::vector<diffLine> diff)
 {
 	if (state->historyPosition < (int32_t)state->history.size()) {
@@ -339,69 +330,72 @@ int32_t contains(const std::map<uint32_t, std::string> &myMap, const std::string
 	return -1;
 }
 
+bool eraseHarpoon(State *state)
+{
+	if (state->harpoon[state->workspace].index < state->harpoon[state->workspace].list.size()) {
+		state->harpoon[state->workspace].list.erase(state->harpoon[state->workspace].list.begin() + state->harpoon[state->workspace].index);
+		return true;
+	}
+	return false;
+}
+
+void clearHarpoon(State *state)
+{
+	state->harpoon[state->workspace].index = 0;
+	state->harpoon[state->workspace].list.clear();
+}
+
 void jumpToPrevHarpoon(State *state)
 {
-	// for (int32_t i = state->harpoonIndex - 1; i >= 0; i--) {
-	// 	if (jumpToHarpoon(state, i + 1)) {
-	// 		return;
-	// 	}
-	// }
-	jumpToHarpoon(state, 1);
+	if (state->harpoon[state->workspace].index > 0) {
+		jumpToHarpoon(state, state->harpoon[state->workspace].index - 1);
+	}
 }
 
 void jumpToNextHarpoon(State *state)
 {
-	// for (int32_t i = state->harpoonIndex + 1; i < state->options.maxHarpoon; i++) {
-	// 	if (jumpToHarpoon(state, i + 1)) {
-	// 		return;
-	// 	}
-	// }
-	jumpToHarpoon(state, state->options.maxHarpoon);
+	jumpToHarpoon(state, state->harpoon[state->workspace].index + 1);
+}
+
+void focusHarpoon(State *state)
+{
+	jumpToHarpoon(state, state->harpoon[state->workspace].index);
+}
+
+bool containsHarpoon(State *state)
+{
+	for (uint32_t i = 0; i < state->harpoon[state->workspace].list.size(); i++) {
+		if (state->filename == state->harpoon[state->workspace].list[i]) {
+			return true;
+		}
+	}
+	return false;
 }
 
 bool createNewestHarpoon(State *state)
 {
-	// for (int32_t num = state->harpoonIndex + 1; num <= state->options.maxHarpoon; num++) {
-	// 	int32_t index = contains(state->harpoonFiles, state->filename);
-	// 	if (index == -1 && state->harpoonFiles.count(num - 1) == 0) {
-	// 		state->harpoonIndex = num - 1;
-	// 		state->harpoonFiles[state->harpoonIndex] = state->filename;
-	// 		state->prevKeys = "";
-	// 		return true;
-	// 	}
-	// }
-	return false;
+	if (containsHarpoon(state)) {
+		return false;
+	}
+	if (state->workspace >= state->harpoon.size()) {
+		state->status = "harpoon workspace over limit";
+		return false;
+	}
+	state->harpoon[state->workspace].list.push_back(state->filename);
+	state->harpoon[state->workspace].index = state->harpoon[state->workspace].list.size() - 1;
+	return true;
 }
 
 bool jumpToHarpoon(State *state, uint32_t num)
 {
-	// if (num > 0) {
-	// 	if (state->prevKeys == "g") {
-	// 		int32_t index = contains(state->harpoonFiles, state->filename);
-	// 		std::string temp = "";
-	// 		if (index != -1) {
-	// 			state->harpoonFiles.erase(index);
-	// 			for (uint32_t i = 1; 0 < state->harpoonPageSize; i++) {
-	// 				if (state->harpoonFiles.count(num + i - 1) == 0) {
-	// 					state->harpoonFiles[num + i - 1] = state->filename;
-	// 					state->harpoonIndex = num + i - 1;
-	// 					break;
-	// 				}
-	// 			}
-	// 		} else {
-	// 			state->harpoonFiles[num - 1] = state->filename;
-	// 			state->harpoonIndex = num - 1;
-	// 		}
-	// 		state->prevKeys = "";
-	// 	} else if (state->harpoonFiles.count(num - 1) > 0) {
-	// 		if (!state->resetState(state->harpoonFiles[num - 1])) {
-	// 			state->harpoonFiles.erase(num - 1);
-	// 			return false;
-	// 		}
-	// 		state->harpoonIndex = num - 1;
-	// 		return true;
-	// 	}
-	// }
+	if (num < state->harpoon[state->workspace].list.size()) {
+		if (!state->resetState(state->harpoon[state->workspace].list[num])) {
+			state->harpoon[state->workspace].list.erase(state->harpoon[state->workspace].list.begin() + num);
+			return false;
+		}
+		state->harpoon[state->workspace].index = num;
+		return true;
+	}
 	return false;
 }
 
@@ -822,30 +816,22 @@ std::string getExtension(const std::string &filename)
 
 void moveHarpoonRight(State *state)
 {
-	// if (state->harpoonFiles.count(state->harpoonIndex) > 0) {
-	// 	if (state->harpoonIndex + 1 < 9) {
-	// 		std::string temp = state->harpoonFiles[state->harpoonIndex];
-	// 		state->harpoonFiles.erase(state->harpoonIndex);
-	// 		if (state->harpoonFiles.count(state->harpoonIndex + 1) > 0) {
-	// 			state->harpoonFiles[state->harpoonIndex] = state->harpoonFiles[state->harpoonIndex + 1];
-	// 		}
-	// 		state->harpoonFiles[state->harpoonIndex + 1] = temp;
-	// 	}
-	// }
+	if (state->harpoon[state->workspace].index + 1 < state->harpoon[state->workspace].list.size()) {
+		auto temp = state->harpoon[state->workspace].list[state->harpoon[state->workspace].index];
+		state->harpoon[state->workspace].list[state->harpoon[state->workspace].index] = state->harpoon[state->workspace].list[state->harpoon[state->workspace].index + 1];
+		state->harpoon[state->workspace].list[state->harpoon[state->workspace].index + 1] = temp;
+		state->harpoon[state->workspace].index += 1;
+	}
 }
 
 void moveHarpoonLeft(State *state)
 {
-	// if (state->harpoonFiles.count(state->harpoonIndex) > 0) {
-	// 	if (state->harpoonIndex > 0) {
-	// 		std::string temp = state->harpoonFiles[state->harpoonIndex];
-	// 		state->harpoonFiles.erase(state->harpoonIndex);
-	// 		if (state->harpoonFiles.count(state->harpoonIndex - 1) > 0) {
-	// 			state->harpoonFiles[state->harpoonIndex] = state->harpoonFiles[state->harpoonIndex - 1];
-	// 		}
-	// 		state->harpoonFiles[state->harpoonIndex - 1] = temp;
-	// 	}
-	// }
+	if (state->harpoon[state->workspace].index > 0) {
+		auto temp = state->harpoon[state->workspace].list[state->harpoon[state->workspace].index];
+		state->harpoon[state->workspace].list[state->harpoon[state->workspace].index] = state->harpoon[state->workspace].list[state->harpoon[state->workspace].index - 1];
+		state->harpoon[state->workspace].list[state->harpoon[state->workspace].index - 1] = temp;
+		state->harpoon[state->workspace].index -= 1;
+	}
 }
 
 void trimTrailingWhitespace(State *state)
