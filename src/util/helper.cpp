@@ -826,7 +826,7 @@ void moveHarpoonRight(State *state)
 
 void moveHarpoonLeft(State *state)
 {
-	if (state->harpoon[state->workspace].index > 0) {
+	if (state->harpoon[state->workspace].index > 0 && state->harpoon[state->workspace].index < state->harpoon[state->workspace].list.size()) {
 		auto temp = state->harpoon[state->workspace].list[state->harpoon[state->workspace].index];
 		state->harpoon[state->workspace].list[state->harpoon[state->workspace].index] = state->harpoon[state->workspace].list[state->harpoon[state->workspace].index - 1];
 		state->harpoon[state->workspace].list[state->harpoon[state->workspace].index - 1] = temp;

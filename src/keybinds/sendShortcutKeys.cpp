@@ -438,7 +438,7 @@ void sendShortcutKeys(State *state, int32_t c)
 		moveHarpoonLeft(state);
 	} else if (c == ctrl('x')) {
 		if (eraseHarpoon(state)) {
-			moveHarpoonLeft(state);
+			jumpToPrevHarpoon(state);
 		}
 	} else if (c == 'X') {
 		clearHarpoon(state);
