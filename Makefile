@@ -44,16 +44,19 @@ COMMON_SOURCES := \
 MAIN_SOURCES = $(SRC_DIR)/edit.cpp $(COMMON_SOURCES)
 FUZZ_SOURCES = $(FUZZ_DIR)/fuzzer.cpp $(COMMON_SOURCES)
 TEST_SOURCES = $(TEST_DIR)/testAll.cpp $(COMMON_SOURCES)
+TEST_GREP_SOURCES = $(TEST_DIR)/testGrep.cpp $(COMMON_SOURCES)
 
 MAIN_OBJECTS = $(patsubst %.cpp, $(BUILD_DIR)/%.o, $(notdir $(MAIN_SOURCES)))
 FUZZ_OBJECTS = $(patsubst %.cpp, $(BUILD_DIR)/%.o, $(notdir $(FUZZ_SOURCES)))
 TEST_OBJECTS = $(patsubst %.cpp, $(BUILD_DIR)/%.o, $(notdir $(TEST_SOURCES)))
+TEST_GREP_OBJECTS = $(patsubst %.cpp, $(BUILD_DIR)/%.o, $(notdir $(TEST_GREP_SOURCES)))
 
 DEPS = $(wildcard $(BUILD_DIR)/*.d)
 
 MAIN_EXECUTABLE = $(BUILD_DIR)/e
 FUZZ_EXECUTABLE = $(BUILD_DIR)/fuzz
 TEST_EXECUTABLE = $(BUILD_DIR)/test
+TEST_GREP_EXECUTABLE = $(BUILD_DIR)/testGrep
 
 .PHONY: all fuzz test clean dev install format
 
@@ -63,6 +66,9 @@ fuzz: $(BUILD_DIR) $(FUZZ_EXECUTABLE)
 
 test: $(BUILD_DIR) $(TEST_EXECUTABLE)
 	$(TEST_EXECUTABLE)
+
+testGrep: $(BUILD_DIR) $(TEST_GREP_EXECUTABLE)
+	$(TEST_GREP_EXECUTABLE)
 
 $(BUILD_DIR):
 	mkdir -p $(BUILD_DIR)
@@ -76,6 +82,9 @@ $(FUZZ_EXECUTABLE): $(FUZZ_OBJECTS)
 $(TEST_EXECUTABLE): $(TEST_OBJECTS)
 	$(CC) $^ -o $@ $(LDFLAGS) $(CFLAGS)
 
+$(TEST_GREP_EXECUTABLE): $(TEST_GREP_OBJECTS)
+	$(CC) $^ -o $@ $(LDFLAGS) $(CFLAGS)
+
 $(BUILD_DIR)/%.o: $(SRC_DIR)/%.cpp
 	$(CC) -c $< -o $@ $(CFLAGS) $(DEPFLAGS)
 
@@ -86,6 +95,9 @@ $(BUILD_DIR)/%.o: $(KEYBINDS_DIR)/%.cpp
 	$(CC) -c $< -o $@ $(CFLAGS) $(DEPFLAGS)
 
 $(BUILD_DIR)/%.o: $(FUZZ_DIR)/%.cpp
+	$(CC) -c $< -o $@ $(CFLAGS) $(DEPFLAGS)
+
+$(BUILD_DIR)/%.o: $(TEST_DIR)/%.cpp
 	$(CC) -c $< -o $@ $(CFLAGS) $(DEPFLAGS)
 
 $(BUILD_DIR)/%.o: $(TEST_DIR)/%.cpp
