@@ -1648,7 +1648,7 @@ bool isOffScreenVertical(State *state)
 	uint32_t windowRow = state->windowPosition.row;
 	uint32_t rowsBelow = 0;
 	while (windowRow < state->data.size() && rowsBelow + 2 < state->maxY) {
-		if (state->row == windowRow) {
+		if (state->row == windowRow && getDisplayRows(state, state->row) <= state->maxY) {
 			return false;
 		}
 		rowsBelow += getDisplayRows(state, windowRow);
@@ -1679,6 +1679,9 @@ uint32_t getCenteredWindowPosition(State *state)
 	uint32_t windowRow = state->row;
 	uint32_t rowsAbove = getDisplayRows(state, state->row, state->col);
 	while (windowRow > 0 && rowsAbove < state->maxY / 2) {
+		if (rowsAbove + getDisplayRows(state, windowRow - 1) >= state->maxY / 2) {
+			break;
+		}
 		windowRow--;
 		rowsAbove += getDisplayRows(state, windowRow);
 	}

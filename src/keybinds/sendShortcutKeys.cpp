@@ -137,6 +137,16 @@ void sendShortcutKeys(State *state, int32_t c)
 		state->col = getNormalizedCol(state, state->hardCol);
 		state->skipSetHardCol = true;
 		state->prevKeys = "";
+	} else if (state->prevKeys == "g" && c == ctrl('u')) {
+		for (uint32_t i = 0; i < state->maxY / 2; i++) {
+			upVisual(state);
+		}
+		state->prevKeys = "";
+	} else if (state->prevKeys == "g" && c == ctrl('d')) {
+		for (uint32_t i = 0; i < state->maxY / 2; i++) {
+			downVisual(state);
+		}
+		state->prevKeys = "";
 	} else if (state->prevKeys == "g" && (c == 'k' || c == KEY_UP)) {
 		upVisual(state);
 		state->prevKeys = "";

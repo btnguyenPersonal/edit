@@ -601,6 +601,7 @@ Cursor renderDiff(State *state)
 int32_t renderLineContent(State *state, int32_t row, int32_t renderRow, Cursor *cursor)
 {
 	std::vector<Pixel> pixels = std::vector<Pixel>();
+	std::vector<Pixel> replacePixels = std::vector<Pixel>();
 
 	if (isRowColInVisual(state, row, 0) && state->data[row].length() == 0) {
 		insertPixels(state, &pixels, " ", invertColor(WHITE));
@@ -617,7 +618,22 @@ int32_t renderLineContent(State *state, int32_t row, int32_t renderRow, Cursor *
 		bool isComment = false;
 		bool foundCursor = false;
 
-		for (uint32_t col = 0; col < state->data[row].length(); col++) {
+		uint32_t col = 0;
+		if (getDisplayRows(state, row) > state->maxY) {
+			int32_t width = ((int32_t)state->maxX - getLineNumberOffset(state));
+			int32_t offset = ((((int32_t) state->maxY / 2) - 1) * width) + (width / 2);
+			if (state->col > (uint32_t) offset) {
+				col = state->col - offset;
+				cursor->row = (state->maxY / 2) + 1;
+				cursor->col = width / 2;
+				foundCursor = true;
+				insertPixels(state, &replacePixels, '.', GREY);
+				insertPixels(state, &replacePixels, '.', GREY);
+				insertPixels(state, &replacePixels, '.', GREY);
+				insertPixels(state, &replacePixels, '>', GREY);
+			}
+		}
+		for (; col < state->data[row].length(); col++) {
 			char c = state->data[row][col];
 
 			if (skipNext) {
@@ -716,6 +732,11 @@ int32_t renderLineContent(State *state, int32_t row, int32_t renderRow, Cursor *
 				cursor->col = getDisplayLength(state, state->data[row]);
 				foundCursor = true;
 			}
+		}
+	}
+	for (uint32_t i = 0; i < replacePixels.size(); i++) {
+		if (i < pixels.size()) {
+			pixels[i] = replacePixels[i];
 		}
 	}
 	return renderRow + renderPixels(state, renderRow, getLineNumberOffset(state), pixels, true);
