@@ -55,6 +55,7 @@ struct Mark {
 };
 
 struct Jumplist {
+	bool touched;
 	uint32_t index;
 	std::vector<Position> list;
 };

@@ -717,12 +717,14 @@ bool sendVisualKeys(State *state, char c, bool onlyMotions)
 			state->jumplist.index--;
 			state->row = state->jumplist.list[state->jumplist.index].row;
 			state->col = state->jumplist.list[state->jumplist.index].col;
+			state->jumplist.touched = true;
 		}
-	} else if (c == ctrl('q')) {
+	} else if (c == 'Z') {
 		if (state->jumplist.index + 1 < state->jumplist.list.size()) {
 			state->jumplist.index++;
 			state->row = state->jumplist.list[state->jumplist.index].row;
 			state->col = state->jumplist.list[state->jumplist.index].col;
+			state->jumplist.touched = true;
 		}
 	} else {
 		return false;

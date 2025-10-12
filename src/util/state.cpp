@@ -409,7 +409,7 @@ State::State()
 	this->searching = false;
 	this->dontSave = false;
 	this->replacing = false;
-	this->jumplist = { 0, std::vector<Position>() };
+	this->jumplist = { false, 0, std::vector<Position>() };
 	this->buildErrorIndex = 0;
 	this->blameSize = 65;
 	this->diffLines = std::vector<std::string>();

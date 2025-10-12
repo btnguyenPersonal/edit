@@ -33,7 +33,7 @@ void cleanup(State *state, char c)
 				recordMacroCommand(state, c);
 			}
 		}
-		if (c != ctrl('z') && c != ctrl('q')) {
+		if (!state->jumplist.touched) {
 			recordJumpList(state);
 		}
 		if (state->mode == SHORTCUTS) {

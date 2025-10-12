@@ -232,6 +232,7 @@ void recordJumpList(State *state)
 		state->jumplist.list.push_back({ state->row, state->col });
 		state->jumplist.index = state->jumplist.list.size() - 1;
 	}
+	state->jumplist.touched = false;
 }
 
 void recordMacroCommand(State *state, char c)
