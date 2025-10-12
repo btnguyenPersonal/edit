@@ -7,6 +7,7 @@
 #include <string>
 #include <vector>
 
+void realignHarpoon(State *state);
 int32_t getLastModifiedDate(State *state, std::string filename);
 std::vector<std::string> getDiffLines(State *state);
 std::vector<std::string> getLogLines(State *state);

@@ -49,6 +49,7 @@ void cleanup(State *state, char c)
 			}
 		}
 		state->matching = matchIt(state);
+		realignHarpoon(state);
 	}
 	state->dontRecordKey = false;
 }

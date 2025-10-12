@@ -362,6 +362,15 @@ void focusHarpoon(State *state)
 	jumpToHarpoon(state, state->harpoon[state->workspace].index);
 }
 
+void realignHarpoon(State *state)
+{
+	for (uint32_t i = 0; i < state->harpoon[state->workspace].list.size(); i++) {
+		if (state->harpoon[state->workspace].list[i] == state->filename) {
+			state->harpoon[state->workspace].index = i;
+		}
+	}
+}
+
 bool containsHarpoon(State *state)
 {
 	for (uint32_t i = 0; i < state->harpoon[state->workspace].list.size(); i++) {
