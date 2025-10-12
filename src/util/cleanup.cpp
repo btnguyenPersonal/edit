@@ -37,7 +37,7 @@ void cleanup(State *state, char c)
 			recordJumpList(state);
 		}
 		if (state->mode == SHORTCUTS) {
-			std::vector<diffLine> diff = generateDiff(state->previousState, state->data);
+			std::vector<diffLine> diff = generateFastDiff(state->previousState, state->data);
 			if (diff.size() != 0) {
 				state->previousState = state->data;
 				if (c != ctrl('r') && c != 'u') {
