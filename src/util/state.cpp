@@ -216,7 +216,6 @@ void State::print(std::string filename, bool printGrep, bool printArchives)
 	out << "lastSave " << this->lastSave << std::endl;
 	out << "maxY " << this->maxY << std::endl;
 	out << "maxX " << this->maxX << std::endl;
-	// TODO std::map<uint32_t, std::string> harpoonFiles;
 	out << "buildDir " << this->buildDir << std::endl;
 	out << "commentSymbol " << this->commentSymbol << std::endl;
 	out << "filename " << this->filename << std::endl;
@@ -247,7 +246,6 @@ void State::print(std::string filename, bool printGrep, bool printArchives)
 	out << "col " << std::to_string(this->col) << std::endl;
 	out << "fileExplorerSize " << std::to_string(this->fileExplorerSize) << std::endl;
 	out << "fileStackIndex " << std::to_string(this->fileStackIndex) << std::endl;
-	out << "harpoonIndex " << std::to_string(this->harpoonIndex) << std::endl;
 	out << "lineNumSize " << std::to_string(this->lineNumSize) << std::endl;
 	out << "row " << std::to_string(this->row) << std::endl;
 	out.close();
@@ -415,9 +413,9 @@ State::State()
 	this->diffLines = std::vector<std::string>();
 	this->logLines = std::vector<std::string>();
 	this->blame = std::vector<std::string>();
-	this->harpoonFiles = std::map<uint32_t, std::string>();
-	this->harpoonIndex = 0;
-	this->harpoonPageSize = 7;
+	this->harpoon = std::vector<Harpoon>();
+	this->harpoon.push_back({ 0, std::vector<std::string>() });
+	this->workspace = 0;
 	this->data = std::vector<std::string>();
 	this->previousState = std::vector<std::string>();
 	this->history = std::vector<std::vector<diffLine> >();

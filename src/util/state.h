@@ -54,6 +54,11 @@ struct Mark {
 	uint32_t mark;
 };
 
+struct Harpoon {
+	uint32_t index;
+	std::vector<std::string> list;
+};
+
 struct Jumplist {
 	bool touched;
 	uint32_t index;
@@ -129,7 +134,6 @@ class State {
 	int32_t lastSave;
 	static uint32_t maxX;
 	static uint32_t maxY;
-	std::map<uint32_t, std::string> harpoonFiles;
 	std::string prompt;
 	std::string buildDir;
 	std::string commentSymbol;
@@ -150,6 +154,7 @@ class State {
 	std::vector<std::string> macroCommand;
 	std::vector<std::string> previousState;
 	std::vector<std::vector<diffLine> > history;
+	std::vector<Harpoon> harpoon;
 	std::vector<ModeKey> keys;
 	struct Position visual;
 	struct Position windowPosition;
@@ -157,10 +162,9 @@ class State {
 	uint32_t col;
 	uint32_t fileExplorerSize;
 	uint32_t fileStackIndex;
-	uint32_t harpoonIndex;
 	uint32_t lineNumSize;
 	uint32_t row;
-	uint32_t harpoonPageSize;
+	uint32_t workspace;
 	uint32_t logIndex;
 	uint32_t diffIndex;
 	State();

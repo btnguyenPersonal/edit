@@ -219,26 +219,15 @@ int32_t renderStatusBar(State *state)
 	std::string prefix;
 	std::vector<Pixel> pixels = std::vector<Pixel>();
 
-	uint32_t i = 0;
-	uint32_t page = 1;
-	uint32_t limit = state->harpoonPageSize;
-	while (state->harpoonIndex >= limit) {
-		page++;
-		i += state->harpoonPageSize;
-		limit += state->harpoonPageSize;
-	}
 	insertPixels(state, &pixels, '*', ORANGE);
-	insertPixels(state, &pixels, std::to_string(page), ORANGE);
+	insertPixels(state, &pixels, std::to_string(state->workspace + 1), ORANGE);
 	insertPixels(state, &pixels, ' ', WHITE);
-	for (; i < limit; i++) {
-		std::string s;
-		if (state->harpoonFiles.count(i) > 0) {
-			bool current = state->harpoonFiles[i] == state->filename && state->harpoonIndex == i;
-			insertPixels(state, &pixels, minimize_filename(state->harpoonFiles[i]),
-				     current ? invertColor(WHITE) : GREY);
-			insertPixels(state, &pixels, ' ', WHITE);
-			insertPixels(state, &pixels, ' ', WHITE);
-		}
+	for (uint32_t i = 0; i < state->harpoon[state->workspace].list.size(); i++) {
+		std::string file = state->harpoon[state->workspace].list[i];
+		bool current = file == state->filename && state->harpoon[state->workspace].index == i;
+		insertPixels(state, &pixels, minimize_filename(file), current ? invertColor(WHITE) : GREY);
+		insertPixels(state, &pixels, ' ', WHITE);
+		insertPixels(state, &pixels, ' ', WHITE);
 	}
 	renderPixels(state, 0, 0, pixels, false);
 

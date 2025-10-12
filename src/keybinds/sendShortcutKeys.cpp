@@ -151,23 +151,23 @@ void sendShortcutKeys(State *state, int32_t c)
 	} else if (c == ' ') {
 		createNewestHarpoon(state);
 	} else if (c == '1') {
-		jumpToHarpoon(state, 1);
+		state->workspace = 0;
 	} else if (c == '2') {
-		jumpToHarpoon(state, 1 + 1 * state->harpoonPageSize);
+		state->workspace = 1;
 	} else if (c == '3') {
-		jumpToHarpoon(state, 1 + 2 * state->harpoonPageSize);
+		state->workspace = 2;
 	} else if (c == '4') {
-		jumpToHarpoon(state, 1 + 3 * state->harpoonPageSize);
+		state->workspace = 3;
 	} else if (c == '5') {
-		jumpToHarpoon(state, 1 + 4 * state->harpoonPageSize);
+		state->workspace = 4;
 	} else if (c == '6') {
-		jumpToHarpoon(state, 1 + 5 * state->harpoonPageSize);
+		state->workspace = 5;
 	} else if (c == '7') {
-		jumpToHarpoon(state, 1 + 6 * state->harpoonPageSize);
+		state->workspace = 6;
 	} else if (c == '8') {
-		jumpToHarpoon(state, 1 + 7 * state->harpoonPageSize);
+		state->workspace = 7;
 	} else if (c == '9') {
-		jumpToHarpoon(state, 1 + 8 * state->harpoonPageSize);
+		state->workspace = 8;
 	} else if (state->prevKeys != "") {
 		state->prevKeys = "";
 	} else if (c == ':') {
@@ -428,13 +428,13 @@ void sendShortcutKeys(State *state, int32_t c)
 	} else if (c == KEY_BACKSPACE || c == ctrl('h')) {
 		moveHarpoonLeft(state);
 	} else if (c == ctrl('x')) {
-		if (state->harpoonFiles.count(state->harpoonIndex) > 0) {
-			state->harpoonFiles.erase(state->harpoonIndex);
-		}
+		// if (state->harpoonFiles.count(state->harpoonIndex) > 0) {
+		// 	state->harpoonFiles.erase(state->harpoonIndex);
+		// }
 		jumpToPrevHarpoon(state);
 	} else if (c == 'X') {
-		state->harpoonIndex = 0;
-		state->harpoonFiles.clear();
+		// state->harpoonIndex = 0;
+		// state->harpoonFiles.clear();
 	} else if (c == 'e') {
 		toggleComment(state);
 		state->col = getIndexFirstNonSpace(state);
