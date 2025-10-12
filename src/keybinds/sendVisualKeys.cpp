@@ -375,7 +375,7 @@ bool sendVisualKeys(State *state, char c, bool onlyMotions)
 	} else if (state->prevKeys == "i" && c == 't') {
 		setStateFromWordPosition(state, findParentheses(state->data[state->row], '>', '<', state->col, false));
 		state->prevKeys = "";
-	} else if (state->prevKeys == "i" && c == 'T') {
+	} else if (state->prevKeys == "i" && (c == 'T' || c == '>' || c == '<')) {
 		setStateFromWordPosition(state, findParentheses(state->data[state->row], '<', '>', state->col, false));
 		state->prevKeys = "";
 	} else if (state->prevKeys == "i" && c == 'd') {
