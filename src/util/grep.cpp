@@ -7,9 +7,17 @@
 #include <mutex>
 #include <functional>
 #include <semaphore>
+#include <algorithm>
+
+const static int32_t THREAD_MAX = 20;
 
 // TODO rm
 #include <iostream>
+
+bool sortByLineNum(const grepMatch &first, const grepMatch &second)
+{
+	return first.lineNum < second.lineNum;
+}
 
 bool sortByFileType(const grepMatch &first, const grepMatch &second)
 {
@@ -22,18 +30,17 @@ bool sortByFileType(const grepMatch &first, const grepMatch &second)
 		return true;
 	}
 	if (firstFile == secondFile) {
-		return first.lineNum < second.lineNum;
+		return sortByLineNum(first, second);
 	}
 	return firstFile < secondFile;
 }
 
 void grepFile(const std::filesystem::path &file_path, const std::string &query,
-				const std::filesystem::path &dir_path, std::mutex &allMatchesMutex, std::vector<grepMatch> &allMatches,
-				std::counting_semaphore<10> &fileSemaphore)
+				const std::filesystem::path &dir_path, std::mutex &allMatchesMutex, std::vector<grepMatch> &allMatches)
 {
 	auto relativePath = file_path.lexically_relative(dir_path);
 	std::vector<grepMatch> matches;
-	fileSemaphore.acquire();
+	std::cout << relativePath << std::endl;
 	std::ifstream file(file_path);
 	std::string line;
 	int32_t lineNumber = 0;
@@ -44,7 +51,7 @@ void grepFile(const std::filesystem::path &file_path, const std::string &query,
 		}
 	}
 	file.close();
-	fileSemaphore.release();
+	std::sort(matches.begin(), matches.end(), sortByLineNum);
 	allMatchesMutex.lock();
 	for (uint32_t i = 0; i < matches.size(); i++) {
 		allMatches.push_back(matches[i]);
@@ -52,12 +59,45 @@ void grepFile(const std::filesystem::path &file_path, const std::string &query,
 	allMatchesMutex.unlock();
 }
 
+void grepThread(
+	const std::string &query,
+	const std::filesystem::path &dir_path,
+	std::mutex &allMatchesMutex,
+	std::vector<grepMatch> &allMatches,
+	std::mutex &allFilesMutex,
+	std::vector<std::filesystem::path> &allFiles
+)
+{
+	std::filesystem::path file;
+	bool done = false;
+	do {
+		allFilesMutex.lock();
+		if (allFiles.size() > 0) {
+			file = allFiles.back();
+			allFiles.pop_back();
+		} else {
+			done = true;
+		}
+		allFilesMutex.unlock();
+		if (!done) {
+			grepFile(
+				file,
+				query,
+				dir_path,
+				allMatchesMutex,
+				allMatches
+			);
+		}
+	} while (!done);
+}
+
 std::vector<grepMatch> grepFiles(const std::filesystem::path &dir_path, const std::string &query, bool allowAllFiles)
 {
 	std::vector<grepMatch> allMatches;
 	std::mutex allMatchesMutex;
+	std::vector<std::filesystem::path> allFiles;
+	std::mutex allFilesMutex;
 	std::vector<std::thread> threads;
-	std::counting_semaphore<10> fileSemaphore(0);
 	for (auto it = std::filesystem::recursive_directory_iterator(dir_path);
 	     it != std::filesystem::recursive_directory_iterator(); ++it) {
 		if (!allowAllFiles && shouldIgnoreFile(it->path())) {
@@ -65,23 +105,31 @@ std::vector<grepMatch> grepFiles(const std::filesystem::path &dir_path, const st
 			continue;
 		}
 		if (std::filesystem::is_regular_file(it->path())) {
-			threads.push_back(
-				std::thread(
-					grepFile,
-					it->path(),
-					query,
-					dir_path,
-					std::ref(allMatchesMutex),
-					std::ref(allMatches),
-					std::ref(fileSemaphore)
-				)
-			);
+			allFilesMutex.lock();
+			allFiles.push_back(it->path());
+			allFilesMutex.unlock();
 		}
+	}
+	for (uint32_t i = 0; i < THREAD_MAX; i++) {
+		threads.push_back(
+			std::thread(
+				grepThread,
+				query,
+				dir_path,
+				std::ref(allMatchesMutex),
+				std::ref(allMatches),
+				std::ref(allFilesMutex),
+				std::ref(allFiles)
+			)
+		);
 	}
 	std::cout << threads.size() << std::endl;
 	for (uint32_t i = 0; i < threads.size(); i++) {
-		threads[i].join();
+		if (threads[i].joinable()) {
+			threads[i].join();
+		}
 	}
+	std::cout << "sorting " << allMatches.size() << " matches..." << std::endl;
 	std::sort(allMatches.begin(), allMatches.end(), sortByFileType);
 
 	return allMatches;
