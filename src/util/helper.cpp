@@ -121,6 +121,8 @@ std::string getMode(uint32_t mode)
 		return "FILEEXPLORER";
 	case 10:
 		return "NAMING";
+	case 11:
+		return "DIFF";
 	default:
 		return "";
 	}
