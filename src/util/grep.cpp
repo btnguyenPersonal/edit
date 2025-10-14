@@ -3,6 +3,12 @@
 
 #include <future>
 #include <fstream>
+#include <thread>
+#include <mutex>
+#include <functional>
+
+// TODO rm
+#include <iostream>
 
 bool sortByFileType(const grepMatch &first, const grepMatch &second)
 {
@@ -20,8 +26,8 @@ bool sortByFileType(const grepMatch &first, const grepMatch &second)
 	return firstFile < secondFile;
 }
 
-std::vector<grepMatch> grepFile(const std::filesystem::path &file_path, const std::string &query,
-				const std::filesystem::path &dir_path)
+void grepFile(const std::filesystem::path &file_path, const std::string &query,
+				const std::filesystem::path &dir_path, std::mutex &allMatchesMutex, std::vector<grepMatch> &allMatches)
 {
 	auto relativePath = file_path.lexically_relative(dir_path);
 	std::vector<grepMatch> matches;
@@ -34,12 +40,18 @@ std::vector<grepMatch> grepFile(const std::filesystem::path &file_path, const st
 			matches.emplace_back(relativePath, lineNumber, line);
 		}
 	}
-	return matches;
+	allMatchesMutex.lock();
+	for (uint32_t i = 0; i < matches.size(); i++) {
+		allMatches.push_back(matches[i]);
+	}
+	allMatchesMutex.unlock();
 }
 
 std::vector<grepMatch> grepFiles(const std::filesystem::path &dir_path, const std::string &query, bool allowAllFiles)
 {
 	std::vector<grepMatch> allMatches;
+	std::mutex allMatchesMutex;
+	std::vector<std::thread> threads;
 	for (auto it = std::filesystem::recursive_directory_iterator(dir_path);
 	     it != std::filesystem::recursive_directory_iterator(); ++it) {
 		if (!allowAllFiles && shouldIgnoreFile(it->path())) {
@@ -47,11 +59,12 @@ std::vector<grepMatch> grepFiles(const std::filesystem::path &dir_path, const st
 			continue;
 		}
 		if (std::filesystem::is_regular_file(it->path())) {
-			auto matches = grepFile(it->path(), query, dir_path);
-			for (uint32_t i = 0; i < matches.size(); i++) {
-				allMatches.push_back(matches[i]);
-			}
+			threads.push_back(std::thread(grepFile, it->path(), query, dir_path, std::ref(allMatchesMutex), std::ref(allMatches)));
 		}
+	}
+	std::cout << threads.size() << std::endl;
+	for (uint32_t i = 0; i < threads.size(); i++) {
+		threads[i].join();
 	}
 	std::sort(allMatches.begin(), allMatches.end(), sortByFileType);
 
