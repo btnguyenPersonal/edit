@@ -35,12 +35,23 @@ bool sortByFileType(const grepMatch &first, const grepMatch &second)
 	return firstFile < secondFile;
 }
 
+bool sortAllMatches(const std::vector<grepMatch> &first, const std::vector<grepMatch> &second)
+{
+	if (first.size() == 0) {
+		return false;
+	} else if (second.size() == 0) {
+		return true;
+	}
+	grepMatch firstGrep = first[0];
+	grepMatch secondGrep = second[0];
+	return sortByFileType(firstGrep, secondGrep);
+}
+
 void grepFile(const std::filesystem::path &file_path, const std::string &query,
-				const std::filesystem::path &dir_path, std::mutex &allMatchesMutex, std::vector<grepMatch> &allMatches)
+				const std::filesystem::path &dir_path, std::mutex &allMatchesMutex, std::vector<std::vector<grepMatch>> &allMatches)
 {
 	auto relativePath = file_path.lexically_relative(dir_path);
 	std::vector<grepMatch> matches;
-	std::cout << relativePath << std::endl;
 	std::ifstream file(file_path);
 	std::string line;
 	int32_t lineNumber = 0;
@@ -53,9 +64,7 @@ void grepFile(const std::filesystem::path &file_path, const std::string &query,
 	file.close();
 	std::sort(matches.begin(), matches.end(), sortByLineNum);
 	allMatchesMutex.lock();
-	for (uint32_t i = 0; i < matches.size(); i++) {
-		allMatches.push_back(matches[i]);
-	}
+	allMatches.push_back(matches);
 	allMatchesMutex.unlock();
 }
 
@@ -63,7 +72,7 @@ void grepThread(
 	const std::string &query,
 	const std::filesystem::path &dir_path,
 	std::mutex &allMatchesMutex,
-	std::vector<grepMatch> &allMatches,
+	std::vector<std::vector<grepMatch>> &allMatches,
 	std::mutex &allFilesMutex,
 	std::vector<std::filesystem::path> &allFiles
 )
@@ -93,7 +102,7 @@ void grepThread(
 
 std::vector<grepMatch> grepFiles(const std::filesystem::path &dir_path, const std::string &query, bool allowAllFiles)
 {
-	std::vector<grepMatch> allMatches;
+	std::vector<std::vector<grepMatch>> allMatches;
 	std::mutex allMatchesMutex;
 	std::vector<std::filesystem::path> allFiles;
 	std::mutex allFilesMutex;
@@ -123,16 +132,21 @@ std::vector<grepMatch> grepFiles(const std::filesystem::path &dir_path, const st
 			)
 		);
 	}
-	std::cout << threads.size() << std::endl;
 	for (uint32_t i = 0; i < threads.size(); i++) {
 		if (threads[i].joinable()) {
 			threads[i].join();
 		}
 	}
-	std::cout << "sorting " << allMatches.size() << " matches..." << std::endl;
-	std::sort(allMatches.begin(), allMatches.end(), sortByFileType);
+	std::sort(allMatches.begin(), allMatches.end(), sortAllMatches);
+	std::vector<grepMatch> output;
+	for (uint32_t i = 0; i < allMatches.size(); i++) {
+		for (uint32_t j = 0; j < allMatches[i].size(); j++) {
+			output.push_back(allMatches[i][j]);
+		}
+	}
+	std::cout << output.size() << std::endl;
 
-	return allMatches;
+	return output;
 }
 
 void generateGrepOutput(State *state, bool resetCursor)
