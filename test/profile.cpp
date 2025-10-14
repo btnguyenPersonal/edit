@@ -2,12 +2,7 @@
 #include "../src/util/helper.h"
 #include "../src/util/history.h"
 
-int main()
-{
-	// std::vector<grepMatch> v = grepFiles(std::filesystem::path("../vscode"), "abc", true);
-	// for (uint32_t i = 0; i < v.size(); i++) {
-	// 	std::cout << v[i].path.string() << ":" << v[i].lineNum << std::endl;
-	// }
+void diff() {
 	std::vector<std::string> a = {
 		"aaaaaaaaaaaaaaaa",
 		"bbbbbbbbbbbbbbbb",
@@ -76,4 +71,23 @@ int main()
 	for (uint32_t i = 0; i < diff.size(); i++) {
 		std::cout << diff[i].line << std::endl;
 	}
+}
+
+void grep() {
+	std::vector<grepMatch> v = grepFiles(std::filesystem::path("../vscode"), "a", true);
+	for (uint32_t i = 0; i < v.size(); i++) {
+		// std::cout << v[i].path.string() << ":" << v[i].lineNum << std::endl;
+	}
+}
+
+void find() {
+	std::vector<std::filesystem::path> v = findFiles(std::filesystem::path("../vscode"), "a");
+	for (uint32_t i = 0; i < v.size(); i++) {
+		std::cout << v[i].string() << std::endl;
+	}
+}
+
+int main()
+{
+	grep();
 }
