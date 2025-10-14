@@ -20,6 +20,8 @@
 #include <vector>
 #include <regex>
 
+#include <chrono>
+
 std::vector<std::string> getLogLines(State *state)
 {
 	std::vector<std::string> gitLogLines = { "current" };
@@ -1383,6 +1385,7 @@ bool filePathContainsSubstring(const std::filesystem::path &filePath, const std:
 std::vector<std::filesystem::path> findFiles(const std::filesystem::path &dir_path, const std::string &query)
 {
 	std::vector<std::filesystem::path> matching_files;
+	const auto start_time = std::chrono::steady_clock::now();
 	for (auto it = std::filesystem::recursive_directory_iterator(dir_path);
 	     it != std::filesystem::recursive_directory_iterator(); ++it) {
 		if (shouldIgnoreFile(it->path())) {
@@ -1396,6 +1399,11 @@ std::vector<std::filesystem::path> findFiles(const std::filesystem::path &dir_pa
 			}
 		}
 	}
+	auto end_time = std::chrono::steady_clock::now();
+	auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time);
+	std::cout << "find time: " << duration.count() << " milliseconds" << std::endl;
+	std::cout << "num: " << matching_files.size() << std::endl;
+	int32_t times = 0;
 	std::sort(matching_files.begin(), matching_files.end(),
 		  [&](const std::filesystem::path &a, const std::filesystem::path &b) {
 			  int32_t matchA = maxConsecutiveMatch(a, query);
@@ -1409,8 +1417,13 @@ std::vector<std::filesystem::path> findFiles(const std::filesystem::path &dir_pa
 				  }
 				  return a.string() < b.string();
 			  }
+			times++;
 			  return matchA > matchB;
 		  });
+	std::cout << "times:" << times << std::endl;
+	end_time = std::chrono::steady_clock::now();
+	duration = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time);
+	std::cout << "sort time: " << duration.count() << " milliseconds" << std::endl;
 	return matching_files;
 }
 

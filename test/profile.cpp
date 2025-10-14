@@ -83,12 +83,12 @@ void grep() {
 
 void find() {
 	std::vector<std::filesystem::path> v = findFiles(std::filesystem::path("../vscode"), "a");
-	for (uint32_t i = 0; i < v.size(); i++) {
-		std::cout << v[i].string() << std::endl;
-	}
+	// for (uint32_t i = 0; i < v.size(); i++) {
+	// 	std::cout << v[i].string() << std::endl;
+	// }
 }
 
 int main()
 {
-	grep();
+	find();
 }
