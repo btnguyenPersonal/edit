@@ -5,11 +5,11 @@
 #include "visualType.h"
 #include "prompt.h"
 #include "expect.h"
+#include "ignore.h"
 #include <algorithm>
 #include <climits>
 #include <cstdio>
 #include <fstream>
-#include <future>
 #include <iostream>
 #include <iterator>
 #include <map>
@@ -419,12 +419,6 @@ std::string setStringToLength(const std::string &s, uint32_t length, bool showTi
 		}
 		return output;
 	}
-}
-
-bool isTestFile(const std::string &filepath)
-{
-	return filepath.find(".spec") != std::string::npos || filepath.find(".test") != std::string::npos ||
-	       filepath.find(".cy") != std::string::npos;
 }
 
 void rename(State *state, const std::filesystem::path &oldPath, const std::string &newName)
@@ -1384,86 +1378,6 @@ bool filePathContainsSubstring(const std::filesystem::path &filePath, const std:
 	return queryIndex == queryLower.length();
 }
 
-bool shouldIgnoreFile(const std::filesystem::path &path)
-{
-	std::vector<std::string> allowList = { "[...nextauth]", ".github", ".gitconfig", ".gitignore" };
-	for (uint32_t i = 0; i < allowList.size(); i++) {
-		if (path.string().find(allowList[i]) != std::string::npos) {
-			return false;
-		}
-	}
-	std::vector<std::string> ignoreList = {
-		".nx/",	    ".mozilla/",    ".vim/",	 "nyc_output/",	  "results/",
-		"target/",  "resources/",   ".git",	 "node_modules/", "build/",
-		"dist/",    "cdk.out/",	    ".next/",	 "tmp/",	  "__pycache__/",
-		"autogen/", "coverage/",    "assets/",	 "extra/",	  ".jar",
-		".jpg",	    ".jpeg",	    ".png",	 ".pdf",	  "package-lock.json",
-		".cache/",  ".eslintcache", ".DS_Store", "snapshots/"
-	};
-	for (uint32_t i = 0; i < ignoreList.size(); i++) {
-		if (path.string().find(ignoreList[i]) != std::string::npos) {
-			return true;
-		}
-	}
-	return false;
-}
-
-std::vector<grepMatch> grepFile(const std::filesystem::path &file_path, const std::string &query,
-				const std::filesystem::path &dir_path)
-{
-	auto relativePath = file_path.lexically_relative(dir_path);
-	std::vector<grepMatch> matches;
-	std::ifstream file(file_path);
-	std::string line;
-	int32_t lineNumber = 0;
-	while (std::getline(file, line)) {
-		lineNumber++;
-		if (line.find(query) != std::string::npos) {
-			matches.emplace_back(relativePath, lineNumber, line);
-		}
-	}
-	return matches;
-}
-
-bool sortByFileType(const grepMatch &first, const grepMatch &second)
-{
-	std::string firstFile = first.path.string();
-	std::string secondFile = second.path.string();
-	if (isTestFile(firstFile) && !isTestFile(secondFile)) {
-		return false;
-	}
-	if (!isTestFile(firstFile) && isTestFile(secondFile)) {
-		return true;
-	}
-	if (firstFile == secondFile) {
-		return first.lineNum < second.lineNum;
-	}
-	return firstFile < secondFile;
-}
-
-std::vector<grepMatch> grepFiles(const std::filesystem::path &dir_path, const std::string &query, bool allowAllFiles)
-{
-	std::vector<std::future<std::vector<grepMatch> > > futures;
-	for (auto it = std::filesystem::recursive_directory_iterator(dir_path);
-	     it != std::filesystem::recursive_directory_iterator(); ++it) {
-		if (!allowAllFiles && shouldIgnoreFile(it->path())) {
-			it.disable_recursion_pending();
-			continue;
-		}
-		if (std::filesystem::is_regular_file(it->path())) {
-			futures.push_back(std::async(std::launch::async, grepFile, it->path(), query, dir_path));
-		}
-	}
-	std::vector<grepMatch> allMatches;
-	for (auto &future : futures) {
-		auto matches = future.get();
-		allMatches.insert(allMatches.end(), matches.begin(), matches.end());
-	}
-	std::sort(allMatches.begin(), allMatches.end(), sortByFileType);
-
-	return allMatches;
-}
-
 std::vector<std::filesystem::path> findFiles(const std::filesystem::path &dir_path, const std::string &query)
 {
 	std::vector<std::filesystem::path> matching_files;
@@ -1496,20 +1410,6 @@ std::vector<std::filesystem::path> findFiles(const std::filesystem::path &dir_pa
 			  return matchA > matchB;
 		  });
 	return matching_files;
-}
-
-void generateGrepOutput(State *state, bool resetCursor)
-{
-	if (state->grep.query == "") {
-		state->grepOutput.clear();
-	} else {
-		state->grepOutput = grepFiles(state->grepPath == "" ? std::filesystem::current_path() :
-								      std::filesystem::path(state->grepPath),
-					      state->grep.query, state->showAllGrep);
-	}
-	if (resetCursor) {
-		state->grep.selection = 0;
-	}
 }
 
 void generateFindFileOutput(State *state)

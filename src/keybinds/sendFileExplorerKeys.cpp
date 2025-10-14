@@ -5,6 +5,7 @@
 #include "../util/modes.h"
 #include "../util/state.h"
 #include "../util/prompt.h"
+#include "../util/grep.h"
 #include <ncurses.h>
 #include <string>
 #include <vector>

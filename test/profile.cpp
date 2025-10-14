@@ -1,5 +1,6 @@
 #include <iostream>
 #include "../src/util/helper.h"
+#include "../src/util/grep.h"
 #include "../src/util/history.h"
 
 void diff() {

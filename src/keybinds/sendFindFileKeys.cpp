@@ -5,6 +5,7 @@
 #include "../util/render.h"
 #include "../util/query.h"
 #include "../util/state.h"
+#include "../util/grep.h"
 #include <ncurses.h>
 #include <string>
 #include <vector>

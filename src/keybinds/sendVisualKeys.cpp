@@ -8,6 +8,7 @@
 #include "../util/modes.h"
 #include "../util/query.h"
 #include "../util/state.h"
+#include "../util/grep.h"
 #include <algorithm>
 #include <ncurses.h>
 #include <string>

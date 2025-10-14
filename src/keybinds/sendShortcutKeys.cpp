@@ -13,6 +13,7 @@
 #include "../util/expect.h"
 #include "../util/cleanup.h"
 #include "../util/keys.h"
+#include "../util/grep.h"
 #include "sendKeys.h"
 #include "sendVisualKeys.h"
 #include <algorithm>
