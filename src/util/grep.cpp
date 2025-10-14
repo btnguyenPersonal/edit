@@ -4,10 +4,25 @@
 #include <future>
 #include <fstream>
 
+bool sortByFileType(const grepMatch &first, const grepMatch &second)
+{
+	std::string firstFile = first.path.string();
+	std::string secondFile = second.path.string();
+	if (isTestFile(firstFile) && !isTestFile(secondFile)) {
+		return false;
+	}
+	if (!isTestFile(firstFile) && isTestFile(secondFile)) {
+		return true;
+	}
+	if (firstFile == secondFile) {
+		return first.lineNum < second.lineNum;
+	}
+	return firstFile < secondFile;
+}
+
 std::vector<grepMatch> grepFile(const std::filesystem::path &file_path, const std::string &query,
 				const std::filesystem::path &dir_path)
 {
-	auto start = std::chrono::high_resolution_clock::now();
 	auto relativePath = file_path.lexically_relative(dir_path);
 	std::vector<grepMatch> matches;
 	std::ifstream file(file_path);
@@ -19,15 +34,12 @@ std::vector<grepMatch> grepFile(const std::filesystem::path &file_path, const st
 			matches.emplace_back(relativePath, lineNumber, line);
 		}
 	}
-	auto end = std::chrono::high_resolution_clock::now();
-	std::chrono::duration<double> duration = end - start;
-	std::cout << relativePath.string() << " " << duration.count() << "s" << std::endl;
 	return matches;
 }
 
 std::vector<grepMatch> grepFiles(const std::filesystem::path &dir_path, const std::string &query, bool allowAllFiles)
 {
-	std::vector<std::future<std::vector<grepMatch> > > futures;
+	std::vector<grepMatch> allMatches;
 	for (auto it = std::filesystem::recursive_directory_iterator(dir_path);
 	     it != std::filesystem::recursive_directory_iterator(); ++it) {
 		if (!allowAllFiles && shouldIgnoreFile(it->path())) {
@@ -35,13 +47,11 @@ std::vector<grepMatch> grepFiles(const std::filesystem::path &dir_path, const st
 			continue;
 		}
 		if (std::filesystem::is_regular_file(it->path())) {
-			futures.push_back(std::async(std::launch::async, grepFile, it->path(), query, dir_path));
+			auto matches = grepFile(it->path(), query, dir_path);
+			for (uint32_t i = 0; i < matches.size(); i++) {
+				allMatches.push_back(matches[i]);
+			}
 		}
-	}
-	std::vector<grepMatch> allMatches;
-	for (auto &future : futures) {
-		auto matches = future.get();
-		allMatches.insert(allMatches.end(), matches.begin(), matches.end());
 	}
 	std::sort(allMatches.begin(), allMatches.end(), sortByFileType);
 
@@ -60,20 +70,4 @@ void generateGrepOutput(State *state, bool resetCursor)
 	if (resetCursor) {
 		state->grep.selection = 0;
 	}
-}
-
-bool sortByFileType(const grepMatch &first, const grepMatch &second)
-{
-	std::string firstFile = first.path.string();
-	std::string secondFile = second.path.string();
-	if (isTestFile(firstFile) && !isTestFile(secondFile)) {
-		return false;
-	}
-	if (!isTestFile(firstFile) && isTestFile(secondFile)) {
-		return true;
-	}
-	if (firstFile == secondFile) {
-		return first.lineNum < second.lineNum;
-	}
-	return firstFile < secondFile;
 }
