@@ -69,6 +69,12 @@ void sendSearchKeys(State *state, int32_t c)
 		} else {
 			backspaceAll(&state->search);
 		}
+	} else if (c == ctrl('w')) {
+		if (state->replacing) {
+			backspaceWord(&state->replace);
+		} else {
+			backspaceWord(&state->search);
+		}
 	} else if (c == ctrl('v')) {
 		if (state->replacing) {
 			addFromClipboard(&state->replace);
