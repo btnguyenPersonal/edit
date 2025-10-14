@@ -4,39 +4,10 @@
 #include <future>
 #include <fstream>
 
-bool sortByFileType(const grepMatch &first, const grepMatch &second)
-{
-	std::string firstFile = first.path.string();
-	std::string secondFile = second.path.string();
-	if (isTestFile(firstFile) && !isTestFile(secondFile)) {
-		return false;
-	}
-	if (!isTestFile(firstFile) && isTestFile(secondFile)) {
-		return true;
-	}
-	if (firstFile == secondFile) {
-		return first.lineNum < second.lineNum;
-	}
-	return firstFile < secondFile;
-}
-
-void generateGrepOutput(State *state, bool resetCursor)
-{
-	if (state->grep.query == "") {
-		state->grepOutput.clear();
-	} else {
-		state->grepOutput = grepFiles(state->grepPath == "" ? std::filesystem::current_path() :
-								      std::filesystem::path(state->grepPath),
-					      state->grep.query, state->showAllGrep);
-	}
-	if (resetCursor) {
-		state->grep.selection = 0;
-	}
-}
-
 std::vector<grepMatch> grepFile(const std::filesystem::path &file_path, const std::string &query,
 				const std::filesystem::path &dir_path)
 {
+	auto start = std::chrono::high_resolution_clock::now();
 	auto relativePath = file_path.lexically_relative(dir_path);
 	std::vector<grepMatch> matches;
 	std::ifstream file(file_path);
@@ -48,6 +19,9 @@ std::vector<grepMatch> grepFile(const std::filesystem::path &file_path, const st
 			matches.emplace_back(relativePath, lineNumber, line);
 		}
 	}
+	auto end = std::chrono::high_resolution_clock::now();
+	std::chrono::duration<double> duration = end - start;
+	std::cout << relativePath.string() << " " << duration.count() << "s" << std::endl;
 	return matches;
 }
 
@@ -72,4 +46,34 @@ std::vector<grepMatch> grepFiles(const std::filesystem::path &dir_path, const st
 	std::sort(allMatches.begin(), allMatches.end(), sortByFileType);
 
 	return allMatches;
+}
+
+void generateGrepOutput(State *state, bool resetCursor)
+{
+	if (state->grep.query == "") {
+		state->grepOutput.clear();
+	} else {
+		state->grepOutput = grepFiles(state->grepPath == "" ? std::filesystem::current_path() :
+								      std::filesystem::path(state->grepPath),
+					      state->grep.query, state->showAllGrep);
+	}
+	if (resetCursor) {
+		state->grep.selection = 0;
+	}
+}
+
+bool sortByFileType(const grepMatch &first, const grepMatch &second)
+{
+	std::string firstFile = first.path.string();
+	std::string secondFile = second.path.string();
+	if (isTestFile(firstFile) && !isTestFile(secondFile)) {
+		return false;
+	}
+	if (!isTestFile(firstFile) && isTestFile(secondFile)) {
+		return true;
+	}
+	if (firstFile == secondFile) {
+		return first.lineNum < second.lineNum;
+	}
+	return firstFile < secondFile;
 }
