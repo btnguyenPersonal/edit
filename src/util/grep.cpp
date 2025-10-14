@@ -9,10 +9,7 @@
 #include <semaphore>
 #include <algorithm>
 
-const static int32_t THREAD_MAX = 20;
-
-// TODO rm
-#include <iostream>
+const static int32_t THREAD_MAX = 5;
 
 bool sortByLineNum(const grepMatch &first, const grepMatch &second)
 {
@@ -138,14 +135,17 @@ std::vector<grepMatch> grepFiles(const std::filesystem::path &dir_path, const st
 		}
 	}
 	std::sort(allMatches.begin(), allMatches.end(), sortAllMatches);
+	uint32_t size = 0;
+	for (uint32_t i = 0; i < allMatches.size(); i++) {
+		size += allMatches[i].size();
+	}
 	std::vector<grepMatch> output;
+	output.reserve(size);
 	for (uint32_t i = 0; i < allMatches.size(); i++) {
 		for (uint32_t j = 0; j < allMatches[i].size(); j++) {
 			output.push_back(allMatches[i][j]);
 		}
 	}
-	std::cout << output.size() << std::endl;
-
 	return output;
 }
 
