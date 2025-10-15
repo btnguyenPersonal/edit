@@ -3,6 +3,7 @@
 #include "util/render.h"
 #include "util/state.h"
 #include "util/cleanup.h"
+#include "util/find.h"
 #include <cstdint>
 #include <iostream>
 
@@ -22,7 +23,7 @@ int32_t main(int32_t argc, char *argv[])
 			std::cerr << "no file specified when running as root" << std::endl;
 			exit(1);
 		}
-		generateFindFileOutput(state);
+		generateFindOutput(state);
 	}
 	initTerminal();
 	calcWindowBounds();

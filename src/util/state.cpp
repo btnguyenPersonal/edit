@@ -189,7 +189,7 @@ void State::print(std::string filename, bool printGrep, bool printArchives)
 	out << "matching.row " << std::to_string(this->matching.row) << std::endl;
 	out << "matching.col " << std::to_string(this->matching.col) << std::endl;
 	printQuery(out, this->commandLine, "commandLine");
-	printQuery(out, this->findFile, "findFile");
+	printQuery(out, this->find, "find");
 	printQuery(out, this->grep, "grep");
 	printQuery(out, this->name, "name");
 	printQuery(out, this->replace, "replace");
@@ -231,7 +231,7 @@ void State::print(std::string filename, bool printGrep, bool printArchives)
 		printGrepOutput(out, this->grepOutput, std::string("grepOutput"));
 	}
 	printVecChar(out, this->motion, std::string("motion"));
-	printVecPath(out, this->findFileOutput, std::string("findFileOutput"));
+	printVecPath(out, this->findOutput, std::string("findOutput"));
 	printVec(out, this->blame, std::string("blame"));
 	printVec(out, this->data, std::string("data"));
 	printVec(out, this->dotCommand, std::string("dotCommand"));
@@ -422,7 +422,7 @@ State::State()
 	this->previousState = std::vector<std::string>();
 	this->history = std::vector<std::vector<diffLine> >();
 	this->grepOutput = std::vector<grepMatch>();
-	this->findFileOutput = std::vector<std::filesystem::path>();
+	this->findOutput = std::vector<std::filesystem::path>();
 	this->historyPosition = -1;
 	this->lastSave = -1;
 	this->windowPosition.row = 0;
@@ -436,7 +436,7 @@ State::State()
 	this->search = { std::string(""), 0, 0 };
 	this->replace = { std::string(""), 0, 0 };
 	this->commandLine = { std::string(""), 0, 0 };
-	this->findFile = { std::string(""), 0, 0 };
+	this->find = { std::string(""), 0, 0 };
 	this->grepPath = "";
 	this->grep = { std::string(""), 0, 0 };
 	this->prevKeys = std::string("");

@@ -5,7 +5,7 @@ commandLine {
     0
     0
 }
-findFile {
+find {
     
     0
     0
@@ -73,7 +73,7 @@ keys [
 prevKeys 
 status 
 motion []
-findFileOutput []
+findOutput []
 blame []
 data [
     #include <X11/XF86keysym.h>

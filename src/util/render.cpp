@@ -261,13 +261,13 @@ int32_t renderStatusBar(State *state)
 	} else if (state->mode == FINDFILE) {
 		prefix = "> ";
 		insertPixels(state, &pixels, prefix, YELLOW);
-		insertPixels(state, &pixels, state->findFile.query, state->selectAll ? invertColor(YELLOW) : YELLOW);
+		insertPixels(state, &pixels, state->find.query, state->selectAll ? invertColor(YELLOW) : YELLOW);
 		insertPixels(state, &pixels, "  ", WHITE);
-		insertPixels(state, &pixels, std::to_string(state->findFile.selection + 1), WHITE);
+		insertPixels(state, &pixels, std::to_string(state->find.selection + 1), WHITE);
 		insertPixels(state, &pixels, " of ", WHITE);
-		insertPixels(state, &pixels, std::to_string(state->findFileOutput.size()), WHITE);
+		insertPixels(state, &pixels, std::to_string(state->findOutput.size()), WHITE);
 		renderPixels(state, 1, 0, pixels, false);
-		return prefix.length() + state->findFile.cursor;
+		return prefix.length() + state->find.cursor;
 	} else {
 		if (state->recording) {
 			std::string s;
@@ -436,20 +436,20 @@ void renderGrepOutput(State *state)
 void renderFindFileOutput(State *state)
 {
 	uint32_t index;
-	if ((int32_t)state->findFile.selection - ((int32_t)state->maxY / 2) > 0) {
-		index = state->findFile.selection - state->maxY / 2;
+	if ((int32_t)state->find.selection - ((int32_t)state->maxY / 2) > 0) {
+		index = state->find.selection - state->maxY / 2;
 	} else {
 		index = 0;
 	}
 	uint32_t renderIndex = STATUS_BAR_LENGTH;
 	int32_t color;
-	for (uint32_t i = index; i < state->findFileOutput.size() && i < index + state->maxY; i++) {
+	for (uint32_t i = index; i < state->findOutput.size() && i < index + state->maxY; i++) {
 		std::vector<Pixel> pixels = std::vector<Pixel>();
-		color = isTestFile(state->findFileOutput[i]) ? ORANGE : WHITE;
-		if (i == state->findFile.selection) {
+		color = isTestFile(state->findOutput[i]) ? ORANGE : WHITE;
+		if (i == state->find.selection) {
 			color = invertColor(color);
 		}
-		std::string line = safeSubstring(state->findFileOutput[i], 0, state->maxX);
+		std::string line = safeSubstring(state->findOutput[i], 0, state->maxX);
 		insertPixels(state, &pixels, line, color);
 		renderPixels(state, renderIndex, 0, pixels, false);
 		renderIndex++;

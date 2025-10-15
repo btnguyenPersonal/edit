@@ -1,5 +1,6 @@
 #include <iostream>
 #include "../src/util/helper.h"
+#include "../src/util/find.h"
 #include "../src/util/grep.h"
 #include "../src/util/history.h"
 
@@ -82,7 +83,7 @@ void grep() {
 }
 
 void find() {
-	std::vector<std::filesystem::path> v = findFiles(std::filesystem::path("../vscode"), "a");
+	std::vector<std::filesystem::path> v = find(std::filesystem::path("../vscode"), "a");
 	// for (uint32_t i = 0; i < v.size(); i++) {
 	// 	std::cout << v[i].string() << std::endl;
 	// }

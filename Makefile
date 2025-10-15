@@ -29,6 +29,7 @@ COMMON_SOURCES := \
   $(UTIL_DIR)/cleanup.cpp \
   $(UTIL_DIR)/keys.cpp \
   $(UTIL_DIR)/grep.cpp \
+  $(UTIL_DIR)/find.cpp \
   $(UTIL_DIR)/ignore.cpp \
   $(KEYBINDS_DIR)/sendKeys.cpp \
   $(KEYBINDS_DIR)/sendVisualKeys.cpp \

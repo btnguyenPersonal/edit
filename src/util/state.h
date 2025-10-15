@@ -103,7 +103,7 @@ class State {
 	Options options;
 	Position matching;
 	Query commandLine;
-	Query findFile;
+	Query find;
 	Query grep;
 	Query name;
 	Query replace;
@@ -144,7 +144,7 @@ class State {
 	std::vector<Archive> archives;
 	std::vector<grepMatch> grepOutput;
 	std::vector<int32_t> motion;
-	std::vector<std::filesystem::path> findFileOutput;
+	std::vector<std::filesystem::path> findOutput;
 	std::vector<std::string> diffLines;
 	std::vector<std::string> logLines;
 	std::vector<std::string> blame;

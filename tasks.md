@@ -2,7 +2,7 @@
 - profile
 	- diff
 	- grep
-	- findFile
+	- find
 
 - make diff generation happen in the background
 

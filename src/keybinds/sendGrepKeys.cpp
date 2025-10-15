@@ -6,6 +6,7 @@
 #include "../util/query.h"
 #include "../util/state.h"
 #include "../util/grep.h"
+#include "../util/find.h"
 #include <ncurses.h>
 #include <string>
 #include <vector>
@@ -23,9 +24,9 @@ void sendGrepKeys(State *state, int32_t c)
 		backspace(&state->grep);
 		state->grep.selection = 0;
 	} else if (c == ctrl('g')) {
-		backspaceAll(&state->findFile);
-		generateFindFileOutput(state);
-		state->findFile.selection = 0;
+		backspaceAll(&state->find);
+		generateFindOutput(state);
+		state->find.selection = 0;
 		state->selectAll = false;
 		state->mode = FINDFILE;
 	} else if (c == ctrl('a')) {
