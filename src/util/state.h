@@ -6,7 +6,7 @@
 #include <filesystem>
 #include <string>
 #include <vector>
-#include <map>
+#include <mutex>
 
 struct buildError {
 	std::string filename;
@@ -96,6 +96,8 @@ struct Options {
 
 class State {
     public:
+	std::mutex findMutex;
+	std::mutex grepMutex;
 	FileExplorerNode *fileExplorer;
 	Jumplist jumplist;
 	Mark mark;

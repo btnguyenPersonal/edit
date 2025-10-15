@@ -1,5 +1,6 @@
 #include "./grep.h"
 #include "./ignore.h"
+#include "./render.h"
 
 #include <future>
 #include <fstream>
@@ -149,14 +150,26 @@ std::vector<grepMatch> grepFiles(const std::filesystem::path &dir_path, const st
 	return output;
 }
 
+void grepDispatch(State* state) {
+	auto query = state->grep.query;
+	auto output = grepFiles(state->grepPath == "" ? std::filesystem::current_path() :
+							      std::filesystem::path(state->grepPath),
+				      state->grep.query, state->showAllGrep);
+	state->grepMutex.lock();
+	if (query == state->grep.query) {
+		state->grepOutput = output;
+	}
+	state->grepMutex.unlock();
+	renderScreen(state, false);
+}
+
 void generateGrepOutput(State *state, bool resetCursor)
 {
 	if (state->grep.query == "") {
 		state->grepOutput.clear();
 	} else {
-		state->grepOutput = grepFiles(state->grepPath == "" ? std::filesystem::current_path() :
-								      std::filesystem::path(state->grepPath),
-					      state->grep.query, state->showAllGrep);
+		std::thread worker(grepDispatch, state);
+		worker.detach();
 	}
 	if (resetCursor) {
 		state->grep.selection = 0;

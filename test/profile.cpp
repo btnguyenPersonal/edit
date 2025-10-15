@@ -4,6 +4,9 @@
 #include "../src/util/grep.h"
 #include "../src/util/history.h"
 
+#include <chrono>
+#include <thread>
+
 void diff() {
 	std::vector<std::string> a = {
 		"aaaaaaaaaaaaaaaa",
@@ -91,5 +94,13 @@ void find() {
 
 int main()
 {
-	find();
+	State *state = new State();
+	state->grepPath = "../vscode";
+	state->grep.query = "a";
+	generateGrepOutput(state, false);
+	std::this_thread::sleep_for(std::chrono::seconds(1)); // Replace with actual work
+	state->grep.query = "abcd";
+	generateGrepOutput(state, false);
+	while (true) {
+	}
 }

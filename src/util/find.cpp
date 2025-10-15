@@ -1,5 +1,8 @@
 #include "./ignore.h"
 #include "./find.h"
+#include "./render.h"
+
+#include <thread>
 
 bool isAllLowercase(const std::string &str)
 {
@@ -78,7 +81,19 @@ std::vector<std::filesystem::path> find(const std::filesystem::path &dir_path, c
 	return matching_files;
 }
 
+void findDispatch(State* state) {
+	auto query = state->find.query;
+	auto output = find(std::filesystem::current_path(), state->find.query);
+	state->findMutex.lock();
+	if (query == state->find.query) {
+		state->findOutput = output;
+	}
+	state->findMutex.unlock();
+	renderScreen(state, false);
+}
+
 void generateFindOutput(State *state)
 {
-	state->findOutput = find(std::filesystem::current_path(), state->find.query);
+	std::thread worker(findDispatch, state);
+	worker.detach();
 }
