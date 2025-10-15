@@ -66,13 +66,14 @@ void diff() {
 	};
 	std::vector<std::string> aa;
 	std::vector<std::string> bb;
-	for (uint32_t j = 0; j < 100; j++) {
+	for (uint32_t j = 0; j < 1000; j++) {
 		for (uint32_t i = 0; i < 26; i++) {
 			aa.push_back(a[i]);
 			aa.push_back(b[i]);
 		}
 	}
-	std::vector<diffLine> diff = generateDiff(aa, bb);
+	std::cout << "75 aa.length" << aa.size() << std::endl;
+	std::vector<diffLine> diff = generateFastDiff(aa, bb);
 	// for (uint32_t i = 0; i < diff.size(); i++) {
 	// 	std::cout << diff[i].line << std::endl;
 	// }

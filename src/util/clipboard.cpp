@@ -9,6 +9,8 @@
 #include <string>
 #include <vector>
 
+#include <iostream> // TODO remove
+
 std::string getFromClipboard()
 {
 	std::string command;
@@ -203,6 +205,7 @@ void pasteFromClipboardVisual(State *state)
 		state->data[state->row] += clip[0];
 		int32_t lastRow = state->row;
 		for (int32_t i = 1; i < (int32_t)clip.size(); i++) {
+			std::cout << "iiiiiiiiii" << i << std::endl;
 			int32_t r = i + state->row;
 			state->data.insert(state->data.begin() + r, clip[i]);
 			lastRow = r;

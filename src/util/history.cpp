@@ -7,6 +7,8 @@
 #include <vector>
 #include <thread>
 
+#include <iostream> // TODO remove
+
 void recordHistory(State *state, std::vector<diffLine> diff)
 {
 	if (state->historyPosition < (int32_t)state->history.size()) {
@@ -98,6 +100,7 @@ std::vector<diffLine> generateDiff(const std::vector<std::string> &a, const std:
 	std::vector<std::vector<int32_t> > trace;
 
 	for (int32_t d = 0; d <= max; ++d) {
+		std::cout << d << std::endl;
 		for (int32_t k = -d; k <= d; k += 2) {
 			int32_t index = k + max;
 
@@ -142,4 +145,17 @@ void setDiffBackground(State *state)
 {
 	std::thread worker(diffDispatch, state);
 	worker.detach();
+}
+
+std::vector<diffLine> generateFastDiff(const std::vector<std::string> &a, const std::vector<std::string> &b)
+{
+	std::vector<diffLine> output;
+	output.reserve(a.size() + b.size());
+	for (uint32_t i = 0; i < a.size(); i++) {
+		output.push_back({ i, false, a[i] });
+	}
+	for (uint32_t i = 0; i < b.size(); i++) {
+		output.push_back({ i, true, b[i] });
+	}
+	return output;
 }
