@@ -13,6 +13,8 @@ bool isAllLowercase(const std::string &str)
 
 int32_t maxConsecutiveMatch(const std::filesystem::path &filePath, const std::string &query)
 {
+	const auto start_time = std::chrono::steady_clock::now(); // TODO
+
 	std::string filePathStr = filePath.string();
 	std::string queryLower = query;
 
@@ -42,11 +44,18 @@ int32_t maxConsecutiveMatch(const std::filesystem::path &filePath, const std::st
 			i++;
 		}
 	}
+
+	auto end_time = std::chrono::steady_clock::now(); // TODO
+	auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>(end_time - start_time); // TODO
+	std::cout << "query time: " << duration.count() << " nanoseconds" << std::endl; // TODO
+
 	return maxLength;
 }
 
 bool filePathContainsSubstring(const std::filesystem::path &filePath, const std::string &query)
 {
+	const auto start_time = std::chrono::steady_clock::now(); // TODO
+
 	std::string filePathStr = filePath.string();
 	std::string queryLower = query;
 
@@ -68,13 +77,17 @@ bool filePathContainsSubstring(const std::filesystem::path &filePath, const std:
 		}
 	}
 
+	auto end_time = std::chrono::steady_clock::now(); // TODO
+	auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>(end_time - start_time); // TODO
+	std::cout << "zoom time: " << duration.count() << " nanoseconds" << std::endl; // TODO
+
 	return queryIndex == queryLower.length();
 }
 
 std::vector<std::filesystem::path> find(const std::filesystem::path &dir_path, const std::string &query)
 {
 	std::vector<std::filesystem::path> matching_files;
-	const auto start_time = std::chrono::steady_clock::now();
+	const auto start_time = std::chrono::steady_clock::now(); // TODO
 	for (auto it = std::filesystem::recursive_directory_iterator(dir_path);
 	     it != std::filesystem::recursive_directory_iterator(); ++it) {
 		if (shouldIgnoreFile(it->path())) {
@@ -95,37 +108,38 @@ std::vector<std::filesystem::path> find(const std::filesystem::path &dir_path, c
 	std::unordered_map<std::filesystem::path, int32_t> map;
 	int hit = 0;
 	int miss = 0;
-	// std::sort(matching_files.begin(), matching_files.end(),
-	// 	[&](const std::filesystem::path &a, const std::filesystem::path &b) {
-	// 		int32_t matchA = map[a];
-	// 		if (matchA == 0) {
-	// 			matchA += 10 * maxConsecutiveMatch(a, query);
-	// 			if (isTestFile(a.string())) {
-	// 				matchA -= 5;
-	// 			}
-	// 			map[b] = matchA;
-	// 			miss++;
-	// 		} else {
-	// 			hit++;
-	// 		}
-	// 		int32_t matchB = map[b];
-	// 		if (matchB == 0) {
-	// 			matchB += 10 * maxConsecutiveMatch(b, query);
-	// 			if (isTestFile(b.string())) {
-	// 				matchB -= 5;
-	// 			}
-	// 			map[b] = matchB;
-	// 			miss++;
-	// 		} else {
-	// 			hit++;
-	// 		}
-	// 		if (matchA == matchB) {
-	// 			return a.string() < b.string();
-	// 		}
-	// 		return matchA > matchB;
-	// 	});
-	std::cout << hit << std::endl;
-	std::cout << miss << std::endl;
+	std::sort(matching_files.begin(), matching_files.end(),
+		[&](const std::filesystem::path &a, const std::filesystem::path &b) {
+			int32_t matchA = map[a];
+			if (matchA == 0) {
+				matchA += 10 * maxConsecutiveMatch(a, query);
+				// if (isTestFile(a.string())) {
+				// 	matchA -= 5;
+				// }
+				map[b] = matchA;
+				miss++;
+			} else {
+				hit++;
+			}
+			int32_t matchB = map[b];
+			if (matchB == 0) {
+				matchB += 10 * maxConsecutiveMatch(b, query);
+				// if (isTestFile(b.string())) {
+				// 	matchB -= 5;
+				// }
+				map[b] = matchB;
+				miss++;
+			} else {
+				hit++;
+			}
+			// if (matchA == matchB) {
+				// return true;
+				// return a.string() < b.string();
+			// }
+			return matchA > matchB;
+		});
+	std::cout << "cache hits: " << hit << std::endl;
+	std::cout << "cache misses: " << miss << std::endl;
 	end_time = std::chrono::steady_clock::now();
 	duration = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time);
 	std::cout << "sort time: " << duration.count() << " milliseconds" << std::endl;
