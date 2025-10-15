@@ -5,10 +5,6 @@
 #include <filesystem>
 #include <unordered_map>
 
-// TODO rm
-#include <iostream>
-#include <chrono>
-
 #include "./state.h"
 
 bool isAllLowercase(const std::string &str);
