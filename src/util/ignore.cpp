@@ -31,4 +31,3 @@ bool shouldIgnoreFile(const std::filesystem::path &path)
 	}
 	return false;
 }
-

@@ -621,8 +621,8 @@ int32_t renderLineContent(State *state, int32_t row, int32_t renderRow, Cursor *
 		uint32_t col = 0;
 		if (getDisplayRows(state, row) > state->maxY) {
 			int32_t width = ((int32_t)state->maxX - getLineNumberOffset(state));
-			int32_t offset = ((((int32_t) state->maxY / 2) - 1) * width) + (width / 2);
-			if (state->col > (uint32_t) offset) {
+			int32_t offset = ((((int32_t)state->maxY / 2) - 1) * width) + (width / 2);
+			if (state->col > (uint32_t)offset) {
 				col = state->col - offset;
 				cursor->row = (state->maxY / 2) + 1;
 				cursor->col = width / 2;

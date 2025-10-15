@@ -78,14 +78,16 @@ void diff() {
 	}
 }
 
-void grep() {
+void grep()
+{
 	std::vector<grepMatch> v = grepFiles(std::filesystem::path("../vscode"), "a", true);
 	// for (uint32_t i = 0; i < v.size(); i++) {
 	// 	std::cout << v[i].path.string() << ":" << v[i].lineNum << std::endl;
 	// }
 }
 
-void find() {
+void find()
+{
 	std::vector<std::filesystem::path> v = find(std::filesystem::path("../vscode"), "a");
 	// for (uint32_t i = 0; i < v.size(); i++) {
 	// 	std::cout << v[i].string() << std::endl;

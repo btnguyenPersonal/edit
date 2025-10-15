@@ -70,18 +70,19 @@ std::vector<std::filesystem::path> find(const std::filesystem::path &dir_path, c
 		}
 	}
 	std::sort(matching_files.begin(), matching_files.end(),
-		[&](const std::filesystem::path &a, const std::filesystem::path &b) {
-			int32_t matchA = cache[a];
-			int32_t matchB = cache[b];
-			if (matchA == matchB) {
-				return a.string() < b.string();
-			}
-			return matchA > matchB;
-		});
+		  [&](const std::filesystem::path &a, const std::filesystem::path &b) {
+			  int32_t matchA = cache[a];
+			  int32_t matchB = cache[b];
+			  if (matchA == matchB) {
+				  return a.string() < b.string();
+			  }
+			  return matchA > matchB;
+		  });
 	return matching_files;
 }
 
-void findDispatch(State* state) {
+void findDispatch(State *state)
+{
 	auto query = state->find.query;
 	auto output = find(std::filesystem::current_path(), state->find.query);
 	state->findMutex.lock();

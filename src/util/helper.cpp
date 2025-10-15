@@ -335,7 +335,8 @@ int32_t contains(const std::map<uint32_t, std::string> &myMap, const std::string
 bool eraseHarpoon(State *state)
 {
 	if (state->harpoon[state->workspace].index < state->harpoon[state->workspace].list.size()) {
-		state->harpoon[state->workspace].list.erase(state->harpoon[state->workspace].list.begin() + state->harpoon[state->workspace].index);
+		state->harpoon[state->workspace].list.erase(state->harpoon[state->workspace].list.begin() +
+							    state->harpoon[state->workspace].index);
 		return true;
 	}
 	return false;
@@ -401,7 +402,8 @@ bool jumpToHarpoon(State *state, uint32_t num)
 {
 	if (num < state->harpoon[state->workspace].list.size()) {
 		if (!state->resetState(state->harpoon[state->workspace].list[num])) {
-			state->harpoon[state->workspace].list.erase(state->harpoon[state->workspace].list.begin() + num);
+			state->harpoon[state->workspace].list.erase(state->harpoon[state->workspace].list.begin() +
+								    num);
 			return false;
 		}
 		state->harpoon[state->workspace].index = num;
@@ -823,7 +825,8 @@ void moveHarpoonRight(State *state)
 {
 	if (state->harpoon[state->workspace].index + 1 < state->harpoon[state->workspace].list.size()) {
 		auto temp = state->harpoon[state->workspace].list[state->harpoon[state->workspace].index];
-		state->harpoon[state->workspace].list[state->harpoon[state->workspace].index] = state->harpoon[state->workspace].list[state->harpoon[state->workspace].index + 1];
+		state->harpoon[state->workspace].list[state->harpoon[state->workspace].index] =
+			state->harpoon[state->workspace].list[state->harpoon[state->workspace].index + 1];
 		state->harpoon[state->workspace].list[state->harpoon[state->workspace].index + 1] = temp;
 		state->harpoon[state->workspace].index += 1;
 	}
@@ -831,9 +834,11 @@ void moveHarpoonRight(State *state)
 
 void moveHarpoonLeft(State *state)
 {
-	if (state->harpoon[state->workspace].index > 0 && state->harpoon[state->workspace].index < state->harpoon[state->workspace].list.size()) {
+	if (state->harpoon[state->workspace].index > 0 &&
+	    state->harpoon[state->workspace].index < state->harpoon[state->workspace].list.size()) {
 		auto temp = state->harpoon[state->workspace].list[state->harpoon[state->workspace].index];
-		state->harpoon[state->workspace].list[state->harpoon[state->workspace].index] = state->harpoon[state->workspace].list[state->harpoon[state->workspace].index - 1];
+		state->harpoon[state->workspace].list[state->harpoon[state->workspace].index] =
+			state->harpoon[state->workspace].list[state->harpoon[state->workspace].index - 1];
 		state->harpoon[state->workspace].list[state->harpoon[state->workspace].index - 1] = temp;
 		state->harpoon[state->workspace].index -= 1;
 	}
