@@ -200,17 +200,6 @@ void swapCase(State *state, uint32_t r, uint32_t c)
 	}
 }
 
-void recordHistory(State *state, std::vector<diffLine> diff)
-{
-	if (state->historyPosition < (int32_t)state->history.size()) {
-		state->history.erase(state->history.begin() + state->historyPosition + 1, state->history.end());
-	}
-	state->history.push_back(diff);
-	state->historyPosition = (int32_t)state->history.size() - 1;
-	state->diffIndex = state->historyPosition;
-	expect(state->historyPosition >= 0);
-}
-
 void recordJumpList(State *state)
 {
 	if (state->jumplist.list.size() > 0) {

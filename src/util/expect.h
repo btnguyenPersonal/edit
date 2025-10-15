@@ -1,4 +1,5 @@
 #include <iostream>
+#include <ncurses.h>
 
 #define expect(condition)                                                                                    \
 	if (!(condition)) {                                                                                  \

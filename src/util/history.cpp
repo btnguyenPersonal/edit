@@ -1,9 +1,22 @@
 #include "history.h"
 #include "state.h"
+#include "expect.h"
 #include <algorithm>
 #include <climits>
 #include <string>
 #include <vector>
+#include <thread>
+
+void recordHistory(State *state, std::vector<diffLine> diff)
+{
+	if (state->historyPosition < (int32_t)state->history.size()) {
+		state->history.erase(state->history.begin() + state->historyPosition + 1, state->history.end());
+	}
+	state->history.push_back(diff);
+	state->historyPosition = (int32_t)state->history.size() - 1;
+	state->diffIndex = state->historyPosition;
+	expect(state->historyPosition >= 0);
+}
 
 uint32_t applyDiff(State *state, std::vector<diffLine> diff, bool reverse)
 {
@@ -110,37 +123,23 @@ std::vector<diffLine> generateDiff(const std::vector<std::string> &a, const std:
 	return backtrack(trace, a, b, max);
 }
 
-std::vector<diffLine> generateFastDiff(const std::vector<std::string> &a, const std::vector<std::string> &b)
+void diffDispatch(State *state)
 {
-	std::vector<diffLine> output;
-	uint32_t aIndex = 0;
-	uint32_t bIndex = 0;
-	while (aIndex < a.size() && bIndex < b.size()) {
-		if (aIndex >= a.size()) {
-			output.push_back({ aIndex, false, a[aIndex] });
-			aIndex++;
-		}
-		if (bIndex >= b.size()) {
-			output.push_back({ aIndex, true, b[bIndex] });
-			bIndex++;
-		}
-		if (a[aIndex] == b[bIndex]) {
-			aIndex++;
-			bIndex++;
-		} else if (a[aIndex] != b[bIndex]) {
-			if (a.size() > b.size()) {
-				output.push_back({ aIndex, false, a[aIndex] });
-				aIndex++;
-			} else if (b.size() > a.size()) {
-				output.push_back({ aIndex, true, b[bIndex] });
-				bIndex++;
-			} else {
-				output.push_back({ aIndex, true, b[bIndex] });
-				bIndex++;
-				output.push_back({ aIndex, false, a[aIndex] });
-				aIndex++;
-			}
+	auto file = state->filename;
+	auto pos = state->historyPosition;
+	std::vector<diffLine> diff = generateDiff(state->previousState, state->data);
+	state->historyMutex.lock();
+	if (file == state->filename && pos == state->historyPosition) {
+		if (diff.size() != 0) {
+			state->previousState = state->data;
+			recordHistory(state, diff);
 		}
 	}
-	return output;
+	state->historyMutex.unlock();
+}
+
+void setDiffBackground(State *state)
+{
+	std::thread worker(diffDispatch, state);
+	worker.detach();
 }

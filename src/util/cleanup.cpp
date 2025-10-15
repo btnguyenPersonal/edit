@@ -37,15 +37,13 @@ void cleanup(State *state, char c)
 			recordJumpList(state);
 		}
 		if (state->mode == SHORTCUTS) {
-			std::vector<diffLine> diff = generateDiff(state->previousState, state->data);
-			if (diff.size() != 0) {
+			if (state->options.autosave && !state->runningAsRoot) {
+				saveFile(state);
+			}
+			if (c == 'u' || c == ctrl('r')) {
 				state->previousState = state->data;
-				if (c != ctrl('r') && c != 'u') {
-					recordHistory(state, diff);
-				}
-				if (state->options.autosave && !state->runningAsRoot) {
-					saveFile(state);
-				}
+			} else {
+				setDiffBackground(state);
 			}
 		}
 		state->matching = matchIt(state);

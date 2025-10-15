@@ -66,16 +66,16 @@ void diff() {
 	};
 	std::vector<std::string> aa;
 	std::vector<std::string> bb;
-	for (uint32_t j = 0; j < 1000; j++) {
+	for (uint32_t j = 0; j < 100; j++) {
 		for (uint32_t i = 0; i < 26; i++) {
 			aa.push_back(a[i]);
 			aa.push_back(b[i]);
 		}
 	}
-	std::vector<diffLine> diff = generateFastDiff(aa, bb);
-	for (uint32_t i = 0; i < diff.size(); i++) {
-		std::cout << diff[i].line << std::endl;
-	}
+	std::vector<diffLine> diff = generateDiff(aa, bb);
+	// for (uint32_t i = 0; i < diff.size(); i++) {
+	// 	std::cout << diff[i].line << std::endl;
+	// }
 }
 
 void grep()
@@ -96,13 +96,11 @@ void find()
 
 int main()
 {
-	State *state = new State();
-	state->grepPath = "../vscode";
-	state->grep.query = "a";
-	generateGrepOutput(state, false);
-	std::this_thread::sleep_for(std::chrono::seconds(1)); // Replace with actual work
-	state->grep.query = "abcd";
-	generateGrepOutput(state, false);
-	while (true) {
-	}
+	const auto start_time = std::chrono::steady_clock::now();
+
+	diff();
+
+	auto end_time = std::chrono::steady_clock::now();
+	auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time);
+	std::cout << "time: " << duration.count() << " milliseconds" << std::endl;
 }

@@ -96,6 +96,7 @@ struct Options {
 
 class State {
     public:
+	std::mutex historyMutex;
 	std::mutex findMutex;
 	std::mutex grepMutex;
 	FileExplorerNode *fileExplorer;
