@@ -29,7 +29,7 @@ std::string getLoggingRegex(State *state)
 	std::string extension = getExtension(state->filename);
 	std::string pattern = "";
 	if (extension == "cpp") {
-		pattern = "std::cout << \"[0-9]+\" .+? << std::endl;";
+		pattern = "std::cout << \"[0-9]+ .+? << std::endl;";
 	} else {
 		pattern = "console\\.log\\('[0-9]+', .+?\\);";
 	}
