@@ -3,6 +3,7 @@
 #include "../src/util/find.h"
 #include "../src/util/grep.h"
 #include "../src/util/history.h"
+#include "../src/keybinds/sendKeys.h"
 
 #include <chrono>
 #include <thread>
@@ -96,13 +97,12 @@ void find()
 
 int main()
 {
-	State *state = new State();
-	state->grepPath = "../vscode";
-	state->grep.query = "a";
-	generateGrepOutput(state, false);
+	State *state = new State("./test-file.h");
+	sendKeys(state, 'V');
+	sendKeys(state, 'G');
+	sendKeys(state, 'y');
 	std::this_thread::sleep_for(std::chrono::seconds(1)); // Replace with actual work
-	state->grep.query = "abcd";
-	generateGrepOutput(state, false);
-	while (true) {
-	}
+	sendKeys(state, 'g');
+	sendKeys(state, 'g');
+	sendKeys(state, 'P');
 }

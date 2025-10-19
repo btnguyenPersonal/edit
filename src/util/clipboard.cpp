@@ -9,6 +9,8 @@
 #include <string>
 #include <vector>
 
+#include <iostream>
+
 std::string getFromClipboard()
 {
 	std::string command;
@@ -235,8 +237,18 @@ void pasteFromClipboard(State *state)
 			state->data[state->row + i] = front + clip[i] + back;
 		}
 	} else if (!result.empty() && result.back() == '\n') {
-		for (int32_t i = 0; i < (int32_t)clip.size(); i++) {
-			state->data.insert(state->data.begin() + i + state->row, clip[i]);
+		size_t newSize = state->data.size() + clip.size();
+		std::cout << "238 newSize" << newSize << std::endl;
+		state->data.resize(newSize);
+		std::cout << "243 state->data.size()" << state->data.size() << std::endl;
+		std::cout << "243 clip.size()" << clip.size() << std::endl;
+		std::cout << "245 state->data.size() - clip.size() - 1" << state->data.size() - clip.size() - 1 << std::endl;
+		for (uint32_t i = state->data.size() - clip.size() - 1; i >= state->row; --i) {
+			// std::cout << "243 i" << i << std::endl;
+			state->data[i + clip.size()] = std::move(state->data[i]);
+		}
+		for (uint32_t i = 0; i < clip.size(); ++i) {
+			state->data[state->row + i] = clip[i];
 		}
 	} else if (clip.size() > 0) {
 		std::string current = state->data[state->row];
