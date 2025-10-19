@@ -53,7 +53,7 @@ std::string getLoggingCode(State *state, uint32_t row, std::string variableName,
 	std::string extension = getExtension(state->filename);
 	std::string rowStr = std::to_string(row + 1);
 	if (extension == "cpp") {
-		std::string s = "std::cout << \"" + rowStr + " " + variableName + "\"";
+		std::string s = "std::cout << \"" + rowStr + " " + variableName + ": \"";
 		if (showValue) {
 			s += " << " + variableName;
 		}
