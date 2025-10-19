@@ -62,7 +62,7 @@ std::vector<std::filesystem::path> find(const std::filesystem::path &dir_path, c
 		}
 		if (std::filesystem::is_regular_file(path)) {
 			auto relativePath = path.lexically_relative(dir_path);
-			int32_t matchQuery = maxConsecutiveMatch(relativePath, query);
+			int32_t matchQuery = query == "" ? 1 : maxConsecutiveMatch(relativePath, query);
 			if (matchQuery > 0) {
 				cache[relativePath] = matchQuery;
 				matching_files.push_back(relativePath);
