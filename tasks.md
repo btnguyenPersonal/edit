@@ -4,6 +4,9 @@
 	- grep
 	- find
 
+- change state->data to rope structure
+    - try to implement by hand that will be fun
+
 - make diff generation happen in the background
 
 - diff reader
