@@ -17,7 +17,7 @@ Rope::Rope()
 	this->length = 0;
 }
 
-uint32_t Rope::size()
+const uint32_t Rope::size() const
 {
 	return this->length;
 }
@@ -38,6 +38,21 @@ Node* Rope::get_before(uint32_t index)
 }
 
 Node* Rope::get(uint32_t index)
+{
+	Node* c = this->head;
+	if (index < 0) {
+		throw std::out_of_range("Rope: Index out of bounds");
+	}
+	if (index >= this->length) {
+		throw std::out_of_range("Rope: Index out of bounds");
+	}
+	for (uint32_t i = 0; i < index && i + 1 < this->length; i++) {
+		c = c->next;
+	}
+	return c;
+}
+
+const Node* Rope::get(uint32_t index) const
 {
 	Node* c = this->head;
 	if (index < 0) {
@@ -73,7 +88,12 @@ void Rope::erase(uint32_t index)
 	this->length--;
 }
 
-std::string Rope::operator[](uint32_t index)
+const std::string& Rope::operator[](uint32_t index) const
+{
+	return (this->get(index))->data;
+}
+
+std::string& Rope::operator[](uint32_t index)
 {
 	return (this->get(index))->data;
 }

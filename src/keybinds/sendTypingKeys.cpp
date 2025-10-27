@@ -11,7 +11,7 @@ void insertNewline(State *state)
 {
 	std::string current = state->data[state->row];
 	state->data[state->row] = current.substr(0, state->col);
-	state->data.insert(state->data.begin() + state->row + 1, current.substr(state->col));
+	state->data.insert(state->row + 1, current.substr(state->col));
 }
 
 void indentLineWhenTypingFirstChar(State *state)
@@ -58,7 +58,7 @@ void sendTypingKeys(State *state, int32_t c)
 		} else if (state->row > 0) {
 			state->col = state->data[state->row - 1].length();
 			state->data[state->row - 1] += state->data[state->row];
-			state->data.erase(state->data.begin() + state->row);
+			state->data.erase(state->row);
 			state->row -= 1;
 		}
 	} else if (c == ctrl('w')) {

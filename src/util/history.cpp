@@ -38,8 +38,8 @@ uint32_t applyDiff(State *state, std::vector<diffLine> diff, bool reverse)
 	return min;
 }
 
-std::vector<diffLine> backtrack(const std::vector<std::vector<int32_t> > &trace, const std::vector<std::string> &a,
-				const std::vector<std::string> &b, int32_t max)
+std::vector<diffLine> backtrack(const std::vector<std::vector<int32_t> > &trace, const Rope &a,
+				const Rope &b, int32_t max)
 {
 	std::vector<diffLine> diff;
 	int32_t x = a.size();

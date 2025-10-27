@@ -369,7 +369,7 @@ void sendShortcutKeys(State *state, int32_t c)
 		if (state->row + 1 < state->data.size()) {
 			state->data[state->row + 1]= ltrim(state->data[state->row + 1]);
 			state->data[state->row] += " " + state->data[state->row + 1];
-			state->data.erase(state->data.begin() + state->row + 1);
+			state->data.erase(state->row + 1);
 		}
 		setDotCommand(state, c);
 	} else if (c == 'J') {
@@ -377,7 +377,7 @@ void sendShortcutKeys(State *state, int32_t c)
 		if (state->row + 1 < state->data.size()) {
 			state->data[state->row + 1] = ltrim(state->data[state->row + 1]);
 			state->data[state->row] += state->data[state->row + 1];
-			state->data.erase(state->data.begin() + state->row + 1);
+			state->data.erase(state->row + 1);
 		}
 		setDotCommand(state, c);
 	} else if (c == '/') {

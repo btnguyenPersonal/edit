@@ -233,11 +233,11 @@ void State::print(std::string filename, bool printGrep, bool printArchives)
 	printVecChar(out, this->motion, std::string("motion"));
 	printVecPath(out, this->findOutput, std::string("findOutput"));
 	printVec(out, this->blame, std::string("blame"));
-	printVec(out, this->data, std::string("data"));
+	// printVec(out, this->data, std::string("data"));
 	printVec(out, this->dotCommand, std::string("dotCommand"));
 	printVec(out, this->fileStack, std::string("fileStack"));
 	printVec(out, this->macroCommand, std::string("macroCommand"));
-	printVec(out, this->previousState, std::string("previousState"));
+	// printVec(out, this->previousState, std::string("previousState"));
 	printHistory(out, this->history, std::string("history"));
 	out << "visual.row " << std::to_string(this->visual.row) << std::endl;
 	out << "visual.col " << std::to_string(this->visual.col) << std::endl;
@@ -419,7 +419,7 @@ State::State()
 	}
 	this->workspace = 0;
 	this->data = Rope();
-	this->previousState = std::vector<std::string>();
+	this->previousState = Rope();
 	this->history = std::vector<std::vector<diffLine> >();
 	this->grepOutput = std::vector<grepMatch>();
 	this->findOutput = std::vector<std::filesystem::path>();

@@ -42,7 +42,7 @@ void removeAllLoggingCode(State *state)
 	if (logPattern != "") {
 		for (int32_t i = state->data.size() - 1; i >= 0; i--) {
 			if (std::regex_search(state->data[i], std::regex(logPattern))) {
-				state->data.erase(state->data.begin() + i);
+				state->data.erase(i);
 			}
 		}
 	}

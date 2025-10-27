@@ -240,7 +240,9 @@ Position changeInVisual(State *state)
 	pos.row = bounds.minR;
 	pos.col = bounds.minC;
 	if (state->visualType == LINE) {
-		state->data.erase(state->data.begin() + bounds.minR, state->data.begin() + bounds.maxR);
+		for (uint32_t i = bounds.minR; i < bounds.maxR; i++) {
+			state->data.erase(i);
+		}
 		state->data[bounds.minR] = std::string("");
 	} else if (state->visualType == BLOCK) {
 		deleteInVisual(state);
@@ -256,7 +258,9 @@ Position changeInVisual(State *state)
 			secondPart = safeSubstring(state->data[bounds.maxR], bounds.maxC + 1);
 		}
 		state->data[bounds.minR] = firstPart + secondPart;
-		state->data.erase(state->data.begin() + bounds.minR + 1, state->data.begin() + bounds.maxR + 1);
+		for (uint32_t i = bounds.minR + 1; i < bounds.maxR + 1; i++) {
+			state->data.erase(i);
+		}
 	}
 	return pos;
 }
@@ -279,7 +283,9 @@ Position deleteInVisual(State *state)
 	pos.row = bounds.minR;
 	pos.col = bounds.minC;
 	if (state->visualType == LINE) {
-		state->data.erase(state->data.begin() + bounds.minR, state->data.begin() + bounds.maxR + 1);
+		for (uint32_t i = bounds.minR; i < bounds.maxR + 1; i++) {
+			state->data.erase(i);
+		}
 	} else if (state->visualType == BLOCK) {
 		uint32_t min = std::min(bounds.minC, bounds.maxC);
 		uint32_t max = std::max(bounds.minC, bounds.maxC);
@@ -299,7 +305,9 @@ Position deleteInVisual(State *state)
 			secondPart = safeSubstring(state->data[bounds.maxR], bounds.maxC + 1);
 		}
 		state->data[bounds.minR] = firstPart + secondPart;
-		state->data.erase(state->data.begin() + bounds.minR + 1, state->data.begin() + bounds.maxR + 1);
+		for (uint32_t i = bounds.minR + 1; i < bounds.maxR + 1; i++) {
+			state->data.erase(i);
+		}
 	}
 	return pos;
 }
@@ -563,8 +571,8 @@ bool sendVisualKeys(State *state, char c, bool onlyMotions)
 		if (bounds.minR > 0) {
 			if (isValidMoveableChunk(state, bounds)) {
 				auto temp = state->data[bounds.minR - 1];
-				state->data.erase(state->data.begin() + bounds.minR - 1);
-				state->data.insert(state->data.begin() + bounds.maxR, temp);
+				state->data.erase(bounds.minR - 1);
+				state->data.insert(bounds.maxR, temp);
 				state->row = bounds.minR - 1;
 				state->visual.row = bounds.maxR - 1;
 				indentRange(state);
@@ -578,8 +586,8 @@ bool sendVisualKeys(State *state, char c, bool onlyMotions)
 		if (bounds.maxR + 1 < state->data.size()) {
 			if (isValidMoveableChunk(state, bounds)) {
 				auto temp = state->data[bounds.maxR + 1];
-				state->data.erase(state->data.begin() + bounds.maxR + 1);
-				state->data.insert(state->data.begin() + bounds.minR, temp);
+				state->data.erase(bounds.maxR + 1);
+				state->data.insert(bounds.minR, temp);
 				state->row = bounds.minR + 1;
 				state->visual.row = bounds.maxR + 1;
 				indentRange(state);
