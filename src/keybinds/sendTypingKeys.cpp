@@ -69,7 +69,9 @@ void sendTypingKeys(State *state, int32_t c)
 	} else if (' ' <= c && c <= '~') {
 		std::string current = state->data[state->row];
 		state->data[state->row] = current.substr(0, state->col) + (char)c + current.substr(state->col);
-		indentLineWhenTypingFirstChar(state);
+		if (c != ' ') {
+			indentLineWhenTypingFirstChar(state);
+		}
 		state->col += 1;
 	} else if (c == ctrl('t')) {
 		std::string current = state->data[state->row];
