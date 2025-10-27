@@ -847,7 +847,7 @@ void moveHarpoonLeft(State *state)
 void trimTrailingWhitespace(State *state)
 {
 	for (uint32_t i = 0; i < state->data.size(); i++) {
-		rtrim(state->data[i]);
+		state->data[i] = rtrim(state->data[i]);
 	}
 }
 
@@ -856,14 +856,16 @@ bool isWhitespace(char c)
 	return std::isspace(c) || c == '\t';
 }
 
-void rtrim(std::string &s)
+std::string rtrim(std::string s)
 {
 	s.erase(std::find_if(s.rbegin(), s.rend(), [](unsigned char ch) { return !isWhitespace(ch); }).base(), s.end());
+	return s;
 }
 
-void ltrim(std::string &s)
+std::string ltrim(std::string s)
 {
 	s.erase(s.begin(), std::find_if(s.begin(), s.end(), [](unsigned char ch) { return !isWhitespace(ch); }));
+	return s;
 }
 
 std::string getCurrentWord(State *state)
@@ -885,7 +887,8 @@ std::string autocomplete(State *state, const std::string &query)
 		return "";
 	}
 	std::map<std::string, int> wordCounts;
-	for (std::string line : state->data) {
+	for (uint32_t i = 0; i < state->data.size(); i++) {
+		std::string line = state->data[i];
 		line += ' ';
 		std::string word = "";
 		for (uint32_t i = 0; i < line.length(); i++) {
@@ -1399,11 +1402,13 @@ void saveFile(State *state)
 		state->lastSave = state->historyPosition;
 		if (!state->dontSave) {
 			std::ofstream file(state->filename);
-			if (!state->data.empty()) {
-				for (size_t i = 0; i < state->data.size() - 1; ++i) {
-					file << state->data[i] << "\n";
+			if (state->data.size() > 0) {
+				for (size_t i = 0; i < state->data.size(); ++i) {
+					file << state->data[i];;
+					if (i < state->data.size() - 1) {
+						file << "\n";
+					}
 				}
-				file << state->data.back();
 			}
 			file.close();
 			state->lastModifiedDate = getLastModifiedDate(state, state->filename);
@@ -1411,11 +1416,11 @@ void saveFile(State *state)
 	}
 }
 
-std::vector<std::string> readFile(const std::string &filename)
+Rope readFile(const std::string &filename)
 {
 	std::ifstream file(filename);
 	std::string str;
-	std::vector<std::string> file_contents;
+	Rope file_contents;
 	while (file.good()) {
 		std::getline(file, str);
 		file_contents.push_back(str);
@@ -1754,12 +1759,12 @@ void calcWindowBounds()
 
 void insertEmptyLineBelow(State *state)
 {
-	state->data.insert(state->data.begin() + state->row + 1, "");
+	state->data.insert(state->row + 1, "");
 }
 
 void insertEmptyLine(State *state)
 {
-	state->data.insert(state->data.begin() + state->row, "");
+	state->data.insert(state->row, "");
 }
 
 int32_t maximum(int32_t a, int32_t b)

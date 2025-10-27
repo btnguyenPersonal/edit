@@ -72,7 +72,7 @@ int32_t getIndentLevel(State *state, uint32_t row)
 	std::string prevLine = getPrevLine(state, row);
 	prevLine = trimComment(state, prevLine);
 	std::string currLine = state->data[row];
-	ltrim(currLine);
+	currLine = ltrim(currLine);
 	int32_t indentLevel = getNumLeadingIndentCharacters(state, prevLine);
 	uint32_t indentSize = getIndentSize(state);
 
@@ -167,7 +167,7 @@ int32_t getIndentLevel(State *state, uint32_t row)
 
 void indentLine(State *state, uint32_t row)
 {
-	ltrim(state->data[row]);
+	state->data[row] = ltrim(state->data[row]);
 	if (state->data[row].length() != 0) {
 		int32_t indentLevel = getIndentLevel(state, row);
 		for (int32_t i = 0; i < indentLevel; i++) {
@@ -178,7 +178,7 @@ void indentLine(State *state, uint32_t row)
 
 void indentLine(State *state)
 {
-	ltrim(state->data[state->row]);
+	state->data[state->row] = ltrim(state->data[state->row]);
 	if (state->data[state->row].length() != 0) {
 		int32_t indentLevel = getIndentLevel(state, state->row);
 		for (int32_t i = 0; i < indentLevel; i++) {

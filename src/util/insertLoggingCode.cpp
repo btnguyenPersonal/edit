@@ -14,13 +14,13 @@ void toggleLoggingCode(State *state, std::string variableName, bool showValue)
 	}
 	if (state->row + 1 < state->data.size()) {
 		auto nextLine = state->data[state->row + 1];
-		ltrim(nextLine);
+		nextLine = ltrim(nextLine);
 		if (nextLine == loggingCode) {
-			state->data.erase(state->data.begin() + state->row + 1);
+			state->data.erase(state->row + 1);
 			return;
 		}
 	}
-	state->data.insert(state->data.begin() + state->row + 1, loggingCode);
+	state->data.insert(state->row + 1, loggingCode);
 	indentLine(state, state->row + 1);
 }
 

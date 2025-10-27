@@ -40,7 +40,7 @@ std::string trimComment(State *state, std::string line)
 			foundNonSpace = true;
 		}
 	}
-	rtrim(outputLine);
+	outputLine = rtrim(outputLine);
 	return outputLine;
 }
 
@@ -70,13 +70,13 @@ void toggleCommentHelper(State *state, uint32_t row, int32_t commentIndex)
 
 bool isCommentWithSpace(State *state, std::string line)
 {
-	ltrim(line);
+	line = ltrim(line);
 	return line.substr(0, state->commentSymbol.length() + 1) == state->commentSymbol + ' ';
 }
 
 bool isComment(State *state, std::string line)
 {
-	ltrim(line);
+	line = ltrim(line);
 	return line.substr(0, state->commentSymbol.length()) == state->commentSymbol;
 }
 

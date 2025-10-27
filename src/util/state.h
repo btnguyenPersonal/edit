@@ -3,6 +3,7 @@
 #include "modes.h"
 #include "visualType.h"
 #include "fileExplorerNode.h"
+#include "rope.h"
 #include <filesystem>
 #include <string>
 #include <vector>
@@ -67,7 +68,7 @@ struct Jumplist {
 
 struct Archive {
 	std::string filename;
-	std::vector<std::string> previousState;
+	Rope previousState;
 	std::vector<std::vector<diffLine> > history;
 	int32_t historyPosition;
 	int32_t lastSave;
@@ -151,11 +152,11 @@ class State {
 	std::vector<std::string> diffLines;
 	std::vector<std::string> logLines;
 	std::vector<std::string> blame;
-	std::vector<std::string> data;
+	Rope data;
+	Rope previousState;
 	std::vector<std::string> dotCommand;
 	std::vector<std::string> fileStack;
 	std::vector<std::string> macroCommand;
-	std::vector<std::string> previousState;
 	std::vector<std::vector<diffLine> > history;
 	std::vector<Harpoon> harpoon;
 	std::vector<ModeKey> keys;

@@ -21,7 +21,7 @@ uint32_t applyDiff(State *state, std::vector<diffLine> diff, bool reverse)
 				min = dl.lineNum;
 			}
 			if (dl.lineNum < state->data.size()) {
-				state->data.insert(state->data.begin() + dl.lineNum, dl.line);
+				state->data.insert(dl.lineNum, dl.line);
 			} else {
 				state->data.push_back(dl.line);
 			}
@@ -30,7 +30,7 @@ uint32_t applyDiff(State *state, std::vector<diffLine> diff, bool reverse)
 				min = dl.lineNum + offsetNeg;
 			}
 			if ((int32_t)dl.lineNum + offsetNeg < static_cast<int32_t>(state->data.size())) {
-				state->data.erase(state->data.begin() + dl.lineNum + offsetNeg);
+				state->data.erase(dl.lineNum + offsetNeg);
 			}
 			offsetNeg--;
 		}
@@ -76,7 +76,7 @@ std::vector<diffLine> backtrack(const std::vector<std::vector<int32_t> > &trace,
 	return diff;
 }
 
-std::vector<diffLine> generateDiff(const std::vector<std::string> &a, const std::vector<std::string> &b)
+std::vector<diffLine> generateDiff(const Rope &a, const Rope &b)
 {
 	int32_t n = a.size();
 	int32_t m = b.size();
@@ -108,39 +108,4 @@ std::vector<diffLine> generateDiff(const std::vector<std::string> &a, const std:
 		trace.push_back(v);
 	}
 	return backtrack(trace, a, b, max);
-}
-
-std::vector<diffLine> generateFastDiff(const std::vector<std::string> &a, const std::vector<std::string> &b)
-{
-	std::vector<diffLine> output;
-	uint32_t aIndex = 0;
-	uint32_t bIndex = 0;
-	while (aIndex < a.size() && bIndex < b.size()) {
-		if (aIndex >= a.size()) {
-			output.push_back({ aIndex, false, a[aIndex] });
-			aIndex++;
-		}
-		if (bIndex >= b.size()) {
-			output.push_back({ aIndex, true, b[bIndex] });
-			bIndex++;
-		}
-		if (a[aIndex] == b[bIndex]) {
-			aIndex++;
-			bIndex++;
-		} else if (a[aIndex] != b[bIndex]) {
-			if (a.size() > b.size()) {
-				output.push_back({ aIndex, false, a[aIndex] });
-				aIndex++;
-			} else if (b.size() > a.size()) {
-				output.push_back({ aIndex, true, b[bIndex] });
-				bIndex++;
-			} else {
-				output.push_back({ aIndex, true, b[bIndex] });
-				bIndex++;
-				output.push_back({ aIndex, false, a[aIndex] });
-				aIndex++;
-			}
-		}
-	}
-	return output;
 }

@@ -418,7 +418,7 @@ State::State()
 		this->harpoon.push_back({ 0, std::vector<std::string>() });
 	}
 	this->workspace = 0;
-	this->data = std::vector<std::string>();
+	this->data = Rope();
 	this->previousState = std::vector<std::string>();
 	this->history = std::vector<std::vector<diffLine> >();
 	this->grepOutput = std::vector<grepMatch>();
@@ -461,9 +461,9 @@ State::State(std::string filename)
 	: State()
 {
 	auto normalizedFilename = normalizeFilename(filename);
-	std::vector<std::string> data;
+	Rope data;
 	if (!std::filesystem::is_regular_file(normalizedFilename.c_str())) {
-		data = { "" };
+		data.push_back("");
 	} else {
 		data = readFile(normalizedFilename.c_str());
 		this->lastModifiedDate = getLastModifiedDate(this, normalizedFilename);
