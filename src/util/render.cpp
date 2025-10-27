@@ -821,6 +821,7 @@ void renderScreen(State *state, bool fullRedraw)
 
 void renderScreen(State *state)
 {
+	state->renderMutex.lock();
 	erase();
 	bool noLineNum = false;
 	Cursor editorCursor, fileExplorerCursor;
@@ -848,6 +849,7 @@ void renderScreen(State *state)
 	moveCursor(state, cursorOnStatusBar, editorCursor, fileExplorerCursor, noLineNum);
 	wnoutrefresh(stdscr);
 	doupdate();
+	state->renderMutex.unlock();
 }
 
 void initTerminal()
