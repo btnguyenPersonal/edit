@@ -3,6 +3,7 @@
 #include "../src/util/find.h"
 #include "../src/util/grep.h"
 #include "../src/util/history.h"
+#include "../src/util/rope.h"
 
 #include <chrono>
 #include <thread>
@@ -96,13 +97,9 @@ void find()
 
 int main()
 {
-	State *state = new State();
-	state->grepPath = "../vscode";
-	state->grep.query = "a";
-	generateGrepOutput(state, false);
-	std::this_thread::sleep_for(std::chrono::seconds(1)); // Replace with actual work
-	state->grep.query = "abcd";
-	generateGrepOutput(state, false);
-	while (true) {
+	Rope* rope = new Rope();
+	for (uint32_t i = 0; i < 500; i++) {
+		rope->push_back(std::string("hi") + std::to_string(i));
 	}
+	std::cout << (*rope)[499] << std::endl;
 }
