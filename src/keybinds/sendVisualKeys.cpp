@@ -241,7 +241,7 @@ Position changeInVisual(State *state)
 	pos.col = bounds.minC;
 	if (state->visualType == LINE) {
 		for (uint32_t i = bounds.minR; i < bounds.maxR; i++) {
-			state->data.erase(i);
+			state->data.erase(bounds.minR);
 		}
 		state->data[bounds.minR] = std::string("");
 	} else if (state->visualType == BLOCK) {
@@ -259,7 +259,7 @@ Position changeInVisual(State *state)
 		}
 		state->data[bounds.minR] = firstPart + secondPart;
 		for (uint32_t i = bounds.minR + 1; i < bounds.maxR + 1; i++) {
-			state->data.erase(i);
+			state->data.erase(bounds.minR + 1);
 		}
 	}
 	return pos;
@@ -284,7 +284,7 @@ Position deleteInVisual(State *state)
 	pos.col = bounds.minC;
 	if (state->visualType == LINE) {
 		for (uint32_t i = bounds.minR; i < bounds.maxR + 1; i++) {
-			state->data.erase(i);
+			state->data.erase(bounds.minR);
 		}
 	} else if (state->visualType == BLOCK) {
 		uint32_t min = std::min(bounds.minC, bounds.maxC);
@@ -306,7 +306,7 @@ Position deleteInVisual(State *state)
 		}
 		state->data[bounds.minR] = firstPart + secondPart;
 		for (uint32_t i = bounds.minR + 1; i < bounds.maxR + 1; i++) {
-			state->data.erase(i);
+			state->data.erase(bounds.minR + 1);
 		}
 	}
 	return pos;
