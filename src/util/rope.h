@@ -18,6 +18,9 @@ class Rope {
 		uint32_t length;
 		uint32_t size();
 		Node* get(uint32_t index);
+		Node* get_before(uint32_t index);
+		void insert(uint32_t index, std::string data);
+		void erase(uint32_t index);
 		std::string operator[](uint32_t index);
 		void push_back(std::string s);
 		Rope();

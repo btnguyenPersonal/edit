@@ -99,7 +99,16 @@ int main()
 {
 	Rope* rope = new Rope();
 	for (uint32_t i = 0; i < 500; i++) {
-		rope->push_back(std::string("hi") + std::to_string(i));
+		rope->push_back(std::string("hi ") + std::to_string(i));
 	}
-	std::cout << (*rope)[499] << std::endl;
+	for (uint32_t i = 0; i < rope->size(); i++) {
+		rope->erase(i);
+	}
+	for (uint32_t i = 0; i < rope->size(); i++) {
+		std::cout << (*rope)[i] << std::endl;
+		// stdrope->erase(i);
+	}
+	// for (uint32_t i = 0; i < 499; i++) {
+	// 	std::cout << (*rope)[i] << std::endl;
+	// }
 }
