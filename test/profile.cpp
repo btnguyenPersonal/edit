@@ -8,76 +8,76 @@
 #include <chrono>
 #include <thread>
 
-void diff() {
-	std::vector<std::string> a = {
-		"aaaaaaaaaaaaaaaa",
-		"bbbbbbbbbbbbbbbb",
-		"cccccccccccccccc",
-		"dddddddddddddddd",
-		"eeeeeeeeeeeeeeee",
-		"ffffffffffffffff",
-		"gggggggggggggggg",
-		"hhhhhhhhhhhhhhhh",
-		"iiiiiiiiiiiiiiii",
-		"jjjjjjjjjjjjjjjj",
-		"kkkkkkkkkkkkkkkk",
-		"llllllllllllllll",
-		"mmmmmmmmmmmmmmmm",
-		"nnnnnnnnnnnnnnnn",
-		"oooooooooooooooo",
-		"pppppppppppppppp",
-		"qqqqqqqqqqqqqqqq",
-		"rrrrrrrrrrrrrrrr",
-		"ssssssssssssssss",
-		"tttttttttttttttt",
-		"uuuuuuuuuuuuuuuu",
-		"vvvvvvvvvvvvvvvv",
-		"wwwwwwwwwwwwwwww",
-		"xxxxxxxxxxxxxxxx",
-		"yyyyyyyyyyyyyyyy",
-		"zzzzzzzzzzzzzzzz",
-	};
-	std::vector<std::string> b = {
-		"zzzzzzzzzzzzzzzz",
-		"yyyyyyyyyyyyyyyy",
-		"xxxxxxxxxxxxxxxx",
-		"wwwwwwwwwwwwwwww",
-		"vvvvvvvvvvvvvvvv",
-		"uuuuuuuuuuuuuuuu",
-		"tttttttttttttttt",
-		"ssssssssssssssss",
-		"rrrrrrrrrrrrrrrr",
-		"qqqqqqqqqqqqqqqq",
-		"pppppppppppppppp",
-		"oooooooooooooooo",
-		"nnnnnnnnnnnnnnnn",
-		"mmmmmmmmmmmmmmmm",
-		"llllllllllllllll",
-		"kkkkkkkkkkkkkkkk",
-		"jjjjjjjjjjjjjjjj",
-		"iiiiiiiiiiiiiiii",
-		"hhhhhhhhhhhhhhhh",
-		"gggggggggggggggg",
-		"ffffffffffffffff",
-		"eeeeeeeeeeeeeeee",
-		"dddddddddddddddd",
-		"cccccccccccccccc",
-		"bbbbbbbbbbbbbbbb",
-		"aaaaaaaaaaaaaaaa",
-	};
-	std::vector<std::string> aa;
-	std::vector<std::string> bb;
-	for (uint32_t j = 0; j < 1000; j++) {
-		for (uint32_t i = 0; i < 26; i++) {
-			aa.push_back(a[i]);
-			aa.push_back(b[i]);
-		}
-	}
-	std::vector<diffLine> diff = generateFastDiff(aa, bb);
-	for (uint32_t i = 0; i < diff.size(); i++) {
-		std::cout << diff[i].line << std::endl;
-	}
-}
+// void diff() {
+// 	std::vector<std::string> a = {
+// 		"aaaaaaaaaaaaaaaa",
+// 		"bbbbbbbbbbbbbbbb",
+// 		"cccccccccccccccc",
+// 		"dddddddddddddddd",
+// 		"eeeeeeeeeeeeeeee",
+// 		"ffffffffffffffff",
+// 		"gggggggggggggggg",
+// 		"hhhhhhhhhhhhhhhh",
+// 		"iiiiiiiiiiiiiiii",
+// 		"jjjjjjjjjjjjjjjj",
+// 		"kkkkkkkkkkkkkkkk",
+// 		"llllllllllllllll",
+// 		"mmmmmmmmmmmmmmmm",
+// 		"nnnnnnnnnnnnnnnn",
+// 		"oooooooooooooooo",
+// 		"pppppppppppppppp",
+// 		"qqqqqqqqqqqqqqqq",
+// 		"rrrrrrrrrrrrrrrr",
+// 		"ssssssssssssssss",
+// 		"tttttttttttttttt",
+// 		"uuuuuuuuuuuuuuuu",
+// 		"vvvvvvvvvvvvvvvv",
+// 		"wwwwwwwwwwwwwwww",
+// 		"xxxxxxxxxxxxxxxx",
+// 		"yyyyyyyyyyyyyyyy",
+// 		"zzzzzzzzzzzzzzzz",
+// 	};
+// 	std::vector<std::string> b = {
+// 		"zzzzzzzzzzzzzzzz",
+// 		"yyyyyyyyyyyyyyyy",
+// 		"xxxxxxxxxxxxxxxx",
+// 		"wwwwwwwwwwwwwwww",
+// 		"vvvvvvvvvvvvvvvv",
+// 		"uuuuuuuuuuuuuuuu",
+// 		"tttttttttttttttt",
+// 		"ssssssssssssssss",
+// 		"rrrrrrrrrrrrrrrr",
+// 		"qqqqqqqqqqqqqqqq",
+// 		"pppppppppppppppp",
+// 		"oooooooooooooooo",
+// 		"nnnnnnnnnnnnnnnn",
+// 		"mmmmmmmmmmmmmmmm",
+// 		"llllllllllllllll",
+// 		"kkkkkkkkkkkkkkkk",
+// 		"jjjjjjjjjjjjjjjj",
+// 		"iiiiiiiiiiiiiiii",
+// 		"hhhhhhhhhhhhhhhh",
+// 		"gggggggggggggggg",
+// 		"ffffffffffffffff",
+// 		"eeeeeeeeeeeeeeee",
+// 		"dddddddddddddddd",
+// 		"cccccccccccccccc",
+// 		"bbbbbbbbbbbbbbbb",
+// 		"aaaaaaaaaaaaaaaa",
+// 	};
+// 	std::vector<std::string> aa;
+// 	std::vector<std::string> bb;
+// 	for (uint32_t j = 0; j < 1000; j++) {
+// 		for (uint32_t i = 0; i < 26; i++) {
+// 			aa.push_back(a[i]);
+// 			aa.push_back(b[i]);
+// 		}
+// 	}
+// 	std::vector<diffLine> diff = generateDiff(aa, bb);
+// 	for (uint32_t i = 0; i < diff.size(); i++) {
+// 		std::cout << diff[i].line << std::endl;
+// 	}
+// }
 
 void grep()
 {
@@ -101,14 +101,15 @@ int main()
 	for (uint32_t i = 0; i < 500; i++) {
 		rope->push_back(std::string("hi ") + std::to_string(i));
 	}
-	for (uint32_t i = 0; i < rope->size(); i++) {
-		rope->erase(i);
+	Rope* ropeCopy = rope->copy();
+	for (uint32_t i = 0; i < ropeCopy->size(); i++) {
+		ropeCopy->erase(i);
 	}
 	for (uint32_t i = 0; i < rope->size(); i++) {
 		std::cout << (*rope)[i] << std::endl;
-		// stdrope->erase(i);
 	}
-	// for (uint32_t i = 0; i < 499; i++) {
-	// 	std::cout << (*rope)[i] << std::endl;
-	// }
+	std::cout << "#########################################" << std::endl;
+	for (uint32_t i = 0; i < ropeCopy->size(); i++) {
+		std::cout << (*ropeCopy)[i] << std::endl;
+	}
 }

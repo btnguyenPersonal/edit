@@ -67,6 +67,24 @@ const Node* Rope::get(uint32_t index) const
 	return c;
 }
 
+Rope* Rope::copy()
+{
+	Rope* r = new Rope();
+	r->length = this->length;
+	Node* h = new Node();
+	r->head = h;
+	Node* c = this->head;
+	for (uint32_t i = 0; i < this->length; i++) {
+		Node* copy = new Node();
+		copy->data = c->data;
+		copy->end = c->end;
+		h->next = copy;
+		h = copy;
+		c = c->next;
+	}
+	return r;
+}
+
 void Rope::insert(uint32_t index, std::string data)
 {
 	Node* b = this->get_before(index);
