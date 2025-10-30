@@ -1,3 +1,4 @@
 build/
 test-file.h
+test-file.hpp
 fuzzer/results

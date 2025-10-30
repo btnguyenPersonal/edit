@@ -4,80 +4,100 @@
 #include "../src/util/grep.h"
 #include "../src/util/history.h"
 #include "../src/util/rope.h"
+#include "../src/keybinds/sendKeys.h"
+#include "../src/util/cleanup.h"
 
 #include <chrono>
 #include <thread>
 
-// void diff() {
-// 	std::vector<std::string> a = {
-// 		"aaaaaaaaaaaaaaaa",
-// 		"bbbbbbbbbbbbbbbb",
-// 		"cccccccccccccccc",
-// 		"dddddddddddddddd",
-// 		"eeeeeeeeeeeeeeee",
-// 		"ffffffffffffffff",
-// 		"gggggggggggggggg",
-// 		"hhhhhhhhhhhhhhhh",
-// 		"iiiiiiiiiiiiiiii",
-// 		"jjjjjjjjjjjjjjjj",
-// 		"kkkkkkkkkkkkkkkk",
-// 		"llllllllllllllll",
-// 		"mmmmmmmmmmmmmmmm",
-// 		"nnnnnnnnnnnnnnnn",
-// 		"oooooooooooooooo",
-// 		"pppppppppppppppp",
-// 		"qqqqqqqqqqqqqqqq",
-// 		"rrrrrrrrrrrrrrrr",
-// 		"ssssssssssssssss",
-// 		"tttttttttttttttt",
-// 		"uuuuuuuuuuuuuuuu",
-// 		"vvvvvvvvvvvvvvvv",
-// 		"wwwwwwwwwwwwwwww",
-// 		"xxxxxxxxxxxxxxxx",
-// 		"yyyyyyyyyyyyyyyy",
-// 		"zzzzzzzzzzzzzzzz",
-// 	};
-// 	std::vector<std::string> b = {
-// 		"zzzzzzzzzzzzzzzz",
-// 		"yyyyyyyyyyyyyyyy",
-// 		"xxxxxxxxxxxxxxxx",
-// 		"wwwwwwwwwwwwwwww",
-// 		"vvvvvvvvvvvvvvvv",
-// 		"uuuuuuuuuuuuuuuu",
-// 		"tttttttttttttttt",
-// 		"ssssssssssssssss",
-// 		"rrrrrrrrrrrrrrrr",
-// 		"qqqqqqqqqqqqqqqq",
-// 		"pppppppppppppppp",
-// 		"oooooooooooooooo",
-// 		"nnnnnnnnnnnnnnnn",
-// 		"mmmmmmmmmmmmmmmm",
-// 		"llllllllllllllll",
-// 		"kkkkkkkkkkkkkkkk",
-// 		"jjjjjjjjjjjjjjjj",
-// 		"iiiiiiiiiiiiiiii",
-// 		"hhhhhhhhhhhhhhhh",
-// 		"gggggggggggggggg",
-// 		"ffffffffffffffff",
-// 		"eeeeeeeeeeeeeeee",
-// 		"dddddddddddddddd",
-// 		"cccccccccccccccc",
-// 		"bbbbbbbbbbbbbbbb",
-// 		"aaaaaaaaaaaaaaaa",
-// 	};
-// 	std::vector<std::string> aa;
-// 	std::vector<std::string> bb;
-// 	for (uint32_t j = 0; j < 1000; j++) {
-// 		for (uint32_t i = 0; i < 26; i++) {
-// 			aa.push_back(a[i]);
-// 			aa.push_back(b[i]);
-// 		}
-// 	}
-// 	std::vector<diffLine> diff = generateDiff(aa, bb);
-// 	for (uint32_t i = 0; i < diff.size(); i++) {
-// 		std::cout << diff[i].line << std::endl;
-// 	}
-// }
+void diff() {
+	std::vector<std::string> a = {
+		"1",
+		"2",
+		"3",
+		"4",
+		"5",
+		"6",
+		"7",
+		"8",
+		"9",
+		"10",
+		"11",
+		"12",
+		"13",
+		"14",
+		"15",
+		"16",
+		"17",
+		"18",
+		"19",
+		"20",
+		"21",
+		"22",
+	};
+	std::vector<std::string> b = {
+		"1",
+		"2",
+		"3",
+		"4",
+		"5",
+		"6",
+		"7",
+		"8",
+		"9",
+		"10",
+		"11",
+		"12",
+		"13",
+		"14a",
+		"zzzzz",
+		"15",
+		"16",
+		"17",
+		"18",
+		"19",
+		"20",
+		"21",
+		"22",
+	};
+	Rope aa;
+	Rope bb;
+	for (uint32_t j = 0; j < 1; j++) {
+		for (uint32_t i = 0; i < a.size(); i++) {
+			aa.push_back(a[i]);
+		}
+		for (uint32_t i = 0; i < b.size(); i++) {
+			bb.push_back(b[i]);
+		}
+	}
+	std::vector<diffLine> diff = generateDiff(aa, bb);
+	for (uint32_t i = 0; i < diff.size(); i++) {
+		std::cout << (diff[i].add ? "+" : "-") << " " << diff[i].lineNum << " " << diff[i].line << std::endl;
+	}
+	std::cout << "###################" << bb[14] << std::endl;
+	State* state = new State("./test-file.h");
+	// state->data = bb;
+	// sendKeys(state, ':');
+	// sendKeys(state, '1');
+	// sendKeys(state, '4');
+	// sendKeys(state, ctrl('m'));
+	sendKeys(state, 'd');
+	cleanup(state, 'd');
+	sendKeys(state, 'd');
+	cleanup(state, 'd');
+	for (uint32_t i = 0; i < state->data.size(); i++) {
+		std::cout << "i: " << i << " " << state->data[i] << std::endl;
+	}
+	for (uint32_t i = 0; i < state->previousState.size(); i++) {
+		std::cout << "i: " << i << " " << state->previousState[i] << std::endl;
+	}
+	// std::cout << std::endl;
+	// applyDiff(state, diff, true);
+	// for (uint32_t i = 0; i < state->data.size(); i++) {
+	// 	std::cout << "i: " << i << " " << state->data[i] << std::endl;
+	// }
+	// std::cout << std::endl;
+}
 
 void grep()
 {
@@ -97,19 +117,20 @@ void find()
 
 int main()
 {
-	Rope* rope = new Rope();
-	for (uint32_t i = 0; i < 500; i++) {
-		rope->push_back(std::string("hi ") + std::to_string(i));
-	}
-	Rope* ropeCopy = rope->copy();
-	for (uint32_t i = 0; i < ropeCopy->size(); i++) {
-		ropeCopy->erase(i);
-	}
-	for (uint32_t i = 0; i < rope->size(); i++) {
-		std::cout << (*rope)[i] << std::endl;
-	}
-	std::cout << "#########################################" << std::endl;
-	for (uint32_t i = 0; i < ropeCopy->size(); i++) {
-		std::cout << (*ropeCopy)[i] << std::endl;
-	}
+	// Rope* rope = new Rope();
+	// for (uint32_t i = 0; i < 500; i++) {
+	// 	rope->push_back(std::string("hi ") + std::to_string(i));
+	// }
+	// Rope* ropeCopy = rope->copy();
+	// for (uint32_t i = 0; i < ropeCopy->size(); i++) {
+	// 	ropeCopy->erase(i);
+	// }
+	// for (uint32_t i = 0; i < rope->size(); i++) {
+	// 	std::cout << (*rope)[i] << std::endl;
+	// }
+	// std::cout << "#########################################" << std::endl;
+	// for (uint32_t i = 0; i < ropeCopy->size(); i++) {
+	// 	std::cout << (*ropeCopy)[i] << std::endl;
+	// }
+	diff();
 }

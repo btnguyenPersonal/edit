@@ -1,5 +1,8 @@
 #include "./rope.h"
 
+// TODO del
+#include <iostream>
+
 Node::Node()
 {
 	this->end = false;
@@ -31,7 +34,7 @@ Node* Rope::get_before(uint32_t index)
 	if (index >= this->length) {
 		throw std::out_of_range("Rope: Index out of bounds");
 	}
-	for (uint32_t i = 0; i + 1 < index && i + 1 < this->length; i++) {
+	for (uint32_t i = 0; i < index && i + 1 < this->length; i++) {
 		c = c->next;
 	}
 	return c;
@@ -46,7 +49,7 @@ Node* Rope::get(uint32_t index)
 	if (index >= this->length) {
 		throw std::out_of_range("Rope: Index out of bounds");
 	}
-	for (uint32_t i = 0; i < index && i + 1 < this->length; i++) {
+	for (uint32_t i = 0; i <= index && i < this->length; i++) {
 		c = c->next;
 	}
 	return c;
@@ -61,7 +64,7 @@ const Node* Rope::get(uint32_t index) const
 	if (index >= this->length) {
 		throw std::out_of_range("Rope: Index out of bounds");
 	}
-	for (uint32_t i = 0; i < index && i + 1 < this->length; i++) {
+	for (uint32_t i = 0; i <= index && i < this->length; i++) {
 		c = c->next;
 	}
 	return c;
@@ -73,7 +76,7 @@ Rope* Rope::copy()
 	r->length = this->length;
 	Node* h = new Node();
 	r->head = h;
-	Node* c = this->head;
+	Node* c = this->head->next;
 	for (uint32_t i = 0; i < this->length; i++) {
 		Node* copy = new Node();
 		copy->data = c->data;
@@ -119,7 +122,7 @@ std::string& Rope::operator[](uint32_t index)
 void Rope::push_back(std::string s)
 {
 	Node* c = this->head;
-	for (uint32_t i = 0; i + 1 < this->length; i++) {
+	for (uint32_t i = 0; i < this->length; i++) {
 		c = c->next;
 	}
 	Node* n = new Node();
