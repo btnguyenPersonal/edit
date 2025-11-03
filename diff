@@ -1,0 +1,138 @@
+diff --git a/src/keybinds/sendDiffKeys.cpp b/src/keybinds/sendDiffKeys.cpp
+index f13b6cc..0fa3f4b 100644
+--- a/src/keybinds/sendDiffKeys.cpp
++++ b/src/keybinds/sendDiffKeys.cpp
+@@ -128,6 +128,9 @@ void sendDiffKeys(State *state, int32_t c)
+ 			if (num != "" && file != "") {
+ 				state->changeFile(file);
+ 				state->row = std::stoi(num) + linesNet + 1;
++				if (state->row >= state->data.size()) {
++					state->row = state->data.size() > 0 ? state->data.size() - 1 : 0;
++				}
+ 				centerScreen(state);
+ 				state->windowPosition.row -= 2;
+ 			}
+diff --git a/src/util/history.cpp b/src/util/history.cpp
+index 83ae0ce..d1b10e8 100644
+--- a/src/util/history.cpp
++++ b/src/util/history.cpp
+@@ -5,6 +5,8 @@
+ #include <string>
+ #include <vector>
+ 
++#include <iostream>
++
+ uint32_t applyDiff(State *state, std::vector<diffLine> diff, bool reverse)
+ {
+ 	std::sort(diff.begin(), diff.end(), [reverse](const diffLine &a, const diffLine &b) {
+@@ -79,7 +81,11 @@ std::vector<diffLine> backtrack(const std::vector<std::vector<int32_t> > &trace,
+ std::vector<diffLine> generateDiff(const Rope &a, const Rope &b)
+ {
+ 	int32_t n = a.size();
++	// std::cout << "81 a.size(): " << a.size() << std::endl;
+ 	int32_t m = b.size();
++	// std::cout << "83 b.size(): " << b.size() << std::endl;
++	// std::cout << "zzz" << b.head->next->data << std::endl;
++	// std::cout << "zyz" << b.head->next->next->end << std::endl;
+ 	int32_t max = n + m;
+ 	std::vector<int32_t> v(2 * max + 1);
+ 	std::vector<std::vector<int32_t> > trace;
+diff --git a/src/util/rope.cpp b/src/util/rope.cpp
+index 3ef8c66..ba82aed 100644
+--- a/src/util/rope.cpp
++++ b/src/util/rope.cpp
+@@ -31,10 +31,10 @@ Node* Rope::get_before(uint32_t index)
+ 	if (index < 0) {
+ 		throw std::out_of_range("Rope: Index out of bounds");
+ 	}
+-	if (index >= this->length) {
++	if (index > this->length) {
+ 		throw std::out_of_range("Rope: Index out of bounds");
+ 	}
+-	for (uint32_t i = 0; i < index && i + 1 < this->length; i++) {
++	for (uint32_t i = 0; i < index && i < this->length; i++) {
+ 		c = c->next;
+ 	}
+ 	return c;
+diff --git a/src/util/state.cpp b/src/util/state.cpp
+index e414504..98b33f6 100644
+--- a/src/util/state.cpp
++++ b/src/util/state.cpp
+@@ -281,7 +281,7 @@ void State::changeFile(std::string filename)
+ 	bool found = false;
+ 	for (uint32_t i = 0; i < this->archives.size(); i++) {
+ 		if (this->archives[i].filename == this->filename) {
+-			this->archives[i].previousState = this->previousState;
++			this->archives[i].previousState = *(this->previousState.copy());
+ 			this->archives[i].history = this->history;
+ 			this->archives[i].historyPosition = this->historyPosition;
+ 			this->archives[i].lastSave = this->lastSave;
+@@ -297,7 +297,7 @@ void State::changeFile(std::string filename)
+ 	if (!found) {
+ 		this->archives.push_back({
+ 			this->filename,
+-			this->previousState,
++			*(this->previousState.copy()),
+ 			this->history,
+ 			this->historyPosition,
+ 			this->lastSave,
+@@ -332,7 +332,7 @@ void State::changeFile(std::string filename)
+ 	this->lastModifiedDate = getLastModifiedDate(this, normalizedFilename);
+ 	this->filename = normalizedFilename;
+ 	this->data = data;
+-	this->previousState = data;
++	this->previousState = *(this->data.copy());
+ 	this->commentSymbol = getCommentSymbol(normalizedFilename);
+ 	this->history = std::vector<std::vector<diffLine> >();
+ 	this->historyPosition = -1;
+@@ -470,7 +470,7 @@ State::State(std::string filename)
+ 	}
+ 	this->filename = std::string(normalizedFilename);
+ 	this->data = data;
+-	this->previousState = data;
++	this->previousState = *(this->data.copy());
+ 	this->commentSymbol = getCommentSymbol(normalizedFilename);
+ 	this->mode = SHORTCUTS;
+ 	this->fileStack = { normalizedFilename };
+diff --git a/test/profile.cpp b/test/profile.cpp
+index f5cafe6..e17a009 100644
+--- a/test/profile.cpp
++++ b/test/profile.cpp
+@@ -81,16 +81,31 @@ void diff() {
+ 	// sendKeys(state, '1');
+ 	// sendKeys(state, '4');
+ 	// sendKeys(state, ctrl('m'));
+-	sendKeys(state, 'd');
+-	cleanup(state, 'd');
+-	sendKeys(state, 'd');
+-	cleanup(state, 'd');
++	std::vector<char> cs = {'j', 'j', 'j', 'v', '$', 'r', 'z'};
++	for (uint32_t i = 0; i < cs.size(); i++) {
++		sendKeys(state, cs[i]);
++		cleanup(state, cs[i]);
++	}
+ 	for (uint32_t i = 0; i < state->data.size(); i++) {
+-		std::cout << "i: " << i << " " << state->data[i] << std::endl;
++		std::cout << "data i: " << i << " " << state->data[i] << std::endl;
+ 	}
+ 	for (uint32_t i = 0; i < state->previousState.size(); i++) {
+-		std::cout << "i: " << i << " " << state->previousState[i] << std::endl;
++		std::cout << "prev i: " << i << " " << state->previousState[i] << std::endl;
+ 	}
++	// sendKeys(state, 'd');
++	// cleanup(state, 'd');
++	// sendKeys(state, 'd');
++	// cleanup(state, 'd');
++	// for (uint32_t i = 0; i < state->data.size(); i++) {
++	// 	std::cout << "data i: " << i << " " << state->data[i] << std::endl;
++	// }
++	// for (uint32_t i = 0; i < state->previousState.size(); i++) {
++	// 	std::cout << "prev i: " << i << " " << state->previousState[i] << std::endl;
++	// }
++	// sendKeys(state, 'u');
++	// cleanup(state, 'u');
++	// sendKeys(state, 'u');
++	// cleanup(state, 'u');
+ 	// std::cout << std::endl;
+ 	// applyDiff(state, diff, true);
+ 	// for (uint32_t i = 0; i < state->data.size(); i++) {
