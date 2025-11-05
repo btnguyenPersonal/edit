@@ -5,6 +5,8 @@
 #include <string>
 #include <vector>
 
+#include <iostream>
+
 uint32_t applyDiff(State *state, std::vector<diffLine> diff, bool reverse)
 {
 	std::sort(diff.begin(), diff.end(), [reverse](const diffLine &a, const diffLine &b) {
@@ -79,7 +81,11 @@ std::vector<diffLine> backtrack(const std::vector<std::vector<int32_t> > &trace,
 std::vector<diffLine> generateDiff(const Rope &a, const Rope &b)
 {
 	int32_t n = a.size();
+	// std::cout << "81 a.size(): " << a.size() << std::endl;
 	int32_t m = b.size();
+	// std::cout << "83 b.size(): " << b.size() << std::endl;
+	// std::cout << "zzz" << b.head->next->data << std::endl;
+	// std::cout << "zyz" << b.head->next->next->end << std::endl;
 	int32_t max = n + m;
 	std::vector<int32_t> v(2 * max + 1);
 	std::vector<std::vector<int32_t> > trace;

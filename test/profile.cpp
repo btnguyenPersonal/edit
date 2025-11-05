@@ -81,16 +81,31 @@ void diff() {
 	// sendKeys(state, '1');
 	// sendKeys(state, '4');
 	// sendKeys(state, ctrl('m'));
-	sendKeys(state, 'd');
-	cleanup(state, 'd');
-	sendKeys(state, 'd');
-	cleanup(state, 'd');
+	std::vector<char> cs = {'j', 'j', 'j', 'v', '$', 'r', 'z'};
+	for (uint32_t i = 0; i < cs.size(); i++) {
+		sendKeys(state, cs[i]);
+		cleanup(state, cs[i]);
+	}
 	for (uint32_t i = 0; i < state->data.size(); i++) {
-		std::cout << "i: " << i << " " << state->data[i] << std::endl;
+		std::cout << "data i: " << i << " " << state->data[i] << std::endl;
 	}
 	for (uint32_t i = 0; i < state->previousState.size(); i++) {
-		std::cout << "i: " << i << " " << state->previousState[i] << std::endl;
+		std::cout << "prev i: " << i << " " << state->previousState[i] << std::endl;
 	}
+	// sendKeys(state, 'd');
+	// cleanup(state, 'd');
+	// sendKeys(state, 'd');
+	// cleanup(state, 'd');
+	// for (uint32_t i = 0; i < state->data.size(); i++) {
+	// 	std::cout << "data i: " << i << " " << state->data[i] << std::endl;
+	// }
+	// for (uint32_t i = 0; i < state->previousState.size(); i++) {
+	// 	std::cout << "prev i: " << i << " " << state->previousState[i] << std::endl;
+	// }
+	// sendKeys(state, 'u');
+	// cleanup(state, 'u');
+	// sendKeys(state, 'u');
+	// cleanup(state, 'u');
 	// std::cout << std::endl;
 	// applyDiff(state, diff, true);
 	// for (uint32_t i = 0; i < state->data.size(); i++) {

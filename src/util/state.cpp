@@ -281,7 +281,7 @@ void State::changeFile(std::string filename)
 	bool found = false;
 	for (uint32_t i = 0; i < this->archives.size(); i++) {
 		if (this->archives[i].filename == this->filename) {
-			this->archives[i].previousState = this->previousState;
+			this->archives[i].previousState = *(this->previousState.copy());
 			this->archives[i].history = this->history;
 			this->archives[i].historyPosition = this->historyPosition;
 			this->archives[i].lastSave = this->lastSave;
@@ -297,7 +297,7 @@ void State::changeFile(std::string filename)
 	if (!found) {
 		this->archives.push_back({
 			this->filename,
-			this->previousState,
+			*(this->previousState.copy()),
 			this->history,
 			this->historyPosition,
 			this->lastSave,
@@ -332,7 +332,7 @@ void State::changeFile(std::string filename)
 	this->lastModifiedDate = getLastModifiedDate(this, normalizedFilename);
 	this->filename = normalizedFilename;
 	this->data = data;
-	this->previousState = data;
+	this->previousState = *(this->data.copy());
 	this->commentSymbol = getCommentSymbol(normalizedFilename);
 	this->history = std::vector<std::vector<diffLine> >();
 	this->historyPosition = -1;
@@ -470,7 +470,7 @@ State::State(std::string filename)
 	}
 	this->filename = std::string(normalizedFilename);
 	this->data = data;
-	this->previousState = data;
+	this->previousState = *(this->data.copy());
 	this->commentSymbol = getCommentSymbol(normalizedFilename);
 	this->mode = SHORTCUTS;
 	this->fileStack = { normalizedFilename };

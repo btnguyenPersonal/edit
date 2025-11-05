@@ -31,10 +31,10 @@ Node* Rope::get_before(uint32_t index)
 	if (index < 0) {
 		throw std::out_of_range("Rope: Index out of bounds");
 	}
-	if (index >= this->length) {
+	if (index > this->length) {
 		throw std::out_of_range("Rope: Index out of bounds");
 	}
-	for (uint32_t i = 0; i < index && i + 1 < this->length; i++) {
+	for (uint32_t i = 0; i < index && i < this->length; i++) {
 		c = c->next;
 	}
 	return c;

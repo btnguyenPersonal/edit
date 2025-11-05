@@ -128,6 +128,9 @@ void sendDiffKeys(State *state, int32_t c)
 			if (num != "" && file != "") {
 				state->changeFile(file);
 				state->row = std::stoi(num) + linesNet + 1;
+				if (state->row >= state->data.size()) {
+					state->row = state->data.size() > 0 ? state->data.size() - 1 : 0;
+				}
 				centerScreen(state);
 				state->windowPosition.row -= 2;
 			}
