@@ -32,6 +32,7 @@ COMMON_SOURCES := \
   $(UTIL_DIR)/find.cpp \
   $(UTIL_DIR)/ignore.cpp \
   $(UTIL_DIR)/rope.cpp \
+  $(UTIL_DIR)/lru.cpp \
   $(KEYBINDS_DIR)/sendKeys.cpp \
   $(KEYBINDS_DIR)/sendVisualKeys.cpp \
   $(KEYBINDS_DIR)/sendBlameKeys.cpp \
