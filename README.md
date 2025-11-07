@@ -324,7 +324,7 @@ Visual block mode highlightes in blocks.
 ```
 wordwrap = true
 autosave = true
-indent_size = 4
+indent_size = 2
 indent_style = space
 ```
 

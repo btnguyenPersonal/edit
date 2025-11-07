@@ -267,7 +267,7 @@ void State::setDefaultOptions()
 	this->options.keysSize = 30;
 	this->options.maxHarpoon = 100;
 	this->options.wordwrap = true;
-	this->options.indent_size = 4;
+	this->options.indent_size = 2;
 	this->options.indent_style = "space";
 }
 
