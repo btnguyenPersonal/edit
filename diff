@@ -45,22 +45,10 @@ index 639032e..f3dae5f 100644
  void realignHarpoon(State *state);
  int32_t getLastModifiedDate(State *state, std::string filename);
 diff --git a/src/util/render.cpp b/src/util/render.cpp
-index ba6b9df..e72d529 100644
+index ba6b9df..e6c63db 100644
 --- a/src/util/render.cpp
 +++ b/src/util/render.cpp
-@@ -320,8 +320,10 @@ int32_t getColorFromChar(char c)
- 		return MAGENTA;
- 	} else if (c == '\'' || c == '"' || c == '`') {
- 		return CYAN;
--	} else {
-+	} else if (isAlphanumeric(c)) {
- 		return WHITE;
-+	} else {
-+		return GREEN;
- 	}
- }
- 
-@@ -469,10 +471,19 @@ Cursor renderVisibleLines(State *state)
+@@ -469,10 +469,19 @@ Cursor renderVisibleLines(State *state)
  {
  	Cursor cursor{ -1, -1 };
  	int32_t currentRenderRow = STATUS_BAR_LENGTH;
@@ -83,7 +71,7 @@ index ba6b9df..e72d529 100644
  	}
  	return cursor;
  }
-@@ -598,7 +609,20 @@ Cursor renderDiff(State *state)
+@@ -598,7 +607,20 @@ Cursor renderDiff(State *state)
  	return cursor;
  }
  
@@ -105,7 +93,7 @@ index ba6b9df..e72d529 100644
  {
  	std::vector<Pixel> pixels = std::vector<Pixel>();
  	std::vector<Pixel> replacePixels = std::vector<Pixel>();
-@@ -616,6 +640,9 @@ int32_t renderLineContent(State *state, int32_t row, int32_t renderRow, Cursor *
+@@ -616,6 +638,9 @@ int32_t renderLineContent(State *state, int32_t row, int32_t renderRow, Cursor *
  		uint32_t searchCounter = 0;
  		uint32_t startOfSearch = 0;
  		bool isComment = false;
