@@ -1,0 +1,46 @@
+diff --git a/Makefile b/Makefile
+index ed59be3..695cc9d 100644
+--- a/Makefile
++++ b/Makefile
+@@ -1,4 +1,4 @@
+-CC = g++-12
++CC = g++-13
+ 
+ NPROCS := $(shell nproc 2>/dev/null || sysctl -n hw.logicalcpu)
+ MAKEFLAGS += --jobs=$(NPROCS)
+diff --git a/src/util/helper.cpp b/src/util/helper.cpp
+index d5c9ab5..9444b3c 100644
+--- a/src/util/helper.cpp
++++ b/src/util/helper.cpp
+@@ -53,13 +53,17 @@ void locateNodeModule(State* state, std::string vis) {
+ 		std::filesystem::path filePath(state->filename);
+ 		std::filesystem::path dir = filePath.parent_path();
+ 		std::filesystem::path current = std::filesystem::absolute(std::filesystem::current_path());
+-		while (std::filesystem::is_regular_file(dir / std::string("node_modules"))) {
++		while (!std::filesystem::is_directory(dir / std::string("node_modules"))) {
++			// state->status += "#";
+ 			dir = dir.parent_path();
+ 			if (dir == current) {
+ 				break;
+ 			}
+ 		}
+-		locateFile(state, (dir / vis).string(), {"", ".js", ".jsx", ".ts", ".tsx"})
++		std::filesystem::path path = dir / "node_modules" / vis / "package.json";
++		if (std::filesystem::is_regular_file(path.c_str())) {
++			state->resetState(path.string());
++		}
+ 	} catch (const std::filesystem::filesystem_error &e) {
+ 		state->status = "not found";
+ 	}
+diff --git a/src/util/helper.h b/src/util/helper.h
+index 639032e..f3dae5f 100644
+--- a/src/util/helper.h
++++ b/src/util/helper.h
+@@ -7,6 +7,7 @@
+ #include <string>
+ #include <vector>
+ 
++void locateNodeModule(State* state, std::string vis);
+ void locateFile(State* state, std::string vis, std::vector<std::string> extensions);
+ void realignHarpoon(State *state);
+ int32_t getLastModifiedDate(State *state, std::string filename);
