@@ -48,6 +48,48 @@ std::vector<std::string> getLogLines(State *state)
 	return gitLogLines;
 }
 
+void locateNodeModule(State* state, std::string vis) {
+	try {
+		std::filesystem::path filePath(state->filename);
+		std::filesystem::path dir = filePath.parent_path();
+		std::filesystem::path current = std::filesystem::absolute(std::filesystem::current_path());
+		while (std::filesystem::is_regular_file(dir / std::string("node_modules"))) {
+			dir = dir.parent_path();
+			if (dir == current) {
+				break;
+			}
+		}
+		locateFile(state, (dir / vis).string(), {"", ".js", ".jsx", ".ts", ".tsx"})
+	} catch (const std::filesystem::filesystem_error &e) {
+		state->status = "not found";
+	}
+}
+
+void locateFile(State* state, std::string vis, std::vector<std::string> extensions) {
+	if (getExtension(vis) == "js") {
+		for (int32_t i = vis.length() - 1; i >= 0; i--) {
+			if (vis[i] == '.') {
+				vis = safeSubstring(vis, 0, i);
+				break;
+			}
+		}
+	}
+	for (uint32_t i = 0; i < extensions.size(); i++) {
+		try {
+			std::filesystem::path filePath(state->filename);
+			std::filesystem::path dir = filePath.parent_path();
+			auto newFilePath = dir / (vis + extensions[i]);
+			if (std::filesystem::is_regular_file(newFilePath.c_str())) {
+				auto baseDir = std::filesystem::current_path();
+				auto relativePath = std::filesystem::relative(newFilePath, baseDir);
+				state->resetState(relativePath.string());
+				break;
+			}
+		} catch (const std::filesystem::filesystem_error &e) {
+		}
+	}
+}
+
 std::vector<std::string> getDiffLines(State *state)
 {
 	std::vector<std::string> gitDiffLines;

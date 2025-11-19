@@ -428,37 +428,15 @@ bool sendVisualKeys(State *state, char c, bool onlyMotions)
 		state->prevKeys = "";
 	} else if (!onlyMotions && state->prevKeys == "g" && c == 'r') {
 		if (state->visualType == NORMAL) {
-			setQuery(&state->grep, getInVisual(state));
-			generateGrepOutput(state, true);
-			findDefinitionFromGrepOutput(state, getInVisual(state));
+			std::string vis = getInVisual(state);
+			locateNodeModule(state, vis);
 		}
 		state->prevKeys = "";
 	} else if (!onlyMotions && state->prevKeys == "g" && c == 'f') {
 		if (state->visualType == NORMAL) {
 			std::vector<std::string> extensions = { "", ".js", ".jsx", ".ts", ".tsx" };
 			std::string vis = getInVisual(state);
-			if (getExtension(vis) == "js") {
-				for (int32_t i = vis.length() - 1; i >= 0; i--) {
-					if (vis[i] == '.') {
-						vis = safeSubstring(vis, 0, i);
-						break;
-					}
-				}
-			}
-			for (uint32_t i = 0; i < extensions.size(); i++) {
-				try {
-					std::filesystem::path filePath(state->filename);
-					std::filesystem::path dir = filePath.parent_path();
-					auto newFilePath = dir / (vis + extensions[i]);
-					if (std::filesystem::is_regular_file(newFilePath.c_str())) {
-						auto baseDir = std::filesystem::current_path();
-						auto relativePath = std::filesystem::relative(newFilePath, baseDir);
-						state->resetState(relativePath.string());
-						break;
-					}
-				} catch (const std::filesystem::filesystem_error &e) {
-				}
-			}
+			locateFile(state, vis, extensions);
 		}
 		state->prevKeys = "";
 	} else if (!onlyMotions && state->prevKeys == "g" && c == 'U') {
