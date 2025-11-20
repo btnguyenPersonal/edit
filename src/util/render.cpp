@@ -612,7 +612,7 @@ bool startsWithSymbol(State* state, uint32_t row, std::string symbol)
 	for (uint32_t i = 0; i < state->data[row].length(); i++) {
 		if (safeSubstring(state->data[row], i, symbol.length()) == symbol) {
 			return true;
-		} else if (!(state->data[row][i] == '\t' || state->data[row][i])) {
+		} else if (!(state->data[row][i] == '\t' || state->data[row][i] == ' ')) {
 			return false;
 		}
 	}
