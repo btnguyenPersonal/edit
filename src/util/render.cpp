@@ -469,10 +469,19 @@ Cursor renderVisibleLines(State *state)
 {
 	Cursor cursor{ -1, -1 };
 	int32_t currentRenderRow = STATUS_BAR_LENGTH;
-	for (int32_t i = state->windowPosition.row;
+	bool multiLineComment = false;
+	for (int32_t i = 0;
 	     i < (int32_t)state->data.size() && i < (int32_t)(state->maxY + state->windowPosition.row) - 1; i++) {
-		renderLineNumber(state, i, currentRenderRow);
-		currentRenderRow = renderLineContent(state, i, currentRenderRow, &cursor);
+		if (startsWithSymbol(state, i, "/*")) {
+			multiLineComment = true;
+		}
+		if (i >= (int32_t)state->windowPosition.row) {
+			renderLineNumber(state, i, currentRenderRow);
+			currentRenderRow = renderLineContent(state, i, currentRenderRow, &cursor, multiLineComment);
+		}
+		if (startsWithSymbol(state, i, "*/")) {
+			multiLineComment = false;
+		}
 	}
 	return cursor;
 }
@@ -598,7 +607,20 @@ Cursor renderDiff(State *state)
 	return cursor;
 }
 
-int32_t renderLineContent(State *state, int32_t row, int32_t renderRow, Cursor *cursor)
+bool startsWithSymbol(State* state, uint32_t row, std::string symbol)
+{
+	for (uint32_t i = 0; i < state->data[row].length(); i++) {
+		if (safeSubstring(state->data[row], i, symbol.length()) == symbol) {
+			return true;
+		} else if (!(state->data[row][i] == '\t' || state->data[row][i])) {
+			return false;
+		}
+	}
+	return false;
+}
+
+
+int32_t renderLineContent(State *state, int32_t row, int32_t renderRow, Cursor *cursor, bool multiLineComment)
 {
 	std::vector<Pixel> pixels = std::vector<Pixel>();
 	std::vector<Pixel> replacePixels = std::vector<Pixel>();
@@ -616,6 +638,9 @@ int32_t renderLineContent(State *state, int32_t row, int32_t renderRow, Cursor *
 		uint32_t searchCounter = 0;
 		uint32_t startOfSearch = 0;
 		bool isComment = false;
+		if (multiLineComment) {
+			isComment = true;
+		}
 		bool foundCursor = false;
 
 		uint32_t col = 0;

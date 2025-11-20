@@ -53,13 +53,17 @@ void locateNodeModule(State* state, std::string vis) {
 		std::filesystem::path filePath(state->filename);
 		std::filesystem::path dir = filePath.parent_path();
 		std::filesystem::path current = std::filesystem::absolute(std::filesystem::current_path());
-		while (std::filesystem::is_regular_file(dir / std::string("node_modules"))) {
+		while (!std::filesystem::is_directory(dir / std::string("node_modules"))) {
+			// state->status += "#";
 			dir = dir.parent_path();
 			if (dir == current) {
 				break;
 			}
 		}
-		locateFile(state, (dir / vis).string(), {"", ".js", ".jsx", ".ts", ".tsx"})
+		std::filesystem::path path = dir / "node_modules" / vis / "package.json";
+		if (std::filesystem::is_regular_file(path.c_str())) {
+			state->resetState(path.string());
+		}
 	} catch (const std::filesystem::filesystem_error &e) {
 		state->status = "not found";
 	}
