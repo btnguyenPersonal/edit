@@ -607,7 +607,7 @@ Cursor renderDiff(State *state)
 	return cursor;
 }
 
-bool startsWithSymbol(State* state, uint32_t row, std::string symbol)
+bool startsWithSymbol(State *state, uint32_t row, std::string symbol)
 {
 	for (uint32_t i = 0; i < state->data[row].length(); i++) {
 		if (safeSubstring(state->data[row], i, symbol.length()) == symbol) {
@@ -618,7 +618,6 @@ bool startsWithSymbol(State* state, uint32_t row, std::string symbol)
 	}
 	return false;
 }
-
 
 int32_t renderLineContent(State *state, int32_t row, int32_t renderRow, Cursor *cursor, bool multiLineComment)
 {

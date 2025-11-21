@@ -48,7 +48,8 @@ std::vector<std::string> getLogLines(State *state)
 	return gitLogLines;
 }
 
-void locateNodeModule(State* state, std::string vis) {
+void locateNodeModule(State *state, std::string vis)
+{
 	try {
 		std::filesystem::path filePath(state->filename);
 		std::filesystem::path dir = filePath.parent_path();
@@ -69,7 +70,8 @@ void locateNodeModule(State* state, std::string vis) {
 	}
 }
 
-void locateFile(State* state, std::string vis, std::vector<std::string> extensions) {
+void locateFile(State *state, std::string vis, std::vector<std::string> extensions)
+{
 	if (getExtension(vis) == "js") {
 		for (int32_t i = vis.length() - 1; i >= 0; i--) {
 			if (vis[i] == '.') {

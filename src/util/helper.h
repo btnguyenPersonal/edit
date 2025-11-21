@@ -7,8 +7,8 @@
 #include <string>
 #include <vector>
 
-void locateNodeModule(State* state, std::string vis);
-void locateFile(State* state, std::string vis, std::vector<std::string> extensions);
+void locateNodeModule(State *state, std::string vis);
+void locateFile(State *state, std::string vis, std::vector<std::string> extensions);
 void realignHarpoon(State *state);
 std::vector<std::string> getDiffLines(State *state);
 std::vector<std::string> getLogLines(State *state);

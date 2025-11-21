@@ -26,5 +26,5 @@ uint32_t renderAutoComplete(State *state, int32_t row, uint32_t col, uint32_t re
 std::string getRenderBlameString(State *state);
 void renderLineNumber(State *state, int32_t row, int32_t renderRow);
 int32_t renderLineContent(State *state, int32_t row, int32_t renderRow, Cursor *cursor, bool multiLineComment);
-bool startsWithSymbol(State* state, uint32_t row, std::string symbol);
+bool startsWithSymbol(State *state, uint32_t row, std::string symbol);
 bool isRowColInVisual(State *state, uint32_t i, uint32_t j);

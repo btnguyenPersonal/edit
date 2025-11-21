@@ -9,7 +9,7 @@
 #include <string>
 #include <vector>
 
-std::string getFromClipboard(State* state, bool useSystemClipboard)
+std::string getFromClipboard(State *state, bool useSystemClipboard)
 {
 	if (!useSystemClipboard || state->dontRecordKey) {
 		return state->clipboard;
