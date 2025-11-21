@@ -5,7 +5,7 @@
 #include <vector>
 
 void add(Query *input, const char &c);
-void addFromClipboard(Query *input);
+void add(Query *input, std::string s);
 void moveCursorLeft(Query *input);
 void moveCursorRight(Query *input);
 void moveCursorStart(Query *input);

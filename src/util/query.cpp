@@ -8,11 +8,10 @@ void add(Query *input, const char &c)
 	input->cursor += 1;
 }
 
-void addFromClipboard(Query *input)
+void add(Query *input, std::string s)
 {
-	std::string clip = getFromClipboard();
-	input->query.insert(input->cursor, clip);
-	input->cursor += clip.length();
+	input->query.insert(input->cursor, s);
+	input->cursor += s.length();
 }
 
 void setQuery(Query *input, std::string s)

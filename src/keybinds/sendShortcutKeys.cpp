@@ -131,7 +131,7 @@ void sendShortcutKeys(State *state, int32_t c)
 		state->prevKeys = "";
 	} else if (state->prevKeys == "g" && c == 'y') {
 		state->status = state->filename;
-		copyToClipboard(state, state->filename);
+		copyToClipboard(state, state->filename, true);
 		state->prevKeys = "";
 	} else if (state->prevKeys == "g" && c == 'g') {
 		state->row = 0;
@@ -157,7 +157,15 @@ void sendShortcutKeys(State *state, int32_t c)
 	} else if (state->prevKeys == "g" && c == ctrl('r')) {
 		std::string path = getRelativeToLastAndRoute(state);
 		state->status = path;
-		copyToClipboard(state, path);
+		copyToClipboard(state, path, false);
+		state->prevKeys = "";
+	} else if (state->prevKeys == "g" && c == 'P') {
+		paste(state, getFromClipboard(state, true));
+		setDotCommand(state, c);
+		state->prevKeys = "";
+	} else if (state->prevKeys == "g" && c == 'p') {
+		pasteAfter(state, getFromClipboard(state, true));
+		setDotCommand(state, c);
 		state->prevKeys = "";
 	} else if (c == ' ') {
 		createNewestHarpoon(state);
@@ -294,14 +302,14 @@ void sendShortcutKeys(State *state, int32_t c)
 		state->mode = TYPING;
 	} else if (c == 'Y') {
 		fixColOverMax(state);
-		copyToClipboard(state, safeSubstring(state->data[state->row], state->col));
+		copyToClipboard(state, safeSubstring(state->data[state->row], state->col), false);
 	} else if (c == 'D') {
 		fixColOverMax(state);
-		copyToClipboard(state, safeSubstring(state->data[state->row], state->col));
+		copyToClipboard(state, safeSubstring(state->data[state->row], state->col), false);
 		state->data[state->row] = state->data[state->row].substr(0, state->col);
 	} else if (c == 'C') {
 		fixColOverMax(state);
-		copyToClipboard(state, safeSubstring(state->data[state->row], state->col));
+		copyToClipboard(state, safeSubstring(state->data[state->row], state->col), false);
 		state->data[state->row] = state->data[state->row].substr(0, state->col);
 		state->mode = TYPING;
 	} else if (c == 'I') {
@@ -400,14 +408,14 @@ void sendShortcutKeys(State *state, int32_t c)
 		getAndAddNumber(state, state->row, state->col, 1);
 	} else if (c == 's') {
 		if (state->col < state->data[state->row].length()) {
-			copyToClipboard(state, state->data[state->row].substr(state->col, 1));
+			copyToClipboard(state, state->data[state->row].substr(state->col, 1), false);
 			state->data[state->row] = state->data[state->row].substr(0, state->col) +
 						  state->data[state->row].substr(state->col + 1);
 			state->mode = TYPING;
 		}
 	} else if (c == 'x') {
 		if (state->col < state->data[state->row].length()) {
-			copyToClipboard(state, state->data[state->row].substr(state->col, 1));
+			copyToClipboard(state, state->data[state->row].substr(state->col, 1), false);
 			state->data[state->row] = state->data[state->row].substr(0, state->col) +
 						  state->data[state->row].substr(state->col + 1);
 		}
@@ -438,10 +446,10 @@ void sendShortcutKeys(State *state, int32_t c)
 		centerScreen(state);
 		renderScreen(state, true);
 	} else if (c == 'P') {
-		pasteFromClipboard(state);
+		paste(state, getFromClipboard(state, false));
 		setDotCommand(state, c);
 	} else if (c == 'p') {
-		pasteFromClipboardAfter(state);
+		pasteAfter(state, getFromClipboard(state, false));
 		setDotCommand(state, c);
 	} else if (c == ctrl('l')) {
 		moveHarpoonRight(state);

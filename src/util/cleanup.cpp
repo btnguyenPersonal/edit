@@ -4,7 +4,6 @@
 #include "cleanup.h"
 #include "expect.h"
 #include <ncurses.h>
-#include <chrono>
 
 void cleanup(State *state, char c)
 {
@@ -45,13 +44,7 @@ void cleanup(State *state, char c)
 					recordHistory(state, diff);
 				}
 				if (state->options.autosave && !state->runningAsRoot) {
-			std::chrono::_V2::system_clock::time_point start;
-			std::chrono::_V2::system_clock::time_point stop;
-			start = std::chrono::high_resolution_clock::now();
 					saveFile(state);
-			stop = std::chrono::high_resolution_clock::now();
-			auto dur = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
-			state->status += std::string(" diff: ") + std::to_string(dur.count());
 				}
 			}
 		}
