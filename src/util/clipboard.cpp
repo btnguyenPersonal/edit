@@ -183,8 +183,8 @@ void paste(State *state, std::string text, int32_t offset, bool visual)
 			state->row = pos.row;
 			state->col = pos.col;
 			std::string current = state->data[state->row];
-			state->data[state->row] = current.substr(0, state->col);
-			state->data.insert(state->data.begin() + state->row + 1, current.substr(state->col));
+			state->data[state->row] = safeSubstring(current, 0, state->col);
+			state->data.insert(state->data.begin() + state->row + 1, safeSubstring(current, state->col));
 			state->row += 1;
 			state->col = 0;
 			indentLine(state);
@@ -215,7 +215,7 @@ void paste(State *state, std::string text, int32_t offset, bool visual)
 		if (offset != 0 && state->col + offset <= state->data[state->row].length()) {
 			breakCol = state->col + offset;
 		}
-		state->data[state->row] = current.substr(0, breakCol);
+		state->data[state->row] = safeSubstring(current, 0, breakCol);
 		state->data[state->row] += clip[0];
 		int32_t lastRow = state->row;
 		if (clip.size() > 1) {

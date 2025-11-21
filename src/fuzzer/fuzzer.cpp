@@ -50,7 +50,7 @@ void fuzzSendKeys(int testnum, int iterations = 1000)
 		}
 		// TODO remove
 		for (int i = 0; i < iterations; i++) {
-			char randomKey = 'u';
+			char randomKey = 'p';
 
 			ret += "\"";
 			ret += getEscapedChar(randomKey, false);
@@ -61,7 +61,7 @@ void fuzzSendKeys(int testnum, int iterations = 1000)
 			ret += ",";
 		}
 		for (int i = 0; i < iterations; i++) {
-			char randomKey = ctrl('r');
+			char randomKey = 'P';
 
 			ret += "\"";
 			ret += getEscapedChar(randomKey, false);
