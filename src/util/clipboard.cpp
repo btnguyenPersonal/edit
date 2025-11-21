@@ -8,6 +8,7 @@
 #include <sstream>
 #include <string>
 #include <vector>
+#include <chrono>
 
 std::string getFromClipboard()
 {
@@ -255,7 +256,15 @@ void pasteFromClipboard(State *state)
 void pasteFromClipboardAfter(State *state)
 {
 	fixColOverMax(state);
+
+	std::chrono::_V2::system_clock::time_point start;
+	std::chrono::_V2::system_clock::time_point stop;
+	start = std::chrono::high_resolution_clock::now();
 	std::string result = getFromClipboard();
+	stop = std::chrono::high_resolution_clock::now();
+	auto dur = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+	state->status += std::string(" clip: ") + std::to_string(dur.count());
+
 	std::vector<std::string> clip;
 	std::stringstream ss(result);
 	std::string line;

@@ -47,7 +47,7 @@ int32_t main(int32_t argc, char *argv[])
 			renderScreen(state);
 			stop = std::chrono::high_resolution_clock::now();
 			auto renderDuration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
-			state->status = std::string("keys: ") + std::to_string(keysDuration.count()) + std::string(" cleanup: ") + std::to_string(cleanupDuration.count()) + std::string(" render: ") + std::to_string(renderDuration.count());
+			state->status += std::string(" keys: ") + std::to_string(keysDuration.count()) + std::string(" cleanup: ") + std::to_string(cleanupDuration.count()) + std::string(" render: ") + std::to_string(renderDuration.count());
 			renderScreen(state);
 		}
 	}
