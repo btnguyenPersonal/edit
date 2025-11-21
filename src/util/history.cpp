@@ -8,19 +8,38 @@
 uint32_t applyDiff(State *state, std::vector<diffLine> diff, bool reverse)
 {
 	uint32_t min = UINT_MAX;
-	for (uint32_t i = 0; i < diff.size(); i++) {
-		if (diff[i].lineNum < min) {
-			min = diff[i].lineNum;
-		}
-		if ((!reverse && diff[i].add) || (reverse && !diff[i].add)) {
-			if (diff[i].lineNum < state->data.size()) {
-				state->data.insert(state->data.begin() + diff[i].lineNum, diff[i].line);
-			} else {
-				state->data.push_back(diff[i].line);
+	if (reverse) {
+		for (uint32_t i = 0; i < diff.size(); i++) {
+			if (diff[i].lineNum < min) {
+				min = diff[i].lineNum;
 			}
-		} else {
-			if (diff[i].lineNum < state->data.size()) {
-				state->data.erase(state->data.begin() + diff[i].lineNum);
+			if (!diff[i].add) {
+				if (diff[i].lineNum < state->data.size()) {
+					state->data.insert(state->data.begin() + diff[i].lineNum, diff[i].line);
+				} else {
+					state->data.push_back(diff[i].line);
+				}
+			} else {
+				if (diff[i].lineNum < state->data.size()) {
+					state->data.erase(state->data.begin() + diff[i].lineNum);
+				}
+			}
+		}
+	} else {
+		for (int32_t i = diff.size() - 1; i >= 0; i--) {
+			if (diff[i].lineNum < min) {
+				min = diff[i].lineNum;
+			}
+			if (diff[i].add) {
+				if (diff[i].lineNum < state->data.size()) {
+					state->data.insert(state->data.begin() + diff[i].lineNum, diff[i].line);
+				} else {
+					state->data.push_back(diff[i].line);
+				}
+			} else {
+				if (diff[i].lineNum < state->data.size()) {
+					state->data.erase(state->data.begin() + diff[i].lineNum);
+				}
 			}
 		}
 	}
@@ -52,9 +71,9 @@ std::vector<diffLine> generateFastDiff(const std::vector<std::string> &a, const 
 					bIndex++;
 				} else {
 					output.push_back({ aIndex, false, a[aIndex] });
+					aIndex++;
 					output.push_back({ aIndex, true, b[bIndex] });
 					bIndex++;
-					aIndex++;
 				}
 			}
 		}

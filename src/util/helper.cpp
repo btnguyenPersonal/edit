@@ -1406,19 +1406,16 @@ uint32_t b(State *state)
 
 void saveFile(State *state)
 {
-	bool overwrite = true;
-	if (overwrite) {
-		state->lastSave = state->historyPosition;
-		if (!state->dontSave) {
-			std::ofstream file(state->filename);
-			if (!state->data.empty()) {
-				for (size_t i = 0; i < state->data.size() - 1; ++i) {
-					file << state->data[i] << "\n";
-				}
-				file << state->data.back();
+	state->lastSave = state->historyPosition;
+	if (!state->dontSave) {
+		std::ofstream file(state->filename);
+		if (!state->data.empty()) {
+			for (size_t i = 0; i < state->data.size() - 1; ++i) {
+				file << state->data[i] << "\n";
 			}
-			file.close();
+			file << state->data.back();
 		}
+		file.close();
 	}
 }
 

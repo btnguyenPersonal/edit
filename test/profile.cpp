@@ -10,7 +10,7 @@
 void diff()
 {
 	std::vector<std::string> a = {
-		"aaaaaaaaaaaaaaaa", "bbbbbbbbbbbbbbbb", "cccccccccccccccc", "dddddddddddddddd", "eeeeeeeeeeeeeeee",
+		"aacccccccccccaaa", "bbbbbbbbbbbbbbbb", "cccccccccccccccc", "dddddddddddddddd", "eeeeeeeeeeeeeeee",
 		"ffffffffffffffff", "gggggggggggggggg", "hhhhhhhhhhhhhhhh", "iiiiiiiiiiiiiiii", "jjjjjjjjjjjjjjjj",
 		"kkkkkkkkkkkkkkkk", "llllllllllllllll", "mmmmmmmmmmmmmmmm", "nnnnnnnnnnnnnnnn", "oooooooooooooooo",
 		"pppppppppppppppp", "qqqqqqqqqqqqqqqq", "rrrrrrrrrrrrrrrr", "ssssssssssssssss", "tttttttttttttttt",
@@ -23,11 +23,13 @@ void diff()
 		"kkkkkkkkkkkkkkkk", "llllllllllllllll", "mmmmmmmmmmmmmmmm", "nnnnnnnnnnnnnnnn", "oooooooooooooooo",
 		"pppppppppppppppp", "qqqqqqqqqqqqqqqq", "rrrrrrrrrrrrrrrr", "ssssssssssssssss", "tttttttttttttttt",
 		"uuuuuuuuuuuuuuuu", "vvvvvvvvvvvvvvvv", "wwwwwwwwwwwwwwww", "xxxxxxxxxxxxxxxx", "yyyyyyyyyyyyyyyy",
+		"zzzzzzzzzzzzzzzz",
 	};
 	std::vector<diffLine> diff = generateFastDiff(a, b);
 	for (uint32_t i = 0; i < diff.size(); i++) {
-		std::cout << diff[i].line << std::endl;
+		std::cout << std::string(diff[i].add ? "+ " : "- ") << diff[i].line << std::endl;
 	}
+	applyDiff();
 }
 
 void grep()
