@@ -48,6 +48,29 @@ void fuzzSendKeys(int testnum, int iterations = 1000)
 			cleanup(state, randomKey);
 			ret += ",";
 		}
+		// TODO remove
+		for (int i = 0; i < iterations; i++) {
+			char randomKey = 'u';
+
+			ret += "\"";
+			ret += getEscapedChar(randomKey, false);
+			ret += "\"";
+			std::cout << getMode(state->mode) << " " << getEscapedChar(randomKey, true) << std::endl;
+			sendKeys(state, randomKey);
+			cleanup(state, randomKey);
+			ret += ",";
+		}
+		for (int i = 0; i < iterations; i++) {
+			char randomKey = ctrl('r');
+
+			ret += "\"";
+			ret += getEscapedChar(randomKey, false);
+			ret += "\"";
+			std::cout << getMode(state->mode) << " " << getEscapedChar(randomKey, true) << std::endl;
+			sendKeys(state, randomKey);
+			cleanup(state, randomKey);
+			ret += ",";
+		}
 	} catch (const std::exception &e) {
 		std::cerr << "Error during fuzzing: " << e.what() << std::endl;
 		std::cout << ret << "}" << std::endl;
