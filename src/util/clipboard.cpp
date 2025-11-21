@@ -11,7 +11,7 @@
 
 std::string getFromClipboard(State* state, bool useSystemClipboard)
 {
-	if (state->dontRecordKey || !useSystemClipboard) {
+	if (!useSystemClipboard || state->dontRecordKey) {
 		return state->clipboard;
 	}
 	std::string command;
@@ -302,7 +302,7 @@ void copyToClipboard(State *state, const std::string &clip, bool useSystemClipbo
 #else
 #error "OS not supported"
 #endif
-	if (state->dontRecordKey || !useSystemClipboard) {
+	if (!useSystemClipboard || state->dontRecordKey) {
 		state->clipboard = clip;
 	}
 	if (pipe != nullptr) {
