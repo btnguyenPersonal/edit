@@ -471,7 +471,7 @@ bool sendVisualKeys(State *state, char c, bool onlyMotions)
 		state->prevKeys = "";
 	} else if (state->prevKeys == "g" && (c == 'p' || c == 'P')) {
 		logDotCommand(state);
-		pasteVisual(state, getFromClipboard(state, true));
+		paste(state, getFromClipboard(state, true), 0, true);
 		state->mode = SHORTCUTS;
 		state->prevKeys = "";
 	} else if (state->prevKeys == "g" && c == 'y') {
@@ -664,7 +664,7 @@ bool sendVisualKeys(State *state, char c, bool onlyMotions)
 		state->mode = SHORTCUTS;
 	} else if (!onlyMotions && (c == 'p' || c == 'P')) {
 		logDotCommand(state);
-		pasteVisual(state, getFromClipboard(state, false));
+		paste(state, getFromClipboard(state, false), 0, true);
 		state->mode = SHORTCUTS;
 	} else if (!onlyMotions && c == 'x') {
 		logDotCommand(state);

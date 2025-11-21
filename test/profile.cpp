@@ -29,7 +29,6 @@ void diff()
 	for (uint32_t i = 0; i < diff.size(); i++) {
 		std::cout << std::string(diff[i].add ? "+ " : "- ") << diff[i].line << std::endl;
 	}
-	applyDiff();
 }
 
 void grep()

@@ -160,11 +160,11 @@ void sendShortcutKeys(State *state, int32_t c)
 		copyToClipboard(state, path, false);
 		state->prevKeys = "";
 	} else if (state->prevKeys == "g" && c == 'P') {
-		paste(state, getFromClipboard(state, true));
+		paste(state, getFromClipboard(state, true), 0, false);
 		setDotCommand(state, c);
 		state->prevKeys = "";
 	} else if (state->prevKeys == "g" && c == 'p') {
-		pasteAfter(state, getFromClipboard(state, true));
+		paste(state, getFromClipboard(state, true), 1, false);
 		setDotCommand(state, c);
 		state->prevKeys = "";
 	} else if (c == ' ') {
@@ -446,10 +446,10 @@ void sendShortcutKeys(State *state, int32_t c)
 		centerScreen(state);
 		renderScreen(state, true);
 	} else if (c == 'P') {
-		paste(state, getFromClipboard(state, false));
+		paste(state, getFromClipboard(state, false), 0, false);
 		setDotCommand(state, c);
 	} else if (c == 'p') {
-		pasteAfter(state, getFromClipboard(state, false));
+		paste(state, getFromClipboard(state, false), 1, false);
 		setDotCommand(state, c);
 	} else if (c == ctrl('l')) {
 		moveHarpoonRight(state);
