@@ -97,7 +97,7 @@ void changeCaseVisual(State *state, bool upper, bool swap)
 			}
 			col = 0;
 		}
-		while (col <= bounds.maxC) {
+		while (col <= bounds.maxC && col < state->data[bounds.maxR].size()) {
 			state->data[bounds.maxR][col] = changeCase(state->data[bounds.maxR][col], upper, swap);
 			col++;
 		}
@@ -106,7 +106,9 @@ void changeCaseVisual(State *state, bool upper, bool swap)
 		uint32_t max = std::max(bounds.minC, bounds.maxC);
 		for (uint32_t row = bounds.minR; row <= bounds.maxR; row++) {
 			for (uint32_t col = min; col <= max; col++) {
-				state->data[row][col] = changeCase(state->data[row][col], upper, swap);
+				if (col < state->data[row].size()) {
+					state->data[row][col] = changeCase(state->data[row][col], upper, swap);
+				}
 			}
 		}
 	} else if (state->visualType == LINE) {
