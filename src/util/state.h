@@ -129,7 +129,6 @@ class State {
 	bool skipSetHardCol;
 	bool viewingDiff;
 	int32_t blameSize;
-	int32_t lastModifiedDate;
 	int32_t buildErrorIndex;
 	int32_t fileExplorerIndex;
 	int32_t fileExplorerWindowLine;

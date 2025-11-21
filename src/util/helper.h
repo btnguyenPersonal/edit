@@ -10,7 +10,6 @@
 void locateNodeModule(State* state, std::string vis);
 void locateFile(State* state, std::string vis, std::vector<std::string> extensions);
 void realignHarpoon(State *state);
-int32_t getLastModifiedDate(State *state, std::string filename);
 std::vector<std::string> getDiffLines(State *state);
 std::vector<std::string> getLogLines(State *state);
 uint32_t getNormalizedCol(State *state, uint32_t hardCol);
