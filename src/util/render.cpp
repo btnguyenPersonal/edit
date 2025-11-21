@@ -470,16 +470,22 @@ Cursor renderVisibleLines(State *state)
 	Cursor cursor{ -1, -1 };
 	int32_t currentRenderRow = STATUS_BAR_LENGTH;
 	bool multiLineComment = false;
+	bool checkAgain = false;
 	for (int32_t i = 0;
 	     i < (int32_t)state->data.size() && i < (int32_t)(state->maxY + state->windowPosition.row) - 1; i++) {
+		checkAgain = false;
 		if (startsWithSymbol(state, i, "/*")) {
 			multiLineComment = true;
+			checkAgain = true;
 		}
 		if (i >= (int32_t)state->windowPosition.row) {
 			renderLineNumber(state, i, currentRenderRow);
 			currentRenderRow = renderLineContent(state, i, currentRenderRow, &cursor, multiLineComment);
 		}
 		if (startsWithSymbol(state, i, "*/")) {
+			multiLineComment = false;
+		}
+		if (checkAgain && endsWithSymbol(state, i, "*/")) {
 			multiLineComment = false;
 		}
 	}
@@ -605,6 +611,11 @@ Cursor renderDiff(State *state)
 		pixels.clear();
 	}
 	return cursor;
+}
+
+bool endsWithSymbol(State *state, uint32_t row, std::string symbol)
+{
+	return safeSubstring(state->data[row], ((int32_t)state->data[row].length()) - symbol.length()) == symbol;
 }
 
 bool startsWithSymbol(State *state, uint32_t row, std::string symbol)
