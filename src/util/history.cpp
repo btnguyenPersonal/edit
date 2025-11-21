@@ -115,30 +115,30 @@ std::vector<diffLine> generateFastDiff(const std::vector<std::string> &a, const 
 	std::vector<diffLine> output;
 	uint32_t aIndex = 0;
 	uint32_t bIndex = 0;
-	while (aIndex < a.size() && bIndex < b.size()) {
-		if (aIndex >= a.size()) {
+	while (aIndex < a.size() || bIndex < b.size()) {
+		if (bIndex >= b.size()) {
 			output.push_back({ aIndex, false, a[aIndex] });
 			aIndex++;
-		}
-		if (bIndex >= b.size()) {
+		} else if (aIndex >= a.size()) {
 			output.push_back({ aIndex, true, b[bIndex] });
 			bIndex++;
-		}
-		if (a[aIndex] == b[bIndex]) {
-			aIndex++;
-			bIndex++;
-		} else if (a[aIndex] != b[bIndex]) {
-			if (a.size() > b.size()) {
-				output.push_back({ aIndex, false, a[aIndex] });
+		} else {
+			if (a[aIndex] == b[bIndex]) {
 				aIndex++;
-			} else if (b.size() > a.size()) {
-				output.push_back({ aIndex, true, b[bIndex] });
 				bIndex++;
-			} else {
-				output.push_back({ aIndex, true, b[bIndex] });
-				bIndex++;
-				output.push_back({ aIndex, false, a[aIndex] });
-				aIndex++;
+			} else if (a[aIndex] != b[bIndex]) {
+				if (a.size() > b.size()) {
+					output.push_back({ aIndex, false, a[aIndex] });
+					aIndex++;
+				} else if (b.size() > a.size()) {
+					output.push_back({ aIndex, true, b[bIndex] });
+					bIndex++;
+				} else {
+					output.push_back({ aIndex, false, a[aIndex] });
+					output.push_back({ aIndex, true, b[bIndex] });
+					bIndex++;
+					aIndex++;
+				}
 			}
 		}
 	}

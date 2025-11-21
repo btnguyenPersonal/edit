@@ -37,42 +37,33 @@ void diff() {
 		"zzzzzzzzzzzzzzzz",
 	};
 	std::vector<std::string> b = {
-		"zzzzzzzzzzzzzzzz",
-		"yyyyyyyyyyyyyyyy",
-		"xxxxxxxxxxxxxxxx",
-		"wwwwwwwwwwwwwwww",
-		"vvvvvvvvvvvvvvvv",
-		"uuuuuuuuuuuuuuuu",
-		"tttttttttttttttt",
-		"ssssssssssssssss",
-		"rrrrrrrrrrrrrrrr",
-		"qqqqqqqqqqqqqqqq",
-		"pppppppppppppppp",
-		"oooooooooooooooo",
-		"nnnnnnnnnnnnnnnn",
-		"mmmmmmmmmmmmmmmm",
-		"llllllllllllllll",
-		"kkkkkkkkkkkkkkkk",
-		"jjjjjjjjjjjjjjjj",
-		"iiiiiiiiiiiiiiii",
-		"hhhhhhhhhhhhhhhh",
-		"gggggggggggggggg",
-		"ffffffffffffffff",
-		"eeeeeeeeeeeeeeee",
-		"dddddddddddddddd",
-		"cccccccccccccccc",
-		"bbbbbbbbbbbbbbbb",
 		"aaaaaaaaaaaaaaaa",
+		"bbbbbbbbbbbbbbbb",
+		"cccccccccccccccc",
+		"dddddddddddddddd",
+		"eeeeeeeeeeeeeeee",
+		"ffffffffffffffff",
+		"gggggggggggggggg",
+		"hhhhhhhhhhhhhhhh",
+		"iiiiiiiiiiiiiiii",
+		"jjjjjjjjjjjjjjjj",
+		"kkkkkkkkkkkkkkkk",
+		"llllllllllllllll",
+		"mmmmmmmmmmmmmmmm",
+		"nnnnnnnnnnnnnnnn",
+		"oooooooooooooooo",
+		"pppppppppppppppp",
+		"qqqqqqqqqqqqqqqq",
+		"rrrrrrrrrrrrrrrr",
+		"ssssssssssssssss",
+		"tttttttttttttttt",
+		"uuuuuuuuuuuuuuuu",
+		"vvvvvvvvvvvvvvvv",
+		"wwwwwwwwwwwwwwww",
+		"xxxxxxxxxxxxxxxx",
+		"yyyyyyyyyyyyyyyy",
 	};
-	std::vector<std::string> aa;
-	std::vector<std::string> bb;
-	for (uint32_t j = 0; j < 1000; j++) {
-		for (uint32_t i = 0; i < 26; i++) {
-			aa.push_back(a[i]);
-			aa.push_back(b[i]);
-		}
-	}
-	std::vector<diffLine> diff = generateFastDiff(aa, bb);
+	std::vector<diffLine> diff = generateFastDiff(a, b);
 	for (uint32_t i = 0; i < diff.size(); i++) {
 		std::cout << diff[i].line << std::endl;
 	}
@@ -96,13 +87,5 @@ void find()
 
 int main()
 {
-	State *state = new State();
-	state->grepPath = "../vscode";
-	state->grep.query = "a";
-	generateGrepOutput(state, false);
-	std::this_thread::sleep_for(std::chrono::seconds(1)); // Replace with actual work
-	state->grep.query = "abcd";
-	generateGrepOutput(state, false);
-	while (true) {
-	}
+	diff();
 }
