@@ -313,7 +313,6 @@ void State::changeFile(std::string filename)
 			auto archive = this->archives[i];
 			this->filename = normalizedFilename;
 			this->data = readFile(normalizedFilename);
-			this->lastModifiedDate = getLastModifiedDate(this, normalizedFilename);
 			this->commentSymbol = getCommentSymbol(normalizedFilename);
 			this->previousState = archive.previousState;
 			this->history = archive.history;
@@ -329,7 +328,6 @@ void State::changeFile(std::string filename)
 		}
 	}
 	auto data = readFile(normalizedFilename);
-	this->lastModifiedDate = getLastModifiedDate(this, normalizedFilename);
 	this->filename = normalizedFilename;
 	this->data = data;
 	this->previousState = data;
@@ -466,7 +464,6 @@ State::State(std::string filename)
 		data = { "" };
 	} else {
 		data = readFile(normalizedFilename.c_str());
-		this->lastModifiedDate = getLastModifiedDate(this, normalizedFilename);
 	}
 	this->filename = std::string(normalizedFilename);
 	this->data = data;
