@@ -295,6 +295,10 @@ void pasteAfter(State *state, std::string text)
 
 void copyToClipboard(State *state, const std::string &clip, bool useSystemClipboard)
 {
+	if (!useSystemClipboard || state->dontRecordKey) {
+		state->clipboard = clip;
+		return;
+	}
 #ifdef __APPLE__
 	FILE *pipe = popen("pbcopy", "w");
 #elif defined(__linux__)
@@ -302,9 +306,6 @@ void copyToClipboard(State *state, const std::string &clip, bool useSystemClipbo
 #else
 #error "OS not supported"
 #endif
-	if (!useSystemClipboard || state->dontRecordKey) {
-		state->clipboard = clip;
-	}
 	if (pipe != nullptr) {
 		fwrite(clip.c_str(), sizeof(char), clip.size(), pipe);
 		pclose(pipe);
