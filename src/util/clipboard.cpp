@@ -284,7 +284,7 @@ void pasteAfter(State *state, std::string text)
 		state->data[state->row] += clip[0];
 		int32_t lastRow = state->row;
 		if (clip.size() > 1) {
-			state->data.insert(state->data.begin() + state->row + 1, clip.begin(), clip.end());
+			state->data.insert(state->data.begin() + state->row + 1, clip.begin() + 1, clip.end());
 		}
 		for (int32_t i = 1; i < (int32_t)clip.size(); i++) {
 			int32_t r = i + state->row;
