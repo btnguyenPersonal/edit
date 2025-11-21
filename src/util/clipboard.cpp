@@ -14,6 +14,7 @@ std::string getFromClipboard(State* state, bool useSystemClipboard)
 	if (!useSystemClipboard || state->dontRecordKey) {
 		return state->clipboard;
 	}
+	state->pasteAsBlock = false;
 	std::string command;
 #ifdef __APPLE__
 	command = "pbpaste 2>/dev/null";
