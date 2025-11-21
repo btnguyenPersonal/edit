@@ -35,7 +35,7 @@ void fuzzSendKeys(int testnum, int iterations = 1000)
 	std::string ret = "{";
 
 	try {
-		state->mode = DIFF;
+		state->mode = NORMAL;
 		std::cout << "Test #" << testnum << ":\n";
 		for (int i = 0; i < iterations; i++) {
 			char randomKey = keypresses[dis(gen)];
@@ -53,8 +53,6 @@ void fuzzSendKeys(int testnum, int iterations = 1000)
 		std::cout << ret << "}" << std::endl;
 		exit(1);
 	}
-
-	std::cout << duration.count() << "ms" << std::endl;
 }
 
 void testValues(std::vector<std::string> v)
