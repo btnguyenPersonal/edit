@@ -30,13 +30,13 @@ void evaluateCommandLineQuery(State *state)
 		saveFile(state);
 		endwin();
 		exit(0);
-	} else if (state->commandLine.query.substr(0, 1) == "s") {
+	} else if (safeSubstring(state->commandLine.query, 0, 1) == "s") {
 		std::istringstream iss(state->commandLine.query);
 		std::string s, first, second, g;
 		if (std::getline(iss, s, '/') && std::getline(iss, first, '/') && std::getline(iss, second, '/')) {
 			replaceCurrentLine(state, first, second);
 		}
-	} else if (state->commandLine.query.substr(0, 2) == "gs") {
+	} else if (safeSubstring(state->commandLine.query, 0, 2) == "gs") {
 		std::istringstream iss(state->commandLine.query);
 		std::string s, first, second, g;
 		if (std::getline(iss, s, '/') && std::getline(iss, first, '/') && std::getline(iss, second, '/')) {
@@ -45,7 +45,7 @@ void evaluateCommandLineQuery(State *state)
 				replaceAllGlobally(state, first, second);
 			}
 		}
-	} else if (state->commandLine.query.substr(0, 2) == "%s") {
+	} else if (safeSubstring(state->commandLine.query, 0, 2) == "%s") {
 		std::istringstream iss(state->commandLine.query);
 		std::string s, first, second, g;
 		do {
@@ -89,7 +89,7 @@ void sendCommandLineKeys(State *state, int32_t c)
 	} else if (c == ctrl('g')) {
 		if (state->commandLine.query.length() > 0) {
 			if (state->commandLine.query[0] == 'g') {
-				state->commandLine.query = state->commandLine.query.substr(1);
+				state->commandLine.query = safeSubstring(state->commandLine.query, 1);
 				if (state->commandLine.cursor > 0) {
 					state->commandLine.cursor -= 1;
 				}

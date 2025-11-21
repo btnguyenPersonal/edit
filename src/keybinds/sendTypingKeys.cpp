@@ -10,8 +10,8 @@
 void insertNewline(State *state)
 {
 	std::string current = state->data[state->row];
-	state->data[state->row] = current.substr(0, state->col);
-	state->data.insert(state->data.begin() + state->row + 1, current.substr(state->col));
+	state->data[state->row] = safeSubstring(current, 0, state->col);
+	state->data.insert(state->data.begin() + state->row + 1, safeSubstring(current, state->col));
 }
 
 void indentLineWhenTypingFirstChar(State *state)
@@ -36,7 +36,7 @@ void sendTypingKeys(State *state, int32_t c)
 			state->col = 0;
 		} else {
 			std::string current = state->data[state->row];
-			state->data[state->row] = current.substr(0, state->col) + (char)c + current.substr(state->col);
+			state->data[state->row] = safeSubstring(current, 0, state->col) + (char)c + safeSubstring(current, state->col);
 			state->col += 1;
 		}
 	} else if (c == 27) { // ESC
@@ -53,7 +53,7 @@ void sendTypingKeys(State *state, int32_t c)
 	} else if (c == KEY_BACKSPACE || c == 127) {
 		if (state->col > 0) {
 			std::string current = state->data[state->row];
-			state->data[state->row] = current.substr(0, state->col - 1) + current.substr(state->col);
+			state->data[state->row] = safeSubstring(current, 0, state->col - 1) + safeSubstring(current, state->col);
 			state->col -= 1;
 		} else if (state->row > 0) {
 			state->col = state->data[state->row - 1].length();
@@ -64,18 +64,18 @@ void sendTypingKeys(State *state, int32_t c)
 	} else if (c == ctrl('w')) {
 		std::string current = state->data[state->row];
 		uint32_t index = b(state);
-		state->data[state->row] = current.substr(0, index) + current.substr(state->col);
+		state->data[state->row] = safeSubstring(current, 0, index) + safeSubstring(current, state->col);
 		state->col = index;
 	} else if (' ' <= c && c <= '~') {
 		std::string current = state->data[state->row];
-		state->data[state->row] = current.substr(0, state->col) + (char)c + current.substr(state->col);
+		state->data[state->row] = safeSubstring(current, 0, state->col) + (char)c + safeSubstring(current, state->col);
 		if (c != ' ') {
 			indentLineWhenTypingFirstChar(state);
 		}
 		state->col += 1;
 	} else if (c == ctrl('t')) {
 		std::string current = state->data[state->row];
-		state->data[state->row] = current.substr(0, state->col) + '\t' + current.substr(state->col);
+		state->data[state->row] = safeSubstring(current, 0, state->col) + '\t' + safeSubstring(current, state->col);
 		state->col += 1;
 	} else if (c == ctrl('v')) {
 		state->prevKeys = 'v';
@@ -83,8 +83,7 @@ void sendTypingKeys(State *state, int32_t c)
 		std::string completion = autocomplete(state, getCurrentWord(state));
 		if (safeSubstring(state->data[state->row], state->col, completion.length()) != completion) {
 			std::string current = state->data[state->row];
-			state->data[state->row] =
-				current.substr(0, state->col) + completion + safeSubstring(current, state->col);
+			state->data[state->row] = safeSubstring(current, 0, state->col) + completion + safeSubstring(current, state->col);
 			state->col += completion.length();
 		}
 	} else if (c == KEY_LEFT) {

@@ -42,7 +42,7 @@ std::string trim(const std::string &str)
 		return str;
 	}
 	size_t last = str.find_last_not_of(' ');
-	return str.substr(first, (last - first + 1));
+	return safeSubstring(str, first, (last - first + 1));
 }
 
 bool hasHTML(std::string line, std::string extension)
@@ -106,7 +106,7 @@ int32_t getIndentLevel(State *state, uint32_t row)
 		}
 	} else {
 		for (uint32_t i = 0; i < prevLine.length(); i++) {
-			if (prevLine.substr(i, state->commentSymbol.length()) == state->commentSymbol) {
+			if (safeSubstring(prevLine, i, state->commentSymbol.length()) == state->commentSymbol) {
 				break;
 			} else if (prevLine[i] == '(' || prevLine[i] == '{' || prevLine[i] == '[' ||
 				   prevLine[i] == ':') {
@@ -144,13 +144,13 @@ int32_t getIndentLevel(State *state, uint32_t row)
 		}
 	} else {
 		for (uint32_t i = 0; i < currLine.length(); i++) {
-			if (currLine.substr(i, state->commentSymbol.length()) == state->commentSymbol) {
+			if (safeSubstring(currLine, i, state->commentSymbol.length()) == state->commentSymbol) {
 				break;
-			} else if (currLine.substr(i, std::string("default:").length()) == "default:") {
+			} else if (safeSubstring(currLine, i, std::string("default:").length()) == "default:") {
 				if (i == 0) {
 					indentLevel -= indentSize;
 				}
-			} else if (currLine.substr(i, std::string("case ").length()) == "case ") {
+			} else if (safeSubstring(currLine, i, std::string("case ").length()) == "case ") {
 				if (i == 0) {
 					indentLevel -= indentSize;
 				}

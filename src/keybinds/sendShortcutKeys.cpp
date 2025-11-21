@@ -306,11 +306,11 @@ void sendShortcutKeys(State *state, int32_t c)
 	} else if (c == 'D') {
 		fixColOverMax(state);
 		copyToClipboard(state, safeSubstring(state->data[state->row], state->col), false);
-		state->data[state->row] = state->data[state->row].substr(0, state->col);
+		state->data[state->row] = safeSubstring(state->data[state->row], 0, state->col);
 	} else if (c == 'C') {
 		fixColOverMax(state);
 		copyToClipboard(state, safeSubstring(state->data[state->row], state->col), false);
-		state->data[state->row] = state->data[state->row].substr(0, state->col);
+		state->data[state->row] = safeSubstring(state->data[state->row], 0, state->col);
 		state->mode = TYPING;
 	} else if (c == 'I') {
 		state->col = getIndexFirstNonSpace(state);
@@ -408,16 +408,16 @@ void sendShortcutKeys(State *state, int32_t c)
 		getAndAddNumber(state, state->row, state->col, 1);
 	} else if (c == 's') {
 		if (state->col < state->data[state->row].length()) {
-			copyToClipboard(state, state->data[state->row].substr(state->col, 1), false);
-			state->data[state->row] = state->data[state->row].substr(0, state->col) +
-						  state->data[state->row].substr(state->col + 1);
+			copyToClipboard(state, safeSubstring(state->data[state->row], state->col, 1), false);
+			state->data[state->row] = safeSubstring(state->data[state->row], 0, state->col) +
+						  safeSubstring(state->data[state->row], state->col + 1);
 			state->mode = TYPING;
 		}
 	} else if (c == 'x') {
 		if (state->col < state->data[state->row].length()) {
-			copyToClipboard(state, state->data[state->row].substr(state->col, 1), false);
-			state->data[state->row] = state->data[state->row].substr(0, state->col) +
-						  state->data[state->row].substr(state->col + 1);
+			copyToClipboard(state, safeSubstring(state->data[state->row], state->col, 1), false);
+			state->data[state->row] = safeSubstring(state->data[state->row], 0, state->col) +
+						  safeSubstring(state->data[state->row], state->col + 1);
 		}
 		setDotCommand(state, c);
 	} else if (c == ctrl('y')) {

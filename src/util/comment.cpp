@@ -12,12 +12,11 @@ std::string trimLeadingComment(State *state, std::string line)
 	std::string outputLine = line;
 	for (size_t i = 0; i < line.length(); i++) {
 		if (line[i] != getIndentCharacter(state)) {
-			if (line.substr(i, state->commentSymbol.length()) == state->commentSymbol) {
-				if (line.substr(i, state->commentSymbol.length() + 1) == state->commentSymbol + " ") {
-					outputLine =
-						line.substr(0, i) + line.substr(i + state->commentSymbol.length() + 1);
+			if (safeSubstring(line, i, state->commentSymbol.length()) == state->commentSymbol) {
+				if (safeSubstring(line, i, state->commentSymbol.length() + 1) == state->commentSymbol + " ") {
+					outputLine = safeSubstring(line, 0, i) + safeSubstring(line, i + state->commentSymbol.length() + 1);
 				} else {
-					outputLine = line.substr(0, i) + line.substr(i + state->commentSymbol.length());
+					outputLine = safeSubstring(line, 0, i) + safeSubstring(line, i + state->commentSymbol.length());
 				}
 				break;
 			}
@@ -31,9 +30,9 @@ std::string trimComment(State *state, std::string line)
 	std::string outputLine = line;
 	bool foundNonSpace = false;
 	for (size_t i = 0; i < line.length(); i++) {
-		if (line.substr(i, state->commentSymbol.length()) == state->commentSymbol) {
+		if (safeSubstring(line, i, state->commentSymbol.length()) == state->commentSymbol) {
 			if (foundNonSpace == true) {
-				outputLine = line.substr(0, i);
+				outputLine = safeSubstring(line, 0, i);
 			}
 			break;
 		} else if (line[i] != getIndentCharacter(state)) {
@@ -55,29 +54,29 @@ void toggleCommentHelper(State *state, uint32_t row, int32_t commentIndex)
 	if (commentIndex == -1) {
 		int32_t i = getNumLeadingIndentCharacters(state, line);
 		if (isCommentWithSpace(state, line)) {
-			state->data[row] = line.substr(0, i) + line.substr(i + state->commentSymbol.length() + 1);
+			state->data[row] = safeSubstring(line, 0, i) + safeSubstring(line, i + state->commentSymbol.length() + 1);
 			return;
 		} else if (isComment(state, line)) {
-			state->data[row] = line.substr(0, i) + line.substr(i + state->commentSymbol.length());
+			state->data[row] = safeSubstring(line, 0, i) + safeSubstring(line, i + state->commentSymbol.length());
 			return;
 		}
 	}
 	if (line.length() != 0) {
 		int32_t spaces = commentIndex != -1 ? commentIndex : getNumLeadingIndentCharacters(state, line);
-		state->data[row] = line.substr(0, spaces) + state->commentSymbol + ' ' + line.substr(spaces);
+		state->data[row] = safeSubstring(line, 0, spaces) + state->commentSymbol + ' ' + safeSubstring(line, spaces);
 	}
 }
 
 bool isCommentWithSpace(State *state, std::string line)
 {
 	ltrim(line);
-	return line.substr(0, state->commentSymbol.length() + 1) == state->commentSymbol + ' ';
+	return safeSubstring(line, 0, state->commentSymbol.length() + 1) == state->commentSymbol + ' ';
 }
 
 bool isComment(State *state, std::string line)
 {
 	ltrim(line);
-	return line.substr(0, state->commentSymbol.length()) == state->commentSymbol;
+	return safeSubstring(line, 0, state->commentSymbol.length()) == state->commentSymbol;
 }
 
 void toggleCommentLines(State *state, Bounds bounds)

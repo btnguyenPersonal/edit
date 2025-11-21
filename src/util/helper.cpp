@@ -583,8 +583,8 @@ void findDefinitionFromGrepOutput(State *state, std::string s)
 std::string normalizeFilename(std::string filename)
 {
 	std::string current_path = std::filesystem::current_path().string() + "/";
-	if (filename.substr(0, current_path.length()) == current_path) {
-		return filename.substr(current_path.length());
+	if (safeSubstring(filename, 0, current_path.length()) == current_path) {
+		return safeSubstring(filename, current_path.length());
 	} else {
 		return filename;
 	}
@@ -694,7 +694,7 @@ std::string safeSubstring(const std::string &str, std::size_t pos, std::size_t l
 	if (pos >= str.size()) {
 		return "";
 	}
-	return str.substr(pos, len);
+	return str.substr(pos);
 }
 
 std::string safeSubstring(const std::string &str, std::size_t pos)
@@ -733,7 +733,7 @@ void getAndAddNumber(State *state, uint32_t row, uint32_t col, int32_t num)
 			} else {
 				temp += num;
 			}
-			state->data[row] = state->data[row].substr(0, startPos) + std::to_string(temp) +
+			state->data[row] = safeSubstring(state->data[row], 0, startPos) + std::to_string(temp) +
 					   safeSubstring(state->data[row], startPos + number.length());
 		} catch (const std::exception &e) {
 			state->status = "number too large";
@@ -865,9 +865,9 @@ std::string getExtension(const std::string &filename)
 		return "";
 	}
 	size_t slashPosition = filename.find_last_of("/\\");
-	std::string file = (slashPosition != std::string::npos) ? filename.substr(slashPosition + 1) : filename;
+	std::string file = (slashPosition != std::string::npos) ? safeSubstring(filename, slashPosition + 1) : filename;
 	size_t dotPosition = file.find_last_of(".");
-	return (dotPosition != std::string::npos && dotPosition != 0) ? file.substr(dotPosition + 1) : file;
+	return (dotPosition != std::string::npos && dotPosition != 0) ? safeSubstring(file, dotPosition + 1) : file;
 }
 
 void moveHarpoonRight(State *state)
@@ -941,13 +941,13 @@ std::string autocomplete(State *state, const std::string &query)
 			if (isAlphanumeric(line[i])) {
 				word += line[i];
 			} else {
-				if (word.substr(0, query.length()) == query) {
+				if (safeSubstring(word, 0, query.length()) == query) {
 					++wordCounts[word];
 				}
 				word = "";
 			}
 		}
-		if (word.substr(0, query.length()) == query) {
+		if (safeSubstring(word, 0, query.length()) == query) {
 			++wordCounts[word];
 		}
 	}
@@ -960,7 +960,7 @@ std::string autocomplete(State *state, const std::string &query)
 		}
 	}
 	if (!mostCommonWord.empty()) {
-		return mostCommonWord.substr(query.length());
+		return safeSubstring(mostCommonWord, query.length());
 	} else {
 		return "";
 	}
@@ -1038,7 +1038,7 @@ bool setSearchResultReverse(State *state)
 	uint32_t row = initialRow;
 	bool isFirst = true;
 	do {
-		std::string line = isFirst ? state->data[row].substr(0, col) : state->data[row];
+		std::string line = isFirst ? safeSubstring(state->data[row], 0, col) : state->data[row];
 		size_t index = line.rfind(state->search.query);
 		if (index != std::string::npos) {
 			state->row = row;
@@ -1095,7 +1095,7 @@ bool setSearchResult(State *state)
 	uint32_t col = initialCol;
 	uint32_t row = initialRow;
 	do {
-		std::string line = state->data[row].substr(col);
+		std::string line = safeSubstring(state->data[row], col);
 		size_t index = line.find(state->search.query);
 		if (index != std::string::npos) {
 			state->row = row;
@@ -1731,8 +1731,8 @@ void indent(State *state)
 void deindent(State *state)
 {
 	for (uint32_t i = 0; i < getIndentSize(state); i++) {
-		if (state->data[state->row].substr(0, 1) == std::string("") + getIndentCharacter(state)) {
-			state->data[state->row] = state->data[state->row].substr(1);
+		if (safeSubstring(state->data[state->row], 0, 1) == std::string("") + getIndentCharacter(state)) {
+			state->data[state->row] = safeSubstring(state->data[state->row], 1);
 		}
 	}
 }

@@ -92,7 +92,7 @@ void pasteFileFromClipboard(State *state, const std::string &destFolder)
 #ifdef __APPLE__
 		std::filesystem::path sourcePath(sourcePathStr);
 #elif defined(__linux__)
-		std::filesystem::path sourcePath(sourcePathStr.substr(7));
+		std::filesystem::path sourcePath(safeSubstring(sourcePathStr, 7));
 #else
 #error "Platform not supported"
 #endif
@@ -212,7 +212,7 @@ void paste(State *state, std::string text, int32_t offset, bool visual)
 	} else if (clip.size() > 0) {
 		std::string current = state->data[state->row];
 		int32_t breakCol = state->col;
-		if (offset != 0 && state->col + offset <= state->data[state->row].length()) {
+		if (offset != 0 && state->col + offset < state->data[state->row].length()) {
 			breakCol = state->col + offset;
 		}
 		state->data[state->row] = safeSubstring(current, 0, breakCol);
@@ -223,7 +223,9 @@ void paste(State *state, std::string text, int32_t offset, bool visual)
 		}
 		for (int32_t i = 1; i < (int32_t)clip.size(); i++) {
 			int32_t r = i + state->row;
-			lastRow = r;
+			if (r < (int32_t)state->data.size()) {
+				lastRow = r;
+			}
 		}
 		state->data[lastRow] += safeSubstring(current, breakCol);
 	}

@@ -140,14 +140,16 @@ void renderFileStack(State *state)
 	}
 	uint32_t renderRow = STATUS_BAR_LENGTH;
 	for (int32_t i = start; i >= 0; i--) {
-		std::string filename = minimize_filename(state->fileStack[i]);
-		if (state->maxX / 4 > filename.length()) {
-			filename += std::string(state->maxX / 4 - filename.length(), ' ');
+		if (start < (int32_t)state->fileStack.size()) {
+			std::string filename = minimize_filename(state->fileStack[i]);
+			if (state->maxX / 4 > filename.length()) {
+				filename += std::string(state->maxX / 4 - filename.length(), ' ');
+			}
+			int32_t color = i == (int32_t)state->fileStackIndex ? invertColor(YELLOW) : GREY;
+			insertPixels(state, &pixels, "|" + filename, color);
+			renderPixels(state, renderRow++, (3 * state->maxX) / 4, pixels, false);
+			pixels.clear();
 		}
-		int32_t color = i == (int32_t)state->fileStackIndex ? invertColor(YELLOW) : GREY;
-		insertPixels(state, &pixels, "|" + filename, color);
-		renderPixels(state, renderRow++, (3 * state->maxX) / 4, pixels, false);
-		pixels.clear();
 	}
 	for (int32_t i = renderRow; i <= (int32_t)state->maxY; i++) {
 		insertPixels(state, &pixels, "|" + std::string(state->maxX / 4, ' '), GREY);
@@ -339,10 +341,8 @@ bool isMergeConflict(const std::string &str)
 {
 	const std::vector<std::string> markers = { "<<<<<<<", "=======", ">>>>>>>", "|||||||" };
 	for (const auto &marker : markers) {
-		if (str.length() >= marker.length()) {
-			if (str.substr(0, marker.length()) == marker) {
-				return true;
-			}
+		if (safeSubstring(str, 0, marker.length()) == marker) {
+			return true;
 		}
 	}
 	return false;
