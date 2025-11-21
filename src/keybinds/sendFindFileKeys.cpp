@@ -84,14 +84,14 @@ void sendFindFileKeys(State *state, int32_t c)
 			auto selectedFile = state->findOutput[state->find.selection].string();
 			std::filesystem::path currentDir = ((std::filesystem::path)state->filename).parent_path();
 			std::filesystem::path relativePath = std::filesystem::relative(selectedFile, currentDir);
-			copyToClipboard(state, relativePath.string());
+			copyToClipboard(state, relativePath.string(), false);
 			state->mode = SHORTCUTS;
 		}
 	} else if (c == ctrl('y')) {
 		if (state->find.selection < state->findOutput.size()) {
 			state->selectAll = false;
 			auto selectedFile = state->findOutput[state->find.selection].string();
-			copyToClipboard(state, selectedFile);
+			copyToClipboard(state, selectedFile, false);
 			state->mode = SHORTCUTS;
 		}
 	} else if (c == ctrl('v')) {
@@ -100,7 +100,7 @@ void sendFindFileKeys(State *state, int32_t c)
 			state->find.selection = 0;
 			state->selectAll = false;
 		}
-		addFromClipboard(&state->find);
+		add(&state->find, getFromClipboard(state, true));
 	} else if (c == ctrl('w')) {
 		state->selectAll = false;
 		backspaceWord(&state->find);

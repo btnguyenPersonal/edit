@@ -9,8 +9,11 @@
 #include <string>
 #include <vector>
 
-std::string getFromClipboard()
+std::string getFromClipboard(State* state, bool useSystemClipboard)
 {
+	if (state->dontRecordKey || !useSystemClipboard) {
+		return state->clipboard;
+	}
 	std::string command;
 #ifdef __APPLE__
 	command = "pbpaste 2>/dev/null";
@@ -158,17 +161,16 @@ void copyPathToClipboard(State *state, const std::string &filePath)
 	}
 }
 
-void pasteFromClipboardVisual(State *state)
+void pasteVisual(State *state, std::string text)
 {
-	std::string result = getFromClipboard();
 	std::vector<std::string> clip;
-	std::stringstream ss(result);
+	std::stringstream ss(text);
 	std::string line;
 	while (std::getline(ss, line)) {
 		clip.push_back(line);
 	}
 	fixColOverMax(state);
-	bool isClipLine = !result.empty() && result.back() == '\n';
+	bool isClipLine = !text.empty() && text.back() == '\n';
 	if (state->visualType == LINE && !isClipLine) {
 		auto pos = deleteInVisual(state);
 		state->row = pos.row;
@@ -193,7 +195,7 @@ void pasteFromClipboardVisual(State *state)
 		for (uint32_t i = 0; i < clip.size(); i++) {
 			state->data.push_back(clip[i]);
 		}
-	} else if (!result.empty() && result.back() == '\n') {
+	} else if (!text.empty() && text.back() == '\n') {
 		for (int32_t i = 0; i < (int32_t)clip.size(); i++) {
 			state->data.insert(state->data.begin() + i + state->row, clip[i]);
 		}
@@ -211,12 +213,11 @@ void pasteFromClipboardVisual(State *state)
 	}
 }
 
-void pasteFromClipboard(State *state)
+void paste(State *state, std::string text)
 {
 	fixColOverMax(state);
-	std::string result = getFromClipboard();
 	std::vector<std::string> clip;
-	std::stringstream ss(result);
+	std::stringstream ss(text);
 	std::string line;
 	while (std::getline(ss, line)) {
 		clip.push_back(line);
@@ -225,7 +226,7 @@ void pasteFromClipboard(State *state)
 		for (uint32_t i = 0; i < clip.size(); i++) {
 			state->data.push_back(clip[i]);
 		}
-	} else if (!result.empty() && state->pasteAsBlock) {
+	} else if (!text.empty() && state->pasteAsBlock) {
 		for (int32_t i = 0; i < (int32_t)clip.size(); i++) {
 			if (state->row + i >= state->data.size()) {
 				state->data.push_back("");
@@ -234,7 +235,7 @@ void pasteFromClipboard(State *state)
 			std::string back = safeSubstring(state->data[state->row + i], state->col);
 			state->data[state->row + i] = front + clip[i] + back;
 		}
-	} else if (!result.empty() && result.back() == '\n') {
+	} else if (!text.empty() && text.back() == '\n') {
 		for (int32_t i = 0; i < (int32_t)clip.size(); i++) {
 			state->data.insert(state->data.begin() + i + state->row, clip[i]);
 		}
@@ -252,17 +253,16 @@ void pasteFromClipboard(State *state)
 	}
 }
 
-void pasteFromClipboardAfter(State *state)
+void pasteAfter(State *state, std::string text)
 {
 	fixColOverMax(state);
-	std::string result = getFromClipboard();
 	std::vector<std::string> clip;
-	std::stringstream ss(result);
+	std::stringstream ss(text);
 	std::string line;
 	while (std::getline(ss, line)) {
 		clip.push_back(line);
 	}
-	if (!result.empty() && state->pasteAsBlock) {
+	if (!text.empty() && state->pasteAsBlock) {
 		for (int32_t i = 0; i < (int32_t)clip.size(); i++) {
 			if (state->row + i >= state->data.size()) {
 				state->data.push_back("");
@@ -271,7 +271,7 @@ void pasteFromClipboardAfter(State *state)
 			std::string back = safeSubstring(state->data[state->row + i], state->col + 1);
 			state->data[state->row + i] = front + clip[i] + back;
 		}
-	} else if (!result.empty() && result.back() == '\n') {
+	} else if (!text.empty() && text.back() == '\n') {
 		for (int32_t i = 0; i < (int32_t)clip.size(); i++) {
 			state->data.insert(state->data.begin() + i + state->row + 1, clip[i]);
 		}
@@ -293,7 +293,7 @@ void pasteFromClipboardAfter(State *state)
 	}
 }
 
-void copyToClipboard(State *state, const std::string &clip)
+void copyToClipboard(State *state, const std::string &clip, bool useSystemClipboard)
 {
 #ifdef __APPLE__
 	FILE *pipe = popen("pbcopy", "w");
@@ -302,6 +302,9 @@ void copyToClipboard(State *state, const std::string &clip)
 #else
 #error "OS not supported"
 #endif
+	if (state->dontRecordKey || !useSystemClipboard) {
+		state->clipboard = clip;
+	}
 	if (pipe != nullptr) {
 		fwrite(clip.c_str(), sizeof(char), clip.size(), pipe);
 		pclose(pipe);

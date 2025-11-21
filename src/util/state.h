@@ -136,6 +136,7 @@ class State {
 	int32_t lastSave;
 	static uint32_t maxX;
 	static uint32_t maxY;
+	std::string clipboard;
 	std::string prompt;
 	std::string buildDir;
 	std::string commentSymbol;

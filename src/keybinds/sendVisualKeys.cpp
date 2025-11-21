@@ -261,13 +261,24 @@ Position changeInVisual(State *state)
 	return pos;
 }
 
+Position copyInVisualSystem(State *state)
+{
+	Bounds bounds = getBounds(state);
+	Position pos = Position();
+	pos.row = bounds.minR;
+	pos.col = bounds.minC;
+	copyToClipboard(state, getInVisual(state), true);
+	state->pasteAsBlock = state->visualType == BLOCK;
+	return pos;
+}
+
 Position copyInVisual(State *state)
 {
 	Bounds bounds = getBounds(state);
 	Position pos = Position();
 	pos.row = bounds.minR;
 	pos.col = bounds.minC;
-	copyToClipboard(state, getInVisual(state));
+	copyToClipboard(state, getInVisual(state), false);
 	state->pasteAsBlock = state->visualType == BLOCK;
 	return pos;
 }
@@ -440,6 +451,7 @@ bool sendVisualKeys(State *state, char c, bool onlyMotions)
 		}
 		state->prevKeys = "";
 	} else if (!onlyMotions && state->prevKeys == "g" && c == 'U') {
+		logDotCommand(state);
 		changeCaseVisual(state, true, false);
 		state->prevKeys = "";
 		state->mode = SHORTCUTS;
@@ -448,11 +460,24 @@ bool sendVisualKeys(State *state, char c, bool onlyMotions)
 		state->prevKeys = "";
 		state->mode = SHORTCUTS;
 	} else if (!onlyMotions && state->prevKeys == "g" && c == 'u') {
+		logDotCommand(state);
 		changeCaseVisual(state, false, false);
 		state->prevKeys = "";
 		state->mode = SHORTCUTS;
 	} else if (state->prevKeys == "g" && c == 'g') {
 		state->row = 0;
+		state->prevKeys = "";
+	} else if (state->prevKeys == "g" && (c == 'p' || c == 'P')) {
+		logDotCommand(state);
+		pasteVisual(state, getFromClipboard(state, true));
+		state->mode = SHORTCUTS;
+		state->prevKeys = "";
+	} else if (state->prevKeys == "g" && c == 'y') {
+		logDotCommand(state);
+		auto pos = copyInVisualSystem(state);
+		state->row = pos.row;
+		state->col = pos.col;
+		state->mode = SHORTCUTS;
 		state->prevKeys = "";
 	} else if (state->prevKeys != "") {
 		state->prevKeys = "";
@@ -637,7 +662,7 @@ bool sendVisualKeys(State *state, char c, bool onlyMotions)
 		state->mode = SHORTCUTS;
 	} else if (!onlyMotions && (c == 'p' || c == 'P')) {
 		logDotCommand(state);
-		pasteFromClipboardVisual(state);
+		pasteVisual(state, getFromClipboard(state, false));
 		state->mode = SHORTCUTS;
 	} else if (!onlyMotions && c == 'x') {
 		logDotCommand(state);

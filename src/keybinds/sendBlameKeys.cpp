@@ -31,7 +31,7 @@ void sendBlameKeys(State *state, int32_t c)
 		state->blameSize += 5;
 	} else if (c == 'y' || c == ctrl('y')) {
 		std::string gitHash = getGitHash(state);
-		copyToClipboard(state, gitHash);
+		copyToClipboard(state, gitHash, true);
 		state->status = gitHash;
 		state->mode = SHORTCUTS;
 	}

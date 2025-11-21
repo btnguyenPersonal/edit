@@ -7,7 +7,6 @@
 #include <iostream>
 #include <random>
 #include <vector>
-#include <chrono>
 
 void fuzzSendKeys(int testnum, int iterations = 1000)
 {
@@ -33,8 +32,6 @@ void fuzzSendKeys(int testnum, int iterations = 1000)
 	State *state = new State("longtest.js");
 	state->dontSave = true;
 
-	auto start = std::chrono::high_resolution_clock::now();
-
 	std::string ret = "{";
 
 	try {
@@ -56,9 +53,6 @@ void fuzzSendKeys(int testnum, int iterations = 1000)
 		std::cout << ret << "}" << std::endl;
 		exit(1);
 	}
-
-	auto end = std::chrono::high_resolution_clock::now();
-	auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
 
 	std::cout << duration.count() << "ms" << std::endl;
 }
