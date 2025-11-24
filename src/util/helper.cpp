@@ -694,7 +694,7 @@ std::string safeSubstring(const std::string &str, std::size_t pos, std::size_t l
 	if (pos >= str.size()) {
 		return "";
 	}
-	return str.substr(pos);
+	return str.substr(pos, len);
 }
 
 std::string safeSubstring(const std::string &str, std::size_t pos)
