@@ -169,33 +169,6 @@ void sendShortcutKeys(State *state, int32_t c)
 		state->prevKeys = "";
 	} else if (c == ' ') {
 		createNewestHarpoon(state);
-	} else if (c == '1') {
-		state->workspace = 0;
-		focusHarpoon(state);
-	} else if (c == '2') {
-		state->workspace = 1;
-		focusHarpoon(state);
-	} else if (c == '3') {
-		state->workspace = 2;
-		focusHarpoon(state);
-	} else if (c == '4') {
-		state->workspace = 3;
-		focusHarpoon(state);
-	} else if (c == '5') {
-		state->workspace = 4;
-		focusHarpoon(state);
-	} else if (c == '6') {
-		state->workspace = 5;
-		focusHarpoon(state);
-	} else if (c == '7') {
-		state->workspace = 6;
-		focusHarpoon(state);
-	} else if (c == '8') {
-		state->workspace = 7;
-		focusHarpoon(state);
-	} else if (c == '9') {
-		state->workspace = 8;
-		focusHarpoon(state);
 	} else if (state->prevKeys != "") {
 		state->prevKeys = "";
 	} else if (c == ':') {

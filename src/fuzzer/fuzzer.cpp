@@ -34,23 +34,29 @@ void fuzzSendKeys(int testnum, int iterations = 1000)
 
 	std::string ret = "{";
 
+
 	try {
 		state->mode = SHORTCUTS;
-		std::cout << "Test #" << testnum << ":\n";
+		std::vector<char> randVec;
 		for (int i = 0; i < iterations; i++) {
-			char randomKey = keypresses[dis(gen)];
-
-			ret += "\"";
-			ret += getEscapedChar(randomKey, false);
-			ret += "\"";
+			randVec.push_back(keypresses[dis(gen)]);
+		}
+		std::cout << "testValues({";
+		for (uint32_t i = 0; i < randVec.size(); i++) {
+			if (i != 0) {
+				std::cout << ", ";
+			}
+			std::cout << "\"" << getEscapedChar(randVec[i], true) << "\"";
+		}
+		std::cout << "});" << std::endl;
+		for (int i = 0; i < randVec.size(); i++) {
+			char randomKey = randVec[i];
 			std::cout << getMode(state->mode) << " " << getEscapedChar(randomKey, true) << std::endl;
 			sendKeys(state, randomKey);
 			cleanup(state, randomKey);
-			ret += ",";
 		}
 	} catch (const std::exception &e) {
 		std::cerr << "Error during fuzzing: " << e.what() << std::endl;
-		std::cout << ret << "}" << std::endl;
 		exit(1);
 	}
 }
@@ -67,7 +73,6 @@ void testValues(std::vector<std::string> v)
 			ret += v[i];
 			ret += "\"";
 			std::cout << getMode(state->mode) << " " << getEscapedChar(randomKey, true) << std::endl;
-			std::cout << "249 state->visual.col " << state->visual.col << std::endl;
 			sendKeys(state, randomKey);
 			cleanup(state, randomKey);
 			ret += ",";
@@ -87,6 +92,7 @@ int main()
 	// testValues({"C-\\",";","`","C-B","I","*","A","-","-","c","r","X","H","=","C-H",">","_","Esc","}","v", "P"});
 	// testValues({"=","*","}","C-B","C-S"," \\","0","E","C-M","C-@","C-]","C-V","R","d","C-]","v","`","a","`","Del","B","C-W","2","$",";","/","C-I","C-_","[","D","P","."});
 	// testValues({"Q", "k", "C-I", "Esc", "C-T", "C-M", "F", "D", "C-_", "{", "f", "b", "=", "k", "S", "C-W", "C-V", "A", "C-I"});
+	testValues({"<C-H>", "<C-I>", "l", "v", "f", "<Del>", "`", "g", "r", "t", "*", "R", "J", "!", "5", "N", "v", "<C-Y>", "3", "?", "<C-Y>", "<C-U>", "<C-I>", "<C-H>", "u", "b", "*", "(", "<C-L>", "<C-_>", "\"", "Z", "<C-M>", "<C-D>", "H", "`", "K", "J", "L", "<C-R>", "x", "<C-K>", "h", "=", "+", "<C-@>", "<C-M>", "8", "=", "<C-T>"});
 	for (int i = 1; i <= 100000000; i++) {
 		fuzzSendKeys(i, 50);
 	}

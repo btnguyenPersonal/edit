@@ -55,7 +55,7 @@ void locateNodeModule(State *state, std::string vis)
 		std::filesystem::path dir = filePath.parent_path();
 		std::filesystem::path current = std::filesystem::absolute(std::filesystem::current_path());
 		uint32_t i = 0;
-		while (!std::filesystem::is_directory(dir / std::string("node_modules")) || i > 50) {
+		while (i < 50 && !std::filesystem::is_directory(dir / std::string("node_modules"))) {
 			dir = dir.parent_path();
 			if (dir == current) {
 				break;
