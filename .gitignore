@@ -1,3 +1,4 @@
 build/
+longtest.js
 test-file.h
 fuzzer/results

@@ -129,7 +129,9 @@ void sendDiffKeys(State *state, int32_t c)
 				state->changeFile(file);
 				state->row = std::stoi(num) + linesNet + 1;
 				centerScreen(state);
-				state->windowPosition.row -= 2;
+				if (state->windowPosition.row >= 2) {
+					state->windowPosition.row -= 2;
+				}
 			}
 		} else {
 			state->diffLines = getDiffLines(state);

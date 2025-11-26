@@ -38,8 +38,8 @@ void cleanup(State *state, char c)
 		}
 		if (state->mode == SHORTCUTS) {
 			std::vector<diffLine> diff = generateFastDiff(state->previousState, state->data);
+			state->previousState = state->data;
 			if (diff.size() != 0) {
-				state->previousState = state->data;
 				if (c != ctrl('r') && c != 'u') {
 					recordHistory(state, diff);
 				}
