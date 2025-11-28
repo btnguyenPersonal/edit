@@ -856,8 +856,6 @@ void renderScreen(State *state, bool fullRedraw)
 
 void renderScreen(State *state)
 {
-	state->renderMutex.lock();
-	erase();
 	bool noLineNum = false;
 	Cursor editorCursor, fileExplorerCursor;
 	if (state->mode == FINDFILE) {
@@ -881,6 +879,8 @@ void renderScreen(State *state)
 		renderFileStack(state);
 	}
 	int32_t cursorOnStatusBar = renderStatusBar(state);
+	state->renderMutex.lock();
+	erase();
 	moveCursor(state, cursorOnStatusBar, editorCursor, fileExplorerCursor, noLineNum);
 	wnoutrefresh(stdscr);
 	doupdate();

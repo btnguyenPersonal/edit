@@ -30,10 +30,12 @@ void evaluateCommandLineQuery(State *state)
 		trimTrailingWhitespace(state);
 		saveFile(state);
 	} else if (state->commandLine.query == "wq" || state->commandLine.query == "x") {
-		trimTrailingWhitespace(state);
-		saveFile(state);
-		endwin();
-		exit(0);
+		if (!state->dontSave) {
+			trimTrailingWhitespace(state);
+			saveFile(state);
+			endwin();
+			exit(0);
+		}
 	} else if (state->commandLine.query.substr(0, 1) == "s") {
 		std::istringstream iss(state->commandLine.query);
 		std::string s, first, second, g;
