@@ -13,14 +13,18 @@
 void evaluateCommandLineQuery(State *state)
 {
 	if (state->commandLine.query == "q!") {
-		endwin();
-		exit(0);
-	} else if (state->commandLine.query == "q") {
-		if (state->lastSave != state->historyPosition) {
-			state->status = "unsaved changes for file: " + state->filename;
-		} else {
+		if (!state->dontSave) {
 			endwin();
 			exit(0);
+		}
+	} else if (state->commandLine.query == "q") {
+		if (!state->dontSave) {
+			if (state->lastSave != state->historyPosition) {
+				state->status = "unsaved changes for file: " + state->filename;
+			} else {
+				endwin();
+				exit(0);
+			}
 		}
 	} else if (state->commandLine.query == "w") {
 		trimTrailingWhitespace(state);
