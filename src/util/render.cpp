@@ -850,41 +850,48 @@ Cursor renderFileExplorer(State *state)
 
 void renderScreen(State *state, bool fullRedraw)
 {
-	clear();
+	if (fullRedraw) {
+		clear();
+	}
 	renderScreen(state);
 }
 
 void renderScreen(State *state)
 {
-	bool noLineNum = false;
-	Cursor editorCursor, fileExplorerCursor;
-	if (state->mode == FINDFILE) {
-		renderFindFileOutput(state);
-	} else if (state->mode == DIFF) {
-		if (state->viewingDiff) {
-			editorCursor = renderDiff(state);
+	try {
+		state->renderMutex.lock();
+		erase();
+		bool noLineNum = false;
+		Cursor editorCursor, fileExplorerCursor;
+		if (state->mode == FINDFILE) {
+			renderFindFileOutput(state);
+		} else if (state->mode == DIFF) {
+			if (state->viewingDiff) {
+				editorCursor = renderDiff(state);
+			} else {
+				editorCursor = renderLogLines(state);
+			}
+			noLineNum = true;
+		} else if (state->mode == GREP) {
+			renderGrepOutput(state);
 		} else {
-			editorCursor = renderLogLines(state);
+			editorCursor = renderVisibleLines(state);
+			if (state->fileExplorerOpen) {
+				fileExplorerCursor = renderFileExplorer(state);
+			}
 		}
-		noLineNum = true;
-	} else if (state->mode == GREP) {
-		renderGrepOutput(state);
-	} else {
-		editorCursor = renderVisibleLines(state);
-		if (state->fileExplorerOpen) {
-			fileExplorerCursor = renderFileExplorer(state);
+		if (state->showFileStack) {
+			renderFileStack(state);
 		}
+		int32_t cursorOnStatusBar = renderStatusBar(state);
+		moveCursor(state, cursorOnStatusBar, editorCursor, fileExplorerCursor, noLineNum);
+		wnoutrefresh(stdscr);
+		doupdate();
+		state->renderMutex.unlock();
+	} catch (const std::exception &e) {
+		state->renderMutex.unlock();
+		state->status = std::string("something went wrong while rendering") + e.what();
 	}
-	if (state->showFileStack) {
-		renderFileStack(state);
-	}
-	int32_t cursorOnStatusBar = renderStatusBar(state);
-	state->renderMutex.lock();
-	erase();
-	moveCursor(state, cursorOnStatusBar, editorCursor, fileExplorerCursor, noLineNum);
-	wnoutrefresh(stdscr);
-	doupdate();
-	state->renderMutex.unlock();
 }
 
 void initTerminal()
