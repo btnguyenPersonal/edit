@@ -22,9 +22,6 @@
 #include <string>
 #include <vector>
 
-// TODO remove
-#include <iostream>
-
 void sendShortcutKeys(State *state, int32_t c)
 {
 	if (c == KEY_MOUSE) {
@@ -186,10 +183,8 @@ void sendShortcutKeys(State *state, int32_t c)
 		setDotCommand(state, c);
 	} else if (c == 'u') {
 		if (state->historyPosition >= 0) {
-			std::cout << "shortcuts" << std::endl;
 			state->row = applyDiff(state, state->history[state->historyPosition], true);
 			state->historyPosition--;
-			std::cout << "endshortcuts" << std::endl;
 		}
 	} else if (c == ctrl('r')) {
 		if (state->historyPosition < ((int32_t)state->history.size()) - 1) {

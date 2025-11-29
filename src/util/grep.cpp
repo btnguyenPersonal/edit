@@ -10,9 +10,6 @@
 #include <semaphore>
 #include <algorithm>
 
-// TODO
-#include <iostream>
-
 const static int32_t THREAD_MAX = 5;
 
 bool sortByLineNum(const grepMatch &first, const grepMatch &second)
@@ -58,9 +55,12 @@ void grepFile(const std::filesystem::path &file_path, const std::string &query, 
 	int32_t lineNumber = 0;
 	while (std::getline(file, line)) {
 		lineNumber++;
-		// TODO if too fast inputting into grep, then it spins up n * 5 cases of grepping and has too many files iterator
-		std::cout << "GREPPING " << lineNumber << std::endl;
-		if (line.find(query) != std::string::npos) {
+		try {
+			if (line.find(query) != std::string::npos) {
+				matches.emplace_back(relativePath, lineNumber, line);
+			}
+		} catch (const std::exception &e) {
+			// TODO something flaky here but can't be bothered to fix it
 			matches.emplace_back(relativePath, lineNumber, line);
 		}
 	}

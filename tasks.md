@@ -1,4 +1,9 @@
 ## tasks
+- if grep changes, put delay on for 5ms, and if it hasn't changed in that amount of time, spin it up. (hacky but would work for fuzzing)
+- real solution would be changing every place where we get a file handle to have a mutex, and could make it a wrapper function
+std::filesystem grabFile(State* state, std::string s);
+void releaseFile(State* state, std::filesystem f);
+
 - profile
 	- diff
 	- grep
