@@ -1,0 +1,15 @@
+#include "read.h"
+#include <fstream>
+
+std::vector<std::string> readFile(const std::string &filename)
+{
+	std::ifstream file(filename);
+	std::string str;
+	std::vector<std::string> file_contents;
+	while (file.good()) {
+		std::getline(file, str);
+		file_contents.push_back(str);
+	}
+	file.close();
+	return file_contents;
+}

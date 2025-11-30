@@ -32,6 +32,8 @@ COMMON_SOURCES := \
   $(UTIL_DIR)/find.cpp \
   $(UTIL_DIR)/ignore.cpp \
   $(UTIL_DIR)/save.cpp \
+  $(UTIL_DIR)/read.cpp \
+  $(UTIL_DIR)/compare.cpp \
   $(KEYBINDS_DIR)/sendKeys.cpp \
   $(KEYBINDS_DIR)/sendVisualKeys.cpp \
   $(KEYBINDS_DIR)/sendBlameKeys.cpp \
@@ -47,7 +49,7 @@ COMMON_SOURCES := \
 
 MAIN_SOURCES = $(SRC_DIR)/edit.cpp $(COMMON_SOURCES)
 FUZZ_SOURCES = $(FUZZ_DIR)/fuzzer.cpp $(COMMON_SOURCES)
-TEST_SOURCES = $(TEST_DIR)/testAll.cpp $(COMMON_SOURCES)
+TEST_SOURCES = $(TEST_DIR)/test.cpp $(COMMON_SOURCES)
 PROFILE_SOURCES = $(TEST_DIR)/profile.cpp $(COMMON_SOURCES)
 
 MAIN_OBJECTS = $(patsubst %.cpp, $(BUILD_DIR)/%.o, $(notdir $(MAIN_SOURCES)))

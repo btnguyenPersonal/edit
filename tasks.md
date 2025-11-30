@@ -1,4 +1,6 @@
 ## tasks
+- fix \ bug
+
 - start using namespace std
 
 - localdefs ifdef TESTING last resort
