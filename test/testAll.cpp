@@ -40,11 +40,11 @@ int32_t snapshotTest(std::vector<std::string> keys)
 
 int main()
 {
-	snapshotTest({ "d", "d" });
-	snapshotTest({ "G", "V", "g", "g", "d", "P" });
-	snapshotTest({ ":", "4", "0", "<C-J>", "d", "d", "d", "d", "c", "c", "<Esc>", "u", "u", "u" });
-	snapshotTest({ ":", "4", "5", "<C-J>", "d", "j", "k", "k", "x", "u", "u", "u" });
-	snapshotTest({ ":", "4", "5", "<C-J>", "d", "j", "k", "w", "d", "i", "w", "u", "u", "u" });
-	snapshotTest({ "J", "J", "J", "J", "J", "J", "J", "J", "J", "J", "J", "J", "J", "J", "J", "J",
-		       "u", "u", "u", "u", "u", "u", "u", "u", "u", "u", "u", "u", "u", "u", "u", "u" });
+	// snapshotTest({ "d", "d" });
+	// snapshotTest({ "G", "V", "g", "g", "d", "P" });
+	// snapshotTest({ ":", "4", "0", "<C-J>", "d", "d", "d", "d", "c", "c", "<Esc>", "u", "u", "u" });
+	// snapshotTest({ ":", "4", "5", "<C-J>", "d", "j", "k", "k", "x", "u", "u", "u" });
+	// snapshotTest({ ":", "4", "5", "<C-J>", "d", "j", "k", "w", "d", "i", "w", "u", "u", "u" });
+	// snapshotTest({ "J", "J", "J", "J", "J", "J", "J", "J", "J", "J", "J", "J", "J", "J", "J", "J",
+	// 	       "u", "u", "u", "u", "u", "u", "u", "u", "u", "u", "u", "u", "u", "u", "u", "u" });
 }

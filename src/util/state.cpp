@@ -273,9 +273,9 @@ void State::setDefaultOptions()
 
 void State::changeFile(std::string filename)
 {
-	auto normalizedFilename = normalizeFilename(filename);
-	if (!std::filesystem::is_regular_file(normalizedFilename)) {
-		this->status = "file not found: " + normalizedFilename;
+	auto name = normalizeFilename(filename);
+	if (!std::filesystem::is_regular_file(name)) {
+		this->status = "file not found: " + name;
 		return;
 	}
 	bool found = false;
@@ -309,11 +309,11 @@ void State::changeFile(std::string filename)
 		});
 	}
 	for (uint32_t i = 0; i < this->archives.size(); i++) {
-		if (this->archives[i].filename == normalizedFilename) {
+		if (this->archives[i].filename == name) {
 			auto archive = this->archives[i];
-			this->filename = normalizedFilename;
-			this->data = readFile(normalizedFilename);
-			this->commentSymbol = getCommentSymbol(normalizedFilename);
+			this->filename = name;
+			this->data = readFile(name);
+			this->commentSymbol = getCommentSymbol(name);
 			this->previousState = archive.previousState;
 			this->history = archive.history;
 			this->historyPosition = archive.historyPosition;
@@ -327,11 +327,11 @@ void State::changeFile(std::string filename)
 			return;
 		}
 	}
-	auto data = readFile(normalizedFilename);
-	this->filename = normalizedFilename;
+	auto data = readFile(name);
+	this->filename = name;
 	this->data = data;
 	this->previousState = data;
-	this->commentSymbol = getCommentSymbol(normalizedFilename);
+	this->commentSymbol = getCommentSymbol(name);
 	this->history = std::vector<std::vector<diffLine> >();
 	this->historyPosition = -1;
 	this->lastSave = -1;
@@ -352,7 +352,6 @@ void State::changeFile(std::string filename)
 	this->searchFail = false;
 	this->motion = std::vector<int32_t>();
 	this->mode = SHORTCUTS;
-	refocusFileExplorer(this, false);
 	this->loadAllConfigFiles();
 }
 
@@ -372,19 +371,19 @@ void State::pushFileStack(std::string filename)
 
 bool State::resetState(std::string filename)
 {
-	auto normalizedFilename = normalizeFilename(filename);
-	if (!std::filesystem::is_regular_file(normalizedFilename.c_str())) {
-		this->status = "file not found: " + normalizedFilename;
+	auto name = normalizeFilename(filename);
+	if (!std::filesystem::is_regular_file(name.c_str())) {
+		this->status = "file not found: " + name;
 		return false;
 	}
 	this->pushFileStack(this->filename);
-	this->pushFileStack(normalizedFilename);
+	this->pushFileStack(name);
 	this->fileStackIndex = this->fileStack.size() - 1;
-	this->changeFile(normalizedFilename);
+	this->changeFile(name);
 	return true;
 }
 
-State::State()
+void State::init()
 {
 	this->runningAsRoot = geteuid() == 0;
 	this->showGrep = false;
@@ -455,24 +454,38 @@ State::State()
 	this->loadAllConfigFiles();
 }
 
-State::State(std::string filename)
-	: State()
+void State::init(std::string name, std::vector<std::string> data)
 {
-	auto normalizedFilename = normalizeFilename(filename);
-	std::vector<std::string> data;
-	if (!std::filesystem::is_regular_file(normalizedFilename.c_str())) {
-		data = { "" };
-	} else {
-		data = readFile(normalizedFilename.c_str());
-	}
-	this->filename = std::string(normalizedFilename);
+	this->init();
+	this->filename = name;
 	this->data = data;
 	this->previousState = data;
-	this->commentSymbol = getCommentSymbol(normalizedFilename);
+	this->commentSymbol = getCommentSymbol(name);
 	this->mode = SHORTCUTS;
-	this->fileStack = { normalizedFilename };
+	this->fileStack = { name };
 	this->fileStackIndex = 0;
-	refocusFileExplorer(this, false);
+}
+
+State::State()
+{
+	this->init();
+}
+
+State::State(std::string name, std::vector<std::string> data)
+{
+	this->init(name, data);
+}
+
+State::State(std::string filename)
+{
+	std::string name = normalizeFilename(filename);
+	std::vector<std::string> data;
+	if (!std::filesystem::is_regular_file(name.c_str())) {
+		data = { "" };
+	} else {
+		data = readFile(name.c_str());
+	}
+	this->init(name, data);
 }
 
 void State::setMaxYX(int32_t y, int32_t x)

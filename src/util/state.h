@@ -172,6 +172,9 @@ class State {
 	uint32_t diffIndex;
 	State();
 	State(std::string filename);
+	State(std::string name, std::vector<std::string> data);
+	void init();
+	void init(std::string name, std::vector<std::string> data);
 	bool resetState(std::string filename);
 	void pushFileStack(std::string filename);
 	void changeFile(std::string filename);
