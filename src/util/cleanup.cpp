@@ -3,6 +3,7 @@
 #include "history.h"
 #include "cleanup.h"
 #include "expect.h"
+#include "save.h"
 #include <ncurses.h>
 
 void cleanup(State *state, char c)

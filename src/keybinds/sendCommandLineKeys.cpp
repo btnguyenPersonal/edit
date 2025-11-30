@@ -5,6 +5,7 @@
 #include "../util/modes.h"
 #include "../util/query.h"
 #include "../util/state.h"
+#include "../util/save.h"
 #include <ncurses.h>
 #include <sstream>
 #include <string>
