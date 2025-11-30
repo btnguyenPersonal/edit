@@ -1,11 +1,13 @@
 #pragma once
 
+#include "../src/util/compare.h"
+
 #include <string>
 #include <vector>
 
 struct testRun {
 	std::string name;
-	bool pass;
+	struct boolWithError result;
 };
 
 struct testSuiteRun {
