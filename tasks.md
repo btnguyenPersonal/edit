@@ -1,4 +1,5 @@
 ## tasks
+- each test should be <.1 s
 - make sure there is a way to initialize State without needing to go to fs
 - make describe beforeEach afterEach it
 - test all of typingKeys
@@ -8,19 +9,10 @@
 std::filesystem grabFile(State* state, std::string s);
 void releaseFile(State* state, std::filesystem f);
 
-- profile
-	- diff
-	- grep
-	- find
-
 - change state->data to rope structure
     - try to implement by hand that will be fun
 
-- make diff generation happen in the background
-
-- diff reader
-	- weird issues with being blank sometimes??
-	- make easier to get around in (more shortcuts to skip between files)
-	- make not crash??
-
 - add crash dumps
+
+# features
+- repeat keys
