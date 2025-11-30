@@ -219,9 +219,6 @@ int32_t renderStatusBar(State *state)
 	std::string prefix;
 	std::vector<Pixel> pixels = std::vector<Pixel>();
 
-	insertPixels(state, &pixels, '*', ORANGE);
-	insertPixels(state, &pixels, std::to_string(state->workspace + 1), ORANGE);
-	insertPixels(state, &pixels, ' ', WHITE);
 	for (uint32_t i = 0; i < state->harpoon[state->workspace].list.size(); i++) {
 		std::string file = state->harpoon[state->workspace].list[i];
 		bool current = file == state->filename && state->harpoon[state->workspace].index == i;

@@ -401,12 +401,18 @@ void jumpToPrevHarpoon(State *state)
 {
 	if (state->harpoon[state->workspace].index > 0) {
 		jumpToHarpoon(state, state->harpoon[state->workspace].index - 1);
+	} else {
+		focusHarpoon(state);
 	}
 }
 
 void jumpToNextHarpoon(State *state)
 {
-	jumpToHarpoon(state, state->harpoon[state->workspace].index + 1);
+	if (state->harpoon[state->workspace].index + 1 < state->harpoon[state->workspace].list.size()) {
+		jumpToHarpoon(state, state->harpoon[state->workspace].index + 1);
+	} else {
+		focusHarpoon(state);
+	}
 }
 
 void focusHarpoon(State *state)
