@@ -19,7 +19,7 @@ std::string getFromClipboard(State *state, bool useSystemClipboard)
 #ifdef __APPLE__
 	command = "pbpaste 2>/dev/null";
 #elif defined(__linux__)
-	command = "xclip -selection clipboard -o 2>/dev/null";
+	command = "[ \"$XDG_SESSION_TYPE\" = \"wayland\" ] && command -v wl-paste >/dev/null 2>&1 && wl-paste || xclip -selection clipboard -o 2>/dev/null";
 #else
 #error "Platform not supported"
 #endif
@@ -60,7 +60,7 @@ std::string getFileFromClipboard()
 #ifdef __APPLE__
 	FILE *pipe = popen("osascript -e 'POSIX path of (the clipboard as «class furl»)'", "r");
 #elif defined(__linux__)
-	FILE *pipe = popen("xclip -selection clipboard -o -t text/uri-list", "r");
+	FILE *pipe = popen("[ \"$XDG_SESSION_TYPE\" = \"wayland\" ] && command -v wl-paste >/dev/null 2>&1 && wl-paste || xclip -selection clipboard -o -t text/uri-list", "r");
 #else
 #error "Platform not supported"
 #endif
@@ -142,7 +142,7 @@ void copyPathToClipboard(State *state, const std::string &filePath)
 	std::string command = "osascript -e 'set the clipboard to POSIX file \"" + escapeForShell(filePath) + "\"'";
 #elif defined(__linux__)
 	auto path = std::string("file://") + escapeForShell(filePath);
-	std::string command = "xclip -selection clipboard -t text/uri-list";
+	std::string command = "[ \"$XDG_SESSION_TYPE\" = \"wayland\" ] && command -v wl-copy >/dev/null 2>&1 && wl-copy || xclip -selection clipboard -o -t text/uri-list";
 #else
 #error "Platform not supported"
 #endif
@@ -303,7 +303,7 @@ void copyToClipboard(State *state, const std::string &clip, bool useSystemClipbo
 #ifdef __APPLE__
 	FILE *pipe = popen("pbcopy", "w");
 #elif defined(__linux__)
-	FILE *pipe = popen("xclip -selection clipboard", "w");
+	FILE *pipe = popen("[ \"$XDG_SESSION_TYPE\" = \"wayland\" ] && command -v wl-copy >/dev/null 2>&1 && wl-copy || xclip -selection clipboard", "w");
 #else
 #error "OS not supported"
 #endif
