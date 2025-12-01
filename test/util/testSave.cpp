@@ -14,15 +14,15 @@ struct testSuiteRun testSave() {
 	}
 
 	{
-		State *state = new State("./test-file.h", {"\n\n\n\n\n"});
+		State *state = new State("./test-file.h", {"\n", ""});
 		saveFile(state);
-		output.push_back({ "it should save the file with newlines when they are passed down", compare(readFile("./test-file.h"), {""}) });
+		output.push_back({ "it should save the file with newlines when they are passed down", compare(readFile("./test-file.h"), {"", ""}) });
 	}
 
 	{
 		State *state = new State("./test-file.h", {});
 		saveFile(state);
-		output.push_back({ "it should empty the file if nothing is passed", compare(readFile("./test-file.h"), {""}) });
+		output.push_back({ "it should empty the file if nothing is passed", compare(readFile("./test-file.h"), {}) });
 	}
 
 	return { "test/util/testSave.cpp", output };
