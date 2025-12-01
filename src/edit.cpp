@@ -27,7 +27,7 @@ int32_t main(int32_t argc, char *argv[])
 	}
 	initTerminal();
 	calcWindowBounds();
-	centerFileExplorer(state);
+	sanityCheckDocumentEmpty(state);
 	renderScreen(state);
 	while (true) {
 		c = getch();
