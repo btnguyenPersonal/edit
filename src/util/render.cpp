@@ -240,12 +240,12 @@ int32_t renderStatusBar(State *state)
 		prefix = state->prompt + " ";
 		insertPixels(state, &pixels, prefix + state->name.query, WHITE);
 		renderPixels(state, 1, 0, pixels, false);
-		return prefix.length() + state->name.cursor;
+		cursor = prefix.length() + state->name.cursor;
 	} else if (state->mode == COMMANDLINE) {
 		std::string prefix = ":";
 		insertPixels(state, &pixels, prefix + state->commandLine.query, WHITE);
 		renderPixels(state, 1, 0, pixels, false);
-		return prefix.length() + state->commandLine.cursor;
+		cursor = prefix.length() + state->commandLine.cursor;
 	} else if (state->mode == GREP) {
 		prefix = state->grepPath + "> ";
 		insertPixels(state, &pixels, prefix + state->grep.query, state->showAllGrep ? DARKGREEN : GREEN);
@@ -254,7 +254,7 @@ int32_t renderStatusBar(State *state)
 		insertPixels(state, &pixels, " of ", WHITE);
 		insertPixels(state, &pixels, std::to_string(state->grepOutput.size()), WHITE);
 		renderPixels(state, 1, 0, pixels, false);
-		return prefix.length() + state->grep.cursor;
+		cursor = prefix.length() + state->grep.cursor;
 	} else if (state->mode == FINDFILE) {
 		prefix = "> ";
 		insertPixels(state, &pixels, prefix, YELLOW);
@@ -264,7 +264,7 @@ int32_t renderStatusBar(State *state)
 		insertPixels(state, &pixels, " of ", WHITE);
 		insertPixels(state, &pixels, std::to_string(state->findOutput.size()), WHITE);
 		renderPixels(state, 1, 0, pixels, false);
-		return prefix.length() + state->find.cursor;
+		cursor = prefix.length() + state->find.cursor;
 	} else {
 		if (state->recording) {
 			std::string s;
@@ -295,12 +295,12 @@ int32_t renderStatusBar(State *state)
 		}
 	}
 
-	auto displayFileName =
-		"\"" + setStringToLength(state->filename, state->maxX - (pixels.size() + 2), true) + "\"";
-	auto tmp = displayFileName.length() + pixels.size();
+	std::string rightSide = std::string(" --") + getMode(state->mode) + std::string("-- ");
+	rightSide += "\"" + setStringToLength(state->filename, state->maxX - (pixels.size() + 2), true) + "\"";
+	auto tmp = rightSide.length() + pixels.size();
 	auto len = state->maxX > tmp ? state->maxX - tmp : 0;
 	prefix = std::string(len, ' ');
-	insertPixels(state, &pixels, prefix + displayFileName,
+	insertPixels(state, &pixels, prefix + rightSide,
 		     state->lastSave != state->historyPosition ? GREY : WHITE);
 
 	renderPixels(state, 1, 0, pixels, false);
