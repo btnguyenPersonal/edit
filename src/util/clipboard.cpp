@@ -3,6 +3,7 @@
 #include "helper.h"
 #include "indent.h"
 #include "state.h"
+#include "sanity.h"
 #include <array>
 #include <iterator>
 #include <sstream>

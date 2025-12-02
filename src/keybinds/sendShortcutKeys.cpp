@@ -14,6 +14,7 @@
 #include "../util/cleanup.h"
 #include "../util/keys.h"
 #include "../util/grep.h"
+#include "../util/sanity.h"
 #include "sendKeys.h"
 #include "sendVisualKeys.h"
 #include <algorithm>

@@ -11,21 +11,21 @@ struct testSuiteRun testSave() {
 		system("rm ./test-file.h");
 		State *state = new State("./test-file.h", {"Hello world!"});
 		saveFile(state);
-		output.push_back({ "it should save the file in the trivial case", compare(readFile("./test-file.h"), {"Hello world!"}) });
+		output.push_back({ "saveFile should save the file in the trivial case", compare(readFile("./test-file.h"), {"Hello world!"}) });
 	}
 
 	{
 		system("rm ./test-file.h");
 		State *state = new State("./test-file.h", {"\n", ""});
 		saveFile(state);
-		output.push_back({ "it should save the file with newlines when they are passed down", compare(readFile("./test-file.h"), {"", ""}) });
+		output.push_back({ "saveFile should save the file with newlines when they are passed down", compare(readFile("./test-file.h"), {"", ""}) });
 	}
 
 	{
 		system("rm ./test-file.h");
 		State *state = new State("./test-file.h", {});
 		saveFile(state);
-		output.push_back({ "it should empty the file if nothing is passed", compare(readFile("./test-file.h"), {}) });
+		output.push_back({ "saveFile should empty the file if nothing is passed", compare(readFile("./test-file.h"), {}) });
 	}
 
 	return { "test/util/testSave.cpp", output };

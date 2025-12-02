@@ -4,6 +4,7 @@
 #include "cleanup.h"
 #include "expect.h"
 #include "save.h"
+#include "sanity.h"
 #include <ncurses.h>
 
 void cleanup(State *state, char c)

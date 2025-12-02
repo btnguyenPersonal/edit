@@ -6,6 +6,7 @@
 #include "prompt.h"
 #include "expect.h"
 #include "ignore.h"
+#include "sanity.h"
 #include <algorithm>
 #include <climits>
 #include <cstdio>
@@ -1764,51 +1765,5 @@ int32_t minimum(int32_t a, int32_t b)
 		return a;
 	} else {
 		return b;
-	}
-}
-
-void sanityCheckGrepSelection(State *state)
-{
-	if (state->mode == GREP && state->grep.selection >= state->grepOutput.size()) {
-		if (state->grepOutput.size() > 0) {
-			state->grep.selection = state->grepOutput.size() - 1;
-		} else {
-			state->grep.selection = 0;
-		}
-	}
-}
-
-void sanityCheckFindFileSelection(State *state)
-{
-	if (state->mode == FINDFILE && state->find.selection >= state->findOutput.size()) {
-		if (state->findOutput.size() > 0) {
-			state->find.selection = state->findOutput.size() - 1;
-		} else {
-			state->find.selection = 0;
-		}
-	}
-}
-
-void sanityCheckDocumentEmpty(State *state)
-{
-	if (state->data.size() == 0) {
-		state->data.push_back("");
-	}
-}
-
-void fixColOverMax(State *state)
-{
-	if (state->col > state->data[state->row].length()) {
-		state->col = state->data[state->row].length();
-	}
-}
-
-void sanityCheckRowColOutOfBounds(State *state)
-{
-	if (state->row >= state->data.size()) {
-		state->row = state->data.size() - 1;
-	}
-	if (state->mode == TYPING) {
-		fixColOverMax(state);
 	}
 }

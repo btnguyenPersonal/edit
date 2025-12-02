@@ -34,6 +34,7 @@ COMMON_SOURCES := \
   $(UTIL_DIR)/save.cpp \
   $(UTIL_DIR)/read.cpp \
   $(UTIL_DIR)/compare.cpp \
+  $(UTIL_DIR)/sanity.cpp \
   $(KEYBINDS_DIR)/sendKeys.cpp \
   $(KEYBINDS_DIR)/sendVisualKeys.cpp \
   $(KEYBINDS_DIR)/sendBlameKeys.cpp \

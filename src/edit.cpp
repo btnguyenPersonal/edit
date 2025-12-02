@@ -4,6 +4,7 @@
 #include "util/state.h"
 #include "util/cleanup.h"
 #include "util/find.h"
+#include "util/sanity.h"
 #include <cstdint>
 #include <iostream>
 
