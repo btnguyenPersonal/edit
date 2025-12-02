@@ -1,4 +1,6 @@
 ## tasks
+- ts-server integration (do it for real this time)
+
 - fix \ bug (sometimes crashes for some reason)
 
 - start using namespace std

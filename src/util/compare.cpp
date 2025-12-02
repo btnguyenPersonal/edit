@@ -22,21 +22,21 @@ std::string print(std::string prefix, std::string name, std::vector<std::string>
 	return output;
 }
 
-struct boolWithError compare(std::vector<std::string> result, std::vector<std::string> expected)
+struct boolWithError compare(std::vector<std::string> result, std::vector<std::string> expect)
 {
 	bool output = true;
-	if (result.size() != expected.size()) {
+	if (result.size() != expect.size()) {
 		output = false;
 	} else {
 		for (uint32_t i = 0; i < result.size(); i++) {
-			if (result[i] != expected[i]) {
+			if (result[i] != expect[i]) {
 				output = false;
 				break;
 			}
 		}
 	}
 	if (output == false) {
-		return { output, print(PRE, RES, result) + print(PRE, EXP, expected) };
+		return { output, print(PRE, RES, result) + print(PRE, EXP, expect) };
 	}
 	return { output, "" };
 }
@@ -52,14 +52,14 @@ std::string print(std::string prefix, std::string name, bool a)
 	return output;
 }
 
-struct boolWithError compare(bool result, bool expected)
+struct boolWithError compare(bool result, bool expect)
 {
 	bool output = true;
-	if (result != expected) {
+	if (result != expect) {
 		output = false;
 	}
 	if (output == false) {
-		return { output, print(PRE, RES, result) + print(PRE, EXP, expected) };
+		return { output, print(PRE, RES, result) + print(PRE, EXP, expect) };
 	}
 	return { output, "" };
 }
@@ -75,14 +75,14 @@ std::string print(std::string prefix, std::string name, uint32_t a)
 	return output;
 }
 
-struct boolWithError compare(uint32_t result, uint32_t expected)
+struct boolWithError compare(uint32_t result, uint32_t expect)
 {
 	bool output = true;
-	if (result != expected) {
+	if (result != expect) {
 		output = false;
 	}
 	if (output == false) {
-		return { output, print(PRE, RES, result) + print(PRE, EXP, expected) };
+		return { output, print(PRE, RES, result) + print(PRE, EXP, expect) };
 	}
 	return { output, "" };
 }
