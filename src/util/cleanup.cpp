@@ -20,7 +20,10 @@ void cleanup(State *state, char c)
 		sanityCheckGrepSelection(state);
 		sanityCheckFindFileSelection(state);
 		sanityCheckDocumentEmpty(state);
-		sanityCheckRowColOutOfBounds(state);
+		sanityCheckRowOutOfBounds(state);
+		if (state->mode == TYPING) {
+			fixColOverMax(state);
+		}
 		expect(state->data[state->row].length() >= 0);
 		if (state->options.insert_final_newline) {
 			insertFinalEmptyNewline(state);

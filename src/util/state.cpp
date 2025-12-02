@@ -403,7 +403,7 @@ void State::init()
 	this->mark = { "", 0 };
 	this->matching = { 0, 0 };
 	this->searching = false;
-	this->dontSave = false;
+	this->dontSave = true;
 	this->replacing = false;
 	this->jumplist = { false, 0, std::vector<Position>() };
 	this->buildErrorIndex = 0;

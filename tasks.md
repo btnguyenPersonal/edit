@@ -1,5 +1,5 @@
 ## tasks
-- fix \ bug
+- fix \ bug (sometimes crashes for some reason)
 
 - start using namespace std
 

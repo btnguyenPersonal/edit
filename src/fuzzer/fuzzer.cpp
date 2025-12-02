@@ -30,7 +30,6 @@ void fuzzSendKeys(int testnum, int iterations = 1000)
 	std::uniform_int_distribution<> dis(0, keypresses.size() - 1);
 	system("cp -v src/util/helper.cpp longtest.js");
 	State *state = new State("longtest.js");
-	state->dontSave = true;
 
 	std::string ret = "{";
 
@@ -63,7 +62,6 @@ void fuzzSendKeys(int testnum, int iterations = 1000)
 void testValues(std::vector<std::string> v)
 {
 	State *state = new State("src/util/helper.cpp");
-	state->dontSave = true;
 	std::string ret = "{";
 	try {
 		for (uint32_t i = 0; i < v.size(); i++) {

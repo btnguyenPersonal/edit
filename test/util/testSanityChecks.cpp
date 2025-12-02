@@ -60,5 +60,62 @@ struct testSuiteRun testSanityChecks() {
 		output.push_back({ "fixColOverMax should not set col to the end when at the start", compare(state->col, 0) });
 	}
 
+	{
+		State *state = new State("./test-file.h", {});
+		sanityCheckDocumentEmpty(state);
+		output.push_back({ "sanityCheckDocumentEmpty should insert an empty string when document is empty", compare(state->data, {""}) });
+	}
+
+	{
+		State *state = new State("./test-file.h", {"hi"});
+		sanityCheckDocumentEmpty(state);
+		output.push_back({ "sanityCheckDocumentEmpty should not insert an empty string when document is not empty", compare(state->data, {"hi"}) });
+	}
+
+	{
+		State *state = new State("./test-file.h", {"hi"});
+		sanityCheckRowOutOfBounds(state);
+		output.push_back({ "sanityCheckRowOutOfBounds should set row to 0 when row is not out of bounds", compare(state->row, 0) });
+	}
+
+	{
+		State *state = new State("./test-file.h", {"hi"});
+		state->row = 10;
+		sanityCheckRowOutOfBounds(state);
+		output.push_back({ "sanityCheckRowOutOfBounds should set row to 0 when row is out of bounds and only one row", compare(state->row, 0) });
+	}
+
+	{
+		State *state = new State("./test-file.h", {"hi", "hi2", "hi3"});
+		state->row = 3;
+		sanityCheckRowOutOfBounds(state);
+		output.push_back({ "sanityCheckRowOutOfBounds should set row to length - 1 when row is one over the length", compare(state->row, 2) });
+	}
+
+	{
+		State *state = new State("./test-file.h", {"hi", "hi2", "hi3"});
+		state->row = 1;
+		sanityCheckRowOutOfBounds(state);
+		output.push_back({ "sanityCheckRowOutOfBounds should not set row to length - 1 when row is one under the length", compare(state->row, 1) });
+	}
+
+	{
+		Query query = {"", 0, 5};
+		sanityCheckQuery(query, 0);
+		output.push_back({ "sanityCheckQuery should set selection to 0 if len is 0", compare(query.selection, 0) });
+	}
+
+	{
+		Query query = {"", 0, 5};
+		sanityCheckQuery(query, 5);
+		output.push_back({ "sanityCheckQuery should set selection to 4 if len is 5", compare(query.selection, 4) });
+	}
+
+	{
+		Query query = {"", 0, 5};
+		sanityCheckQuery(query, 100);
+		output.push_back({ "sanityCheckQuery should keep selection at 5 if len is 100", compare(query.selection, 5) });
+	}
+
 	return { "test/util/testSanityChecks.cpp", output };
 }

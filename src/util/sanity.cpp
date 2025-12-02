@@ -2,22 +2,25 @@
 
 void sanityCheckGrepSelection(State *state)
 {
-	if (state->mode == GREP && state->grep.selection >= state->grepOutput.size()) {
-		if (state->grepOutput.size() > 0) {
-			state->grep.selection = state->grepOutput.size() - 1;
-		} else {
-			state->grep.selection = 0;
-		}
+	if (state->mode == GREP) {
+		sanityCheckQuery(state->grep, state->grepOutput.size());
 	}
 }
 
 void sanityCheckFindFileSelection(State *state)
 {
-	if (state->mode == FINDFILE && state->find.selection >= state->findOutput.size()) {
-		if (state->findOutput.size() > 0) {
-			state->find.selection = state->findOutput.size() - 1;
+	if (state->mode == FINDFILE) {
+		sanityCheckQuery(state->find, state->findOutput.size());
+	}
+}
+
+void sanityCheckQuery(Query &query, uint32_t len)
+{
+	if (query.selection >= len) {
+		if (len > 0) {
+			query.selection = len - 1;
 		} else {
-			state->find.selection = 0;
+			query.selection = 0;
 		}
 	}
 }
@@ -44,13 +47,5 @@ void sanityCheckRowOutOfBounds(State *state)
 		state->row = 0;
 	} else if (state->row >= state->data.size()) {
 		state->row = state->data.size() - 1;
-	}
-}
-
-void sanityCheckRowColOutOfBounds(State *state)
-{
-	sanityCheckRowOutOfBounds(state);
-	if (state->mode == TYPING) {
-		fixColOverMax(state);
 	}
 }
