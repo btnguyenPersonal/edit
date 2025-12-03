@@ -1,6 +1,7 @@
 #include "./util/testSave.cpp"
 #include "./util/testRead.cpp"
 #include "./util/testSanityChecks.cpp"
+#include "./util/testTypingKeys.cpp"
 
 auto color_white = "\033[0m";
 auto color_green = "\033[1;32m";
@@ -22,4 +23,5 @@ int main() {
 	 printSuiteRun(testSave());
 	 printSuiteRun(testRead());
 	 printSuiteRun(testSanityChecks());
+	 printSuiteRun(testTypingKeys());
 }

@@ -86,3 +86,26 @@ struct boolWithError compare(uint32_t result, uint32_t expect)
 	}
 	return { output, "" };
 }
+
+std::string print(std::string prefix, std::string name, Mode a)
+{
+	std::string output = "";
+	output += prefix;
+	output += name;
+	output += ": ";
+	output += std::to_string(a);
+	output += "\n";
+	return output;
+}
+
+struct boolWithError compare(Mode result, Mode expect)
+{
+	bool output = true;
+	if (result != expect) {
+		output = false;
+	}
+	if (output == false) {
+		return { output, print(PRE, RES, result) + print(PRE, EXP, expect) };
+	}
+	return { output, "" };
+}
