@@ -13,7 +13,6 @@ void realignHarpoon(State *state);
 std::vector<std::string> getDiffLines(State *state);
 std::vector<std::string> getLogLines(State *state);
 uint32_t getNormalizedCol(State *state, uint32_t hardCol);
-std::string getMode(uint32_t mode);
 bool isColTooSmall(State *state);
 bool isWhitespace(char c);
 bool isColTooBig(State *state);
