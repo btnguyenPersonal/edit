@@ -40,7 +40,6 @@ int32_t maxConsecutiveMatch(const std::filesystem::path &filePath, const std::st
 			}
 		} else {
 			i = i - currentLength;
-			j = 0;
 			currentLength = 0;
 			i++;
 		}
