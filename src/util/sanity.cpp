@@ -2,16 +2,12 @@
 
 void sanityCheckGrepSelection(State *state)
 {
-	if (state->mode == GREP) {
-		sanityCheckQuery(state->grep, state->grepOutput.size());
-	}
+	sanityCheckQuery(state->grep, state->grepOutput.size());
 }
 
-void sanityCheckFindFileSelection(State *state)
+void sanityCheckFindSelection(State *state)
 {
-	if (state->mode == FINDFILE) {
-		sanityCheckQuery(state->find, state->findOutput.size());
-	}
+	sanityCheckQuery(state->find, state->findOutput.size());
 }
 
 void sanityCheckQuery(Query &query, uint32_t len)

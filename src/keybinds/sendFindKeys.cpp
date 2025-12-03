@@ -1,4 +1,4 @@
-#include "sendFindFileKeys.h"
+#include "sendFindKeys.h"
 #include "../util/clipboard.h"
 #include "../util/helper.h"
 #include "../util/modes.h"
@@ -11,7 +11,7 @@
 #include <string>
 #include <vector>
 
-void sendFindFileKeys(State *state, int32_t c)
+void sendFindKeys(State *state, int32_t c)
 {
 	std::string cachedFileString = state->find.query;
 	if (c == 27) { // ESC

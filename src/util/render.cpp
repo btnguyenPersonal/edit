@@ -430,7 +430,7 @@ void renderGrepOutput(State *state)
 	}
 }
 
-void renderFindFileOutput(State *state)
+void renderFindOutput(State *state)
 {
 	uint32_t index;
 	if ((int32_t)state->find.selection - ((int32_t)state->maxY / 2) > 0) {
@@ -861,7 +861,7 @@ void renderScreen(State *state)
 		bool noLineNum = false;
 		Cursor editorCursor, fileExplorerCursor;
 		if (state->mode == FINDFILE) {
-			renderFindFileOutput(state);
+			renderFindOutput(state);
 		} else if (state->mode == DIFF) {
 			if (state->viewingDiff) {
 				editorCursor = renderDiff(state);

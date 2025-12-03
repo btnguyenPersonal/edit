@@ -18,7 +18,7 @@ void cleanup(State *state, char c)
 		}
 		state->skipSetHardCol = false;
 		sanityCheckGrepSelection(state);
-		sanityCheckFindFileSelection(state);
+		sanityCheckFindSelection(state);
 		sanityCheckDocumentEmpty(state);
 		sanityCheckRowOutOfBounds(state);
 		if (state->mode == TYPING) {

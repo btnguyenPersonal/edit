@@ -117,5 +117,31 @@ struct testSuiteRun testSanityChecks() {
 		output.push_back({ "sanityCheckQuery should keep selection at 5 if len is 100", compare(query.selection, 5) });
 	}
 
+	{
+		Query query = {"", 0, 5};
+		sanityCheckQuery(query, 100);
+		output.push_back({ "sanityCheckQuery should keep selection at 5 if len is 100", compare(query.selection, 5) });
+	}
+
+	{
+		State *state = new State("./test-file.h", {});
+		state->grep.selection = 100;
+		for (uint32_t i = 0; i < 6; i++) {
+			state->grepOutput.push_back({"", 0, ""});
+		}
+		sanityCheckGrepSelection(state);
+		output.push_back({ "sanityCheckGrepSelection should set grep.selection to 5 if length is 6", compare(state->grep.selection, 5) });
+	}
+
+	{
+		State *state = new State("./test-file.h", {});
+		state->find.selection = 100;
+		for (uint32_t i = 0; i < 6; i++) {
+			state->findOutput.push_back("");
+		}
+		sanityCheckFindSelection(state);
+		output.push_back({ "sanityCheckFindSelection should set find.selection to 5 if length is 6", compare(state->find.selection, 5) });
+	}
+
 	return { "test/util/testSanityChecks.cpp", output };
 }

@@ -38,7 +38,7 @@ COMMON_SOURCES := \
   $(KEYBINDS_DIR)/sendKeys.cpp \
   $(KEYBINDS_DIR)/sendVisualKeys.cpp \
   $(KEYBINDS_DIR)/sendBlameKeys.cpp \
-  $(KEYBINDS_DIR)/sendFindFileKeys.cpp \
+  $(KEYBINDS_DIR)/sendFindKeys.cpp \
   $(KEYBINDS_DIR)/sendFileExplorerKeys.cpp \
   $(KEYBINDS_DIR)/sendSearchKeys.cpp \
   $(KEYBINDS_DIR)/sendGrepKeys.cpp \

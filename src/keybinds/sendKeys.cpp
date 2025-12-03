@@ -6,7 +6,7 @@
 #include "sendBlameKeys.h"
 #include "sendFileExplorerKeys.h"
 #include "sendCommandLineKeys.h"
-#include "sendFindFileKeys.h"
+#include "sendFindKeys.h"
 #include "sendGrepKeys.h"
 #include "sendMultiCursorKeys.h"
 #include "sendSearchKeys.h"
@@ -45,7 +45,7 @@ void sendKeys(State *state, int32_t c)
 		sendCommandLineKeys(state, c);
 		break;
 	case FINDFILE:
-		sendFindFileKeys(state, c);
+		sendFindKeys(state, c);
 		break;
 	case GREP:
 		sendGrepKeys(state, c);
