@@ -4,6 +4,16 @@
 #include <string>
 #include <vector>
 
+void indentLineWhenTypingFirstChar(State *state)
+{
+	if (!autoIndentDisabledFileType(state->filename)) {
+		if ((int32_t)state->col == getIndexFirstNonSpace(state)) {
+			indentLine(state);
+			state->col = getIndexFirstNonSpace(state);
+		}
+	}
+}
+
 bool autoIndentDisabledFileType(std::string filename)
 {
 	if (getExtension(filename) == "py") {

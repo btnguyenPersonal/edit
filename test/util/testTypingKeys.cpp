@@ -51,6 +51,8 @@ struct testSuiteRun testTypingKeys()
 		state->col = 5;
 		insertNewline(state);
 		output.push_back({ "insertNewline should insert a newline in the middle of a line", compare(state->data, { "Hello World", "Hello World", "Hello World", "Hello World", "Hello", " World", "Hello World" }) });
+		output.push_back({ "  and col is 0", compare(state->col, 0) });
+		output.push_back({ "  and row is 5", compare(state->row, 5) });
 	}
 
 	{
@@ -59,6 +61,8 @@ struct testSuiteRun testTypingKeys()
 		state->col = 0;
 		insertNewline(state);
 		output.push_back({ "insertNewline should insert a newline at the start of a line", compare(state->data, { "Hello World", "Hello World", "Hello World", "Hello World", "", "Hello World", "Hello World" }) });
+		output.push_back({ "  and col is 0", compare(state->col, 0) });
+		output.push_back({ "  and row is 5", compare(state->row, 5) });
 	}
 
 	{
@@ -67,6 +71,8 @@ struct testSuiteRun testTypingKeys()
 		state->col = 1000;
 		insertNewline(state);
 		output.push_back({ "insertNewline should insert a newline at the end of a line", compare(state->data, { "Hello World", "Hello World", "Hello World", "Hello World", "Hello World", "", "Hello World" }) });
+		output.push_back({ "  and col is 0", compare(state->col, 0) });
+		output.push_back({ "  and row is 5", compare(state->row, 5) });
 	}
 
 	{
@@ -75,6 +81,8 @@ struct testSuiteRun testTypingKeys()
 		state->col = 0;
 		insertNewline(state);
 		output.push_back({ "insertNewline should insert a newline at the start of a file", compare(state->data, { "", "Hello World", "Hello World", "Hello World", "Hello World", "Hello World", "Hello World" }) });
+		output.push_back({ "  and col is 0", compare(state->col, 0) });
+		output.push_back({ "  and row is 1", compare(state->row, 1) });
 	}
 
 	{
@@ -83,7 +91,18 @@ struct testSuiteRun testTypingKeys()
 		state->col = 1000;
 		insertNewline(state);
 		output.push_back({ "insertNewline should insert a newline at the end of a file", compare(state->data, { "Hello World", "Hello World", "Hello World", "Hello World", "Hello World", "Hello World", "" }) });
+		output.push_back({ "  and col is 0", compare(state->col, 0) });
+		output.push_back({ "  and row is 6", compare(state->row, 6) });
+	}
+
+	{
+		State *state = new State("./test-file.h", { "Hello World", "Hello World", "Hello World", "Hello World", "Hello World", "Hello World" });
+		state->row = 50;
+		state->col = 1000;
+		insertNewline(state);
 		output.push_back({ "insertNewline should insert a newline at the end of a file", compare(state->data, { "Hello World", "Hello World", "Hello World", "Hello World", "Hello World", "Hello World", "" }) });
+		output.push_back({ "  and col is 0", compare(state->col, 0) });
+		output.push_back({ "  and row is 6", compare(state->row, 6) });
 	}
 
 	return { "test/util/testTypingKeys.cpp", output };

@@ -14,16 +14,8 @@ void insertNewline(State *state)
 	std::string current = state->data[state->row];
 	state->data[state->row] = current.substr(0, state->col);
 	state->data.insert(state->data.begin() + state->row + 1, current.substr(state->col));
-}
-
-void indentLineWhenTypingFirstChar(State *state)
-{
-	if (!autoIndentDisabledFileType(state->filename)) {
-		if ((int32_t)state->col == getIndexFirstNonSpace(state)) {
-			indentLine(state);
-			state->col = getIndexFirstNonSpace(state);
-		}
-	}
+	state->row += 1;
+	state->col = 0;
 }
 
 void sendTypingKeys(State *state, int32_t c)
@@ -34,9 +26,6 @@ void sendTypingKeys(State *state, int32_t c)
 		state->prevKeys = "";
 		if (c == '\n') {
 			insertNewline(state);
-			state->row += 1;
-			indentLineWhenTypingFirstChar(state);
-			state->col = 0;
 		} else {
 			std::string current = state->data[state->row];
 			state->data[state->row] = current.substr(0, state->col) + (char)c + current.substr(state->col);
@@ -51,8 +40,6 @@ void sendTypingKeys(State *state, int32_t c)
 		return;
 	} else if (c == '\n') {
 		insertNewline(state);
-		state->row += 1;
-		state->col = 0;
 	} else if (c == KEY_BACKSPACE || c == 127) {
 		if (state->col > 0) {
 			std::string current = state->data[state->row];
