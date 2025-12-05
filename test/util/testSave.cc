@@ -1,8 +1,4 @@
-#include "../../src/util/save.h"
-#include "../../src/util/read.h"
-#include "../../src/util/state.h"
-#include "../../src/util/compare.h"
-#include "../test.h"
+#include "testSave.h"
 
 struct testSuiteRun testSave()
 {
@@ -40,5 +36,5 @@ struct testSuiteRun testSave()
 		output.push_back({ "saveFile should empty the file if nothing is passed", compare(readFile("./test-file.h"), {}) });
 	}
 
-	return { "test/util/testSave.cpp", output };
+	return { "test/util/testSave.cc", output };
 }

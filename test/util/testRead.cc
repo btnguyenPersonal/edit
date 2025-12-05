@@ -1,8 +1,4 @@
-#include "../../src/util/save.h"
-#include "../../src/util/read.h"
-#include "../../src/util/state.h"
-#include "../../src/util/compare.h"
-#include "../test.h"
+#include "testRead.h"
 
 struct testSuiteRun testRead()
 {
@@ -33,5 +29,5 @@ struct testSuiteRun testRead()
 		output.push_back({ "readFile should read a big file correctly", compare(readFile("./test-file.h"), f) });
 	}
 
-	return { "test/util/testRead.cpp", output };
+	return { "test/util/testRead.cc", output };
 }

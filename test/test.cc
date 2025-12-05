@@ -1,7 +1,7 @@
-#include "./util/testSave.cpp"
-#include "./util/testRead.cpp"
-#include "./util/testSanityChecks.cpp"
-#include "./util/testTypingKeys.cpp"
+#include "./util/testSave.h"
+#include "./util/testRead.h"
+#include "./util/testSanityChecks.h"
+#include "./util/testTypingKeys.h"
 
 auto color_white = "\033[0m";
 auto color_green = "\033[1;32m";

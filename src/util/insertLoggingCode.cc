@@ -28,7 +28,7 @@ std::string getLoggingRegex(State *state)
 {
 	std::string extension = getExtension(state->filename);
 	std::string pattern = "";
-	if (extension == "cpp") {
+	if (extension == "cc" || extension == "cpp") {
 		pattern = "std::cout << \"[0-9]+ .+? << std::endl;";
 	} else {
 		pattern = "console\\.log\\('[0-9]+', .+?\\);";
@@ -52,7 +52,7 @@ std::string getLoggingCode(State *state, uint32_t row, std::string variableName,
 {
 	std::string extension = getExtension(state->filename);
 	std::string rowStr = std::to_string(row + 1);
-	if (extension == "cpp") {
+	if (extension == "cc" || extension == "cpp") {
 		std::string s = "std::cout << \"" + rowStr + " " + variableName + ": \"";
 		if (showValue) {
 			s += " << " + variableName;

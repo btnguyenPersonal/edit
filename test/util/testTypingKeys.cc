@@ -1,9 +1,4 @@
-#include "../../src/keybinds/sendTypingKeys.h"
-#include "../../src/util/state.h"
-#include "../../src/util/compare.h"
-#include "../../src/util/ctrl.h"
-#include "../test.h"
-#include <ncurses.h>
+#include "testTypingKeys.h"
 
 struct testSuiteRun testTypingKeys()
 {
@@ -228,5 +223,15 @@ struct testSuiteRun testTypingKeys()
 		output.push_back({ "sendTypingKeys ctrl(w) should delete to the start of line if all spaces", compare(state->data, { "    Hello World",  "    Hello World", "" }) });
 	}
 
-	return { "test/util/testTypingKeys.cpp", output };
+	{
+		State *state = new State("./test-file.h", { "    Hello World",  "    Hello World", "    Hello Wor(ld" });
+		state->row = 2;
+		state->col = 1000;
+		sendTypingKeys(state, ctrl('w'));
+		sendTypingKeys(state, ctrl('w'));
+		sendTypingKeys(state, ctrl('w'));
+		output.push_back({ "sendTypingKeys ctrl(w) should not stop at (", compare(state->data, { "    Hello World",  "    Hello World", "    Hello " }) });
+	}
+
+	return { "test/util/testTypingKeys.cc", output };
 }
