@@ -101,17 +101,13 @@ void sendDiffKeys(State *state, int32_t c)
 			bool found = false;
 			if (state->diffIndex < state->diffLines.size()) {
 				for (int32_t i = state->diffIndex; i >= 0; i--) {
-					if (!found && state->diffLines[i].length() > 0 &&
-					    state->diffLines[i][0] == '+') {
+					if (!found && state->diffLines[i].length() > 0 && state->diffLines[i][0] == '+') {
 						linesNet++;
-					} else if (found && state->diffLines[i].length() > 2 &&
-						   state->diffLines[i][0] == '+' && state->diffLines[i][1] == '+' &&
-						   state->diffLines[i][2] == '+') {
+					} else if (found && state->diffLines[i].length() > 2 && state->diffLines[i][0] == '+' && state->diffLines[i][1] == '+' && state->diffLines[i][2] == '+') {
 						std::string line = state->diffLines[i];
 						file = safeSubstring(line, 6);
 						break;
-					} else if (state->diffLines[i].length() > 1 && state->diffLines[i][0] == '@' &&
-						   state->diffLines[i][1] == '@') {
+					} else if (state->diffLines[i].length() > 1 && state->diffLines[i][0] == '@' && state->diffLines[i][1] == '@') {
 						std::string line = state->diffLines[i];
 						for (uint32_t i = 0; i < line.length(); i++) {
 							if (!found && line[i] == '+') {

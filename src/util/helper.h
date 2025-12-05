@@ -97,8 +97,7 @@ bool setSearchResult(State *state);
 void setPosition(State *state, Position pos);
 void initVisual(State *state, VisualType visualType);
 bool is_number(const std::string &s);
-WordPosition findParentheses(const std::string &str, char openParen, char closeParen, uint32_t cursor,
-			     bool includeParen);
+WordPosition findParentheses(const std::string &str, char openParen, char closeParen, uint32_t cursor, bool includeParen);
 uint32_t getIndent(const std::string &str);
 uint32_t getNextLineSameIndent(State *state);
 uint32_t getPrevLineSameIndent(State *state);

@@ -10,20 +10,10 @@
 void diff()
 {
 	std::vector<std::string> a = {
-		"aacccccccccccaaa", "bbbbbbbbbbbbbbbb", "cccccccccccccccc", "dddddddddddddddd", "eeeeeeeeeeeeeeee",
-		"ffffffffffffffff", "gggggggggggggggg", "hhhhhhhhhhhhhhhh", "iiiiiiiiiiiiiiii", "jjjjjjjjjjjjjjjj",
-		"kkkkkkkkkkkkkkkk", "llllllllllllllll", "mmmmmmmmmmmmmmmm", "nnnnnnnnnnnnnnnn", "oooooooooooooooo",
-		"pppppppppppppppp", "qqqqqqqqqqqqqqqq", "rrrrrrrrrrrrrrrr", "ssssssssssssssss", "tttttttttttttttt",
-		"uuuuuuuuuuuuuuuu", "vvvvvvvvvvvvvvvv", "wwwwwwwwwwwwwwww", "xxxxxxxxxxxxxxxx", "yyyyyyyyyyyyyyyy",
-		"zzzzzzzzzzzzzzzz",
+		"aacccccccccccaaa", "bbbbbbbbbbbbbbbb", "cccccccccccccccc", "dddddddddddddddd", "eeeeeeeeeeeeeeee", "ffffffffffffffff", "gggggggggggggggg", "hhhhhhhhhhhhhhhh", "iiiiiiiiiiiiiiii", "jjjjjjjjjjjjjjjj", "kkkkkkkkkkkkkkkk", "llllllllllllllll", "mmmmmmmmmmmmmmmm", "nnnnnnnnnnnnnnnn", "oooooooooooooooo", "pppppppppppppppp", "qqqqqqqqqqqqqqqq", "rrrrrrrrrrrrrrrr", "ssssssssssssssss", "tttttttttttttttt", "uuuuuuuuuuuuuuuu", "vvvvvvvvvvvvvvvv", "wwwwwwwwwwwwwwww", "xxxxxxxxxxxxxxxx", "yyyyyyyyyyyyyyyy", "zzzzzzzzzzzzzzzz",
 	};
 	std::vector<std::string> b = {
-		"aaaaaaaaaaaaaaaa", "bbbbbbbbbbbbbbbb", "cccccccccccccccc", "dddddddddddddddd", "eeeeeeeeeeeeeeee",
-		"ffffffffffffffff", "gggggggggggggggg", "hhhhhhhhhhhhhhhh", "iiiiiiiiiiiiiiii", "jjjjjjjjjjjjjjjj",
-		"kkkkkkkkkkkkkkkk", "llllllllllllllll", "mmmmmmmmmmmmmmmm", "nnnnnnnnnnnnnnnn", "oooooooooooooooo",
-		"pppppppppppppppp", "qqqqqqqqqqqqqqqq", "rrrrrrrrrrrrrrrr", "ssssssssssssssss", "tttttttttttttttt",
-		"uuuuuuuuuuuuuuuu", "vvvvvvvvvvvvvvvv", "wwwwwwwwwwwwwwww", "xxxxxxxxxxxxxxxx", "yyyyyyyyyyyyyyyy",
-		"zzzzzzzzzzzzzzzz",
+		"aaaaaaaaaaaaaaaa", "bbbbbbbbbbbbbbbb", "cccccccccccccccc", "dddddddddddddddd", "eeeeeeeeeeeeeeee", "ffffffffffffffff", "gggggggggggggggg", "hhhhhhhhhhhhhhhh", "iiiiiiiiiiiiiiii", "jjjjjjjjjjjjjjjj", "kkkkkkkkkkkkkkkk", "llllllllllllllll", "mmmmmmmmmmmmmmmm", "nnnnnnnnnnnnnnnn", "oooooooooooooooo", "pppppppppppppppp", "qqqqqqqqqqqqqqqq", "rrrrrrrrrrrrrrrr", "ssssssssssssssss", "tttttttttttttttt", "uuuuuuuuuuuuuuuu", "vvvvvvvvvvvvvvvv", "wwwwwwwwwwwwwwww", "xxxxxxxxxxxxxxxx", "yyyyyyyyyyyyyyyy", "zzzzzzzzzzzzzzzz",
 	};
 	std::vector<diffLine> diff = generateFastDiff(a, b);
 	for (uint32_t i = 0; i < diff.size(); i++) {

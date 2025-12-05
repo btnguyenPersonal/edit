@@ -49,13 +49,11 @@ void sendShortcutKeys(State *state, int32_t c)
 		state->prevKeys = "";
 	} else if (state->prevKeys == "r") {
 		if (state->col < state->data[state->row].length() && ' ' <= c && c <= '~') {
-			state->data[state->row] = safeSubstring(state->data[state->row], 0, state->col) + (char)c +
-						  safeSubstring(state->data[state->row], state->col + 1);
+			state->data[state->row] = safeSubstring(state->data[state->row], 0, state->col) + (char)c + safeSubstring(state->data[state->row], state->col + 1);
 		}
 		setDotCommand(state, { 'r', c });
 		state->prevKeys = "";
-	} else if ((state->prevKeys[0] == 'y' || state->prevKeys[0] == 'd' || state->prevKeys[0] == 'c') &&
-		   state->prevKeys.length() == 2) {
+	} else if ((state->prevKeys[0] == 'y' || state->prevKeys[0] == 'd' || state->prevKeys[0] == 'c') && state->prevKeys.length() == 2) {
 		uint32_t tempRow = state->row;
 		uint32_t tempCol = state->col;
 		char command0 = state->prevKeys[0];
@@ -383,15 +381,13 @@ void sendShortcutKeys(State *state, int32_t c)
 	} else if (c == 's') {
 		if (state->col < state->data[state->row].length()) {
 			copyToClipboard(state, state->data[state->row].substr(state->col, 1), false);
-			state->data[state->row] = state->data[state->row].substr(0, state->col) +
-						  state->data[state->row].substr(state->col + 1);
+			state->data[state->row] = state->data[state->row].substr(0, state->col) + state->data[state->row].substr(state->col + 1);
 			state->mode = TYPING;
 		}
 	} else if (c == 'x') {
 		if (state->col < state->data[state->row].length()) {
 			copyToClipboard(state, state->data[state->row].substr(state->col, 1), false);
-			state->data[state->row] = state->data[state->row].substr(0, state->col) +
-						  state->data[state->row].substr(state->col + 1);
+			state->data[state->row] = state->data[state->row].substr(0, state->col) + state->data[state->row].substr(state->col + 1);
 		}
 		setDotCommand(state, c);
 	} else if (c == ctrl('y')) {

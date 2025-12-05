@@ -114,11 +114,9 @@ std::vector<std::string> getDiffLines(State *state)
 		}
 		std::string command = "";
 		if (hash == "") {
-			command = "git add -N :/ && git diff HEAD | expand -t " +
-				  std::to_string(state->options.indent_size) + " 2>/dev/null";
+			command = "git add -N :/ && git diff HEAD | expand -t " + std::to_string(state->options.indent_size) + " 2>/dev/null";
 		} else {
-			command = "git show " + hash + " | expand -t " + std::to_string(state->options.indent_size) +
-				  " 2>/dev/null";
+			command = "git show " + hash + " | expand -t " + std::to_string(state->options.indent_size) + " 2>/dev/null";
 		}
 		std::unique_ptr<FILE, int (*)(FILE *)> pipe(popen(command.c_str(), "r"), pclose);
 		if (!pipe) {
@@ -234,8 +232,7 @@ void recordJumpList(State *state)
 	if (state->jumplist.list.size() > 0) {
 		auto pos = state->jumplist.list.back();
 		if (pos.row != state->row || pos.col != state->col) {
-			state->jumplist.list.erase(state->jumplist.list.begin() + state->jumplist.index + 1,
-						   state->jumplist.list.end());
+			state->jumplist.list.erase(state->jumplist.list.begin() + state->jumplist.index + 1, state->jumplist.list.end());
 			state->jumplist.list.push_back({ state->row, state->col });
 			state->jumplist.index = state->jumplist.list.size() - 1;
 		}
@@ -353,8 +350,7 @@ int32_t contains(const std::map<uint32_t, std::string> &myMap, const std::string
 bool eraseHarpoon(State *state)
 {
 	if (state->harpoon[state->workspace].index < state->harpoon[state->workspace].list.size()) {
-		state->harpoon[state->workspace].list.erase(state->harpoon[state->workspace].list.begin() +
-							    state->harpoon[state->workspace].index);
+		state->harpoon[state->workspace].list.erase(state->harpoon[state->workspace].list.begin() + state->harpoon[state->workspace].index);
 		return true;
 	}
 	return false;
@@ -426,8 +422,7 @@ bool jumpToHarpoon(State *state, uint32_t num)
 {
 	if (num < state->harpoon[state->workspace].list.size()) {
 		if (!state->resetState(state->harpoon[state->workspace].list[num])) {
-			state->harpoon[state->workspace].list.erase(state->harpoon[state->workspace].list.begin() +
-								    num);
+			state->harpoon[state->workspace].list.erase(state->harpoon[state->workspace].list.begin() + num);
 			return false;
 		}
 		state->harpoon[state->workspace].index = num;
@@ -456,8 +451,7 @@ void rename(State *state, const std::filesystem::path &oldPath, const std::strin
 		return;
 	}
 
-	std::filesystem::path newPath =
-		std::filesystem::relative(oldPath.parent_path() / newName, std::filesystem::current_path());
+	std::filesystem::path newPath = std::filesystem::relative(oldPath.parent_path() / newName, std::filesystem::current_path());
 
 	try {
 		std::filesystem::rename(oldPath, newPath);
@@ -482,8 +476,7 @@ std::filesystem::path getUniqueFilePath(const std::filesystem::path &basePath)
 	std::filesystem::path directory = basePath.parent_path();
 
 	for (int32_t i = 1;; ++i) {
-		std::filesystem::path newPath =
-			directory / (stem.string() + " (" + std::to_string(i) + ")" + extension.string());
+		std::filesystem::path newPath = directory / (stem.string() + " (" + std::to_string(i) + ")" + extension.string());
 		if (!std::filesystem::exists(newPath)) {
 			return newPath;
 		}
@@ -526,8 +519,7 @@ bool isFunctionLine(std::string line, std::string s, std::string extension)
 	std::vector<std::vector<std::string> > functionStrings;
 	if (extension == "js" || extension == "jsx" || extension == "ts" || extension == "tsx") {
 		functionStrings = {
-			{ "enum", " {" }, { "async", "" },     { "class", " {" },  { " ", " (" },	  { " ", "(" },
-			{ "const", " " }, { "function", "(" }, { "struct", " {" }, { "interface", " {" },
+			{ "enum", " {" }, { "async", "" }, { "class", " {" }, { " ", " (" }, { " ", "(" }, { "const", " " }, { "function", "(" }, { "struct", " {" }, { "interface", " {" },
 		};
 	} else if (extension == "c" || extension == "cpp" || extension == "h" || extension == "hpp") {
 		functionStrings = {
@@ -708,8 +700,7 @@ void getAndAddNumber(State *state, uint32_t row, uint32_t col, int32_t num)
 			} else {
 				temp += num;
 			}
-			state->data[row] = state->data[row].substr(0, startPos) + std::to_string(temp) +
-					   safeSubstring(state->data[row], startPos + number.length());
+			state->data[row] = state->data[row].substr(0, startPos) + std::to_string(temp) + safeSubstring(state->data[row], startPos + number.length());
 		} catch (const std::exception &e) {
 			state->status = "number too large";
 		}
@@ -719,15 +710,9 @@ void getAndAddNumber(State *state, uint32_t row, uint32_t col, int32_t num)
 std::string getCommentSymbol(const std::string &filename)
 {
 	std::string extension = getExtension(filename);
-	if (extension == "js" || extension == "jsx" || extension == "ts" || extension == "tsx" || extension == "cpp" ||
-	    extension == "hpp" || extension == "c" || extension == "h" || extension == "java" || extension == "cs" ||
-	    extension == "go" || extension == "php" || extension == "rs" || extension == "css" || extension == "scss" ||
-	    extension == "vb" || extension == "lua") {
+	if (extension == "js" || extension == "jsx" || extension == "ts" || extension == "tsx" || extension == "cpp" || extension == "hpp" || extension == "c" || extension == "h" || extension == "java" || extension == "cs" || extension == "go" || extension == "php" || extension == "rs" || extension == "css" || extension == "scss" || extension == "vb" || extension == "lua") {
 		return "//";
-	} else if (extension == "py" || extension == "sh" || extension == "bash" || extension == "rb" ||
-		   extension == "pl" || extension == "pm" || extension == "r" || extension == "yaml" ||
-		   extension == "yml" || extension == "bashrc" || extension == "zshrc" || extension == "Makefile" ||
-		   extension == "md" || extension == "gitignore" || extension == "env") {
+	} else if (extension == "py" || extension == "sh" || extension == "bash" || extension == "rb" || extension == "pl" || extension == "pm" || extension == "r" || extension == "yaml" || extension == "yml" || extension == "bashrc" || extension == "zshrc" || extension == "Makefile" || extension == "md" || extension == "gitignore" || extension == "env") {
 		return "#";
 	} else if (extension == "html" || extension == "xml" || extension == "xhtml" || extension == "svg") {
 		return "<!--";
@@ -796,8 +781,7 @@ std::vector<std::string> getGitBlame(const std::string &filename)
 {
 	std::vector<std::string> blameLines;
 	try {
-		std::string command = "git --no-pager blame ./" + filename +
-				      " --date=short 2>/dev/null | awk '{print $1, $2, $3, $4, \")\"}'";
+		std::string command = "git --no-pager blame ./" + filename + " --date=short 2>/dev/null | awk '{print $1, $2, $3, $4, \")\"}'";
 		std::unique_ptr<FILE, int (*)(FILE *)> pipe(popen(command.c_str(), "r"), pclose);
 		if (!pipe) {
 			throw std::runtime_error("popen() failed!");
@@ -849,8 +833,7 @@ void moveHarpoonRight(State *state)
 {
 	if (state->harpoon[state->workspace].index + 1 < state->harpoon[state->workspace].list.size()) {
 		auto temp = state->harpoon[state->workspace].list[state->harpoon[state->workspace].index];
-		state->harpoon[state->workspace].list[state->harpoon[state->workspace].index] =
-			state->harpoon[state->workspace].list[state->harpoon[state->workspace].index + 1];
+		state->harpoon[state->workspace].list[state->harpoon[state->workspace].index] = state->harpoon[state->workspace].list[state->harpoon[state->workspace].index + 1];
 		state->harpoon[state->workspace].list[state->harpoon[state->workspace].index + 1] = temp;
 		state->harpoon[state->workspace].index += 1;
 	}
@@ -858,11 +841,9 @@ void moveHarpoonRight(State *state)
 
 void moveHarpoonLeft(State *state)
 {
-	if (state->harpoon[state->workspace].index > 0 &&
-	    state->harpoon[state->workspace].index < state->harpoon[state->workspace].list.size()) {
+	if (state->harpoon[state->workspace].index > 0 && state->harpoon[state->workspace].index < state->harpoon[state->workspace].list.size()) {
 		auto temp = state->harpoon[state->workspace].list[state->harpoon[state->workspace].index];
-		state->harpoon[state->workspace].list[state->harpoon[state->workspace].index] =
-			state->harpoon[state->workspace].list[state->harpoon[state->workspace].index - 1];
+		state->harpoon[state->workspace].list[state->harpoon[state->workspace].index] = state->harpoon[state->workspace].list[state->harpoon[state->workspace].index - 1];
 		state->harpoon[state->workspace].list[state->harpoon[state->workspace].index - 1] = temp;
 		state->harpoon[state->workspace].index -= 1;
 	}
@@ -972,11 +953,9 @@ void replaceAllGlobally(State *state, const std::string &query, const std::strin
 	try {
 		std::string command;
 #ifdef __APPLE__
-		command = ("git ls-files | xargs -I {} sed -i '' \"s/" + query + '/' + replace +
-			   "/g\" \"{}\" 2>/dev/null");
+		command = ("git ls-files | xargs -I {} sed -i '' \"s/" + query + '/' + replace + "/g\" \"{}\" 2>/dev/null");
 #elif defined(__linux__)
-		command = ("git ls-files | xargs -I {} sed -i'' \"s/" + query + '/' + replace +
-			   "/g\" \"{}\" 2>/dev/null");
+		command = ("git ls-files | xargs -I {} sed -i'' \"s/" + query + '/' + replace + "/g\" \"{}\" 2>/dev/null");
 #else
 #error "Platform not supported"
 #endif
@@ -1212,8 +1191,7 @@ WordPosition findQuoteBounds(const std::string &str, char quoteChar, uint32_t cu
 	}
 }
 
-WordPosition findParentheses(const std::string &str, char openParen, char closeParen, uint32_t cursor,
-			     bool includeParen)
+WordPosition findParentheses(const std::string &str, char openParen, char closeParen, uint32_t cursor, bool includeParen)
 {
 	int32_t balance = 0;
 	int32_t openParenIndex = -1;
@@ -1304,8 +1282,7 @@ WordPosition getWordPosition(const std::string &str, uint32_t cursor)
 		return { 0, 0 };
 	}
 	// Move cursor to the start of the current chunk
-	while (cursor > 0 && str[cursor - 1] != ' ' && str[cursor] != ' ' &&
-	       (isAlphanumeric(str[cursor]) == isAlphanumeric(str[cursor - 1]))) {
+	while (cursor > 0 && str[cursor - 1] != ' ' && str[cursor] != ' ' && (isAlphanumeric(str[cursor]) == isAlphanumeric(str[cursor - 1]))) {
 		cursor--;
 	}
 	// If cursor is on a space, move to the next chunk
@@ -1348,8 +1325,7 @@ uint32_t w(State *state)
 			space = true;
 		} else if (space && state->data[state->row][i] != ' ') {
 			return i;
-		} else if (isAlphanumeric(state->data[state->row][state->col]) !=
-			   isAlphanumeric(state->data[state->row][i])) {
+		} else if (isAlphanumeric(state->data[state->row][state->col]) != isAlphanumeric(state->data[state->row][i])) {
 			return i;
 		}
 	}
@@ -1389,8 +1365,7 @@ bool isColTooSmall(State *state)
 bool isColTooBig(State *state)
 {
 	uint32_t col = getDisplayCol(state);
-	return (int32_t)col - (int32_t)state->windowPosition.col >
-	       (int32_t)state->maxX - (int32_t)getLineNumberOffset(state) - 1;
+	return (int32_t)col - (int32_t)state->windowPosition.col > (int32_t)state->maxX - (int32_t)getLineNumberOffset(state) - 1;
 }
 
 bool isWindowPositionInvalid(State *state)
@@ -1586,8 +1561,7 @@ void upVisual(State *state)
 		if (state->row > 0) {
 			state->row -= 1;
 			state->col = getNormalizedCol(state, state->hardCol);
-			state->col += (state->maxX - getLineNumberOffset(state)) *
-				      (state->data[state->row].length() / (state->maxX - getLineNumberOffset(state)));
+			state->col += (state->maxX - getLineNumberOffset(state)) * (state->data[state->row].length() / (state->maxX - getLineNumberOffset(state)));
 		}
 		if (isOffScreenVertical(state)) {
 			state->windowPosition.row -= 1;
@@ -1613,8 +1587,7 @@ void down(State *state)
 
 bool isOnLastVisualLine(State *state)
 {
-	auto lastLineStarts = (state->maxX - getLineNumberOffset(state)) *
-			      (state->data[state->row].length() / (state->maxX - getLineNumberOffset(state)));
+	auto lastLineStarts = (state->maxX - getLineNumberOffset(state)) * (state->data[state->row].length() / (state->maxX - getLineNumberOffset(state)));
 	return state->col > lastLineStarts;
 }
 

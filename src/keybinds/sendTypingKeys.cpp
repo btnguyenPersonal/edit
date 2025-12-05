@@ -10,6 +10,7 @@
 
 void insertNewline(State *state)
 {
+	fixColOverMax(state);
 	std::string current = state->data[state->row];
 	state->data[state->row] = current.substr(0, state->col);
 	state->data.insert(state->data.begin() + state->row + 1, current.substr(state->col));
@@ -85,8 +86,7 @@ void sendTypingKeys(State *state, int32_t c)
 		std::string completion = autocomplete(state, getCurrentWord(state));
 		if (safeSubstring(state->data[state->row], state->col, completion.length()) != completion) {
 			std::string current = state->data[state->row];
-			state->data[state->row] =
-				current.substr(0, state->col) + completion + safeSubstring(current, state->col);
+			state->data[state->row] = current.substr(0, state->col) + completion + safeSubstring(current, state->col);
 			state->col += completion.length();
 		}
 	} else if (c == KEY_LEFT) {

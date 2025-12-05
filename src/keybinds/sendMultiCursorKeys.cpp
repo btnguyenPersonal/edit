@@ -43,8 +43,7 @@ void sendMultiCursorKeys(State *state, int32_t c)
 		if (safeSubstring(state->data[state->row], state->col, completion.length()) != completion) {
 			for (uint32_t i = bounds.minR; i <= bounds.maxR; i++) {
 				std::string current = state->data[i];
-				state->data[i] =
-					current.substr(0, state->col) + completion + safeSubstring(current, state->col);
+				state->data[i] = current.substr(0, state->col) + completion + safeSubstring(current, state->col);
 			}
 			state->col += completion.length();
 		}

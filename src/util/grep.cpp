@@ -45,8 +45,7 @@ bool sortAllMatches(const std::vector<grepMatch> &first, const std::vector<grepM
 	return sortByFileType(firstGrep, secondGrep);
 }
 
-void grepFile(const std::filesystem::path &file_path, const std::string &query, const std::filesystem::path &dir_path,
-	      std::mutex &allMatchesMutex, std::vector<std::vector<grepMatch> > &allMatches)
+void grepFile(const std::filesystem::path &file_path, const std::string &query, const std::filesystem::path &dir_path, std::mutex &allMatchesMutex, std::vector<std::vector<grepMatch> > &allMatches)
 {
 	auto relativePath = file_path.lexically_relative(dir_path);
 	std::vector<grepMatch> matches;
@@ -71,9 +70,7 @@ void grepFile(const std::filesystem::path &file_path, const std::string &query, 
 	allMatchesMutex.unlock();
 }
 
-void grepThread(const std::string &query, const std::filesystem::path &dir_path, std::mutex &allMatchesMutex,
-		std::vector<std::vector<grepMatch> > &allMatches, std::mutex &allFilesMutex,
-		std::vector<std::filesystem::path> &allFiles)
+void grepThread(const std::string &query, const std::filesystem::path &dir_path, std::mutex &allMatchesMutex, std::vector<std::vector<grepMatch> > &allMatches, std::mutex &allFilesMutex, std::vector<std::filesystem::path> &allFiles)
 {
 	std::filesystem::path file;
 	bool done = false;
@@ -99,8 +96,7 @@ std::vector<grepMatch> grepFiles(const std::filesystem::path &dir_path, const st
 	std::vector<std::filesystem::path> allFiles;
 	std::mutex allFilesMutex;
 	std::vector<std::thread> threads;
-	for (auto it = std::filesystem::recursive_directory_iterator(dir_path);
-	     it != std::filesystem::recursive_directory_iterator(); ++it) {
+	for (auto it = std::filesystem::recursive_directory_iterator(dir_path); it != std::filesystem::recursive_directory_iterator(); ++it) {
 		if (!allowAllFiles && shouldIgnoreFile(it->path())) {
 			it.disable_recursion_pending();
 			continue;
@@ -112,8 +108,7 @@ std::vector<grepMatch> grepFiles(const std::filesystem::path &dir_path, const st
 		}
 	}
 	for (uint32_t i = 0; i < THREAD_MAX; i++) {
-		threads.push_back(std::thread(grepThread, query, dir_path, std::ref(allMatchesMutex),
-					      std::ref(allMatches), std::ref(allFilesMutex), std::ref(allFiles)));
+		threads.push_back(std::thread(grepThread, query, dir_path, std::ref(allMatchesMutex), std::ref(allMatches), std::ref(allFilesMutex), std::ref(allFiles)));
 	}
 	for (uint32_t i = 0; i < threads.size(); i++) {
 		if (threads[i].joinable()) {
@@ -138,9 +133,7 @@ std::vector<grepMatch> grepFiles(const std::filesystem::path &dir_path, const st
 void grepDispatch(State *state)
 {
 	auto query = state->grep.query;
-	auto output = grepFiles(state->grepPath == "" ? std::filesystem::current_path() :
-							std::filesystem::path(state->grepPath),
-				state->grep.query, state->showAllGrep);
+	auto output = grepFiles(state->grepPath == "" ? std::filesystem::current_path() : std::filesystem::path(state->grepPath), state->grep.query, state->showAllGrep);
 	state->grepMutex.lock();
 	if (query == state->grep.query) {
 		state->grepOutput = output;

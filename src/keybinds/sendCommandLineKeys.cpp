@@ -56,8 +56,7 @@ void evaluateCommandLineQuery(State *state)
 		std::istringstream iss(state->commandLine.query);
 		std::string s, first, second, g;
 		do {
-			if (std::getline(iss, s, '/') && std::getline(iss, first, '/') &&
-			    std::getline(iss, second, '/')) {
+			if (std::getline(iss, s, '/') && std::getline(iss, first, '/') && std::getline(iss, second, '/')) {
 				replaceAll(state, first, second);
 			}
 			std::getline(iss, s, ';');

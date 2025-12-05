@@ -55,8 +55,7 @@ bool hasHTML(std::string line, std::string extension)
 		if (safeSubstring(trimmed, 0, std::string("#include ").length()) == "#include ") {
 			return false;
 		}
-		return trimmed.front() == '<' || trimmed.back() == '>' || trimmed.front() == '>' ||
-		       trimmed.back() == '<';
+		return trimmed.front() == '<' || trimmed.back() == '>' || trimmed.front() == '>' || trimmed.back() == '<';
 	}
 	return false;
 }
@@ -108,8 +107,7 @@ int32_t getIndentLevel(State *state, uint32_t row)
 		for (uint32_t i = 0; i < prevLine.length(); i++) {
 			if (prevLine.substr(i, state->commentSymbol.length()) == state->commentSymbol) {
 				break;
-			} else if (prevLine[i] == '(' || prevLine[i] == '{' || prevLine[i] == '[' ||
-				   prevLine[i] == ':') {
+			} else if (prevLine[i] == '(' || prevLine[i] == '{' || prevLine[i] == '[' || prevLine[i] == ':') {
 				if (i + 1 == prevLine.length()) {
 					indentLevel += indentSize;
 				}
@@ -196,8 +194,7 @@ void indentRange(State *state)
 			break;
 		}
 	}
-	int32_t indentDifference =
-		getIndentLevel(state, state->row) - getNumLeadingIndentCharacters(state, state->data[firstNonEmptyRow]);
+	int32_t indentDifference = getIndentLevel(state, state->row) - getNumLeadingIndentCharacters(state, state->data[firstNonEmptyRow]);
 	if (indentDifference > 0) {
 		for (int32_t i = state->row; i <= (int32_t)state->visual.row; i++) {
 			if (state->data[i] != "") {
@@ -210,8 +207,7 @@ void indentRange(State *state)
 		for (int32_t i = state->row; i <= (int32_t)state->visual.row; i++) {
 			if (state->data[i] != "") {
 				for (int32_t j = 0; j < -1 * indentDifference; j++) {
-					if (state->data[i].length() > 0 &&
-					    state->data[i][0] == getIndentCharacter(state)) {
+					if (state->data[i].length() > 0 && state->data[i][0] == getIndentCharacter(state)) {
 						state->data[i] = safeSubstring(state->data[i], 1);
 					}
 				}

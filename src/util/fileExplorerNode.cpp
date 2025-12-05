@@ -100,15 +100,14 @@ void FileExplorerNode::refresh()
 			}
 		}
 		this->children = newChildren;
-		std::sort(this->children.begin(), this->children.end(),
-			  [](const FileExplorerNode a, const FileExplorerNode b) {
-				  if (a.isFolder && !b.isFolder) {
-					  return true;
-				  } else if (!a.isFolder && b.isFolder) {
-					  return false;
-				  }
-				  return a.name < b.name;
-			  });
+		std::sort(this->children.begin(), this->children.end(), [](const FileExplorerNode a, const FileExplorerNode b) {
+			if (a.isFolder && !b.isFolder) {
+				return true;
+			} else if (!a.isFolder && b.isFolder) {
+				return false;
+			}
+			return a.name < b.name;
+		});
 	}
 }
 
@@ -126,15 +125,14 @@ void FileExplorerNode::open()
 		for (const auto &entry : std::filesystem::directory_iterator(this->path)) {
 			this->children.push_back(FileExplorerNode(entry.path(), this));
 		}
-		std::sort(this->children.begin(), this->children.end(),
-			  [](const FileExplorerNode a, const FileExplorerNode b) {
-				  if (a.isFolder && !b.isFolder) {
-					  return true;
-				  } else if (!a.isFolder && b.isFolder) {
-					  return false;
-				  }
-				  return a.name < b.name;
-			  });
+		std::sort(this->children.begin(), this->children.end(), [](const FileExplorerNode a, const FileExplorerNode b) {
+			if (a.isFolder && !b.isFolder) {
+				return true;
+			} else if (!a.isFolder && b.isFolder) {
+				return false;
+			}
+			return a.name < b.name;
+		});
 	}
 }
 

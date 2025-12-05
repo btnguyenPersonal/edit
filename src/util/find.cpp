@@ -20,10 +20,8 @@ int32_t maxConsecutiveMatch(const std::filesystem::path &filePath, const std::st
 	std::string queryLower = query;
 
 	if (isAllLowercase(queryLower)) {
-		std::transform(filePathStr.begin(), filePathStr.end(), filePathStr.begin(),
-			       [](unsigned char c) { return std::tolower(c); });
-		std::transform(queryLower.begin(), queryLower.end(), queryLower.begin(),
-			       [](unsigned char c) { return std::tolower(c); });
+		std::transform(filePathStr.begin(), filePathStr.end(), filePathStr.begin(), [](unsigned char c) { return std::tolower(c); });
+		std::transform(queryLower.begin(), queryLower.end(), queryLower.begin(), [](unsigned char c) { return std::tolower(c); });
 	}
 
 	int32_t maxLength = 0;
@@ -52,8 +50,7 @@ std::vector<std::filesystem::path> find(const std::filesystem::path &dir_path, c
 {
 	std::vector<std::filesystem::path> matching_files;
 	std::unordered_map<std::filesystem::path, int32_t> cache;
-	for (auto it = std::filesystem::recursive_directory_iterator(dir_path);
-	     it != std::filesystem::recursive_directory_iterator(); ++it) {
+	for (auto it = std::filesystem::recursive_directory_iterator(dir_path); it != std::filesystem::recursive_directory_iterator(); ++it) {
 		auto path = it->path();
 		if (shouldIgnoreFile(path)) {
 			it.disable_recursion_pending();
@@ -68,15 +65,14 @@ std::vector<std::filesystem::path> find(const std::filesystem::path &dir_path, c
 			}
 		}
 	}
-	std::sort(matching_files.begin(), matching_files.end(),
-		  [&](const std::filesystem::path &a, const std::filesystem::path &b) {
-			  int32_t matchA = cache[a];
-			  int32_t matchB = cache[b];
-			  if (matchA == matchB) {
-				  return a.string() < b.string();
-			  }
-			  return matchA > matchB;
-		  });
+	std::sort(matching_files.begin(), matching_files.end(), [&](const std::filesystem::path &a, const std::filesystem::path &b) {
+		int32_t matchA = cache[a];
+		int32_t matchB = cache[b];
+		if (matchA == matchB) {
+			return a.string() < b.string();
+		}
+		return matchA > matchB;
+	});
 	return matching_files;
 }
 
