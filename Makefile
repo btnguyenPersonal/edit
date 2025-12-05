@@ -15,6 +15,7 @@ TEST_DIR    = test
 BUILD_DIR   = build
 
 COMMON_SOURCES := \
+  $(UTIL_DIR)/ctrl.cpp \
   $(UTIL_DIR)/helper.cpp \
   $(UTIL_DIR)/render.cpp \
   $(UTIL_DIR)/fileExplorerNode.cpp \

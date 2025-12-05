@@ -1,4 +1,5 @@
 #include "keys.h"
+#include "ctrl.h"
 #include "helper.h"
 #include "comment.h"
 #include "state.h"
@@ -1088,16 +1089,6 @@ bool is_number(const std::string &s)
 	while (it != s.end() && std::isdigit(*it))
 		++it;
 	return !s.empty() && it == s.end();
-}
-
-char ctrl(char c)
-{
-	return c - 'a' + 1;
-}
-
-char unctrl(char c)
-{
-	return c + 'a' - 1;
 }
 
 uint32_t getIndent(State *state, const std::string &str)
