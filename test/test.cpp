@@ -7,7 +7,8 @@ auto color_white = "\033[0m";
 auto color_green = "\033[1;32m";
 auto color_red = "\033[1;31m";
 
-void printSuiteRun(struct testSuiteRun suite) {
+void printSuiteRun(struct testSuiteRun suite)
+{
 	printf("    %s\n", suite.file.c_str());
 	for (uint32_t i = 0; i < suite.runs.size(); i++) {
 		if (suite.runs[i].result.equal) {
@@ -19,9 +20,10 @@ void printSuiteRun(struct testSuiteRun suite) {
 	}
 }
 
-int main() {
-	 printSuiteRun(testSave());
-	 printSuiteRun(testRead());
-	 printSuiteRun(testSanityChecks());
-	 printSuiteRun(testTypingKeys());
+int main()
+{
+	printSuiteRun(testSave());
+	printSuiteRun(testRead());
+	printSuiteRun(testSanityChecks());
+	printSuiteRun(testTypingKeys());
 }

@@ -3,6 +3,7 @@
 #include "../util/indent.h"
 #include "../util/modes.h"
 #include "../util/state.h"
+#include "../util/sanity.h"
 #include <ncurses.h>
 #include <string>
 #include <vector>
@@ -26,6 +27,7 @@ void indentLineWhenTypingFirstChar(State *state)
 
 void sendTypingKeys(State *state, int32_t c)
 {
+	fixColOverMax(state);
 	recordMotion(state, c);
 	if (state->prevKeys == "v") {
 		state->prevKeys = "";

@@ -300,8 +300,7 @@ int32_t renderStatusBar(State *state)
 	auto tmp = rightSide.length() + pixels.size();
 	auto len = state->maxX > tmp ? state->maxX - tmp : 0;
 	prefix = std::string(len, ' ');
-	insertPixels(state, &pixels, prefix + rightSide,
-		     state->lastSave != state->historyPosition ? GREY : WHITE);
+	insertPixels(state, &pixels, prefix + rightSide, state->lastSave != state->historyPosition ? GREY : WHITE);
 
 	renderPixels(state, 1, 0, pixels, false);
 	return cursor;
