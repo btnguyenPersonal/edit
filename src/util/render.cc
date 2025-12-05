@@ -23,6 +23,7 @@
 #define _COLOR_WHITE 231
 #define _COLOR_ORANGE 214
 #define _COLOR_DARKGREEN 22
+#define _COLOR_MANTISGREEN 113
 
 #define STATUS_BAR_LENGTH 2
 
@@ -37,6 +38,7 @@
 #define WHITE 9
 #define ORANGE 10
 #define DARKGREEN 11
+#define MANTISGREEN 12
 
 struct Pixel {
 	char c;
@@ -45,7 +47,7 @@ struct Pixel {
 
 int32_t invertColor(int32_t color)
 {
-	return color + 11;
+	return color + 12;
 }
 
 std::vector<Pixel> toPixels(State *state, std::string s, int32_t color, uint32_t size)
@@ -115,6 +117,7 @@ void initColors()
 	init_pair(WHITE, _COLOR_WHITE, _COLOR_BLACK);
 	init_pair(ORANGE, _COLOR_ORANGE, _COLOR_BLACK);
 	init_pair(DARKGREEN, _COLOR_DARKGREEN, _COLOR_BLACK);
+	init_pair(MANTISGREEN, _COLOR_MANTISGREEN, _COLOR_BLACK);
 
 	init_pair(invertColor(BLACK), _COLOR_BLACK, _COLOR_BLACK);
 	init_pair(invertColor(GREY), _COLOR_BLACK, _COLOR_GREY);
@@ -127,6 +130,7 @@ void initColors()
 	init_pair(invertColor(WHITE), _COLOR_BLACK, _COLOR_WHITE);
 	init_pair(invertColor(ORANGE), _COLOR_BLACK, _COLOR_ORANGE);
 	init_pair(invertColor(DARKGREEN), _COLOR_BLACK, _COLOR_DARKGREEN);
+	init_pair(invertColor(MANTISGREEN), _COLOR_BLACK, _COLOR_MANTISGREEN);
 }
 
 void renderFileStack(State *state)
@@ -701,7 +705,7 @@ int32_t renderLineContent(State *state, int32_t row, int32_t renderRow, Cursor *
 					if (isMergeConflict(state->data[row])) {
 						color = RED;
 					} else if (isComment) {
-						color = GREY;
+						color = MANTISGREEN;
 					} else if (inString && getExtension(state->filename) != "md" && getExtension(state->filename) != "txt") {
 						color = CYAN;
 					} else {
