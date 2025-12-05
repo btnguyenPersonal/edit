@@ -14,42 +14,11 @@ FUZZ_DIR    = $(SRC_DIR)/fuzzer
 TEST_DIR    = test
 BUILD_DIR   = build
 
-COMMON_SOURCES := \
-  $(UTIL_DIR)/ctrl.cpp \
-  $(UTIL_DIR)/helper.cpp \
-  $(UTIL_DIR)/render.cpp \
-  $(UTIL_DIR)/fileExplorerNode.cpp \
-  $(UTIL_DIR)/state.cpp \
-  $(UTIL_DIR)/clipboard.cpp \
-  $(UTIL_DIR)/history.cpp \
-  $(UTIL_DIR)/indent.cpp \
-  $(UTIL_DIR)/comment.cpp \
-  $(UTIL_DIR)/insertLoggingCode.cpp \
-  $(UTIL_DIR)/query.cpp \
-  $(UTIL_DIR)/prompt.cpp \
-  $(UTIL_DIR)/cleanup.cpp \
-  $(UTIL_DIR)/keys.cpp \
-  $(UTIL_DIR)/grep.cpp \
-  $(UTIL_DIR)/find.cpp \
-  $(UTIL_DIR)/ignore.cpp \
-  $(UTIL_DIR)/save.cpp \
-  $(UTIL_DIR)/read.cpp \
-  $(UTIL_DIR)/compare.cpp \
-  $(UTIL_DIR)/sanity.cpp \
-  $(UTIL_DIR)/modes.cpp \
-  $(KEYBINDS_DIR)/sendKeys.cpp \
-  $(KEYBINDS_DIR)/sendVisualKeys.cpp \
-  $(KEYBINDS_DIR)/sendBlameKeys.cpp \
-  $(KEYBINDS_DIR)/sendFindKeys.cpp \
-  $(KEYBINDS_DIR)/sendFileExplorerKeys.cpp \
-  $(KEYBINDS_DIR)/sendSearchKeys.cpp \
-  $(KEYBINDS_DIR)/sendGrepKeys.cpp \
-  $(KEYBINDS_DIR)/sendCommandLineKeys.cpp \
-  $(KEYBINDS_DIR)/sendShortcutKeys.cpp \
-  $(KEYBINDS_DIR)/sendMultiCursorKeys.cpp \
-  $(KEYBINDS_DIR)/sendDiffKeys.cpp \
-  $(KEYBINDS_DIR)/sendTypingKeys.cpp
 
+UTIL_SRCS := $(wildcard $(UTIL_DIR)/*.cpp)
+KEYBINDS_SRCS := $(wildcard $(KEYBINDS_DIR)/*.cpp)
+
+COMMON_SOURCES := $(UTIL_SRCS) $(KEYBINDS_SRCS)
 MAIN_SOURCES = $(SRC_DIR)/edit.cpp $(COMMON_SOURCES)
 FUZZ_SOURCES = $(FUZZ_DIR)/fuzzer.cpp $(COMMON_SOURCES)
 TEST_SOURCES = $(TEST_DIR)/test.cpp $(COMMON_SOURCES)
