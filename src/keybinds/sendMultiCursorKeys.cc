@@ -3,6 +3,7 @@
 #include "../util/helper.h"
 #include "../util/modes.h"
 #include "../util/state.h"
+#include "../util/autocomplete.h"
 #include "sendVisualKeys.h"
 #include <ncurses.h>
 #include <string>

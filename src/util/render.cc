@@ -9,6 +9,7 @@
 #include "modes.h"
 #include "render.h"
 #include "state.h"
+#include "autocomplete.h"
 #include <iostream>
 #include <ncurses.h>
 

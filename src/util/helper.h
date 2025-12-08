@@ -82,7 +82,6 @@ void runCommand(State *state, const std::string &command);
 void replaceAllGlobally(State *state, const std::string &query, const std::string &replace);
 void replaceCurrentLine(State *state, const std::string &query, const std::string &replace);
 std::string getCurrentWord(State *state);
-std::string autocomplete(State *state, const std::string &query);
 std::string getCommentSymbol(const std::string &filename);
 std::string getExtension(const std::string &filename);
 void moveHarpoonLeft(State *state);

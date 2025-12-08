@@ -4,6 +4,7 @@
 #include "../util/modes.h"
 #include "../util/state.h"
 #include "../util/sanity.h"
+#include "../util/autocomplete.h"
 #include <ncurses.h>
 #include <string>
 #include <vector>

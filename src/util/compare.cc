@@ -101,6 +101,29 @@ struct boolWithError compare(bool result, bool expect)
 	return { output, "" };
 }
 
+std::string print(std::string prefix, std::string name, std::string a)
+{
+	std::string output = "";
+	output += prefix;
+	output += name;
+	output += ": \"";
+	output += a;
+	output += "\"\n";
+	return output;
+}
+
+struct boolWithError compare(std::string result, std::string expect)
+{
+	bool output = true;
+	if (result != expect) {
+		output = false;
+	}
+	if (output == false) {
+		return { output, print(PRE, RES, result) + print(PRE, EXP, expect) };
+	}
+	return { output, "" };
+}
+
 std::string print(std::string prefix, std::string name, uint32_t a)
 {
 	std::string output = "";
