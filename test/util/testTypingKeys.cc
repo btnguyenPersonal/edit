@@ -233,5 +233,17 @@ struct testSuiteRun testTypingKeys()
 		output.push_back({ "sendTypingKeys ctrl(w) should not stop at (", compare(state->data, { "    Hello World",  "    Hello World", "    Hello " }) });
 	}
 
+	{
+		State *state = new State("./test-file.h", { "" });
+		state->row = 0;
+		state->col = 0;
+		for (char c = ' '; c <= '~' ;c++) {
+			sendTypingKeys(state, c);
+		}
+		output.push_back({ "sendTypingKeys should print all valid characters", compare(state->data, { "!\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~" }) });
+	}
+
+	// TODO autocomplete tests
+
 	return { "test/util/testTypingKeys.cc", output };
 }
