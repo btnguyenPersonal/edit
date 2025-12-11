@@ -54,10 +54,15 @@ void sendShortcutKeys(State *state, int32_t c)
 		setDotCommand(state, { 'r', c });
 		state->prevKeys = "";
 	} else if ((state->prevKeys[0] == 'y' || state->prevKeys[0] == 'd' || state->prevKeys[0] == 'c') && state->prevKeys.length() == 2) {
+		state->dontRecordKey = true;
 		uint32_t tempRow = state->row;
 		uint32_t tempCol = state->col;
 		char command0 = state->prevKeys[0];
 		char command1 = state->prevKeys[1];
+		state->dotCommand.clear();
+		for (uint32_t i = 0; i < state->prevKeys.size(); i++) {
+			state->dotCommand.push_back(getEscapedChar(state->prevKeys[i]));
+		}
 		state->prevKeys = "";
 		state->motion.clear();
 		recordMotion(state, 'v');
@@ -73,11 +78,19 @@ void sendShortcutKeys(State *state, int32_t c)
 			state->col = tempCol;
 			state->mode = SHORTCUTS;
 		}
+		state->dotCommand.push_back(getEscapedChar(c));
+		state->dontRecordKey = false;
 		return;
 	} else if (state->prevKeys == "y" || state->prevKeys == "d" || state->prevKeys == "c") {
+		state->dontRecordKey = true;
 		if (c == 'i' || c == 'a' || c == 'f' || c == 't') {
 			state->prevKeys += c;
 		} else {
+			state->dotCommand.clear();
+			for (uint32_t i = 0; i < state->prevKeys.size(); i++) {
+				state->dotCommand.push_back(getEscapedChar(state->prevKeys[i]));
+			}
+
 			bool specialWOrLOnlyCase = state->prevKeys.length() == 1 && (c == 'w' || c == 'l');
 			uint32_t tempRow = state->row;
 			uint32_t tempCol = state->col;
@@ -89,13 +102,13 @@ void sendShortcutKeys(State *state, int32_t c)
 				success = sendVisualKeys(state, c, true);
 				if (state->row != state->visual.row) {
 					state->visualType = LINE;
-					state->motion.insert(state->motion.begin(), 1, 'V');
 				} else {
-					state->motion.insert(state->motion.begin(), 1, 'v');
+					if (state->col < state->visual.col && state->visual.col > 0) {
+						state->visual.col -= 1;
+					}
 				}
 			} else {
 				state->visualType = LINE;
-				state->motion.insert(state->motion.begin(), 1, 'V');
 			}
 			if (success) {
 				if (specialWOrLOnlyCase) {
@@ -109,7 +122,10 @@ void sendShortcutKeys(State *state, int32_t c)
 				state->col = tempCol;
 				state->mode = SHORTCUTS;
 			}
+
+			state->dotCommand.push_back(getEscapedChar(c));
 		}
+		state->dontRecordKey = false;
 		return;
 	} else if (state->prevKeys == "g" && c == '/') {
 		state->mode = SEARCH;
