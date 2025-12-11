@@ -421,11 +421,7 @@ void sendShortcutKeys(State *state, int32_t c)
 	} else if (c == '0') {
 		state->col = 0;
 	} else if (c == '$') {
-		if (state->data[state->row].length() != 0) {
-			state->col = state->data[state->row].length() - 1;
-		} else {
-			state->col = 0;
-		}
+		state->col = getLastCharIndex(state);
 	} else if (c == 'z') {
 		fixColOverMax(state);
 		state->windowPosition.col = 0;

@@ -4,6 +4,16 @@
 #include <string>
 #include <vector>
 
+void indentLineWhenTypingLastChar(State *state)
+{
+	if (!autoIndentDisabledFileType(state->filename)) {
+		if (state->col + 1 == state->data[state->row].length()) {
+			indentLine(state);
+			state->col = getLastCharIndex(state);
+		}
+	}
+}
+
 void indentLineWhenTypingFirstChar(State *state)
 {
 	if (!autoIndentDisabledFileType(state->filename)) {

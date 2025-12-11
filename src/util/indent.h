@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 
+void indentLineWhenTypingLastChar(State *state);
 void indentLineWhenTypingFirstChar(State *state);
 bool autoIndentDisabledFileType(std::string filename);
 int32_t getNumLeadingIndentCharacters(State *state, std::string s);

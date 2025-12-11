@@ -60,6 +60,9 @@ void sendTypingKeys(State *state, int32_t c)
 	} else if (' ' <= c && c <= '~') {
 		std::string current = state->data[state->row];
 		state->data[state->row] = current.substr(0, state->col) + (char)c + current.substr(state->col);
+		if (c == ':') {
+			indentLineWhenTypingLastChar(state);
+		}
 		if (c != ' ') {
 			indentLineWhenTypingFirstChar(state);
 		}

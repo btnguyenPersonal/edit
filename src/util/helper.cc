@@ -286,6 +286,15 @@ bool matchesEditorConfigGlob(const std::string &pattern, const std::string &file
 	}
 }
 
+uint32_t getLastCharIndex(State* state)
+{
+	if (state->data[state->row].length() != 0) {
+		return state->data[state->row].length() - 1;
+	} else {
+		return 0;
+	}
+}
+
 std::string getRelativeToLastAndRoute(State *state)
 {
 	if (state->fileStackIndex == 0) {
