@@ -55,7 +55,11 @@ void testValues(std::vector<std::string> v)
 		for (uint32_t i = 0; i < v.size(); i++) {
 			char randomKey = getUnEscapedChar(v[i]);
 			ret += "\"";
-			ret += v[i];
+			if (v[i] == "\"") {
+				ret += "\\\"";
+			} else {
+				ret += v[i];
+			}
 			ret += "\"";
 			// std::cout << getMode(state->mode) << " " << getEscapedChar(randomKey, true) << std::endl;
 			sendKeys(state, randomKey);

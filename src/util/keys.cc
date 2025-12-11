@@ -156,7 +156,7 @@ std::string getEscapedChar(char c, bool space)
 	case '\x7F':
 		return "<Del>";
 	case '"':
-		return "\\\"";
+		return "\"";
 	case ' ':
 		return "<Space>";
 	case '\\':
