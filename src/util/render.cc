@@ -78,10 +78,16 @@ int32_t renderPixels(State *state, int32_t r, int32_t c, std::vector<Pixel> pixe
 {
 	int32_t row = r;
 	int32_t col = c;
-	for (Pixel p : pixels) {
-		attron(COLOR_PAIR(p.color));
-		mvaddch(row, col, p.c);
-		attroff(COLOR_PAIR(p.color));
+	for (uint32_t i = 0; i + getLineNumberOffset(state) + 1 < state->maxX; i++) {
+		if (i < pixels.size()) {
+			attron(COLOR_PAIR(pixels[i].color));
+			mvaddch(row, col, pixels[i].c);
+			attroff(COLOR_PAIR(pixels[i].color));
+		} else {
+			attron(COLOR_PAIR(BLACK));
+			mvaddch(row, col, ' ');
+			attroff(COLOR_PAIR(BLACK));
+		}
 		if ((uint32_t)col + 1 >= state->maxX) {
 			if (wrap && state->options.wordwrap) {
 				row++;
