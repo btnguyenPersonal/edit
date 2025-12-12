@@ -583,9 +583,9 @@ Cursor renderDiff(State *state)
 		} else if (state->diffLines[i].length() > 2 && state->diffLines[i][0] == '-' && state->diffLines[i][1] == '-' && state->diffLines[i][2] == '-') {
 			color = WHITE;
 		} else if (state->diffLines[i].length() > 0 && state->diffLines[i][0] == '+') {
-			color = GREEN;
+			color = invertColor(GREEN);
 		} else if (state->diffLines[i].length() > 0 && state->diffLines[i][0] == '-') {
-			color = RED;
+			color = invertColor(RED);
 		} else if (state->diffLines[i].length() > 0 && state->diffLines[i][0] == '@') {
 			color = CYAN;
 		}
