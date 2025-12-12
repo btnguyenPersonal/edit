@@ -96,15 +96,9 @@ int32_t renderPixels(State *state, int32_t r, int32_t c, std::vector<Pixel> pixe
 	int32_t row = r;
 	int32_t col = c;
 	for (uint32_t i = 0; i < pixels.size(); i++) {
-		if (i < pixels.size()) {
-			attron(COLOR_PAIR(pixels[i].color));
-			mvaddch(row, col, pixels[i].c);
-			attroff(COLOR_PAIR(pixels[i].color));
-		} else {
-			attron(COLOR_PAIR(BLACK));
-			mvaddch(row, col, ' ');
-			attroff(COLOR_PAIR(BLACK));
-		}
+		attron(COLOR_PAIR(pixels[i].color));
+		mvwaddch(stdscr, row, col, pixels[i].c);
+		attroff(COLOR_PAIR(pixels[i].color));
 		if ((uint32_t)col + 1 >= state->maxX) {
 			if (wrap && state->options.wordwrap) {
 				row++;
