@@ -48,7 +48,7 @@ void cleanup(State *state, char c)
 				if (c != ctrl('r') && c != 'u') {
 					recordHistory(state, diff);
 				}
-				if (state->options.autosave && !state->runningAsRoot) {
+				if (state->options.autosave && !state->runningAsRoot && !state->dontRecordKey) {
 					saveFile(state);
 				}
 			}

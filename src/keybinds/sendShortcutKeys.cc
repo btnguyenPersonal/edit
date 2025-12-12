@@ -148,6 +148,11 @@ void sendShortcutKeys(State *state, int32_t c)
 		state->status = state->filename;
 		copyToClipboard(state, state->filename, true);
 		state->prevKeys = "";
+	} else if (state->prevKeys == "g" && c == 'Y') {
+		std::string absPath = std::filesystem::canonical(state->filename);
+		state->status = absPath;
+		copyToClipboard(state, absPath, true);
+		state->prevKeys = "";
 	} else if (state->prevKeys == "g" && c == 'g') {
 		state->row = 0;
 		state->col = getNormalizedCol(state, state->hardCol);
