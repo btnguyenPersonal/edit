@@ -97,7 +97,7 @@ int32_t renderPixels(State *state, int32_t r, int32_t c, std::vector<Pixel> pixe
 	int32_t col = c;
 	for (uint32_t i = 0; i < pixels.size(); i++) {
 		attron(COLOR_PAIR(pixels[i].color));
-		mvwaddch(stdscr, row, col, pixels[i].c);
+		mvaddch(row, col, pixels[i].c);
 		attroff(COLOR_PAIR(pixels[i].color));
 		if ((uint32_t)col + 1 >= state->maxX) {
 			if (wrap && state->options.wordwrap) {
@@ -831,6 +831,7 @@ void renderScreen(State *state)
 {
 	try {
 		state->renderMutex.lock();
+		curs_set(0);
 		erase();
 		bool noLineNum = false;
 		Cursor editorCursor, fileExplorerCursor;
@@ -858,10 +859,12 @@ void renderScreen(State *state)
 		moveCursor(state, cursorOnStatusBar, editorCursor, fileExplorerCursor, noLineNum);
 		wnoutrefresh(stdscr);
 		doupdate();
+		curs_set(1);
 		state->renderMutex.unlock();
 	} catch (const std::exception &e) {
-		state->renderMutex.unlock();
 		state->status = std::string("something went wrong while rendering") + e.what();
+		curs_set(1);
+		state->renderMutex.unlock();
 	}
 }
 
