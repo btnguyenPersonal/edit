@@ -35,15 +35,38 @@
 #define CYAN 8
 #define WHITE 9
 
+void initColors()
+{
+	init_pair(BLACK, _COLOR_BLACK, -1);
+	init_pair(GREY, _COLOR_GREY, -1);
+	init_pair(RED, _COLOR_RED, -1);
+	init_pair(GREEN, _COLOR_GREEN, -1);
+	init_pair(YELLOW, _COLOR_YELLOW, -1);
+	init_pair(BLUE, _COLOR_BLUE, -1);
+	init_pair(MAGENTA, _COLOR_MAGENTA, -1);
+	init_pair(CYAN, _COLOR_CYAN, -1);
+	init_pair(WHITE, -1, -1);
+
+	init_pair(invertColor(BLACK), _COLOR_BLACK, _COLOR_BLACK);
+	init_pair(invertColor(GREY), _COLOR_BLACK, _COLOR_GREY);
+	init_pair(invertColor(RED), _COLOR_BLACK, _COLOR_RED);
+	init_pair(invertColor(GREEN), _COLOR_BLACK, _COLOR_GREEN);
+	init_pair(invertColor(YELLOW), _COLOR_BLACK, _COLOR_YELLOW);
+	init_pair(invertColor(BLUE), _COLOR_BLACK, _COLOR_BLUE);
+	init_pair(invertColor(MAGENTA), _COLOR_BLACK, _COLOR_MAGENTA);
+	init_pair(invertColor(CYAN), _COLOR_BLACK, _COLOR_CYAN);
+	init_pair(invertColor(WHITE), _COLOR_BLACK, _COLOR_WHITE);
+}
+
+int32_t invertColor(int32_t color)
+{
+	return color + 11;
+}
+
 struct Pixel {
 	char c;
 	int32_t color;
 };
-
-int32_t invertColor(int32_t color)
-{
-	return color + 10;
-}
 
 std::vector<Pixel> toPixels(State *state, std::string s, int32_t color, uint32_t size)
 {
@@ -103,29 +126,6 @@ void insertPixels(State *state, std::vector<Pixel> *pixels, std::string s, int32
 void insertPixels(State *state, std::vector<Pixel> *pixels, char c, int32_t color)
 {
 	insertPixels(state, pixels, std::string("") + c, color);
-}
-
-void initColors()
-{
-	init_pair(BLACK, _COLOR_BLACK, _COLOR_BLACK);
-	init_pair(GREY, _COLOR_GREY, _COLOR_BLACK);
-	init_pair(RED, _COLOR_RED, _COLOR_BLACK);
-	init_pair(GREEN, _COLOR_GREEN, _COLOR_BLACK);
-	init_pair(YELLOW, _COLOR_YELLOW, _COLOR_BLACK);
-	init_pair(BLUE, _COLOR_BLUE, _COLOR_BLACK);
-	init_pair(MAGENTA, _COLOR_MAGENTA, _COLOR_BLACK);
-	init_pair(CYAN, _COLOR_CYAN, _COLOR_BLACK);
-	init_pair(WHITE, _COLOR_WHITE, _COLOR_BLACK);
-
-	init_pair(invertColor(BLACK), _COLOR_BLACK, _COLOR_BLACK);
-	init_pair(invertColor(GREY), _COLOR_BLACK, _COLOR_GREY);
-	init_pair(invertColor(RED), _COLOR_BLACK, _COLOR_RED);
-	init_pair(invertColor(GREEN), _COLOR_BLACK, _COLOR_GREEN);
-	init_pair(invertColor(YELLOW), _COLOR_BLACK, _COLOR_YELLOW);
-	init_pair(invertColor(BLUE), _COLOR_BLACK, _COLOR_BLUE);
-	init_pair(invertColor(MAGENTA), _COLOR_BLACK, _COLOR_MAGENTA);
-	init_pair(invertColor(CYAN), _COLOR_BLACK, _COLOR_CYAN);
-	init_pair(invertColor(WHITE), _COLOR_BLACK, _COLOR_WHITE);
 }
 
 void renderFileStack(State *state)
@@ -525,7 +525,8 @@ void renderLineNumber(State *state, int32_t row, int32_t renderRow)
 
 	insertPixels(state, &pixels, padTo(std::to_string(row + 1), state->lineNumSize, ' '), getLineNumberColor(state, row));
 
-	insertPixels(state, &pixels, "|", getMarkColor(state, row));
+	auto color = getMarkColor(state, row);
+	insertPixels(state, &pixels, color == BLACK ? " " : "|", color);
 
 	if (state->mode == BLAME) {
 		insertPixels(state, &pixels, getBlame(state, row), getBlameColor(state, row));
@@ -890,6 +891,7 @@ void initTerminal()
 		std::cout << "Your terminal does not support 256 colors" << std::endl;
 		exit(1);
 	}
+	use_default_colors();
 	initColors();
 	mousemask(ALL_MOUSE_EVENTS | REPORT_MOUSE_POSITION, NULL);
 }
