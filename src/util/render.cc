@@ -13,18 +13,15 @@
 #include <iostream>
 #include <ncurses.h>
 
-#define _COLOR_BLACK 16
-#define _COLOR_GREY 242
-#define _COLOR_RED 196
-#define _COLOR_GREEN 46
-#define _COLOR_YELLOW 226
-#define _COLOR_BLUE 21
-#define _COLOR_MAGENTA 201
-#define _COLOR_CYAN 51
-#define _COLOR_WHITE 231
-#define _COLOR_ORANGE 214
-#define _COLOR_DARKGREEN 22
-#define _COLOR_MANTISGREEN 113
+#define _COLOR_BLACK COLOR_BLACK
+#define _COLOR_GREY 8
+#define _COLOR_RED COLOR_RED
+#define _COLOR_GREEN COLOR_GREEN
+#define _COLOR_YELLOW COLOR_YELLOW
+#define _COLOR_BLUE COLOR_BLUE
+#define _COLOR_MAGENTA COLOR_MAGENTA
+#define _COLOR_CYAN COLOR_CYAN
+#define _COLOR_WHITE COLOR_WHITE
 
 #define STATUS_BAR_LENGTH 2
 
@@ -37,9 +34,6 @@
 #define MAGENTA 7
 #define CYAN 8
 #define WHITE 9
-#define ORANGE 10
-#define DARKGREEN 11
-#define MANTISGREEN 12
 
 struct Pixel {
 	char c;
@@ -48,7 +42,7 @@ struct Pixel {
 
 int32_t invertColor(int32_t color)
 {
-	return color + 12;
+	return color + 10;
 }
 
 std::vector<Pixel> toPixels(State *state, std::string s, int32_t color, uint32_t size)
@@ -78,7 +72,7 @@ int32_t renderPixels(State *state, int32_t r, int32_t c, std::vector<Pixel> pixe
 {
 	int32_t row = r;
 	int32_t col = c;
-	for (uint32_t i = 0; i + getLineNumberOffset(state) + 1 < state->maxX; i++) {
+	for (uint32_t i = 0; i < pixels.size(); i++) {
 		if (i < pixels.size()) {
 			attron(COLOR_PAIR(pixels[i].color));
 			mvaddch(row, col, pixels[i].c);
@@ -122,9 +116,6 @@ void initColors()
 	init_pair(MAGENTA, _COLOR_MAGENTA, _COLOR_BLACK);
 	init_pair(CYAN, _COLOR_CYAN, _COLOR_BLACK);
 	init_pair(WHITE, _COLOR_WHITE, _COLOR_BLACK);
-	init_pair(ORANGE, _COLOR_ORANGE, _COLOR_BLACK);
-	init_pair(DARKGREEN, _COLOR_DARKGREEN, _COLOR_BLACK);
-	init_pair(MANTISGREEN, _COLOR_MANTISGREEN, _COLOR_BLACK);
 
 	init_pair(invertColor(BLACK), _COLOR_BLACK, _COLOR_BLACK);
 	init_pair(invertColor(GREY), _COLOR_BLACK, _COLOR_GREY);
@@ -135,9 +126,6 @@ void initColors()
 	init_pair(invertColor(MAGENTA), _COLOR_BLACK, _COLOR_MAGENTA);
 	init_pair(invertColor(CYAN), _COLOR_BLACK, _COLOR_CYAN);
 	init_pair(invertColor(WHITE), _COLOR_BLACK, _COLOR_WHITE);
-	init_pair(invertColor(ORANGE), _COLOR_BLACK, _COLOR_ORANGE);
-	init_pair(invertColor(DARKGREEN), _COLOR_BLACK, _COLOR_DARKGREEN);
-	init_pair(invertColor(MANTISGREEN), _COLOR_BLACK, _COLOR_MANTISGREEN);
 }
 
 void renderFileStack(State *state)
@@ -173,7 +161,7 @@ int32_t getModeColor(State *state)
 	} else if (state->mode == FILEEXPLORER) {
 		return CYAN;
 	} else if (state->mode == VISUAL) {
-		return ORANGE;
+		return YELLOW;
 	} else {
 		return GREEN;
 	}
@@ -188,7 +176,7 @@ int32_t getDisplayModeColor(Mode m)
 	} else if (m == VISUAL) {
 		return RED;
 	} else {
-		return ORANGE;
+		return YELLOW;
 	}
 }
 std::string getDisplayModeName(State *state)
@@ -258,7 +246,7 @@ int32_t renderStatusBar(State *state)
 		cursor = prefix.length() + state->commandLine.cursor;
 	} else if (state->mode == GREP) {
 		prefix = state->grepPath + "> ";
-		insertPixels(state, &pixels, prefix + state->grep.query, state->showAllGrep ? DARKGREEN : GREEN);
+		insertPixels(state, &pixels, prefix + state->grep.query, state->showAllGrep ? BLUE : GREEN);
 		insertPixels(state, &pixels, "  ", WHITE);
 		insertPixels(state, &pixels, std::to_string(state->grep.selection + 1), WHITE);
 		insertPixels(state, &pixels, " of ", WHITE);
@@ -336,7 +324,7 @@ int32_t getSearchColor(State *state, int32_t row, uint32_t startOfSearch, std::s
 	if (state->row == (uint32_t)row && startOfSearch + query.length() >= state->col && startOfSearch <= state->col) {
 		return invertColor(grep ? GREEN : MAGENTA);
 	} else {
-		return invertColor(grep ? DARKGREEN : CYAN);
+		return invertColor(grep ? BLUE : CYAN);
 	}
 }
 
@@ -421,7 +409,7 @@ void renderGrepOutput(State *state)
 	int32_t color;
 	for (uint32_t i = index; i < state->grepOutput.size() && i < index + state->maxY; i++) {
 		std::vector<Pixel> pixels = std::vector<Pixel>();
-		color = isTestFile(state->grepOutput[i].path.string()) ? ORANGE : WHITE;
+		color = isTestFile(state->grepOutput[i].path.string()) ? YELLOW : WHITE;
 		if (i == state->grep.selection) {
 			color = invertColor(color);
 		}
@@ -449,7 +437,7 @@ void renderFindOutput(State *state)
 	int32_t color;
 	for (uint32_t i = index; i < state->findOutput.size() && i < index + state->maxY; i++) {
 		std::vector<Pixel> pixels = std::vector<Pixel>();
-		color = isTestFile(state->findOutput[i]) ? ORANGE : WHITE;
+		color = isTestFile(state->findOutput[i]) ? YELLOW : WHITE;
 		if (i == state->find.selection) {
 			color = invertColor(color);
 		}
@@ -712,7 +700,7 @@ int32_t renderLineContent(State *state, int32_t row, int32_t renderRow, Cursor *
 					if (isMergeConflict(state->data[row])) {
 						color = RED;
 					} else if (isComment) {
-						color = MANTISGREEN;
+						color = GREEN;
 					} else if (inString && getExtension(state->filename) != "md" && getExtension(state->filename) != "txt") {
 						color = CYAN;
 					} else {
