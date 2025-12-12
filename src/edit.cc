@@ -37,6 +37,7 @@ int32_t main(int32_t argc, char *argv[])
 			sendKeys(state, c);
 			cleanup(state, c);
 			renderScreen(state);
+			history(state, c);
 		}
 	}
 	endwin();

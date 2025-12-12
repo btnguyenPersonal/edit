@@ -41,20 +41,24 @@ void cleanup(State *state, char c)
 		if (!state->jumplist.touched) {
 			recordJumpList(state);
 		}
-		if (state->mode == SHORTCUT) {
-			std::vector<diffLine> diff = generateFastDiff(state->previousState, state->data);
-			state->previousState = state->data;
-			if (diff.size() != 0) {
-				if (c != ctrl('r') && c != 'u') {
-					recordHistory(state, diff);
-				}
-				if (state->options.autosave && !state->runningAsRoot && !state->dontRecordKey) {
-					saveFile(state);
-				}
-			}
-		}
 		state->matching = matchIt(state);
 		realignHarpoon(state);
+		if (state->mode == SHORTCUT && state->options.autosave && !state->runningAsRoot && !state->dontRecordKey) {
+			saveFile(state);
+		}
 	}
 	state->dontRecordKey = false;
+}
+
+void history(State *state, char c)
+{
+	if (state->mode == SHORTCUT) {
+		std::vector<diffLine> diff = generateDiff(state->previousState, state->data);
+		state->previousState = state->data;
+		if (diff.size() != 0) {
+			if (c != ctrl('r') && c != 'u') {
+				recordHistory(state, diff);
+			}
+		}
+	}
 }

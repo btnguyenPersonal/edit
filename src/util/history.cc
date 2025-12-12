@@ -46,7 +46,7 @@ uint32_t applyDiff(State *state, std::vector<diffLine> diff, bool reverse)
 	return min;
 }
 
-std::vector<diffLine> generateFastDiff(const std::vector<std::string> &a, const std::vector<std::string> &b)
+std::vector<diffLine> generateDiff(const std::vector<std::string> &a, const std::vector<std::string> &b)
 {
 	std::vector<diffLine> output;
 	uint32_t aIndex = 0;
