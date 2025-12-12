@@ -622,7 +622,7 @@ int32_t renderLineContent(State *state, int32_t row, int32_t renderRow, Cursor *
 	std::vector<Pixel> replacePixels = std::vector<Pixel>();
 
 	if (isRowColInVisual(state, row, 0) && state->data[row].length() == 0) {
-		insertPixels(state, &pixels, " ", invertColor(WHITE));
+		insertPixels(state, &pixels, " ", invertColor(RED));
 		if (state->row == (uint32_t)row) {
 			cursor->row = renderRow;
 			cursor->col = 0;
