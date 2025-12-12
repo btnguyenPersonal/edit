@@ -15,7 +15,7 @@ void sendMultiCursorKeys(State *state, int32_t c)
 	Bounds bounds = getBounds(state);
 	if (c == 27) { // ESC
 		left(state);
-		state->mode = SHORTCUTS;
+		state->mode = SHORTCUT;
 		setDotCommand(state, state->motion);
 		state->motion.clear();
 		return;

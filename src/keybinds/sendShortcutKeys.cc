@@ -76,7 +76,7 @@ void sendShortcutKeys(State *state, int32_t c)
 			state->motion.clear();
 			state->row = tempRow;
 			state->col = tempCol;
-			state->mode = SHORTCUTS;
+			state->mode = SHORTCUT;
 		}
 		state->dotCommand.push_back(getEscapedChar(c));
 		state->dontRecordKey = false;
@@ -120,7 +120,7 @@ void sendShortcutKeys(State *state, int32_t c)
 				state->motion.clear();
 				state->row = tempRow;
 				state->col = tempCol;
-				state->mode = SHORTCUTS;
+				state->mode = SHORTCUT;
 			}
 
 			state->dotCommand.push_back(getEscapedChar(c));
@@ -262,7 +262,7 @@ void sendShortcutKeys(State *state, int32_t c)
 		state->mode = GREP;
 		generateGrepOutput(state, false);
 	} else if (c == ctrl('p')) {
-		state->mode = FINDFILE;
+		state->mode = FIND;
 		state->selectAll = true;
 	} else if (c == ctrl('v')) {
 		state->mode = VISUAL;
@@ -461,7 +461,7 @@ void sendShortcutKeys(State *state, int32_t c)
 		initVisual(state, NORMAL);
 		setStateFromWordPosition(state, getWordPosition(state->data[state->row], state->col));
 		toggleLoggingCode(state, getInVisual(state), true);
-		state->mode = SHORTCUTS;
+		state->mode = SHORTCUT;
 		setDotCommand(state, c);
 	} else if (c == ctrl('w')) {
 		jumpToPrevHarpoon(state);
@@ -492,7 +492,7 @@ void sendShortcutKeys(State *state, int32_t c)
 			state->jumplist.touched = true;
 		}
 	}
-	if (state->mode != SHORTCUTS) {
+	if (state->mode != SHORTCUT) {
 		state->motion.clear();
 		recordMotion(state, c);
 	}

@@ -83,7 +83,7 @@ void sendCommandLineKeys(State *state, int32_t c)
 {
 	if (c == 27) { // ESC
 		backspaceAll(&state->commandLine);
-		state->mode = SHORTCUTS;
+		state->mode = SHORTCUT;
 	} else if (' ' <= c && c <= '~') {
 		add(&state->commandLine, c);
 	} else if (c == ctrl('t')) {
@@ -115,6 +115,6 @@ void sendCommandLineKeys(State *state, int32_t c)
 	} else if (c == '\n') {
 		evaluateCommandLineQuery(state);
 		backspaceAll(&state->commandLine);
-		state->mode = SHORTCUTS;
+		state->mode = SHORTCUT;
 	}
 }

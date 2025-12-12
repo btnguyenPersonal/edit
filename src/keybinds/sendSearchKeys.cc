@@ -12,7 +12,7 @@ void sendSearchKeys(State *state, int32_t c)
 	if (c == 27) { // ESC
 		state->searching = false;
 		state->replacing = false;
-		state->mode = SHORTCUTS;
+		state->mode = SHORTCUT;
 	} else if (c == ctrl('t')) {
 		if (state->replacing) {
 			add(&state->replace, '\t');
@@ -34,7 +34,7 @@ void sendSearchKeys(State *state, int32_t c)
 	} else if (c == ctrl('f')) {
 		state->replacing = true;
 	} else if (c == ctrl('g')) {
-		state->mode = FINDFILE;
+		state->mode = FIND;
 	} else if (c == KEY_LEFT) {
 		if (state->replacing) {
 			moveCursorLeft(&state->replace);
@@ -86,7 +86,7 @@ void sendSearchKeys(State *state, int32_t c)
 			replaceAll(state, state->search.query, state->replace.query);
 		}
 		state->replacing = false;
-		state->mode = SHORTCUTS;
+		state->mode = SHORTCUT;
 	}
 	bool result = setSearchResult(state);
 	state->searchFail = !result;

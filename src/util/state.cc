@@ -323,7 +323,7 @@ void State::changeFile(std::string filename)
 			this->col = archive.col;
 			this->hardCol = archive.hardCol;
 			this->jumplist = archive.jumplist;
-			this->mode = SHORTCUTS;
+			this->mode = SHORTCUT;
 			return;
 		}
 	}
@@ -351,7 +351,7 @@ void State::changeFile(std::string filename)
 	this->status = std::string("");
 	this->searchFail = false;
 	this->motion = std::vector<int32_t>();
-	this->mode = SHORTCUTS;
+	this->mode = SHORTCUT;
 	this->loadAllConfigFiles();
 }
 
@@ -439,7 +439,7 @@ void State::init()
 	this->prevKeys = std::string("");
 	this->status = std::string("");
 	this->searchFail = false;
-	this->mode = FINDFILE;
+	this->mode = FIND;
 	this->dotCommand = std::vector<std::string>();
 	this->macroCommand = std::vector<std::string>();
 	this->playingCommand = false;
@@ -461,7 +461,7 @@ void State::init(std::string name, std::vector<std::string> data)
 	this->data = data;
 	this->previousState = data;
 	this->commentSymbol = getCommentSymbol(name);
-	this->mode = SHORTCUTS;
+	this->mode = SHORTCUT;
 	this->fileStack = { name };
 	this->fileStackIndex = 0;
 }

@@ -22,7 +22,7 @@ void fuzzSendKeys(int testnum, int iterations = 1000)
 	std::string ret = "{";
 
 	try {
-		state->mode = SHORTCUTS;
+		state->mode = SHORTCUT;
 		std::vector<char> randVec;
 		for (int i = 0; i < iterations; i++) {
 			randVec.push_back(keypresses[dis(gen)]);

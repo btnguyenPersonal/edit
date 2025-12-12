@@ -10,9 +10,9 @@ std::string getMode(uint32_t mode)
 	case 2:
 		return "TYPING";
 	case 3:
-		return "SHORTCUTS";
+		return "SHORTCUT";
 	case 4:
-		return "FINDFILE";
+		return "FIND";
 	case 5:
 		return "GREP";
 	case 6:

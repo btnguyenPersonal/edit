@@ -9,7 +9,7 @@
 
 void cleanup(State *state, char c)
 {
-	if (state->mode == SHORTCUTS && state->filename == "") {
+	if (state->mode == SHORTCUT && state->filename == "") {
 		endwin();
 		exit(0);
 	} else if (state->filename != "") {
@@ -34,14 +34,14 @@ void cleanup(State *state, char c)
 		expect(state->windowPosition.row <= state->row);
 		expect(state->windowPosition.row + state->maxY > state->row);
 		if (state->recording && !state->dontRecordKey) {
-			if (!(c == ',' && state->mode == SHORTCUTS)) {
+			if (!(c == ',' && state->mode == SHORTCUT)) {
 				recordMacroCommand(state, c);
 			}
 		}
 		if (!state->jumplist.touched) {
 			recordJumpList(state);
 		}
-		if (state->mode == SHORTCUTS) {
+		if (state->mode == SHORTCUT) {
 			std::vector<diffLine> diff = generateFastDiff(state->previousState, state->data);
 			state->previousState = state->data;
 			if (diff.size() != 0) {

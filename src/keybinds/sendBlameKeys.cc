@@ -10,7 +10,7 @@
 void sendBlameKeys(State *state, int32_t c)
 {
 	if (c == 27) { // ESC
-		state->mode = SHORTCUTS;
+		state->mode = SHORTCUT;
 	} else if (c == 'k') {
 		up(state);
 	} else if (c == 'j') {
@@ -33,6 +33,6 @@ void sendBlameKeys(State *state, int32_t c)
 		std::string gitHash = getGitHash(state);
 		copyToClipboard(state, gitHash, true);
 		state->status = gitHash;
-		state->mode = SHORTCUTS;
+		state->mode = SHORTCUT;
 	}
 }

@@ -156,29 +156,23 @@ void renderFileStack(State *state)
 
 int32_t getModeColor(State *state)
 {
-	if (state->mode == TYPING) {
-		return MAGENTA;
-	} else if (state->mode == FILEEXPLORER) {
-		return CYAN;
-	} else if (state->mode == VISUAL) {
-		return YELLOW;
-	} else {
+	if (state->mode == SHORTCUT) {
+		return WHITE;
+	} else if (state->mode == TYPING) {
+		return BLUE;
+	} else if (state->mode == GREP) {
 		return GREEN;
+	} else if (state->mode == FIND) {
+		return YELLOW;
+	} else if (state->mode == VISUAL) {
+		return CYAN;
+	} else if (state->mode == MULTICURSOR) {
+		return CYAN;
+	} else {
+		return MAGENTA;
 	}
 }
 
-int32_t getDisplayModeColor(Mode m)
-{
-	if (m == TYPING) {
-		return GREEN;
-	} else if (m == SHORTCUTS) {
-		return YELLOW;
-	} else if (m == VISUAL) {
-		return RED;
-	} else {
-		return YELLOW;
-	}
-}
 std::string getDisplayModeName(State *state)
 {
 	if (state->mode == VISUAL && state->visualType == NORMAL) {
@@ -191,10 +185,10 @@ std::string getDisplayModeName(State *state)
 		return "COMMANDLINE";
 	} else if (state->mode == TYPING) {
 		return "TYPING";
-	} else if (state->mode == SHORTCUTS) {
+	} else if (state->mode == SHORTCUT) {
 		return "SHORTCUT";
-	} else if (state->mode == FINDFILE) {
-		return "FINDFILE";
+	} else if (state->mode == FIND) {
+		return "FIND";
 	} else if (state->mode == GREP) {
 		return "GREP";
 	} else if (state->mode == BLAME) {
@@ -253,7 +247,7 @@ int32_t renderStatusBar(State *state)
 		insertPixels(state, &pixels, std::to_string(state->grepOutput.size()), WHITE);
 		renderPixels(state, 1, 0, pixels, false);
 		cursor = prefix.length() + state->grep.cursor;
-	} else if (state->mode == FINDFILE) {
+	} else if (state->mode == FIND) {
 		prefix = "> ";
 		insertPixels(state, &pixels, prefix, YELLOW);
 		insertPixels(state, &pixels, state->find.query, state->selectAll ? invertColor(YELLOW) : YELLOW);
@@ -293,12 +287,15 @@ int32_t renderStatusBar(State *state)
 		}
 	}
 
-	std::string rightSide = std::string(" --") + getMode(state->mode) + std::string("-- ");
-	rightSide += "\"" + setStringToLength(state->filename, state->maxX - (pixels.size() + 2), true) + "\"";
+	std::string mode = std::string(" --") + getMode(state->mode) + std::string("-- ");
+	std::string file = std::string("\"") + setStringToLength(state->filename, state->maxX - (pixels.size() + 2), true) + "\"";
+	std::string rightSide = mode + file;
 	auto tmp = rightSide.length() + pixels.size();
 	auto len = state->maxX > tmp ? state->maxX - tmp : 0;
 	prefix = std::string(len, ' ');
-	insertPixels(state, &pixels, prefix + rightSide, state->lastSave != state->historyPosition ? GREY : WHITE);
+	insertPixels(state, &pixels, prefix, WHITE);
+	insertPixels(state, &pixels, mode, getModeColor(state));
+	insertPixels(state, &pixels, file, state->lastSave != state->historyPosition ? GREY : WHITE);
 
 	renderPixels(state, 1, 0, pixels, false);
 	return cursor;
@@ -843,7 +840,7 @@ void renderScreen(State *state)
 		erase();
 		bool noLineNum = false;
 		Cursor editorCursor, fileExplorerCursor;
-		if (state->mode == FINDFILE) {
+		if (state->mode == FIND) {
 			renderFindOutput(state);
 		} else if (state->mode == DIFF) {
 			if (state->viewingDiff) {

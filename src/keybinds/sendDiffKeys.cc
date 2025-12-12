@@ -31,7 +31,7 @@ void downDiff(State *state)
 void sendDiffKeys(State *state, int32_t c)
 {
 	if (c == 'q') {
-		state->mode = SHORTCUTS;
+		state->mode = SHORTCUT;
 	} else if (c == 27) { // ESC
 		if (state->prevKeys != "") {
 			state->prevKeys = "";
@@ -40,7 +40,7 @@ void sendDiffKeys(State *state, int32_t c)
 			state->viewingDiff = false;
 			state->diffIndex = 0;
 		} else {
-			state->mode = SHORTCUTS;
+			state->mode = SHORTCUT;
 		}
 	} else if (c == ctrl('u') || c == 'u') {
 		for (uint32_t i = 0; i < state->maxY / 2; i++) {

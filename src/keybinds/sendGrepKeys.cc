@@ -15,7 +15,7 @@ void sendGrepKeys(State *state, int32_t c)
 {
 	std::string cachedGrepString = state->grep.query;
 	if (c == 27) { // ESC
-		state->mode = SHORTCUTS;
+		state->mode = SHORTCUT;
 	} else if (c == KEY_LEFT) {
 		moveCursorLeft(&state->grep);
 	} else if (c == KEY_RIGHT) {
@@ -28,7 +28,7 @@ void sendGrepKeys(State *state, int32_t c)
 		generateFindOutput(state);
 		state->find.selection = 0;
 		state->selectAll = false;
-		state->mode = FINDFILE;
+		state->mode = FIND;
 	} else if (c == ctrl('a')) {
 		moveCursorStart(&state->grep);
 	} else if (c == ctrl('e')) {
@@ -63,13 +63,13 @@ void sendGrepKeys(State *state, int32_t c)
 			std::filesystem::path currentDir = ((std::filesystem::path)state->filename).parent_path();
 			std::filesystem::path relativePath = std::filesystem::relative(selectedFile, currentDir);
 			copyToClipboard(state, relativePath.string(), false);
-			state->mode = SHORTCUTS;
+			state->mode = SHORTCUT;
 		}
 	} else if (c == ctrl('y')) {
 		if (state->grep.selection < state->grepOutput.size()) {
 			std::filesystem::path selectedFile = state->grepOutput[state->grep.selection].path.string();
 			copyToClipboard(state, selectedFile, false);
-			state->mode = SHORTCUTS;
+			state->mode = SHORTCUT;
 		}
 	} else if (c == ctrl('v')) {
 		add(&state->grep, getFromClipboard(state, true));

@@ -32,7 +32,7 @@ void sendKeys(State *state, int32_t c)
 	state->searching = state->mode == SEARCH;
 	calcWindowBounds();
 	switch (state->mode) {
-	case SHORTCUTS:
+	case SHORTCUT:
 		sendShortcutKeys(state, c);
 		break;
 	case TYPING:
@@ -44,7 +44,7 @@ void sendKeys(State *state, int32_t c)
 	case COMMANDLINE:
 		sendCommandLineKeys(state, c);
 		break;
-	case FINDFILE:
+	case FIND:
 		sendFindKeys(state, c);
 		break;
 	case GREP:
