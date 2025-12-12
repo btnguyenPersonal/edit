@@ -705,7 +705,7 @@ int32_t renderLineContent(State *state, int32_t row, int32_t renderRow, Cursor *
 						color = getColorFromChar(state->data[row][col]);
 					}
 					if (isRowColInVisual(state, row, col)) {
-						color = invertColor(YELLOW);
+						color = invertColor(RED);
 					}
 				}
 			}
