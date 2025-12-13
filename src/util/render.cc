@@ -257,7 +257,7 @@ int32_t renderStatusBar(State *state)
 			for (uint32_t i = 0; i < state->macroCommand.size(); i++) {
 				s += state->macroCommand[i];
 			}
-			insertPixels(state, &pixels, std::string("recording: ") + setStringToLength(s, 60, true), RED);
+			insertPixels(state, &pixels, std::string("recording: ") + setStringToLength(s, 60, true), WHITE);
 		}
 		prefix = "/";
 		std::string displayQuery = state->search.query;
