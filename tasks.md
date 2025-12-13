@@ -1,4 +1,6 @@
 ## tasks
+- make sure switching files doesn't move memory (archives are so dumb)
+
 - ts-server integration (do it for real this time)
 
 - fix \ bug (sometimes crashes for some reason)
