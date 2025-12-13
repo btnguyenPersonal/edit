@@ -36,5 +36,5 @@ struct testSuiteRun testSave()
 		output.push_back({ "saveFile should empty the file if nothing is passed", compare(readFile("./test-file.h"), {}) });
 	}
 
-	return { "test/util/testSave.cc", output };
+	return { "test/util/testSave.cpp", output };
 }

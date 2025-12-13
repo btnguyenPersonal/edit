@@ -245,5 +245,5 @@ struct testSuiteRun testTypingKeys()
 
 	// TODO autocomplete tests
 
-	return { "test/util/testTypingKeys.cc", output };
+	return { "test/util/testTypingKeys.cpp", output };
 }

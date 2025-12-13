@@ -17,7 +17,7 @@
 - mocking
 	- break clipboard dependency
 	- break filesystem dependency
-		- remove all the std::filesystem dependencies from everywhere and have replacement methods in filesystem.cc
+		- remove all the std::filesystem dependencies from everywhere and have replacement methods in filesystem.cpp
 		- changes get sent to global testing variable, can read from that while testing
 	- break ncurses dependency
 

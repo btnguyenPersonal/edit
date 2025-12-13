@@ -141,5 +141,5 @@ struct testSuiteRun testSanityChecks()
 		output.push_back({ "sanityCheckFindSelection should set find.selection to 5 if length is 6", compare(state->find.selection, 5) });
 	}
 
-	return { "test/util/testSanityChecks.cc", output };
+	return { "test/util/testSanityChecks.cpp", output };
 }

@@ -29,5 +29,5 @@ struct testSuiteRun testRead()
 		output.push_back({ "readFile should read a big file correctly", compare(readFile("./test-file.h"), f) });
 	}
 
-	return { "test/util/testRead.cc", output };
+	return { "test/util/testRead.cpp", output };
 }

@@ -16,21 +16,21 @@ TEST_UTIL_DIR    = test/util
 BUILD_DIR   = build
 
 
-UTIL_SRCS := $(wildcard $(UTIL_DIR)/*.cc)
-KEYBINDS_SRCS := $(wildcard $(KEYBINDS_DIR)/*.cc)
+UTIL_SRCS := $(wildcard $(UTIL_DIR)/*.cpp)
+KEYBINDS_SRCS := $(wildcard $(KEYBINDS_DIR)/*.cpp)
 
-TEST_FILE_SRCS := $(wildcard $(TEST_UTIL_DIR)/*.cc)
+TEST_FILE_SRCS := $(wildcard $(TEST_UTIL_DIR)/*.cpp)
 
 COMMON_SRCS := $(UTIL_SRCS) $(KEYBINDS_SRCS)
-MAIN_SRCS = $(SRC_DIR)/edit.cc $(COMMON_SRCS)
-FUZZ_SRCS = $(FUZZ_DIR)/fuzzer.cc $(COMMON_SRCS)
-TEST_SRCS = $(TEST_DIR)/test.cc $(TEST_FILE_SRCS) $(COMMON_SRCS)
-PROFILE_SRCS = $(TEST_DIR)/profile.cc $(COMMON_SRCS)
+MAIN_SRCS = $(SRC_DIR)/edit.cpp $(COMMON_SRCS)
+FUZZ_SRCS = $(FUZZ_DIR)/fuzzer.cpp $(COMMON_SRCS)
+TEST_SRCS = $(TEST_DIR)/test.cpp $(TEST_FILE_SRCS) $(COMMON_SRCS)
+PROFILE_SRCS = $(TEST_DIR)/profile.cpp $(COMMON_SRCS)
 
-MAIN_OBJECTS = $(patsubst %.cc, $(BUILD_DIR)/%.o, $(notdir $(MAIN_SRCS)))
-FUZZ_OBJECTS = $(patsubst %.cc, $(BUILD_DIR)/%.o, $(notdir $(FUZZ_SRCS)))
-TEST_OBJECTS = $(patsubst %.cc, $(BUILD_DIR)/%.o, $(notdir $(TEST_SRCS)))
-PROFILE_OBJECTS = $(patsubst %.cc, $(BUILD_DIR)/%.o, $(notdir $(PROFILE_SRCS)))
+MAIN_OBJECTS = $(patsubst %.cpp, $(BUILD_DIR)/%.o, $(notdir $(MAIN_SRCS)))
+FUZZ_OBJECTS = $(patsubst %.cpp, $(BUILD_DIR)/%.o, $(notdir $(FUZZ_SRCS)))
+TEST_OBJECTS = $(patsubst %.cpp, $(BUILD_DIR)/%.o, $(notdir $(TEST_SRCS)))
+PROFILE_OBJECTS = $(patsubst %.cpp, $(BUILD_DIR)/%.o, $(notdir $(PROFILE_SRCS)))
 
 DEPS = $(wildcard $(BUILD_DIR)/*.d)
 
@@ -66,26 +66,26 @@ $(TEST_EXECUTABLE): $(TEST_OBJECTS)
 $(PROFILE_EXECUTABLE): $(PROFILE_OBJECTS)
 	$(CC) $^ -o $@ $(LDFLAGS) $(CFLAGS)
 
-$(BUILD_DIR)/%.o: $(SRC_DIR)/%.cc
+$(BUILD_DIR)/%.o: $(SRC_DIR)/%.cpp
 	$(CC) -c $< -o $@ $(CFLAGS) $(DEPFLAGS)
 
-$(BUILD_DIR)/%.o: $(UTIL_DIR)/%.cc
+$(BUILD_DIR)/%.o: $(UTIL_DIR)/%.cpp
 	$(CC) -c $< -o $@ $(CFLAGS) $(DEPFLAGS)
 
-$(BUILD_DIR)/%.o: $(KEYBINDS_DIR)/%.cc
+$(BUILD_DIR)/%.o: $(KEYBINDS_DIR)/%.cpp
 	$(CC) -c $< -o $@ $(CFLAGS) $(DEPFLAGS)
 
-$(BUILD_DIR)/%.o: $(FUZZ_DIR)/%.cc
+$(BUILD_DIR)/%.o: $(FUZZ_DIR)/%.cpp
 	$(CC) -c $< -o $@ $(CFLAGS) $(DEPFLAGS)
 
-$(BUILD_DIR)/%.o: $(TEST_DIR)/%.cc
+$(BUILD_DIR)/%.o: $(TEST_DIR)/%.cpp
 	$(CC) -c $< -o $@ $(CFLAGS) $(DEPFLAGS)
 
-$(BUILD_DIR)/%.o: $(TEST_UTIL_DIR)/%.cc
+$(BUILD_DIR)/%.o: $(TEST_UTIL_DIR)/%.cpp
 	$(CC) -c $< -o $@ $(CFLAGS) $(DEPFLAGS)
 
 format:
-	find . -iname "*.cc" -o -iname "*.h" | xargs clang-format -i
+	find . -iname "*.cpp" -o -iname "*.h" | xargs clang-format -i
 
 dev:
 	make all && $(MAIN_EXECUTABLE) test-file.h

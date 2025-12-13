@@ -79,5 +79,5 @@ struct testSuiteRun testAutocomplete()
 		output.push_back({ "autocomplete picks the smaller non-current one", compare(autocomplete(state, "function"), std::string("2")) });
 	}
 
-	return { "test/util/testAutocomplete.cc", output };
+	return { "test/util/testAutocomplete.cpp", output };
 }
