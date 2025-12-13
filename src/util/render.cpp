@@ -456,19 +456,23 @@ Cursor renderVisibleLines(State *state)
 	bool checkAgain = false;
 	for (int32_t i = 0; i < (int32_t)state->data.size() && i < (int32_t)(state->maxY + state->windowPosition.row) - 1; i++) {
 		checkAgain = false;
-		if (startsWithSymbol(state, i, "/*")) {
-			multiLineComment = true;
-			checkAgain = true;
+		if (!isLargeFile(state)) {
+			if (startsWithSymbol(state, i, "/*")) {
+				multiLineComment = true;
+				checkAgain = true;
+			}
 		}
 		if (i >= (int32_t)state->windowPosition.row) {
 			renderLineNumber(state, i, currentRenderRow);
 			currentRenderRow = renderLineContent(state, i, currentRenderRow, &cursor, multiLineComment);
 		}
-		if (startsWithSymbol(state, i, "*/")) {
-			multiLineComment = false;
-		}
-		if (checkAgain && endsWithSymbol(state, i, "*/")) {
-			multiLineComment = false;
+		if (!isLargeFile(state)) {
+			if (startsWithSymbol(state, i, "*/")) {
+				multiLineComment = false;
+			}
+			if (checkAgain && endsWithSymbol(state, i, "*/")) {
+				multiLineComment = false;
+			}
 		}
 	}
 	return cursor;

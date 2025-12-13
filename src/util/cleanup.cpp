@@ -43,7 +43,7 @@ void cleanup(State *state, char c)
 		}
 		state->matching = matchIt(state);
 		realignHarpoon(state);
-		if (state->mode == SHORTCUT && state->options.autosave && !state->runningAsRoot && !state->dontRecordKey) {
+		if (!isLargeFile(state) && state->mode == SHORTCUT && state->options.autosave && !state->runningAsRoot && !state->dontRecordKey) {
 			saveFile(state);
 		}
 	}

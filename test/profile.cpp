@@ -3,7 +3,11 @@
 #include "../src/util/find.h"
 #include "../src/util/grep.h"
 #include "../src/util/history.h"
+#include "../src/util/render.h"
+#include "../src/util/cleanup.h"
+#include "../src/keybinds/sendKeys.h"
 
+#include <ncurses.h>
 #include <chrono>
 #include <thread>
 
@@ -40,5 +44,13 @@ void find()
 
 int main()
 {
-	diff();
+	State *state = new State("./test-file.h");
+	initTerminal();
+	for (uint32_t i = 0; i < 10; i++) {
+		sendKeys(state, 'j');
+		cleanup(state, 'j');
+		renderScreen(state);
+		history(state, 'j');
+	}
+	endwin();
 }

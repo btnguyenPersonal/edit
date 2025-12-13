@@ -1536,6 +1536,11 @@ void upVisual(State *state)
 	}
 }
 
+uint32_t isLargeFile(State *state)
+{
+	return state->data.size() > 50000;
+}
+
 void down(State *state)
 {
 	if (state->row < state->data.size() - 1) {
