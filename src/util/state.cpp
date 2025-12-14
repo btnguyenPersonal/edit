@@ -140,6 +140,7 @@ void State::changeFile(std::string filename)
 		this->currentFile = this->files.size() - 1;
 		this->file = file;
 	}
+	this->mode = NORMAL;
 	this->loadAllConfigFiles();
 }
 
@@ -164,7 +165,9 @@ bool State::resetState(std::string filename)
 		this->status = "file not found: " + name;
 		return false;
 	}
-	this->pushFileStack(this->file->filename);
+	if (this->file) {
+		this->pushFileStack(this->file->filename);
+	}
 	this->pushFileStack(name);
 	this->fileStackIndex = this->fileStack.size() - 1;
 	this->changeFile(name);

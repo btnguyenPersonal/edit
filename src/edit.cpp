@@ -36,10 +36,8 @@ int32_t main(int32_t argc, char *argv[])
 		if (c != ERR) {
 			sendKeys(state, c);
 			cleanup(state, c);
+			history(state, c);
 			renderScreen(state);
-			if (!isLargeFile(state)) {
-				history(state, c);
-			}
 		}
 	}
 	endwin();

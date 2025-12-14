@@ -43,21 +43,21 @@ void cleanup(State *state, char c)
 		}
 		state->matching = matchIt(state);
 		realignHarpoon(state);
-		if (!isLargeFile(state) && state->mode == NORMAL && state->options.autosave && !state->runningAsRoot && !state->dontRecordKey) {
-			saveFile(state);
-		}
 	}
 	state->dontRecordKey = false;
 }
 
 void history(State *state, char c)
 {
-	if (state->mode == NORMAL) {
+	if (!isLargeFile(state) && state->mode == NORMAL) {
 		std::vector<diffLine> diff = generateDiff(state->file->previousState, state->file->data);
 		state->file->previousState = state->file->data;
 		if (diff.size() != 0) {
 			if (c != ctrl('r') && c != 'u') {
 				recordHistory(state, diff);
+			}
+			if (state->options.autosave && !state->runningAsRoot && !state->dontRecordKey) {
+				saveFile(state);
 			}
 		}
 	}

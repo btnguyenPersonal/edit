@@ -250,8 +250,10 @@ void recordMacroCommand(State *state, char c)
 
 void insertFinalEmptyNewline(State *state)
 {
-	if (state->file->data.size() > 0 && state->file->data[state->file->data.size() - 1] != "") {
-		state->file->data.push_back("");
+	if (state->file) {
+		if (state->file->data.size() > 0 && state->file->data[state->file->data.size() - 1] != "") {
+			state->file->data.push_back("");
+		}
 	}
 }
 

@@ -9,6 +9,9 @@ std::vector<std::string> readFile(const std::string &filename)
 	while (std::getline(file, str)) {
 		file_contents.push_back(str);
 	}
+	if (file.eof() && str.empty()) {
+		file_contents.push_back("");
+	}
 	file.close();
 	return file_contents;
 }
