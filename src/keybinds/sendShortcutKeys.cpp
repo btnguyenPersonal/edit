@@ -42,21 +42,21 @@ void sendShortcutKeys(State *state, int32_t c)
 		state->prevKeys = "";
 		state->motion.clear();
 	} else if (state->prevKeys == "t") {
-		state->col = toNextChar(state, c);
+		state->file->col = toNextChar(state, c);
 		state->prevKeys = "";
 	} else if (state->prevKeys == "f") {
-		state->col = findNextChar(state, c);
+		state->file->col = findNextChar(state, c);
 		state->prevKeys = "";
 	} else if (state->prevKeys == "r") {
-		if (state->col < state->data[state->row].length() && ' ' <= c && c <= '~') {
-			state->data[state->row] = safeSubstring(state->data[state->row], 0, state->col) + (char)c + safeSubstring(state->data[state->row], state->col + 1);
+		if (state->file->col < state->file->data[state->file->row].length() && ' ' <= c && c <= '~') {
+			state->file->data[state->file->row] = safeSubstring(state->file->data[state->file->row], 0, state->file->col) + (char)c + safeSubstring(state->file->data[state->file->row], state->file->col + 1);
 		}
 		setDotCommand(state, { 'r', c });
 		state->prevKeys = "";
 	} else if ((state->prevKeys[0] == 'y' || state->prevKeys[0] == 'd' || state->prevKeys[0] == 'c') && state->prevKeys.length() == 2) {
 		state->dontRecordKey = true;
-		uint32_t tempRow = state->row;
-		uint32_t tempCol = state->col;
+		uint32_t tempRow = state->file->row;
+		uint32_t tempCol = state->file->col;
 		char command0 = state->prevKeys[0];
 		char command1 = state->prevKeys[1];
 		state->dotCommand.clear();
@@ -66,16 +66,16 @@ void sendShortcutKeys(State *state, int32_t c)
 		state->prevKeys = "";
 		state->motion.clear();
 		recordMotion(state, 'v');
-		initVisual(state, NORMAL);
+		initVisual(state, SELECT);
 		sendVisualKeys(state, command1, true);
 		sendVisualKeys(state, c, true);
-		if (state->row != state->visual.row || state->col != state->visual.col) {
+		if (state->file->row != state->visual.row || state->file->col != state->visual.col) {
 			sendVisualKeys(state, command0, false);
 		} else {
 			state->prevKeys = "";
 			state->motion.clear();
-			state->row = tempRow;
-			state->col = tempCol;
+			state->file->row = tempRow;
+			state->file->col = tempCol;
 			state->mode = NORMAL;
 		}
 		state->dotCommand.push_back(getEscapedChar(c));
@@ -92,18 +92,18 @@ void sendShortcutKeys(State *state, int32_t c)
 			}
 
 			bool specialWOrLOnlyCase = state->prevKeys.length() == 1 && (c == 'w' || c == 'l');
-			uint32_t tempRow = state->row;
-			uint32_t tempCol = state->col;
+			uint32_t tempRow = state->file->row;
+			uint32_t tempCol = state->file->col;
 			char command = state->prevKeys[0];
 			state->prevKeys = "";
 			bool success = true;
-			initVisual(state, NORMAL);
+			initVisual(state, SELECT);
 			if (c != command) {
 				success = sendVisualKeys(state, c, true);
-				if (state->row != state->visual.row) {
+				if (state->file->row != state->visual.row) {
 					state->visualType = LINE;
 				} else {
-					if (state->col < state->visual.col && state->visual.col > 0) {
+					if (state->file->col < state->visual.col && state->visual.col > 0) {
 						state->visual.col -= 1;
 					}
 				}
@@ -118,8 +118,8 @@ void sendShortcutKeys(State *state, int32_t c)
 			} else {
 				state->prevKeys = "";
 				state->motion.clear();
-				state->row = tempRow;
-				state->col = tempCol;
+				state->file->row = tempRow;
+				state->file->col = tempCol;
 				state->mode = NORMAL;
 			}
 
@@ -130,8 +130,8 @@ void sendShortcutKeys(State *state, int32_t c)
 	} else if (state->prevKeys == "g" && c == '/') {
 		state->mode = SEARCH;
 	} else if (state->prevKeys == "g" && c == 'r') {
-		initVisual(state, NORMAL);
-		setStateFromWordPosition(state, getWordPosition(state->data[state->row], state->col));
+		initVisual(state, SELECT);
+		setStateFromWordPosition(state, getWordPosition(state->file->data[state->file->row], state->file->col));
 		setQuery(&state->grep, getInVisual(state));
 		generateGrepOutput(state, true);
 		findDefinitionFromGrepOutput(state, getInVisual(state));
@@ -145,17 +145,17 @@ void sendShortcutKeys(State *state, int32_t c)
 		trimTrailingWhitespace(state);
 		state->prevKeys = "";
 	} else if (state->prevKeys == "g" && c == 'y') {
-		state->status = state->filename;
-		copyToClipboard(state, state->filename, true);
+		state->status = state->file->filename;
+		copyToClipboard(state, state->file->filename, true);
 		state->prevKeys = "";
 	} else if (state->prevKeys == "g" && c == 'Y') {
-		std::string absPath = std::filesystem::canonical(state->filename);
+		std::string absPath = std::filesystem::canonical(state->file->filename);
 		state->status = absPath;
 		copyToClipboard(state, absPath, true);
 		state->prevKeys = "";
 	} else if (state->prevKeys == "g" && c == 'g') {
-		state->row = 0;
-		state->col = getNormalizedCol(state, state->hardCol);
+		state->file->row = 0;
+		state->file->col = getNormalizedCol(state, state->file->hardCol);
 		state->skipSetHardCol = true;
 		state->prevKeys = "";
 	} else if (state->prevKeys == "g" && c == ctrl('u')) {
@@ -195,21 +195,21 @@ void sendShortcutKeys(State *state, int32_t c)
 		state->mode = COMMAND;
 	} else if (c == '<') {
 		deindent(state);
-		state->col = getIndexFirstNonSpace(state);
+		state->file->col = getIndexFirstNonSpace(state);
 		setDotCommand(state, c);
 	} else if (c == '>') {
 		indent(state);
-		state->col = getIndexFirstNonSpace(state);
+		state->file->col = getIndexFirstNonSpace(state);
 		setDotCommand(state, c);
 	} else if (c == 'u') {
-		if (state->historyPosition >= 0) {
-			state->row = applyDiff(state, state->history[state->historyPosition], true);
-			state->historyPosition--;
+		if (state->file->historyPosition >= 0) {
+			state->file->row = applyDiff(state, state->file->history[state->file->historyPosition], true);
+			state->file->historyPosition--;
 		}
 	} else if (c == ctrl('r')) {
-		if (state->historyPosition < ((int32_t)state->history.size()) - 1) {
-			state->row = applyDiff(state, state->history[state->historyPosition + 1], false);
-			state->historyPosition++;
+		if (state->file->historyPosition < ((int32_t)state->file->history.size()) - 1) {
+			state->file->row = applyDiff(state, state->file->history[state->file->historyPosition + 1], false);
+			state->file->historyPosition++;
 		}
 	} else if (c == ctrl('i')) {
 		forwardFileStack(state);
@@ -226,35 +226,35 @@ void sendShortcutKeys(State *state, int32_t c)
 	} else if (c == 'j' || c == KEY_DOWN) {
 		down(state);
 	} else if (c == '{') {
-		state->row = getPrevEmptyLine(state);
+		state->file->row = getPrevEmptyLine(state);
 	} else if (c == '}') {
-		state->row = getNextEmptyLine(state);
+		state->file->row = getNextEmptyLine(state);
 	} else if (c == '[') {
-		state->row = getPrevLineSameIndent(state);
+		state->file->row = getPrevLineSameIndent(state);
 	} else if (c == ']') {
-		state->row = getNextLineSameIndent(state);
+		state->file->row = getNextLineSameIndent(state);
 	} else if (c == '~') {
-		swapCase(state, state->row, state->col);
+		swapCase(state, state->file->row, state->file->col);
 		right(state);
 	} else if (c == '#') {
-		initVisual(state, NORMAL);
-		setStateFromWordPosition(state, getWordPosition(state->data[state->row], state->col));
+		initVisual(state, SELECT);
+		setStateFromWordPosition(state, getWordPosition(state->file->data[state->file->row], state->file->col));
 		setQuery(&state->grep, getInVisual(state));
 		state->mode = GREP;
 		state->showAllGrep = false;
 		generateGrepOutput(state, true);
 	} else if (c == '*') {
-		initVisual(state, NORMAL);
-		setStateFromWordPosition(state, getWordPosition(state->data[state->row], state->col));
+		initVisual(state, SELECT);
+		setStateFromWordPosition(state, getWordPosition(state->file->data[state->file->row], state->file->col));
 		setQuery(&state->search, getInVisual(state));
 		state->searching = true;
-		state->col += 1;
-		uint32_t temp_col = state->col;
-		uint32_t temp_row = state->row;
+		state->file->col += 1;
+		uint32_t temp_col = state->file->col;
+		uint32_t temp_row = state->file->row;
 		bool result = setSearchResult(state);
 		if (result == false) {
-			state->row = temp_row;
-			state->col = temp_col - 1;
+			state->file->row = temp_row;
+			state->file->col = temp_col - 1;
 		}
 		centerScreen(state);
 	} else if (c == ctrl('g')) {
@@ -269,14 +269,14 @@ void sendShortcutKeys(State *state, int32_t c)
 		initVisual(state, BLOCK);
 	} else if (c == 'v') {
 		state->mode = VISUAL;
-		initVisual(state, NORMAL);
+		initVisual(state, SELECT);
 	} else if (c == 'V') {
 		state->mode = VISUAL;
 		initVisual(state, LINE);
 	} else if (c == 'b') {
-		state->col = b(state);
+		state->file->col = b(state);
 	} else if (c == 'w') {
-		state->col = w(state);
+		state->file->col = w(state);
 	} else if (c == 'i') {
 		state->mode = INSERT;
 	} else if (c == 'a') {
@@ -295,26 +295,26 @@ void sendShortcutKeys(State *state, int32_t c)
 		state->mode = INSERT;
 	} else if (c == 'Y') {
 		fixColOverMax(state);
-		copyToClipboard(state, safeSubstring(state->data[state->row], state->col), false);
+		copyToClipboard(state, safeSubstring(state->file->data[state->file->row], state->file->col), false);
 	} else if (c == 'D') {
 		fixColOverMax(state);
-		copyToClipboard(state, safeSubstring(state->data[state->row], state->col), false);
-		state->data[state->row] = state->data[state->row].substr(0, state->col);
+		copyToClipboard(state, safeSubstring(state->file->data[state->file->row], state->file->col), false);
+		state->file->data[state->file->row] = state->file->data[state->file->row].substr(0, state->file->col);
 	} else if (c == 'C') {
 		fixColOverMax(state);
-		copyToClipboard(state, safeSubstring(state->data[state->row], state->col), false);
-		state->data[state->row] = state->data[state->row].substr(0, state->col);
+		copyToClipboard(state, safeSubstring(state->file->data[state->file->row], state->file->col), false);
+		state->file->data[state->file->row] = state->file->data[state->file->row].substr(0, state->file->col);
 		state->mode = INSERT;
 	} else if (c == 'I') {
-		state->col = getIndexFirstNonSpace(state);
+		state->file->col = getIndexFirstNonSpace(state);
 		state->mode = INSERT;
 	} else if (c == 'A') {
-		state->col = state->data[state->row].length();
+		state->file->col = state->file->data[state->file->row].length();
 		state->mode = INSERT;
 	} else if (c == '\'') {
 		if (state->mark.filename != "") {
 			state->resetState(state->mark.filename);
-			state->row = state->mark.mark;
+			state->file->row = state->mark.mark;
 		}
 	} else if (c == ctrl('q')) {
 		state->logLines = getLogLines(state);
@@ -322,7 +322,7 @@ void sendShortcutKeys(State *state, int32_t c)
 		state->viewingDiff = true;
 		state->mode = DIFF;
 	} else if (c == 'M') {
-		state->mark = { state->filename, state->row };
+		state->mark = { state->file->filename, state->file->row };
 	} else if (c == 'N') {
 		state->searching = true;
 		bool result = setSearchResultReverse(state);
@@ -332,14 +332,14 @@ void sendShortcutKeys(State *state, int32_t c)
 		centerScreen(state);
 	} else if (c == 'n') {
 		state->searching = true;
-		state->col += 1;
-		uint32_t temp_col = state->col;
-		uint32_t temp_row = state->row;
+		state->file->col += 1;
+		uint32_t temp_col = state->file->col;
+		uint32_t temp_row = state->file->row;
 		bool result = setSearchResult(state);
 		if (result == false) {
 			state->searchFail = true;
-			state->row = temp_row;
-			state->col = temp_col - 1;
+			state->file->row = temp_row;
+			state->file->col = temp_col - 1;
 		}
 		centerScreen(state);
 	} else if (c == '.') {
@@ -366,56 +366,56 @@ void sendShortcutKeys(State *state, int32_t c)
 		state->recording = !state->recording;
 		state->dontRecordKey = true;
 	} else if (c == 'K') {
-		state->col = state->data[state->row].length();
-		if (state->row + 1 < state->data.size()) {
-			ltrim(state->data[state->row + 1]);
-			state->data[state->row] += " " + state->data[state->row + 1];
-			state->data.erase(state->data.begin() + state->row + 1);
+		state->file->col = state->file->data[state->file->row].length();
+		if (state->file->row + 1 < state->file->data.size()) {
+			ltrim(state->file->data[state->file->row + 1]);
+			state->file->data[state->file->row] += " " + state->file->data[state->file->row + 1];
+			state->file->data.erase(state->file->data.begin() + state->file->row + 1);
 		}
 		setDotCommand(state, c);
 	} else if (c == 'J') {
-		state->col = state->data[state->row].length();
-		if (state->row + 1 < state->data.size()) {
-			ltrim(state->data[state->row + 1]);
-			state->data[state->row] += state->data[state->row + 1];
-			state->data.erase(state->data.begin() + state->row + 1);
+		state->file->col = state->file->data[state->file->row].length();
+		if (state->file->row + 1 < state->file->data.size()) {
+			ltrim(state->file->data[state->file->row + 1]);
+			state->file->data[state->file->row] += state->file->data[state->file->row + 1];
+			state->file->data.erase(state->file->data.begin() + state->file->row + 1);
 		}
 		setDotCommand(state, c);
 	} else if (c == '/') {
 		backspaceAll(&state->search);
 		state->mode = SEARCH;
 	} else if (c == '^') {
-		state->col = getIndexFirstNonSpace(state);
+		state->file->col = getIndexFirstNonSpace(state);
 	} else if (c == ctrl('t')) {
 		if (!state->dontSave) {
 			state->mode = FILEEXPLORER;
 			if (!state->fileExplorerOpen) {
-				state->fileExplorerIndex = state->fileExplorer->expand(state->filename);
+				state->fileExplorerIndex = state->fileExplorer->expand(state->file->filename);
 				centerFileExplorer(state);
 			}
 			state->fileExplorerOpen = true;
 		}
 	} else if (c == ctrl('s')) {
-		getAndAddNumber(state, state->row, state->col, -1);
+		getAndAddNumber(state, state->file->row, state->file->col, -1);
 	} else if (c == ctrl('a')) {
-		getAndAddNumber(state, state->row, state->col, 1);
+		getAndAddNumber(state, state->file->row, state->file->col, 1);
 	} else if (c == 's') {
-		if (state->col < state->data[state->row].length()) {
-			copyToClipboard(state, state->data[state->row].substr(state->col, 1), false);
-			state->data[state->row] = state->data[state->row].substr(0, state->col) + state->data[state->row].substr(state->col + 1);
+		if (state->file->col < state->file->data[state->file->row].length()) {
+			copyToClipboard(state, state->file->data[state->file->row].substr(state->file->col, 1), false);
+			state->file->data[state->file->row] = state->file->data[state->file->row].substr(0, state->file->col) + state->file->data[state->file->row].substr(state->file->col + 1);
 			state->mode = INSERT;
 		}
 	} else if (c == 'x') {
-		if (state->col < state->data[state->row].length()) {
-			copyToClipboard(state, state->data[state->row].substr(state->col, 1), false);
-			state->data[state->row] = state->data[state->row].substr(0, state->col) + state->data[state->row].substr(state->col + 1);
+		if (state->file->col < state->file->data[state->file->row].length()) {
+			copyToClipboard(state, state->file->data[state->file->row].substr(state->file->col, 1), false);
+			state->file->data[state->file->row] = state->file->data[state->file->row].substr(0, state->file->col) + state->file->data[state->file->row].substr(state->file->col + 1);
 		}
 		setDotCommand(state, c);
 	} else if (c == ctrl('y')) {
-		state->col = 0;
+		state->file->col = 0;
 		state->mode = BLAME;
 		try {
-			state->blame = getGitBlame(state->filename);
+			state->blame = getGitBlame(state->file->filename);
 		} catch (const std::exception &e) {
 			state->status = "git blame error";
 		}
@@ -424,12 +424,12 @@ void sendShortcutKeys(State *state, int32_t c)
 		state->replacing = true;
 		backspaceAll(&state->replace);
 	} else if (c == '0') {
-		state->col = 0;
+		state->file->col = 0;
 	} else if (c == '$') {
-		state->col = getLastCharIndex(state);
+		state->file->col = getLastCharIndex(state);
 	} else if (c == 'z') {
 		fixColOverMax(state);
-		state->windowPosition.col = 0;
+		state->file->windowPosition.col = 0;
 		centerScreen(state);
 		renderScreen(state, true);
 	} else if (c == 'P') {
@@ -450,16 +450,16 @@ void sendShortcutKeys(State *state, int32_t c)
 		clearHarpoon(state);
 	} else if (c == 'e') {
 		toggleComment(state);
-		state->col = getIndexFirstNonSpace(state);
+		state->file->col = getIndexFirstNonSpace(state);
 	} else if (c == '=') {
 		indentLine(state);
-		state->col = getIndexFirstNonSpace(state);
+		state->file->col = getIndexFirstNonSpace(state);
 	} else if (c == 'Q') {
 		removeAllLoggingCode(state);
 		setDotCommand(state, c);
 	} else if (c == 'm') {
-		initVisual(state, NORMAL);
-		setStateFromWordPosition(state, getWordPosition(state->data[state->row], state->col));
+		initVisual(state, SELECT);
+		setStateFromWordPosition(state, getWordPosition(state->file->data[state->file->row], state->file->col));
 		toggleLoggingCode(state, getInVisual(state), true);
 		state->mode = NORMAL;
 		setDotCommand(state, c);
@@ -469,27 +469,27 @@ void sendShortcutKeys(State *state, int32_t c)
 		jumpToNextHarpoon(state);
 	} else if (c == '%') {
 		auto pos = matchIt(state);
-		state->row = pos.row;
-		state->col = pos.col;
+		state->file->row = pos.row;
+		state->file->col = pos.col;
 	} else if (c == '\\') {
-		state->changeFile(state->filename);
+		state->changeFile(state->file->filename);
 	} else if (c == 'G') {
-		state->row = state->data.size() - 1;
-		state->col = getNormalizedCol(state, state->hardCol);
+		state->file->row = state->file->data.size() - 1;
+		state->file->col = getNormalizedCol(state, state->file->hardCol);
 		state->skipSetHardCol = true;
 	} else if (c == ctrl('z')) {
-		if (state->jumplist.index > 0) {
-			state->jumplist.index--;
-			state->row = state->jumplist.list[state->jumplist.index].row;
-			state->col = state->jumplist.list[state->jumplist.index].col;
-			state->jumplist.touched = true;
+		if (state->file->jumplist.index > 0) {
+			state->file->jumplist.index--;
+			state->file->row = state->file->jumplist.list[state->file->jumplist.index].row;
+			state->file->col = state->file->jumplist.list[state->file->jumplist.index].col;
+			state->file->jumplist.touched = true;
 		}
 	} else if (c == 'Z') {
-		if (state->jumplist.index + 1 < state->jumplist.list.size()) {
-			state->jumplist.index++;
-			state->row = state->jumplist.list[state->jumplist.index].row;
-			state->col = state->jumplist.list[state->jumplist.index].col;
-			state->jumplist.touched = true;
+		if (state->file->jumplist.index + 1 < state->file->jumplist.list.size()) {
+			state->file->jumplist.index++;
+			state->file->row = state->file->jumplist.list[state->file->jumplist.index].row;
+			state->file->col = state->file->jumplist.list[state->file->jumplist.index].col;
+			state->file->jumplist.touched = true;
 		}
 	}
 	if (state->mode != NORMAL) {

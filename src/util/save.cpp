@@ -3,14 +3,14 @@
 
 void saveFile(State *state)
 {
-	state->lastSave = state->historyPosition;
+	state->file->lastSave = state->file->historyPosition;
 	if (!state->dontSave) {
-		std::ofstream file(state->filename);
-		if (!state->data.empty()) {
-			for (size_t i = 0; i < state->data.size() - 1; ++i) {
-				file << state->data[i] << "\n";
+		std::ofstream file(state->file->filename);
+		if (!state->file->data.empty()) {
+			for (size_t i = 0; i < state->file->data.size() - 1; ++i) {
+				file << state->file->data[i] << "\n";
 			}
-			file << state->data.back();
+			file << state->file->data.back();
 		}
 		file.close();
 	}

@@ -6,7 +6,7 @@ std::string autocomplete(State *state, const std::string &query)
 		return "";
 	}
 	std::map<std::string, int> wordCounts;
-	for (std::string line : state->data) {
+	for (std::string line : state->file->data) {
 		line += ' ';
 		std::string word = "";
 		for (uint32_t i = 0; i < line.length(); i++) {

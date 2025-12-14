@@ -20,33 +20,33 @@ void sendMultiCursorKeys(State *state, int32_t c)
 		state->motion.clear();
 		return;
 	} else if (c == KEY_BACKSPACE || c == 127) {
-		if (state->col > 0) {
+		if (state->file->col > 0) {
 			for (uint32_t i = bounds.minR; i <= bounds.maxR; i++) {
-				std::string current = state->data[i];
-				state->data[i] = current.substr(0, state->col - 1) + safeSubstring(current, state->col);
+				std::string current = state->file->data[i];
+				state->file->data[i] = current.substr(0, state->file->col - 1) + safeSubstring(current, state->file->col);
 			}
-			state->col -= 1;
+			state->file->col -= 1;
 		}
 	} else if (' ' <= c && c <= '~') {
 		for (uint32_t i = bounds.minR; i <= bounds.maxR; i++) {
-			std::string current = state->data[i];
-			state->data[i] = current.substr(0, state->col) + (char)c + safeSubstring(current, state->col);
+			std::string current = state->file->data[i];
+			state->file->data[i] = current.substr(0, state->file->col) + (char)c + safeSubstring(current, state->file->col);
 		}
-		state->col += 1;
+		state->file->col += 1;
 	} else if (c == ctrl('t')) {
 		for (uint32_t i = bounds.minR; i <= bounds.maxR; i++) {
-			std::string current = state->data[i];
-			state->data[i] = current.substr(0, state->col) + '\t' + safeSubstring(current, state->col);
+			std::string current = state->file->data[i];
+			state->file->data[i] = current.substr(0, state->file->col) + '\t' + safeSubstring(current, state->file->col);
 		}
-		state->col += 1;
+		state->file->col += 1;
 	} else if (c == ctrl('i')) { // TAB
 		std::string completion = autocomplete(state, getCurrentWord(state));
-		if (safeSubstring(state->data[state->row], state->col, completion.length()) != completion) {
+		if (safeSubstring(state->file->data[state->file->row], state->file->col, completion.length()) != completion) {
 			for (uint32_t i = bounds.minR; i <= bounds.maxR; i++) {
-				std::string current = state->data[i];
-				state->data[i] = current.substr(0, state->col) + completion + safeSubstring(current, state->col);
+				std::string current = state->file->data[i];
+				state->file->data[i] = current.substr(0, state->file->col) + completion + safeSubstring(current, state->file->col);
 			}
-			state->col += completion.length();
+			state->file->col += completion.length();
 		}
 	}
 }

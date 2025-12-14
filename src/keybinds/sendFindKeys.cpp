@@ -82,7 +82,7 @@ void sendFindKeys(State *state, int32_t c)
 		if (state->find.selection < state->findOutput.size()) {
 			state->selectAll = false;
 			auto selectedFile = state->findOutput[state->find.selection].string();
-			std::filesystem::path currentDir = ((std::filesystem::path)state->filename).parent_path();
+			std::filesystem::path currentDir = ((std::filesystem::path)state->file->filename).parent_path();
 			std::filesystem::path relativePath = std::filesystem::relative(selectedFile, currentDir);
 			copyToClipboard(state, relativePath.string(), false);
 			state->mode = NORMAL;

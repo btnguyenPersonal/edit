@@ -6,20 +6,20 @@
 
 void indentLineWhenTypingLastChar(State *state)
 {
-	if (!autoIndentDisabledFileType(state->filename)) {
-		if (state->col + 1 == state->data[state->row].length()) {
+	if (!autoIndentDisabledFileType(state->file->filename)) {
+		if (state->file->col + 1 == state->file->data[state->file->row].length()) {
 			indentLine(state);
-			state->col = getLastCharIndex(state);
+			state->file->col = getLastCharIndex(state);
 		}
 	}
 }
 
 void indentLineWhenTypingFirstChar(State *state)
 {
-	if (!autoIndentDisabledFileType(state->filename)) {
-		if ((int32_t)state->col == getIndexFirstNonSpace(state)) {
+	if (!autoIndentDisabledFileType(state->file->filename)) {
+		if ((int32_t)state->file->col == getIndexFirstNonSpace(state)) {
 			indentLine(state);
-			state->col = getIndexFirstNonSpace(state);
+			state->file->col = getIndexFirstNonSpace(state);
 		}
 	}
 }
@@ -48,8 +48,8 @@ int32_t getNumLeadingIndentCharacters(State *state, std::string s)
 std::string getPrevLine(State *state, uint32_t row)
 {
 	for (int32_t i = row - 1; i >= 0; i--) {
-		if (state->data[i] != "") {
-			return state->data[i];
+		if (state->file->data[i] != "") {
+			return state->file->data[i];
 		}
 	}
 	return "";
@@ -90,12 +90,12 @@ int32_t getIndentLevel(State *state, uint32_t row)
 {
 	std::string prevLine = getPrevLine(state, row);
 	prevLine = trimComment(state, prevLine);
-	std::string currLine = state->data[row];
+	std::string currLine = state->file->data[row];
 	ltrim(currLine);
 	int32_t indentLevel = getNumLeadingIndentCharacters(state, prevLine);
 	uint32_t indentSize = getIndentSize(state);
 
-	if (hasHTML(prevLine, getExtension(state->filename))) {
+	if (hasHTML(prevLine, getExtension(state->file->filename))) {
 		int32_t tagType = EMPTY;
 		int32_t tagStack = 0;
 		for (uint32_t i = 0; i < prevLine.length(); i++) {
@@ -125,7 +125,7 @@ int32_t getIndentLevel(State *state, uint32_t row)
 		}
 	} else {
 		for (uint32_t i = 0; i < prevLine.length(); i++) {
-			if (prevLine.substr(i, state->commentSymbol.length()) == state->commentSymbol) {
+			if (prevLine.substr(i, state->file->commentSymbol.length()) == state->file->commentSymbol) {
 				break;
 			} else if (prevLine[i] == '(' || prevLine[i] == '{' || prevLine[i] == '[' || prevLine[i] == ':') {
 				if (i + 1 == prevLine.length()) {
@@ -135,7 +135,7 @@ int32_t getIndentLevel(State *state, uint32_t row)
 		}
 	}
 
-	if (hasHTML(currLine, getExtension(state->filename))) {
+	if (hasHTML(currLine, getExtension(state->file->filename))) {
 		int32_t tagType = EMPTY;
 		int32_t tagStack = 0;
 		for (uint32_t i = 0; i < currLine.length(); i++) {
@@ -162,7 +162,7 @@ int32_t getIndentLevel(State *state, uint32_t row)
 		}
 	} else {
 		for (uint32_t i = 0; i < currLine.length(); i++) {
-			if (currLine.substr(i, state->commentSymbol.length()) == state->commentSymbol) {
+			if (currLine.substr(i, state->file->commentSymbol.length()) == state->file->commentSymbol) {
 				break;
 			} else if (currLine.substr(i, std::string("default:").length()) == "default:") {
 				if (i == 0) {
@@ -185,50 +185,50 @@ int32_t getIndentLevel(State *state, uint32_t row)
 
 void indentLine(State *state, uint32_t row)
 {
-	ltrim(state->data[row]);
-	if (state->data[row].length() != 0) {
+	ltrim(state->file->data[row]);
+	if (state->file->data[row].length() != 0) {
 		int32_t indentLevel = getIndentLevel(state, row);
 		for (int32_t i = 0; i < indentLevel; i++) {
-			state->data[row] = getIndentCharacter(state) + state->data[row];
+			state->file->data[row] = getIndentCharacter(state) + state->file->data[row];
 		}
 	}
 }
 
 void indentLine(State *state)
 {
-	ltrim(state->data[state->row]);
-	if (state->data[state->row].length() != 0) {
-		int32_t indentLevel = getIndentLevel(state, state->row);
+	ltrim(state->file->data[state->file->row]);
+	if (state->file->data[state->file->row].length() != 0) {
+		int32_t indentLevel = getIndentLevel(state, state->file->row);
 		for (int32_t i = 0; i < indentLevel; i++) {
-			state->data[state->row] = getIndentCharacter(state) + state->data[state->row];
+			state->file->data[state->file->row] = getIndentCharacter(state) + state->file->data[state->file->row];
 		}
 	}
 }
 
 void indentRange(State *state)
 {
-	uint32_t firstNonEmptyRow = state->row;
-	for (int32_t i = state->row; i <= (int32_t)state->visual.row; i++) {
-		if (state->data[i] != "") {
+	uint32_t firstNonEmptyRow = state->file->row;
+	for (int32_t i = state->file->row; i <= (int32_t)state->visual.row; i++) {
+		if (state->file->data[i] != "") {
 			firstNonEmptyRow = i;
 			break;
 		}
 	}
-	int32_t indentDifference = getIndentLevel(state, state->row) - getNumLeadingIndentCharacters(state, state->data[firstNonEmptyRow]);
+	int32_t indentDifference = getIndentLevel(state, state->file->row) - getNumLeadingIndentCharacters(state, state->file->data[firstNonEmptyRow]);
 	if (indentDifference > 0) {
-		for (int32_t i = state->row; i <= (int32_t)state->visual.row; i++) {
-			if (state->data[i] != "") {
+		for (int32_t i = state->file->row; i <= (int32_t)state->visual.row; i++) {
+			if (state->file->data[i] != "") {
 				for (int32_t j = 0; j < indentDifference; j++) {
-					state->data[i] = getIndentCharacter(state) + state->data[i];
+					state->file->data[i] = getIndentCharacter(state) + state->file->data[i];
 				}
 			}
 		}
 	} else if (indentDifference < 0) {
-		for (int32_t i = state->row; i <= (int32_t)state->visual.row; i++) {
-			if (state->data[i] != "") {
+		for (int32_t i = state->file->row; i <= (int32_t)state->visual.row; i++) {
+			if (state->file->data[i] != "") {
 				for (int32_t j = 0; j < -1 * indentDifference; j++) {
-					if (state->data[i].length() > 0 && state->data[i][0] == getIndentCharacter(state)) {
-						state->data[i] = safeSubstring(state->data[i], 1);
+					if (state->file->data[i].length() > 0 && state->file->data[i][0] == getIndentCharacter(state)) {
+						state->file->data[i] = safeSubstring(state->file->data[i], 1);
 					}
 				}
 			}

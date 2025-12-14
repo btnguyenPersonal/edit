@@ -7,94 +7,94 @@ struct testSuiteRun testSanityChecks()
 	{
 		State *state = new State("./test-file.h", {});
 		fixColOverMax(state);
-		output.push_back({ "fixColOverMax should add an empty line if the data is empty", compare(state->data, { "" }) });
+		output.push_back({ "fixColOverMax should add an empty line if the data is empty", compare(state->file->data, { "" }) });
 	}
 
 	{
 		State *state = new State("./test-file.h", { "" });
 		fixColOverMax(state);
-		output.push_back({ "fixColOverMax should set col to 0 if col is already 0 and the line is empty", compare(state->col, 0) });
+		output.push_back({ "fixColOverMax should set col to 0 if col is already 0 and the line is empty", compare(state->file->col, 0) });
 	}
 
 	{
 		State *state = new State("./test-file.h", { "" });
-		state->col = 1;
+		state->file->col = 1;
 		fixColOverMax(state);
-		output.push_back({ "fixColOverMax should set col to 0 if col is 1 and the line is empty", compare(state->col, 0) });
+		output.push_back({ "fixColOverMax should set col to 0 if col is 1 and the line is empty", compare(state->file->col, 0) });
 	}
 
 	{
 		State *state = new State("./test-file.h", { "" });
-		state->row = 1;
+		state->file->row = 1;
 		fixColOverMax(state);
-		output.push_back({ "fixColOverMax should set row to 0 if row is 1 and the row does not exist", compare(state->row, 0) });
+		output.push_back({ "fixColOverMax should set row to 0 if row is 1 and the row does not exist", compare(state->file->row, 0) });
 	}
 
 	{
 		State *state = new State("./test-file.h", { "Hello world!" });
-		state->col = 1000;
+		state->file->col = 1000;
 		fixColOverMax(state);
-		output.push_back({ "fixColOverMax should set col to the end in the trivial case", compare(state->col, std::string("Hello world!").length()) });
+		output.push_back({ "fixColOverMax should set col to the end in the trivial case", compare(state->file->col, std::string("Hello world!").length()) });
 	}
 
 	{
 		State *state = new State("./test-file.h", { "Hello world!" });
-		state->col = 13;
+		state->file->col = 13;
 		fixColOverMax(state);
-		output.push_back({ "fixColOverMax should set col to the end when one after the end", compare(state->col, std::string("Hello world!").length()) });
+		output.push_back({ "fixColOverMax should set col to the end when one after the end", compare(state->file->col, std::string("Hello world!").length()) });
 	}
 
 	{
 		State *state = new State("./test-file.h", { "Hello world!" });
-		state->col = 11;
+		state->file->col = 11;
 		fixColOverMax(state);
-		output.push_back({ "fixColOverMax should not set col to the end when one before the end", compare(state->col, 11) });
+		output.push_back({ "fixColOverMax should not set col to the end when one before the end", compare(state->file->col, 11) });
 	}
 
 	{
 		State *state = new State("./test-file.h", { "Hello world!" });
-		state->col = 0;
+		state->file->col = 0;
 		fixColOverMax(state);
-		output.push_back({ "fixColOverMax should not set col to the end when at the start", compare(state->col, 0) });
+		output.push_back({ "fixColOverMax should not set col to the end when at the start", compare(state->file->col, 0) });
 	}
 
 	{
 		State *state = new State("./test-file.h", {});
 		sanityCheckDocumentEmpty(state);
-		output.push_back({ "sanityCheckDocumentEmpty should insert an empty string when document is empty", compare(state->data, { "" }) });
+		output.push_back({ "sanityCheckDocumentEmpty should insert an empty string when document is empty", compare(state->file->data, { "" }) });
 	}
 
 	{
 		State *state = new State("./test-file.h", { "hi" });
 		sanityCheckDocumentEmpty(state);
-		output.push_back({ "sanityCheckDocumentEmpty should not insert an empty string when document is not empty", compare(state->data, { "hi" }) });
+		output.push_back({ "sanityCheckDocumentEmpty should not insert an empty string when document is not empty", compare(state->file->data, { "hi" }) });
 	}
 
 	{
 		State *state = new State("./test-file.h", { "hi" });
 		sanityCheckRowOutOfBounds(state);
-		output.push_back({ "sanityCheckRowOutOfBounds should set row to 0 when row is not out of bounds", compare(state->row, 0) });
+		output.push_back({ "sanityCheckRowOutOfBounds should set row to 0 when row is not out of bounds", compare(state->file->row, 0) });
 	}
 
 	{
 		State *state = new State("./test-file.h", { "hi" });
-		state->row = 10;
+		state->file->row = 10;
 		sanityCheckRowOutOfBounds(state);
-		output.push_back({ "sanityCheckRowOutOfBounds should set row to 0 when row is out of bounds and only one row", compare(state->row, 0) });
+		output.push_back({ "sanityCheckRowOutOfBounds should set row to 0 when row is out of bounds and only one row", compare(state->file->row, 0) });
 	}
 
 	{
 		State *state = new State("./test-file.h", { "hi", "hi2", "hi3" });
-		state->row = 3;
+		state->file->row = 3;
 		sanityCheckRowOutOfBounds(state);
-		output.push_back({ "sanityCheckRowOutOfBounds should set row to length - 1 when row is one over the length", compare(state->row, 2) });
+		output.push_back({ "sanityCheckRowOutOfBounds should set row to length - 1 when row is one over the length", compare(state->file->row, 2) });
 	}
 
 	{
 		State *state = new State("./test-file.h", { "hi", "hi2", "hi3" });
-		state->row = 1;
+		state->file->row = 1;
 		sanityCheckRowOutOfBounds(state);
-		output.push_back({ "sanityCheckRowOutOfBounds should not set row to length - 1 when row is one under the length", compare(state->row, 1) });
+		output.push_back({ "sanityCheckRowOutOfBounds should not set row to length - 1 when row is one under the length", compare(state->file->row, 1) });
 	}
 
 	{

@@ -16,6 +16,23 @@
 uint32_t State::maxX = 0;
 uint32_t State::maxY = 0;
 
+File *getFile(std::string name, std::vector<std::string> data) {
+	File *file = new File();
+	file->filename = name;
+	file->data = data;
+	file->previousState = data;
+	file->commentSymbol = getCommentSymbol(name);
+	file->history = std::vector<std::vector<diffLine> >();
+	file->historyPosition = -1;
+	file->lastSave = -1;
+	file->windowPosition.row = 0;
+	file->windowPosition.col = 0;
+	file->row = 0;
+	file->col = 0;
+	file->hardCol = 0;
+	return file;
+}
+
 void State::loadAllConfigFiles()
 {
 	std::filesystem::path home = std::filesystem::absolute(getenv("HOME"));
@@ -46,7 +63,7 @@ void State::loadConfigFile(std::string fileLocation)
 			} else {
 				readConfigLine(config[i]);
 			}
-		} else if (!found && isLineFileRegex(config[i]) && matchesEditorConfigGlob(config[i], this->filename)) {
+		} else if (!found && isLineFileRegex(config[i]) && this->file && matchesEditorConfigGlob(config[i], this->file->filename)) {
 			found = true;
 		}
 	}
@@ -109,29 +126,18 @@ void State::changeFile(std::string filename)
 		return;
 	}
 	bool found = false;
-	for (uint32_t i = 0; i < this->archives.size(); i++) {
-		if (this->files[i].filename == name) {
-			this->file = &this->files[i];
+	for (uint32_t i = 0; i < this->files.size(); i++) {
+		if (this->files[i]->filename == name) {
+			this->file = this->files[i];
 			found = true;
 			break;
 		}
 	}
 	if (!found) {
-		File *file = {};
 		std::vector<std::string> data = readFile(name);
-		file->filename = name;
-		file->data = data;
-		file->previousState = data;
-		file->commentSymbol = getCommentSymbol(name);
-		file->history = std::vector<std::vector<diffLine> >();
-		file->historyPosition = -1;
-		file->lastSave = -1;
-		file->windowPosition.row = 0;
-		file->windowPosition.col = 0;
-		file->row = 0;
-		file->col = 0;
-		file->hardCol = 0;
-		this->files.push_back(&file);
+		File *file = getFile(name, data);
+		this->files.push_back(file);
+		this->currentFile = this->files.size() - 1;
 		this->file = file;
 	}
 	this->loadAllConfigFiles();
@@ -158,7 +164,7 @@ bool State::resetState(std::string filename)
 		this->status = "file not found: " + name;
 		return false;
 	}
-	this->pushFileStack(this->filename);
+	this->pushFileStack(this->file->filename);
 	this->pushFileStack(name);
 	this->fileStackIndex = this->fileStack.size() - 1;
 	this->changeFile(name);
@@ -187,7 +193,6 @@ void State::init()
 	this->searching = false;
 	this->dontSave = true;
 	this->replacing = false;
-	this->jumplist = { false, 0, std::vector<Position>() };
 	this->buildErrorIndex = 0;
 	this->blameSize = 65;
 	this->diffLines = std::vector<std::string>();
@@ -198,19 +203,11 @@ void State::init()
 		this->harpoon.push_back({ 0, std::vector<std::string>() });
 	}
 	this->workspace = 0;
-	this->data = std::vector<std::string>();
-	this->previousState = std::vector<std::string>();
 	this->grepOutput = std::vector<grepMatch>();
 	this->findOutput = std::vector<std::filesystem::path>();
-	this->lastSave = -1;
-	this->windowPosition.row = 0;
-	this->windowPosition.col = 0;
-	this->visualType = NORMAL;
+	this->visualType = SELECT;
 	this->visual.row = 0;
 	this->visual.col = 0;
-	this->row = 0;
-	this->col = 0;
-	this->hardCol = 0;
 	this->search = { std::string(""), 0, 0 };
 	this->replace = { std::string(""), 0, 0 };
 	this->commandLine = { std::string(""), 0, 0 };
@@ -238,10 +235,10 @@ void State::init()
 void State::init(std::string name, std::vector<std::string> data)
 {
 	this->init();
-	this->filename = name;
-	this->data = data;
-	this->previousState = data;
-	this->commentSymbol = getCommentSymbol(name);
+	File *file = getFile(name, data);
+	this->files.push_back(file);
+	this->currentFile = this->files.size() - 1;
+	this->file = file;
 	this->mode = NORMAL;
 	this->fileStack = { name };
 	this->fileStackIndex = 0;

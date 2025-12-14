@@ -9,12 +9,12 @@
 
 void cleanup(State *state, char c)
 {
-	if (state->mode == NORMAL && state->filename == "") {
+	if (state->mode == NORMAL && !state->file) {
 		endwin();
 		exit(0);
-	} else if (state->filename != "") {
+	} else if (state->file) {
 		if (!state->skipSetHardCol) {
-			state->hardCol = getDisplayCol(state);
+			state->file->hardCol = getDisplayCol(state);
 		}
 		state->skipSetHardCol = false;
 		sanityCheckGrepSelection(state);
@@ -24,21 +24,21 @@ void cleanup(State *state, char c)
 		if (state->mode == INSERT) {
 			fixColOverMax(state);
 		}
-		expect(state->data[state->row].length() >= 0);
+		expect(state->file->data[state->file->row].length() >= 0);
 		if (state->options.insert_final_newline) {
 			insertFinalEmptyNewline(state);
 		}
 		if (isWindowPositionInvalid(state)) {
 			centerScreen(state);
 		}
-		expect(state->windowPosition.row <= state->row);
-		expect(state->windowPosition.row + state->maxY > state->row);
+		expect(state->file->windowPosition.row <= state->file->row);
+		expect(state->file->windowPosition.row + state->maxY > state->file->row);
 		if (state->recording && !state->dontRecordKey) {
 			if (!(c == ',' && state->mode == NORMAL)) {
 				recordMacroCommand(state, c);
 			}
 		}
-		if (!state->jumplist.touched) {
+		if (!state->file->jumplist.touched) {
 			recordJumpList(state);
 		}
 		state->matching = matchIt(state);
@@ -53,8 +53,8 @@ void cleanup(State *state, char c)
 void history(State *state, char c)
 {
 	if (state->mode == NORMAL) {
-		std::vector<diffLine> diff = generateDiff(state->previousState, state->data);
-		state->previousState = state->data;
+		std::vector<diffLine> diff = generateDiff(state->file->previousState, state->file->data);
+		state->file->previousState = state->file->data;
 		if (diff.size() != 0) {
 			if (c != ctrl('r') && c != 'u') {
 				recordHistory(state, diff);

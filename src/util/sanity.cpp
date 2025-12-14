@@ -23,25 +23,31 @@ void sanityCheckQuery(Query &query, uint32_t len)
 
 void sanityCheckDocumentEmpty(State *state)
 {
-	if (state->data.size() == 0) {
-		state->data.push_back("");
+	if (state->file) {
+		if (state->file->data.size() == 0) {
+			state->file->data.push_back("");
+		}
 	}
 }
 
 void fixColOverMax(State *state)
 {
-	sanityCheckDocumentEmpty(state);
-	sanityCheckRowOutOfBounds(state);
-	if (state->col > state->data[state->row].length()) {
-		state->col = state->data[state->row].length();
+	if (state->file) {
+		sanityCheckDocumentEmpty(state);
+		sanityCheckRowOutOfBounds(state);
+		if (state->file->col > state->file->data[state->file->row].length()) {
+			state->file->col = state->file->data[state->file->row].length();
+		}
 	}
 }
 
 void sanityCheckRowOutOfBounds(State *state)
 {
-	if (state->data.size() == 0) {
-		state->row = 0;
-	} else if (state->row >= state->data.size()) {
-		state->row = state->data.size() - 1;
+	if (state->file) {
+		if (state->file->data.size() == 0) {
+			state->file->row = 0;
+		} else if (state->file->row >= state->file->data.size()) {
+			state->file->row = state->file->data.size() - 1;
+		}
 	}
 }

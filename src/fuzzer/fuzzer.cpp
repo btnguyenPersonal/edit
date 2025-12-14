@@ -53,19 +53,19 @@ void fuzzSendKeys(int testnum, int iterations = 1000)
 		}
 		std::cout << "\t\toutput.push_back({" << std::endl;
 		std::cout << std::string("\t\t\t\"snapshotTest ") + std::to_string(testnum) + "\"," << std::endl;
-		std::cout << "\t\t\tcompare(state->data, {";
-		for (uint32_t i = 0; i < state->data.size(); i++) {
+		std::cout << "\t\t\tcompare(state->file->data, {";
+		for (uint32_t i = 0; i < state->file->data.size(); i++) {
 			if (i != 0) {
 				std::cout << ",";
 			}
 			std::cout << std::endl;
 			std::cout << "\t\t\t\t\"";
 			std::string s = "";
-			for (uint32_t j = 0; j < state->data[i].length(); j++) {
-				if (state->data[i][j] == '\\' || state->data[i][j] == '"') {
+			for (uint32_t j = 0; j < state->file->data[i].length(); j++) {
+				if (state->file->data[i][j] == '\\' || state->file->data[i][j] == '"') {
 					s += "\\";
 				}
-				s += state->data[i][j];
+				s += state->file->data[i][j];
 			}
 			std::cout << s;
 			std::cout << "\"";

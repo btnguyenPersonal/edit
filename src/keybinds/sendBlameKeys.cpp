@@ -16,9 +16,9 @@ void sendBlameKeys(State *state, int32_t c)
 	} else if (c == 'j') {
 		down(state);
 	} else if (c == '[') {
-		state->row = getPrevLineSameIndent(state);
+		state->file->row = getPrevLineSameIndent(state);
 	} else if (c == ']') {
-		state->row = getNextLineSameIndent(state);
+		state->file->row = getNextLineSameIndent(state);
 	} else if (c == ctrl('u')) {
 		upHalfScreen(state);
 	} else if (c == ctrl('d')) {

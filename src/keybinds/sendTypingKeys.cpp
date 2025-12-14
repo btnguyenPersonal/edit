@@ -12,11 +12,11 @@
 void insertNewline(State *state)
 {
 	fixColOverMax(state);
-	std::string current = state->data[state->row];
-	state->data[state->row] = current.substr(0, state->col);
-	state->data.insert(state->data.begin() + state->row + 1, current.substr(state->col));
-	state->row += 1;
-	state->col = 0;
+	std::string current = state->file->data[state->file->row];
+	state->file->data[state->file->row] = current.substr(0, state->file->col);
+	state->file->data.insert(state->file->data.begin() + state->file->row + 1, current.substr(state->file->col));
+	state->file->row += 1;
+	state->file->col = 0;
 }
 
 void sendTypingKeys(State *state, int32_t c)
@@ -28,9 +28,9 @@ void sendTypingKeys(State *state, int32_t c)
 		if (c == '\n') {
 			insertNewline(state);
 		} else {
-			std::string current = state->data[state->row];
-			state->data[state->row] = current.substr(0, state->col) + (char)c + current.substr(state->col);
-			state->col += 1;
+			std::string current = state->file->data[state->file->row];
+			state->file->data[state->file->row] = current.substr(0, state->file->col) + (char)c + current.substr(state->file->col);
+			state->file->col += 1;
 		}
 	} else if (c == 27) { // ESC
 		left(state);
@@ -42,43 +42,43 @@ void sendTypingKeys(State *state, int32_t c)
 	} else if (c == '\n') {
 		insertNewline(state);
 	} else if (c == KEY_BACKSPACE || c == 127) {
-		if (state->col > 0) {
-			std::string current = state->data[state->row];
-			state->data[state->row] = current.substr(0, state->col - 1) + current.substr(state->col);
-			state->col -= 1;
-		} else if (state->row > 0) {
-			state->col = state->data[state->row - 1].length();
-			state->data[state->row - 1] += state->data[state->row];
-			state->data.erase(state->data.begin() + state->row);
-			state->row -= 1;
+		if (state->file->col > 0) {
+			std::string current = state->file->data[state->file->row];
+			state->file->data[state->file->row] = current.substr(0, state->file->col - 1) + current.substr(state->file->col);
+			state->file->col -= 1;
+		} else if (state->file->row > 0) {
+			state->file->col = state->file->data[state->file->row - 1].length();
+			state->file->data[state->file->row - 1] += state->file->data[state->file->row];
+			state->file->data.erase(state->file->data.begin() + state->file->row);
+			state->file->row -= 1;
 		}
 	} else if (c == ctrl('w')) {
-		std::string current = state->data[state->row];
+		std::string current = state->file->data[state->file->row];
 		uint32_t index = b(state);
-		state->data[state->row] = current.substr(0, index) + current.substr(state->col);
-		state->col = index;
+		state->file->data[state->file->row] = current.substr(0, index) + current.substr(state->file->col);
+		state->file->col = index;
 	} else if (' ' <= c && c <= '~') {
-		std::string current = state->data[state->row];
-		state->data[state->row] = current.substr(0, state->col) + (char)c + current.substr(state->col);
+		std::string current = state->file->data[state->file->row];
+		state->file->data[state->file->row] = current.substr(0, state->file->col) + (char)c + current.substr(state->file->col);
 		if (c == ':') {
 			indentLineWhenTypingLastChar(state);
 		}
 		if (c != ' ') {
 			indentLineWhenTypingFirstChar(state);
 		}
-		state->col += 1;
+		state->file->col += 1;
 	} else if (c == ctrl('t')) {
-		std::string current = state->data[state->row];
-		state->data[state->row] = current.substr(0, state->col) + '\t' + current.substr(state->col);
-		state->col += 1;
+		std::string current = state->file->data[state->file->row];
+		state->file->data[state->file->row] = current.substr(0, state->file->col) + '\t' + current.substr(state->file->col);
+		state->file->col += 1;
 	} else if (c == ctrl('v')) {
 		state->prevKeys = 'v';
 	} else if (c == ctrl('i')) { // TAB
 		std::string completion = autocomplete(state, getCurrentWord(state));
-		if (safeSubstring(state->data[state->row], state->col, completion.length()) != completion) {
-			std::string current = state->data[state->row];
-			state->data[state->row] = current.substr(0, state->col) + completion + safeSubstring(current, state->col);
-			state->col += completion.length();
+		if (safeSubstring(state->file->data[state->file->row], state->file->col, completion.length()) != completion) {
+			std::string current = state->file->data[state->file->row];
+			state->file->data[state->file->row] = current.substr(0, state->file->col) + completion + safeSubstring(current, state->file->col);
+			state->file->col += completion.length();
 		}
 	} else if (c == KEY_LEFT) {
 		left(state);

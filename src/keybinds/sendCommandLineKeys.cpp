@@ -20,8 +20,8 @@ void evaluateCommandLineQuery(State *state)
 		}
 	} else if (state->commandLine.query == "q") {
 		if (!state->dontSave) {
-			if (state->lastSave != state->historyPosition) {
-				state->status = "unsaved changes for file: " + state->filename;
+			if (state->file->lastSave != state->file->historyPosition) {
+				state->status = "unsaved changes for file: " + state->file->filename;
 			} else {
 				endwin();
 				exit(0);
@@ -70,9 +70,9 @@ void evaluateCommandLineQuery(State *state)
 	} else if (is_number(state->commandLine.query)) {
 		uint32_t number = stoul(state->commandLine.query);
 		if (number > 0) {
-			state->row = number - 1;
+			state->file->row = number - 1;
 		} else {
-			state->row = 0;
+			state->file->row = 0;
 		}
 	} else {
 		state->readConfigLine(state->commandLine.query);

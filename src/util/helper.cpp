@@ -52,7 +52,7 @@ std::vector<std::string> getLogLines(State *state)
 void locateNodeModule(State *state, std::string vis)
 {
 	try {
-		std::filesystem::path filePath(state->filename);
+		std::filesystem::path filePath(state->file->filename);
 		std::filesystem::path dir = filePath.parent_path();
 		std::filesystem::path current = std::filesystem::absolute(std::filesystem::current_path());
 		uint32_t i = 0;
@@ -84,7 +84,7 @@ void locateFile(State *state, std::string vis, std::vector<std::string> extensio
 	}
 	for (uint32_t i = 0; i < extensions.size(); i++) {
 		try {
-			std::filesystem::path filePath(state->filename);
+			std::filesystem::path filePath(state->file->filename);
 			std::filesystem::path dir = filePath.parent_path();
 			auto newFilePath = dir / (vis + extensions[i]);
 			if (std::filesystem::is_regular_file(newFilePath.c_str())) {
@@ -206,41 +206,41 @@ void backwardFileStack(State *state)
 
 void swapCase(State *state, uint32_t r, uint32_t c)
 {
-	if (c < state->data[r].length()) {
-		char tmp = state->data[r][c];
+	if (c < state->file->data[r].length()) {
+		char tmp = state->file->data[r][c];
 		if (isupper(tmp)) {
-			state->data[r][c] = std::tolower(tmp);
+			state->file->data[r][c] = std::tolower(tmp);
 		} else if (islower(tmp)) {
-			state->data[r][c] = std::toupper(tmp);
+			state->file->data[r][c] = std::toupper(tmp);
 		}
 	}
 }
 
 void recordHistory(State *state, std::vector<diffLine> diff)
 {
-	if (state->historyPosition < (int32_t)state->history.size()) {
-		state->history.erase(state->history.begin() + state->historyPosition + 1, state->history.end());
+	if (state->file->historyPosition < (int32_t)state->file->history.size()) {
+		state->file->history.erase(state->file->history.begin() + state->file->historyPosition + 1, state->file->history.end());
 	}
-	state->history.push_back(diff);
-	state->historyPosition = (int32_t)state->history.size() - 1;
-	state->diffIndex = state->historyPosition;
-	expect(state->historyPosition >= 0);
+	state->file->history.push_back(diff);
+	state->file->historyPosition = (int32_t)state->file->history.size() - 1;
+	state->diffIndex = state->file->historyPosition;
+	expect(state->file->historyPosition >= 0);
 }
 
 void recordJumpList(State *state)
 {
-	if (state->jumplist.list.size() > 0) {
-		auto pos = state->jumplist.list.back();
-		if (pos.row != state->row || pos.col != state->col) {
-			state->jumplist.list.erase(state->jumplist.list.begin() + state->jumplist.index + 1, state->jumplist.list.end());
-			state->jumplist.list.push_back({ state->row, state->col });
-			state->jumplist.index = state->jumplist.list.size() - 1;
+	if (state->file->jumplist.list.size() > 0) {
+		auto pos = state->file->jumplist.list.back();
+		if (pos.row != state->file->row || pos.col != state->file->col) {
+			state->file->jumplist.list.erase(state->file->jumplist.list.begin() + state->file->jumplist.index + 1, state->file->jumplist.list.end());
+			state->file->jumplist.list.push_back({ state->file->row, state->file->col });
+			state->file->jumplist.index = state->file->jumplist.list.size() - 1;
 		}
 	} else {
-		state->jumplist.list.push_back({ state->row, state->col });
-		state->jumplist.index = state->jumplist.list.size() - 1;
+		state->file->jumplist.list.push_back({ state->file->row, state->file->col });
+		state->file->jumplist.index = state->file->jumplist.list.size() - 1;
 	}
-	state->jumplist.touched = false;
+	state->file->jumplist.touched = false;
 }
 
 void recordMacroCommand(State *state, char c)
@@ -250,8 +250,8 @@ void recordMacroCommand(State *state, char c)
 
 void insertFinalEmptyNewline(State *state)
 {
-	if (state->data.size() > 0 && state->data[state->data.size() - 1] != "") {
-		state->data.push_back("");
+	if (state->file->data.size() > 0 && state->file->data[state->file->data.size() - 1] != "") {
+		state->file->data.push_back("");
 	}
 }
 
@@ -288,8 +288,8 @@ bool matchesEditorConfigGlob(const std::string &pattern, const std::string &file
 
 uint32_t getLastCharIndex(State* state)
 {
-	if (state->data[state->row].length() != 0) {
-		return state->data[state->row].length() - 1;
+	if (state->file->data[state->file->row].length() != 0) {
+		return state->file->data[state->file->row].length() - 1;
 	} else {
 		return 0;
 	}
@@ -302,8 +302,8 @@ std::string getRelativeToLastAndRoute(State *state)
 	}
 	std::string lastFile = state->fileStack[state->fileStackIndex - 1];
 	std::filesystem::path lastDir = std::filesystem::path(std::string("./") + lastFile).parent_path();
-	std::filesystem::path currentDir = std::filesystem::path(std::string("./") + state->filename).parent_path();
-	auto relativePath = std::filesystem::relative(state->filename, lastDir).string();
+	std::filesystem::path currentDir = std::filesystem::path(std::string("./") + state->file->filename).parent_path();
+	auto relativePath = std::filesystem::relative(state->file->filename, lastDir).string();
 	if (std::filesystem::is_regular_file(lastFile.c_str())) {
 		state->changeFile(lastFile);
 	}
@@ -315,7 +315,7 @@ std::string getRelativeToLastAndRoute(State *state)
 
 std::string getRelativeToCurrent(State *state, std::string p)
 {
-	std::filesystem::path currentDir = std::filesystem::path(std::string("./") + state->filename).parent_path();
+	std::filesystem::path currentDir = std::filesystem::path(std::string("./") + state->file->filename).parent_path();
 	auto relativePath = std::filesystem::relative(p, currentDir).string();
 	if (safeSubstring(relativePath, 0, 3) != "../") {
 		relativePath = "./" + relativePath;
@@ -401,7 +401,7 @@ void focusHarpoon(State *state)
 void realignHarpoon(State *state)
 {
 	for (uint32_t i = 0; i < state->harpoon[state->workspace].list.size(); i++) {
-		if (state->harpoon[state->workspace].list[i] == state->filename) {
+		if (state->harpoon[state->workspace].list[i] == state->file->filename) {
 			state->harpoon[state->workspace].index = i;
 		}
 	}
@@ -410,7 +410,7 @@ void realignHarpoon(State *state)
 bool containsHarpoon(State *state)
 {
 	for (uint32_t i = 0; i < state->harpoon[state->workspace].list.size(); i++) {
-		if (state->filename == state->harpoon[state->workspace].list[i]) {
+		if (state->file->filename == state->harpoon[state->workspace].list[i]) {
 			return true;
 		}
 	}
@@ -426,7 +426,7 @@ bool createNewestHarpoon(State *state)
 		state->status = "harpoon workspace over limit";
 		return false;
 	}
-	state->harpoon[state->workspace].list.push_back(state->filename);
+	state->harpoon[state->workspace].list.push_back(state->file->filename);
 	state->harpoon[state->workspace].index = state->harpoon[state->workspace].list.size() - 1;
 	return true;
 }
@@ -473,8 +473,8 @@ void rename(State *state, const std::filesystem::path &oldPath, const std::strin
 	}
 
 	auto relativePath = std::filesystem::relative(oldPath, std::filesystem::current_path()).string();
-	if (state->filename == relativePath) {
-		state->filename = newPath.string();
+	if (state->file->filename == relativePath) {
+		state->file->filename = newPath.string();
 	}
 }
 
@@ -522,7 +522,7 @@ void changeToGrepFile(State *state)
 		}
 		int32_t lineNum = state->grepOutput[state->grep.selection].lineNum;
 		state->resetState(selectedFile);
-		state->row = lineNum - 1;
+		state->file->row = lineNum - 1;
 		setSearchResultCurrentLine(state, state->grep.query);
 	}
 }
@@ -549,7 +549,7 @@ bool isFunctionLine(std::string line, std::string s, std::string extension)
 
 void findDefinitionFromGrepOutput(State *state, std::string s)
 {
-	std::string extension = getExtension(state->filename);
+	std::string extension = getExtension(state->file->filename);
 	for (uint32_t i = 0; i < state->grepOutput.size(); i++) {
 		if (state->grepOutput[i].line.back() == '(' || state->grepOutput[i].line.back() == '{') {
 			if (isFunctionLine(state->grepOutput[i].line, s, extension)) {
@@ -572,7 +572,7 @@ std::string normalizeFilename(std::string filename)
 
 void refocusFileExplorer(State *state, bool changeMode)
 {
-	auto normalizedFilename = normalizeFilename(state->filename);
+	auto normalizedFilename = normalizeFilename(state->file->filename);
 	if (state->fileExplorerOpen) {
 		state->fileExplorerIndex = state->fileExplorer->expand(normalizedFilename);
 		centerFileExplorer(state);
@@ -623,20 +623,20 @@ char getCorrespondingParen(char c)
 
 Position matchIt(State *state)
 {
-	char firstParen = state->data[state->row][state->col];
+	char firstParen = state->file->data[state->file->row][state->file->col];
 	int32_t stack = 0;
 	if (isOpenParen(firstParen)) {
 		char secondParen = getCorrespondingParen(firstParen);
-		uint32_t col = state->col;
-		for (uint32_t row = state->row; row < state->data.size(); row++) {
-			while (col < state->data[row].size()) {
-				if (state->data[row][col] == secondParen) {
+		uint32_t col = state->file->col;
+		for (uint32_t row = state->file->row; row < state->file->data.size(); row++) {
+			while (col < state->file->data[row].size()) {
+				if (state->file->data[row][col] == secondParen) {
 					if (stack == 1) {
 						return { row, col };
 					} else {
 						stack--;
 					}
-				} else if (state->data[row][col] == firstParen) {
+				} else if (state->file->data[row][col] == firstParen) {
 					stack++;
 				}
 				col++;
@@ -645,20 +645,20 @@ Position matchIt(State *state)
 		}
 	} else if (isCloseParen(firstParen)) {
 		char secondParen = getCorrespondingParen(firstParen);
-		int32_t col = (int32_t)state->col;
+		int32_t col = (int32_t)state->file->col;
 		bool first = true;
-		for (int32_t row = (int32_t)state->row; row >= 0; row--) {
+		for (int32_t row = (int32_t)state->file->row; row >= 0; row--) {
 			if (!first) {
-				col = state->data[row].length() > 0 ? state->data[row].length() - 1 : 0;
+				col = state->file->data[row].length() > 0 ? state->file->data[row].length() - 1 : 0;
 			}
 			while (col >= 0) {
-				if (state->data[row][col] == secondParen) {
+				if (state->file->data[row][col] == secondParen) {
 					if (stack == 1) {
 						return { (uint32_t)row, (uint32_t)col };
 					} else {
 						stack--;
 					}
-				} else if (state->data[row][col] == firstParen) {
+				} else if (state->file->data[row][col] == firstParen) {
 					stack++;
 				}
 				col--;
@@ -666,7 +666,7 @@ Position matchIt(State *state)
 			first = false;
 		}
 	}
-	return { state->row, state->col };
+	return { state->file->row, state->file->col };
 }
 
 std::string safeSubstring(const std::string &str, std::size_t pos, std::size_t len)
@@ -689,19 +689,19 @@ void getAndAddNumber(State *state, uint32_t row, uint32_t col, int32_t num)
 {
 	std::string number;
 	int32_t startPos = col;
-	if (std::isdigit(state->data[row][col])) {
-		number += state->data[row][col];
+	if (std::isdigit(state->file->data[row][col])) {
+		number += state->file->data[row][col];
 		for (int32_t i = (int32_t)col - 1; i >= 0; i--) {
-			if (std::isdigit(state->data[row][i])) {
-				number = state->data[row][i] + number;
+			if (std::isdigit(state->file->data[row][i])) {
+				number = state->file->data[row][i] + number;
 				startPos = i;
 			} else {
 				break;
 			}
 		}
-		for (uint32_t i = col + 1; i < state->data[row].length(); i++) {
-			if (std::isdigit(state->data[row][i])) {
-				number += state->data[row][i];
+		for (uint32_t i = col + 1; i < state->file->data[row].length(); i++) {
+			if (std::isdigit(state->file->data[row][i])) {
+				number += state->file->data[row][i];
 			} else {
 				break;
 			}
@@ -713,7 +713,7 @@ void getAndAddNumber(State *state, uint32_t row, uint32_t col, int32_t num)
 			} else {
 				temp += num;
 			}
-			state->data[row] = state->data[row].substr(0, startPos) + std::to_string(temp) + safeSubstring(state->data[row], startPos + number.length());
+			state->file->data[row] = state->file->data[row].substr(0, startPos) + std::to_string(temp) + safeSubstring(state->file->data[row], startPos + number.length());
 		} catch (const std::exception &e) {
 			state->status = "number too large";
 		}
@@ -747,31 +747,31 @@ bool isAlphanumeric(char c)
 
 uint32_t findNextChar(State *state, char c)
 {
-	for (uint32_t i = state->col; i < state->data[state->row].length(); i++) {
-		if (state->data[state->row][i] == c) {
+	for (uint32_t i = state->file->col; i < state->file->data[state->file->row].length(); i++) {
+		if (state->file->data[state->file->row][i] == c) {
 			return i;
 		}
 	}
-	return state->col;
+	return state->file->col;
 }
 
 uint32_t toNextChar(State *state, char c)
 {
-	uint32_t index = state->col;
-	for (uint32_t i = state->col; i < state->data[state->row].length(); i++) {
-		if (state->data[state->row][i] == c) {
+	uint32_t index = state->file->col;
+	for (uint32_t i = state->file->col; i < state->file->data[state->file->row].length(); i++) {
+		if (state->file->data[state->file->row][i] == c) {
 			return index;
 		} else {
 			index = i;
 		}
 	}
-	return state->col;
+	return state->file->col;
 }
 
 std::string getGitHash(State *state)
 {
 	std::stringstream command;
-	command << "git blame -l -L " << state->row + 1 << ",+1 " << state->filename << " | awk '{print $1}'";
+	command << "git blame -l -L " << state->file->row + 1 << ",+1 " << state->file->filename << " | awk '{print $1}'";
 	std::unique_ptr<FILE, int (*)(FILE *)> pipe(popen(command.str().c_str(), "r"), pclose);
 	if (!pipe) {
 		state->status = "popen() failed!";
@@ -864,8 +864,8 @@ void moveHarpoonLeft(State *state)
 
 void trimTrailingWhitespace(State *state)
 {
-	for (uint32_t i = 0; i < state->data.size(); i++) {
-		rtrim(state->data[i]);
+	for (uint32_t i = 0; i < state->file->data.size(); i++) {
+		rtrim(state->file->data[i]);
 	}
 }
 
@@ -887,9 +887,9 @@ void ltrim(std::string &s)
 std::string getCurrentWord(State *state)
 {
 	std::string currentWord = "";
-	for (int32_t i = (int32_t)state->col - 1; i >= 0; i--) {
-		if (isAlphanumeric(state->data[state->row][i])) {
-			currentWord = state->data[state->row][i] + currentWord;
+	for (int32_t i = (int32_t)state->file->col - 1; i >= 0; i--) {
+		if (isAlphanumeric(state->file->data[state->file->row][i])) {
+			currentWord = state->file->data[state->file->row][i] + currentWord;
 		} else {
 			break;
 		}
@@ -903,8 +903,8 @@ void replaceCurrentLine(State *state, const std::string &query, const std::strin
 		return;
 	}
 	size_t startPos = 0;
-	while ((startPos = state->data[state->row].find(query, startPos)) != std::string::npos) {
-		state->data[state->row].replace(startPos, query.length(), replace);
+	while ((startPos = state->file->data[state->file->row].find(query, startPos)) != std::string::npos) {
+		state->file->data[state->file->row].replace(startPos, query.length(), replace);
 		startPos += replace.length();
 	}
 }
@@ -920,7 +920,7 @@ void runCommand(State *state, const std::string &command)
 	} catch (const std::exception &e) {
 		state->status = "command failed";
 	}
-	state->changeFile(state->filename);
+	state->changeFile(state->file->filename);
 }
 
 void replaceAllGlobally(State *state, const std::string &query, const std::string &replace)
@@ -938,7 +938,7 @@ void replaceAllGlobally(State *state, const std::string &query, const std::strin
 		if (returnValue != 0) {
 			throw std::exception();
 		}
-		state->changeFile(state->filename);
+		state->changeFile(state->file->filename);
 	} catch (const std::exception &e) {
 		state->status = "command failed";
 	}
@@ -946,13 +946,13 @@ void replaceAllGlobally(State *state, const std::string &query, const std::strin
 
 void replaceAll(State *state, const std::string &query, const std::string &replace)
 {
-	for (uint32_t i = 0; i < state->data.size(); i++) {
+	for (uint32_t i = 0; i < state->file->data.size(); i++) {
 		if (query.empty()) {
 			return;
 		}
 		size_t startPos = 0;
-		while ((startPos = state->data[i].find(query, startPos)) != std::string::npos) {
-			state->data[i].replace(startPos, query.length(), replace);
+		while ((startPos = state->file->data[i].find(query, startPos)) != std::string::npos) {
+			state->file->data[i].replace(startPos, query.length(), replace);
 			startPos += replace.length();
 		}
 	}
@@ -961,32 +961,32 @@ void replaceAll(State *state, const std::string &query, const std::string &repla
 bool setSearchResultReverse(State *state)
 {
 	fixColOverMax(state);
-	uint32_t initialCol = state->col;
-	uint32_t initialRow = state->row;
+	uint32_t initialCol = state->file->col;
+	uint32_t initialRow = state->file->row;
 	uint32_t col = initialCol;
 	uint32_t row = initialRow;
 	bool isFirst = true;
 	do {
-		std::string line = isFirst ? state->data[row].substr(0, col) : state->data[row];
+		std::string line = isFirst ? state->file->data[row].substr(0, col) : state->file->data[row];
 		size_t index = line.rfind(state->search.query);
 		if (index != std::string::npos) {
-			state->row = row;
-			state->col = static_cast<uint32_t>(index);
+			state->file->row = row;
+			state->file->col = static_cast<uint32_t>(index);
 			return true;
 		}
 		if (row == 0) {
-			row = state->data.size() - 1;
+			row = state->file->data.size() - 1;
 		} else {
 			row--;
 		}
 		isFirst = false;
 	} while (row != initialRow);
 	// try last row again
-	std::string line = state->data[row];
+	std::string line = state->file->data[row];
 	size_t index = line.rfind(state->search.query);
 	if (index != std::string::npos) {
-		state->row = row;
-		state->col = static_cast<uint32_t>(index);
+		state->file->row = row;
+		state->file->col = static_cast<uint32_t>(index);
 		return true;
 	}
 	return false;
@@ -994,11 +994,11 @@ bool setSearchResultReverse(State *state)
 
 bool searchFromTop(State *state)
 {
-	for (uint32_t i = 0; i < state->data.size(); i++) {
-		size_t index = state->data[i].rfind(state->search.query);
+	for (uint32_t i = 0; i < state->file->data.size(); i++) {
+		size_t index = state->file->data[i].rfind(state->search.query);
 		if (index != std::string::npos) {
-			state->row = i;
-			state->col = static_cast<uint32_t>(index);
+			state->file->row = i;
+			state->file->col = static_cast<uint32_t>(index);
 			return true;
 		}
 	}
@@ -1007,10 +1007,10 @@ bool searchFromTop(State *state)
 
 bool setSearchResultCurrentLine(State *state, const std::string &query)
 {
-	std::string line = state->data[state->row];
+	std::string line = state->file->data[state->file->row];
 	size_t index = line.find(query);
 	if (index != std::string::npos) {
-		state->col = static_cast<uint32_t>(index);
+		state->file->col = static_cast<uint32_t>(index);
 		return true;
 	}
 	return false;
@@ -1019,26 +1019,26 @@ bool setSearchResultCurrentLine(State *state, const std::string &query)
 bool setSearchResult(State *state)
 {
 	fixColOverMax(state);
-	uint32_t initialCol = state->col;
-	uint32_t initialRow = state->row;
+	uint32_t initialCol = state->file->col;
+	uint32_t initialRow = state->file->row;
 	uint32_t col = initialCol;
 	uint32_t row = initialRow;
 	do {
-		std::string line = state->data[row].substr(col);
+		std::string line = state->file->data[row].substr(col);
 		size_t index = line.find(state->search.query);
 		if (index != std::string::npos) {
-			state->row = row;
-			state->col = static_cast<uint32_t>(index) + col;
+			state->file->row = row;
+			state->file->col = static_cast<uint32_t>(index) + col;
 			return true;
 		}
-		row = (row + 1) % state->data.size();
+		row = (row + 1) % state->file->data.size();
 		col = 0;
 	} while (row != initialRow);
-	std::string line = state->data[row];
+	std::string line = state->file->data[row];
 	size_t index = line.find(state->search.query);
 	if (index != std::string::npos) {
-		state->row = row;
-		state->col = static_cast<uint32_t>(index) + col;
+		state->file->row = row;
+		state->file->col = static_cast<uint32_t>(index) + col;
 		return true;
 	}
 	return false;
@@ -1046,15 +1046,15 @@ bool setSearchResult(State *state)
 
 void setPosition(State *state, Position pos)
 {
-	state->row = pos.row;
-	state->col = pos.col;
+	state->file->row = pos.row;
+	state->file->col = pos.col;
 }
 
 void initVisual(State *state, VisualType visualType)
 {
 	state->visualType = visualType;
-	state->visual.row = state->row;
-	state->visual.col = state->col;
+	state->visual.row = state->file->row;
+	state->visual.col = state->file->col;
 }
 
 bool is_number(const std::string &s)
@@ -1078,49 +1078,49 @@ uint32_t getIndent(State *state, const std::string &str)
 uint32_t getPrevEmptyLine(State *state)
 {
 	bool hitNonEmpty = false;
-	for (int32_t i = (int32_t)state->row; i >= 0; i--) {
-		if (state->data[i] != "") {
+	for (int32_t i = (int32_t)state->file->row; i >= 0; i--) {
+		if (state->file->data[i] != "") {
 			hitNonEmpty = true;
-		} else if (hitNonEmpty && state->data[i] == "") {
+		} else if (hitNonEmpty && state->file->data[i] == "") {
 			return i;
 		}
 	}
-	return state->row;
+	return state->file->row;
 }
 
 uint32_t getNextEmptyLine(State *state)
 {
 	bool hitNonEmpty = false;
-	for (uint32_t i = state->row; i < state->data.size(); i++) {
-		if (state->data[i] != "") {
+	for (uint32_t i = state->file->row; i < state->file->data.size(); i++) {
+		if (state->file->data[i] != "") {
 			hitNonEmpty = true;
-		} else if (hitNonEmpty && state->data[i] == "") {
+		} else if (hitNonEmpty && state->file->data[i] == "") {
 			return i;
 		}
 	}
-	return state->row;
+	return state->file->row;
 }
 
 uint32_t getPrevLineSameIndent(State *state)
 {
-	uint32_t current = getIndent(state, trimLeadingComment(state, state->data[state->row]));
-	for (int32_t i = (int32_t)state->row - 1; i >= 0; i--) {
-		if (current == getIndent(state, trimLeadingComment(state, state->data[i])) && state->data[i] != "") {
+	uint32_t current = getIndent(state, trimLeadingComment(state, state->file->data[state->file->row]));
+	for (int32_t i = (int32_t)state->file->row - 1; i >= 0; i--) {
+		if (current == getIndent(state, trimLeadingComment(state, state->file->data[i])) && state->file->data[i] != "") {
 			return i;
 		}
 	}
-	return state->row;
+	return state->file->row;
 }
 
 uint32_t getNextLineSameIndent(State *state)
 {
-	uint32_t current = getIndent(state, trimLeadingComment(state, state->data[state->row]));
-	for (uint32_t i = state->row + 1; i < state->data.size(); i++) {
-		if (current == getIndent(state, trimLeadingComment(state, state->data[i])) && state->data[i] != "") {
+	uint32_t current = getIndent(state, trimLeadingComment(state, state->file->data[state->file->row]));
+	for (uint32_t i = state->file->row + 1; i < state->file->data.size(); i++) {
+		if (current == getIndent(state, trimLeadingComment(state, state->file->data[i])) && state->file->data[i] != "") {
 			return i;
 		}
 	}
-	return state->row;
+	return state->file->row;
 }
 
 WordPosition findQuoteBounds(const std::string &str, char quoteChar, uint32_t cursor, bool includeQuote)
@@ -1272,11 +1272,11 @@ WordPosition getWordPosition(const std::string &str, uint32_t cursor)
 
 void resetValidCursorState(State *state)
 {
-	if (state->data[state->row].length() <= state->col) {
-		if (state->data[state->row].length() != 0) {
-			state->col = state->data[state->row].length() - 1;
+	if (state->file->data[state->file->row].length() <= state->file->col) {
+		if (state->file->data[state->file->row].length() != 0) {
+			state->file->col = state->file->data[state->file->row].length() - 1;
 		} else {
-			state->col = 0;
+			state->file->col = 0;
 		}
 	}
 }
@@ -1284,37 +1284,37 @@ void resetValidCursorState(State *state)
 uint32_t w(State *state)
 {
 	fixColOverMax(state);
-	bool space = state->data[state->row][state->col] == ' ';
-	for (uint32_t i = state->col + 1; i < state->data[state->row].size(); i += 1) {
-		if (state->data[state->row][i] == ' ') {
+	bool space = state->file->data[state->file->row][state->file->col] == ' ';
+	for (uint32_t i = state->file->col + 1; i < state->file->data[state->file->row].size(); i += 1) {
+		if (state->file->data[state->file->row][i] == ' ') {
 			space = true;
-		} else if (space && state->data[state->row][i] != ' ') {
+		} else if (space && state->file->data[state->file->row][i] != ' ') {
 			return i;
-		} else if (isAlphanumeric(state->data[state->row][state->col]) != isAlphanumeric(state->data[state->row][i])) {
+		} else if (isAlphanumeric(state->file->data[state->file->row][state->file->col]) != isAlphanumeric(state->file->data[state->file->row][i])) {
 			return i;
 		}
 	}
-	return state->col;
+	return state->file->col;
 }
 
 uint32_t b(State *state)
 {
 	fixColOverMax(state);
-	if (state->col == 0 || state->data[state->row].empty()) {
+	if (state->file->col == 0 || state->file->data[state->file->row].empty()) {
 		return 0;
 	}
-	int32_t i = state->col - 1;
-	while (i >= 0 && state->data[state->row][i] == ' ') {
+	int32_t i = state->file->col - 1;
+	while (i >= 0 && state->file->data[state->file->row][i] == ' ') {
 		i--;
 	}
 	if (i < 0) {
 		return 0;
 	}
-	bool isAlnum = isAlphanumeric(state->data[state->row][i]);
+	bool isAlnum = isAlphanumeric(state->file->data[state->file->row][i]);
 	for (i -= 1; i >= 0; i--) {
-		if (state->data[state->row][i] == ' ') {
+		if (state->file->data[state->file->row][i] == ' ') {
 			return i + 1;
-		} else if ((isAlphanumeric(state->data[state->row][i])) != isAlnum) {
+		} else if ((isAlphanumeric(state->file->data[state->file->row][i])) != isAlnum) {
 			return i + 1;
 		}
 	}
@@ -1324,13 +1324,13 @@ uint32_t b(State *state)
 bool isColTooSmall(State *state)
 {
 	uint32_t col = getDisplayCol(state);
-	return col < state->windowPosition.col;
+	return col < state->file->windowPosition.col;
 }
 
 bool isColTooBig(State *state)
 {
 	uint32_t col = getDisplayCol(state);
-	return (int32_t)col - (int32_t)state->windowPosition.col > (int32_t)state->maxX - (int32_t)getLineNumberOffset(state) - 1;
+	return (int32_t)col - (int32_t)state->file->windowPosition.col > (int32_t)state->maxX - (int32_t)getLineNumberOffset(state) - 1;
 }
 
 bool isWindowPositionInvalid(State *state)
@@ -1345,13 +1345,13 @@ bool isWindowPositionInvalid(State *state)
 
 bool isOffScreenVertical(State *state)
 {
-	if (state->row < state->windowPosition.row) {
+	if (state->file->row < state->file->windowPosition.row) {
 		return true;
 	}
-	uint32_t windowRow = state->windowPosition.row;
+	uint32_t windowRow = state->file->windowPosition.row;
 	uint32_t rowsBelow = 0;
-	while (windowRow < state->data.size() && rowsBelow + 2 < state->maxY) {
-		if (state->row == windowRow && getDisplayRows(state, state->row) <= state->maxY) {
+	while (windowRow < state->file->data.size() && rowsBelow + 2 < state->maxY) {
+		if (state->file->row == windowRow && getDisplayRows(state, state->file->row) <= state->maxY) {
 			return false;
 		}
 		rowsBelow += getDisplayRows(state, windowRow);
@@ -1364,8 +1364,8 @@ uint32_t getDisplayCol(State *state)
 {
 	if (state->options.indent_style == "tab") {
 		uint32_t sum = 0;
-		for (uint32_t i = 0; i < state->col; i++) {
-			if (state->data[state->row][i] == '\t') {
+		for (uint32_t i = 0; i < state->file->col; i++) {
+			if (state->file->data[state->file->row][i] == '\t') {
 				sum += state->options.indent_size;
 			} else {
 				sum++;
@@ -1373,14 +1373,14 @@ uint32_t getDisplayCol(State *state)
 		}
 		return sum;
 	} else {
-		return state->col;
+		return state->file->col;
 	}
 }
 
 uint32_t getCenteredWindowPosition(State *state)
 {
-	uint32_t windowRow = state->row;
-	uint32_t rowsAbove = getDisplayRows(state, state->row, state->col);
+	uint32_t windowRow = state->file->row;
+	uint32_t rowsAbove = getDisplayRows(state, state->file->row, state->file->col);
 	while (windowRow > 0 && rowsAbove < state->maxY / 2) {
 		if (rowsAbove + getDisplayRows(state, windowRow - 1) >= state->maxY / 2) {
 			break;
@@ -1413,7 +1413,7 @@ uint32_t getDisplayRows(State *state, uint32_t r, uint32_t c)
 	if (!state->options.wordwrap) {
 		return 1;
 	}
-	auto physicalCol = state->data[r].length() < c ? state->data[r].length() : c;
+	auto physicalCol = state->file->data[r].length() < c ? state->file->data[r].length() : c;
 	return 1 + physicalCol / (state->maxX - getLineNumberOffset(state));
 }
 
@@ -1422,38 +1422,38 @@ uint32_t getDisplayRows(State *state, uint32_t r)
 	if (!state->options.wordwrap) {
 		return 1;
 	}
-	return 1 + getDisplayLength(state, state->data[r]) / (state->maxX - getLineNumberOffset(state));
+	return 1 + getDisplayLength(state, state->file->data[r]) / (state->maxX - getLineNumberOffset(state));
 }
 
 void centerScreen(State *state)
 {
-	state->windowPosition.row = getCenteredWindowPosition(state);
+	state->file->windowPosition.row = getCenteredWindowPosition(state);
 	uint32_t col = getDisplayCol(state);
 	if (!state->options.wordwrap) {
 		if (isColTooSmall(state)) {
-			state->windowPosition.col = col;
+			state->file->windowPosition.col = col;
 		} else if (isColTooBig(state)) {
-			state->windowPosition.col = col + getLineNumberOffset(state) + 1 - state->maxX;
+			state->file->windowPosition.col = col + getLineNumberOffset(state) + 1 - state->maxX;
 		}
 	}
 }
 
 void upScreen(State *state)
 {
-	if (state->row > 0) {
-		state->row -= 1;
-		state->windowPosition.row -= 1;
-		state->col = getNormalizedCol(state, state->hardCol);
+	if (state->file->row > 0) {
+		state->file->row -= 1;
+		state->file->windowPosition.row -= 1;
+		state->file->col = getNormalizedCol(state, state->file->hardCol);
 		state->skipSetHardCol = true;
 	}
 }
 
 void downScreen(State *state)
 {
-	if (state->row < state->data.size() - 1) {
-		state->row += 1;
-		state->windowPosition.row += 1;
-		state->col = getNormalizedCol(state, state->hardCol);
+	if (state->file->row < state->file->data.size() - 1) {
+		state->file->row += 1;
+		state->file->windowPosition.row += 1;
+		state->file->col = getNormalizedCol(state, state->file->hardCol);
 		state->skipSetHardCol = true;
 	}
 }
@@ -1461,36 +1461,36 @@ void downScreen(State *state)
 void upHalfScreen(State *state)
 {
 	for (uint32_t i = 0; i < state->maxY / 2; i++) {
-		if (state->row > 0) {
-			state->row -= 1;
-			state->windowPosition.row -= 1;
+		if (state->file->row > 0) {
+			state->file->row -= 1;
+			state->file->windowPosition.row -= 1;
 		}
 	}
-	state->col = getNormalizedCol(state, state->hardCol);
+	state->file->col = getNormalizedCol(state, state->file->hardCol);
 	state->skipSetHardCol = true;
 }
 
 void downHalfScreen(State *state)
 {
 	for (uint32_t i = 0; i < state->maxY / 2; i++) {
-		if (state->row < state->data.size() - 1) {
-			state->row += 1;
-			state->windowPosition.row += 1;
+		if (state->file->row < state->file->data.size() - 1) {
+			state->file->row += 1;
+			state->file->windowPosition.row += 1;
 		}
 	}
-	state->col = getNormalizedCol(state, state->hardCol);
+	state->file->col = getNormalizedCol(state, state->file->hardCol);
 	state->skipSetHardCol = true;
 }
 
 uint32_t getNormalizedCol(State *state, uint32_t hardCol)
 {
 	if (state->options.indent_style != "tab") {
-		return state->col;
+		return state->file->col;
 	}
 	int32_t tmpHardCol = hardCol;
 	int32_t output = 0;
-	for (uint32_t i = 0; i < state->data[state->row].length() && (int32_t)i < tmpHardCol; i++) {
-		if (i < state->data[state->row].length() && state->data[state->row][i] == '\t') {
+	for (uint32_t i = 0; i < state->file->data[state->file->row].length() && (int32_t)i < tmpHardCol; i++) {
+		if (i < state->file->data[state->file->row].length() && state->file->data[state->file->row][i] == '\t') {
 			tmpHardCol -= (state->options.indent_size - 1);
 			if ((int32_t)i < tmpHardCol) {
 				output++;
@@ -1506,90 +1506,90 @@ uint32_t getNormalizedCol(State *state, uint32_t hardCol)
 
 void up(State *state)
 {
-	if (state->row > 0) {
-		state->row -= 1;
-		state->col = getNormalizedCol(state, state->hardCol);
+	if (state->file->row > 0) {
+		state->file->row -= 1;
+		state->file->col = getNormalizedCol(state, state->file->hardCol);
 		state->skipSetHardCol = true;
 	}
 	if (isOffScreenVertical(state)) {
-		state->windowPosition.row -= 1;
+		state->file->windowPosition.row -= 1;
 	}
 }
 
 void upVisual(State *state)
 {
-	auto visualCol = state->col;
-	if (visualCol > state->data[state->row].length()) {
-		visualCol = state->data[state->row].length();
+	auto visualCol = state->file->col;
+	if (visualCol > state->file->data[state->file->row].length()) {
+		visualCol = state->file->data[state->file->row].length();
 	}
 	if (visualCol < state->maxX - getLineNumberOffset(state)) {
-		if (state->row > 0) {
-			state->row -= 1;
-			state->col = getNormalizedCol(state, state->hardCol);
-			state->col += (state->maxX - getLineNumberOffset(state)) * (state->data[state->row].length() / (state->maxX - getLineNumberOffset(state)));
+		if (state->file->row > 0) {
+			state->file->row -= 1;
+			state->file->col = getNormalizedCol(state, state->file->hardCol);
+			state->file->col += (state->maxX - getLineNumberOffset(state)) * (state->file->data[state->file->row].length() / (state->maxX - getLineNumberOffset(state)));
 		}
 		if (isOffScreenVertical(state)) {
-			state->windowPosition.row -= 1;
+			state->file->windowPosition.row -= 1;
 		}
 	} else {
-		state->col -= state->maxX - getLineNumberOffset(state);
+		state->file->col -= state->maxX - getLineNumberOffset(state);
 	}
 }
 
 uint32_t isLargeFile(State *state)
 {
-	return state->data.size() > 50000;
+	return state->file && state->file->data.size() > 50000;
 }
 
 void down(State *state)
 {
-	if (state->row < state->data.size() - 1) {
-		state->row += 1;
-		state->col = getNormalizedCol(state, state->hardCol);
+	if (state->file->row < state->file->data.size() - 1) {
+		state->file->row += 1;
+		state->file->col = getNormalizedCol(state, state->file->hardCol);
 		state->skipSetHardCol = true;
 	}
 	if (isOffScreenVertical(state)) {
-		while (isOffScreenVertical(state) && state->windowPosition.row <= state->data.size()) {
-			state->windowPosition.row += 1;
+		while (isOffScreenVertical(state) && state->file->windowPosition.row <= state->file->data.size()) {
+			state->file->windowPosition.row += 1;
 		}
 	}
 }
 
 bool isOnLastVisualLine(State *state)
 {
-	auto lastLineStarts = (state->maxX - getLineNumberOffset(state)) * (state->data[state->row].length() / (state->maxX - getLineNumberOffset(state)));
-	return state->col > lastLineStarts;
+	auto lastLineStarts = (state->maxX - getLineNumberOffset(state)) * (state->file->data[state->file->row].length() / (state->maxX - getLineNumberOffset(state)));
+	return state->file->col > lastLineStarts;
 }
 
 void downVisual(State *state)
 {
 	if (isOnLastVisualLine(state)) {
-		if (state->row < state->data.size() - 1) {
-			state->row += 1;
-			state->col = getNormalizedCol(state, state->hardCol);
-			state->col = state->col % (state->maxX - getLineNumberOffset(state));
+		if (state->file->row < state->file->data.size() - 1) {
+			state->file->row += 1;
+			state->file->col = getNormalizedCol(state, state->file->hardCol);
+			state->file->col = state->file->col % (state->maxX - getLineNumberOffset(state));
 		}
 		if (isOffScreenVertical(state)) {
-			state->windowPosition.row += 1;
+			state->file->windowPosition.row += 1;
 		}
 	} else {
-		state->col += state->maxX - getLineNumberOffset(state);
+		state->file->col += state->maxX - getLineNumberOffset(state);
 	}
 }
 
 void left(State *state)
 {
 	fixColOverMax(state);
-	if (state->col > 0) {
-		state->col -= 1;
+	if (state->file->col > 0) {
+		state->file->col -= 1;
 	}
 }
 
 void right(State *state)
 {
 	fixColOverMax(state);
-	if (state->col < state->data[state->row].length()) {
-		state->col += 1;
+	if (state->file->col < state->file->data[state->file->row].length()) {
+		state->file->col += 1;
 	}
 }
 
@@ -1614,15 +1614,15 @@ char getIndentCharacter(State *state)
 void indent(State *state)
 {
 	for (uint32_t i = 0; i < getIndentSize(state); i++) {
-		state->data[state->row] = getIndentCharacter(state) + state->data[state->row];
+		state->file->data[state->file->row] = getIndentCharacter(state) + state->file->data[state->file->row];
 	}
 }
 
 void deindent(State *state)
 {
 	for (uint32_t i = 0; i < getIndentSize(state); i++) {
-		if (state->data[state->row].substr(0, 1) == std::string("") + getIndentCharacter(state)) {
-			state->data[state->row] = state->data[state->row].substr(1);
+		if (state->file->data[state->file->row].substr(0, 1) == std::string("") + getIndentCharacter(state)) {
+			state->file->data[state->file->row] = state->file->data[state->file->row].substr(1);
 		}
 	}
 }
@@ -1630,8 +1630,8 @@ void deindent(State *state)
 int32_t getIndexFirstNonSpace(State *state)
 {
 	int32_t i;
-	for (i = 0; i < (int32_t)state->data[state->row].length(); i++) {
-		if (state->data[state->row][i] != getIndentCharacter(state)) {
+	for (i = 0; i < (int32_t)state->file->data[state->file->row].length(); i++) {
+		if (state->file->data[state->file->row][i] != getIndentCharacter(state)) {
 			return i;
 		}
 	}
@@ -1653,12 +1653,12 @@ void calcWindowBounds()
 
 void insertEmptyLineBelow(State *state)
 {
-	state->data.insert(state->data.begin() + state->row + 1, "");
+	state->file->data.insert(state->file->data.begin() + state->file->row + 1, "");
 }
 
 void insertEmptyLine(State *state)
 {
-	state->data.insert(state->data.begin() + state->row, "");
+	state->file->data.insert(state->file->data.begin() + state->file->row, "");
 }
 
 int32_t maximum(int32_t a, int32_t b)

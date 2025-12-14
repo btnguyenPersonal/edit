@@ -60,7 +60,7 @@ void sendGrepKeys(State *state, int32_t c)
 	} else if (c == ctrl('r')) {
 		if (state->grep.selection < state->grepOutput.size()) {
 			std::filesystem::path selectedFile = state->grepOutput[state->grep.selection].path.string();
-			std::filesystem::path currentDir = ((std::filesystem::path)state->filename).parent_path();
+			std::filesystem::path currentDir = ((std::filesystem::path)state->file->filename).parent_path();
 			std::filesystem::path relativePath = std::filesystem::relative(selectedFile, currentDir);
 			copyToClipboard(state, relativePath.string(), false);
 			state->mode = NORMAL;

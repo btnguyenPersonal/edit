@@ -173,43 +173,43 @@ void pasteVisual(State *state, std::string text)
 	bool isClipLine = !text.empty() && text.back() == '\n';
 	if (state->visualType == LINE && !isClipLine) {
 		auto pos = deleteInVisual(state);
-		state->row = pos.row;
-		state->col = pos.col;
+		state->file->row = pos.row;
+		state->file->col = pos.col;
 		insertEmptyLine(state);
-	} else if (state->visualType == NORMAL && isClipLine) {
+	} else if (state->visualType == SELECT && isClipLine) {
 		auto pos = changeInVisual(state);
-		state->row = pos.row;
-		state->col = pos.col;
-		std::string current = state->data[state->row];
-		state->data[state->row] = current.substr(0, state->col);
-		state->data.insert(state->data.begin() + state->row + 1, current.substr(state->col));
-		state->row += 1;
-		state->col = 0;
+		state->file->row = pos.row;
+		state->file->col = pos.col;
+		std::string current = state->file->data[state->file->row];
+		state->file->data[state->file->row] = current.substr(0, state->file->col);
+		state->file->data.insert(state->file->data.begin() + state->file->row + 1, current.substr(state->file->col));
+		state->file->row += 1;
+		state->file->col = 0;
 		indentLine(state);
 	} else {
 		auto pos = deleteInVisual(state);
-		state->row = pos.row;
-		state->col = pos.col;
+		state->file->row = pos.row;
+		state->file->col = pos.col;
 	}
-	if (state->data.size() == 0) {
+	if (state->file->data.size() == 0) {
 		for (uint32_t i = 0; i < clip.size(); i++) {
-			state->data.push_back(clip[i]);
+			state->file->data.push_back(clip[i]);
 		}
 	} else if (!text.empty() && text.back() == '\n') {
-		state->data.insert(state->data.begin() + state->row, clip.begin(), clip.end());
+		state->file->data.insert(state->file->data.begin() + state->file->row, clip.begin(), clip.end());
 	} else if (clip.size() > 0) {
-		std::string current = state->data[state->row];
-		state->data[state->row] = current.substr(0, state->col);
-		state->data[state->row] += clip[0];
-		int32_t lastRow = state->row;
+		std::string current = state->file->data[state->file->row];
+		state->file->data[state->file->row] = current.substr(0, state->file->col);
+		state->file->data[state->file->row] += clip[0];
+		int32_t lastRow = state->file->row;
 		if (clip.size() > 1) {
-			state->data.insert(state->data.begin() + state->row + 1, clip.begin() + 1, clip.end());
+			state->file->data.insert(state->file->data.begin() + state->file->row + 1, clip.begin() + 1, clip.end());
 		}
 		for (int32_t i = 1; i < (int32_t)clip.size(); i++) {
-			int32_t r = i + state->row;
+			int32_t r = i + state->file->row;
 			lastRow = r;
 		}
-		state->data[lastRow] += safeSubstring(current, state->col);
+		state->file->data[lastRow] += safeSubstring(current, state->file->col);
 	}
 }
 
@@ -222,34 +222,34 @@ void paste(State *state, std::string text)
 	while (std::getline(ss, line)) {
 		clip.push_back(line);
 	}
-	if (state->data.size() == 0) {
+	if (state->file->data.size() == 0) {
 		for (uint32_t i = 0; i < clip.size(); i++) {
-			state->data.push_back(clip[i]);
+			state->file->data.push_back(clip[i]);
 		}
 	} else if (!text.empty() && state->pasteAsBlock) {
 		for (int32_t i = 0; i < (int32_t)clip.size(); i++) {
-			if (state->row + i >= state->data.size()) {
-				state->data.push_back("");
+			if (state->file->row + i >= state->file->data.size()) {
+				state->file->data.push_back("");
 			}
-			std::string front = safeSubstring(state->data[state->row + i], 0, state->col);
-			std::string back = safeSubstring(state->data[state->row + i], state->col);
-			state->data[state->row + i] = front + clip[i] + back;
+			std::string front = safeSubstring(state->file->data[state->file->row + i], 0, state->file->col);
+			std::string back = safeSubstring(state->file->data[state->file->row + i], state->file->col);
+			state->file->data[state->file->row + i] = front + clip[i] + back;
 		}
 	} else if (!text.empty() && text.back() == '\n') {
-		state->data.insert(state->data.begin() + state->row, clip.begin(), clip.end());
+		state->file->data.insert(state->file->data.begin() + state->file->row, clip.begin(), clip.end());
 	} else if (clip.size() > 0) {
-		std::string current = state->data[state->row];
-		state->data[state->row] = current.substr(0, state->col);
-		state->data[state->row] += clip[0];
-		int32_t lastRow = state->row;
+		std::string current = state->file->data[state->file->row];
+		state->file->data[state->file->row] = current.substr(0, state->file->col);
+		state->file->data[state->file->row] += clip[0];
+		int32_t lastRow = state->file->row;
 		if (clip.size() > 1) {
-			state->data.insert(state->data.begin() + state->row + 1, clip.begin() + 1, clip.end());
+			state->file->data.insert(state->file->data.begin() + state->file->row + 1, clip.begin() + 1, clip.end());
 		}
 		for (int32_t i = 1; i < (int32_t)clip.size(); i++) {
-			int32_t r = i + state->row;
+			int32_t r = i + state->file->row;
 			lastRow = r;
 		}
-		state->data[lastRow] += current.substr(state->col);
+		state->file->data[lastRow] += current.substr(state->file->col);
 	}
 }
 
@@ -264,32 +264,32 @@ void pasteAfter(State *state, std::string text)
 	}
 	if (!text.empty() && state->pasteAsBlock) {
 		for (int32_t i = 0; i < (int32_t)clip.size(); i++) {
-			if (state->row + i >= state->data.size()) {
-				state->data.push_back("");
+			if (state->file->row + i >= state->file->data.size()) {
+				state->file->data.push_back("");
 			}
-			std::string front = safeSubstring(state->data[state->row + i], 0, state->col + 1);
-			std::string back = safeSubstring(state->data[state->row + i], state->col + 1);
-			state->data[state->row + i] = front + clip[i] + back;
+			std::string front = safeSubstring(state->file->data[state->file->row + i], 0, state->file->col + 1);
+			std::string back = safeSubstring(state->file->data[state->file->row + i], state->file->col + 1);
+			state->file->data[state->file->row + i] = front + clip[i] + back;
 		}
 	} else if (!text.empty() && text.back() == '\n') {
-		state->data.insert(state->data.begin() + state->row + 1, clip.begin(), clip.end());
+		state->file->data.insert(state->file->data.begin() + state->file->row + 1, clip.begin(), clip.end());
 	} else if (clip.size() > 0) {
-		std::string current = state->data[state->row];
-		int32_t breakCol = state->col;
-		if (state->col + 1 <= state->data[state->row].length()) {
-			breakCol = state->col + 1;
+		std::string current = state->file->data[state->file->row];
+		int32_t breakCol = state->file->col;
+		if (state->file->col + 1 <= state->file->data[state->file->row].length()) {
+			breakCol = state->file->col + 1;
 		}
-		state->data[state->row] = current.substr(0, breakCol);
-		state->data[state->row] += clip[0];
-		int32_t lastRow = state->row;
+		state->file->data[state->file->row] = current.substr(0, breakCol);
+		state->file->data[state->file->row] += clip[0];
+		int32_t lastRow = state->file->row;
 		if (clip.size() > 1) {
-			state->data.insert(state->data.begin() + state->row + 1, clip.begin() + 1, clip.end());
+			state->file->data.insert(state->file->data.begin() + state->file->row + 1, clip.begin() + 1, clip.end());
 		}
 		for (int32_t i = 1; i < (int32_t)clip.size(); i++) {
-			int32_t r = i + state->row;
+			int32_t r = i + state->file->row;
 			lastRow = r;
 		}
-		state->data[lastRow] += current.substr(breakCol);
+		state->file->data[lastRow] += current.substr(breakCol);
 	}
 }
 

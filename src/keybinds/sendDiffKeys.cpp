@@ -123,10 +123,10 @@ void sendDiffKeys(State *state, int32_t c)
 			}
 			if (num != "" && file != "") {
 				state->changeFile(file);
-				state->row = std::stoi(num) + linesNet + 1;
+				state->file->row = std::stoi(num) + linesNet + 1;
 				centerScreen(state);
-				if (state->windowPosition.row >= 2) {
-					state->windowPosition.row -= 2;
+				if (state->file->windowPosition.row >= 2) {
+					state->file->windowPosition.row -= 2;
 				}
 			}
 		} else {

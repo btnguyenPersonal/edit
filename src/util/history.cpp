@@ -14,14 +14,14 @@ uint32_t applyDiff(State *state, std::vector<diffLine> diff, bool reverse)
 				min = diff[i].lineNum;
 			}
 			if (!diff[i].add) {
-				if (diff[i].lineNum < state->data.size()) {
-					state->data.insert(state->data.begin() + diff[i].lineNum, diff[i].line);
+				if (diff[i].lineNum < state->file->data.size()) {
+					state->file->data.insert(state->file->data.begin() + diff[i].lineNum, diff[i].line);
 				} else {
-					state->data.push_back(diff[i].line);
+					state->file->data.push_back(diff[i].line);
 				}
 			} else {
-				if (diff[i].lineNum < state->data.size()) {
-					state->data.erase(state->data.begin() + diff[i].lineNum);
+				if (diff[i].lineNum < state->file->data.size()) {
+					state->file->data.erase(state->file->data.begin() + diff[i].lineNum);
 				}
 			}
 		}
@@ -31,14 +31,14 @@ uint32_t applyDiff(State *state, std::vector<diffLine> diff, bool reverse)
 				min = diff[i].lineNum;
 			}
 			if (diff[i].add) {
-				if (diff[i].lineNum < state->data.size()) {
-					state->data.insert(state->data.begin() + diff[i].lineNum, diff[i].line);
+				if (diff[i].lineNum < state->file->data.size()) {
+					state->file->data.insert(state->file->data.begin() + diff[i].lineNum, diff[i].line);
 				} else {
-					state->data.push_back(diff[i].line);
+					state->file->data.push_back(diff[i].line);
 				}
 			} else {
-				if (diff[i].lineNum < state->data.size()) {
-					state->data.erase(state->data.begin() + diff[i].lineNum);
+				if (diff[i].lineNum < state->file->data.size()) {
+					state->file->data.erase(state->file->data.begin() + diff[i].lineNum);
 				}
 			}
 		}

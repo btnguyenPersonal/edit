@@ -1,4 +1,6 @@
 ## tasks
+- have global searchReplace use the same stuff as local searchReplace
+
 - multiple macroCommands
 
 - make sure switching files doesn't move memory (archives are so dumb)
@@ -37,7 +39,7 @@ void releaseFile(State* state, std::filesystem f);
 
 gs///g make sure it pipes all git files non-ignored files into sed xargs (or could go through files manually)
 
-- change state->data to rope structure
+- change state->file->data to rope structure
     - try to implement by hand that will be fun
 
 - add crash dumps

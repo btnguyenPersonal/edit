@@ -12,11 +12,11 @@ std::string trimLeadingComment(State *state, std::string line)
 	std::string outputLine = line;
 	for (size_t i = 0; i < line.length(); i++) {
 		if (line[i] != getIndentCharacter(state)) {
-			if (line.substr(i, state->commentSymbol.length()) == state->commentSymbol) {
-				if (line.substr(i, state->commentSymbol.length() + 1) == state->commentSymbol + " ") {
-					outputLine = line.substr(0, i) + line.substr(i + state->commentSymbol.length() + 1);
+			if (line.substr(i, state->file->commentSymbol.length()) == state->file->commentSymbol) {
+				if (line.substr(i, state->file->commentSymbol.length() + 1) == state->file->commentSymbol + " ") {
+					outputLine = line.substr(0, i) + line.substr(i + state->file->commentSymbol.length() + 1);
 				} else {
-					outputLine = line.substr(0, i) + line.substr(i + state->commentSymbol.length());
+					outputLine = line.substr(0, i) + line.substr(i + state->file->commentSymbol.length());
 				}
 				break;
 			}
@@ -30,7 +30,7 @@ std::string trimComment(State *state, std::string line)
 	std::string outputLine = line;
 	bool foundNonSpace = false;
 	for (size_t i = 0; i < line.length(); i++) {
-		if (line.substr(i, state->commentSymbol.length()) == state->commentSymbol) {
+		if (line.substr(i, state->file->commentSymbol.length()) == state->file->commentSymbol) {
 			if (foundNonSpace == true) {
 				outputLine = line.substr(0, i);
 			}
@@ -45,45 +45,45 @@ std::string trimComment(State *state, std::string line)
 
 void toggleComment(State *state)
 {
-	toggleCommentHelper(state, state->row, -1);
+	toggleCommentHelper(state, state->file->row, -1);
 }
 
 void toggleCommentHelper(State *state, uint32_t row, int32_t commentIndex)
 {
-	std::string line = state->data[row];
+	std::string line = state->file->data[row];
 	if (commentIndex == -1) {
 		int32_t i = getNumLeadingIndentCharacters(state, line);
 		if (isCommentWithSpace(state, line)) {
-			state->data[row] = line.substr(0, i) + line.substr(i + state->commentSymbol.length() + 1);
+			state->file->data[row] = line.substr(0, i) + line.substr(i + state->file->commentSymbol.length() + 1);
 			return;
 		} else if (isComment(state, line)) {
-			state->data[row] = line.substr(0, i) + line.substr(i + state->commentSymbol.length());
+			state->file->data[row] = line.substr(0, i) + line.substr(i + state->file->commentSymbol.length());
 			return;
 		}
 	}
 	if (line.length() != 0) {
 		int32_t spaces = commentIndex != -1 ? commentIndex : getNumLeadingIndentCharacters(state, line);
-		state->data[row] = line.substr(0, spaces) + state->commentSymbol + ' ' + line.substr(spaces);
+		state->file->data[row] = line.substr(0, spaces) + state->file->commentSymbol + ' ' + line.substr(spaces);
 	}
 }
 
 bool isCommentWithSpace(State *state, std::string line)
 {
 	ltrim(line);
-	return line.substr(0, state->commentSymbol.length() + 1) == state->commentSymbol + ' ';
+	return line.substr(0, state->file->commentSymbol.length() + 1) == state->file->commentSymbol + ' ';
 }
 
 bool isComment(State *state, std::string line)
 {
 	ltrim(line);
-	return line.substr(0, state->commentSymbol.length()) == state->commentSymbol;
+	return line.substr(0, state->file->commentSymbol.length()) == state->file->commentSymbol;
 }
 
 void toggleCommentLines(State *state, Bounds bounds)
 {
 	bool foundNonComment = false;
 	for (size_t i = bounds.minR; i <= bounds.maxR; i++) {
-		if (!isComment(state, state->data[i]) && state->data[i] != "") {
+		if (!isComment(state, state->file->data[i]) && state->file->data[i] != "") {
 			foundNonComment = true;
 			break;
 		}
@@ -92,8 +92,8 @@ void toggleCommentLines(State *state, Bounds bounds)
 	if (foundNonComment) {
 		minIndentLevel = INT_MAX;
 		for (size_t i = bounds.minR; i <= bounds.maxR; i++) {
-			int32_t indent = getNumLeadingIndentCharacters(state, state->data[i]);
-			if (indent < minIndentLevel && state->data[i] != "") {
+			int32_t indent = getNumLeadingIndentCharacters(state, state->file->data[i]);
+			if (indent < minIndentLevel && state->file->data[i] != "") {
 				minIndentLevel = indent;
 			}
 		}
@@ -109,23 +109,23 @@ void unCommentBlock(State *state)
 	Bounds bounds;
 	bounds.minC = 0;
 	bounds.maxC = 0;
-	if (isComment(state, state->data[state->row])) {
-		for (int32_t i = (int32_t)state->row; i >= 0; i--) {
-			if (!isComment(state, state->data[i])) {
-				state->row = i;
+	if (isComment(state, state->file->data[state->file->row])) {
+		for (int32_t i = (int32_t)state->file->row; i >= 0; i--) {
+			if (!isComment(state, state->file->data[i])) {
+				state->file->row = i;
 				break;
 			}
 		}
 	}
-	for (uint32_t i = state->row; i < state->data.size(); i++) {
+	for (uint32_t i = state->file->row; i < state->file->data.size(); i++) {
 		if (!foundComment) {
-			if (isComment(state, state->data[i])) {
+			if (isComment(state, state->file->data[i])) {
 				foundComment = true;
 				bounds.minR = i;
 				bounds.maxR = i;
 			}
 		} else {
-			if (!isComment(state, state->data[i])) {
+			if (!isComment(state, state->file->data[i])) {
 				break;
 			} else {
 				bounds.maxR = i;
@@ -134,6 +134,6 @@ void unCommentBlock(State *state)
 	}
 	if (foundComment) {
 		toggleCommentLines(state, bounds);
-		state->row = bounds.minR;
+		state->file->row = bounds.minR;
 	}
 }
