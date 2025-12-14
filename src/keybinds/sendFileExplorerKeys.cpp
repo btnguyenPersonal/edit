@@ -14,10 +14,10 @@ void sendFileExplorerKeys(State *state, int32_t c)
 {
 	try {
 		if (c == 27) { // ESC
-			state->mode = SHORTCUT;
+			state->mode = NORMAL;
 			state->fileExplorerOpen = false;
 		} else if (c == ctrl('t')) {
-			state->mode = SHORTCUT;
+			state->mode = NORMAL;
 		} else if (c == '-') {
 			state->fileExplorerWindowLine = 0;
 			state->fileExplorerIndex = 0;
@@ -129,7 +129,7 @@ void sendFileExplorerKeys(State *state, int32_t c)
 			state->status = relativePath;
 			copyToClipboard(state, relativePath, false);
 			state->fileExplorerOpen = false;
-			state->mode = SHORTCUT;
+			state->mode = NORMAL;
 		} else if (c == 'f') {
 			auto node = state->fileExplorer->getNode(state->fileExplorerIndex);
 			if (node->isFolder) {

@@ -150,9 +150,9 @@ void renderFileStack(State *state)
 
 int32_t getModeColor(State *state)
 {
-	if (state->mode == SHORTCUT) {
+	if (state->mode == NORMAL) {
 		return WHITE;
-	} else if (state->mode == TYPING) {
+	} else if (state->mode == INSERT) {
 		return BLUE;
 	} else if (state->mode == GREP) {
 		return GREEN;
@@ -175,12 +175,12 @@ std::string getDisplayModeName(State *state)
 		return "VISUALBLOCK";
 	} else if (state->mode == VISUAL && state->visualType == LINE) {
 		return "VISUALLINE";
-	} else if (state->mode == COMMANDLINE) {
-		return "COMMANDLINE";
-	} else if (state->mode == TYPING) {
-		return "TYPING";
-	} else if (state->mode == SHORTCUT) {
-		return "SHORTCUT";
+	} else if (state->mode == COMMAND) {
+		return "COMMAND";
+	} else if (state->mode == INSERT) {
+		return "INSERT";
+	} else if (state->mode == NORMAL) {
+		return "NORMAL";
 	} else if (state->mode == FIND) {
 		return "FIND";
 	} else if (state->mode == GREP) {
@@ -227,7 +227,7 @@ int32_t renderStatusBar(State *state)
 		insertPixels(state, &pixels, prefix + state->name.query, WHITE);
 		renderPixels(state, 1, 0, pixels, false);
 		cursor = prefix.length() + state->name.cursor;
-	} else if (state->mode == COMMANDLINE) {
+	} else if (state->mode == COMMAND) {
 		std::string prefix = ":";
 		insertPixels(state, &pixels, prefix + state->commandLine.query, WHITE);
 		renderPixels(state, 1, 0, pixels, false);
@@ -494,7 +494,7 @@ int32_t getMarkColor(State *state, int32_t row)
 	bool logging = std::regex_search(state->data[row], std::regex(getLoggingRegex(state)));
 	bool endsWithSpace = isWhitespace(state->data[row].back());
 	bool isOnMark = (int32_t)state->mark.mark == row && state->mark.filename == state->filename;
-	if (endsWithSpace && state->mode != TYPING) {
+	if (endsWithSpace && state->mode != INSERT) {
 		return RED;
 	} else if (getLoggingRegex(state) != "" && logging) {
 		return YELLOW;
@@ -722,7 +722,7 @@ int32_t renderLineContent(State *state, int32_t row, int32_t renderRow, Cursor *
 					foundCursor = true;
 				}
 				if (state->row == (uint32_t)row && state->col == col + 1) {
-					if (state->mode == TYPING || state->mode == MULTICURSOR) {
+					if (state->mode == INSERT || state->mode == MULTICURSOR) {
 						if (state->col + 1 >= state->data[state->row].length() || !isAlphanumeric(state->data[state->row][state->col])) {
 							cursor->row = renderRow;
 							cursor->col = pixels.size() > 0 ? pixels.size() : 0;

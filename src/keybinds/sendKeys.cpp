@@ -32,16 +32,16 @@ void sendKeys(State *state, int32_t c)
 	state->searching = state->mode == SEARCH;
 	calcWindowBounds();
 	switch (state->mode) {
-	case SHORTCUT:
+	case NORMAL:
 		sendShortcutKeys(state, c);
 		break;
-	case TYPING:
+	case INSERT:
 		sendTypingKeys(state, c);
 		break;
 	case VISUAL:
 		sendVisualKeys(state, c, false);
 		break;
-	case COMMANDLINE:
+	case COMMAND:
 		sendCommandLineKeys(state, c);
 		break;
 	case FIND:

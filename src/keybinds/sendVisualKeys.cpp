@@ -345,7 +345,7 @@ bool sendVisualKeys(State *state, char c, bool onlyMotions)
 {
 	recordMotion(state, c);
 	if (c == 27) { // ESC
-		state->mode = SHORTCUT;
+		state->mode = NORMAL;
 		logDotCommand(state);
 	} else if (state->prevKeys == "t") {
 		state->col = toNextChar(state, c);
@@ -425,11 +425,11 @@ bool sendVisualKeys(State *state, char c, bool onlyMotions)
 		state->prevKeys = "";
 	} else if (!onlyMotions && state->prevKeys == "" && c == '_') {
 		sortLines(state);
-		state->mode = SHORTCUT;
+		state->mode = NORMAL;
 		state->prevKeys = "";
 	} else if (!onlyMotions && state->prevKeys == "g" && c == '_') {
 		sortReverseLines(state);
-		state->mode = SHORTCUT;
+		state->mode = NORMAL;
 		state->prevKeys = "";
 	} else if (!onlyMotions && state->visualType == BLOCK && state->prevKeys == "g" && c == ctrl('a')) {
 		Bounds bounds = getBounds(state);
@@ -456,30 +456,30 @@ bool sendVisualKeys(State *state, char c, bool onlyMotions)
 		logDotCommand(state);
 		changeCaseVisual(state, true, false);
 		state->prevKeys = "";
-		state->mode = SHORTCUT;
+		state->mode = NORMAL;
 	} else if (!onlyMotions && state->prevKeys == "r") {
 		replaceAllWithChar(state, c);
 		state->prevKeys = "";
-		state->mode = SHORTCUT;
+		state->mode = NORMAL;
 	} else if (!onlyMotions && state->prevKeys == "g" && c == 'u') {
 		logDotCommand(state);
 		changeCaseVisual(state, false, false);
 		state->prevKeys = "";
-		state->mode = SHORTCUT;
+		state->mode = NORMAL;
 	} else if (state->prevKeys == "g" && c == 'g') {
 		state->row = 0;
 		state->prevKeys = "";
 	} else if (state->prevKeys == "g" && (c == 'p' || c == 'P')) {
 		logDotCommand(state);
 		pasteVisual(state, getFromClipboard(state, true));
-		state->mode = SHORTCUT;
+		state->mode = NORMAL;
 		state->prevKeys = "";
 	} else if (state->prevKeys == "g" && c == 'y') {
 		logDotCommand(state);
 		auto pos = copyInVisualSystem(state);
 		state->row = pos.row;
 		state->col = pos.col;
-		state->mode = SHORTCUT;
+		state->mode = NORMAL;
 		state->prevKeys = "";
 	} else if (state->prevKeys != "") {
 		state->prevKeys = "";
@@ -497,18 +497,18 @@ bool sendVisualKeys(State *state, char c, bool onlyMotions)
 		}
 	} else if (!onlyMotions && c == '~') {
 		changeCaseVisual(state, true, true);
-		state->mode = SHORTCUT;
+		state->mode = NORMAL;
 	} else if (!onlyMotions && c == 'm') {
 		logDotCommand(state);
 		if (state->visualType == NORMAL) {
 			toggleLoggingCode(state, getInVisual(state), true);
 		}
-		state->mode = SHORTCUT;
+		state->mode = NORMAL;
 	} else if (!onlyMotions && c == ':') {
 		if (state->visualType == NORMAL) {
 			state->commandLine.query = "gs/" + getInVisual(state) + "/";
 			state->commandLine.cursor = 3 + getInVisual(state).length() + 1;
-			state->mode = COMMANDLINE;
+			state->mode = COMMAND;
 		}
 	} else if (c == '^') {
 		state->col = getIndexFirstNonSpace(state);
@@ -553,7 +553,7 @@ bool sendVisualKeys(State *state, char c, bool onlyMotions)
 			logDotCommand(state);
 			state->searching = true;
 			setQuery(&state->search, getInVisual(state));
-			state->mode = SHORTCUT;
+			state->mode = NORMAL;
 			setSearchResult(state);
 		}
 	} else if (!onlyMotions && c == '#') {
@@ -614,7 +614,7 @@ bool sendVisualKeys(State *state, char c, bool onlyMotions)
 		state->row = bounds.minR;
 		state->visual.row = bounds.maxR;
 		state->col = getIndexFirstNonSpace(state);
-		state->mode = SHORTCUT;
+		state->mode = NORMAL;
 	} else if (c == '%') {
 		auto pos = matchIt(state);
 		state->row = pos.row;
@@ -649,7 +649,7 @@ bool sendVisualKeys(State *state, char c, bool onlyMotions)
 		state->row = bounds.minR;
 		state->visual.row = bounds.maxR;
 		state->col = getIndexFirstNonSpace(state);
-		state->mode = SHORTCUT;
+		state->mode = NORMAL;
 	} else if (!onlyMotions && c == '>') {
 		logDotCommand(state);
 		Bounds bounds = getBounds(state);
@@ -661,42 +661,42 @@ bool sendVisualKeys(State *state, char c, bool onlyMotions)
 		state->row = bounds.minR;
 		state->visual.row = bounds.maxR;
 		state->col = getIndexFirstNonSpace(state);
-		state->mode = SHORTCUT;
+		state->mode = NORMAL;
 	} else if (!onlyMotions && (c == 'p' || c == 'P')) {
 		logDotCommand(state);
 		pasteVisual(state, getFromClipboard(state, false));
-		state->mode = SHORTCUT;
+		state->mode = NORMAL;
 	} else if (!onlyMotions && c == 'x') {
 		logDotCommand(state);
 		auto pos = deleteInVisual(state);
 		state->row = pos.row;
 		state->col = pos.col;
-		state->mode = SHORTCUT;
+		state->mode = NORMAL;
 	} else if (!onlyMotions && c == 'd') {
 		logDotCommand(state);
 		copyInVisual(state);
 		auto pos = deleteInVisual(state);
 		state->row = pos.row;
 		state->col = pos.col;
-		state->mode = SHORTCUT;
+		state->mode = NORMAL;
 	} else if (!onlyMotions && c == 'y') {
 		logDotCommand(state);
 		auto pos = copyInVisual(state);
 		state->row = pos.row;
 		state->col = pos.col;
-		state->mode = SHORTCUT;
+		state->mode = NORMAL;
 	} else if (!onlyMotions && c == 'e') {
 		logDotCommand(state);
 		Bounds bounds = getBounds(state);
 		toggleCommentLines(state, bounds);
 		state->row = bounds.minR;
 		state->col = getIndexFirstNonSpace(state);
-		state->mode = SHORTCUT;
+		state->mode = NORMAL;
 	} else if (!onlyMotions && c == 's') {
 		auto pos = changeInVisual(state);
 		state->row = pos.row;
 		state->col = pos.col;
-		state->mode = TYPING;
+		state->mode = INSERT;
 	} else if (c == 'o') {
 		auto tempRow = state->row;
 		auto tempCol = state->col;
@@ -710,7 +710,7 @@ bool sendVisualKeys(State *state, char c, bool onlyMotions)
 		if (state->visualType == BLOCK) {
 			state->mode = MULTICURSOR;
 		} else {
-			state->mode = TYPING;
+			state->mode = INSERT;
 		}
 		if (state->row != pos.row) {
 			auto temp = state->row;

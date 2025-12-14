@@ -9,7 +9,7 @@
 
 void cleanup(State *state, char c)
 {
-	if (state->mode == SHORTCUT && state->filename == "") {
+	if (state->mode == NORMAL && state->filename == "") {
 		endwin();
 		exit(0);
 	} else if (state->filename != "") {
@@ -21,7 +21,7 @@ void cleanup(State *state, char c)
 		sanityCheckFindSelection(state);
 		sanityCheckDocumentEmpty(state);
 		sanityCheckRowOutOfBounds(state);
-		if (state->mode == TYPING) {
+		if (state->mode == INSERT) {
 			fixColOverMax(state);
 		}
 		expect(state->data[state->row].length() >= 0);
@@ -34,7 +34,7 @@ void cleanup(State *state, char c)
 		expect(state->windowPosition.row <= state->row);
 		expect(state->windowPosition.row + state->maxY > state->row);
 		if (state->recording && !state->dontRecordKey) {
-			if (!(c == ',' && state->mode == SHORTCUT)) {
+			if (!(c == ',' && state->mode == NORMAL)) {
 				recordMacroCommand(state, c);
 			}
 		}
@@ -43,7 +43,7 @@ void cleanup(State *state, char c)
 		}
 		state->matching = matchIt(state);
 		realignHarpoon(state);
-		if (!isLargeFile(state) && state->mode == SHORTCUT && state->options.autosave && !state->runningAsRoot && !state->dontRecordKey) {
+		if (!isLargeFile(state) && state->mode == NORMAL && state->options.autosave && !state->runningAsRoot && !state->dontRecordKey) {
 			saveFile(state);
 		}
 	}
@@ -52,7 +52,7 @@ void cleanup(State *state, char c)
 
 void history(State *state, char c)
 {
-	if (state->mode == SHORTCUT) {
+	if (state->mode == NORMAL) {
 		std::vector<diffLine> diff = generateDiff(state->previousState, state->data);
 		state->previousState = state->data;
 		if (diff.size() != 0) {

@@ -153,7 +153,7 @@ void State::changeFile(std::string filename)
 			this->col = archive.col;
 			this->hardCol = archive.hardCol;
 			this->jumplist = archive.jumplist;
-			this->mode = SHORTCUT;
+			this->mode = NORMAL;
 			return;
 		}
 	}
@@ -181,7 +181,7 @@ void State::changeFile(std::string filename)
 	this->status = std::string("");
 	this->searchFail = false;
 	this->motion = std::vector<int32_t>();
-	this->mode = SHORTCUT;
+	this->mode = NORMAL;
 	this->loadAllConfigFiles();
 }
 
@@ -291,7 +291,7 @@ void State::init(std::string name, std::vector<std::string> data)
 	this->data = data;
 	this->previousState = data;
 	this->commentSymbol = getCommentSymbol(name);
-	this->mode = SHORTCUT;
+	this->mode = NORMAL;
 	this->fileStack = { name };
 	this->fileStackIndex = 0;
 }

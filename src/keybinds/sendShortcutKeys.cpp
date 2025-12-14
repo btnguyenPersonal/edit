@@ -76,7 +76,7 @@ void sendShortcutKeys(State *state, int32_t c)
 			state->motion.clear();
 			state->row = tempRow;
 			state->col = tempCol;
-			state->mode = SHORTCUT;
+			state->mode = NORMAL;
 		}
 		state->dotCommand.push_back(getEscapedChar(c));
 		state->dontRecordKey = false;
@@ -120,7 +120,7 @@ void sendShortcutKeys(State *state, int32_t c)
 				state->motion.clear();
 				state->row = tempRow;
 				state->col = tempCol;
-				state->mode = SHORTCUT;
+				state->mode = NORMAL;
 			}
 
 			state->dotCommand.push_back(getEscapedChar(c));
@@ -192,7 +192,7 @@ void sendShortcutKeys(State *state, int32_t c)
 	} else if (state->prevKeys != "") {
 		state->prevKeys = "";
 	} else if (c == ':') {
-		state->mode = COMMANDLINE;
+		state->mode = COMMAND;
 	} else if (c == '<') {
 		deindent(state);
 		state->col = getIndexFirstNonSpace(state);
@@ -278,10 +278,10 @@ void sendShortcutKeys(State *state, int32_t c)
 	} else if (c == 'w') {
 		state->col = w(state);
 	} else if (c == 'i') {
-		state->mode = TYPING;
+		state->mode = INSERT;
 	} else if (c == 'a') {
 		right(state);
-		state->mode = TYPING;
+		state->mode = INSERT;
 	} else if (c == ctrl('u')) {
 		upHalfScreen(state);
 	} else if (c == ctrl('d')) {
@@ -289,10 +289,10 @@ void sendShortcutKeys(State *state, int32_t c)
 	} else if (c == 'o') {
 		insertEmptyLineBelow(state);
 		down(state);
-		state->mode = TYPING;
+		state->mode = INSERT;
 	} else if (c == 'O') {
 		insertEmptyLine(state);
-		state->mode = TYPING;
+		state->mode = INSERT;
 	} else if (c == 'Y') {
 		fixColOverMax(state);
 		copyToClipboard(state, safeSubstring(state->data[state->row], state->col), false);
@@ -304,13 +304,13 @@ void sendShortcutKeys(State *state, int32_t c)
 		fixColOverMax(state);
 		copyToClipboard(state, safeSubstring(state->data[state->row], state->col), false);
 		state->data[state->row] = state->data[state->row].substr(0, state->col);
-		state->mode = TYPING;
+		state->mode = INSERT;
 	} else if (c == 'I') {
 		state->col = getIndexFirstNonSpace(state);
-		state->mode = TYPING;
+		state->mode = INSERT;
 	} else if (c == 'A') {
 		state->col = state->data[state->row].length();
-		state->mode = TYPING;
+		state->mode = INSERT;
 	} else if (c == '\'') {
 		if (state->mark.filename != "") {
 			state->resetState(state->mark.filename);
@@ -403,7 +403,7 @@ void sendShortcutKeys(State *state, int32_t c)
 		if (state->col < state->data[state->row].length()) {
 			copyToClipboard(state, state->data[state->row].substr(state->col, 1), false);
 			state->data[state->row] = state->data[state->row].substr(0, state->col) + state->data[state->row].substr(state->col + 1);
-			state->mode = TYPING;
+			state->mode = INSERT;
 		}
 	} else if (c == 'x') {
 		if (state->col < state->data[state->row].length()) {
@@ -461,7 +461,7 @@ void sendShortcutKeys(State *state, int32_t c)
 		initVisual(state, NORMAL);
 		setStateFromWordPosition(state, getWordPosition(state->data[state->row], state->col));
 		toggleLoggingCode(state, getInVisual(state), true);
-		state->mode = SHORTCUT;
+		state->mode = NORMAL;
 		setDotCommand(state, c);
 	} else if (c == ctrl('w')) {
 		jumpToPrevHarpoon(state);
@@ -492,7 +492,7 @@ void sendShortcutKeys(State *state, int32_t c)
 			state->jumplist.touched = true;
 		}
 	}
-	if (state->mode != SHORTCUT) {
+	if (state->mode != NORMAL) {
 		state->motion.clear();
 		recordMotion(state, c);
 	}

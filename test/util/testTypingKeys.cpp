@@ -13,7 +13,7 @@ struct testSuiteRun testTypingKeys()
 	{
 		State *state = new State("./test-file.h", { "" });
 		sendTypingKeys(state, 27);
-		output.push_back({ "sendTypingKeys <Esc> should set mode to SHORTCUT", compare(state->mode, SHORTCUT) });
+		output.push_back({ "sendTypingKeys <Esc> should set mode to NORMAL", compare(state->mode, NORMAL) });
 	}
 
 	{

@@ -16,7 +16,7 @@ void sendFindKeys(State *state, int32_t c)
 	std::string cachedFileString = state->find.query;
 	if (c == 27) { // ESC
 		state->selectAll = false;
-		state->mode = SHORTCUT;
+		state->mode = NORMAL;
 	} else if (' ' <= c && c <= '~') {
 		if (state->selectAll == true) {
 			backspaceAll(&state->find);
@@ -85,14 +85,14 @@ void sendFindKeys(State *state, int32_t c)
 			std::filesystem::path currentDir = ((std::filesystem::path)state->filename).parent_path();
 			std::filesystem::path relativePath = std::filesystem::relative(selectedFile, currentDir);
 			copyToClipboard(state, relativePath.string(), false);
-			state->mode = SHORTCUT;
+			state->mode = NORMAL;
 		}
 	} else if (c == ctrl('y')) {
 		if (state->find.selection < state->findOutput.size()) {
 			state->selectAll = false;
 			auto selectedFile = state->findOutput[state->find.selection].string();
 			copyToClipboard(state, selectedFile, false);
-			state->mode = SHORTCUT;
+			state->mode = NORMAL;
 		}
 	} else if (c == ctrl('v')) {
 		if (state->selectAll == true) {

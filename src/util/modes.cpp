@@ -6,11 +6,11 @@ std::string getMode(uint32_t mode)
 	case 0:
 		return "VISUAL";
 	case 1:
-		return "COMMANDLINE";
+		return "COMMAND";
 	case 2:
-		return "TYPING";
+		return "INSERT";
 	case 3:
-		return "SHORTCUT";
+		return "NORMAL";
 	case 4:
 		return "FIND";
 	case 5:
