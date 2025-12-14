@@ -170,12 +170,6 @@ class State {
 	bool resetState(std::string filename);
 	void pushFileStack(std::string filename);
 	void changeFile(std::string filename);
-	void readStringConfigValue(std::string &option, std::string configValue, std::string line);
-	void readUintConfigValue(uint32_t &option, std::string configValue, std::string line);
-	void readBoolConfigValue(bool &option, std::string configValue, std::string line);
-	void loadAllConfigFiles();
-	void loadConfigFile(std::string fileLocation);
-	void readConfigLine(std::string optionLine);
 	void setDefaultOptions();
 	void print(std::string filename, bool printGrep, bool printArchives);
 	static void setMaxYX(int32_t y, int32_t x);

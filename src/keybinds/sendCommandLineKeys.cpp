@@ -74,8 +74,6 @@ void evaluateCommandLineQuery(State *state)
 		} else {
 			state->file->row = 0;
 		}
-	} else {
-		state->readConfigLine(state->commandLine.query);
 	}
 }
 

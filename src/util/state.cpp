@@ -33,82 +33,9 @@ File *getFile(std::string name, std::vector<std::string> data) {
 	return file;
 }
 
-void State::loadAllConfigFiles()
-{
-	std::filesystem::path home = std::filesystem::absolute(getenv("HOME"));
-	std::filesystem::path current = std::filesystem::absolute(std::filesystem::current_path());
-
-	this->loadConfigFile(home.string() + "/.editorconfig");
-
-	std::vector<std::filesystem::path> dirs;
-	for (std::filesystem::path p = current; p != home && p != p.parent_path(); p = p.parent_path()) {
-		dirs.push_back(p);
-	}
-
-	for (auto it = dirs.rbegin(); it != dirs.rend(); ++it) {
-		this->loadConfigFile(it->string() + "/.editorconfig");
-	}
-
-	this->loadConfigFile("./.editorconfig");
-}
-
-void State::loadConfigFile(std::string fileLocation)
-{
-	auto config = readFile(fileLocation.c_str());
-	bool found = false;
-	for (uint32_t i = 0; i < config.size(); i++) {
-		if (found) {
-			if (isLineFileRegex(config[i])) {
-				found = false;
-			} else {
-				readConfigLine(config[i]);
-			}
-		} else if (!found && isLineFileRegex(config[i]) && this->file && matchesEditorConfigGlob(config[i], this->file->filename)) {
-			found = true;
-		}
-	}
-}
-
-void State::readStringConfigValue(std::string &option, std::string configValue, std::string line)
-{
-	std::string prefix = configValue + " = ";
-	if (safeSubstring(line, 0, prefix.length()) == prefix) {
-		option = safeSubstring(line, prefix.length());
-	}
-}
-
-void State::readUintConfigValue(uint32_t &option, std::string configValue, std::string line)
-{
-	std::string prefix = configValue + " = ";
-	if (safeSubstring(line, 0, prefix.length()) == prefix) {
-		option = stoi(safeSubstring(line, prefix.length()));
-	}
-}
-
-void State::readBoolConfigValue(bool &option, std::string configValue, std::string line)
-{
-	std::string prefix = configValue + " = ";
-	if (safeSubstring(line, 0, prefix.length()) == prefix) {
-		std::string s = safeSubstring(line, prefix.length());
-		if (s == "true") {
-			option = true;
-		} else if (s == "false") {
-			option = false;
-		}
-	}
-}
-
-void State::readConfigLine(std::string line)
-{
-	this->readBoolConfigValue(this->options.autosave, "autosave", line);
-	this->readBoolConfigValue(this->options.wordwrap, "wordwrap", line);
-	this->readBoolConfigValue(this->options.insert_final_newline, "insert_final_newline", line);
-	this->readStringConfigValue(this->options.indent_style, "indent_style", line);
-	this->readUintConfigValue(this->options.indent_size, "indent_size", line);
-}
-
 void State::setDefaultOptions()
 {
+	// TODO read .editorconfig
 	this->options.insert_final_newline = false;
 	this->options.autosave = true;
 	this->options.keysSize = 30;
@@ -134,6 +61,8 @@ void State::changeFile(std::string filename)
 		}
 	}
 	if (!found) {
+		// TODO keep old data, show diff of current data and if you want to load most recent file? (y/n)
+		// new mode APPLYDIFF?
 		std::vector<std::string> data = readFile(name);
 		File *file = getFile(name, data);
 		this->files.push_back(file);
@@ -141,7 +70,6 @@ void State::changeFile(std::string filename)
 		this->file = file;
 	}
 	this->mode = NORMAL;
-	this->loadAllConfigFiles();
 }
 
 void State::pushFileStack(std::string filename)
@@ -232,7 +160,6 @@ void State::init()
 	this->fileStackIndex = 0;
 	this->motion = std::vector<int32_t>();
 	this->setDefaultOptions();
-	this->loadAllConfigFiles();
 }
 
 void State::init(std::string name, std::vector<std::string> data)
