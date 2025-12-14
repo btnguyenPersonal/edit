@@ -110,78 +110,30 @@ void State::changeFile(std::string filename)
 	}
 	bool found = false;
 	for (uint32_t i = 0; i < this->archives.size(); i++) {
-		if (this->archives[i].filename == this->filename) {
-			this->archives[i].previousState = this->previousState;
-			this->archives[i].history = this->history;
-			this->archives[i].historyPosition = this->historyPosition;
-			this->archives[i].lastSave = this->lastSave;
-			this->archives[i].windowPosition = this->windowPosition;
-			this->archives[i].row = this->row;
-			this->archives[i].col = this->col;
-			this->archives[i].hardCol = this->hardCol;
-			this->archives[i].jumplist = this->jumplist;
+		if (this->files[i].filename == name) {
+			this->file = &this->files[i];
 			found = true;
 			break;
 		}
 	}
 	if (!found) {
-		this->archives.push_back({
-			this->filename,
-			this->previousState,
-			this->history,
-			this->historyPosition,
-			this->lastSave,
-			this->windowPosition,
-			this->row,
-			this->col,
-			this->hardCol,
-			this->jumplist,
-		});
+		File *file = {};
+		std::vector<std::string> data = readFile(name);
+		file->filename = name;
+		file->data = data;
+		file->previousState = data;
+		file->commentSymbol = getCommentSymbol(name);
+		file->history = std::vector<std::vector<diffLine> >();
+		file->historyPosition = -1;
+		file->lastSave = -1;
+		file->windowPosition.row = 0;
+		file->windowPosition.col = 0;
+		file->row = 0;
+		file->col = 0;
+		file->hardCol = 0;
+		this->files.push_back(&file);
+		this->file = file;
 	}
-	for (uint32_t i = 0; i < this->archives.size(); i++) {
-		if (this->archives[i].filename == name) {
-			auto archive = this->archives[i];
-			this->filename = name;
-			this->data = readFile(name);
-			this->commentSymbol = getCommentSymbol(name);
-			this->previousState = archive.previousState;
-			this->history = archive.history;
-			this->historyPosition = archive.historyPosition;
-			this->lastSave = archive.lastSave;
-			this->windowPosition = archive.windowPosition;
-			this->row = archive.row;
-			this->col = archive.col;
-			this->hardCol = archive.hardCol;
-			this->jumplist = archive.jumplist;
-			this->mode = NORMAL;
-			return;
-		}
-	}
-	auto data = readFile(name);
-	this->filename = name;
-	this->data = data;
-	this->previousState = data;
-	this->commentSymbol = getCommentSymbol(name);
-	this->history = std::vector<std::vector<diffLine> >();
-	this->historyPosition = -1;
-	this->lastSave = -1;
-	this->windowPosition.row = 0;
-	this->windowPosition.col = 0;
-	this->visualType = NORMAL;
-	this->visual.row = 0;
-	this->visual.col = 0;
-	this->row = 0;
-	this->col = 0;
-	this->hardCol = 0;
-	this->skipSetHardCol = 0;
-	this->commandLine.query = std::string("");
-	this->selectAll = false;
-	this->showAllGrep = false;
-	this->prevKeys = std::string("");
-	this->status = std::string("");
-	this->searchFail = false;
-	this->motion = std::vector<int32_t>();
-	this->mode = NORMAL;
 	this->loadAllConfigFiles();
 }
 
@@ -215,6 +167,7 @@ bool State::resetState(std::string filename)
 
 void State::init()
 {
+	this->currentFile = 0;
 	this->runningAsRoot = geteuid() == 0;
 	this->showGrep = false;
 	this->diffIndex = 0;
@@ -247,10 +200,8 @@ void State::init()
 	this->workspace = 0;
 	this->data = std::vector<std::string>();
 	this->previousState = std::vector<std::string>();
-	this->history = std::vector<std::vector<diffLine> >();
 	this->grepOutput = std::vector<grepMatch>();
 	this->findOutput = std::vector<std::filesystem::path>();
-	this->historyPosition = -1;
 	this->lastSave = -1;
 	this->windowPosition.row = 0;
 	this->windowPosition.col = 0;

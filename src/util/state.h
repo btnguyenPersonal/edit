@@ -65,17 +65,19 @@ struct Jumplist {
 	std::vector<Position> list;
 };
 
-struct Archive {
-	std::string filename;
-	std::vector<std::string> previousState;
-	std::vector<std::vector<diffLine> > history;
+struct File {
+	Jumplist jumplist;
 	int32_t historyPosition;
 	int32_t lastSave;
+	std::string commentSymbol;
+	std::string filename;
+	std::vector<std::string> data;
+	std::vector<std::string> previousState;
+	std::vector<std::vector<diffLine> > history;
 	struct Position windowPosition;
-	uint32_t row;
 	uint32_t col;
 	uint32_t hardCol;
-	Jumplist jumplist;
+	uint32_t row;
 };
 
 struct Query {
@@ -100,7 +102,6 @@ class State {
 	std::mutex findMutex;
 	std::mutex grepMutex;
 	FileExplorerNode *fileExplorer;
-	Jumplist jumplist;
 	Mark mark;
 	Mode mode;
 	Options options;
@@ -132,41 +133,32 @@ class State {
 	int32_t buildErrorIndex;
 	int32_t fileExplorerIndex;
 	int32_t fileExplorerWindowLine;
-	int32_t historyPosition;
-	int32_t lastSave;
 	static uint32_t maxX;
 	static uint32_t maxY;
 	std::string clipboard;
 	std::string prompt;
 	std::string buildDir;
-	std::string commentSymbol;
-	std::string filename;
 	std::string grepPath;
 	std::string prevKeys;
 	std::string status;
-	std::vector<Archive> archives;
+	File *file;
+	std::vector<File *> files;
 	std::vector<grepMatch> grepOutput;
 	std::vector<int32_t> motion;
 	std::vector<std::filesystem::path> findOutput;
 	std::vector<std::string> diffLines;
 	std::vector<std::string> logLines;
 	std::vector<std::string> blame;
-	std::vector<std::string> data;
 	std::vector<std::string> dotCommand;
 	std::vector<std::string> fileStack;
 	std::vector<std::string> macroCommand;
-	std::vector<std::string> previousState;
-	std::vector<std::vector<diffLine> > history;
 	std::vector<Harpoon> harpoon;
 	std::vector<ModeKey> keys;
 	struct Position visual;
-	struct Position windowPosition;
-	uint32_t hardCol;
-	uint32_t col;
+	uint32_t currentFile;
 	uint32_t fileExplorerSize;
 	uint32_t fileStackIndex;
 	uint32_t lineNumSize;
-	uint32_t row;
 	uint32_t workspace;
 	uint32_t logIndex;
 	uint32_t diffIndex;
