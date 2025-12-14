@@ -169,7 +169,7 @@ int32_t getModeColor(State *state)
 
 std::string getDisplayModeName(State *state)
 {
-	if (state->mode == VISUAL && state->visualType == NORMAL) {
+	if (state->mode == VISUAL && state->visualType == SELECT) {
 		return "VISUAL";
 	} else if (state->mode == VISUAL && state->visualType == BLOCK) {
 		return "VISUALBLOCK";
@@ -281,7 +281,7 @@ int32_t renderStatusBar(State *state)
 		}
 	}
 
-	std::string mode = std::string(" --") + getMode(state->mode) + std::string("-- ");
+	std::string mode = std::string(" -- ") + getMode(state->mode) + std::string(" -- ");
 	std::string file = std::string("\"") + setStringToLength(state->filename, state->maxX - (pixels.size() + 2), true) + "\"";
 	std::string rightSide = mode + file;
 	auto tmp = rightSide.length() + pixels.size();
@@ -358,7 +358,7 @@ bool isRowColInVisual(State *state, uint32_t i, uint32_t j)
 			if (minR <= i && i <= maxR) {
 				return (minC <= j && j <= maxC) || (maxC <= j && j <= minC);
 			}
-		} else if (state->visualType == NORMAL) {
+		} else if (state->visualType == SELECT) {
 			if (minR < i && i < maxR) {
 				return true;
 			} else if (minR == i && maxR == i) {

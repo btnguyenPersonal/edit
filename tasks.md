@@ -1,4 +1,6 @@
 ## tasks
+- have global searchReplace use the same stuff as local searchReplace
+
 - multiple macroCommands
 
 - make sure switching files doesn't move memory (archives are so dumb)

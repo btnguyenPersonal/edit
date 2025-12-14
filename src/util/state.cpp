@@ -167,7 +167,7 @@ void State::changeFile(std::string filename)
 	this->lastSave = -1;
 	this->windowPosition.row = 0;
 	this->windowPosition.col = 0;
-	this->visualType = NORMAL;
+	this->visualType = SELECT;
 	this->visual.row = 0;
 	this->visual.col = 0;
 	this->row = 0;
@@ -254,7 +254,7 @@ void State::init()
 	this->lastSave = -1;
 	this->windowPosition.row = 0;
 	this->windowPosition.col = 0;
-	this->visualType = NORMAL;
+	this->visualType = SELECT;
 	this->visual.row = 0;
 	this->visual.col = 0;
 	this->row = 0;

@@ -176,7 +176,7 @@ void pasteVisual(State *state, std::string text)
 		state->row = pos.row;
 		state->col = pos.col;
 		insertEmptyLine(state);
-	} else if (state->visualType == NORMAL && isClipLine) {
+	} else if (state->visualType == SELECT && isClipLine) {
 		auto pos = changeInVisual(state);
 		state->row = pos.row;
 		state->col = pos.col;

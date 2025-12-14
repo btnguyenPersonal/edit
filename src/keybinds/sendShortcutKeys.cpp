@@ -66,7 +66,7 @@ void sendShortcutKeys(State *state, int32_t c)
 		state->prevKeys = "";
 		state->motion.clear();
 		recordMotion(state, 'v');
-		initVisual(state, NORMAL);
+		initVisual(state, SELECT);
 		sendVisualKeys(state, command1, true);
 		sendVisualKeys(state, c, true);
 		if (state->row != state->visual.row || state->col != state->visual.col) {
@@ -97,7 +97,7 @@ void sendShortcutKeys(State *state, int32_t c)
 			char command = state->prevKeys[0];
 			state->prevKeys = "";
 			bool success = true;
-			initVisual(state, NORMAL);
+			initVisual(state, SELECT);
 			if (c != command) {
 				success = sendVisualKeys(state, c, true);
 				if (state->row != state->visual.row) {
@@ -130,7 +130,7 @@ void sendShortcutKeys(State *state, int32_t c)
 	} else if (state->prevKeys == "g" && c == '/') {
 		state->mode = SEARCH;
 	} else if (state->prevKeys == "g" && c == 'r') {
-		initVisual(state, NORMAL);
+		initVisual(state, SELECT);
 		setStateFromWordPosition(state, getWordPosition(state->data[state->row], state->col));
 		setQuery(&state->grep, getInVisual(state));
 		generateGrepOutput(state, true);
@@ -237,14 +237,14 @@ void sendShortcutKeys(State *state, int32_t c)
 		swapCase(state, state->row, state->col);
 		right(state);
 	} else if (c == '#') {
-		initVisual(state, NORMAL);
+		initVisual(state, SELECT);
 		setStateFromWordPosition(state, getWordPosition(state->data[state->row], state->col));
 		setQuery(&state->grep, getInVisual(state));
 		state->mode = GREP;
 		state->showAllGrep = false;
 		generateGrepOutput(state, true);
 	} else if (c == '*') {
-		initVisual(state, NORMAL);
+		initVisual(state, SELECT);
 		setStateFromWordPosition(state, getWordPosition(state->data[state->row], state->col));
 		setQuery(&state->search, getInVisual(state));
 		state->searching = true;
@@ -269,7 +269,7 @@ void sendShortcutKeys(State *state, int32_t c)
 		initVisual(state, BLOCK);
 	} else if (c == 'v') {
 		state->mode = VISUAL;
-		initVisual(state, NORMAL);
+		initVisual(state, SELECT);
 	} else if (c == 'V') {
 		state->mode = VISUAL;
 		initVisual(state, LINE);
@@ -458,7 +458,7 @@ void sendShortcutKeys(State *state, int32_t c)
 		removeAllLoggingCode(state);
 		setDotCommand(state, c);
 	} else if (c == 'm') {
-		initVisual(state, NORMAL);
+		initVisual(state, SELECT);
 		setStateFromWordPosition(state, getWordPosition(state->data[state->row], state->col));
 		toggleLoggingCode(state, getInVisual(state), true);
 		state->mode = NORMAL;
