@@ -8,7 +8,7 @@
 #include <vector>
 
 uint32_t isLargeFile(State *state);
-uint32_t getLastCharIndex(State* state);
+uint32_t getLastCharIndex(State *state);
 void locateNodeModule(State *state, std::string vis);
 void locateFile(State *state, std::string vis, std::vector<std::string> extensions);
 void realignHarpoon(State *state);

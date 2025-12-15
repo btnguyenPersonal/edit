@@ -16,7 +16,8 @@
 uint32_t State::maxX = 0;
 uint32_t State::maxY = 0;
 
-File *getFile(std::string name, std::vector<std::string> data) {
+File *getFile(std::string name, std::vector<std::string> data)
+{
 	File *file = new File();
 	file->filename = name;
 	file->data = data;
@@ -33,9 +34,75 @@ File *getFile(std::string name, std::vector<std::string> data) {
 	return file;
 }
 
+void State::loadAllConfigFiles()
+{
+	if (this->file) {
+		std::filesystem::path home = std::filesystem::absolute(getenv("HOME"));
+		std::filesystem::path current = std::filesystem::absolute(std::filesystem::current_path());
+
+		this->loadConfigFile(home.string() + "/.editorconfig");
+
+		this->loadConfigFile("./.editorconfig");
+	}
+}
+
+void State::loadConfigFile(std::string fileLocation)
+{
+	auto config = readFile(fileLocation.c_str());
+	bool found = false;
+	for (uint32_t i = 0; i < config.size(); i++) {
+		if (found) {
+			if (isLineFileRegex(config[i])) {
+				found = false;
+			} else {
+				readConfigLine(config[i]);
+			}
+		} else if (!found && isLineFileRegex(config[i]) && matchesEditorConfigGlob(config[i], this->file->filename)) {
+			found = true;
+		}
+	}
+}
+
+void State::readStringConfigValue(std::string &option, std::string configValue, std::string line)
+{
+	std::string prefix = configValue + " = ";
+	if (safeSubstring(line, 0, prefix.length()) == prefix) {
+		option = safeSubstring(line, prefix.length());
+	}
+}
+
+void State::readUintConfigValue(uint32_t &option, std::string configValue, std::string line)
+{
+	std::string prefix = configValue + " = ";
+	if (safeSubstring(line, 0, prefix.length()) == prefix) {
+		option = stoi(safeSubstring(line, prefix.length()));
+	}
+}
+
+void State::readBoolConfigValue(bool &option, std::string configValue, std::string line)
+{
+	std::string prefix = configValue + " = ";
+	if (safeSubstring(line, 0, prefix.length()) == prefix) {
+		std::string s = safeSubstring(line, prefix.length());
+		if (s == "true") {
+			option = true;
+		} else if (s == "false") {
+			option = false;
+		}
+	}
+}
+
+void State::readConfigLine(std::string line)
+{
+	this->readBoolConfigValue(this->options.autosave, "autosave", line);
+	this->readBoolConfigValue(this->options.wordwrap, "wordwrap", line);
+	this->readBoolConfigValue(this->options.insert_final_newline, "insert_final_newline", line);
+	this->readStringConfigValue(this->options.indent_style, "indent_style", line);
+	this->readUintConfigValue(this->options.indent_size, "indent_size", line);
+}
+
 void State::setDefaultOptions()
 {
-	// TODO read .editorconfig
 	this->options.insert_final_newline = false;
 	this->options.autosave = true;
 	this->options.keysSize = 30;
@@ -43,6 +110,7 @@ void State::setDefaultOptions()
 	this->options.wordwrap = true;
 	this->options.indent_size = 4;
 	this->options.indent_style = "space";
+	this->loadAllConfigFiles();
 }
 
 void State::changeFile(std::string filename)
@@ -69,6 +137,7 @@ void State::changeFile(std::string filename)
 		this->currentFile = this->files.size() - 1;
 		this->file = file;
 	}
+	this->loadAllConfigFiles();
 	this->mode = NORMAL;
 }
 

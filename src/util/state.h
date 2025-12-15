@@ -165,6 +165,12 @@ class State {
 	State();
 	State(std::string filename);
 	State(std::string name, std::vector<std::string> data);
+	void readStringConfigValue(std::string &option, std::string configValue, std::string line);
+	void readUintConfigValue(uint32_t &option, std::string configValue, std::string line);
+	void readBoolConfigValue(bool &option, std::string configValue, std::string line);
+	void loadAllConfigFiles();
+	void loadConfigFile(std::string fileLocation);
+	void readConfigLine(std::string optionLine);
 	void init();
 	void init(std::string name, std::vector<std::string> data);
 	bool resetState(std::string filename);

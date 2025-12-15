@@ -21,6 +21,22 @@
 #include <vector>
 #include <regex>
 
+bool matchesEditorConfigGlob(const std::string &pattern, const std::string &filepath)
+{
+	auto cleanPattern = safeSubstring(pattern, 1, pattern.length() - 2);
+	cleanPattern = replaceAll(cleanPattern, ".", "\\.");
+	cleanPattern = replaceAll(cleanPattern, "*", ".*");
+	cleanPattern = replaceAll(cleanPattern, "{", "(");
+	cleanPattern = replaceAll(cleanPattern, "}", ")");
+	cleanPattern = replaceAll(cleanPattern, ",", "|");
+
+	try {
+		return std::regex_search(filepath, std::regex(cleanPattern));
+	} catch (const std::exception &e) {
+		return false;
+	}
+}
+
 std::vector<std::string> getLogLines(State *state)
 {
 	std::vector<std::string> gitLogLines = { "current" };
@@ -272,7 +288,7 @@ bool isLineFileRegex(const std::string &line)
 	return line.front() == '[' && line.back() == ']';
 }
 
-uint32_t getLastCharIndex(State* state)
+uint32_t getLastCharIndex(State *state)
 {
 	if (state->file->data[state->file->row].length() != 0) {
 		return state->file->data[state->file->row].length() - 1;

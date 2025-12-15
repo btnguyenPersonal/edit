@@ -10,7 +10,7 @@ auto color_red = "\033[1;31m";
 
 uint32_t pass = 0;
 uint32_t fail = 0;
-struct testSuiteRun failures = {"failures", {}};
+struct testSuiteRun failures = { "failures", {} };
 
 void printSuiteRun(struct testSuiteRun suite)
 {

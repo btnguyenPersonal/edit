@@ -103,7 +103,7 @@ struct testSuiteRun testTypingKeys()
 	}
 
 	{
-		State *state = new State("./test-file.h", { "    Hello World",  "    Hello World", "    Hello World" });
+		State *state = new State("./test-file.h", { "    Hello World", "    Hello World", "    Hello World" });
 		state->file->row = 1;
 		state->file->col = 1;
 		sendTypingKeys(state, KEY_LEFT);
@@ -111,7 +111,7 @@ struct testSuiteRun testTypingKeys()
 	}
 
 	{
-		State *state = new State("./test-file.h", { "    Hello World",  "    Hello World", "    Hello World" });
+		State *state = new State("./test-file.h", { "    Hello World", "    Hello World", "    Hello World" });
 		state->file->row = 1;
 		state->file->col = 1;
 		sendTypingKeys(state, KEY_RIGHT);
@@ -119,7 +119,7 @@ struct testSuiteRun testTypingKeys()
 	}
 
 	{
-		State *state = new State("./test-file.h", { "    Hello World",  "    Hello World", "    Hello World" });
+		State *state = new State("./test-file.h", { "    Hello World", "    Hello World", "    Hello World" });
 		state->file->row = 1;
 		state->file->col = 1;
 		sendTypingKeys(state, KEY_UP);
@@ -127,7 +127,7 @@ struct testSuiteRun testTypingKeys()
 	}
 
 	{
-		State *state = new State("./test-file.h", { "    Hello World",  "    Hello World", "    Hello World" });
+		State *state = new State("./test-file.h", { "    Hello World", "    Hello World", "    Hello World" });
 		state->file->row = 1;
 		state->file->col = 1;
 		sendTypingKeys(state, KEY_DOWN);
@@ -135,109 +135,109 @@ struct testSuiteRun testTypingKeys()
 	}
 
 	{
-		State *state = new State("./test-file.h", { "    Hello World",  "    Hello World", "    Hello World" });
+		State *state = new State("./test-file.h", { "    Hello World", "    Hello World", "    Hello World" });
 		state->file->row = 1;
 		state->file->col = 1;
 		sendTypingKeys(state, ctrl('v'));
 		sendTypingKeys(state, '\n');
-		output.push_back({ "sendTypingKeys ctrl(v) \\n should output a newline character", compare(state->file->data, { "    Hello World",  " ", "   Hello World", "    Hello World" }) });
+		output.push_back({ "sendTypingKeys ctrl(v) \\n should output a newline character", compare(state->file->data, { "    Hello World", " ", "   Hello World", "    Hello World" }) });
 	}
 
 	{
-		State *state = new State("./test-file.h", { "    Hello World",  "    Hello World", "    Hello World" });
+		State *state = new State("./test-file.h", { "    Hello World", "    Hello World", "    Hello World" });
 		state->file->row = 2;
 		state->file->col = 1000;
 		for (uint32_t i = 0; i < 1000; i++) {
 			sendTypingKeys(state, KEY_BACKSPACE);
 		}
-		output.push_back({ "sendTypingKeys KEY_BACKSPACE should delete everything if starting at the end", compare(state->file->data, {""}) });
+		output.push_back({ "sendTypingKeys KEY_BACKSPACE should delete everything if starting at the end", compare(state->file->data, { "" }) });
 	}
 
 	{
-		State *state = new State("./test-file.h", { "    Hello World",  "    Hello World", "    Hello World" });
+		State *state = new State("./test-file.h", { "    Hello World", "    Hello World", "    Hello World" });
 		state->file->row = 2;
 		state->file->col = 1000;
 		for (uint32_t i = 0; i < 1000; i++) {
 			sendTypingKeys(state, 127);
 		}
-		output.push_back({ "sendTypingKeys 127 should delete everything if starting at the end", compare(state->file->data, {""}) });
+		output.push_back({ "sendTypingKeys 127 should delete everything if starting at the end", compare(state->file->data, { "" }) });
 	}
 
 	{
-		State *state = new State("./test-file.h", { "    Hello World",  "    Hello World", "    Hello World" });
+		State *state = new State("./test-file.h", { "    Hello World", "    Hello World", "    Hello World" });
 		state->file->row = 2;
 		state->file->col = 0;
 		sendTypingKeys(state, KEY_BACKSPACE);
-		output.push_back({ "sendTypingKeys KEY_BACKSPACE should delete newlines", compare(state->file->data, { "    Hello World",  "    Hello World    Hello World" }) });
+		output.push_back({ "sendTypingKeys KEY_BACKSPACE should delete newlines", compare(state->file->data, { "    Hello World", "    Hello World    Hello World" }) });
 	}
 
 	{
-		State *state = new State("./test-file.h", { "    Hello World",  "    Hello World", "    Hello World" });
+		State *state = new State("./test-file.h", { "    Hello World", "    Hello World", "    Hello World" });
 		state->file->row = 2;
 		state->file->col = 1000;
 		sendTypingKeys(state, KEY_BACKSPACE);
-		output.push_back({ "sendTypingKeys KEY_BACKSPACE should delete normal characters", compare(state->file->data, { "    Hello World",  "    Hello World", "    Hello Worl" }) });
+		output.push_back({ "sendTypingKeys KEY_BACKSPACE should delete normal characters", compare(state->file->data, { "    Hello World", "    Hello World", "    Hello Worl" }) });
 	}
 
 	{
-		State *state = new State("./test-file.h", { "    Hello World",  "    Hello World", "    Hello World" });
+		State *state = new State("./test-file.h", { "    Hello World", "    Hello World", "    Hello World" });
 		state->file->row = 2;
 		state->file->col = 0;
 		sendTypingKeys(state, ctrl('t'));
-		output.push_back({ "sendTypingKeys ctrl(t) should insert a tab", compare(state->file->data, { "    Hello World",  "    Hello World", "	    Hello World" }) });
+		output.push_back({ "sendTypingKeys ctrl(t) should insert a tab", compare(state->file->data, { "    Hello World", "    Hello World", "	    Hello World" }) });
 	}
 
 	{
-		State *state = new State("./test-file.h", { "    Hello World",  "    Hello World", "    Hello World" });
+		State *state = new State("./test-file.h", { "    Hello World", "    Hello World", "    Hello World" });
 		state->file->row = 2;
 		state->file->col = 1000;
 		insertNewline(state);
 		sendTypingKeys(state, 'a');
-		output.push_back({ "sendTypingKeys typing at the start of a newline should indent", compare(state->file->data, { "    Hello World",  "    Hello World", "    Hello World", "    a" }) });
+		output.push_back({ "sendTypingKeys typing at the start of a newline should indent", compare(state->file->data, { "    Hello World", "    Hello World", "    Hello World", "    a" }) });
 	}
 
 	{
-		State *state = new State("./test-file.h", { "    Hello World",  "    Hello World", "    Hello World" });
+		State *state = new State("./test-file.h", { "    Hello World", "    Hello World", "    Hello World" });
 		state->file->row = 2;
 		state->file->col = 1000;
 		sendTypingKeys(state, ctrl('w'));
-		output.push_back({ "sendTypingKeys ctrl(w) should delete whole words", compare(state->file->data, { "    Hello World",  "    Hello World", "    Hello " }) });
+		output.push_back({ "sendTypingKeys ctrl(w) should delete whole words", compare(state->file->data, { "    Hello World", "    Hello World", "    Hello " }) });
 	}
 
 	{
-		State *state = new State("./test-file.h", { "    Hello World",  "    Hello World", "    Hello World" });
-		state->file->row = 2;
-		state->file->col = 1000;
-		sendTypingKeys(state, ctrl('w'));
-		sendTypingKeys(state, ctrl('w'));
-		output.push_back({ "sendTypingKeys ctrl(w) should delete spaces between words", compare(state->file->data, { "    Hello World",  "    Hello World", "    " }) });
-	}
-
-	{
-		State *state = new State("./test-file.h", { "    Hello World",  "    Hello World", "    Hello World" });
+		State *state = new State("./test-file.h", { "    Hello World", "    Hello World", "    Hello World" });
 		state->file->row = 2;
 		state->file->col = 1000;
 		sendTypingKeys(state, ctrl('w'));
 		sendTypingKeys(state, ctrl('w'));
-		sendTypingKeys(state, ctrl('w'));
-		output.push_back({ "sendTypingKeys ctrl(w) should delete to the start of line if all spaces", compare(state->file->data, { "    Hello World",  "    Hello World", "" }) });
+		output.push_back({ "sendTypingKeys ctrl(w) should delete spaces between words", compare(state->file->data, { "    Hello World", "    Hello World", "    " }) });
 	}
 
 	{
-		State *state = new State("./test-file.h", { "    Hello World",  "    Hello World", "    Hello Wor(ld" });
+		State *state = new State("./test-file.h", { "    Hello World", "    Hello World", "    Hello World" });
 		state->file->row = 2;
 		state->file->col = 1000;
 		sendTypingKeys(state, ctrl('w'));
 		sendTypingKeys(state, ctrl('w'));
 		sendTypingKeys(state, ctrl('w'));
-		output.push_back({ "sendTypingKeys ctrl(w) should not stop at (", compare(state->file->data, { "    Hello World",  "    Hello World", "    Hello " }) });
+		output.push_back({ "sendTypingKeys ctrl(w) should delete to the start of line if all spaces", compare(state->file->data, { "    Hello World", "    Hello World", "" }) });
+	}
+
+	{
+		State *state = new State("./test-file.h", { "    Hello World", "    Hello World", "    Hello Wor(ld" });
+		state->file->row = 2;
+		state->file->col = 1000;
+		sendTypingKeys(state, ctrl('w'));
+		sendTypingKeys(state, ctrl('w'));
+		sendTypingKeys(state, ctrl('w'));
+		output.push_back({ "sendTypingKeys ctrl(w) should not stop at (", compare(state->file->data, { "    Hello World", "    Hello World", "    Hello " }) });
 	}
 
 	{
 		State *state = new State("./test-file.h", { "" });
 		state->file->row = 0;
 		state->file->col = 0;
-		for (char c = ' '; c <= '~' ;c++) {
+		for (char c = ' '; c <= '~'; c++) {
 			sendTypingKeys(state, c);
 		}
 		output.push_back({ "sendTypingKeys should print all valid characters", compare(state->file->data, { "!\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~" }) });
