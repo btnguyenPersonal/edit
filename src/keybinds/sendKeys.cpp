@@ -3,6 +3,7 @@
 #include "../util/modes.h"
 #include "../util/state.h"
 #include "../util/keys.h"
+#include "../util/expect.h"
 #include "sendBlameKeys.h"
 #include "sendFileExplorerKeys.h"
 #include "sendCommandLineKeys.h"
@@ -18,6 +19,9 @@
 
 void sendKeys(State *state, int32_t c)
 {
+	if (state->mode != FIND) {
+		expect(state->file);
+	}
 	if (c == KEY_MOUSE) {
 		state->keys.push_back({ state->mode, getEscapedChar('\xFF', false) });
 	} else if (c == KEY_BACKSPACE) {
@@ -32,6 +36,9 @@ void sendKeys(State *state, int32_t c)
 	state->searching = state->mode == SEARCH;
 	calcWindowBounds();
 	switch (state->mode) {
+	case FIND:
+		sendFindKeys(state, c);
+		break;
 	case NORMAL:
 		sendShortcutKeys(state, c);
 		break;
@@ -43,9 +50,6 @@ void sendKeys(State *state, int32_t c)
 		break;
 	case COMMAND:
 		sendCommandLineKeys(state, c);
-		break;
-	case FIND:
-		sendFindKeys(state, c);
 		break;
 	case GREP:
 		sendGrepKeys(state, c);
