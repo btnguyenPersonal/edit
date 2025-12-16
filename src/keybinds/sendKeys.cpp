@@ -19,7 +19,7 @@
 
 void sendKeys(State *state, int32_t c)
 {
-	if (state->mode != FIND) {
+	if (state->mode != FIND && state->mode != GREP) {
 		expect(state->file);
 	}
 	if (c == KEY_MOUSE) {
