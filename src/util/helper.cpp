@@ -21,6 +21,26 @@
 #include <vector>
 #include <regex>
 
+void searchNextResult(State* state, bool reverse)
+{
+	if (reverse) {
+		bool result = setSearchResultReverse(state, false);
+		if (result == false) {
+			state->searchFail = true;
+		}
+	} else {
+		state->col += 1;
+		uint32_t temp_col = state->col;
+		uint32_t temp_row = state->row;
+		bool result = setSearchResult(state);
+		if (result == false) {
+			state->searchFail = true;
+			state->row = temp_row;
+			state->col = temp_col - 1;
+		}
+	}
+}
+
 std::vector<std::string> getLogLines(State *state)
 {
 	std::vector<std::string> gitLogLines = { "current" };
@@ -958,12 +978,15 @@ void replaceAll(State *state, const std::string &query, const std::string &repla
 	}
 }
 
-bool setSearchResultReverse(State *state)
+bool setSearchResultReverse(State *state, bool allowCurrent)
 {
 	fixColOverMax(state);
 	uint32_t initialCol = state->col;
 	uint32_t initialRow = state->row;
 	uint32_t col = initialCol;
+	if (allowCurrent) {
+		col += state->search.query.length();
+	}
 	uint32_t row = initialRow;
 	bool isFirst = true;
 	do {

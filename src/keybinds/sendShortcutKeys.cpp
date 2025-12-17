@@ -325,22 +325,11 @@ void sendShortcutKeys(State *state, int32_t c)
 		state->mark = { state->filename, state->row };
 	} else if (c == 'N') {
 		state->searching = true;
-		bool result = setSearchResultReverse(state);
-		if (result == false) {
-			state->searchFail = true;
-		}
+		searchNextResult(state, !state->searchBackwards);
 		centerScreen(state);
 	} else if (c == 'n') {
 		state->searching = true;
-		state->col += 1;
-		uint32_t temp_col = state->col;
-		uint32_t temp_row = state->row;
-		bool result = setSearchResult(state);
-		if (result == false) {
-			state->searchFail = true;
-			state->row = temp_row;
-			state->col = temp_col - 1;
-		}
+		searchNextResult(state, state->searchBackwards);
 		centerScreen(state);
 	} else if (c == '.') {
 		resetValidCursorState(state);
@@ -381,9 +370,14 @@ void sendShortcutKeys(State *state, int32_t c)
 			state->data.erase(state->data.begin() + state->row + 1);
 		}
 		setDotCommand(state, c);
+	} else if (c == '?') {
+		backspaceAll(&state->search);
+		state->mode = SEARCH;
+		state->searchBackwards = true;
 	} else if (c == '/') {
 		backspaceAll(&state->search);
 		state->mode = SEARCH;
+		state->searchBackwards = false;
 	} else if (c == '^') {
 		state->col = getIndexFirstNonSpace(state);
 	} else if (c == ctrl('t')) {

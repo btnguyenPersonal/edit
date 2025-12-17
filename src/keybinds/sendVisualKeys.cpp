@@ -621,22 +621,11 @@ bool sendVisualKeys(State *state, char c, bool onlyMotions)
 		state->col = pos.col;
 	} else if (c == 'N') {
 		state->searching = true;
-		bool result = setSearchResultReverse(state);
-		if (result == false) {
-			state->searchFail = true;
-		}
+		searchNextResult(state, !state->searchBackwards);
 		centerScreen(state);
 	} else if (c == 'n') {
 		state->searching = true;
-		state->col += 1;
-		uint32_t temp_col = state->col;
-		uint32_t temp_row = state->row;
-		bool result = setSearchResult(state);
-		if (result == false) {
-			state->searchFail = true;
-			state->row = temp_row;
-			state->col = temp_col - 1;
-		}
+		searchNextResult(state, state->searchBackwards);
 		centerScreen(state);
 	} else if (!onlyMotions && c == '<') {
 		logDotCommand(state);

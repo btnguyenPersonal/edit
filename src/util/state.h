@@ -112,6 +112,7 @@ class State {
 	Query replace;
 	Query search;
 	VisualType visualType;
+	bool searchBackwards;
 	bool pasteAsBlock;
 	bool dontRecordKey;
 	bool dontSave;

@@ -266,7 +266,7 @@ int32_t renderStatusBar(State *state)
 			}
 			insertPixels(state, &pixels, std::string("recording: ") + setStringToLength(s, 60, true), WHITE);
 		}
-		prefix = "/";
+		prefix = state->searchBackwards ? "?" : "/";
 		std::string displayQuery = state->search.query;
 		if (state->mode == SEARCH) {
 			cursor = prefix.length() + pixels.size() + state->search.cursor;
