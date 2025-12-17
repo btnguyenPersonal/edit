@@ -1053,6 +1053,9 @@ void replaceAll(State *state, const std::string &query, const std::string &repla
 
 bool setSearchResultReverse(State *state, bool allowCurrent)
 {
+	if (state->search.query == "") {
+		return false;
+	}
 	fixColOverMax(state);
 	uint32_t initialCol = state->file->col;
 	uint32_t initialRow = state->file->row;
@@ -1114,6 +1117,9 @@ bool setSearchResultCurrentLine(State *state, const std::string &query)
 
 bool setSearchResult(State *state)
 {
+	if (state->search.query == "") {
+		return false;
+	}
 	fixColOverMax(state);
 	uint32_t initialCol = state->file->col;
 	uint32_t initialRow = state->file->row;
