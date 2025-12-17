@@ -1,4 +1,6 @@
 ## tasks
+- have emacs find alt f
+
 - rename expect() to assert()
 
 - git diff less harsh colors
