@@ -337,6 +337,10 @@ void sendShortcutKeys(State *state, int32_t c)
 		state->searching = true;
 		searchNextResult(state, state->searchBackwards);
 		centerScreen(state);
+	} else if (c == ';') {
+		repeatPrevLineSearch(state, false);
+	} else if (c == ',') {
+		repeatPrevLineSearch(state, true);
 	} else if (c == '.') {
 		resetValidCursorState(state);
 		for (uint32_t i = 0; i < state->dotCommand.size(); i++) {
@@ -345,7 +349,7 @@ void sendShortcutKeys(State *state, int32_t c)
 			cleanup(state, c);
 		}
 		state->dontRecordKey = true;
-	} else if (c == ',') {
+	} else if (c == '@') {
 		resetValidCursorState(state);
 		for (uint32_t i = 0; i < state->macroCommand.size(); i++) {
 			state->dontRecordKey = true;

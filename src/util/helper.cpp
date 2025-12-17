@@ -765,9 +765,51 @@ bool isAlphanumeric(char c)
 	return std::isalnum(c) || c == '_' ? 1 : 0;
 }
 
+int32_t findChar(State* state, bool reverse, char c)
+{
+	if (reverse) {
+		return findPrevChar(state, c);
+	} else {
+		return findNextChar(state, c);
+	}
+}
+
+int32_t toChar(State* state, bool reverse, char c)
+{
+	if (reverse) {
+		return toPrevChar(state, c);
+	} else {
+		return toNextChar(state, c);
+	}
+}
+
+void repeatPrevLineSearch(State *state, bool reverse)
+{
+	char temp = state->prevSearch.type;
+	switch (state->prevSearch.type) {
+	case 'f':
+		state->col = findChar(state, reverse, state->prevSearch.search);
+		break;
+	case 'F':
+		state->col = findChar(state, !reverse, state->prevSearch.search);
+		break;
+	case 't':
+		state->col = toChar(state, reverse, state->prevSearch.search);
+		break;
+	case 'T':
+		state->col = toChar(state, !reverse, state->prevSearch.search);
+		break;
+	default:
+		break;
+	}
+	state->prevSearch.type = temp;
+}
+
 uint32_t findPrevChar(State *state, char c)
 {
-	for (int32_t i = state->col; i >= 0; i--) {
+	state->prevSearch.type = 'F';
+	state->prevSearch.search = c;
+	for (int32_t i = state->col - 1; i >= 0; i--) {
 		if (state->data[state->row][i] == c) {
 			return (int32_t)i;
 		}
@@ -777,8 +819,10 @@ uint32_t findPrevChar(State *state, char c)
 
 uint32_t toPrevChar(State *state, char c)
 {
+	state->prevSearch.type = 'T';
+	state->prevSearch.search = c;
 	int32_t index = state->col;
-	for (int32_t i = state->col; i >= 0; i--) {
+	for (int32_t i = state->col - 1; i >= 0; i--) {
 		if (state->data[state->row][i] == c) {
 			return (uint32_t)index;
 		} else {
@@ -790,7 +834,9 @@ uint32_t toPrevChar(State *state, char c)
 
 uint32_t findNextChar(State *state, char c)
 {
-	for (uint32_t i = state->col; i < state->data[state->row].length(); i++) {
+	state->prevSearch.type = 'f';
+	state->prevSearch.search = c;
+	for (uint32_t i = state->col + 1; i < state->data[state->row].length(); i++) {
 		if (state->data[state->row][i] == c) {
 			return i;
 		}
@@ -800,8 +846,10 @@ uint32_t findNextChar(State *state, char c)
 
 uint32_t toNextChar(State *state, char c)
 {
+	state->prevSearch.type = 't';
+	state->prevSearch.search = c;
 	uint32_t index = state->col;
-	for (uint32_t i = state->col; i < state->data[state->row].length(); i++) {
+	for (uint32_t i = state->col + 1; i < state->data[state->row].length(); i++) {
 		if (state->data[state->row][i] == c) {
 			return index;
 		} else {
