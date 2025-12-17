@@ -1,4 +1,6 @@
 ## tasks
+- rename expect() to assert()
+
 - git diff less harsh colors
 
 - gf also work with local filesystem instead of just relative
