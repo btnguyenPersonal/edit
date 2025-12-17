@@ -1529,13 +1529,15 @@ uint32_t getDisplayRows(State *state, uint32_t r)
 
 void centerScreen(State *state)
 {
-	state->file->windowPosition.row = getCenteredWindowPosition(state);
-	uint32_t col = getDisplayCol(state);
-	if (!state->options.wordwrap) {
-		if (isColTooSmall(state)) {
-			state->file->windowPosition.col = col;
-		} else if (isColTooBig(state)) {
-			state->file->windowPosition.col = col + getLineNumberOffset(state) + 1 - state->maxX;
+	if (state->file) {
+		state->file->windowPosition.row = getCenteredWindowPosition(state);
+		uint32_t col = getDisplayCol(state);
+		if (!state->options.wordwrap) {
+			if (isColTooSmall(state)) {
+				state->file->windowPosition.col = col;
+			} else if (isColTooBig(state)) {
+				state->file->windowPosition.col = col + getLineNumberOffset(state) + 1 - state->maxX;
+			}
 		}
 	}
 }

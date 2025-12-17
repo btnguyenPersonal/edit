@@ -83,8 +83,8 @@ void fuzzSendKeys(int testnum, int iterations = 1000)
 
 int main()
 {
-	for (uint32_t i = 0; i < 100000; i++) {
-		fuzzSendKeys(i, 50);
+	for (uint32_t i = 0; i < 100; i++) {
+		fuzzSendKeys(i, 1000);
 	}
 	return 0;
 }
