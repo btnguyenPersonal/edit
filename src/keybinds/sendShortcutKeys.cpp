@@ -41,6 +41,12 @@ void sendShortcutKeys(State *state, int32_t c)
 	} else if (c == 27) { // ESC
 		state->prevKeys = "";
 		state->motion.clear();
+	} else if (state->prevKeys == "T") {
+		state->col = toPrevChar(state, c);
+		state->prevKeys = "";
+	} else if (state->prevKeys == "F") {
+		state->col = findPrevChar(state, c);
+		state->prevKeys = "";
 	} else if (state->prevKeys == "t") {
 		state->col = toNextChar(state, c);
 		state->prevKeys = "";
@@ -83,7 +89,7 @@ void sendShortcutKeys(State *state, int32_t c)
 		return;
 	} else if (state->prevKeys == "y" || state->prevKeys == "d" || state->prevKeys == "c") {
 		state->dontRecordKey = true;
-		if (c == 'i' || c == 'a' || c == 'f' || c == 't') {
+		if (c == 'i' || c == 'a' || c == 'f' || c == 't' || c == 'F' || c == 'T') {
 			state->prevKeys += c;
 		} else {
 			state->dotCommand.clear();
@@ -215,7 +221,7 @@ void sendShortcutKeys(State *state, int32_t c)
 		forwardFileStack(state);
 	} else if (c == ctrl('o')) {
 		backwardFileStack(state);
-	} else if (c == 'r' || c == 'g' || c == 'c' || c == 'd' || c == 'y' || c == 'f' || c == 't') {
+	} else if (c == 'r' || c == 'g' || c == 'c' || c == 'd' || c == 'y' || c == 'f' || c == 't' || c == 'F' || c == 'T') {
 		state->prevKeys = c;
 	} else if (c == 'h' || c == KEY_LEFT) {
 		left(state);

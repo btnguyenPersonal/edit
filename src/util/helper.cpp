@@ -765,6 +765,29 @@ bool isAlphanumeric(char c)
 	return std::isalnum(c) || c == '_' ? 1 : 0;
 }
 
+uint32_t findPrevChar(State *state, char c)
+{
+	for (int32_t i = state->col; i >= 0; i--) {
+		if (state->data[state->row][i] == c) {
+			return (int32_t)i;
+		}
+	}
+	return state->col;
+}
+
+uint32_t toPrevChar(State *state, char c)
+{
+	int32_t index = state->col;
+	for (int32_t i = state->col; i >= 0; i--) {
+		if (state->data[state->row][i] == c) {
+			return (uint32_t)index;
+		} else {
+			index = i;
+		}
+	}
+	return state->col;
+}
+
 uint32_t findNextChar(State *state, char c)
 {
 	for (uint32_t i = state->col; i < state->data[state->row].length(); i++) {

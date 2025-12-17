@@ -347,6 +347,12 @@ bool sendVisualKeys(State *state, char c, bool onlyMotions)
 	if (c == 27) { // ESC
 		state->mode = NORMAL;
 		logDotCommand(state);
+	} else if (state->prevKeys == "T") {
+		state->col = toPrevChar(state, c);
+		state->prevKeys = "";
+	} else if (state->prevKeys == "F") {
+		state->col = findPrevChar(state, c);
+		state->prevKeys = "";
 	} else if (state->prevKeys == "t") {
 		state->col = toNextChar(state, c);
 		state->prevKeys = "";
@@ -520,6 +526,10 @@ bool sendVisualKeys(State *state, char c, bool onlyMotions)
 		} else {
 			state->col = 0;
 		}
+	} else if (c == 'F') {
+		state->prevKeys = "F";
+	} else if (c == 'T') {
+		state->prevKeys = "T";
 	} else if (c == 'f') {
 		state->prevKeys = "f";
 	} else if (c == 't') {

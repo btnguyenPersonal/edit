@@ -7,6 +7,8 @@
 #include <string>
 #include <vector>
 
+uint32_t findPrevChar(State *state, char c);
+uint32_t toPrevChar(State *state, char c);
 void searchNextResult(State* state, bool reverse);
 uint32_t isLargeFile(State *state);
 uint32_t getLastCharIndex(State* state);
