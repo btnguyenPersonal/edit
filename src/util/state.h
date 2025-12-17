@@ -86,6 +86,11 @@ struct Query {
 	uint32_t selection;
 };
 
+struct PrevSearch {
+	char type;
+	char search;
+};
+
 struct Options {
 	bool wordwrap;
 	bool autosave;
@@ -105,6 +110,7 @@ class State {
 	Mark mark;
 	Mode mode;
 	Options options;
+	PrevSearch prevSearch;
 	Position matching;
 	Query commandLine;
 	Query find;
@@ -113,6 +119,7 @@ class State {
 	Query replace;
 	Query search;
 	VisualType visualType;
+	bool searchBackwards;
 	bool pasteAsBlock;
 	bool dontRecordKey;
 	bool dontSave;

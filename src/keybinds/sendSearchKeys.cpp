@@ -88,6 +88,6 @@ void sendSearchKeys(State *state, int32_t c)
 		state->replacing = false;
 		state->mode = NORMAL;
 	}
-	bool result = setSearchResult(state);
+	bool result = state->searchBackwards ? setSearchResultReverse(state, true) : setSearchResult(state);
 	state->searchFail = !result;
 }

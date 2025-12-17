@@ -37,6 +37,26 @@ bool matchesEditorConfigGlob(const std::string &pattern, const std::string &file
 	}
 }
 
+void searchNextResult(State* state, bool reverse)
+{
+	if (reverse) {
+		bool result = setSearchResultReverse(state, false);
+		if (result == false) {
+			state->searchFail = true;
+		}
+	} else {
+		state->file->col += 1;
+		uint32_t temp_col = state->file->col;
+		uint32_t temp_row = state->file->row;
+		bool result = setSearchResult(state);
+		if (result == false) {
+			state->searchFail = true;
+			state->file->row = temp_row;
+			state->file->col = temp_col - 1;
+		}
+	}
+}
+
 std::vector<std::string> getLogLines(State *state)
 {
 	std::vector<std::string> gitLogLines = { "current" };
@@ -747,9 +767,78 @@ bool isAlphanumeric(char c)
 	return std::isalnum(c) || c == '_' ? 1 : 0;
 }
 
+int32_t findChar(State* state, bool reverse, char c)
+{
+	if (reverse) {
+		return findPrevChar(state, c);
+	} else {
+		return findNextChar(state, c);
+	}
+}
+
+int32_t toChar(State* state, bool reverse, char c)
+{
+	if (reverse) {
+		return toPrevChar(state, c);
+	} else {
+		return toNextChar(state, c);
+	}
+}
+
+void repeatPrevLineSearch(State *state, bool reverse)
+{
+	char temp = state->prevSearch.type;
+	switch (state->prevSearch.type) {
+	case 'f':
+		state->file->col = findChar(state, reverse, state->prevSearch.search);
+		break;
+	case 'F':
+		state->file->col = findChar(state, !reverse, state->prevSearch.search);
+		break;
+	case 't':
+		state->file->col = toChar(state, reverse, state->prevSearch.search);
+		break;
+	case 'T':
+		state->file->col = toChar(state, !reverse, state->prevSearch.search);
+		break;
+	default:
+		break;
+	}
+	state->prevSearch.type = temp;
+}
+
+uint32_t findPrevChar(State *state, char c)
+{
+	state->prevSearch.type = 'F';
+	state->prevSearch.search = c;
+	for (int32_t i = state->file->col - 1; i >= 0; i--) {
+		if (state->file->data[state->file->row][i] == c) {
+			return (int32_t)i;
+		}
+	}
+	return state->file->col;
+}
+
+uint32_t toPrevChar(State *state, char c)
+{
+	state->prevSearch.type = 'T';
+	state->prevSearch.search = c;
+	int32_t index = state->file->col;
+	for (int32_t i = state->file->col - 1; i >= 0; i--) {
+		if (state->file->data[state->file->row][i] == c) {
+			return (uint32_t)index;
+		} else {
+			index = i;
+		}
+	}
+	return state->file->col;
+}
+
 uint32_t findNextChar(State *state, char c)
 {
-	for (uint32_t i = state->file->col; i < state->file->data[state->file->row].length(); i++) {
+	state->prevSearch.type = 'f';
+	state->prevSearch.search = c;
+	for (uint32_t i = state->file->col + 1; i < state->file->data[state->file->row].length(); i++) {
 		if (state->file->data[state->file->row][i] == c) {
 			return i;
 		}
@@ -759,8 +848,10 @@ uint32_t findNextChar(State *state, char c)
 
 uint32_t toNextChar(State *state, char c)
 {
+	state->prevSearch.type = 't';
+	state->prevSearch.search = c;
 	uint32_t index = state->file->col;
-	for (uint32_t i = state->file->col; i < state->file->data[state->file->row].length(); i++) {
+	for (uint32_t i = state->file->col + 1; i < state->file->data[state->file->row].length(); i++) {
 		if (state->file->data[state->file->row][i] == c) {
 			return index;
 		} else {
@@ -960,12 +1051,15 @@ void replaceAll(State *state, const std::string &query, const std::string &repla
 	}
 }
 
-bool setSearchResultReverse(State *state)
+bool setSearchResultReverse(State *state, bool allowCurrent)
 {
 	fixColOverMax(state);
 	uint32_t initialCol = state->file->col;
 	uint32_t initialRow = state->file->row;
 	uint32_t col = initialCol;
+	if (allowCurrent) {
+		col += state->search.query.length();
+	}
 	uint32_t row = initialRow;
 	bool isFirst = true;
 	do {

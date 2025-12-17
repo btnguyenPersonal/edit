@@ -1,4 +1,14 @@
 ## tasks
+- have emacs find alt f
+
+- rename expect() to assert()
+
+- git diff less harsh colors
+
+- gf also work with local filesystem instead of just relative
+
+- flash a different color when global copy/paste
+
 - have global searchReplace use the same stuff as local searchReplace
 
 - multiple macroCommands

@@ -347,6 +347,12 @@ bool sendVisualKeys(State *state, char c, bool onlyMotions)
 	if (c == 27) { // ESC
 		state->mode = NORMAL;
 		logDotCommand(state);
+	} else if (state->prevKeys == "T") {
+		state->file->col = toPrevChar(state, c);
+		state->prevKeys = "";
+	} else if (state->prevKeys == "F") {
+		state->file->col = findPrevChar(state, c);
+		state->prevKeys = "";
 	} else if (state->prevKeys == "t") {
 		state->file->col = toNextChar(state, c);
 		state->prevKeys = "";
@@ -520,6 +526,10 @@ bool sendVisualKeys(State *state, char c, bool onlyMotions)
 		} else {
 			state->file->col = 0;
 		}
+	} else if (c == 'F') {
+		state->prevKeys = "F";
+	} else if (c == 'T') {
+		state->prevKeys = "T";
 	} else if (c == 'f') {
 		state->prevKeys = "f";
 	} else if (c == 't') {
@@ -621,22 +631,11 @@ bool sendVisualKeys(State *state, char c, bool onlyMotions)
 		state->file->col = pos.col;
 	} else if (c == 'N') {
 		state->searching = true;
-		bool result = setSearchResultReverse(state);
-		if (result == false) {
-			state->searchFail = true;
-		}
+		searchNextResult(state, !state->searchBackwards);
 		centerScreen(state);
 	} else if (c == 'n') {
 		state->searching = true;
-		state->file->col += 1;
-		uint32_t temp_col = state->file->col;
-		uint32_t temp_row = state->file->row;
-		bool result = setSearchResult(state);
-		if (result == false) {
-			state->searchFail = true;
-			state->file->row = temp_row;
-			state->file->col = temp_col - 1;
-		}
+		searchNextResult(state, state->searchBackwards);
 		centerScreen(state);
 	} else if (!onlyMotions && c == '<') {
 		logDotCommand(state);

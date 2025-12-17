@@ -34,6 +34,8 @@
 #define MAGENTA 7
 #define CYAN 8
 #define WHITE 9
+#define DIFFGREEN 100
+#define DIFFRED 101
 
 void initColors()
 {
@@ -56,11 +58,16 @@ void initColors()
 	init_pair(invertColor(MAGENTA), _COLOR_BLACK, _COLOR_MAGENTA);
 	init_pair(invertColor(CYAN), _COLOR_BLACK, _COLOR_CYAN);
 	init_pair(invertColor(WHITE), _COLOR_BLACK, _COLOR_WHITE);
+
+	// 0xafff87
+	init_pair(DIFFGREEN, _COLOR_BLACK, 156);
+	// 0xd75f5f
+	init_pair(DIFFRED, _COLOR_BLACK, 167);
 }
 
 int32_t invertColor(int32_t color)
 {
-	return color + 11;
+	return color + 20;
 }
 
 struct Pixel {
@@ -259,7 +266,7 @@ int32_t renderStatusBar(State *state)
 			}
 			insertPixels(state, &pixels, std::string("recording: ") + setStringToLength(s, 60, true), WHITE);
 		}
-		prefix = "/";
+		prefix = state->searchBackwards ? "?" : "/";
 		std::string displayQuery = state->search.query;
 		if (state->mode == SEARCH) {
 			cursor = prefix.length() + pixels.size() + state->search.cursor;
@@ -589,9 +596,9 @@ Cursor renderDiff(State *state)
 		} else if (state->diffLines[i].length() > 2 && state->diffLines[i][0] == '-' && state->diffLines[i][1] == '-' && state->diffLines[i][2] == '-') {
 			color = WHITE;
 		} else if (state->diffLines[i].length() > 0 && state->diffLines[i][0] == '+') {
-			color = invertColor(GREEN);
+			color = DIFFGREEN;
 		} else if (state->diffLines[i].length() > 0 && state->diffLines[i][0] == '-') {
-			color = invertColor(RED);
+			color = DIFFRED;
 		} else if (state->diffLines[i].length() > 0 && state->diffLines[i][0] == '@') {
 			color = CYAN;
 		}

@@ -41,6 +41,12 @@ void sendShortcutKeys(State *state, int32_t c)
 	} else if (c == 27) { // ESC
 		state->prevKeys = "";
 		state->motion.clear();
+	} else if (state->prevKeys == "T") {
+		state->file->col = toPrevChar(state, c);
+		state->prevKeys = "";
+	} else if (state->prevKeys == "F") {
+		state->file->col = findPrevChar(state, c);
+		state->prevKeys = "";
 	} else if (state->prevKeys == "t") {
 		state->file->col = toNextChar(state, c);
 		state->prevKeys = "";
@@ -83,7 +89,7 @@ void sendShortcutKeys(State *state, int32_t c)
 		return;
 	} else if (state->prevKeys == "y" || state->prevKeys == "d" || state->prevKeys == "c") {
 		state->dontRecordKey = true;
-		if (c == 'i' || c == 'a' || c == 'f' || c == 't') {
+		if (c == 'i' || c == 'a' || c == 'f' || c == 't' || c == 'F' || c == 'T') {
 			state->prevKeys += c;
 		} else {
 			state->dotCommand.clear();
@@ -215,7 +221,7 @@ void sendShortcutKeys(State *state, int32_t c)
 		forwardFileStack(state);
 	} else if (c == ctrl('o')) {
 		backwardFileStack(state);
-	} else if (c == 'r' || c == 'g' || c == 'c' || c == 'd' || c == 'y' || c == 'f' || c == 't') {
+	} else if (c == 'r' || c == 'g' || c == 'c' || c == 'd' || c == 'y' || c == 'f' || c == 't' || c == 'F' || c == 'T') {
 		state->prevKeys = c;
 	} else if (c == 'h' || c == KEY_LEFT) {
 		left(state);
@@ -325,23 +331,16 @@ void sendShortcutKeys(State *state, int32_t c)
 		state->mark = { state->file->filename, state->file->row };
 	} else if (c == 'N') {
 		state->searching = true;
-		bool result = setSearchResultReverse(state);
-		if (result == false) {
-			state->searchFail = true;
-		}
+		searchNextResult(state, !state->searchBackwards);
 		centerScreen(state);
 	} else if (c == 'n') {
 		state->searching = true;
-		state->file->col += 1;
-		uint32_t temp_col = state->file->col;
-		uint32_t temp_row = state->file->row;
-		bool result = setSearchResult(state);
-		if (result == false) {
-			state->searchFail = true;
-			state->file->row = temp_row;
-			state->file->col = temp_col - 1;
-		}
+		searchNextResult(state, state->searchBackwards);
 		centerScreen(state);
+	} else if (c == ';') {
+		repeatPrevLineSearch(state, false);
+	} else if (c == ',') {
+		repeatPrevLineSearch(state, true);
 	} else if (c == '.') {
 		resetValidCursorState(state);
 		for (uint32_t i = 0; i < state->dotCommand.size(); i++) {
@@ -350,7 +349,7 @@ void sendShortcutKeys(State *state, int32_t c)
 			cleanup(state, c);
 		}
 		state->dontRecordKey = true;
-	} else if (c == ',') {
+	} else if (c == '@') {
 		resetValidCursorState(state);
 		for (uint32_t i = 0; i < state->macroCommand.size(); i++) {
 			state->dontRecordKey = true;
@@ -381,9 +380,14 @@ void sendShortcutKeys(State *state, int32_t c)
 			state->file->data.erase(state->file->data.begin() + state->file->row + 1);
 		}
 		setDotCommand(state, c);
+	} else if (c == '?') {
+		backspaceAll(&state->search);
+		state->mode = SEARCH;
+		state->searchBackwards = true;
 	} else if (c == '/') {
 		backspaceAll(&state->search);
 		state->mode = SEARCH;
+		state->searchBackwards = false;
 	} else if (c == '^') {
 		state->file->col = getIndexFirstNonSpace(state);
 	} else if (c == ctrl('t')) {

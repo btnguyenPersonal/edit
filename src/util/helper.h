@@ -7,6 +7,10 @@
 #include <string>
 #include <vector>
 
+void repeatPrevLineSearch(State *state, bool reverse);
+uint32_t findPrevChar(State *state, char c);
+uint32_t toPrevChar(State *state, char c);
+void searchNextResult(State* state, bool reverse);
 uint32_t isLargeFile(State *state);
 uint32_t getLastCharIndex(State *state);
 void locateNodeModule(State *state, std::string vis);
@@ -92,7 +96,7 @@ bool isWindowPositionHorizontalInvalid(State *state);
 void ltrim(std::string &s);
 void rtrim(std::string &s);
 void replaceAll(State *state, const std::string &query, const std::string &replace);
-bool setSearchResultReverse(State *state);
+bool setSearchResultReverse(State *state, bool allowCurrent);
 WordPosition findQuoteBounds(const std::string &str, char quoteChar, uint32_t cursor, bool includeQuote);
 bool setSearchResult(State *state);
 void setPosition(State *state, Position pos);

@@ -182,6 +182,8 @@ void State::init()
 	this->fileExplorer->open();
 	this->fileExplorerOpen = false;
 	this->pasteAsBlock = false;
+	this->prevSearch = { ' ', ' ' };
+	this->searchBackwards = false;
 	this->lineNumSize = 5;
 	this->fileExplorerSize = 40;
 	this->fileExplorerWindowLine = 0;
