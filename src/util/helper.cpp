@@ -1039,7 +1039,13 @@ void replaceAllGlobally(State *state, const std::string &query, const std::strin
 
 void replaceAll(State *state, const std::string &query, const std::string &replace)
 {
-	for (uint32_t i = 0; i < state->file->data.size(); i++) {
+	uint32_t i = 0;
+	uint32_t max = state->file->data.size();
+	if (state->replaceBounds.minR != 0 || state->replaceBounds.maxR != 0) {
+		i = state->replaceBounds.minR;
+		max = state->replaceBounds.maxR + 1;
+	}
+	for (; i < max && i < state->file->data.size(); i++) {
 		if (query.empty()) {
 			return;
 		}

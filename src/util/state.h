@@ -2,6 +2,7 @@
 
 #include "modes.h"
 #include "visualType.h"
+#include "bounds.h"
 #include "fileExplorerNode.h"
 #include <filesystem>
 #include <string>
@@ -118,6 +119,7 @@ class State {
 	Query name;
 	Query replace;
 	Query search;
+	Bounds replaceBounds;
 	VisualType visualType;
 	bool searchBackwards;
 	bool pasteAsBlock;

@@ -183,6 +183,7 @@ void State::init()
 	this->fileExplorerOpen = false;
 	this->pasteAsBlock = false;
 	this->prevSearch = { ' ', ' ' };
+	this->replaceBounds = { 0, 0, 0, 0 };
 	this->searchBackwards = false;
 	this->lineNumSize = 5;
 	this->fileExplorerSize = 40;

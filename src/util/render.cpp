@@ -155,6 +155,13 @@ void renderFileStack(State *state)
 	}
 }
 
+bool isTextInReplaceBounds(State *state, int32_t row)
+{
+	bool boundsSet = state->replaceBounds.minR != 0 || state->replaceBounds.maxR != 0;
+	bool inBounds = (int32_t)state->replaceBounds.minR <= row && row <= (int32_t)state->replaceBounds.maxR;
+	return !boundsSet || (boundsSet && inBounds);
+}
+
 int32_t getModeColor(State *state)
 {
 	if (state->mode == NORMAL) {
@@ -703,7 +710,7 @@ int32_t renderLineContent(State *state, int32_t row, int32_t renderRow, Cursor *
 			} else {
 				if (state->showGrep && searchCounter != 0) {
 					color = getSearchColor(state, row, startOfSearch, state->grep.query, true);
-				} else if (searchCounter != 0 && (state->searching || state->replacing)) {
+				} else if (searchCounter != 0 && ((state->searching && !state->replacing) || (state->replacing && isTextInReplaceBounds(state, row)))) {
 					color = getSearchColor(state, row, startOfSearch, state->search.query, false);
 				} else if ((int32_t)state->file->row == row && state->file->col == col && col < state->file->data[row].length() && state->file->data[row][col] == '\t') {
 					color = invertColor(WHITE);
@@ -724,7 +731,8 @@ int32_t renderLineContent(State *state, int32_t row, int32_t renderRow, Cursor *
 			}
 
 			if (col >= state->file->windowPosition.col) {
-				if (state->replacing && searchCounter != 0) {
+				bool shouldReplace = state->replacing && searchCounter != 0 && isTextInReplaceBounds(state, row);
+				if (shouldReplace) {
 					insertPixels(state, &pixels, state->replace.query, color);
 					col += state->search.query.length() - 1;
 					searchCounter = 0;

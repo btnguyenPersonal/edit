@@ -516,6 +516,10 @@ bool sendVisualKeys(State *state, char c, bool onlyMotions)
 			state->commandLine.cursor = 3 + getInVisual(state).length() + 1;
 			state->mode = COMMAND;
 		}
+	} else if (c == ctrl('f')) {
+		state->replaceBounds = getBounds(state);
+		state->replacing = true;
+		state->mode = SEARCH;
 	} else if (c == '^') {
 		state->file->col = getIndexFirstNonSpace(state);
 	} else if (c == '0') {
