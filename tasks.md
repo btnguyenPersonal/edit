@@ -1,6 +1,4 @@
 ## tasks
-- visual mode search
-
 - have emacs find alt f
 
 - rename expect() to assert()
