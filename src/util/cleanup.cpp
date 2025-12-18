@@ -1,8 +1,7 @@
 #include "helper.h"
-#include "expect.h"
+#include "assert.h"
 #include "history.h"
 #include "cleanup.h"
-#include "expect.h"
 #include "save.h"
 #include "sanity.h"
 #include <ncurses.h>
@@ -24,15 +23,15 @@ void cleanup(State *state, char c)
 		if (state->mode == INSERT) {
 			fixColOverMax(state);
 		}
-		expect(state->file->data[state->file->row].length() >= 0);
+		assert(state->file->data[state->file->row].length() >= 0);
 		if (state->options.insert_final_newline) {
 			insertFinalEmptyNewline(state);
 		}
 		if (isWindowPositionInvalid(state)) {
 			centerScreen(state);
 		}
-		expect(state->file->windowPosition.row <= state->file->row);
-		expect(state->file->windowPosition.row + state->maxY > state->file->row);
+		assert(state->file->windowPosition.row <= state->file->row);
+		assert(state->file->windowPosition.row + state->maxY > state->file->row);
 		if (state->recording && !state->dontRecordKey) {
 			if (!(c == ',' && state->mode == NORMAL)) {
 				recordMacroCommand(state, c);

@@ -3,7 +3,7 @@
 #include "../util/modes.h"
 #include "../util/state.h"
 #include "../util/keys.h"
-#include "../util/expect.h"
+#include "../util/assert.h"
 #include "sendBlameKeys.h"
 #include "sendFileExplorerKeys.h"
 #include "sendCommandLineKeys.h"
@@ -20,7 +20,7 @@
 void sendKeys(State *state, int32_t c)
 {
 	if (state->mode != FIND && state->mode != GREP) {
-		expect(state->file);
+		assert(state->file);
 	}
 	if (c == KEY_MOUSE) {
 		state->keys.push_back({ state->mode, getEscapedChar('\xFF', false) });

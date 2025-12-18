@@ -5,7 +5,7 @@
 #include "state.h"
 #include "visualType.h"
 #include "prompt.h"
-#include "expect.h"
+#include "assert.h"
 #include "ignore.h"
 #include "sanity.h"
 #include <algorithm>
@@ -260,7 +260,7 @@ void recordHistory(State *state, std::vector<diffLine> diff)
 	state->file->history.push_back(diff);
 	state->file->historyPosition = (int32_t)state->file->history.size() - 1;
 	state->diffIndex = state->file->historyPosition;
-	expect(state->file->historyPosition >= 0);
+	assert(state->file->historyPosition >= 0);
 }
 
 void recordJumpList(State *state)

@@ -518,7 +518,9 @@ bool sendVisualKeys(State *state, char c, bool onlyMotions)
 		}
 	} else if (c == ctrl('f')) {
 		state->replaceBounds = getBounds(state);
-		state->replacing = true;
+		if (state->search.query != "") {
+			state->replacing = true;
+		}
 		state->mode = SEARCH;
 	} else if (c == '^') {
 		state->file->col = getIndexFirstNonSpace(state);
@@ -695,11 +697,6 @@ bool sendVisualKeys(State *state, char c, bool onlyMotions)
 		state->file->row = bounds.minR;
 		state->file->col = getIndexFirstNonSpace(state);
 		state->mode = NORMAL;
-	} else if (!onlyMotions && c == 's') {
-		auto pos = changeInVisual(state);
-		state->file->row = pos.row;
-		state->file->col = pos.col;
-		state->mode = INSERT;
 	} else if (c == 'o') {
 		auto tempRow = state->file->row;
 		auto tempCol = state->file->col;
@@ -707,7 +704,7 @@ bool sendVisualKeys(State *state, char c, bool onlyMotions)
 		state->file->col = state->visual.col;
 		state->visual.row = tempRow;
 		state->visual.col = tempCol;
-	} else if (!onlyMotions && c == 'c') {
+	} else if (!onlyMotions && (c == 'c' || c == 's')) {
 		copyInVisual(state);
 		auto pos = changeInVisual(state);
 		if (state->visualType == BLOCK) {

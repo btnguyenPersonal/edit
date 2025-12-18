@@ -10,7 +10,7 @@
 #include "../util/query.h"
 #include "../util/state.h"
 #include "../util/visualType.h"
-#include "../util/expect.h"
+#include "../util/assert.h"
 #include "../util/cleanup.h"
 #include "../util/keys.h"
 #include "../util/grep.h"
