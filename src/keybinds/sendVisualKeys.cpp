@@ -208,17 +208,28 @@ bool visualBlockValid(State *state)
 
 std::string getInVisual(State *state)
 {
+	return getInVisual(state, true);
+}
+
+std::string getInVisual(State *state, bool addNewlines)
+{
 	Bounds bounds = getBounds(state);
 	std::string clip = "";
 	if (state->visualType == BLOCK) {
 		uint32_t min = std::min(bounds.minC, bounds.maxC);
 		uint32_t max = std::max(bounds.minC, bounds.maxC);
 		for (uint32_t i = bounds.minR; i <= bounds.maxR; i++) {
-			clip += safeSubstring(state->file->data[i], min, max + 1 - min) + "\n";
+			clip += safeSubstring(state->file->data[i], min, max + 1 - min);
+			if (addNewlines) {
+				clip += "\n";
+			}
 		}
 	} else if (state->visualType == LINE) {
 		for (size_t i = bounds.minR; i <= bounds.maxR; i++) {
-			clip += state->file->data[i] + "\n";
+			clip += state->file->data[i];
+			if (addNewlines) {
+				clip += "\n";
+			}
 		}
 	} else if (state->visualType == SELECT) {
 		uint32_t index = bounds.minC;
@@ -228,7 +239,9 @@ std::string getInVisual(State *state)
 				index += 1;
 			}
 			index = 0;
-			clip += '\n';
+			if (addNewlines) {
+				clip += "\n";
+			}
 		}
 		clip += safeSubstring(state->file->data[bounds.maxR], index, bounds.maxC - index + 1);
 	}
@@ -446,15 +459,15 @@ bool sendVisualKeys(State *state, char c, bool onlyMotions)
 		}
 		state->prevKeys = "";
 	} else if (!onlyMotions && state->prevKeys == "g" && c == 'r') {
-		if (state->visualType == SELECT) {
-			std::string vis = getInVisual(state);
+		if (state->visualType == SELECT || state->visualType == LINE) {
+			std::string vis = getInVisual(state, false);
 			locateNodeModule(state, vis);
 		}
 		state->prevKeys = "";
 	} else if (!onlyMotions && state->prevKeys == "g" && c == 'f') {
-		if (state->visualType == SELECT) {
+		if (state->visualType == SELECT || state->visualType == LINE) {
 			std::vector<std::string> extensions = { "", ".js", ".jsx", ".ts", ".tsx" };
-			std::string vis = getInVisual(state);
+			std::string vis = getInVisual(state, false);
 			locateFile(state, vis, extensions);
 		}
 		state->prevKeys = "";
@@ -506,14 +519,15 @@ bool sendVisualKeys(State *state, char c, bool onlyMotions)
 		state->mode = NORMAL;
 	} else if (!onlyMotions && c == 'm') {
 		logDotCommand(state);
-		if (state->visualType == SELECT) {
-			toggleLoggingCode(state, getInVisual(state), true);
+		if (state->visualType == SELECT || state->visualType == LINE) {
+			toggleLoggingCode(state, getInVisual(state, false), true);
 		}
 		state->mode = NORMAL;
 	} else if (!onlyMotions && c == ':') {
-		if (state->visualType == SELECT) {
-			state->commandLine.query = "gs/" + getInVisual(state) + "/";
-			state->commandLine.cursor = 3 + getInVisual(state).length() + 1;
+		if (state->visualType == SELECT || state->visualType == LINE) {
+			std::string vis = getInVisual(state, false);
+			state->commandLine.query = "gs/" + vis + "/";
+			state->commandLine.cursor = 3 + vis.length() + 1;
 			state->mode = COMMAND;
 		}
 	} else if (c == ctrl('f')) {
@@ -565,15 +579,15 @@ bool sendVisualKeys(State *state, char c, bool onlyMotions)
 	} else if (c == '}') {
 		state->file->row = getNextEmptyLine(state);
 	} else if (!onlyMotions && c == '*') {
-		if (state->visualType == SELECT) {
+		if (state->visualType == SELECT || state->visualType == LINE) {
 			logDotCommand(state);
 			state->searching = true;
-			setQuery(&state->search, getInVisual(state));
+			setQuery(&state->search, getInVisual(state, false));
 			state->mode = NORMAL;
 			setSearchResult(state);
 		}
 	} else if (!onlyMotions && c == '#') {
-		setQuery(&state->grep, getInVisual(state));
+		setQuery(&state->grep, getInVisual(state, false));
 		state->mode = GREP;
 		state->showAllGrep = false;
 		generateGrepOutput(state, true);

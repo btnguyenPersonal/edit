@@ -1,21 +1,13 @@
 ## tasks
 - have emacs find alt f
 
-- git diff less harsh colors
-
-- gf also work with local filesystem instead of just relative
-
 - flash a different color when global copy/paste
 
 - have global searchReplace use the same stuff as local searchReplace
 
 - multiple macroCommands
 
-- make sure switching files doesn't move memory (archives are so dumb)
-
 - ts-server integration (do it for real this time)
-
-- fix \ bug (sometimes crashes for some reason)
 
 - start using namespace std
 

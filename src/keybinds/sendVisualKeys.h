@@ -3,6 +3,7 @@
 #include "../util/bounds.h"
 #include "../util/state.h"
 
+std::string getInVisual(State *state, bool addNewlines);
 bool isValidMoveableChunk(State *state, Bounds bounds);
 bool visualBlockValid(State *state);
 Bounds getBounds(State *state);

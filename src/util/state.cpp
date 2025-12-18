@@ -37,12 +37,15 @@ File *getFile(std::string name, std::vector<std::string> data)
 void State::loadAllConfigFiles()
 {
 	if (this->file) {
-		std::filesystem::path home = std::filesystem::absolute(getenv("HOME"));
-		std::filesystem::path current = std::filesystem::absolute(std::filesystem::current_path());
+		try {
+			std::filesystem::path home = std::filesystem::absolute(getenv("HOME"));
+			std::filesystem::path current = std::filesystem::absolute(std::filesystem::current_path());
 
-		this->loadConfigFile(home.string() + "/.editorconfig");
+			this->loadConfigFile(home.string() + "/.editorconfig");
 
-		this->loadConfigFile("./.editorconfig");
+			this->loadConfigFile("./.editorconfig");
+		} catch (const std::exception &e) {
+		}
 	}
 }
 
@@ -288,6 +291,7 @@ State::State(std::string filename)
 		data = readFile(name.c_str());
 	}
 	this->init(name, data);
+	this->loadAllConfigFiles();
 }
 
 void State::setMaxYX(int32_t y, int32_t x)

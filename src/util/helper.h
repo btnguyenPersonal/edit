@@ -7,6 +7,8 @@
 #include <string>
 #include <vector>
 
+bool locateFileAbsolute(State *state, std::string vis);
+bool locateFileRelative(State *state, std::string vis, std::vector<std::string> extensions);
 void repeatPrevLineSearch(State *state, bool reverse);
 uint32_t findPrevChar(State *state, char c);
 uint32_t toPrevChar(State *state, char c);
@@ -14,7 +16,7 @@ void searchNextResult(State* state, bool reverse);
 uint32_t isLargeFile(State *state);
 uint32_t getLastCharIndex(State *state);
 void locateNodeModule(State *state, std::string vis);
-void locateFile(State *state, std::string vis, std::vector<std::string> extensions);
+bool locateFile(State *state, std::string vis, std::vector<std::string> extensions);
 void realignHarpoon(State *state);
 std::vector<std::string> getDiffLines(State *state);
 std::vector<std::string> getLogLines(State *state);

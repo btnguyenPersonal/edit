@@ -108,7 +108,45 @@ void locateNodeModule(State *state, std::string vis)
 	}
 }
 
-void locateFile(State *state, std::string vis, std::vector<std::string> extensions)
+bool locateFile(State *state, std::string vis, std::vector<std::string> extensions)
+{
+	ltrim(vis);
+	rtrim(vis);
+	bool result = locateFileRelative(state, vis, extensions);
+	if (!result) {
+		result = locateFileAbsolute(state, vis);
+	}
+	return result;
+}
+
+bool locateFileAbsolute(State *state, std::string vis)
+{
+	std::string path = vis;
+	try {
+		if (path.length() > 0 && path[0] == '~') {
+			const char* home = std::getenv("HOME");
+			if (home == nullptr) {
+				home = std::getenv("USERPROFILE");
+			}
+			if (home != nullptr) {
+				path = std::string(home) + path.substr(1);
+			} else {
+				return false;
+			}
+		}
+		if (std::filesystem::is_regular_file(path)) {
+			std::filesystem::path filePath(path);
+			state->resetState(filePath);
+			return true;
+		} else {
+			return false;
+		}
+	} catch (const std::filesystem::filesystem_error &e) {
+	}
+	return false;
+}
+
+bool locateFileRelative(State *state, std::string vis, std::vector<std::string> extensions)
 {
 	if (getExtension(vis) == "js") {
 		for (int32_t i = vis.length() - 1; i >= 0; i--) {
@@ -127,11 +165,12 @@ void locateFile(State *state, std::string vis, std::vector<std::string> extensio
 				auto baseDir = std::filesystem::current_path();
 				auto relativePath = std::filesystem::relative(newFilePath, baseDir);
 				state->resetState(relativePath.string());
-				break;
+				return true;
 			}
 		} catch (const std::filesystem::filesystem_error &e) {
 		}
 	}
+	return false;
 }
 
 std::vector<std::string> getDiffLines(State *state)
