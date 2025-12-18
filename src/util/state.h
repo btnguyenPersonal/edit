@@ -184,6 +184,7 @@ class State {
 	void init(std::string name, std::vector<std::string> data);
 	bool resetState(std::string filename);
 	void pushFileStack(std::string filename);
+	void reloadFile(std::string filename);
 	void changeFile(std::string filename);
 	void setDefaultOptions();
 	void print(std::string filename, bool printGrep, bool printArchives);

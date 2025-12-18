@@ -476,7 +476,7 @@ void sendShortcutKeys(State *state, int32_t c)
 		state->file->row = pos.row;
 		state->file->col = pos.col;
 	} else if (c == '\\') {
-		state->changeFile(state->file->filename);
+		state->reloadFile(state->file->filename);
 	} else if (c == 'G') {
 		state->file->row = state->file->data.size() - 1;
 		state->file->col = getNormalizedCol(state, state->file->hardCol);

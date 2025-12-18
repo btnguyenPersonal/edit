@@ -113,6 +113,28 @@ void State::setDefaultOptions()
 	this->loadAllConfigFiles();
 }
 
+void State::reloadFile(std::string filename)
+{
+	auto name = normalizeFilename(filename);
+	if (!std::filesystem::is_regular_file(name)) {
+		this->status = "file not found: " + name;
+		return;
+	}
+	for (uint32_t i = 0; i < this->files.size(); i++) {
+		if (this->files[i]->filename == name) {
+			this->files.erase(this->files.begin() + i);
+			break;
+		}
+	}
+	std::vector<std::string> data = readFile(name);
+	File *file = getFile(name, data);
+	this->files.push_back(file);
+	this->currentFile = this->files.size() - 1;
+	this->file = file;
+	this->loadAllConfigFiles();
+	this->mode = NORMAL;
+}
+
 void State::changeFile(std::string filename)
 {
 	auto name = normalizeFilename(filename);
