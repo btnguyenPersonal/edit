@@ -8,6 +8,7 @@
 #include <string>
 #include <vector>
 #include <mutex>
+#include <map>
 
 struct buildError {
 	std::string filename;
@@ -102,6 +103,11 @@ struct Options {
 	std::string indent_style;
 };
 
+struct Recording {
+	bool on;
+	char c;
+};
+
 class State {
     public:
 	std::mutex renderMutex;
@@ -127,7 +133,7 @@ class State {
 	bool dontSave;
 	bool fileExplorerOpen;
 	bool playingCommand;
-	bool recording;
+	Recording recording;
 	bool replacing;
 	bool runningAsRoot;
 	bool searchFail;
@@ -160,10 +166,11 @@ class State {
 	std::vector<std::string> blame;
 	std::vector<std::string> dotCommand;
 	std::vector<std::string> fileStack;
-	std::vector<std::string> macroCommand;
+	std::map<char, std::vector<std::string>> macroCommand;
 	std::vector<Harpoon> harpoon;
 	std::vector<ModeKey> keys;
 	struct Position visual;
+	int32_t lastMacro;
 	uint32_t currentFile;
 	uint32_t fileExplorerSize;
 	uint32_t fileStackIndex;

@@ -5,8 +5,6 @@
 
 - have global searchReplace use the same stuff as local searchReplace
 
-- multiple macroCommands
-
 - ts-server integration (do it for real this time)
 
 - start using namespace std

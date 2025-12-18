@@ -320,7 +320,7 @@ void recordJumpList(State *state)
 
 void recordMacroCommand(State *state, char c)
 {
-	state->macroCommand.push_back(getEscapedChar(c));
+	state->macroCommand[state->recording.c].push_back(getEscapedChar(c));
 }
 
 void insertFinalEmptyNewline(State *state)

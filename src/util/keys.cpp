@@ -74,6 +74,8 @@ char getUnEscapedChar(std::string s)
 		return ' ';
 	} else if (s == " \\\\") {
 		return '\\';
+	} else if (s == "\\\\") {
+		return '\\';
 	} else {
 		return s[0];
 	}

@@ -266,12 +266,12 @@ int32_t renderStatusBar(State *state)
 		renderPixels(state, 1, 0, pixels, false);
 		cursor = prefix.length() + state->find.cursor;
 	} else {
-		if (state->recording) {
+		if (state->recording.on) {
 			std::string s;
-			for (uint32_t i = 0; i < state->macroCommand.size(); i++) {
-				s += state->macroCommand[i];
+			for (uint32_t i = 0; i < state->macroCommand[state->recording.c].size(); i++) {
+				s += state->macroCommand[state->recording.c][i];
 			}
-			insertPixels(state, &pixels, std::string("recording: ") + setStringToLength(s, 60, true), WHITE);
+			insertPixels(state, &pixels, std::string("recording @") + state->recording.c + std::string(": ") + setStringToLength(s, 60, true), WHITE);
 		}
 		prefix = state->searchBackwards ? "?" : "/";
 		std::string displayQuery = state->search.query;

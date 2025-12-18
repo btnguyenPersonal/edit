@@ -32,10 +32,8 @@ void cleanup(State *state, char c)
 		}
 		assert(state->file->windowPosition.row <= state->file->row);
 		assert(state->file->windowPosition.row + state->maxY > state->file->row);
-		if (state->recording && !state->dontRecordKey) {
-			if (!(c == ',' && state->mode == NORMAL)) {
-				recordMacroCommand(state, c);
-			}
+		if (state->recording.on && !state->dontRecordKey) {
+			recordMacroCommand(state, c);
 		}
 		if (!state->file->jumplist.touched) {
 			recordJumpList(state);

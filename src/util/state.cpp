@@ -247,9 +247,9 @@ void State::init()
 	this->searchFail = false;
 	this->mode = FIND;
 	this->dotCommand = std::vector<std::string>();
-	this->macroCommand = std::vector<std::string>();
+	this->macroCommand = std::map<char, std::vector<std::string>>();
 	this->playingCommand = false;
-	this->recording = false;
+	this->recording = { false, 'w' };
 	this->selectAll = false;
 	this->dontRecordKey = false;
 	this->fileStack = std::vector<std::string>();

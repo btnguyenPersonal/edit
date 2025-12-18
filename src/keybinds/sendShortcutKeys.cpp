@@ -53,6 +53,35 @@ void sendShortcutKeys(State *state, int32_t c)
 	} else if (state->prevKeys == "f") {
 		state->file->col = findNextChar(state, c);
 		state->prevKeys = "";
+	} else if (state->prevKeys == "@") {
+		state->prevKeys = "";
+		char macro;
+		if (c == '@' && state->lastMacro != 'E') {
+			macro = state->lastMacro;
+		} else {
+			macro = std::tolower((char)c);
+			state->lastMacro = macro;
+		}
+		state->lastMacro = macro;
+		try {
+			resetValidCursorState(state);
+			for (uint32_t i = 0; i < state->macroCommand[macro].size(); i++) {
+				state->dontRecordKey = true;
+				sendKeys(state, getUnEscapedChar(state->macroCommand[macro][i]));
+				cleanup(state, c);
+			}
+			centerScreen(state);
+			state->dontRecordKey = true;
+		} catch (const std::exception &e) {
+		}
+	} else if (state->prevKeys == "q") {
+		if (!state->recording.on) {
+			state->recording.c = std::tolower((char)c);
+			state->macroCommand[state->recording.c].clear();
+		}
+		state->recording.on = !state->recording.on;
+		state->dontRecordKey = true;
+		state->prevKeys = "";
 	} else if (state->prevKeys == "r") {
 		if (state->file->col < state->file->data[state->file->row].length() && ' ' <= c && c <= '~') {
 			state->file->data[state->file->row] = safeSubstring(state->file->data[state->file->row], 0, state->file->col) + (char)c + safeSubstring(state->file->data[state->file->row], state->file->col + 1);
@@ -221,7 +250,9 @@ void sendShortcutKeys(State *state, int32_t c)
 		forwardFileStack(state);
 	} else if (c == ctrl('o')) {
 		backwardFileStack(state);
-	} else if (c == 'r' || c == 'g' || c == 'c' || c == 'd' || c == 'y' || c == 'f' || c == 't' || c == 'F' || c == 'T') {
+	} else if (c == 'q' && state->recording.on) {
+		state->recording.on = false;
+	} else if (c == 'q' || c == '@' || c == 'r' || c == 'g' || c == 'c' || c == 'd' || c == 'y' || c == 'f' || c == 't' || c == 'F' || c == 'T') {
 		state->prevKeys = c;
 	} else if (c == 'h' || c == KEY_LEFT) {
 		left(state);
@@ -348,21 +379,6 @@ void sendShortcutKeys(State *state, int32_t c)
 			sendKeys(state, getUnEscapedChar(state->dotCommand[i]));
 			cleanup(state, c);
 		}
-		state->dontRecordKey = true;
-	} else if (c == '@') {
-		resetValidCursorState(state);
-		for (uint32_t i = 0; i < state->macroCommand.size(); i++) {
-			state->dontRecordKey = true;
-			sendKeys(state, getUnEscapedChar(state->macroCommand[i]));
-			cleanup(state, c);
-		}
-		centerScreen(state);
-		state->dontRecordKey = true;
-	} else if (c == 'q') {
-		if (!state->recording) {
-			state->macroCommand.clear();
-		}
-		state->recording = !state->recording;
 		state->dontRecordKey = true;
 	} else if (c == 'K') {
 		state->file->col = state->file->data[state->file->row].length();
