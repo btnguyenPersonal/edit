@@ -1,9 +1,6 @@
 ## tasks
 - have emacs find alt f
 
-- flash a different color when global copy/paste
-	- if i want all pastes, I need to output the paste Bounds, then set visual cursor and regular cursor to temp, render(state, true), then set back
-
 - have global searchReplace use the same stuff as local searchReplace
 
 - ts-server integration (do it for real this time)
