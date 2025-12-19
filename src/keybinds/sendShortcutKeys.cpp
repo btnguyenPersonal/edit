@@ -412,6 +412,8 @@ void sendShortcutKeys(State *state, int32_t c)
 		if (!state->dontSave) {
 			state->mode = FILEEXPLORER;
 			if (!state->fileExplorerOpen) {
+				state->fileExplorer = new FileExplorerNode(std::filesystem::current_path());
+				state->fileExplorer->open();
 				state->fileExplorerIndex = state->fileExplorer->expand(state->file->filename);
 				centerFileExplorer(state);
 			}

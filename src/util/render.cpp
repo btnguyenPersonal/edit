@@ -834,7 +834,7 @@ int32_t renderFileExplorerNode(State *state, FileExplorerNode *node, int32_t r, 
 	}
 	if (node->isOpen) {
 		for (uint32_t i = 0; i < node->children.size(); i++) {
-			row = renderFileExplorerNode(state, &node->children[i], row, startingSpaces + "  ", cursor);
+			row = renderFileExplorerNode(state, node->children[i], row, startingSpaces + "  ", cursor);
 		}
 	}
 	return row;

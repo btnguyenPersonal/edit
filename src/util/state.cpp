@@ -113,7 +113,6 @@ void State::setDefaultOptions()
 	this->options.wordwrap = true;
 	this->options.indent_size = 4;
 	this->options.indent_style = "space";
-	this->loadAllConfigFiles();
 }
 
 void State::reloadFile(std::string filename)
@@ -203,8 +202,6 @@ void State::init()
 	this->showGrep = false;
 	this->diffIndex = 0;
 	this->logIndex = 0;
-	this->fileExplorer = new FileExplorerNode(std::filesystem::current_path());
-	this->fileExplorer->open();
 	this->fileExplorerOpen = false;
 	this->pasteAsBlock = false;
 	this->prevSearch = { ' ', ' ' };
@@ -274,6 +271,21 @@ void State::init(std::string name, std::vector<std::string> data)
 State::State()
 {
 	this->init();
+}
+
+State::~State()
+{
+	delete this->file;
+
+	for (auto f : this->files) {
+		if (f != nullptr) {
+			delete f;
+		}
+	}
+	this->file = nullptr;
+
+	delete this->fileExplorer;
+	this->fileExplorer = nullptr;
 }
 
 State::State(std::string name, std::vector<std::string> data)

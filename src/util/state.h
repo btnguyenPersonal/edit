@@ -179,6 +179,7 @@ class State {
 	uint32_t logIndex;
 	uint32_t diffIndex;
 	State();
+	~State();
 	State(std::string filename);
 	State(std::string name, std::vector<std::string> data);
 	void readStringConfigValue(std::string &option, std::string configValue, std::string line);
