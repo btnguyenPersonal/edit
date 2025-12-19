@@ -491,7 +491,8 @@ bool sendVisualKeys(State *state, char c, bool onlyMotions)
 		state->prevKeys = "";
 	} else if (state->prevKeys == "g" && (c == 'p' || c == 'P')) {
 		logDotCommand(state);
-		pasteVisual(state, getFromClipboard(state, true));
+		Bounds b = pasteVisual(state, getFromClipboard(state, true));
+		highlightRenderBounds(state, b);
 		state->mode = NORMAL;
 		state->prevKeys = "";
 	} else if (state->prevKeys == "g" && c == 'y') {

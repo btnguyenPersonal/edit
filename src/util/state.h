@@ -166,7 +166,7 @@ class State {
 	std::vector<std::string> blame;
 	std::vector<std::string> dotCommand;
 	std::vector<std::string> fileStack;
-	std::map<char, std::vector<std::string>> macroCommand;
+	std::map<char, std::vector<std::string> > macroCommand;
 	std::vector<Harpoon> harpoon;
 	std::vector<ModeKey> keys;
 	struct Position visual;

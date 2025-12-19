@@ -859,7 +859,6 @@ void renderScreen(State *state, bool fullRedraw)
 	}
 	try {
 		state->renderMutex.lock();
-		curs_set(0);
 		erase();
 		bool noLineNum = false;
 		Cursor editorCursor, fileExplorerCursor;
@@ -887,11 +886,9 @@ void renderScreen(State *state, bool fullRedraw)
 		moveCursor(state, cursorOnStatusBar, editorCursor, fileExplorerCursor, noLineNum);
 		wnoutrefresh(stdscr);
 		doupdate();
-		curs_set(1);
 		state->renderMutex.unlock();
 	} catch (const std::exception &e) {
 		state->status = std::string("something went wrong while rendering") + e.what();
-		curs_set(1);
 		state->renderMutex.unlock();
 	}
 }

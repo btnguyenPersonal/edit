@@ -215,11 +215,13 @@ void sendShortcutKeys(State *state, int32_t c)
 		copyToClipboard(state, path, false);
 		state->prevKeys = "";
 	} else if (state->prevKeys == "g" && c == 'P') {
-		paste(state, getFromClipboard(state, true));
+		Bounds b = paste(state, getFromClipboard(state, true));
+		highlightRenderBounds(state, b);
 		setDotCommand(state, c);
 		state->prevKeys = "";
 	} else if (state->prevKeys == "g" && c == 'p') {
-		pasteAfter(state, getFromClipboard(state, true));
+		Bounds b = pasteAfter(state, getFromClipboard(state, true));
+		highlightRenderBounds(state, b);
 		setDotCommand(state, c);
 		state->prevKeys = "";
 	} else if (c == ' ') {

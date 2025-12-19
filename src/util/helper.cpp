@@ -20,6 +20,26 @@
 #include <string>
 #include <vector>
 #include <regex>
+#include <chrono>
+#include <thread>
+
+void highlightRenderBounds(State *state, Bounds b)
+{
+	uint32_t tempR = state->file->row;
+	uint32_t tempC = state->file->col;
+	state->file->row = b.minR;
+	state->file->col = b.minC;
+	state->visual.row = b.maxR;
+	state->visual.col = b.maxC;
+	auto tempMode = state->mode;
+	state->mode = VISUAL;
+	state->visualType = SELECT;
+	renderScreen(state, true);
+	state->mode = tempMode;
+	state->file->row = tempR;
+	state->file->col = tempC;
+	std::this_thread::sleep_for(std::chrono::milliseconds(10));
+}
 
 bool matchesEditorConfigGlob(const std::string &pattern, const std::string &filepath)
 {
@@ -37,7 +57,7 @@ bool matchesEditorConfigGlob(const std::string &pattern, const std::string &file
 	}
 }
 
-void searchNextResult(State* state, bool reverse)
+void searchNextResult(State *state, bool reverse)
 {
 	if (reverse) {
 		bool result = setSearchResultReverse(state, false);
@@ -124,7 +144,7 @@ bool locateFileAbsolute(State *state, std::string vis)
 	std::string path = vis;
 	try {
 		if (path.length() > 0 && path[0] == '~') {
-			const char* home = std::getenv("HOME");
+			const char *home = std::getenv("HOME");
 			if (home == nullptr) {
 				home = std::getenv("USERPROFILE");
 			}
@@ -806,7 +826,7 @@ bool isAlphanumeric(char c)
 	return std::isalnum(c) || c == '_' ? 1 : 0;
 }
 
-int32_t findChar(State* state, bool reverse, char c)
+int32_t findChar(State *state, bool reverse, char c)
 {
 	if (reverse) {
 		return findPrevChar(state, c);
@@ -815,7 +835,7 @@ int32_t findChar(State* state, bool reverse, char c)
 	}
 }
 
-int32_t toChar(State* state, bool reverse, char c)
+int32_t toChar(State *state, bool reverse, char c)
 {
 	if (reverse) {
 		return toPrevChar(state, c);

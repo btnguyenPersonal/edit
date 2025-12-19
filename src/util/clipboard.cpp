@@ -4,6 +4,7 @@
 #include "indent.h"
 #include "state.h"
 #include "sanity.h"
+#include "bounds.h"
 #include <array>
 #include <iterator>
 #include <sstream>
@@ -161,8 +162,9 @@ void copyPathToClipboard(State *state, const std::string &filePath)
 	}
 }
 
-void pasteVisual(State *state, std::string text)
+Bounds pasteVisual(State *state, std::string text)
 {
+	Bounds bounds = { state->file->row, state->file->row, state->file->col, state->file->col };
 	std::vector<std::string> clip;
 	std::stringstream ss(text);
 	std::string line;
@@ -195,6 +197,9 @@ void pasteVisual(State *state, std::string text)
 		for (uint32_t i = 0; i < clip.size(); i++) {
 			state->file->data.push_back(clip[i]);
 		}
+		bounds.minC = 0;
+		bounds.maxC = 999999;
+		bounds.maxR += clip.size();
 	} else if (!text.empty() && text.back() == '\n') {
 		state->file->data.insert(state->file->data.begin() + state->file->row, clip.begin(), clip.end());
 	} else if (clip.size() > 0) {
@@ -209,12 +214,16 @@ void pasteVisual(State *state, std::string text)
 			int32_t r = i + state->file->row;
 			lastRow = r;
 		}
+		bounds.maxR = lastRow;
+		bounds.maxC = state->file->data[lastRow].length();
 		state->file->data[lastRow] += safeSubstring(current, state->file->col);
 	}
+	return bounds;
 }
 
-void paste(State *state, std::string text)
+Bounds paste(State *state, std::string text)
 {
+	Bounds bounds = { state->file->row, state->file->row, state->file->col, state->file->col };
 	fixColOverMax(state);
 	std::vector<std::string> clip;
 	std::stringstream ss(text);
@@ -237,6 +246,9 @@ void paste(State *state, std::string text)
 		}
 	} else if (!text.empty() && text.back() == '\n') {
 		state->file->data.insert(state->file->data.begin() + state->file->row, clip.begin(), clip.end());
+		bounds.minC = 0;
+		bounds.maxC = 999999;
+		bounds.maxR += clip.size();
 	} else if (clip.size() > 0) {
 		std::string current = state->file->data[state->file->row];
 		state->file->data[state->file->row] = current.substr(0, state->file->col);
@@ -249,12 +261,16 @@ void paste(State *state, std::string text)
 			int32_t r = i + state->file->row;
 			lastRow = r;
 		}
+		bounds.maxR = lastRow;
+		bounds.maxC = state->file->data[lastRow].length();
 		state->file->data[lastRow] += current.substr(state->file->col);
 	}
+	return bounds;
 }
 
-void pasteAfter(State *state, std::string text)
+Bounds pasteAfter(State *state, std::string text)
 {
+	Bounds bounds = { state->file->row, state->file->row, state->file->col, state->file->col };
 	fixColOverMax(state);
 	std::vector<std::string> clip;
 	std::stringstream ss(text);
@@ -273,7 +289,12 @@ void pasteAfter(State *state, std::string text)
 		}
 	} else if (!text.empty() && text.back() == '\n') {
 		state->file->data.insert(state->file->data.begin() + state->file->row + 1, clip.begin(), clip.end());
+		bounds.minR += 1;
+		bounds.minC = 0;
+		bounds.maxC = 999999;
+		bounds.maxR += clip.size();
 	} else if (clip.size() > 0) {
+		bounds.minC += 1;
 		std::string current = state->file->data[state->file->row];
 		int32_t breakCol = state->file->col;
 		if (state->file->col + 1 <= state->file->data[state->file->row].length()) {
@@ -289,8 +310,11 @@ void pasteAfter(State *state, std::string text)
 			int32_t r = i + state->file->row;
 			lastRow = r;
 		}
+		bounds.maxR = lastRow;
+		bounds.maxC = state->file->data[lastRow].length();
 		state->file->data[lastRow] += current.substr(breakCol);
 	}
+	return bounds;
 }
 
 void copyToClipboard(State *state, const std::string &clip, bool useSystemClipboard)

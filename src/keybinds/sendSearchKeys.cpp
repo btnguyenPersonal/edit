@@ -12,7 +12,7 @@ void sendSearchKeys(State *state, int32_t c)
 	if (c == 27) { // ESC
 		state->searching = false;
 		state->replacing = false;
-		state->replaceBounds = {0, 0, 0, 0};
+		state->replaceBounds = { 0, 0, 0, 0 };
 		state->mode = NORMAL;
 	} else if (c == ctrl('t')) {
 		if (state->replacing) {
@@ -85,7 +85,7 @@ void sendSearchKeys(State *state, int32_t c)
 			replaceAll(state, state->search.query, state->replace.query);
 		}
 		state->replacing = false;
-		state->replaceBounds = {0, 0, 0, 0};
+		state->replaceBounds = { 0, 0, 0, 0 };
 		state->mode = NORMAL;
 		return;
 	}
