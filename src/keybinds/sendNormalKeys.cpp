@@ -1,4 +1,4 @@
-#include "sendShortcutKeys.h"
+#include "sendNormalKeys.h"
 #include "../util/clipboard.h"
 #include "../util/comment.h"
 #include "../util/helper.h"
@@ -23,7 +23,7 @@
 #include <string>
 #include <vector>
 
-void sendShortcutKeys(State *state, int32_t c)
+void sendNormalKeys(State *state, int32_t c)
 {
 	if (c == KEY_MOUSE) {
 		MEVENT event;

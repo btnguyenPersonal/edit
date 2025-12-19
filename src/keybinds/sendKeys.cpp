@@ -11,7 +11,7 @@
 #include "sendGrepKeys.h"
 #include "sendMultiCursorKeys.h"
 #include "sendSearchKeys.h"
-#include "sendShortcutKeys.h"
+#include "sendNormalKeys.h"
 #include "sendTypingKeys.h"
 #include "sendVisualKeys.h"
 #include "sendDiffKeys.h"
@@ -40,7 +40,7 @@ void sendKeys(State *state, int32_t c)
 		sendFindKeys(state, c);
 		break;
 	case NORMAL:
-		sendShortcutKeys(state, c);
+		sendNormalKeys(state, c);
 		break;
 	case INSERT:
 		sendTypingKeys(state, c);

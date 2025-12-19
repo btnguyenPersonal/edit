@@ -9,18 +9,18 @@ sudo make install
 
 # why do you use this?
 
-I wanted to have every single shortcut I could ever want within 1-3 keypresses so I can code FASTER THAN THE SPEED OF LIGHT
+I wanted to have every single normal I could ever want within 1-3 keypresses so I can code FASTER THAN THE SPEED OF LIGHT
 
 I also wanted every common action I make to be repeatable easily with the "." command
-- example: I want to replace a comma to a semicolon to the end of a line, I can use some shortcuts to do it, then repeat for the next 3 lines `A backspace ; escape j . j . j .`
+- example: I want to replace a comma to a semicolon to the end of a line, I can use some normals to do it, then repeat for the next 3 lines `A backspace ; escape j . j . j .`
 
 The philosophy behind this editor is that I spend much more time editing code than adding new code, so I have optimized for editing over adding.
 
 This editor has many different "modes" that you switch between based on what type of actions you are doing to the code, here are the main ones:
-- `shortcut mode`: this is the main mode for editing code, you can move around the document, search text, copy and paste text, all using every key as a shortcut (for example: d for delete or p for paste)
+- `normal mode`: this is the main mode for editing code, you can move around the document, search text, copy and paste text, all using every key as a normal (for example: d for delete or p for paste)
   - the whole aim of this is so you don't need to reach for the arrow keys (SLOW), and don't have to use ctrl + shift + alt + f and destroy your wrists
 - `typing mode`: this is where the keyboard becomes just like normal for typing in text
-- `visual mode`: this is the mode for highlighting text, it lets you use all the movement keys in shortcut mode for selecting blocks of text, or doing shortcuts on entire blocks of text at once
+- `visual mode`: this is the mode for highlighting text, it lets you use all the movement keys in normal mode for selecting blocks of text, or doing normals on entire blocks of text at once
 
 When everything you do is through the keyboard instead of the mouse, muscle memory will let you spend 0 brainpower on the action, and your fingers will move for you.
 
@@ -42,9 +42,9 @@ almost all of the important edit commands follow this formula:
 
 # documentation
 
-## shortcut mode
+## normal mode
 
-Shortcut mode is the starting mode. every key is a shortcut.
+Normal mode is the starting mode. every key is a normal.
 I spend 80% of my time in this mode.
 
 The reason why i use hjkl for moving in cardinal directions instead of arrow keys is because such a common action should be right on the home row.
@@ -53,7 +53,7 @@ The reason why i use hjkl for moving in cardinal directions instead of arrow key
 
 |key|description|
 |:---:|:---:|
-| escape | cancel multi-key shortcut, or if not in shortcut mode go back to shortcut mode |
+| escape | cancel multi-key normal, or if not in normal mode go back to normal mode |
 | h or left | move left |
 | l or right | move right |
 | j or down | move down |
@@ -195,7 +195,7 @@ The reason why i use hjkl for moving in cardinal directions instead of arrow key
 | ' | jump to marked position |
 | n | jump to next search result |
 | N | jump to previous search result |
-| . | repeat previous shortcut |
+| . | repeat previous normal |
 | q | toggle recording macro |
 | , | repeat previous macro |
 | J | join next line with current line |
@@ -236,7 +236,7 @@ Typing mode is the mode that acts like a normal keyboard.
 
 |key|description|
 |:---:|:---:|
-| escape | go back to shortcuts mode |
+| escape | go back to normals mode |
 | any character | insert character |
 | backspace | delete one character backwards |
 | ctrl w | delete one word backwards |
@@ -254,7 +254,7 @@ Mode for settings or saving or quitting.
 
 |key|description|
 |:---:|:---:|
-| escape | go back to shortcuts mode |
+| escape | go back to normals mode |
 | :q | quit |
 | :wq or :x | save and quit |
 | :q! | force quit |
@@ -298,7 +298,7 @@ Visual block mode highlightes in blocks.
 
 |key|description|
 |:---:|:---:|
-| escape | go back to shortcuts mode |
+| escape | go back to normals mode |
 | k or ctrl p | up |
 | j or ctrl n | down |
 | enter | open file, or toggle folder open/closed |
@@ -313,7 +313,7 @@ Visual block mode highlightes in blocks.
 | r | refresh file explorer |
 | ctrl h | make file explorer smaller |
 | ctrl l | make file explorer bigger |
-| ctrl t | go back to shortcuts mode while keeping file explorer open |
+| ctrl t | go back to normals mode while keeping file explorer open |
 | f | open file in background |
 | - | collapse all |
 | ctrl g | grep at filepath |

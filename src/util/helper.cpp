@@ -1090,7 +1090,7 @@ void replaceAllGlobally(State *state, const std::string &query, const std::strin
 		if (returnValue != 0) {
 			throw std::exception();
 		}
-		state->changeFile(state->file->filename);
+		state->reloadFile(state->file->filename);
 	} catch (const std::exception &e) {
 		state->status = "command failed";
 	}
