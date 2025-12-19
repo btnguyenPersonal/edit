@@ -9,6 +9,7 @@
 #include "../util/query.h"
 #include "../util/state.h"
 #include "../util/grep.h"
+#include "../util/render.h"
 #include <algorithm>
 #include <ncurses.h>
 #include <string>
@@ -494,6 +495,7 @@ bool sendVisualKeys(State *state, char c, bool onlyMotions)
 		state->mode = NORMAL;
 		state->prevKeys = "";
 	} else if (state->prevKeys == "g" && c == 'y') {
+		renderScreen(state, true);
 		logDotCommand(state);
 		auto pos = copyInVisualSystem(state);
 		state->file->row = pos.row;

@@ -470,7 +470,7 @@ std::string getBlame(State *state, int32_t i)
 	}
 }
 
-Cursor renderVisibleLines(State *state)
+Cursor renderVisibleLines(State *state, bool changeVisualColor)
 {
 	Cursor cursor{ -1, -1 };
 	int32_t currentRenderRow = STATUS_BAR_LENGTH;
@@ -486,7 +486,7 @@ Cursor renderVisibleLines(State *state)
 		}
 		if (i >= (int32_t)state->file->windowPosition.row) {
 			renderLineNumber(state, i, currentRenderRow);
-			currentRenderRow = renderLineContent(state, i, currentRenderRow, &cursor, multiLineComment);
+			currentRenderRow = renderLineContent(state, i, currentRenderRow, &cursor, multiLineComment, changeVisualColor);
 		}
 		if (!isLargeFile(state)) {
 			if (startsWithSymbol(state, i, "*/")) {
@@ -636,13 +636,14 @@ bool startsWithSymbol(State *state, uint32_t row, std::string symbol)
 	return false;
 }
 
-int32_t renderLineContent(State *state, int32_t row, int32_t renderRow, Cursor *cursor, bool multiLineComment)
+int32_t renderLineContent(State *state, int32_t row, int32_t renderRow, Cursor *cursor, bool multiLineComment, bool changeVisualColor)
 {
 	std::vector<Pixel> pixels = std::vector<Pixel>();
 	std::vector<Pixel> replacePixels = std::vector<Pixel>();
+	int visualColor = changeVisualColor ? invertColor(YELLOW) : invertColor(RED);
 
 	if (isRowColInVisual(state, row, 0) && state->file->data[row].length() == 0) {
-		insertPixels(state, &pixels, " ", invertColor(RED));
+		insertPixels(state, &pixels, " ", visualColor);
 		if (state->file->row == (uint32_t)row) {
 			cursor->row = renderRow;
 			cursor->col = 0;
@@ -725,7 +726,7 @@ int32_t renderLineContent(State *state, int32_t row, int32_t renderRow, Cursor *
 						color = getColorFromChar(state->file->data[row][col]);
 					}
 					if (isRowColInVisual(state, row, col)) {
-						color = invertColor(RED);
+						color = visualColor;
 					}
 				}
 			}
@@ -846,16 +847,16 @@ Cursor renderFileExplorer(State *state)
 	return cursor;
 }
 
+void renderScreen(State *state)
+{
+	renderScreen(state, false);
+}
+
 void renderScreen(State *state, bool fullRedraw)
 {
 	if (fullRedraw) {
 		clear();
 	}
-	renderScreen(state);
-}
-
-void renderScreen(State *state)
-{
 	try {
 		state->renderMutex.lock();
 		curs_set(0);
@@ -874,7 +875,7 @@ void renderScreen(State *state)
 		} else if (state->mode == GREP) {
 			renderGrepOutput(state);
 		} else {
-			editorCursor = renderVisibleLines(state);
+			editorCursor = renderVisibleLines(state, fullRedraw);
 			if (state->fileExplorerOpen) {
 				fileExplorerCursor = renderFileExplorer(state);
 			}
