@@ -38,12 +38,15 @@ void State::loadAllConfigFiles()
 {
 	if (this->file) {
 		try {
-			std::filesystem::path home = std::filesystem::absolute(getenv("HOME"));
-			std::filesystem::path current = std::filesystem::absolute(std::filesystem::current_path());
+			auto homeEnv = getenv("HOME");
+			if (homeEnv) {
+				std::filesystem::path home = std::filesystem::absolute(homeEnv);
+				std::filesystem::path current = std::filesystem::absolute(std::filesystem::current_path());
 
-			this->loadConfigFile(home.string() + "/.editorconfig");
+				this->loadConfigFile(home.string() + "/.editorconfig");
 
-			this->loadConfigFile("./.editorconfig");
+				this->loadConfigFile("./.editorconfig");
+			}
 		} catch (const std::exception &e) {
 		}
 	}

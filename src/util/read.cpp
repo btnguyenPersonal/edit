@@ -4,14 +4,19 @@
 std::vector<std::string> readFile(const std::string &filename)
 {
 	std::ifstream file(filename);
-	std::string str;
-	std::vector<std::string> file_contents;
-	while (std::getline(file, str)) {
-		file_contents.push_back(str);
+
+	if (!file.is_open()) {
+		return { "" };
 	}
-	if (file.eof() && str.empty()) {
-		file_contents.push_back("");
+
+	std::string line;
+	std::vector<std::string> lines;
+	while (std::getline(file, line)) {
+		lines.push_back(std::move(line));
+	}
+	if (lines.empty()) {
+		lines.push_back("");
 	}
 	file.close();
-	return file_contents;
+	return lines;
 }

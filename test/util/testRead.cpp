@@ -13,7 +13,7 @@ struct testSuiteRun testRead()
 	{
 		system("rm -f ./test-file.h");
 		system("echo \"Hello World!\" > ./test-file.h");
-		output.push_back({ "readFile should read a one line file and give back the line", compare(readFile("./test-file.h"), { "Hello World!", "" }) });
+		output.push_back({ "readFile should read a one line file and give back the line", compare(readFile("./test-file.h"), { "Hello World!" }) });
 	}
 
 	{
