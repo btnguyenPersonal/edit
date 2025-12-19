@@ -164,7 +164,6 @@ void copyPathToClipboard(State *state, const std::string &filePath)
 
 Bounds pasteVisual(State *state, std::string text)
 {
-	Bounds bounds = { state->file->row, state->file->row, state->file->col, state->file->col };
 	std::vector<std::string> clip;
 	std::stringstream ss(text);
 	std::string line;
@@ -193,6 +192,7 @@ Bounds pasteVisual(State *state, std::string text)
 		state->file->row = pos.row;
 		state->file->col = pos.col;
 	}
+	Bounds bounds = { state->file->row, state->file->row, state->file->col, state->file->col };
 	if (state->file->data.size() == 0) {
 		for (uint32_t i = 0; i < clip.size(); i++) {
 			state->file->data.push_back(clip[i]);
@@ -202,6 +202,9 @@ Bounds pasteVisual(State *state, std::string text)
 		bounds.maxR += clip.size();
 	} else if (!text.empty() && text.back() == '\n') {
 		state->file->data.insert(state->file->data.begin() + state->file->row, clip.begin(), clip.end());
+		bounds.minC = 0;
+		bounds.maxC = 999999;
+		bounds.maxR += clip.size();
 	} else if (clip.size() > 0) {
 		std::string current = state->file->data[state->file->row];
 		state->file->data[state->file->row] = current.substr(0, state->file->col);
