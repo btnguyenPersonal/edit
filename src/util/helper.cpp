@@ -1136,8 +1136,8 @@ void replaceAllGlobally(State* state, const std::string& query, const std::strin
 	}
 
 	state->status = modified_count > 0
-	? "Replaced in " + std::to_string(modified_count) + " files"
-	: "No matches found";
+	? "replaced in " + std::to_string(modified_count) + " files"
+	: "no matches found";
 }
 
 void replaceAll(State *state, const std::string &query, const std::string &replace)
