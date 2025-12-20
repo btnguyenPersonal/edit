@@ -37,6 +37,10 @@ void evaluateCommandLineQuery(State *state)
 			endwin();
 			exit(0);
 		}
+	} else if (state->commandLine.query.substr(0, 1) == "e") {
+		if (state->commandLine.query.length() > 2) {
+			locateFile(state, safeSubstring(state->commandLine.query, 2), { "" });
+		}
 	} else if (state->commandLine.query.substr(0, 1) == "s") {
 		std::istringstream iss(state->commandLine.query);
 		std::string s, first, second, g;

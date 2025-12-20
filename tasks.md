@@ -33,8 +33,6 @@
 std::filesystem grabFile(State* state, std::string s);
 void releaseFile(State* state, std::filesystem f);
 
-gs///g make sure it pipes all git files non-ignored files into sed xargs (or could go through files manually)
-
 - change state->file->data to rope structure
     - try to implement by hand that will be fun
 

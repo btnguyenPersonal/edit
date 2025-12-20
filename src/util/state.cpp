@@ -120,6 +120,7 @@ void State::setDefaultOptions()
 
 void State::reloadFile(std::string filename)
 {
+	Position pos = { this->file->row, this->file->col };
 	auto name = normalizeFilename(filename);
 	if (!std::filesystem::is_regular_file(name)) {
 		this->status = "file not found: " + name;
@@ -138,6 +139,8 @@ void State::reloadFile(std::string filename)
 	this->file = file;
 	this->loadAllConfigFiles();
 	this->mode = NORMAL;
+	this->file->row = pos.row;
+	this->file->col = pos.col;
 }
 
 void State::changeFile(std::string filename)
