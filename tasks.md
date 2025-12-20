@@ -1,7 +1,7 @@
 ## tasks
-- have emacs find alt f
+- W and B
 
-- have global searchReplace use the same stuff as local searchReplace
+- have emacs find alt f
 
 - ts-server integration (do it for real this time)
 
