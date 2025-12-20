@@ -107,7 +107,25 @@ void sendCommandLineKeys(State *state, int32_t c)
 			}
 		}
 	} else if (c == KEY_BACKSPACE || c == 127) {
-		backspace(&state->commandLine);
+		if (state->commandLine.query.length() > 0 && state->commandLine.query[0] == 'e') {
+			bool found = false;
+			int32_t num = 0;
+			for (int32_t i = state->commandLine.query.length() - 1; i > 0; i--) {
+				if (num != 0 && state->commandLine.query[i] == '/') {
+					for (int32_t j = 0; j < num; j++) {
+						backspace(&state->commandLine);
+					}
+					found = true;
+					break;
+				}
+				num++;
+			}
+			if (!found) {
+				backspace(&state->commandLine);
+			}
+		} else {
+			backspace(&state->commandLine);
+		}
 	} else if (c == ctrl('w')) {
 		backspaceWord(&state->commandLine);
 	} else if (c == ctrl('l')) {

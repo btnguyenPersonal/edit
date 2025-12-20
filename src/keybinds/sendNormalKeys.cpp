@@ -497,6 +497,10 @@ void sendNormalKeys(State *state, int32_t c)
 		state->file->col = pos.col;
 	} else if (c == '\\') {
 		state->reloadFile(state->file->filename);
+	} else if (c == 'H') {
+		state->commandLine.query = std::string("e ") + std::filesystem::canonical(state->file->filename).string();
+		state->commandLine.cursor = state->commandLine.query.length();
+		state->mode = COMMAND;
 	} else if (c == 'G') {
 		state->file->row = state->file->data.size() - 1;
 		state->file->col = getNormalizedCol(state, state->file->hardCol);
