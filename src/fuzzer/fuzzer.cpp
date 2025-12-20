@@ -26,23 +26,23 @@ void fuzzSendKeys(int testnum, int iterations = 1000)
 			randVec.push_back(keypresses[dis(gen)]);
 		}
 		// std::cout << "\t{" << std::endl;;
-		// std::cout << "\t\tState *state = new State(\"./test-file.h\", file);" << std::endl;
-		// std::cout << "\t\ttestValues(state, {";
-		// for (uint32_t i = 0; i < randVec.size(); i++) {
-		// 	if (i != 0) {
-		// 		std::cout << ", ";
-		// 	}
-		// 	std::string c = getEscapedChar(randVec[i], true);
-		// 	std::string s = "";
-		// 	for (uint32_t j = 0; j < c.length(); j++) {
-		// 		if (c[j] == '\\' || c[j] == '"') {
-		// 			s += "\\";
-		// 		}
-		// 		s += c[j];
-		// 	}
-		// 	std::cout << "\"" << s << "\"";
-		// }
-		// std::cout << "});" << std::endl;
+		std::cout << "\t\tState *state = new State(\"src/helper.cpp\");" << std::endl;
+		std::cout << "\t\ttestValues(state, {";
+		for (uint32_t i = 0; i < randVec.size(); i++) {
+			if (i != 0) {
+				std::cout << ", ";
+			}
+			std::string c = getEscapedChar(randVec[i], true);
+			std::string s = "";
+			for (uint32_t j = 0; j < c.length(); j++) {
+				if (c[j] == '\\' || c[j] == '"') {
+					s += "\\";
+				}
+				s += c[j];
+			}
+			std::cout << "\"" << s << "\"";
+		}
+		std::cout << "});" << std::endl;
 		for (uint32_t i = 0; i < randVec.size(); i++) {
 			char randomKey = randVec[i];
 			std::cout << getMode(state->mode) << " " << getEscapedChar(randomKey, true) << std::endl;
@@ -83,8 +83,8 @@ void fuzzSendKeys(int testnum, int iterations = 1000)
 
 int main()
 {
-	for (uint32_t i = 0; i < 100; i++) {
-		fuzzSendKeys(i, 1000);
+	for (uint32_t i = 0; i < 1000000; i++) {
+		fuzzSendKeys(i, 10);
 	}
 	return 0;
 }

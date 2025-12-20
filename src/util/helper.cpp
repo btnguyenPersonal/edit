@@ -1075,25 +1075,69 @@ void runCommand(State *state, const std::string &command)
 	state->changeFile(state->file->filename);
 }
 
-void replaceAllGlobally(State *state, const std::string &query, const std::string &replace)
-{
-	try {
-		std::string command;
-#ifdef __APPLE__
-		command = ("git ls-files | xargs -I {} sed -i '' \"s/" + query + '/' + replace + "/g\" \"{}\" 2>/dev/null");
-#elif defined(__linux__)
-		command = ("git ls-files | xargs -I {} sed -i'' \"s/" + query + '/' + replace + "/g\" \"{}\" 2>/dev/null");
-#else
-#error "Platform not supported"
-#endif
-		int32_t returnValue = std::system(command.c_str());
-		if (returnValue != 0) {
-			throw std::exception();
-		}
-		state->reloadFile(state->file->filename);
-	} catch (const std::exception &e) {
-		state->status = "command failed";
+void replaceAllGlobally(State* state, const std::string& query, const std::string& replace) {
+	if (query.empty()) {
+		state->status = "query empty";
+		return;
 	}
+
+	try {
+		std::regex re(query);
+	} catch (const std::regex_error&) {
+		state->status = "invalid regex";
+		return;
+	}
+
+	std::regex re(query);
+
+	FILE* pipe = popen("git ls-files", "r");
+	if (!pipe) {
+		// TODO use all files if git not available
+		state->status = "git not available";
+		return;
+	}
+
+	char path[1024];
+	int modified_count = 0;
+
+	while (fgets(path, sizeof(path), pipe)) {
+		std::string filename = path;
+		if (!filename.empty() && filename.back() == '\n') {
+			filename.pop_back();
+		}
+
+		std::filesystem::path full_path = std::filesystem::current_path() / filename;
+		if (!std::filesystem::is_regular_file(full_path)) {
+			continue;
+		}
+
+		std::ifstream in(full_path, std::ios::binary);
+		if (!in) {
+			continue;
+		}
+
+		std::string content((std::istreambuf_iterator<char>(in)),
+		std::istreambuf_iterator<char>());
+
+		std::string replaced = std::regex_replace(content, re, replace);
+
+		if (replaced != content) {
+			std::ofstream out(full_path, std::ios::binary);
+			if (out) {
+				out << replaced;
+				modified_count++;
+			}
+		}
+	}
+	pclose(pipe);
+
+	if (state->file) {
+		state->reloadFile(state->file->filename);
+	}
+
+	state->status = modified_count > 0
+	? "Replaced in " + std::to_string(modified_count) + " files"
+	: "No matches found";
 }
 
 void replaceAll(State *state, const std::string &query, const std::string &replace)

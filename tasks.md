@@ -10,16 +10,16 @@
 - localdefs ifdef TESTING last resort
 
 - object oriented seam
-	- consider changing some things to objects in order to test this way (supposed to be the best way)
+    - consider changing some things to objects in order to test this way (supposed to be the best way)
 
 - be careful when using linking seams, outside the environment is where the seam originates (hard to tell test vs prod)
 
 - mocking
-	- break clipboard dependency
-	- break filesystem dependency
-		- remove all the std::filesystem dependencies from everywhere and have replacement methods in filesystem.cpp
-		- changes get sent to global testing variable, can read from that while testing
-	- break ncurses dependency
+    - break clipboard dependency
+    - break filesystem dependency
+        - remove all the std::filesystem dependencies from everywhere and have replacement methods in filesystem.cpp
+        - changes get sent to global testing variable, can read from that while testing
+    - break ncurses dependency
 
 - everything that we mock needs to have an integration test to cover the real-world application (macos, linux x11, linux wayland)
 
