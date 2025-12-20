@@ -39,4 +39,4 @@ void releaseFile(State* state, std::filesystem f);
 - add crash dumps
 
 # features
-- repeat keys
+- repeat number keys
