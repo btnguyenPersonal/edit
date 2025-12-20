@@ -1,7 +1,10 @@
 ## tasks
+- editing new file indicator [NEW] on right side??
+
 - W and B
 
 - have emacs find alt f
+	- just need tab complete now
 
 - ts-server integration (do it for real this time)
 
