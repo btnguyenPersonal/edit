@@ -16,34 +16,33 @@ bool isAllLowercase(const std::string &str)
 
 int32_t maxConsecutiveMatch(const std::filesystem::path &filePath, const std::string &query)
 {
-	std::string filePathStr = filePath.string();
-	std::string queryLower = query;
-
-	if (isAllLowercase(queryLower)) {
-		std::transform(filePathStr.begin(), filePathStr.end(), filePathStr.begin(), [](unsigned char c) { return std::tolower(c); });
-		std::transform(queryLower.begin(), queryLower.end(), queryLower.begin(), [](unsigned char c) { return std::tolower(c); });
+	if (query.empty()) {
+		return 0;
 	}
 
-	int32_t maxLength = 0;
-	int32_t currentLength = 0;
-	for (size_t i = 0, j = 0; i < filePathStr.size();) {
-		if (filePathStr[i] == queryLower[j]) {
-			currentLength++;
-			i++;
-			j++;
-			if (j == queryLower.size()) {
-				maxLength = std::max(maxLength, currentLength);
-				currentLength = 0;
-				j = 0;
-			}
-		} else {
-			i = i - currentLength;
-			currentLength = 0;
-			i++;
+	auto to_lower = [](std::string s) {
+		std::transform(s.begin(), s.end(), s.begin(), [](unsigned char c) { return std::tolower(c); });
+		return s;
+	};
+
+	std::string fileLower = filePath.string();
+	std::string queryLower = query;
+	if (isAllLowercase(query)) {
+		fileLower = to_lower(fileLower);
+		queryLower = to_lower(queryLower);
+	}
+
+	if (fileLower.find(queryLower) != std::string::npos) {
+		return query.size();
+	}
+
+	for (size_t len = queryLower.size() - 1; len > 0; len--) {
+		if (fileLower.find(queryLower.substr(0, len)) != std::string::npos) {
+			return static_cast<int32_t>(len);
 		}
 	}
 
-	return maxLength;
+	return 0;
 }
 
 std::vector<std::filesystem::path> find(const std::filesystem::path &dir_path, const std::string &query)
