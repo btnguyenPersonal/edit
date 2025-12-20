@@ -860,6 +860,7 @@ void renderScreen(State *state, bool fullRedraw)
 	try {
 		state->renderMutex.lock();
 		erase();
+		int old_vis = curs_set(0);
 		bool noLineNum = false;
 		Cursor editorCursor, fileExplorerCursor;
 		if (state->mode == FIND) {
@@ -883,8 +884,9 @@ void renderScreen(State *state, bool fullRedraw)
 			renderFileStack(state);
 		}
 		int32_t cursorOnStatusBar = renderStatusBar(state);
-		moveCursor(state, cursorOnStatusBar, editorCursor, fileExplorerCursor, noLineNum);
 		wnoutrefresh(stdscr);
+		curs_set(old_vis);
+		moveCursor(state, cursorOnStatusBar, editorCursor, fileExplorerCursor, noLineNum);
 		doupdate();
 		state->renderMutex.unlock();
 	} catch (const std::exception &e) {
