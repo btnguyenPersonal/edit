@@ -103,6 +103,12 @@ struct Options {
 	std::string indent_style;
 };
 
+struct CommandLineAutocompleteState {
+	int32_t skips;
+	std::string currentUncompleted;
+	std::string lastDirectory;
+};
+
 struct Recording {
 	bool on;
 	char c;
@@ -150,6 +156,7 @@ class State {
 	int32_t fileExplorerWindowLine;
 	static uint32_t maxX;
 	static uint32_t maxY;
+	CommandLineAutocompleteState commandLineState;
 	std::string clipboard;
 	std::string prompt;
 	std::string buildDir;

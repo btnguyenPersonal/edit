@@ -327,13 +327,3 @@ autosave = true
 indent_size = 4
 indent_style = space
 ```
-
-# faq
-
-how to get rid of delay when using escape key?
-
-put this in ~/.bashrc or ~/.zshrc
-
-```
-export ESCDELAY=0
-```

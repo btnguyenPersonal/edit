@@ -203,6 +203,7 @@ bool State::resetState(std::string filename)
 
 void State::init()
 {
+	this->commandLineState = { 0, "", "" };
 	this->currentFile = 0;
 	this->runningAsRoot = geteuid() == 0;
 	this->showGrep = false;

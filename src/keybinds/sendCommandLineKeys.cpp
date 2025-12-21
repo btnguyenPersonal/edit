@@ -81,6 +81,75 @@ void evaluateCommandLineQuery(State *state)
 	}
 }
 
+void autocompleteCommandLinePath(State* state, bool reverse)
+{
+	if (state->commandLine.query.length() > 1 && state->commandLine.query[0] == 'e') {
+		std::string currentPathQuery = state->commandLine.query.substr(2);
+		std::string lastDirectory = "";
+		std::string currentUncompleted = "";
+		for (int32_t i = currentPathQuery.length() - 1; i >= 0; i--) {
+			if (currentPathQuery[i] == '/') {
+				lastDirectory = currentPathQuery.substr(0, i);
+				currentUncompleted = safeSubstring(currentPathQuery, i + 1);
+				if (lastDirectory == "") {
+					lastDirectory = "/";
+				}
+				break;
+			}
+		}
+		std::vector<std::string> filesInLastDirectory;
+		if (lastDirectory != "" && std::filesystem::exists(lastDirectory)) {
+			if (state->commandLineState.lastDirectory != lastDirectory) {
+				state->commandLineState = { 0, currentUncompleted, lastDirectory };
+			}
+			int32_t skipsLeft = state->commandLineState.skips;
+			for (const auto &entry : std::filesystem::directory_iterator(lastDirectory)) {
+				 filesInLastDirectory.push_back(entry.path());
+			}
+			for (uint32_t i = 0; i < filesInLastDirectory.size(); i++) {
+				for (int32_t j = filesInLastDirectory[i].length() - 1; j >= 0; j--) {
+					if (filesInLastDirectory[i][j] == '/') {
+						std::string autocompleteFile = safeSubstring(filesInLastDirectory[i], j + 1);
+						if (autocompleteFile.length() >= state->commandLineState.currentUncompleted.length()) {
+							bool good = true;
+							for (uint32_t k = 0; k < state->commandLineState.currentUncompleted.length(); k++) {
+								if (autocompleteFile[k] != state->commandLineState.currentUncompleted[k]) {
+									good = false;
+									break;
+								}
+							}
+							if (good) {
+								if (reverse) {
+									if (skipsLeft <= 2) {
+										state->commandLine.query = std::string("e ") + filesInLastDirectory[i];
+										state->commandLine.cursor = state->commandLine.query.length();
+										if (skipsLeft > 0) {
+											state->commandLineState.skips--;
+										}
+										return;
+									} else {
+										skipsLeft--;
+									}
+								} else {
+									if (skipsLeft <= 0) {
+										state->commandLine.query = std::string("e ") + filesInLastDirectory[i];
+										state->commandLine.cursor = state->commandLine.query.length();
+										state->commandLineState.skips++;
+										return;
+									} else {
+										skipsLeft--;
+									}
+								}
+							}
+						}
+						break;
+					}
+				}
+			}
+		}
+	}
+}
+
 void sendCommandLineKeys(State *state, int32_t c)
 {
 	if (c == 27) { // ESC
@@ -106,6 +175,12 @@ void sendCommandLineKeys(State *state, int32_t c)
 				state->commandLine.cursor += 1;
 			}
 		}
+	} else if (c == ctrl('r')) {
+		// TODO copy gs///g query to replacement
+	} else if (c == KEY_BTAB) {
+		autocompleteCommandLinePath(state, true);
+	} else if (c == ctrl('i')) {
+		autocompleteCommandLinePath(state, false);
 	} else if (c == KEY_BACKSPACE || c == 127) {
 		if (state->commandLine.query.length() > 0 && state->commandLine.query[0] == 'e') {
 			bool found = false;
@@ -136,5 +211,8 @@ void sendCommandLineKeys(State *state, int32_t c)
 		evaluateCommandLineQuery(state);
 		backspaceAll(&state->commandLine);
 		state->mode = NORMAL;
+	}
+	if (c != ctrl('i') && c != KEY_BTAB) {
+		state->commandLineState = { 0, "", "" };
 	}
 }
