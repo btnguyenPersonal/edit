@@ -167,7 +167,11 @@ void sendCommandLineKeys(State *state, int32_t c)
 			}
 		}
 	} else if (c == ctrl('r')) {
-		// TODO copy gs///g query to replacement
+		std::istringstream iss(state->commandLine.query);
+		std::string s, first, second, g;
+		if (std::getline(iss, s, '/') && std::getline(iss, first, '/')) {
+			add(&state->commandLine, first);
+		}
 	} else if (c == KEY_BTAB) {
 		autocompleteCommandLinePath(state, true);
 	} else if (c == ctrl('i')) {
