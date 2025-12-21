@@ -883,8 +883,8 @@ void renderScreen(State *state, bool fullRedraw)
 			renderFileStack(state);
 		}
 		int32_t cursorOnStatusBar = renderStatusBar(state);
-		wnoutrefresh(stdscr);
 		moveCursor(state, cursorOnStatusBar, editorCursor, fileExplorerCursor, noLineNum);
+		wnoutrefresh(stdscr);
 		doupdate();
 		state->renderMutex.unlock();
 	} catch (const std::exception &e) {
