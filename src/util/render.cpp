@@ -215,7 +215,7 @@ std::string getDisplayModeName(State *state)
 }
 
 void insertCommandLine(State *state, std::vector<Pixel> *pixels, std::string prefix) {
-	if (state->commandLine.query.length() > 1 && state->commandLine.query[0] == 'e') {
+	if (state->commandLine.query.length() > 2 && state->commandLine.query[0] == 'e') {
 		std::string currentPathQuery = state->commandLine.query.substr(2);
 		struct DirSplit dirSplit = getCurrentDirSplit(state, currentPathQuery);
 		insertPixels(state, pixels, prefix + "e ", WHITE);
