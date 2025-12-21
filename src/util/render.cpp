@@ -218,9 +218,10 @@ void insertCommandLine(State *state, std::vector<Pixel> *pixels, std::string pre
 	if (state->commandLine.query.length() > 2 && state->commandLine.query[0] == 'e') {
 		std::string currentPathQuery = state->commandLine.query.substr(2);
 		struct DirSplit dirSplit = getCurrentDirSplit(state, currentPathQuery);
+		bool isValidFolder = std::filesystem::exists(dirSplit.lastDirectory) && std::filesystem::is_directory(dirSplit.lastDirectory);
 		insertPixels(state, pixels, prefix + "e ", WHITE);
-		insertPixels(state, pixels, dirSplit.lastDirectory, CYAN);
-		insertPixels(state, pixels, "/", CYAN);
+		insertPixels(state, pixels, dirSplit.lastDirectory, isValidFolder ? CYAN : RED);
+		insertPixels(state, pixels, "/", isValidFolder ? CYAN : RED);
 		insertPixels(state, pixels, dirSplit.currentUncompleted, WHITE);
 	} else {
 		insertPixels(state, pixels, prefix + state->commandLine.query, WHITE);
