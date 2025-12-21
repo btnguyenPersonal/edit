@@ -89,7 +89,7 @@ void autocompleteCommandLinePath(State* state, bool reverse)
 		std::string currentUncompleted = dirSplit.currentUncompleted;
 		std::string lastDirectory = dirSplit.lastDirectory;
 		std::vector<std::string> filesInLastDirectory;
-		if (lastDirectory != "" && std::filesystem::exists(lastDirectory)) {
+		if (lastDirectory != "" && std::filesystem::exists(lastDirectory) && std::filesystem::is_directory(lastDirectory)) {
 			if (state->commandLineState.lastDirectory != lastDirectory) {
 				state->commandLineState = { 0, currentUncompleted, lastDirectory };
 			}
