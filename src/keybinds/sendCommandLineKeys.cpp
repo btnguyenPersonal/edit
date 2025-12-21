@@ -85,18 +85,9 @@ void autocompleteCommandLinePath(State* state, bool reverse)
 {
 	if (state->commandLine.query.length() > 1 && state->commandLine.query[0] == 'e') {
 		std::string currentPathQuery = state->commandLine.query.substr(2);
-		std::string lastDirectory = "";
-		std::string currentUncompleted = "";
-		for (int32_t i = currentPathQuery.length() - 1; i >= 0; i--) {
-			if (currentPathQuery[i] == '/') {
-				lastDirectory = currentPathQuery.substr(0, i);
-				currentUncompleted = safeSubstring(currentPathQuery, i + 1);
-				if (lastDirectory == "") {
-					lastDirectory = "/";
-				}
-				break;
-			}
-		}
+		struct DirSplit dirSplit = getCurrentDirSplit(state, currentPathQuery);
+		std::string currentUncompleted = dirSplit.currentUncompleted;
+		std::string lastDirectory = dirSplit.lastDirectory;
 		std::vector<std::string> filesInLastDirectory;
 		if (lastDirectory != "" && std::filesystem::exists(lastDirectory)) {
 			if (state->commandLineState.lastDirectory != lastDirectory) {

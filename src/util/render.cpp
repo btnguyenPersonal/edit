@@ -10,6 +10,7 @@
 #include "render.h"
 #include "state.h"
 #include "autocomplete.h"
+#include "dirSplit.h"
 #include <iostream>
 #include <ncurses.h>
 
@@ -213,6 +214,19 @@ std::string getDisplayModeName(State *state)
 	return "ERROR";
 }
 
+void insertCommandLine(State *state, std::vector<Pixel> *pixels, std::string prefix) {
+	if (state->commandLine.query.length() > 1 && state->commandLine.query[0] == 'e') {
+		std::string currentPathQuery = state->commandLine.query.substr(2);
+		struct DirSplit dirSplit = getCurrentDirSplit(state, currentPathQuery);
+		insertPixels(state, pixels, prefix + "e ", WHITE);
+		insertPixels(state, pixels, dirSplit.lastDirectory, CYAN);
+		insertPixels(state, pixels, "/", CYAN);
+		insertPixels(state, pixels, dirSplit.currentUncompleted, WHITE);
+	} else {
+		insertPixels(state, pixels, prefix + state->commandLine.query, WHITE);
+	}
+}
+
 int32_t renderStatusBar(State *state)
 {
 	int32_t cursor = -1;
@@ -243,7 +257,7 @@ int32_t renderStatusBar(State *state)
 		cursor = prefix.length() + state->name.cursor;
 	} else if (state->mode == COMMAND) {
 		std::string prefix = ":";
-		insertPixels(state, &pixels, prefix + state->commandLine.query, WHITE);
+		insertCommandLine(state, &pixels, prefix);
 		renderPixels(state, 1, 0, pixels, false);
 		cursor = prefix.length() + state->commandLine.cursor;
 	} else if (state->mode == GREP) {

@@ -1,0 +1,17 @@
+#include "dirSplit.h"
+
+struct DirSplit getCurrentDirSplit(State *state, std::string currentPathQuery)
+{
+	DirSplit output = {};
+	for (int32_t i = currentPathQuery.length() - 1; i >= 0; i--) {
+		if (currentPathQuery[i] == '/') {
+			output.lastDirectory = currentPathQuery.substr(0, i);
+			output.currentUncompleted = safeSubstring(currentPathQuery, i + 1);
+			if (output.lastDirectory == "") {
+				output.lastDirectory = "/";
+			}
+			break;
+		}
+	}
+	return output;
+}
