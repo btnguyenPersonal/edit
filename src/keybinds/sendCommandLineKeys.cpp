@@ -83,7 +83,7 @@ void evaluateCommandLineQuery(State *state)
 
 void autocompleteCommandLinePath(State* state, bool reverse)
 {
-	if (state->commandLine.query.length() > 1 && state->commandLine.query[0] == 'e') {
+	if (state->commandLine.query.length() > 1 && safeSubstring(state->commandLine.query, 0, 2) == "e ") {
 		std::string currentPathQuery = state->commandLine.query.substr(2);
 		struct DirSplit dirSplit = getCurrentDirSplit(state, currentPathQuery);
 		std::string currentUncompleted = dirSplit.currentUncompleted;
@@ -177,20 +177,25 @@ void sendCommandLineKeys(State *state, int32_t c)
 	} else if (c == ctrl('i')) {
 		autocompleteCommandLinePath(state, false);
 	} else if (c == KEY_BACKSPACE || c == 127) {
-		if (state->commandLine.query.length() > 0 && state->commandLine.query[0] == 'e') {
-			bool found = false;
-			int32_t num = 0;
-			for (int32_t i = state->commandLine.query.length() - 1; i > 0; i--) {
-				if (num != 0 && state->commandLine.query[i] == '/') {
-					for (int32_t j = 0; j < num; j++) {
-						backspace(&state->commandLine);
+		if (state->commandLine.query.length() > 1 && safeSubstring(state->commandLine.query, 0, 2) == "e ") {
+			struct DirSplit dirSplit = getCurrentDirSplit(state, state->commandLine.query.substr(2));
+			if (dirSplit.currentUncompleted.length() == 0) {
+				bool found = false;
+				int32_t num = 0;
+				for (int32_t i = state->commandLine.query.length() - 1; i > 0; i--) {
+					if (num != 0 && state->commandLine.query[i] == '/') {
+						for (int32_t j = 0; j < num; j++) {
+							backspace(&state->commandLine);
+						}
+						found = true;
+						break;
 					}
-					found = true;
-					break;
+					num++;
 				}
-				num++;
-			}
-			if (!found) {
+				if (!found) {
+					backspace(&state->commandLine);
+				}
+			} else {
 				backspace(&state->commandLine);
 			}
 		} else {
