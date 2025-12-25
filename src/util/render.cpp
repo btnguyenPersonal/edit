@@ -653,6 +653,24 @@ bool startsWithSymbol(State *state, uint32_t row, std::string symbol)
 	return false;
 }
 
+bool pushColorOverrides(State *state, int32_t row, int32_t col, std::string name, int color, std::vector<int> *colorOverrides)
+{
+	if (safeSubstring(state->file->data[row], col, name.length()) == name) {
+		for (uint32_t i = 0; i < name.length(); i++) {
+			colorOverrides->push_back(color);
+		}
+		return true;
+	}
+	return false;
+}
+
+void determineColorOverrides(State *state, int32_t row, int32_t col, std::vector<int> *colorOverrides)
+{
+	if (pushColorOverrides(state, row, col, "TODO", invertColor(RED), colorOverrides)) { return; }
+	if (pushColorOverrides(state, row, col, "NOTE", invertColor(GREEN), colorOverrides)) { return; }
+	if (pushColorOverrides(state, row, col, "IMPORTANT", invertColor(YELLOW), colorOverrides)) { return; }
+}
+
 int32_t renderLineContent(State *state, int32_t row, int32_t renderRow, Cursor *cursor, bool multiLineComment, bool changeVisualColor)
 {
 	std::vector<Pixel> pixels = std::vector<Pixel>();
@@ -676,6 +694,7 @@ int32_t renderLineContent(State *state, int32_t row, int32_t renderRow, Cursor *
 			isComment = true;
 		}
 		bool foundCursor = false;
+		std::vector<int> colorOverrides;
 
 		uint32_t col = 0;
 		if (getDisplayRows(state, row) > state->maxY) {
@@ -718,6 +737,10 @@ int32_t renderLineContent(State *state, int32_t row, int32_t renderRow, Cursor *
 				}
 			}
 
+			if (colorOverrides.size() == 0) {
+				determineColorOverrides(state, row, col, &colorOverrides);
+			}
+
 			if (!inString && safeSubstring(state->file->data[row], col, state->file->commentSymbol.length()) == state->file->commentSymbol && state->file->commentSymbol != "") {
 				isComment = true;
 			}
@@ -746,6 +769,10 @@ int32_t renderLineContent(State *state, int32_t row, int32_t renderRow, Cursor *
 						color = visualColor;
 					}
 				}
+			}
+			if (colorOverrides.size() != 0) {
+				color = colorOverrides.back();
+				colorOverrides.pop_back();
 			}
 
 			if (col >= state->file->windowPosition.col) {
