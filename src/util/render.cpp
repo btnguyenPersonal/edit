@@ -214,7 +214,8 @@ std::string getDisplayModeName(State *state)
 	return "ERROR";
 }
 
-void insertCommandLine(State *state, std::vector<Pixel> *pixels, std::string prefix) {
+void insertCommandLine(State *state, std::vector<Pixel> *pixels, std::string prefix)
+{
 	if (state->commandLine.query.length() > 2 && state->commandLine.query[0] == 'e') {
 		std::string currentPathQuery = state->commandLine.query.substr(2);
 		struct DirSplit dirSplit = getCurrentDirSplit(state, currentPathQuery);
@@ -666,9 +667,15 @@ bool pushColorOverrides(State *state, int32_t row, int32_t col, std::string name
 
 void determineColorOverrides(State *state, int32_t row, int32_t col, std::vector<int> *colorOverrides)
 {
-	if (pushColorOverrides(state, row, col, "TODO", invertColor(RED), colorOverrides)) { return; }
-	if (pushColorOverrides(state, row, col, "NOTE", invertColor(GREEN), colorOverrides)) { return; }
-	if (pushColorOverrides(state, row, col, "IMPORTANT", invertColor(YELLOW), colorOverrides)) { return; }
+	if (pushColorOverrides(state, row, col, "TODO", invertColor(RED), colorOverrides)) {
+		return;
+	}
+	if (pushColorOverrides(state, row, col, "NOTE", invertColor(GREEN), colorOverrides)) {
+		return;
+	}
+	if (pushColorOverrides(state, row, col, "IMPORTANT", invertColor(YELLOW), colorOverrides)) {
+		return;
+	}
 }
 
 int32_t renderLineContent(State *state, int32_t row, int32_t renderRow, Cursor *cursor, bool multiLineComment, bool changeVisualColor)

@@ -1075,7 +1075,8 @@ void runCommand(State *state, const std::string &command)
 	state->changeFile(state->file->filename);
 }
 
-void replaceAllGlobally(State* state, const std::string& query, const std::string& replace) {
+void replaceAllGlobally(State *state, const std::string &query, const std::string &replace)
+{
 	if (query.empty()) {
 		state->status = "query empty";
 		return;
@@ -1083,14 +1084,14 @@ void replaceAllGlobally(State* state, const std::string& query, const std::strin
 
 	try {
 		std::regex re(query);
-	} catch (const std::regex_error&) {
+	} catch (const std::regex_error &) {
 		state->status = "invalid regex";
 		return;
 	}
 
 	std::regex re(query);
 
-	FILE* pipe = popen("git ls-files", "r");
+	FILE *pipe = popen("git ls-files", "r");
 	if (!pipe) {
 		// TODO use all files if git not available
 		state->status = "git not available";
@@ -1116,8 +1117,7 @@ void replaceAllGlobally(State* state, const std::string& query, const std::strin
 			continue;
 		}
 
-		std::string content((std::istreambuf_iterator<char>(in)),
-		std::istreambuf_iterator<char>());
+		std::string content((std::istreambuf_iterator<char>(in)), std::istreambuf_iterator<char>());
 
 		std::string replaced = std::regex_replace(content, re, replace);
 
@@ -1135,9 +1135,7 @@ void replaceAllGlobally(State* state, const std::string& query, const std::strin
 		state->reloadFile(state->file->filename);
 	}
 
-	state->status = modified_count > 0
-	? "replaced in " + std::to_string(modified_count) + " files"
-	: "no matches found";
+	state->status = modified_count > 0 ? "replaced in " + std::to_string(modified_count) + " files" : "no matches found";
 }
 
 void replaceAll(State *state, const std::string &query, const std::string &replace)

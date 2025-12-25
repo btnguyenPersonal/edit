@@ -81,7 +81,7 @@ void evaluateCommandLineQuery(State *state)
 	}
 }
 
-void autocompleteCommandLinePath(State* state, bool reverse)
+void autocompleteCommandLinePath(State *state, bool reverse)
 {
 	if (state->commandLine.query.length() > 1 && safeSubstring(state->commandLine.query, 0, 2) == "e ") {
 		std::string currentPathQuery = state->commandLine.query.substr(2);
@@ -95,7 +95,7 @@ void autocompleteCommandLinePath(State* state, bool reverse)
 			}
 			int32_t skipsLeft = state->commandLineState.skips;
 			for (const auto &entry : std::filesystem::directory_iterator(lastDirectory)) {
-				 filesInLastDirectory.push_back(entry.path());
+				filesInLastDirectory.push_back(entry.path());
 			}
 			for (uint32_t i = 0; i < filesInLastDirectory.size(); i++) {
 				for (int32_t j = filesInLastDirectory[i].length() - 1; j >= 0; j--) {
