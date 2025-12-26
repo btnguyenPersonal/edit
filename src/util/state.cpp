@@ -126,6 +126,7 @@ void State::reloadFile(std::string filename)
 	}
 	for (uint32_t i = 0; i < this->files.size(); i++) {
 		if (this->files[i]->filename == name) {
+			delete this->files[i];
 			this->files.erase(this->files.begin() + i);
 			break;
 		}
@@ -311,4 +312,3 @@ State::State(std::string filename)
 	this->init(name, data);
 	this->loadAllConfigFiles();
 }
-
