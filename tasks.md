@@ -1,7 +1,4 @@
 ## tasks
-separate helper.cpp waaaay more
-start by moving one-off things to their own files
-
 use these to fix problems
 -fsanitize=thread
 -fsanitize=undefined
