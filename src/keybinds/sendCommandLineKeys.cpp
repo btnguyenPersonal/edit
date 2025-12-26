@@ -79,8 +79,8 @@ void evaluateCommandLineQuery(State *state)
 		} else {
 			replaceAll(state, "\t", std::string(state->options.indent_size, ' '));
 		}
-	} else if (is_number(state->commandLine.query)) {
-		uint32_t number = stoul(state->commandLine.query);
+	} else if (isNumber(state->commandLine.query)) {
+		uint32_t number = buildNumberFromString(state->commandLine.query);
 		if (number > 0) {
 			state->file->row = number - 1;
 		} else {

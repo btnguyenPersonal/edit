@@ -7,6 +7,7 @@
 #include <string>
 #include <vector>
 
+uint32_t buildNumberFromString(std::string s);
 std::string runCommand(std::string command);
 std::vector<std::string> splitByChar(std::string text, char c);
 void highlightRenderBounds(State *state, Bounds b);
@@ -105,7 +106,7 @@ WordPosition findQuoteBounds(const std::string &str, char quoteChar, uint32_t cu
 bool setSearchResult(State *state);
 void setPosition(State *state, Position pos);
 void initVisual(State *state, VisualType visualType);
-bool is_number(const std::string &s);
+bool isNumber(std::string s);
 WordPosition findParentheses(const std::string &str, char openParen, char closeParen, uint32_t cursor, bool includeParen);
 uint32_t getIndent(const std::string &str);
 uint32_t getNextLineSameIndent(State *state);

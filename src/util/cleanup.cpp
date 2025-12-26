@@ -20,6 +20,7 @@ void cleanup(State *state, char c)
 		sanityCheckFindSelection(state);
 		sanityCheckDocumentEmpty(state);
 		sanityCheckRowOutOfBounds(state);
+		assert(state->file->row < state->file->data.size());
 		if (state->mode == INSERT) {
 			fixColOverMax(state);
 		}
