@@ -11,7 +11,6 @@
 #include "state.h"
 #include "autocomplete.h"
 #include "dirSplit.h"
-#include <iostream>
 #include <ncurses.h>
 
 #define _COLOR_BLACK COLOR_BLACK
@@ -952,13 +951,13 @@ void initTerminal()
 	noecho();
 	if (has_colors() == false) {
 		endwin();
-		std::cout << "Your terminal does not support color" << std::endl;
+		printf("Your terminal does not support color\n");
 		exit(1);
 	}
 	start_color();
 	if (COLORS < 256) {
 		endwin();
-		std::cout << "Your terminal does not support 256 colors" << std::endl;
+		printf("Your terminal does not support 256 colors\n");
 		exit(1);
 	}
 	use_default_colors();

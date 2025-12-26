@@ -6,7 +6,6 @@
 #include "util/find.h"
 #include "util/sanity.h"
 #include <cstdint>
-#include <iostream>
 
 int32_t main(int32_t argc, char *argv[])
 {
@@ -21,7 +20,7 @@ int32_t main(int32_t argc, char *argv[])
 	} else {
 		state = new State();
 		if (state->runningAsRoot) {
-			std::cerr << "no file specified when running as root" << std::endl;
+			printf("no file specified when running as root\n");
 			exit(1);
 		}
 		generateFindOutput(state);

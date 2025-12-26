@@ -4,7 +4,6 @@
 #include "visualType.h"
 #include "keys.h"
 #include "read.h"
-#include <iostream>
 #include <ncurses.h>
 #include <string>
 #include <filesystem>

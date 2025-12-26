@@ -12,7 +12,6 @@
 #include <climits>
 #include <cstdio>
 #include <fstream>
-#include <iostream>
 #include <iterator>
 #include <memory>
 #include <ncurses.h>

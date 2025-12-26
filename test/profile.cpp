@@ -1,4 +1,3 @@
-#include <iostream>
 #include "../src/util/helper.h"
 #include "../src/util/find.h"
 #include "../src/util/grep.h"
@@ -21,7 +20,7 @@ void diff()
 	};
 	std::vector<diffLine> diff = generateDiff(a, b);
 	for (uint32_t i = 0; i < diff.size(); i++) {
-		std::cout << std::string(diff[i].add ? "+ " : "- ") << diff[i].line << std::endl;
+		printf("%s%s\n", diff[i].add ? "+ " : "- ", diff[i].line.c_str());
 	}
 	// applyDiff();
 }
@@ -29,28 +28,23 @@ void diff()
 void grep()
 {
 	std::vector<grepMatch> v = grepFiles(std::filesystem::path("../vscode"), "a", true);
-	// for (uint32_t i = 0; i < v.size(); i++) {
-	// 	std::cout << v[i].path.string() << ":" << v[i].lineNum << std::endl;
-	// }
 }
 
 void find()
 {
 	std::vector<std::filesystem::path> v = find(std::filesystem::path("../vscode"), "a");
-	// for (uint32_t i = 0; i < v.size(); i++) {
-	// 	std::cout << v[i].string() << std::endl;
-	// }
 }
 
 int main()
 {
-	State *state = new State("./test-file.h");
-	initTerminal();
-	for (uint32_t i = 0; i < 10; i++) {
-		sendKeys(state, 'j');
-		cleanup(state, 'j');
-		renderScreen(state);
-		history(state, 'j');
-	}
-	endwin();
+	// State *state = new State("./test-file.h");
+	// initTerminal();
+	// for (uint32_t i = 0; i < 10; i++) {
+	// 	sendKeys(state, 'j');
+	// 	cleanup(state, 'j');
+	// 	renderScreen(state);
+	// 	history(state, 'j');
+	// }
+	// endwin();
+	diff();
 }

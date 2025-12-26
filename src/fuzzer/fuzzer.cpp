@@ -4,7 +4,6 @@
 #include "../util/keys.h"
 #include "../util/helper.h"
 #include "../keybinds/sendKeys.h"
-#include <iostream>
 #include <random>
 #include <vector>
 
@@ -25,12 +24,11 @@ void fuzzSendKeys(int testnum, int iterations = 1000)
 		for (int i = 0; i < iterations; i++) {
 			randVec.push_back(keypresses[dis(gen)]);
 		}
-		// std::cout << "\t{" << std::endl;;
-		std::cout << "\t\tState *state = new State(\"src/helper.cpp\");" << std::endl;
-		std::cout << "\t\ttestValues(state, {";
+		printf("State *state = new State(\"src/helper.cpp\");\n");
+		printf("testValues(state, {");
 		for (uint32_t i = 0; i < randVec.size(); i++) {
 			if (i != 0) {
-				std::cout << ", ";
+				printf(", ");
 			}
 			std::string c = getEscapedChar(randVec[i], true);
 			std::string s = "";
@@ -40,43 +38,18 @@ void fuzzSendKeys(int testnum, int iterations = 1000)
 				}
 				s += c[j];
 			}
-			std::cout << "\"" << s << "\"";
+			printf("\"%s\"", s.c_str());
 		}
-		std::cout << "});" << std::endl;
+		printf("});\n");
 		for (uint32_t i = 0; i < randVec.size(); i++) {
 			char randomKey = randVec[i];
-			std::cout << getMode(state->mode) << " " << getEscapedChar(randomKey, true) << std::endl;
+			printf("%s %s\n", getMode(state->mode).c_str(), getEscapedChar(randomKey, true).c_str());
 			sendKeys(state, randomKey);
 			cleanup(state, randomKey);
 			history(state, randomKey);
 		}
-		// std::cout << "\t\toutput.push_back({" << std::endl;
-		// std::cout << std::string("\t\t\t\"snapshotTest ") + std::to_string(testnum) + "\"," << std::endl;
-		// std::cout << "\t\t\tcompare(state->file->data, {";
-		// for (uint32_t i = 0; i < state->file->data.size(); i++) {
-		// 	if (i != 0) {
-		// 		std::cout << ",";
-		// 	}
-		// 	std::cout << std::endl;
-		// 	std::cout << "\t\t\t\t\"";
-		// 	std::string s = "";
-		// 	for (uint32_t j = 0; j < state->file->data[i].length(); j++) {
-		// 		if (state->file->data[i][j] == '\\' || state->file->data[i][j] == '"') {
-		// 			s += "\\";
-		// 		}
-		// 		s += state->file->data[i][j];
-		// 	}
-		// 	std::cout << s;
-		// 	std::cout << "\"";
-		// }
-		// std::cout << std::endl;
-		// std::cout << "\t\t\t})";
-		// std::cout << std::endl;
-		// std::cout << "\t\t});";
-		// std::cout << std::endl;
-		// std::cout << "\t}\n\n";
 	} catch (const std::exception &e) {
-		std::cerr << "Error during fuzzing: " << e.what() << std::endl;
+		printf("Error during fuzzing: %s\n", e.what());
 		exit(1);
 	}
 }
