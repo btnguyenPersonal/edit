@@ -5,9 +5,6 @@
 #include "state.h"
 #include "sanity.h"
 #include "bounds.h"
-#include <array>
-#include <iterator>
-#include <sstream>
 #include <string>
 #include <vector>
 
@@ -25,36 +22,24 @@ std::string getFromClipboard(State *state, bool useSystemClipboard)
 #else
 #error "Platform not supported"
 #endif
-
-	std::string result;
-	std::array<char, 256> buffer;
-	FILE *pipe = popen(command.c_str(), "r");
-
-	if (!pipe)
-		throw std::runtime_error("popen() failed!");
-
-	while (fgets(buffer.data(), buffer.size(), pipe) != nullptr) {
-		result += buffer.data();
+	std::string output = runCommand(command);
+	if (output.length() > 0 && output.back() == '\n') {
+		output.pop_back();
 	}
-
-	int32_t status = pclose(pipe);
-	if (status != 0 || result.empty()) {
-		return { "" };
-	}
-	return result;
+	return output;
 }
 
 std::string escapeForShell(const std::string &s)
 {
-	std::ostringstream oss;
-	for (auto c : s) {
+	std::string output = "";
+	for (char c : s) {
 		if (c == '\'') {
-			oss << "'\\''";
+			output += "'\\''";
 		} else {
-			oss << c;
+			output += c;
 		}
 	}
-	return oss.str();
+	return output;
 }
 
 std::string getFileFromClipboard()
@@ -141,35 +126,18 @@ void copyPathToClipboard(State *state, const std::string &filePath)
 #ifdef __APPLE__
 	std::string command = "osascript -e 'set the clipboard to POSIX file \"" + escapeForShell(filePath) + "\"'";
 #elif defined(__linux__)
-	auto path = std::string("file://") + escapeForShell(filePath);
-	std::string command = "[ \"$XDG_SESSION_TYPE\" = \"wayland\" ] && command -v wl-copy >/dev/null 2>&1 && wl-copy || xclip -selection clipboard -o -t text/uri-list";
+	std::string command = std::string("echo -n 'file://") + escapeForShell(filePath) + "' | "
+		"if [ \"$XDG_SESSION_TYPE\" = wayland ] && command -v wl-copy >/dev/null 2>&1; then "
+		"wl-copy; else xclip -selection clipboard -t text/uri-list; fi";
 #else
 #error "Platform not supported"
 #endif
-	try {
-		FILE *pipe = popen(command.c_str(), "w");
-		if (pipe != nullptr) {
-#ifdef __APPLE__
-			pclose(pipe);
-#else
-			fwrite(path.c_str(), sizeof(char), path.size(), pipe);
-			pclose(pipe);
-#endif
-		}
-		state->status = filePath;
-	} catch (const std::exception &e) {
-		state->status = std::string("file copy failed") + filePath;
-	}
+	runCommand(command);
 }
 
 Bounds pasteVisual(State *state, std::string text)
 {
-	std::vector<std::string> clip;
-	std::stringstream ss(text);
-	std::string line;
-	while (std::getline(ss, line)) {
-		clip.push_back(line);
-	}
+	std::vector<std::string> clip = splitByChar(text, '\n');
 	fixColOverMax(state);
 	bool isClipLine = !text.empty() && text.back() == '\n';
 	if (state->visualType == LINE && !isClipLine) {
@@ -226,14 +194,9 @@ Bounds pasteVisual(State *state, std::string text)
 
 Bounds paste(State *state, std::string text)
 {
+	std::vector<std::string> clip = splitByChar(text, '\n');
 	Bounds bounds = { state->file->row, state->file->row, state->file->col, state->file->col };
 	fixColOverMax(state);
-	std::vector<std::string> clip;
-	std::stringstream ss(text);
-	std::string line;
-	while (std::getline(ss, line)) {
-		clip.push_back(line);
-	}
 	if (state->file->data.size() == 0) {
 		for (uint32_t i = 0; i < clip.size(); i++) {
 			state->file->data.push_back(clip[i]);
@@ -273,14 +236,9 @@ Bounds paste(State *state, std::string text)
 
 Bounds pasteAfter(State *state, std::string text)
 {
+	std::vector<std::string> clip = splitByChar(text, '\n');
 	Bounds bounds = { state->file->row, state->file->row, state->file->col, state->file->col };
 	fixColOverMax(state);
-	std::vector<std::string> clip;
-	std::stringstream ss(text);
-	std::string line;
-	while (std::getline(ss, line)) {
-		clip.push_back(line);
-	}
 	if (!text.empty() && state->pasteAsBlock) {
 		for (int32_t i = 0; i < (int32_t)clip.size(); i++) {
 			if (state->file->row + i >= state->file->data.size()) {

@@ -7,9 +7,29 @@
 #include "../util/state.h"
 #include "../util/save.h"
 #include <ncurses.h>
-#include <sstream>
 #include <string>
 #include <vector>
+
+struct searchReplace {
+	std::string first;
+	std::string second;
+};
+
+struct searchReplace getSearchReplace(std::string query)
+{
+	struct searchReplace output = { "", "" };
+	uint32_t slashesFound = 0;
+	for (uint32_t i = 0; i < query.length(); i++) {
+		if (query[i] == '/') {
+			slashesFound++;
+		} else if (slashesFound == 1) {
+			output.first += query[i];
+		} else if (slashesFound == 2) {
+			output.second += query[i];
+		}
+	}
+	return output;
+}
 
 void evaluateCommandLineQuery(State *state)
 {
@@ -42,29 +62,17 @@ void evaluateCommandLineQuery(State *state)
 			locateFile(state, safeSubstring(state->commandLine.query, 2), { "" });
 		}
 	} else if (state->commandLine.query.substr(0, 1) == "s") {
-		std::istringstream iss(state->commandLine.query);
-		std::string s, first, second, g;
-		if (std::getline(iss, s, '/') && std::getline(iss, first, '/') && std::getline(iss, second, '/')) {
-			replaceCurrentLine(state, first, second);
-		}
+		struct searchReplace temp = getSearchReplace(state->commandLine.query);
+		replaceCurrentLine(state, temp.first, temp.second);
 	} else if (state->commandLine.query.substr(0, 2) == "gs") {
-		std::istringstream iss(state->commandLine.query);
-		std::string s, first, second, g;
-		if (std::getline(iss, s, '/') && std::getline(iss, first, '/') && std::getline(iss, second, '/')) {
-			if (!state->dontSave) {
-				renderScreen(state);
-				replaceAllGlobally(state, first, second);
-			}
+		struct searchReplace temp = getSearchReplace(state->commandLine.query);
+		if (!state->dontSave) {
+			renderScreen(state);
+			replaceAllGlobally(state, temp.first, temp.second);
 		}
 	} else if (state->commandLine.query.substr(0, 2) == "%s") {
-		std::istringstream iss(state->commandLine.query);
-		std::string s, first, second, g;
-		do {
-			if (std::getline(iss, s, '/') && std::getline(iss, first, '/') && std::getline(iss, second, '/')) {
-				replaceAll(state, first, second);
-			}
-			std::getline(iss, s, ';');
-		} while (!iss.eof());
+		struct searchReplace temp = getSearchReplace(state->commandLine.query);
+		replaceAll(state, temp.first, temp.second);
 	} else if (state->commandLine.query == "retab") {
 		if (state->options.indent_style == "tab") {
 			replaceAll(state, "    ", "\t");
@@ -167,11 +175,8 @@ void sendCommandLineKeys(State *state, int32_t c)
 			}
 		}
 	} else if (c == ctrl('r')) {
-		std::istringstream iss(state->commandLine.query);
-		std::string s, first, second, g;
-		if (std::getline(iss, s, '/') && std::getline(iss, first, '/')) {
-			add(&state->commandLine, first);
-		}
+		struct searchReplace temp = getSearchReplace(state->commandLine.query);
+		add(&state->commandLine, temp.first);
 	} else if (c == KEY_BTAB) {
 		autocompleteCommandLinePath(state, true);
 	} else if (c == ctrl('i')) {

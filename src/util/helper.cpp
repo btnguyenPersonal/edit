@@ -22,6 +22,37 @@
 #include <chrono>
 #include <thread>
 
+std::string runCommand(std::string command)
+{
+	std::string output = "";
+	char temp[4096];
+	FILE *fp = popen(command.c_str(), "r");
+	if (fp) {
+		while (fgets(temp, sizeof(temp), fp)) {
+			output += temp;
+		}
+	}
+	return output;
+}
+
+std::vector<std::string> splitByChar(std::string text, char c)
+{
+	std::vector<std::string> clip;
+	std::string line = "";
+	for (uint32_t i = 0; i < text.length(); i++) {
+		if (text[i] == c) {
+			clip.push_back(line);
+			line = "";
+		} else {
+			line += text[i];
+		}
+	}
+	if (line != "") {
+		clip.push_back(line);
+	}
+	return clip;
+}
+
 void highlightRenderBounds(State *state, Bounds b)
 {
 	uint32_t tempR = state->file->row;
@@ -79,27 +110,9 @@ void searchNextResult(State *state, bool reverse)
 std::vector<std::string> getLogLines(State *state)
 {
 	std::vector<std::string> gitLogLines = { "current" };
-	try {
-		std::string command = "git log --oneline | cat 2>/dev/null";
-		std::unique_ptr<FILE, int (*)(FILE *)> pipe(popen(command.c_str(), "r"), pclose);
-		if (!pipe) {
-			throw std::runtime_error("popen() failed!");
-		}
-		std::stringstream ss;
-		char *line = nullptr;
-		size_t len = 0;
-		ssize_t read;
-		while ((read = getline(&line, &len, pipe.get())) != -1) {
-			ss << line;
-		}
-		free(line);
-		std::string str;
-		while (std::getline(ss, str)) {
-			if (!str.empty()) {
-				gitLogLines.push_back(str);
-			}
-		}
-	} catch (const std::exception &e) {
+	std::vector<std::string> temp = splitByChar(runCommand("git log --oneline | cat 2>/dev/null"), '\n');
+	for (uint32_t i = 0; i < temp.size(); i++) {
+		gitLogLines.push_back(temp[i]);
 	}
 	return gitLogLines;
 }
@@ -196,57 +209,32 @@ std::vector<std::string> getDiffLines(State *state)
 {
 	std::vector<std::string> gitDiffLines;
 	std::string hash = "";
-	try {
-		if (state->logIndex != 0) {
-			for (uint32_t i = 0; i < state->logLines[state->logIndex].length(); i++) {
-				if (state->logLines[state->logIndex][i] != ' ') {
-					hash += state->logLines[state->logIndex][i];
-				} else {
-					break;
-				}
+	if (state->logIndex != 0) {
+		for (uint32_t i = 0; i < state->logLines[state->logIndex].length(); i++) {
+			if (state->logLines[state->logIndex][i] != ' ') {
+				hash += state->logLines[state->logIndex][i];
+			} else {
+				break;
 			}
 		}
-		std::string command = "";
-		if (hash == "") {
-			command = "git add -N :/ && git diff HEAD | expand -t " + std::to_string(state->options.indent_size) + " 2>/dev/null";
-		} else {
-			command = "git show " + hash + " | expand -t " + std::to_string(state->options.indent_size) + " 2>/dev/null";
-		}
-		std::unique_ptr<FILE, int (*)(FILE *)> pipe(popen(command.c_str(), "r"), pclose);
-		if (!pipe) {
-			throw std::runtime_error("popen() failed!");
-		}
-		std::stringstream ss;
-		char *line = nullptr;
-		size_t len = 0;
-		ssize_t read;
-		while ((read = getline(&line, &len, pipe.get())) != -1) {
-			ss << line;
-		}
-		free(line);
-		std::string str;
-		while (std::getline(ss, str)) {
-			if (!str.empty()) {
-				gitDiffLines.push_back(str);
-			}
-		}
-	} catch (const std::exception &e) {
 	}
+	std::string command = "";
+	if (hash == "") {
+		command = "git add -N :/ && git diff HEAD | expand -t " + std::to_string(state->options.indent_size) + " 2>/dev/null";
+	} else {
+		command = "git show " + hash + " | expand -t " + std::to_string(state->options.indent_size) + " 2>/dev/null";
+	}
+	gitDiffLines = splitByChar(runCommand(command), '\n');
 	if (hash == "" && gitDiffLines.size() == 0) {
 		return { "No local changes" };
 	}
 	return gitDiffLines;
 }
 
-std::string minimize_filename(const std::string &filename)
+std::string minimize_filename(std::string filename)
 {
-	std::vector<std::string> parts;
-	std::stringstream ss(filename);
-	std::string part;
+	std::vector<std::string> parts = splitByChar(filename, '/');
 	std::string minimized;
-	while (std::getline(ss, part, '/')) {
-		parts.push_back(part);
-	}
 	for (size_t i = 0; i < parts.size() - 1; ++i) {
 		if (!parts[i].empty()) {
 			minimized += parts[i][0];
@@ -921,20 +909,9 @@ uint32_t toNextChar(State *state, char c)
 
 std::string getGitHash(State *state)
 {
-	std::stringstream command;
-	command << "git blame -l -L " << state->file->row + 1 << ",+1 " << state->file->filename << " | awk '{print $1}'";
-	std::unique_ptr<FILE, int (*)(FILE *)> pipe(popen(command.str().c_str(), "r"), pclose);
-	if (!pipe) {
-		state->status = "popen() failed!";
-		return "";
-	}
-	std::string output, line;
-	char buffer[128];
-	while (fgets(buffer, sizeof(buffer), pipe.get()) != NULL) {
-		output += buffer;
-	}
-	std::stringstream ss(output);
-	std::getline(ss, line);
+	std::string command = std::string("git blame -l -L ") + std::to_string(state->file->row + 1) + ",+1 " + state->file->filename + " | awk '{print $1}'";
+	std::string line = runCommand(command);
+	rtrim(line);
 	if (safeSubstring(line, 0, 1) == "^") {
 		return safeSubstring(line, 1);
 	}
@@ -944,28 +921,8 @@ std::string getGitHash(State *state)
 std::vector<std::string> getGitBlame(const std::string &filename)
 {
 	std::vector<std::string> blameLines;
-	try {
-		std::string command = "git --no-pager blame ./" + filename + " --date=short 2>/dev/null | awk '{print $1, $2, $3, $4, \")\"}'";
-		std::unique_ptr<FILE, int (*)(FILE *)> pipe(popen(command.c_str(), "r"), pclose);
-		if (!pipe) {
-			throw std::runtime_error("popen() failed!");
-		}
-		std::stringstream ss;
-		char *line = nullptr;
-		size_t len = 0;
-		ssize_t read;
-		while ((read = getline(&line, &len, pipe.get())) != -1) {
-			ss << line;
-		}
-		free(line);
-		std::string str;
-		while (std::getline(ss, str)) {
-			if (!str.empty()) {
-				blameLines.push_back(str);
-			}
-		}
-	} catch (const std::exception &e) {
-	}
+	std::string command = "git --no-pager blame ./" + filename + " --date=short 2>/dev/null | awk '{print $1, $2, $3, $4, \")\"}'";
+	blameLines = splitByChar(runCommand(command), '\n');
 	blameLines.push_back("");
 	return blameLines;
 }
@@ -1058,20 +1015,6 @@ void replaceCurrentLine(State *state, const std::string &query, const std::strin
 		state->file->data[state->file->row].replace(startPos, query.length(), replace);
 		startPos += replace.length();
 	}
-}
-
-void runCommand(State *state, const std::string &command)
-{
-	try {
-		std::string prompt = std::string("bash -ic '") + (command + " >/dev/null 2>/dev/null") + "'";
-		int32_t returnValue = std::system(prompt.c_str());
-		if (returnValue != 0) {
-			throw std::exception();
-		}
-	} catch (const std::exception &e) {
-		state->status = "command failed";
-	}
-	state->changeFile(state->file->filename);
 }
 
 void replaceAllGlobally(State *state, const std::string &query, const std::string &replace)

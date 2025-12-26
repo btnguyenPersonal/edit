@@ -10,7 +10,6 @@ struct Cursor {
 };
 
 std::string getHarpoonName(State *state, uint32_t index);
-std::string minimize_filename(const std::string &filename);
 int32_t invertColor(int32_t color);
 void initColors();
 int32_t renderStatusBar(State *state);

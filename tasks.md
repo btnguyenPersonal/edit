@@ -5,9 +5,7 @@
 		- ncurses
 		- string
 		- vector
-		- iostream
 		- fstream
-		- sstream
 		- algorithm
 		- climits
 		- cstdint

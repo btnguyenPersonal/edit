@@ -4,7 +4,6 @@
 #include <string>
 #include <filesystem>
 #include <algorithm>
-#include <sstream>
 #include <stack>
 
 class FileExplorerNode {

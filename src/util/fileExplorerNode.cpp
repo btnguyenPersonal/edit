@@ -37,14 +37,7 @@ int32_t FileExplorerNode::getChildIndex(FileExplorerNode *node)
 
 int32_t FileExplorerNode::expand(std::string input)
 {
-	std::stringstream ss(input);
-	std::string line;
-	std::vector<std::string> path;
-	while (getline(ss, line, '/')) {
-		if (!line.empty()) {
-			path.push_back(line);
-		}
-	}
+	std::vector<std::string> path = splitByChar(input, '/');
 	if (path.empty()) {
 		return 0;
 	}

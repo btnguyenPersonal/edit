@@ -7,6 +7,8 @@
 #include <string>
 #include <vector>
 
+std::string runCommand(std::string command);
+std::vector<std::string> splitByChar(std::string text, char c);
 void highlightRenderBounds(State *state, Bounds b);
 bool locateFileAbsolute(State *state, std::string vis);
 bool locateFileRelative(State *state, std::string vis, std::vector<std::string> extensions);
@@ -27,7 +29,7 @@ bool isWhitespace(char c);
 bool isColTooBig(State *state);
 uint32_t getDisplayCol(State *state);
 uint32_t getDisplayLength(State *state, std::string s);
-std::string minimize_filename(const std::string &filename);
+std::string minimize_filename(std::string filename);
 std::string padTo(std::string str, const uint32_t num, const char paddingChar);
 void forwardFileStack(State *state);
 void backwardFileStack(State *state);
@@ -87,7 +89,6 @@ uint32_t getNextEmptyLine(State *state);
 std::string getGitHash(State *state);
 std::vector<std::string> getGitBlame(const std::string &filename);
 uint32_t getLineNumberOffset(State *state);
-void runCommand(State *state, const std::string &command);
 void replaceAllGlobally(State *state, const std::string &query, const std::string &replace);
 void replaceCurrentLine(State *state, const std::string &query, const std::string &replace);
 std::string getCurrentWord(State *state);

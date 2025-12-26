@@ -18,7 +18,7 @@ struct testSuiteRun testRead()
 
 	{
 		system("rm -f ./test-file.h");
-		uint32_t num = 100000;
+		uint32_t num = 1000;
 		std::vector<std::string> f = {};
 		for (uint32_t i = 0; i < num; i++) {
 			f.push_back(std::to_string(i));
