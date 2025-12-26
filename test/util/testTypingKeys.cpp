@@ -243,7 +243,5 @@ struct testSuiteRun testTypingKeys()
 		output.push_back({ "sendTypingKeys should print all valid characters", compare(state->file->data, { "!\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~" }) });
 	}
 
-	// TODO autocomplete tests
-
 	return { "test/util/testTypingKeys.cpp", output };
 }
