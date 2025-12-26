@@ -3,7 +3,7 @@
 #include "../src/util/history.h"
 #include "../src/util/render.h"
 #include "../src/util/cleanup.h"
-#include "../src/keybinds/sendKeys.h"
+#include "../src/keybinds/sendGrepKeys.h"
 
 #include <ncurses.h>
 #include <chrono>
@@ -26,7 +26,7 @@ void diff()
 
 void grep()
 {
-	std::vector<grepMatch> v = grepFiles(std::filesystem::path("../vscode"), "a", true);
+	std::vector<grepMatch> v = grepFiles(std::filesystem::path("."), "a", true);
 }
 
 void find()
@@ -36,14 +36,37 @@ void find()
 
 int main()
 {
-	// State *state = new State("./test-file.h");
-	// initTerminal();
-	// for (uint32_t i = 0; i < 10; i++) {
-	// 	sendKeys(state, 'j');
-	// 	cleanup(state, 'j');
-	// 	renderScreen(state);
-	// 	history(state, 'j');
-	// }
-	// endwin();
-	diff();
+	State *state = new State("./test-file.h");
+	state->mode = GREP;
+	generateGrepOutput(state, false);
+
+	sendGrepKeys(state, 's');
+	generateGrepOutput(state, false);
+	cleanup(state, 's');
+	history(state, 's');
+	renderScreen(state, false);
+
+	sendGrepKeys(state, 't');
+	generateGrepOutput(state, false);
+	cleanup(state, 't');
+	history(state, 't');
+	renderScreen(state, false);
+
+	sendGrepKeys(state, 'a');
+	generateGrepOutput(state, false);
+	cleanup(state, 'a');
+	history(state, 'a');
+	renderScreen(state, false);
+
+	sendGrepKeys(state, 't');
+	generateGrepOutput(state, false);
+	cleanup(state, 't');
+	history(state, 't');
+	renderScreen(state, false);
+
+	sendGrepKeys(state, 'e');
+	generateGrepOutput(state, false);
+	cleanup(state, 'e');
+	history(state, 'e');
+	renderScreen(state, false);
 }

@@ -154,8 +154,8 @@ class State {
 	int32_t buildErrorIndex;
 	int32_t fileExplorerIndex;
 	int32_t fileExplorerWindowLine;
-	static uint32_t maxX;
-	static uint32_t maxY;
+	uint32_t maxX;
+	uint32_t maxY;
 	CommandLineAutocompleteState commandLineState;
 	std::string clipboard;
 	std::string prompt;
@@ -203,5 +203,4 @@ class State {
 	void changeFile(std::string filename);
 	void setDefaultOptions();
 	void print(std::string filename, bool printGrep, bool printArchives);
-	static void setMaxYX(int32_t y, int32_t x);
 };

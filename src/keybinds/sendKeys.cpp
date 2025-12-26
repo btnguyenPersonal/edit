@@ -34,7 +34,7 @@ void sendKeys(State *state, int32_t c)
 	state->searchFail = false;
 	state->showFileStack = false;
 	state->searching = state->mode == SEARCH;
-	calcWindowBounds();
+	calcWindowBounds(state);
 	switch (state->mode) {
 	case FIND:
 		sendFindKeys(state, c);

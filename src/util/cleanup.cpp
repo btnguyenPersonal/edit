@@ -37,7 +37,7 @@ void cleanup(State *state, char c)
 			centerScreen(state);
 		}
 		assert(state->file->windowPosition.row <= state->file->row);
-		assert(state->file->windowPosition.row + state->maxY > state->file->row);
+		assert(state->file->windowPosition.row + state->maxY >= state->file->row);
 		if (state->recording.on && !state->dontRecordKey) {
 			recordMacroCommand(state, c);
 		}

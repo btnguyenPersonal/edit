@@ -14,7 +14,7 @@ uint32_t getNormalizedCol(State *state, uint32_t hardCol);
 bool isColTooSmall(State *state);
 uint32_t isLargeFile(State *state);
 uint32_t getLastCharIndex(State *state);
-void calcWindowBounds();
+void calcWindowBounds(State *state);
 void refocusFileExplorer(State *state, bool changeMode);
 void centerFileExplorer(State *state);
 uint32_t getLineNumberOffset(State *state);

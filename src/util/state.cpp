@@ -14,9 +14,6 @@
 #include <unistd.h>
 #include <fstream>
 
-uint32_t State::maxX = 0;
-uint32_t State::maxY = 0;
-
 File *getFile(std::string name, std::vector<std::string> data)
 {
 	File *file = new File();
@@ -315,8 +312,3 @@ State::State(std::string filename)
 	this->loadAllConfigFiles();
 }
 
-void State::setMaxYX(int32_t y, int32_t x)
-{
-	State::maxY = (uint32_t)y;
-	State::maxX = (uint32_t)x;
-}

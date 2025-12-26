@@ -268,6 +268,7 @@ int32_t renderStatusBar(State *state)
 		renderPixels(state, 1, 0, pixels, false);
 		cursor = prefix.length() + state->commandLine.cursor;
 	} else if (state->mode == GREP) {
+		state->grepMutex.lock();
 		prefix = state->grepPath + "> ";
 		insertPixels(state, &pixels, prefix + state->grep.query, state->showAllGrep ? BLUE : GREEN);
 		insertPixels(state, &pixels, "  ", WHITE);
@@ -276,6 +277,7 @@ int32_t renderStatusBar(State *state)
 		insertPixels(state, &pixels, std::to_string(state->grepOutput.size()), WHITE);
 		renderPixels(state, 1, 0, pixels, false);
 		cursor = prefix.length() + state->grep.cursor;
+		state->grepMutex.unlock();
 	} else if (state->mode == FIND) {
 		prefix = "> ";
 		insertPixels(state, &pixels, prefix, YELLOW);
@@ -435,6 +437,7 @@ bool isRowInVisual(State *state, int32_t row)
 
 void renderGrepOutput(State *state)
 {
+	state->grepMutex.lock();
 	uint32_t index;
 	if ((int32_t)state->grep.selection - ((int32_t)state->maxY / 2) > 0) {
 		index = state->grep.selection - state->maxY / 2;
@@ -459,6 +462,7 @@ void renderGrepOutput(State *state)
 		renderPixels(state, renderIndex, 0, pixels, false);
 		renderIndex++;
 	}
+	state->grepMutex.unlock();
 }
 
 void renderFindOutput(State *state)

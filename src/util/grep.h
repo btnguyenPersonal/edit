@@ -5,6 +5,6 @@
 #include <vector>
 
 void generateGrepOutput(State *state, bool resetCursor);
-std::vector<grepMatch> grepFiles(const std::filesystem::path &dir_path, const std::string &query, bool allowAllFiles);
+std::vector<grepMatch> grepFiles(std::filesystem::path dir_path, std::string query, bool allowAllFiles);
 void changeToGrepFile(State *state);
 void findDefinitionFromGrepOutput(State *state, std::string s);
