@@ -155,6 +155,7 @@ void State::changeFile(std::string filename)
 	for (uint32_t i = 0; i < this->files.size(); i++) {
 		if (this->files[i]->filename == name) {
 			this->file = this->files[i];
+			this->file->data = readFile(name);
 			found = true;
 			break;
 		}

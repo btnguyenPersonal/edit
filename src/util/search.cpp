@@ -180,7 +180,6 @@ void replaceAllGlobally(State *state, const std::string &query, const std::strin
 
 	FILE *pipe = popen("git ls-files", "r");
 	if (!pipe) {
-		// TODO use all files if git not available
 		state->status = "git not available";
 		return;
 	}
