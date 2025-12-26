@@ -75,10 +75,9 @@ std::vector<std::filesystem::path> find(const std::filesystem::path &dir_path, c
 	return matching_files;
 }
 
-void findDispatch(State *state)
+void findDispatch(State *state, std::string query)
 {
-	auto query = state->find.query;
-	auto output = find(std::filesystem::current_path(), state->find.query);
+	std::vector<std::filesystem::path> output = find(std::filesystem::current_path(), query);
 	state->findMutex.lock();
 	if (query == state->find.query) {
 		state->findOutput = output;
@@ -89,6 +88,7 @@ void findDispatch(State *state)
 
 void generateFindOutput(State *state)
 {
-	std::thread worker(findDispatch, state);
+	std::string query = state->find.query;
+	std::thread worker(findDispatch, state, query);
 	worker.detach();
 }

@@ -14,6 +14,7 @@
 
 void sendGrepKeys(State *state, int32_t c)
 {
+	state->grepMutex.lock();
 	std::string cachedGrepString = state->grep.query;
 	if (c == 27) { // ESC
 		state->mode = NORMAL;
@@ -86,6 +87,7 @@ void sendGrepKeys(State *state, int32_t c)
 		add(&state->grep, c);
 		state->grep.selection = 0;
 	}
+	state->grepMutex.unlock();
 	if (state->mode == GREP && cachedGrepString != state->grep.query) {
 		renderScreen(state);
 		generateGrepOutput(state, true);

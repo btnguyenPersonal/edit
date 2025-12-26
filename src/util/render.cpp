@@ -268,6 +268,7 @@ int32_t renderStatusBar(State *state)
 		renderPixels(state, 1, 0, pixels, false);
 		cursor = prefix.length() + state->commandLine.cursor;
 	} else if (state->mode == GREP) {
+		state->grepMutex.lock();
 		prefix = state->grepPath + "> ";
 		insertPixels(state, &pixels, prefix + state->grep.query, state->showAllGrep ? BLUE : GREEN);
 		insertPixels(state, &pixels, "  ", WHITE);
@@ -276,7 +277,9 @@ int32_t renderStatusBar(State *state)
 		insertPixels(state, &pixels, std::to_string(state->grepOutput.size()), WHITE);
 		renderPixels(state, 1, 0, pixels, false);
 		cursor = prefix.length() + state->grep.cursor;
+		state->grepMutex.unlock();
 	} else if (state->mode == FIND) {
+		state->findMutex.lock();
 		prefix = "> ";
 		insertPixels(state, &pixels, prefix, YELLOW);
 		insertPixels(state, &pixels, state->find.query, state->selectAll ? invertColor(YELLOW) : YELLOW);
@@ -286,6 +289,7 @@ int32_t renderStatusBar(State *state)
 		insertPixels(state, &pixels, std::to_string(state->findOutput.size()), WHITE);
 		renderPixels(state, 1, 0, pixels, false);
 		cursor = prefix.length() + state->find.cursor;
+		state->findMutex.unlock();
 	} else {
 		if (state->recording.on) {
 			std::string s;
@@ -435,6 +439,7 @@ bool isRowInVisual(State *state, int32_t row)
 
 void renderGrepOutput(State *state)
 {
+	state->grepMutex.lock();
 	uint32_t index;
 	if ((int32_t)state->grep.selection - ((int32_t)state->maxY / 2) > 0) {
 		index = state->grep.selection - state->maxY / 2;
@@ -459,10 +464,12 @@ void renderGrepOutput(State *state)
 		renderPixels(state, renderIndex, 0, pixels, false);
 		renderIndex++;
 	}
+	state->grepMutex.unlock();
 }
 
 void renderFindOutput(State *state)
 {
+	state->findMutex.lock();
 	uint32_t index;
 	if ((int32_t)state->find.selection - ((int32_t)state->maxY / 2) > 0) {
 		index = state->find.selection - state->maxY / 2;
@@ -482,6 +489,7 @@ void renderFindOutput(State *state)
 		renderPixels(state, renderIndex, 0, pixels, false);
 		renderIndex++;
 	}
+	state->findMutex.unlock();
 }
 
 std::string getBlame(State *state, int32_t i)
@@ -910,11 +918,11 @@ void renderScreen(State *state)
 
 void renderScreen(State *state, bool fullRedraw)
 {
+	state->renderMutex.lock();
 	if (fullRedraw) {
 		clear();
 	}
 	try {
-		state->renderMutex.lock();
 		erase();
 		bool noLineNum = false;
 		Cursor editorCursor, fileExplorerCursor;
@@ -942,11 +950,10 @@ void renderScreen(State *state, bool fullRedraw)
 		moveCursor(state, cursorOnStatusBar, editorCursor, fileExplorerCursor, noLineNum);
 		wnoutrefresh(stdscr);
 		doupdate();
-		state->renderMutex.unlock();
 	} catch (const std::exception &e) {
 		state->status = std::string("something went wrong while rendering") + e.what();
-		state->renderMutex.unlock();
 	}
+	state->renderMutex.unlock();
 }
 
 void initTerminal()

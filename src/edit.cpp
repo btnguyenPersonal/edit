@@ -28,7 +28,7 @@ int32_t main(int32_t argc, char *argv[])
 	state->dontSave = false;
 	initTerminal();
 	sanityCheckDocumentEmpty(state);
-	calcWindowBounds();
+	calcWindowBounds(state);
 	renderScreen(state);
 	while (true) {
 		c = getch();

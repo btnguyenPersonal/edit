@@ -4,12 +4,9 @@
 #include "search.h"
 #include "fileops.h"
 
-#include <future>
 #include <fstream>
 #include <thread>
 #include <mutex>
-#include <functional>
-#include <semaphore>
 #include <algorithm>
 
 const static int32_t THREAD_MAX = 5;
@@ -31,7 +28,7 @@ bool isFunctionLine(std::string line, std::string s, std::string extension)
 			return true;
 		}
 	}
-	return functionStrings.size() == 0;
+	return false;
 }
 
 bool sortByLineNum(const grepMatch &first, const grepMatch &second)
@@ -111,7 +108,7 @@ void grepThread(const std::string &query, const std::filesystem::path &dir_path,
 	} while (!done);
 }
 
-std::vector<grepMatch> grepFiles(const std::filesystem::path &dir_path, const std::string &query, bool allowAllFiles)
+std::vector<grepMatch> grepFiles(std::filesystem::path dir_path, std::string query, bool allowAllFiles)
 {
 	std::vector<std::vector<grepMatch> > allMatches;
 	std::mutex allMatchesMutex;
@@ -152,13 +149,12 @@ std::vector<grepMatch> grepFiles(const std::filesystem::path &dir_path, const st
 	return output;
 }
 
-void grepDispatch(State *state)
+void grepDispatch(State *state, std::string query, std::string path, bool showAllGrep)
 {
-	auto query = state->grep.query;
-	auto output = grepFiles(state->grepPath == "" ? std::filesystem::current_path() : std::filesystem::path(state->grepPath), state->grep.query, state->showAllGrep);
+	std::vector<grepMatch> output = grepFiles(path == "" ? std::filesystem::current_path() : std::filesystem::path(path), query, showAllGrep);
 	state->grepMutex.lock();
 	if (query == state->grep.query) {
-		state->grepOutput = output;
+		state->grepOutput = std::move(output);
 	}
 	state->grepMutex.unlock();
 	renderScreen(state, false);
@@ -169,7 +165,10 @@ void generateGrepOutput(State *state, bool resetCursor)
 	if (state->grep.query == "") {
 		state->grepOutput.clear();
 	} else {
-		std::thread worker(grepDispatch, state);
+		std::string query = state->grep.query;
+		std::string path = state->grepPath;
+		bool showAllGrep = state->showAllGrep;
+		std::thread worker(grepDispatch, state, std::move(query), std::move(path), std::move(showAllGrep));
 		worker.detach();
 	}
 	if (resetCursor) {

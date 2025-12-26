@@ -13,7 +13,9 @@ void resetValidCursorState(State *state)
 
 void sanityCheckGrepSelection(State *state)
 {
+	state->grepMutex.lock();
 	sanityCheckQuery(state->grep, state->grepOutput.size());
+	state->grepMutex.unlock();
 }
 
 void sanityCheckFindSelection(State *state)

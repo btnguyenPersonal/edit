@@ -142,17 +142,20 @@ uint32_t getLastCharIndex(State *state)
 	}
 }
 
-void calcWindowBounds()
+void calcWindowBounds(State *state)
 {
+	state->renderMutex.lock();
 	int32_t y, x;
 	getmaxyx(stdscr, y, x);
 	if (y == -1) {
-		y = 30;
+		y = 24;
 	}
 	if (x == -1) {
-		x = 100;
+		x = 80;
 	}
-	State::setMaxYX(y, x);
+	state->maxY = y;
+	state->maxX = x;
+	state->renderMutex.unlock();
 }
 
 void refocusFileExplorer(State *state, bool changeMode)
