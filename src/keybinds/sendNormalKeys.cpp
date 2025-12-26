@@ -17,8 +17,6 @@
 #include "../util/sanity.h"
 #include "sendKeys.h"
 #include "sendVisualKeys.h"
-#include <algorithm>
-#include <climits>
 #include <ncurses.h>
 #include <string>
 #include <vector>

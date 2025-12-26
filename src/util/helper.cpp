@@ -8,18 +8,9 @@
 #include "assert.h"
 #include "ignore.h"
 #include "sanity.h"
-#include <algorithm>
-#include <climits>
-#include <cstdio>
-#include <fstream>
-#include <iterator>
-#include <memory>
-#include <ncurses.h>
 #include <string>
 #include <vector>
 #include <regex>
-#include <chrono>
-#include <thread>
 
 std::string runCommand(std::string command)
 {
@@ -67,11 +58,11 @@ void highlightRenderBounds(State *state, Bounds b)
 	state->mode = tempMode;
 	state->file->row = tempR;
 	state->file->col = tempC;
-	std::this_thread::sleep_for(std::chrono::milliseconds(10));
 }
 
 bool matchesEditorConfigGlob(const std::string &pattern, const std::string &filepath)
 {
+	// TODO somehow do the real glob matching instead of this regex hack
 	auto cleanPattern = safeSubstring(pattern, 1, pattern.length() - 2);
 	cleanPattern = replaceAll(cleanPattern, ".", "\\.");
 	cleanPattern = replaceAll(cleanPattern, "*", ".*");

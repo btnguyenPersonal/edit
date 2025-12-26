@@ -1,6 +1,5 @@
 #include "history.h"
 #include "state.h"
-#include <algorithm>
 #include <climits>
 #include <string>
 #include <vector>

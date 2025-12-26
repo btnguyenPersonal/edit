@@ -10,8 +10,6 @@
 #include "../util/state.h"
 #include "../util/grep.h"
 #include "../util/render.h"
-#include <algorithm>
-#include <ncurses.h>
 #include <string>
 #include <vector>
 

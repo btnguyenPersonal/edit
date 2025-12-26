@@ -126,9 +126,10 @@ void copyPathToClipboard(State *state, const std::string &filePath)
 #ifdef __APPLE__
 	std::string command = "osascript -e 'set the clipboard to POSIX file \"" + escapeForShell(filePath) + "\"'";
 #elif defined(__linux__)
-	std::string command = std::string("echo -n 'file://") + escapeForShell(filePath) + "' | "
-		"if [ \"$XDG_SESSION_TYPE\" = wayland ] && command -v wl-copy >/dev/null 2>&1; then "
-		"wl-copy; else xclip -selection clipboard -t text/uri-list; fi";
+	std::string command = std::string("echo -n 'file://") + escapeForShell(filePath) +
+			      "' | "
+			      "if [ \"$XDG_SESSION_TYPE\" = wayland ] && command -v wl-copy >/dev/null 2>&1; then "
+			      "wl-copy; else xclip -selection clipboard -t text/uri-list; fi";
 #else
 #error "Platform not supported"
 #endif
