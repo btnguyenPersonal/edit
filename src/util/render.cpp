@@ -918,7 +918,6 @@ void renderScreen(State *state)
 
 void renderScreen(State *state, bool fullRedraw)
 {
-	state->renderMutex.lock();
 	if (fullRedraw) {
 		clear();
 	}
@@ -953,7 +952,6 @@ void renderScreen(State *state, bool fullRedraw)
 	} catch (const std::exception &e) {
 		state->status = std::string("something went wrong while rendering") + e.what();
 	}
-	state->renderMutex.unlock();
 }
 
 void initTerminal()

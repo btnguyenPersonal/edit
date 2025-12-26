@@ -302,7 +302,6 @@ void downHalfScreen(State *state)
 void centerScreen(State *state)
 {
 	if (state->file) {
-		state->renderMutex.lock();
 		state->file->windowPosition.row = getCenteredWindowPosition(state);
 		uint32_t col = getDisplayCol(state);
 		if (!state->options.wordwrap) {
@@ -312,6 +311,5 @@ void centerScreen(State *state)
 				state->file->windowPosition.col = col + getLineNumberOffset(state) + 1 - state->maxX;
 			}
 		}
-		state->renderMutex.unlock();
 	}
 }
