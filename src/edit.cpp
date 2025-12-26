@@ -37,6 +37,9 @@ int32_t main(int32_t argc, char *argv[])
 			cleanup(state, c);
 			history(state, c);
 			renderScreen(state);
+		} else if (state->shouldReRender) {
+			state->shouldReRender = false;
+			renderScreen(state);
 		}
 	}
 	endwin();

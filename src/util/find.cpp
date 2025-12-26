@@ -1,6 +1,5 @@
-#include "./ignore.h"
-#include "./find.h"
-#include "./render.h"
+#include "ignore.h"
+#include "find.h"
 
 #include <thread>
 
@@ -82,8 +81,8 @@ void findDispatch(State *state, std::string query)
 	if (query == state->find.query) {
 		state->findOutput = output;
 	}
+	state->shouldReRender = true;
 	state->findMutex.unlock();
-	renderScreen(state, false);
 }
 
 void generateFindOutput(State *state)

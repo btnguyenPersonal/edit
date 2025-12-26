@@ -1,6 +1,5 @@
 #include "grep.h"
 #include "ignore.h"
-#include "render.h"
 #include "search.h"
 #include "fileops.h"
 
@@ -156,8 +155,8 @@ void grepDispatch(State *state, std::string query, std::string path, bool showAl
 	if (query == state->grep.query) {
 		state->grepOutput = std::move(output);
 	}
+	state->shouldReRender = true;
 	state->grepMutex.unlock();
-	renderScreen(state, false);
 }
 
 void generateGrepOutput(State *state, bool resetCursor)

@@ -114,7 +114,6 @@ void sendFindKeys(State *state, int32_t c)
 	}
 	state->findMutex.unlock();
 	if (state->mode == FIND && cachedFileString != state->find.query) {
-		renderScreen(state);
 		generateFindOutput(state);
 	}
 }

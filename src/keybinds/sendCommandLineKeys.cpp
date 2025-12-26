@@ -72,7 +72,6 @@ void evaluateCommandLineQuery(State *state)
 	} else if (state->commandLine.query.substr(0, 2) == "gs") {
 		struct searchReplace temp = getSearchReplace(state->commandLine.query);
 		if (!state->dontSave) {
-			renderScreen(state);
 			replaceAllGlobally(state, temp.first, temp.second);
 		}
 	} else if (state->commandLine.query.substr(0, 2) == "%s") {

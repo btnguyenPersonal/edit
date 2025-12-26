@@ -89,7 +89,6 @@ void sendGrepKeys(State *state, int32_t c)
 	}
 	state->grepMutex.unlock();
 	if (state->mode == GREP && cachedGrepString != state->grep.query) {
-		renderScreen(state);
 		generateGrepOutput(state, true);
 	}
 }

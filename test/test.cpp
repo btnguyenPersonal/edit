@@ -1,8 +1,8 @@
-#include "./util/testSave.h"
-#include "./util/testRead.h"
-#include "./util/testSanityChecks.h"
-#include "./util/testTypingKeys.h"
-#include "./util/testAutocomplete.h"
+#include "util/testSave.h"
+#include "util/testRead.h"
+#include "util/testSanityChecks.h"
+#include "util/testTypingKeys.h"
+#include "util/testAutocomplete.h"
 
 auto color_white = "\033[0m";
 auto color_green = "\033[1;32m";

@@ -5,7 +5,7 @@
 #include <filesystem>
 #include <unordered_map>
 
-#include "./state.h"
+#include "state.h"
 
 bool isAllLowercase(const std::string &str);
 bool filePathContainsSubstring(const std::filesystem::path &filePath, const std::string &query);

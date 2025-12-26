@@ -133,6 +133,7 @@ class State {
 	Query search;
 	Bounds replaceBounds;
 	VisualType visualType;
+	bool shouldReRender;
 	bool searchBackwards;
 	bool pasteAsBlock;
 	bool dontRecordKey;
