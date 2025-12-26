@@ -25,7 +25,7 @@ struct testSuiteRun testSave()
 		State *state = new State("./test-file.h", { "\n", "" });
 		state->dontSave = false;
 		saveFile(state);
-		output.push_back({ "saveFile should save the file with newlines when they are passed down", compare(readFile("./test-file.h"), { "", "" }) });
+		output.push_back({ "saveFile should save the file with newlines when they are passed down", compare(readFile("./test-file.h"), { "", "", "" }) });
 	}
 
 	{
