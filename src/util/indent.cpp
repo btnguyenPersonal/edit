@@ -113,7 +113,7 @@ int32_t getIndentLevel(State *state, uint32_t row)
 				} else if (tagType == EMPTY) {
 					tagType = CLOSE;
 				} else {
-					if (i - 1 >= 0 && prevLine[i - 1] == '/') {
+					if (i > 0 && prevLine[i - 1] == '/') {
 						tagStack--;
 					}
 					tagType = EMPTY;

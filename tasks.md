@@ -1,49 +1,11 @@
 ## tasks
--pedantic
--Wall
--Wextra
--Wcas
--align
--Wcas
--qual
--Wcto
--dto
--privacy
--Wdisable
--optimization
--Wformat=2
--Wini
--self
--Wlogica
--op
--Wmissin
--declarations
--Wmissin
--includ
--dirs
--Wnoexcept
--Wol
--styl
--cast
--Woverloade
--virtual
--Wredundan
--decls
--Wshadow
--Wsig
--conversion
--Wsig
--promo
--Wstric
--nul
--sentinel
--Wstric
--overflow=5
--Wswitc
--default
--Wundef
--Werror
--Wno-unused
+separate helper.cpp waaaay more
+start by moving one-off things to their own files
+
+use these to fix problems
+-fsanitize=thread
+-fsanitize=undefined
+-fsanitize=address
 
 - improve build time! it is unbearable!!
 

@@ -72,5 +72,8 @@ void sendKeys(State *state, int32_t c)
 	case NAMING:
 		state->status = "Error: in NAMING mode outside of naming loop";
 		break;
+	default:
+		state->status = std::string("Error: in unknown mode") + getMode(state->mode);
+		break;
 	}
 }

@@ -19,12 +19,12 @@ void cleanup(State *state, char c)
 		sanityCheckGrepSelection(state);
 		sanityCheckFindSelection(state);
 		sanityCheckDocumentEmpty(state);
+		assert(state->file->data.size() > 0);
 		sanityCheckRowOutOfBounds(state);
 		assert(state->file->row < state->file->data.size());
 		if (state->mode == INSERT) {
 			fixColOverMax(state);
 		}
-		assert(state->file->data[state->file->row].length() >= 0);
 		if (state->options.insert_final_newline) {
 			insertFinalEmptyNewline(state);
 		}

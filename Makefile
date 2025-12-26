@@ -3,7 +3,7 @@ CC = g++
 NPROCS := $(shell nproc 2>/dev/null || sysctl -n hw.logicalcpu)
 MAKEFLAGS += --jobs=$(NPROCS)
 
-CFLAGS   = -Werror -Wno-unused -Wall -O2 -std=c++20
+CFLAGS   = -pedantic -Wextra -Werror -Wundef -Wmain -Wswitch-default -Wswitch-enum -Wpointer-arith -Wcast-align -Wunreachable-code -Wno-unused -Wall -O2 -std=c++20
 LDFLAGS  = -lncurses -pthread
 DEPFLAGS = -MMD -MP
 
