@@ -122,7 +122,9 @@ bool hasHTML(std::string line, std::string extension)
 		if (safeSubstring(trimmed, 0, std::string("#include ").length()) == "#include ") {
 			return false;
 		}
-		return trimmed.front() == '<' || trimmed.back() == '>' || trimmed.front() == '>' || trimmed.back() == '<';
+		if (trimmed.length() > 0) {
+			return trimmed.front() == '<' || trimmed.back() == '>' || trimmed.front() == '>' || trimmed.back() == '<';
+		}
 	}
 	return false;
 }

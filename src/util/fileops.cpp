@@ -168,7 +168,9 @@ std::string minimize_filename(std::string filename)
 			minimized += '/';
 		}
 	}
-	minimized += parts.back();
+	if (parts.size() > 0) {
+		minimized += parts.back();
+	}
 	return minimized;
 }
 
@@ -211,9 +213,12 @@ std::string getExtension(const std::string &filename)
 	return (dotPosition != std::string::npos && dotPosition != 0) ? file.substr(dotPosition + 1) : file;
 }
 
-bool isLineFileRegex(const std::string &line)
+bool isLineFileRegex(std::string line)
 {
-	return line.front() == '[' && line.back() == ']';
+	if (line.length() > 1) {
+		return line.front() == '[' && line.back() == ']';
+	}
+	return false;
 }
 
 bool matchesEditorConfigGlob(const std::string &pattern, const std::string &filepath)

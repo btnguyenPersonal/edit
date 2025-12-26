@@ -545,7 +545,7 @@ int32_t getLineNumberColor(State *state, int32_t row)
 int32_t getMarkColor(State *state, int32_t row)
 {
 	bool logging = std::regex_search(state->file->data[row], std::regex(getLoggingRegex(state)));
-	bool endsWithSpace = isWhitespace(state->file->data[row].back());
+	bool endsWithSpace = state->file->data[row].length() > 0 && isWhitespace(state->file->data[row].back());
 	bool isOnMark = (int32_t)state->mark.mark == row && state->mark.filename == state->file->filename;
 	if (endsWithSpace && state->mode != INSERT) {
 		return RED;
