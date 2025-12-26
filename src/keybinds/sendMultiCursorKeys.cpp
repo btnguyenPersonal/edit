@@ -4,6 +4,7 @@
 #include "../util/modes.h"
 #include "../util/state.h"
 #include "../util/autocomplete.h"
+#include "../util/movement.h"
 #include "sendVisualKeys.h"
 #include <ncurses.h>
 #include <string>

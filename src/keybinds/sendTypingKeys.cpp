@@ -5,6 +5,7 @@
 #include "../util/state.h"
 #include "../util/sanity.h"
 #include "../util/autocomplete.h"
+#include "../util/movement.h"
 #include <ncurses.h>
 #include <string>
 #include <vector>

@@ -10,6 +10,7 @@
 #include "../util/state.h"
 #include "../util/grep.h"
 #include "../util/render.h"
+#include "../util/movement.h"
 #include <string>
 #include <vector>
 

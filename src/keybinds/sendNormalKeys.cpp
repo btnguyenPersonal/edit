@@ -15,6 +15,7 @@
 #include "../util/keys.h"
 #include "../util/grep.h"
 #include "../util/sanity.h"
+#include "../util/movement.h"
 #include "sendKeys.h"
 #include "sendVisualKeys.h"
 #include <ncurses.h>
