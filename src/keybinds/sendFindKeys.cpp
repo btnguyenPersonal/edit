@@ -13,6 +13,7 @@
 
 void sendFindKeys(State *state, int32_t c)
 {
+	state->findMutex.lock();
 	std::string cachedFileString = state->find.query;
 	if (c == 27) { // ESC
 		state->selectAll = false;
@@ -111,6 +112,7 @@ void sendFindKeys(State *state, int32_t c)
 			state->resetState(selectedFile);
 		}
 	}
+	state->findMutex.unlock();
 	if (state->mode == FIND && cachedFileString != state->find.query) {
 		renderScreen(state);
 		generateFindOutput(state);

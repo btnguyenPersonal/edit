@@ -4,12 +4,9 @@
 #include "search.h"
 #include "fileops.h"
 
-#include <future>
 #include <fstream>
 #include <thread>
 #include <mutex>
-#include <functional>
-#include <semaphore>
 #include <algorithm>
 
 const static int32_t THREAD_MAX = 5;
