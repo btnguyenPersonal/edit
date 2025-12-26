@@ -1,10 +1,14 @@
-#include "helper.h"
 #include "assert.h"
 #include "history.h"
 #include "cleanup.h"
 #include "save.h"
 #include "sanity.h"
 #include "visual.h"
+#include "display.h"
+#include "textedit.h"
+#include "harpoon.h"
+#include "movement.h"
+#include "ctrl.h"
 #include <ncurses.h>
 
 void cleanup(State *state, char c)

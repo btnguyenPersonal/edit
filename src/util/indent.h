@@ -4,6 +4,12 @@
 #include <string>
 #include <vector>
 
+uint32_t getIndent(const std::string &str);
+char getIndentCharacter(State *state);
+uint32_t getIndentSize(State *state);
+uint32_t getIndent(State *state, const std::string &str);
+void indent(State *state);
+void deindent(State *state);
 void indentLineWhenTypingLastChar(State *state);
 void indentLineWhenTypingFirstChar(State *state);
 bool autoIndentDisabledFileType(std::string filename);

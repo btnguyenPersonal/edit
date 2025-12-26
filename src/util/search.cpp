@@ -1,9 +1,20 @@
 #include "search.h"
-#include "helper.h"
+#include "string.h"
 #include "sanity.h"
 #include "movement.h"
 #include <regex>
 #include <fstream>
+
+bool setSearchResultCurrentLine(State *state, const std::string &query)
+{
+	std::string line = state->file->data[state->file->row];
+	size_t index = line.find(query);
+	if (index != std::string::npos) {
+		state->file->col = static_cast<uint32_t>(index);
+		return true;
+	}
+	return false;
+}
 
 void searchNextResult(State *state, bool reverse)
 {

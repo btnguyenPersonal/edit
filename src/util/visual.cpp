@@ -1,6 +1,6 @@
 #include "visual.h"
 #include "render.h"
-#include "helper.h"
+#include "string.h"
 
 bool isOpenParen(char c)
 {

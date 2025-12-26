@@ -1,4 +1,5 @@
 #include "autocomplete.h"
+#include "string.h"
 
 std::string autocomplete(State *state, const std::string &query)
 {

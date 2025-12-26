@@ -3,7 +3,6 @@
 #include "state.h"
 #include "query.h"
 #include "render.h"
-#include "helper.h"
 #include "modes.h"
 #include "clipboard.h"
 

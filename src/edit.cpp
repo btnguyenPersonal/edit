@@ -1,10 +1,10 @@
 #include "keybinds/sendKeys.h"
-#include "util/helper.h"
 #include "util/render.h"
 #include "util/state.h"
 #include "util/cleanup.h"
 #include "util/find.h"
 #include "util/sanity.h"
+#include "util/display.h"
 #include <cstdint>
 
 int32_t main(int32_t argc, char *argv[])

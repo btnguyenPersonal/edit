@@ -1,4 +1,3 @@
-#include "../src/util/helper.h"
 #include "../src/util/find.h"
 #include "../src/util/grep.h"
 #include "../src/util/history.h"

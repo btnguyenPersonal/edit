@@ -1,5 +1,4 @@
 #include "sendTypingKeys.h"
-#include "../util/helper.h"
 #include "../util/indent.h"
 #include "../util/modes.h"
 #include "../util/state.h"
@@ -7,6 +6,10 @@
 #include "../util/autocomplete.h"
 #include "../util/movement.h"
 #include "../util/search.h"
+#include "../util/history.h"
+#include "../util/string.h"
+#include "../util/ctrl.h"
+#include "../util/repeat.h"
 #include <ncurses.h>
 #include <string>
 #include <vector>

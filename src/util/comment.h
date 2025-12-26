@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 
+std::string getCommentSymbol(const std::string &filename);
 void toggleComment(State *state);
 void toggleCommentHelper(State *state, uint32_t row, int32_t commentIndex);
 void toggleCommentLines(State *state, Bounds bounds);

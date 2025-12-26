@@ -1,11 +1,14 @@
 #include "sendMultiCursorKeys.h"
 #include "../util/bounds.h"
-#include "../util/helper.h"
 #include "../util/modes.h"
 #include "../util/state.h"
 #include "../util/autocomplete.h"
 #include "../util/movement.h"
 #include "../util/search.h"
+#include "../util/history.h"
+#include "../util/ctrl.h"
+#include "../util/string.h"
+#include "../util/repeat.h"
 #include "sendVisualKeys.h"
 #include <ncurses.h>
 #include <string>

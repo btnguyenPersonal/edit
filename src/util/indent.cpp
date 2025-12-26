@@ -1,9 +1,55 @@
 #include "indent.h"
 #include "comment.h"
-#include "helper.h"
+#include "string.h"
 #include "fileops.h"
+#include "display.h"
+#include "textedit.h"
 #include <string>
 #include <vector>
+
+uint32_t getIndent(State *state, const std::string &str)
+{
+	for (uint32_t i = 0; i < str.length(); i++) {
+		if (str[i] != getIndentCharacter(state)) {
+			return i;
+		}
+	}
+	return 0;
+}
+
+uint32_t getIndentSize(State *state)
+{
+	if (state->options.indent_style == "tab") {
+		return 1;
+	}
+	return state->options.indent_size;
+}
+
+char getIndentCharacter(State *state)
+{
+	if (state->options.indent_style == "tab") {
+		return '\t';
+	} else if (state->options.indent_style == "space") {
+		return ' ';
+	}
+	return 'E';
+}
+
+void indent(State *state)
+{
+	for (uint32_t i = 0; i < getIndentSize(state); i++) {
+		state->file->data[state->file->row] = getIndentCharacter(state) + state->file->data[state->file->row];
+	}
+}
+
+void deindent(State *state)
+{
+	for (uint32_t i = 0; i < getIndentSize(state); i++) {
+		if (state->file->data[state->file->row].substr(0, 1) == std::string("") + getIndentCharacter(state)) {
+			state->file->data[state->file->row] = state->file->data[state->file->row].substr(1);
+		}
+	}
+}
 
 void indentLineWhenTypingLastChar(State *state)
 {
@@ -18,9 +64,9 @@ void indentLineWhenTypingLastChar(State *state)
 void indentLineWhenTypingFirstChar(State *state)
 {
 	if (!autoIndentDisabledFileType(state->file->filename)) {
-		if ((int32_t)state->file->col == getIndexFirstNonSpace(state)) {
+		if ((int32_t)state->file->col == getIndexFirstNonSpace(state->file->data[state->file->row], getIndentCharacter(state))) {
 			indentLine(state);
-			state->file->col = getIndexFirstNonSpace(state);
+			state->file->col = getIndexFirstNonSpace(state->file->data[state->file->row], getIndentCharacter(state));
 		}
 	}
 }

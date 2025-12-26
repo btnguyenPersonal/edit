@@ -1,7 +1,6 @@
 #include "sendNormalKeys.h"
 #include "../util/clipboard.h"
 #include "../util/comment.h"
-#include "../util/helper.h"
 #include "../util/render.h"
 #include "../util/history.h"
 #include "../util/indent.h"
@@ -19,6 +18,13 @@
 #include "../util/visual.h"
 #include "../util/search.h"
 #include "../util/fileops.h"
+#include "../util/display.h"
+#include "../util/textedit.h"
+#include "../util/external.h"
+#include "../util/harpoon.h"
+#include "../util/ctrl.h"
+#include "../util/string.h"
+#include "../util/repeat.h"
 #include "sendKeys.h"
 #include "sendVisualKeys.h"
 #include <ncurses.h>
@@ -234,11 +240,11 @@ void sendNormalKeys(State *state, int32_t c)
 		state->mode = COMMAND;
 	} else if (c == '<') {
 		deindent(state);
-		state->file->col = getIndexFirstNonSpace(state);
+		state->file->col = getIndexFirstNonSpace(state->file->data[state->file->row], getIndentCharacter(state));
 		setDotCommand(state, c);
 	} else if (c == '>') {
 		indent(state);
-		state->file->col = getIndexFirstNonSpace(state);
+		state->file->col = getIndexFirstNonSpace(state->file->data[state->file->row], getIndentCharacter(state));
 		setDotCommand(state, c);
 	} else if (c == 'u') {
 		if (state->file->historyPosition >= 0) {
@@ -347,7 +353,7 @@ void sendNormalKeys(State *state, int32_t c)
 		state->file->data[state->file->row] = state->file->data[state->file->row].substr(0, state->file->col);
 		state->mode = INSERT;
 	} else if (c == 'I') {
-		state->file->col = getIndexFirstNonSpace(state);
+		state->file->col = getIndexFirstNonSpace(state->file->data[state->file->row], getIndentCharacter(state));
 		state->mode = INSERT;
 	} else if (c == 'A') {
 		state->file->col = state->file->data[state->file->row].length();
@@ -409,7 +415,7 @@ void sendNormalKeys(State *state, int32_t c)
 		state->mode = SEARCH;
 		state->searchBackwards = false;
 	} else if (c == '^') {
-		state->file->col = getIndexFirstNonSpace(state);
+		state->file->col = getIndexFirstNonSpace(state->file->data[state->file->row], getIndentCharacter(state));
 	} else if (c == ctrl('t')) {
 		if (!state->dontSave) {
 			state->mode = FILEEXPLORER;
@@ -476,10 +482,10 @@ void sendNormalKeys(State *state, int32_t c)
 		clearHarpoon(state);
 	} else if (c == 'e') {
 		toggleComment(state);
-		state->file->col = getIndexFirstNonSpace(state);
+		state->file->col = getIndexFirstNonSpace(state->file->data[state->file->row], getIndentCharacter(state));
 	} else if (c == '=') {
 		indentLine(state);
-		state->file->col = getIndexFirstNonSpace(state);
+		state->file->col = getIndexFirstNonSpace(state->file->data[state->file->row], getIndentCharacter(state));
 	} else if (c == 'Q') {
 		removeAllLoggingCode(state);
 		setDotCommand(state, c);

@@ -1,7 +1,8 @@
 #include "insertLoggingCode.h"
-#include "helper.h"
+#include "string.h"
 #include "indent.h"
 #include "fileops.h"
+#include "textedit.h"
 #include <regex>
 #include <string>
 #include <vector>

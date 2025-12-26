@@ -1,10 +1,10 @@
 #include "sendSearchKeys.h"
 #include "../util/clipboard.h"
-#include "../util/helper.h"
 #include "../util/modes.h"
 #include "../util/query.h"
 #include "../util/state.h"
 #include "../util/search.h"
+#include "../util/ctrl.h"
 #include <climits>
 #include <ncurses.h>
 

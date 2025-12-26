@@ -9,7 +9,6 @@ struct Cursor {
 	int32_t col;
 };
 
-std::string getHarpoonName(State *state, uint32_t index);
 int32_t invertColor(int32_t color);
 void initColors();
 int32_t renderStatusBar(State *state);

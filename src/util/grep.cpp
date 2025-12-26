@@ -1,6 +1,8 @@
-#include "./grep.h"
-#include "./ignore.h"
-#include "./render.h"
+#include "grep.h"
+#include "ignore.h"
+#include "render.h"
+#include "search.h"
+#include "fileops.h"
 
 #include <future>
 #include <fstream>
@@ -11,6 +13,26 @@
 #include <algorithm>
 
 const static int32_t THREAD_MAX = 5;
+
+bool isFunctionLine(std::string line, std::string s, std::string extension)
+{
+	std::vector<std::vector<std::string> > functionStrings;
+	if (extension == "js" || extension == "jsx" || extension == "ts" || extension == "tsx") {
+		functionStrings = {
+			{ "enum", " {" }, { "async", "" }, { "class", " {" }, { " ", " (" }, { " ", "(" }, { "const", " " }, { "function", "(" }, { "struct", " {" }, { "interface", " {" },
+		};
+	} else if (extension == "c" || extension == "cc" || extension == "cpp" || extension == "h" || extension == "hpp") {
+		functionStrings = {
+			{ "", "(" },
+		};
+	}
+	for (uint32_t i = 0; i < functionStrings.size(); i++) {
+		if (line.find(functionStrings[i][0] + " " + s + functionStrings[i][1]) != std::string::npos) {
+			return true;
+		}
+	}
+	return functionStrings.size() == 0;
+}
 
 bool sortByLineNum(const grepMatch &first, const grepMatch &second)
 {
@@ -154,3 +176,31 @@ void generateGrepOutput(State *state, bool resetCursor)
 		state->grep.selection = 0;
 	}
 }
+
+void changeToGrepFile(State *state)
+{
+	if (state->grep.selection < state->grepOutput.size()) {
+		std::filesystem::path selectedFile = state->grepOutput[state->grep.selection].path;
+		if (state->grepPath != "") {
+			selectedFile = state->grepPath / selectedFile;
+		}
+		int32_t lineNum = state->grepOutput[state->grep.selection].lineNum;
+		state->resetState(selectedFile);
+		state->file->row = lineNum - 1;
+		setSearchResultCurrentLine(state, state->grep.query);
+	}
+}
+
+void findDefinitionFromGrepOutput(State *state, std::string s)
+{
+	std::string extension = getExtension(state->file->filename);
+	for (uint32_t i = 0; i < state->grepOutput.size(); i++) {
+		if (state->grepOutput[i].line.back() == '(' || state->grepOutput[i].line.back() == '{') {
+			if (isFunctionLine(state->grepOutput[i].line, s, extension)) {
+				state->grep.selection = i;
+				changeToGrepFile(state);
+			}
+		}
+	}
+}
+

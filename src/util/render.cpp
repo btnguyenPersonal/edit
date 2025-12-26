@@ -4,7 +4,6 @@
 #include <string>
 #include <vector>
 
-#include "helper.h"
 #include "insertLoggingCode.h"
 #include "modes.h"
 #include "render.h"
@@ -14,6 +13,10 @@
 #include "search.h"
 #include "fileops.h"
 #include "ignore.h"
+#include "display.h"
+#include "textedit.h"
+#include "string.h"
+#include "ctrl.h"
 #include <ncurses.h>
 
 #define _COLOR_BLACK COLOR_BLACK

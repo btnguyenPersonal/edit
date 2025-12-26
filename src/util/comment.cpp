@@ -1,11 +1,32 @@
 #include "comment.h"
 #include "bounds.h"
-#include "helper.h"
 #include "indent.h"
 #include "state.h"
+#include "textedit.h"
+#include "fileops.h"
 #include <climits>
 #include <string>
 #include <vector>
+
+std::string getCommentSymbol(const std::string &filename)
+{
+	std::string extension = getExtension(filename);
+	if (extension == "js" || extension == "jsx" || extension == "ts" || extension == "tsx" || extension == "cc" || extension == "cpp" || extension == "hpp" || extension == "c" || extension == "h" || extension == "java" || extension == "cs" || extension == "go" || extension == "php" || extension == "rs" || extension == "css" || extension == "scss" || extension == "vb" || extension == "lua") {
+		return "//";
+	} else if (extension == "py" || extension == "sh" || extension == "bash" || extension == "rb" || extension == "pl" || extension == "pm" || extension == "r" || extension == "yaml" || extension == "yml" || extension == "bashrc" || extension == "zshrc" || extension == "Makefile" || extension == "md" || extension == "gitignore" || extension == "env") {
+		return "#";
+	} else if (extension == "html" || extension == "xml" || extension == "xhtml" || extension == "svg") {
+		return "<!--";
+	} else if (extension == "sql") {
+		return "--";
+	} else if (extension == "lua") {
+		return "--";
+	} else if (extension == "json") {
+		return "//";
+	} else {
+		return "#";
+	}
+}
 
 std::string trimLeadingComment(State *state, std::string line)
 {

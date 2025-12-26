@@ -1,9 +1,10 @@
 #include "sendBlameKeys.h"
 #include "../util/clipboard.h"
-#include "../util/helper.h"
 #include "../util/modes.h"
 #include "../util/state.h"
 #include "../util/movement.h"
+#include "../util/external.h"
+#include "../util/ctrl.h"
 #include <ncurses.h>
 #include <string>
 #include <vector>

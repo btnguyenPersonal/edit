@@ -1,12 +1,12 @@
 #include "sendFindKeys.h"
 #include "../util/clipboard.h"
-#include "../util/helper.h"
 #include "../util/modes.h"
 #include "../util/render.h"
 #include "../util/query.h"
 #include "../util/state.h"
 #include "../util/grep.h"
 #include "../util/find.h"
+#include "../util/ctrl.h"
 #include <ncurses.h>
 #include <string>
 #include <vector>

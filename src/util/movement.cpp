@@ -1,7 +1,15 @@
 #include "movement.h"
-#include "helper.h"
 #include "sanity.h"
 #include "comment.h"
+#include "indent.h"
+#include "display.h"
+#include "string.h"
+
+void setPosition(State *state, Position pos)
+{
+	state->file->row = pos.row;
+	state->file->col = pos.col;
+}
 
 int32_t findChar(State *state, bool reverse, char c)
 {

@@ -1,5 +1,6 @@
 #include "fileops.h"
-#include "helper.h"
+#include "string.h"
+#include "textedit.h"
 #include <fstream>
 #include <regex>
 

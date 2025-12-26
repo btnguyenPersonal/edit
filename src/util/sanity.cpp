@@ -1,5 +1,16 @@
 #include "sanity.h"
 
+void resetValidCursorState(State *state)
+{
+	if (state->file->data[state->file->row].length() <= state->file->col) {
+		if (state->file->data[state->file->row].length() != 0) {
+			state->file->col = state->file->data[state->file->row].length() - 1;
+		} else {
+			state->file->col = 0;
+		}
+	}
+}
+
 void sanityCheckGrepSelection(State *state)
 {
 	sanityCheckQuery(state->grep, state->grepOutput.size());

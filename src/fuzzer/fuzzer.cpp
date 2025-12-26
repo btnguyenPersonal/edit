@@ -2,7 +2,6 @@
 #include "../util/state.h"
 #include "../util/cleanup.h"
 #include "../util/keys.h"
-#include "../util/helper.h"
 #include "../keybinds/sendKeys.h"
 #include <random>
 #include <vector>

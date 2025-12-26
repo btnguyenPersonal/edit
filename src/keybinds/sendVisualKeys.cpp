@@ -2,7 +2,6 @@
 #include "../util/bounds.h"
 #include "../util/clipboard.h"
 #include "../util/comment.h"
-#include "../util/helper.h"
 #include "../util/indent.h"
 #include "../util/insertLoggingCode.h"
 #include "../util/modes.h"
@@ -14,6 +13,11 @@
 #include "../util/visual.h"
 #include "../util/search.h"
 #include "../util/fileops.h"
+#include "../util/history.h"
+#include "../util/ctrl.h"
+#include "../util/string.h"
+#include "../util/textedit.h"
+#include "../util/repeat.h"
 #include <string>
 #include <vector>
 
@@ -547,7 +551,7 @@ bool sendVisualKeys(State *state, char c, bool onlyMotions)
 		}
 		state->mode = SEARCH;
 	} else if (c == '^') {
-		state->file->col = getIndexFirstNonSpace(state);
+		state->file->col = getIndexFirstNonSpace(state->file->data[state->file->row], getIndentCharacter(state));
 	} else if (c == '0') {
 		state->file->col = 0;
 	} else if (c == '$') {
@@ -613,7 +617,7 @@ bool sendVisualKeys(State *state, char c, bool onlyMotions)
 				state->file->row = bounds.minR - 1;
 				state->visual.row = bounds.maxR - 1;
 				indentRange(state);
-				state->file->col = getIndexFirstNonSpace(state);
+				state->file->col = getIndexFirstNonSpace(state->file->data[state->file->row], getIndentCharacter(state));
 			} else {
 				state->status = "not a valid moveable chunk";
 			}
@@ -628,7 +632,7 @@ bool sendVisualKeys(State *state, char c, bool onlyMotions)
 				state->file->row = bounds.minR + 1;
 				state->visual.row = bounds.maxR + 1;
 				indentRange(state);
-				state->file->col = getIndexFirstNonSpace(state);
+				state->file->col = getIndexFirstNonSpace(state->file->data[state->file->row], getIndentCharacter(state));
 			} else {
 				state->status = "not a valid moveable chunk";
 			}
@@ -653,7 +657,7 @@ bool sendVisualKeys(State *state, char c, bool onlyMotions)
 		}
 		state->file->row = bounds.minR;
 		state->visual.row = bounds.maxR;
-		state->file->col = getIndexFirstNonSpace(state);
+		state->file->col = getIndexFirstNonSpace(state->file->data[state->file->row], getIndentCharacter(state));
 		state->mode = NORMAL;
 	} else if (c == '%') {
 		auto pos = matchIt(state);
@@ -677,7 +681,7 @@ bool sendVisualKeys(State *state, char c, bool onlyMotions)
 		}
 		state->file->row = bounds.minR;
 		state->visual.row = bounds.maxR;
-		state->file->col = getIndexFirstNonSpace(state);
+		state->file->col = getIndexFirstNonSpace(state->file->data[state->file->row], getIndentCharacter(state));
 		state->mode = NORMAL;
 	} else if (!onlyMotions && c == '>') {
 		logDotCommand(state);
@@ -689,7 +693,7 @@ bool sendVisualKeys(State *state, char c, bool onlyMotions)
 		}
 		state->file->row = bounds.minR;
 		state->visual.row = bounds.maxR;
-		state->file->col = getIndexFirstNonSpace(state);
+		state->file->col = getIndexFirstNonSpace(state->file->data[state->file->row], getIndentCharacter(state));
 		state->mode = NORMAL;
 	} else if (!onlyMotions && (c == 'p' || c == 'P')) {
 		logDotCommand(state);
@@ -719,7 +723,7 @@ bool sendVisualKeys(State *state, char c, bool onlyMotions)
 		Bounds bounds = getBounds(state);
 		toggleCommentLines(state, bounds);
 		state->file->row = bounds.minR;
-		state->file->col = getIndexFirstNonSpace(state);
+		state->file->col = getIndexFirstNonSpace(state->file->data[state->file->row], getIndentCharacter(state));
 		state->mode = NORMAL;
 	} else if (c == 'o') {
 		auto tempRow = state->file->row;

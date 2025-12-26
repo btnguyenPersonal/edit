@@ -1,4 +1,5 @@
 #include "prompt.h"
+#include "ctrl.h"
 
 std::string prompt(State *state, std::string startingValue)
 {

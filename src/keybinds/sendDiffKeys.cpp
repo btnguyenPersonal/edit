@@ -1,4 +1,8 @@
 #include "sendDiffKeys.h"
+#include "../util/external.h"
+#include "../util/movement.h"
+#include "../util/string.h"
+#include "../util/ctrl.h"
 
 void upLog(State *state)
 {

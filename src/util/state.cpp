@@ -1,10 +1,11 @@
 #include "state.h"
-#include "helper.h"
 #include "modes.h"
 #include "visualType.h"
 #include "keys.h"
 #include "read.h"
+#include "string.h"
 #include "fileops.h"
+#include "comment.h"
 #include <ncurses.h>
 #include <string>
 #include <filesystem>

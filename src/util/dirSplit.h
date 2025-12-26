@@ -1,7 +1,6 @@
 #pragma once
 
 #include "state.h"
-#include "helper.h"
 #include <string>
 
 struct DirSplit {

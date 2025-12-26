@@ -1,5 +1,5 @@
 #include "fileExplorerNode.h"
-#include "helper.h"
+#include "string.h"
 
 FileExplorerNode::FileExplorerNode()
 {

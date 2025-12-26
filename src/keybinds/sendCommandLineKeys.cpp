@@ -1,13 +1,16 @@
 #include "sendCommandLineKeys.h"
 #include "../util/clipboard.h"
 #include "../util/render.h"
-#include "../util/helper.h"
 #include "../util/modes.h"
 #include "../util/query.h"
 #include "../util/state.h"
 #include "../util/save.h"
 #include "../util/search.h"
 #include "../util/fileops.h"
+#include "../util/textedit.h"
+#include "../util/external.h"
+#include "../util/ctrl.h"
+#include "../util/string.h"
 #include <ncurses.h>
 #include <string>
 #include <vector>

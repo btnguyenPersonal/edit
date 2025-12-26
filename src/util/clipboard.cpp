@@ -1,12 +1,14 @@
 #include "clipboard.h"
 // TODO remove this
 #include "../keybinds/sendVisualKeys.h"
-#include "helper.h"
 #include "indent.h"
 #include "state.h"
 #include "sanity.h"
 #include "bounds.h"
 #include "fileops.h"
+#include "textedit.h"
+#include "external.h"
+#include "string.h"
 #include <string>
 #include <vector>
 

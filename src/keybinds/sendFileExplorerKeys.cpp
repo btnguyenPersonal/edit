@@ -1,12 +1,13 @@
 #include "sendFileExplorerKeys.h"
 #include "../util/fileExplorerNode.h"
 #include "../util/clipboard.h"
-#include "../util/helper.h"
 #include "../util/modes.h"
 #include "../util/state.h"
 #include "../util/prompt.h"
 #include "../util/grep.h"
 #include "../util/fileops.h"
+#include "../util/display.h"
+#include "../util/ctrl.h"
 #include <ncurses.h>
 #include <string>
 #include <vector>
