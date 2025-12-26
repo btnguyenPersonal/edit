@@ -534,7 +534,12 @@ bool sendVisualKeys(State *state, char c, bool onlyMotions)
 			state->mode = COMMAND;
 		}
 	} else if (c == ctrl('f')) {
-		state->replaceBounds = getBounds(state);
+		if (state->visualType == LINE) {
+			state->replaceBounds = getBounds(state);
+		} else if (state->visualType == SELECT) {
+			state->search.query = getInVisual(state);
+			state->replaceBounds = { state->file->row, state->file->row, 0, (uint32_t)state->file->data[state->file->row].length() };
+		}
 		if (state->search.query != "") {
 			state->replacing = true;
 		}
