@@ -15,7 +15,6 @@
 #include <iterator>
 #include <memory>
 #include <ncurses.h>
-#include <stdexcept>
 #include <string>
 #include <vector>
 #include <regex>

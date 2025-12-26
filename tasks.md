@@ -10,7 +10,6 @@
 		- climits
 		- cstdint
 		- map
-		- stdexcept
 		- mutex
 	- compiler flags turn off exceptions
 	- more compiler flags
