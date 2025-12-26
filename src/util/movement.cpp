@@ -3,6 +3,24 @@
 #include "sanity.h"
 #include "comment.h"
 
+int32_t findChar(State *state, bool reverse, char c)
+{
+	if (reverse) {
+		return findPrevChar(state, c);
+	} else {
+		return findNextChar(state, c);
+	}
+}
+
+int32_t toChar(State *state, bool reverse, char c)
+{
+	if (reverse) {
+		return toPrevChar(state, c);
+	} else {
+		return toNextChar(state, c);
+	}
+}
+
 bool isOnLastVisualLine(State *state)
 {
 	auto lastLineStarts = (state->maxX - getLineNumberOffset(state)) * (state->file->data[state->file->row].length() / (state->maxX - getLineNumberOffset(state)));

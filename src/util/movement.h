@@ -2,6 +2,8 @@
 
 #include "state.h"
 
+int32_t findChar(State *state, bool reverse, char c);
+int32_t toChar(State *state, bool reverse, char c);
 uint32_t w(State *state);
 uint32_t b(State *state);
 uint32_t findNextChar(State *state, char c);

@@ -11,6 +11,9 @@
 #include "state.h"
 #include "autocomplete.h"
 #include "dirSplit.h"
+#include "search.h"
+#include "fileops.h"
+#include "ignore.h"
 #include <ncurses.h>
 
 #define _COLOR_BLACK COLOR_BLACK

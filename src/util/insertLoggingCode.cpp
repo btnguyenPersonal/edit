@@ -1,6 +1,7 @@
 #include "insertLoggingCode.h"
 #include "helper.h"
 #include "indent.h"
+#include "fileops.h"
 #include <regex>
 #include <string>
 #include <vector>
@@ -60,7 +61,7 @@ std::string getLoggingCode(State *state, uint32_t row, std::string variableName,
 		s += " << std::endl;";
 		return s;
 	} else {
-		std::string s = "console.log('" + rowStr + "', " + "'" + replaceAll(variableName, "'", "\\'") + "'";
+		std::string s = "console.log('" + rowStr + "', " + "'" + replace(variableName, "'", "\\'") + "'";
 		if (showValue) {
 			s += ", " + variableName;
 		}

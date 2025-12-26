@@ -4,6 +4,7 @@
 #include "../util/modes.h"
 #include "../util/query.h"
 #include "../util/state.h"
+#include "../util/search.h"
 #include <climits>
 #include <ncurses.h>
 

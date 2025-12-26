@@ -12,6 +12,8 @@
 #include "../util/render.h"
 #include "../util/movement.h"
 #include "../util/visual.h"
+#include "../util/search.h"
+#include "../util/fileops.h"
 #include <string>
 #include <vector>
 

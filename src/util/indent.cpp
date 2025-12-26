@@ -1,6 +1,7 @@
 #include "indent.h"
 #include "comment.h"
 #include "helper.h"
+#include "fileops.h"
 #include <string>
 #include <vector>
 

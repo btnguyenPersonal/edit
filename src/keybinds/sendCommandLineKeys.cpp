@@ -6,6 +6,8 @@
 #include "../util/query.h"
 #include "../util/state.h"
 #include "../util/save.h"
+#include "../util/search.h"
+#include "../util/fileops.h"
 #include <ncurses.h>
 #include <string>
 #include <vector>
