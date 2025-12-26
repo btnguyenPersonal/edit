@@ -11,6 +11,7 @@
 #include "../util/grep.h"
 #include "../util/render.h"
 #include "../util/movement.h"
+#include "../util/visual.h"
 #include <string>
 #include <vector>
 

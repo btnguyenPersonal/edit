@@ -3,14 +3,12 @@
 #include "state.h"
 #include "visualType.h"
 #include <filesystem>
-#include <fstream>
 #include <string>
 #include <vector>
 
 uint32_t buildNumberFromString(std::string s);
 std::string runCommand(std::string command);
 std::vector<std::string> splitByChar(std::string text, char c);
-void highlightRenderBounds(State *state, Bounds b);
 bool locateFileAbsolute(State *state, std::string vis);
 bool locateFileRelative(State *state, std::string vis, std::vector<std::string> extensions);
 void repeatPrevLineSearch(State *state, bool reverse);
@@ -75,7 +73,6 @@ void findDefinitionFromGrepOutput(State *state, std::string s);
 void centerFileExplorer(State *state);
 void resetValidCursorState(State *state);
 bool setSearchResultCurrentLine(State *state, const std::string &query);
-Position matchIt(State *state);
 bool searchFromTop(State *state);
 void getAndAddNumber(State *state, uint32_t row, uint32_t col, int32_t num);
 std::string safeSubstring(const std::string &str, std::size_t pos, std::size_t len);
@@ -95,15 +92,10 @@ void ltrim(std::string &s);
 void rtrim(std::string &s);
 void replaceAll(State *state, const std::string &query, const std::string &replace);
 bool setSearchResultReverse(State *state, bool allowCurrent);
-WordPosition findQuoteBounds(const std::string &str, char quoteChar, uint32_t cursor, bool includeQuote);
 bool setSearchResult(State *state);
 void setPosition(State *state, Position pos);
-void initVisual(State *state, VisualType visualType);
 bool isNumber(std::string s);
-WordPosition findParentheses(const std::string &str, char openParen, char closeParen, uint32_t cursor, bool includeParen);
 uint32_t getIndent(const std::string &str);
-WordPosition getBigWordPosition(const std::string &str, uint32_t cursor);
-WordPosition getWordPosition(const std::string &str, uint32_t cursor);
 bool shouldIgnoreFile(const std::filesystem::path &path);
 void insertEmptyLineBelow(State *state);
 void indent(State *state);
