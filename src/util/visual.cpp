@@ -30,7 +30,6 @@ char getCorrespondingParen(char c)
 	return ')';
 }
 
-
 void initVisual(State *state, VisualType visualType)
 {
 	state->visualType = visualType;
@@ -249,4 +248,3 @@ Position matchIt(State *state)
 	}
 	return { state->file->row, state->file->col };
 }
-

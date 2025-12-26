@@ -232,4 +232,3 @@ bool matchesEditorConfigGlob(const std::string &pattern, const std::string &file
 		return false;
 	}
 }
-

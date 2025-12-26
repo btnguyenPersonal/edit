@@ -70,4 +70,3 @@ std::string runCommand(std::string command)
 	}
 	return output;
 }
-

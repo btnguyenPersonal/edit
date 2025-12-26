@@ -12,4 +12,3 @@ void replaceAllGlobally(State *state, const std::string &query, const std::strin
 void replaceCurrentLine(State *state, const std::string &query, const std::string &replace);
 void replaceAll(State *state, const std::string &query, const std::string &replace);
 std::string getCurrentWord(State *state);
-

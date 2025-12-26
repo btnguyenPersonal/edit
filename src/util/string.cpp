@@ -117,4 +117,3 @@ bool isNumber(std::string s)
 	}
 	return true;
 }
-

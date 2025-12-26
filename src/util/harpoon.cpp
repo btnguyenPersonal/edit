@@ -103,4 +103,3 @@ bool jumpToHarpoon(State *state, uint32_t num)
 	}
 	return false;
 }
-

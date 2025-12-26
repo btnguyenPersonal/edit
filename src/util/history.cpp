@@ -155,4 +155,3 @@ void backwardFileStack(State *state)
 		}
 	}
 }
-

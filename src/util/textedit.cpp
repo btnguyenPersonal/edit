@@ -105,4 +105,3 @@ void trimTrailingWhitespace(State *state)
 		rtrim(state->file->data[i]);
 	}
 }
-

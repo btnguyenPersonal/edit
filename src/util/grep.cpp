@@ -203,4 +203,3 @@ void findDefinitionFromGrepOutput(State *state, std::string s)
 		}
 	}
 }
-

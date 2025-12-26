@@ -248,4 +248,3 @@ std::string getCurrentWord(State *state)
 	}
 	return currentWord;
 }
-

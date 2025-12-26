@@ -189,4 +189,3 @@ uint32_t getLineNumberOffset(State *state)
 	}
 	return offset;
 }
-

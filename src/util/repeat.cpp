@@ -18,4 +18,3 @@ void setDotCommand(State *state, std::vector<int32_t> s)
 		}
 	}
 }
-

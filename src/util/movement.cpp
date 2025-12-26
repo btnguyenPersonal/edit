@@ -313,4 +313,3 @@ void centerScreen(State *state)
 		}
 	}
 }
-
