@@ -12,7 +12,7 @@ std::vector<std::string> readFile(const std::string &filename)
 	std::string line;
 	std::vector<std::string> lines;
 	while (std::getline(file, line)) {
-		lines.push_back(std::move(line));
+		lines.push_back(line);
 	}
 	if (lines.empty()) {
 		lines.push_back("");
