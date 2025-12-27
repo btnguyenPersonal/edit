@@ -9,7 +9,6 @@
 
 void toggleLoggingCode(State *state, std::string variableName, bool showValue)
 {
-	std::string current = state->file->data[state->file->row];
 	std::string loggingCode = getLoggingCode(state, state->file->row, variableName, showValue);
 	if (loggingCode == "") {
 		return;

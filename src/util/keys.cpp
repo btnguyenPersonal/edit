@@ -168,10 +168,6 @@ std::string getEscapedChar(char c, bool space)
 			return "\\\\";
 		}
 	default:
-		if (space) {
-			return std::string("") + c;
-		} else {
-			return std::string("") + c;
-		}
+		return std::string("") + c;
 	}
 }

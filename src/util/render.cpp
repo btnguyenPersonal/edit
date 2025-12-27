@@ -165,7 +165,7 @@ bool isTextInReplaceBounds(State *state, int32_t row)
 {
 	bool boundsSet = state->replaceBounds.minR != 0 || state->replaceBounds.maxR != 0;
 	bool inBounds = (int32_t)state->replaceBounds.minR <= row && row <= (int32_t)state->replaceBounds.maxR;
-	return !boundsSet || (boundsSet && inBounds);
+	return !boundsSet || inBounds;
 }
 
 int32_t getModeColor(State *state)
@@ -549,7 +549,7 @@ void renderLineNumber(State *state, int32_t row, int32_t renderRow)
 
 Cursor renderLogLines(State *state)
 {
-	Cursor cursor;
+	Cursor cursor = {};
 	uint32_t index;
 	if ((int32_t)state->logIndex - ((int32_t)state->maxY / 2) > 0) {
 		index = state->logIndex - state->maxY / 2;
@@ -877,7 +877,8 @@ void renderScreen(State *state, bool fullRedraw)
 	try {
 		erase();
 		bool noLineNum = false;
-		Cursor editorCursor, fileExplorerCursor;
+		Cursor editorCursor = {};
+		Cursor fileExplorerCursor = {};
 		if (state->mode == FIND) {
 			renderFindOutput(state);
 		} else if (state->mode == DIFF) {
