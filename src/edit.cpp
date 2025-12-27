@@ -6,6 +6,8 @@
 #include "util/sanity.h"
 #include "util/display.h"
 #include <cstdint>
+#include <chrono>
+#include <thread>
 
 int32_t main(int32_t argc, char *argv[])
 {
@@ -41,6 +43,7 @@ int32_t main(int32_t argc, char *argv[])
 			state->shouldReRender = false;
 			renderScreen(state);
 		}
+		std::this_thread::sleep_for(std::chrono::milliseconds(1));
 	}
 	endwin();
 	return 0;

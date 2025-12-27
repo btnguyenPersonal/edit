@@ -14,7 +14,7 @@
 #include <unistd.h>
 #include <fstream>
 
-File *getFile(std::string name, std::vector<std::string> data)
+File *getFile(const std::string &name, const std::vector<std::string> &data)
 {
 	File *file = new File();
 	file->filename = name;
@@ -39,7 +39,6 @@ void State::loadAllConfigFiles()
 			auto homeEnv = getenv("HOME");
 			if (homeEnv) {
 				std::filesystem::path home = std::filesystem::absolute(homeEnv);
-				std::filesystem::path current = std::filesystem::absolute(std::filesystem::current_path());
 
 				this->loadConfigFile(home.string() + "/.editorconfig");
 
@@ -50,9 +49,9 @@ void State::loadAllConfigFiles()
 	}
 }
 
-void State::loadConfigFile(std::string fileLocation)
+void State::loadConfigFile(const std::string &fileLocation)
 {
-	auto config = readFile(fileLocation.c_str());
+	auto config = readFile(fileLocation);
 	bool found = false;
 	for (uint32_t i = 0; i < config.size(); i++) {
 		if (found) {
@@ -67,7 +66,7 @@ void State::loadConfigFile(std::string fileLocation)
 	}
 }
 
-void State::readStringConfigValue(std::string &option, std::string configValue, std::string line)
+void State::readStringConfigValue(std::string &option, const std::string &configValue, const std::string &line)
 {
 	std::string prefix = configValue + " = ";
 	if (safeSubstring(line, 0, prefix.length()) == prefix) {
@@ -75,7 +74,7 @@ void State::readStringConfigValue(std::string &option, std::string configValue, 
 	}
 }
 
-void State::readUintConfigValue(uint32_t &option, std::string configValue, std::string line)
+void State::readUintConfigValue(uint32_t &option, const std::string &configValue, const std::string &line)
 {
 	std::string prefix = configValue + " = ";
 	if (safeSubstring(line, 0, prefix.length()) == prefix) {
@@ -83,7 +82,7 @@ void State::readUintConfigValue(uint32_t &option, std::string configValue, std::
 	}
 }
 
-void State::readBoolConfigValue(bool &option, std::string configValue, std::string line)
+void State::readBoolConfigValue(bool &option, const std::string &configValue, const std::string &line)
 {
 	std::string prefix = configValue + " = ";
 	if (safeSubstring(line, 0, prefix.length()) == prefix) {
@@ -96,7 +95,7 @@ void State::readBoolConfigValue(bool &option, std::string configValue, std::stri
 	}
 }
 
-void State::readConfigLine(std::string line)
+void State::readConfigLine(const std::string &line)
 {
 	this->readBoolConfigValue(this->options.autosave, "autosave", line);
 	this->readBoolConfigValue(this->options.wordwrap, "wordwrap", line);
@@ -116,7 +115,7 @@ void State::setDefaultOptions()
 	this->options.indent_style = "space";
 }
 
-void State::reloadFile(std::string filename)
+void State::reloadFile(const std::string &filename)
 {
 	Position pos = { this->file->row, this->file->col };
 	auto name = normalizeFilename(filename);
@@ -142,7 +141,7 @@ void State::reloadFile(std::string filename)
 	this->file->col = pos.col;
 }
 
-void State::changeFile(std::string filename)
+void State::changeFile(const std::string &filename)
 {
 	auto name = normalizeFilename(filename);
 	if (!std::filesystem::is_regular_file(name)) {
@@ -171,7 +170,7 @@ void State::changeFile(std::string filename)
 	this->mode = NORMAL;
 }
 
-void State::pushFileStack(std::string filename)
+void State::pushFileStack(const std::string &filename)
 {
 	if (filename != "") {
 		for (auto it = this->fileStack.begin(); it != this->fileStack.end();) {
@@ -185,7 +184,7 @@ void State::pushFileStack(std::string filename)
 	}
 }
 
-bool State::resetState(std::string filename)
+bool State::resetState(const std::string &filename)
 {
 	auto name = normalizeFilename(filename);
 	if (!std::filesystem::is_regular_file(name.c_str())) {
@@ -203,6 +202,15 @@ bool State::resetState(std::string filename)
 
 void State::init()
 {
+	this->lastMacro = 'w';
+	this->skipSetHardCol = false;
+	this->maxX = 80;
+	this->maxY = 24;
+	this->viewingDiff = false;
+	this->showAllGrep = false;
+	this->shouldReRender = false;
+	this->fileExplorer = nullptr;
+	this->file = nullptr;
 	this->commandLineState = { 0, "", "" };
 	this->currentFile = 0;
 	this->runningAsRoot = geteuid() == 0;
@@ -240,6 +248,7 @@ void State::init()
 	this->visualType = SELECT;
 	this->visual.row = 0;
 	this->visual.col = 0;
+	this->name = { std::string(""), 0, 0 };
 	this->search = { std::string(""), 0, 0 };
 	this->replace = { std::string(""), 0, 0 };
 	this->commandLine = { std::string(""), 0, 0 };
@@ -263,7 +272,7 @@ void State::init()
 	this->setDefaultOptions();
 }
 
-void State::init(std::string name, std::vector<std::string> data)
+void State::init(const std::string &name, const std::vector<std::string> &data)
 {
 	this->init();
 	File *file = getFile(name, data);
@@ -295,19 +304,19 @@ State::~State()
 	this->fileExplorer = nullptr;
 }
 
-State::State(std::string name, std::vector<std::string> data)
+State::State(const std::string &name, const std::vector<std::string> &data)
 {
 	this->init(name, data);
 }
 
-State::State(std::string filename)
+State::State(const std::string &filename)
 {
 	std::string name = normalizeFilename(filename);
 	std::vector<std::string> data;
 	if (!std::filesystem::is_regular_file(name.c_str())) {
 		data = { "" };
 	} else {
-		data = readFile(name.c_str());
+		data = readFile(name);
 	}
 	this->init(name, data);
 	this->loadAllConfigFiles();

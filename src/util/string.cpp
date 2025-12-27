@@ -1,6 +1,6 @@
 #include "string.h"
 
-uint32_t buildNumberFromString(std::string s)
+uint32_t buildNumberFromString(const std::string &s)
 {
 	uint32_t output = 0;
 	for (uint32_t i = 0; i < s.length(); i++) {
@@ -43,7 +43,7 @@ uint32_t buildNumberFromString(std::string s)
 	return output;
 }
 
-int32_t getIndexFirstNonSpace(std::string s, char indentCharacter)
+int32_t getIndexFirstNonSpace(const std::string &s, char indentCharacter)
 {
 	int32_t i;
 	for (i = 0; i < (int32_t)s.length(); i++) {
@@ -54,7 +54,7 @@ int32_t getIndexFirstNonSpace(std::string s, char indentCharacter)
 	return i;
 }
 
-std::vector<std::string> splitByChar(std::string text, char c)
+std::vector<std::string> splitByChar(const std::string &text, char c)
 {
 	std::vector<std::string> clip;
 	std::string line = "";
@@ -108,7 +108,7 @@ std::string safeSubstring(const std::string &str, std::size_t pos)
 	return str.substr(pos);
 }
 
-bool isNumber(std::string s)
+bool isNumber(const std::string &s)
 {
 	for (uint32_t i = 0; i < s.length(); i++) {
 		if (i > '0' && i < '9') {

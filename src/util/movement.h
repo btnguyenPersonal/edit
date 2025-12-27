@@ -2,7 +2,6 @@
 
 #include "state.h"
 
-void setPosition(State *state, Position pos);
 void centerScreen(State *state);
 int32_t findChar(State *state, bool reverse, char c);
 int32_t toChar(State *state, bool reverse, char c);

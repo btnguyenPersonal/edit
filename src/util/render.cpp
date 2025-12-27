@@ -187,38 +187,6 @@ int32_t getModeColor(State *state)
 	}
 }
 
-std::string getDisplayModeName(State *state)
-{
-	if (state->mode == VISUAL && state->visualType == SELECT) {
-		return "VISUAL";
-	} else if (state->mode == VISUAL && state->visualType == BLOCK) {
-		return "VISUALBLOCK";
-	} else if (state->mode == VISUAL && state->visualType == LINE) {
-		return "VISUALLINE";
-	} else if (state->mode == COMMAND) {
-		return "COMMAND";
-	} else if (state->mode == INSERT) {
-		return "INSERT";
-	} else if (state->mode == NORMAL) {
-		return "NORMAL";
-	} else if (state->mode == FIND) {
-		return "FIND";
-	} else if (state->mode == GREP) {
-		return "GREP";
-	} else if (state->mode == BLAME) {
-		return "BLAME";
-	} else if (state->mode == MULTICURSOR) {
-		return "MULTICURSOR";
-	} else if (state->mode == SEARCH) {
-		return "SEARCH";
-	} else if (state->mode == FILEEXPLORER) {
-		return "FILEEXPLORER";
-	} else if (state->mode == NAMING) {
-		return "NAMING";
-	}
-	return "ERROR";
-}
-
 void insertCommandLine(State *state, std::vector<Pixel> *pixels, std::string prefix)
 {
 	if (state->commandLine.query.length() > 2 && state->commandLine.query[0] == 'e') {
@@ -432,11 +400,6 @@ bool isInQuery(State *state, uint32_t row, uint32_t col, std::string query)
 	return false;
 }
 
-bool isRowInVisual(State *state, int32_t row)
-{
-	return ((int32_t)state->visual.row <= row && row <= (int32_t)state->file->row) || ((int32_t)state->file->row <= row && row <= (int32_t)state->visual.row);
-}
-
 void renderGrepOutput(State *state)
 {
 	state->grepMutex.lock();
@@ -582,16 +545,6 @@ void renderLineNumber(State *state, int32_t row, int32_t renderRow)
 
 	int32_t border = state->fileExplorerOpen ? state->fileExplorerSize : 0;
 	renderPixels(state, renderRow, border, pixels, false);
-}
-
-void advancePosition(State *state, int &renderRow, int &renderCol)
-{
-	if (state->options.wordwrap && (uint32_t)renderCol + 1 >= state->maxX - getLineNumberOffset(state)) {
-		renderRow++;
-		renderCol = 0;
-	} else {
-		renderCol++;
-	}
 }
 
 Cursor renderLogLines(State *state)

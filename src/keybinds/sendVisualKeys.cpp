@@ -202,17 +202,6 @@ bool isValidMoveableChunk(State *state, Bounds bounds)
 	return true;
 }
 
-bool visualBlockValid(State *state)
-{
-	Bounds bounds = getBounds(state);
-	for (uint32_t i = bounds.minR; i <= bounds.maxR; i++) {
-		if (bounds.maxC >= state->file->data[i].length()) {
-			return false;
-		}
-	}
-	return true;
-}
-
 std::string getInVisual(State *state)
 {
 	return getInVisual(state, true);

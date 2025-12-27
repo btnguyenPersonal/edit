@@ -3,9 +3,9 @@
 
 void getAndAddNumber(State *state, uint32_t row, uint32_t col, int32_t num)
 {
-	std::string number;
-	int32_t startPos = col;
 	if (std::isdigit(state->file->data[row][col])) {
+		std::string number;
+		int32_t startPos = col;
 		number += state->file->data[row][col];
 		for (int32_t i = (int32_t)col - 1; i >= 0; i--) {
 			if (std::isdigit(state->file->data[row][i])) {
@@ -59,7 +59,7 @@ void insertEmptyLine(State *state)
 	state->file->data.insert(state->file->data.begin() + state->file->row, "");
 }
 
-std::string padTo(std::string str, const uint32_t num, const char paddingChar)
+std::string padTo(const std::string &str, const uint32_t num, const char paddingChar)
 {
 	auto tmp = str;
 	if (num > str.size()) {

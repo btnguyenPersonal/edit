@@ -36,19 +36,6 @@ void searchNextResult(State *state, bool reverse)
 	}
 }
 
-bool searchFromTop(State *state)
-{
-	for (uint32_t i = 0; i < state->file->data.size(); i++) {
-		size_t index = state->file->data[i].rfind(state->search.query);
-		if (index != std::string::npos) {
-			state->file->row = i;
-			state->file->col = static_cast<uint32_t>(index);
-			return true;
-		}
-	}
-	return false;
-}
-
 void repeatPrevLineSearch(State *state, bool reverse)
 {
 	char temp = state->prevSearch.type;

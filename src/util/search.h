@@ -3,7 +3,6 @@
 #include "state.h"
 
 void searchNextResult(State *state, bool reverse);
-bool searchFromTop(State *state);
 void repeatPrevLineSearch(State *state, bool reverse);
 bool setSearchResultReverse(State *state, bool allowCurrent);
 bool setSearchResult(State *state);
