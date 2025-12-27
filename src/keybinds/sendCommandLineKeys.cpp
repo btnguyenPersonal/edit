@@ -106,8 +106,7 @@ void autocompleteCommandLinePath(State *state, bool reverse)
 				state->commandLineState = { 0, currentUncompleted, lastDirectory };
 			}
 			int32_t skipsLeft = state->commandLineState.skips;
-			// TODO too many open files
-			for (const auto &entry : std::filesystem::directory_iterator(lastDirectory)) {
+			for (const std::filesystem::directory_entry &entry : std::filesystem::directory_iterator(lastDirectory)) {
 				filesInLastDirectory.push_back(entry.path());
 			}
 			for (uint32_t i = 0; i < filesInLastDirectory.size(); i++) {
@@ -183,9 +182,13 @@ void sendCommandLineKeys(State *state, int32_t c)
 		struct searchReplace temp = getSearchReplace(state->commandLine.query);
 		add(&state->commandLine, temp.first);
 	} else if (c == KEY_BTAB) {
-		autocompleteCommandLinePath(state, true);
+		try {
+			autocompleteCommandLinePath(state, true);
+		} catch (const std::exception &e) {}
 	} else if (c == ctrl('i')) {
-		autocompleteCommandLinePath(state, false);
+		try {
+			autocompleteCommandLinePath(state, false);
+		} catch (const std::exception &e) {}
 	} else if (c == KEY_BACKSPACE || c == 127) {
 		if (state->commandLine.query.length() > 1 && safeSubstring(state->commandLine.query, 0, 2) == "e ") {
 			struct DirSplit dirSplit = getCurrentDirSplit(state, state->commandLine.query.substr(2));

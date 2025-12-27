@@ -94,26 +94,28 @@ void FileExplorerNode::sortChildren()
 
 void FileExplorerNode::refresh()
 {
-	if (this->isFolder) {
-		this->isOpen = true;
-		std::vector<FileExplorerNode *> newChildren;
-		bool found = false;
-		for (const auto &entry : std::filesystem::directory_iterator(this->path)) {
-			found = false;
-			for (uint32_t i = 0; i < this->children.size(); i++) {
-				if (this->children[i]->path == entry.path()) {
-					newChildren.push_back(this->children[i]);
-					found = true;
-					break;
+	try {
+		if (this->isFolder) {
+			this->isOpen = true;
+			std::vector<FileExplorerNode *> newChildren;
+			bool found = false;
+			for (const std::filesystem::directory_entry &entry : std::filesystem::directory_iterator(this->path)) {
+				found = false;
+				for (uint32_t i = 0; i < this->children.size(); i++) {
+					if (this->children[i]->path == entry.path()) {
+						newChildren.push_back(this->children[i]);
+						found = true;
+						break;
+					}
+				}
+				if (!found) {
+					newChildren.push_back(new FileExplorerNode(entry.path(), this));
 				}
 			}
-			if (!found) {
-				newChildren.push_back(new FileExplorerNode(entry.path(), this));
-			}
+			this->children = newChildren;
+			this->sortChildren();
 		}
-		this->children = newChildren;
-		this->sortChildren();
-	}
+	} catch (const std::exception &e) {}
 }
 
 void FileExplorerNode::remove()
@@ -125,13 +127,15 @@ void FileExplorerNode::remove()
 
 void FileExplorerNode::open()
 {
-	if (this->isFolder && !this->isOpen) {
-		this->isOpen = true;
-		for (const auto &entry : std::filesystem::directory_iterator(this->path)) {
-			this->children.push_back(new FileExplorerNode(entry.path(), this));
+	try {
+		if (this->isFolder && !this->isOpen) {
+			this->isOpen = true;
+			for (const std::filesystem::directory_entry &entry : std::filesystem::directory_iterator(this->path)) {
+				this->children.push_back(new FileExplorerNode(entry.path(), this));
+			}
+			this->sortChildren();
 		}
-		this->sortChildren();
-	}
+	} catch (const std::exception &e) {}
 }
 
 FileExplorerNode *FileExplorerNode::getNode(int32_t n)
