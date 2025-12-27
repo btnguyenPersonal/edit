@@ -179,7 +179,9 @@ void grepDispatch(State *state, std::string query, std::string path, bool showAl
 void generateGrepOutput(State *state, bool resetCursor)
 {
 	if (state->grep.query == "") {
+		state->grepMutex.lock();
 		state->grepOutput.clear();
+		state->grepMutex.unlock();
 	} else {
 		std::string query = state->grep.query;
 		std::string path = state->grepPath;

@@ -72,10 +72,14 @@ int main()
 	// testValues(state, {"%", "[", "'", "+", "<C-E>", "}", "=", "<C-P>", "3", "X"});
 	// State *state = new State("./test-file.h");
 	// testValues(state, {"M", "K", "p", "J", "]", "]", "T", "A", "<C-J>", "k"});
-	State *state = new State("./test-file.h");
-	testValues(state, {"H", "<C-I>", "/", "<C-Q>", "'", "<C-H>", "3", "w", "2", "#"});
-	// for (uint32_t i = 0; i < 1000000; i++) {
-	// 	fuzzSendKeys(i, 10);
-	// }
+	// State *state = new State("./test-file.h");
+	// testValues(state, {"H", "<C-I>", "/", "<C-Q>", "'", "<C-H>", "3", "w", "2", "#"});
+	// State *state = new State("./test-file.h");
+	// testValues(state, {"<C-G>", "Z", "<C-O>", "<C-P>", "p", "<C-@>", "1", "<C-J>", "M", "5"});
+	// State *state = new State("./test-file.h");
+	// testValues(state, {"z", "v", "<C-@>", "<C-H>", "T", "*", ".", "2", "=", "."});
+	for (uint32_t i = 0; i < 1000000; i++) {
+		fuzzSendKeys(i, 10);
+	}
 	return 0;
 }

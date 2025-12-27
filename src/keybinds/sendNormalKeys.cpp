@@ -62,25 +62,27 @@ void sendNormalKeys(State *state, int32_t c)
 		state->file->col = findNextChar(state, c);
 		state->prevKeys = "";
 	} else if (state->prevKeys == "@") {
-		state->prevKeys = "";
-		char macro;
-		if (c == '@' && state->lastMacro != 'E') {
-			macro = state->lastMacro;
-		} else {
-			macro = std::tolower((char)c);
-			state->lastMacro = macro;
-		}
-		state->lastMacro = macro;
-		try {
-			resetValidCursorState(state);
-			for (uint32_t i = 0; i < state->macroCommand[macro].size(); i++) {
-				state->dontRecordKey = true;
-				sendKeys(state, getUnEscapedChar(state->macroCommand[macro][i]));
-				cleanup(state, c);
+		if (!state->dontRecordKey) {
+			state->prevKeys = "";
+			char macro;
+			if (c == '@' && state->lastMacro != 'E') {
+				macro = state->lastMacro;
+			} else {
+				macro = std::tolower((char)c);
+				state->lastMacro = macro;
 			}
-			centerScreen(state);
-			state->dontRecordKey = true;
-		} catch (const std::exception &e) {
+			state->lastMacro = macro;
+			try {
+				resetValidCursorState(state);
+				for (uint32_t i = 0; i < state->macroCommand[macro].size(); i++) {
+					state->dontRecordKey = true;
+					sendKeys(state, getUnEscapedChar(state->macroCommand[macro][i]));
+					cleanup(state, c);
+				}
+				centerScreen(state);
+				state->dontRecordKey = true;
+			} catch (const std::exception &e) {
+			}
 		}
 	} else if (state->prevKeys == "q") {
 		if (!state->recording.on) {
@@ -383,11 +385,13 @@ void sendNormalKeys(State *state, int32_t c)
 	} else if (c == ',') {
 		repeatPrevLineSearch(state, true);
 	} else if (c == '.') {
-		resetValidCursorState(state);
-		for (uint32_t i = 0; i < state->dotCommand.size(); i++) {
-			state->dontRecordKey = true;
-			sendKeys(state, getUnEscapedChar(state->dotCommand[i]));
-			cleanup(state, c);
+		if (!state->dontRecordKey) {
+			resetValidCursorState(state);
+			for (uint32_t i = 0; i < state->dotCommand.size(); i++) {
+				state->dontRecordKey = true;
+				sendKeys(state, getUnEscapedChar(state->dotCommand[i]));
+				cleanup(state, c);
+			}
 		}
 		state->dontRecordKey = true;
 	} else if (c == 'K') {
