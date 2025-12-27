@@ -3,7 +3,7 @@
 
 void getAndAddNumber(State *state, uint32_t row, uint32_t col, int32_t num)
 {
-	if (std::isdigit(state->file->data[row][col])) {
+	if (col < state->file->data[row].length() && std::isdigit(state->file->data[row][col])) {
 		std::string number;
 		int32_t startPos = col;
 		number += state->file->data[row][col];

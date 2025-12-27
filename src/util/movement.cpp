@@ -101,8 +101,10 @@ uint32_t findPrevChar(State *state, char c)
 	state->prevSearch.type = 'F';
 	state->prevSearch.search = c;
 	for (int32_t i = state->file->col - 1; i >= 0; i--) {
-		if (state->file->data[state->file->row][i] == c) {
-			return (int32_t)i;
+		if (i < (int32_t)state->file->data[state->file->row].length()) {
+			if (state->file->data[state->file->row][i] == c) {
+				return (int32_t)i;
+			}
 		}
 	}
 	return state->file->col;
@@ -114,10 +116,12 @@ uint32_t toPrevChar(State *state, char c)
 	state->prevSearch.search = c;
 	int32_t index = state->file->col;
 	for (int32_t i = state->file->col - 1; i >= 0; i--) {
-		if (state->file->data[state->file->row][i] == c) {
-			return (uint32_t)index;
-		} else {
-			index = i;
+		if (i < (int32_t)state->file->data[state->file->row].length()) {
+			if (state->file->data[state->file->row][i] == c) {
+				return (uint32_t)index;
+			} else {
+				index = i;
+			}
 		}
 	}
 	return state->file->col;

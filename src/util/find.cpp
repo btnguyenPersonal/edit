@@ -48,18 +48,35 @@ std::vector<std::filesystem::path> find(const std::filesystem::path &dir_path, c
 {
 	std::vector<std::filesystem::path> matching_files;
 	std::unordered_map<std::filesystem::path, int32_t> cache;
-	for (auto it = std::filesystem::recursive_directory_iterator(dir_path); it != std::filesystem::recursive_directory_iterator(); ++it) {
-		auto path = it->path();
-		if (shouldIgnoreFile(path)) {
-			it.disable_recursion_pending();
-			continue;
-		}
-		if (std::filesystem::is_regular_file(path)) {
-			auto relativePath = path.lexically_relative(dir_path);
-			int32_t matchQuery = query == "" ? 1 : maxConsecutiveMatch(relativePath, query);
-			if (matchQuery > 0) {
-				cache[relativePath] = matchQuery;
-				matching_files.push_back(relativePath);
+	std::vector<std::filesystem::path> stack;
+	stack.push_back(dir_path);
+
+	while (!stack.empty()) {
+		std::filesystem::path dir = stack.back();
+		stack.pop_back();
+
+		std::error_code error;
+		for (const std::filesystem::directory_entry& entry : std::filesystem::directory_iterator(dir, error)) {
+			if (error) {
+				continue;
+			}
+
+			const std::filesystem::path& path = entry.path();
+
+			if (shouldIgnoreFile(path)) {
+				continue;
+			}
+
+			if (entry.is_directory(error)) {
+				stack.push_back(path);
+			} else if (entry.is_regular_file(error)) {
+				std::filesystem::path rel = path.lexically_relative(dir_path);
+				int32_t score = query.empty() ? 1 : maxConsecutiveMatch(rel, query);
+
+				if (score > 0) {
+					cache[rel] = score;
+					matching_files.push_back(rel);
+				}
 			}
 		}
 	}

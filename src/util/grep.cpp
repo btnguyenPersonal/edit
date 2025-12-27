@@ -114,15 +114,32 @@ std::vector<grepMatch> grepFiles(std::filesystem::path dir_path, std::string que
 	std::vector<std::filesystem::path> allFiles;
 	std::mutex allFilesMutex;
 	std::vector<std::thread> threads;
-	for (auto it = std::filesystem::recursive_directory_iterator(dir_path); it != std::filesystem::recursive_directory_iterator(); ++it) {
-		if (!allowAllFiles && shouldIgnoreFile(it->path())) {
-			it.disable_recursion_pending();
-			continue;
-		}
-		if (std::filesystem::is_regular_file(it->path())) {
-			allFilesMutex.lock();
-			allFiles.push_back(it->path());
-			allFilesMutex.unlock();
+	std::vector<std::filesystem::path> stack;
+	stack.push_back(dir_path);
+
+	while (!stack.empty()) {
+		std::filesystem::path dir = stack.back();
+		stack.pop_back();
+
+		std::error_code error;
+		for (const std::filesystem::directory_entry& entry : std::filesystem::directory_iterator(dir, error)) {
+			if (error) {
+				continue;
+			}
+
+			const std::filesystem::path& path = entry.path();
+
+			if (!allowAllFiles && shouldIgnoreFile(path)) {
+				continue;
+			}
+
+			if (entry.is_directory(error)) {
+				stack.push_back(path);
+			} else if (entry.is_regular_file(error)) {
+				allFilesMutex.lock();
+				allFiles.push_back(path);
+				allFilesMutex.unlock();
+			}
 		}
 	}
 	for (uint32_t i = 0; i < THREAD_MAX; i++) {

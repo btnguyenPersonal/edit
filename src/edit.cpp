@@ -1,13 +1,10 @@
-#include "keybinds/sendKeys.h"
+#include "keybinds/mainLoop.h"
 #include "util/render.h"
 #include "util/state.h"
-#include "util/cleanup.h"
 #include "util/find.h"
 #include "util/sanity.h"
 #include "util/display.h"
 #include <cstdint>
-#include <chrono>
-#include <thread>
 
 int32_t main(int32_t argc, char *argv[])
 {
@@ -34,16 +31,7 @@ int32_t main(int32_t argc, char *argv[])
 	renderScreen(state);
 	while (true) {
 		c = getch();
-		if (c != ERR) {
-			sendKeys(state, c);
-			cleanup(state, c);
-			history(state, c);
-			renderScreen(state);
-		} else if (state->shouldReRender) {
-			state->shouldReRender = false;
-			renderScreen(state);
-		}
-		std::this_thread::sleep_for(std::chrono::milliseconds(1));
+		mainLoop(state, c);
 	}
 	endwin();
 	return 0;

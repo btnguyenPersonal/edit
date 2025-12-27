@@ -1,22 +1,8 @@
-#include "../util/render.h"
 #include "../util/state.h"
-#include "../util/cleanup.h"
 #include "../util/keys.h"
-#include "../keybinds/sendKeys.h"
+#include "../keybinds/mainLoop.h"
 #include <random>
 #include <vector>
-
-void testValues(State *state, std::vector<std::string> v)
-{
-	for (uint32_t i = 0; i < v.size(); i++) {
-		char key = getUnEscapedChar(v[i]);
-		printf("%s %s\n", getMode(state->mode).c_str(), getEscapedChar(key, true).c_str());
-		sendKeys(state, key);
-		cleanup(state, key);
-		history(state, key);
-		renderScreen(state, key);
-	}
-}
 
 void fuzzSendKeys(int testnum, int iterations = 1000)
 {
@@ -28,15 +14,13 @@ void fuzzSendKeys(int testnum, int iterations = 1000)
 	std::uniform_int_distribution<> dis(0, keypresses.size() - 1);
 	State *state = new State("./test-file.h");
 
-	std::string ret = "{";
-
 	try {
 		std::vector<char> randVec;
 		for (int i = 0; i < iterations; i++) {
 			randVec.push_back(keypresses[dis(gen)]);
 		}
-		printf("State *state = new State(\"./test-file.h\");\n");
-		printf("testValues(state, {");
+		printf("\tState *state = new State(\"./test-file.h\");\n");
+		printf("\ttestValues(state, {");
 		for (uint32_t i = 0; i < randVec.size(); i++) {
 			if (i != 0) {
 				printf(", ");
@@ -55,9 +39,7 @@ void fuzzSendKeys(int testnum, int iterations = 1000)
 		for (uint32_t i = 0; i < randVec.size(); i++) {
 			char key = randVec[i];
 			printf("%s %s\n", getMode(state->mode).c_str(), getEscapedChar(key, true).c_str());
-			sendKeys(state, key);
-			cleanup(state, key);
-			history(state, key);
+			mainLoop(state, key);
 		}
 	} catch (const std::exception &e) {
 		printf("Error during fuzzing: %s\n", e.what());
@@ -65,10 +47,33 @@ void fuzzSendKeys(int testnum, int iterations = 1000)
 	}
 }
 
+void testValues(State *state, std::vector<std::string> v)
+{
+	for (uint32_t i = 0; i < v.size(); i++) {
+		char key = getUnEscapedChar(v[i]);
+		printf("%s %s\n", getMode(state->mode).c_str(), getEscapedChar(key, true).c_str());
+		mainLoop(state, key);
+	}
+}
+
 int main()
 {
+	// State *state = new State("./test-file.h");
+	// testValues(state, {"E", "N", "<C-O>", ">", ">", "l", "<C-^>", " \\\\", "3", "<C-P>"});
+	// State *state = new State("./test-file.h");
+	// testValues(state, {"r", "~", "Q", ">", "V", "I", "p", "<C-A>", "<C-K>", "<C-@>"});
+	// State *state = new State("./test-file.h");
+	// testValues(state, {"{", "~", "5", "r", "<Space>", "<C-O>", "<C-_>", "d", "G", "<C-]>"});
+	// State *state = new State("./test-file.h");
+	// testValues(state, {"|", "<C-A>", "'", "<C-U>", "U", "#", "7", "T", ":", "l"});
+	// State *state = new State("./test-file.h");
+	// testValues(state, {")", "n", "S", "b", "#", "<C-_>", ";", "c", "(", "<C-Q>"});
+	// State *state = new State("./test-file.h");
+	// testValues(state, {"%", "[", "'", "+", "<C-E>", "}", "=", "<C-P>", "3", "X"});
+	// State *state = new State("./test-file.h");
+	// testValues(state, {"M", "K", "p", "J", "]", "]", "T", "A", "<C-J>", "k"});
 	State *state = new State("./test-file.h");
-	testValues(state, {"E", "N", "<C-O>", ">", ">", "l", "<C-^>", " \\\\", "3", "<C-P>"});
+	testValues(state, {"H", "<C-I>", "/", "<C-Q>", "'", "<C-H>", "3", "w", "2", "#"});
 	// for (uint32_t i = 0; i < 1000000; i++) {
 	// 	fuzzSendKeys(i, 10);
 	// }

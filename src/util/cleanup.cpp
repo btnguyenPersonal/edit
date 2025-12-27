@@ -17,16 +17,16 @@ void cleanup(State *state, char c)
 		endwin();
 		exit(0);
 	} else if (state->file) {
-		if (!state->skipSetHardCol) {
-			state->file->hardCol = getDisplayCol(state);
-		}
-		state->skipSetHardCol = false;
 		sanityCheckGrepSelection(state);
 		sanityCheckFindSelection(state);
 		sanityCheckDocumentEmpty(state);
 		assert(state->file->data.size() > 0);
 		sanityCheckRowOutOfBounds(state);
 		assert(state->file->row < state->file->data.size());
+		if (!state->skipSetHardCol) {
+			state->file->hardCol = getDisplayCol(state);
+		}
+		state->skipSetHardCol = false;
 		if (state->mode == INSERT) {
 			fixColOverMax(state);
 		}
