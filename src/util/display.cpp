@@ -120,7 +120,7 @@ uint32_t getDisplayCol(State *state)
 {
 	if (state->options.indent_style == "tab") {
 		uint32_t sum = 0;
-		for (uint32_t i = 0; i < state->file->col; i++) {
+		for (uint32_t i = 0; i < state->file->col && i < state->file->data[state->file->row].length(); i++) {
 			if (state->file->data[state->file->row][i] == '\t') {
 				sum += state->options.indent_size;
 			} else {

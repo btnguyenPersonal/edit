@@ -203,47 +203,49 @@ WordPosition findParentheses(const std::string &str, char openParen, char closeP
 
 Position matchIt(State *state)
 {
-	char firstParen = state->file->data[state->file->row][state->file->col];
-	int32_t stack = 0;
-	if (isOpenParen(firstParen)) {
-		char secondParen = getCorrespondingParen(firstParen);
-		uint32_t col = state->file->col;
-		for (uint32_t row = state->file->row; row < state->file->data.size(); row++) {
-			while (col < state->file->data[row].size()) {
-				if (state->file->data[row][col] == secondParen) {
-					if (stack == 1) {
-						return { row, col };
-					} else {
-						stack--;
+	if (state->file->col < state->file->data[state->file->row].length()) {
+		char firstParen = state->file->data[state->file->row][state->file->col];
+		int32_t stack = 0;
+		if (isOpenParen(firstParen)) {
+			char secondParen = getCorrespondingParen(firstParen);
+			uint32_t col = state->file->col;
+			for (uint32_t row = state->file->row; row < state->file->data.size(); row++) {
+				while (col < state->file->data[row].size()) {
+					if (state->file->data[row][col] == secondParen) {
+						if (stack == 1) {
+							return { row, col };
+						} else {
+							stack--;
+						}
+					} else if (state->file->data[row][col] == firstParen) {
+						stack++;
 					}
-				} else if (state->file->data[row][col] == firstParen) {
-					stack++;
+					col++;
 				}
-				col++;
+				col = 0;
 			}
-			col = 0;
-		}
-	} else if (isCloseParen(firstParen)) {
-		char secondParen = getCorrespondingParen(firstParen);
-		int32_t col = (int32_t)state->file->col;
-		bool first = true;
-		for (int32_t row = (int32_t)state->file->row; row >= 0; row--) {
-			if (!first) {
-				col = state->file->data[row].length() > 0 ? state->file->data[row].length() - 1 : 0;
-			}
-			while (col >= 0) {
-				if (state->file->data[row][col] == secondParen) {
-					if (stack == 1) {
-						return { (uint32_t)row, (uint32_t)col };
-					} else {
-						stack--;
+		} else if (isCloseParen(firstParen)) {
+			char secondParen = getCorrespondingParen(firstParen);
+			int32_t col = (int32_t)state->file->col;
+			bool first = true;
+			for (int32_t row = (int32_t)state->file->row; row >= 0; row--) {
+				if (!first) {
+					col = state->file->data[row].length() > 0 ? state->file->data[row].length() - 1 : 0;
+				}
+				while (col >= 0) {
+					if (state->file->data[row][col] == secondParen) {
+						if (stack == 1) {
+							return { (uint32_t)row, (uint32_t)col };
+						} else {
+							stack--;
+						}
+					} else if (state->file->data[row][col] == firstParen) {
+						stack++;
 					}
-				} else if (state->file->data[row][col] == firstParen) {
-					stack++;
+					col--;
 				}
-				col--;
+				first = false;
 			}
-			first = false;
 		}
 	}
 	return { state->file->row, state->file->col };

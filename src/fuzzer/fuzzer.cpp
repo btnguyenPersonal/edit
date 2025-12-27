@@ -6,6 +6,18 @@
 #include <random>
 #include <vector>
 
+void testValues(State *state, std::vector<std::string> v)
+{
+	for (uint32_t i = 0; i < v.size(); i++) {
+		char key = getUnEscapedChar(v[i]);
+		printf("%s %s\n", getMode(state->mode).c_str(), getEscapedChar(key, true).c_str());
+		sendKeys(state, key);
+		cleanup(state, key);
+		history(state, key);
+		renderScreen(state, key);
+	}
+}
+
 void fuzzSendKeys(int testnum, int iterations = 1000)
 {
 	std::random_device rd;
@@ -41,11 +53,11 @@ void fuzzSendKeys(int testnum, int iterations = 1000)
 		}
 		printf("});\n");
 		for (uint32_t i = 0; i < randVec.size(); i++) {
-			char randomKey = randVec[i];
-			printf("%s %s\n", getMode(state->mode).c_str(), getEscapedChar(randomKey, true).c_str());
-			sendKeys(state, randomKey);
-			cleanup(state, randomKey);
-			history(state, randomKey);
+			char key = randVec[i];
+			printf("%s %s\n", getMode(state->mode).c_str(), getEscapedChar(key, true).c_str());
+			sendKeys(state, key);
+			cleanup(state, key);
+			history(state, key);
 		}
 	} catch (const std::exception &e) {
 		printf("Error during fuzzing: %s\n", e.what());
@@ -55,8 +67,10 @@ void fuzzSendKeys(int testnum, int iterations = 1000)
 
 int main()
 {
-	for (uint32_t i = 0; i < 1000000; i++) {
-		fuzzSendKeys(i, 10);
-	}
+	State *state = new State("./test-file.h");
+	testValues(state, {"E", "N", "<C-O>", ">", ">", "l", "<C-^>", " \\\\", "3", "<C-P>"});
+	// for (uint32_t i = 0; i < 1000000; i++) {
+	// 	fuzzSendKeys(i, 10);
+	// }
 	return 0;
 }
