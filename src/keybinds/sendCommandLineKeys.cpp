@@ -106,6 +106,7 @@ void autocompleteCommandLinePath(State *state, bool reverse)
 				state->commandLineState = { 0, currentUncompleted, lastDirectory };
 			}
 			int32_t skipsLeft = state->commandLineState.skips;
+			// TODO too many open files
 			for (const auto &entry : std::filesystem::directory_iterator(lastDirectory)) {
 				filesInLastDirectory.push_back(entry.path());
 			}
