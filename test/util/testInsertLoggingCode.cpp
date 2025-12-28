@@ -46,6 +46,8 @@ struct testSuiteRun testInsertLoggingCode()
 		output.push_back({ "getLoggingCode c 8", compare(state->file->data, { "function (param) {", "    printf(\"1 param: %d\\n\", param);", "    return 0;", "}" }) });
 		toggleLoggingCode(state, "param");
 		output.push_back({ "getLoggingCode c 9", compare(state->file->data, { "function (param) {", "    return 0;", "}" }) });
+		toggleLoggingCode(state, "\"\\all the escape/sequenc%s in one thing\\\"");
+		output.push_back({ "getLoggingCode c 9", compare(state->file->data, { "function (param) {", "    printf(\"1 \\\"\\\\all the escape/sequenc%%s in one thing\\\\\\\": %d\\n\", \"\\all the escape/sequenc%s in one thing\\\");", "    return 0;", "}" }) });
 		removeAllLoggingCode(state);
 		output.push_back({ "removeAllLoggingCode c 1", compare(state->file->data, { "function (param) {", "    return 0;", "}" }) });
 	}

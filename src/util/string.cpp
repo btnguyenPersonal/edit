@@ -71,7 +71,9 @@ std::vector<std::string> splitByChar(const std::string &text, char c)
 			line += text[i];
 		}
 	}
-	clip.push_back(line);
+	if (line != "") {
+		clip.push_back(line);
+	}
 	return clip;
 }
 

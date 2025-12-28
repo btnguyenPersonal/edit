@@ -5,6 +5,7 @@
 #include "util/testAutocomplete.h"
 #include "util/testString.h"
 #include "util/testInsertLoggingCode.h"
+#include "util/testMovement.h"
 
 auto color_white = "\033[0m";
 auto color_green = "\033[1;32m";
@@ -39,6 +40,7 @@ int main()
 	printSuiteRun(testAutocomplete());
 	printSuiteRun(testString());
 	printSuiteRun(testInsertLoggingCode());
+	printSuiteRun(testMovement());
 	printf("\n    pass: %d\n", pass);
 	printf("    fail: %d\n", fail);
 	if (fail > 0) {

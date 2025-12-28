@@ -1,4 +1,5 @@
 #include "movement.h"
+#include "assert.h"
 #include "sanity.h"
 #include "comment.h"
 #include "indent.h"
@@ -216,6 +217,7 @@ void left(State *state)
 void right(State *state)
 {
 	fixColOverMax(state);
+	assert(state->file->row < state->file->data.size());
 	if (state->file->col < state->file->data[state->file->row].length()) {
 		state->file->col += 1;
 	}

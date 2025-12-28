@@ -120,10 +120,10 @@ struct testSuiteRun testString()
 		output.push_back({ "splitByChar 1", compare(splitByChar("%s/from/to/g", '/'), { "%s", "from", "to", "g" }) });
 		output.push_back({ "splitByChar 2", compare(splitByChar("gs/from/to/g", '/'), { "gs", "from", "to", "g" }) });
 		output.push_back({ "splitByChar 3", compare(splitByChar("bingbong/bing", '/'), { "bingbong", "bing" }) });
-		output.push_back({ "splitByChar 4", compare(splitByChar(" bing bong bing ", ' '), { "", "bing", "bong", "bing", "" }) });
-		output.push_back({ "splitByChar 5", compare(splitByChar("   ", ' '), { "", "", "", "" }) });
-		output.push_back({ "splitByChar 6", compare(splitByChar("b b", 'b'), { "", " ", "" }) });
-		output.push_back({ "splitByChar 7", compare(splitByChar("/from/to/", '/'), { "", "from", "to", "" }) });
+		output.push_back({ "splitByChar 4", compare(splitByChar(" bing bong bing ", ' '), { "", "bing", "bong", "bing" }) });
+		output.push_back({ "splitByChar 5", compare(splitByChar("   ", ' '), { "", "", "" }) });
+		output.push_back({ "splitByChar 6", compare(splitByChar("b b", 'b'), { "", " " }) });
+		output.push_back({ "splitByChar 7", compare(splitByChar("/from/to/", '/'), { "", "from", "to" }) });
 		output.push_back({ "splitByChar 8", compare(splitByChar("from", '/'), { "from" }) });
 	}
 
