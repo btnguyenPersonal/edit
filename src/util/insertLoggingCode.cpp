@@ -7,9 +7,14 @@
 #include <string>
 #include <vector>
 
-void toggleLoggingCode(State *state, std::string variableName, bool showValue)
+static bool isCExtension(std::string extension)
 {
-	std::string loggingCode = getLoggingCode(state, state->file->row, variableName, showValue);
+	return extension == "h" || extension == "c" || extension == "cc" || extension == "cpp";
+}
+
+void toggleLoggingCode(State *state, std::string variableName)
+{
+	std::string loggingCode = getLoggingCode(state, variableName);
 	if (loggingCode == "") {
 		return;
 	}
@@ -27,10 +32,9 @@ void toggleLoggingCode(State *state, std::string variableName, bool showValue)
 
 std::string getLoggingRegex(State *state)
 {
-	std::string extension = getExtension(state->file->filename);
 	std::string pattern = "";
-	if (extension == "cc" || extension == "cpp") {
-		pattern = "std::cout << \"[0-9]+ .+? << std::endl;";
+	if (isCExtension(getExtension(state->file->filename))) {
+		pattern = "printf(\"[0-9]+ .+?);";
 	} else {
 		pattern = "console\\.log\\('[0-9]+', .+?\\);";
 	}
@@ -49,22 +53,21 @@ void removeAllLoggingCode(State *state)
 	}
 }
 
-std::string getLoggingCode(State *state, uint32_t row, std::string variableName, bool showValue)
+std::string getLoggingCode(State *state, std::string variableName)
 {
-	std::string extension = getExtension(state->file->filename);
-	std::string rowStr = std::to_string(row + 1);
-	if (extension == "cc" || extension == "cpp") {
-		std::string s = "std::cout << \"" + rowStr + " " + variableName + ": \"";
-		if (showValue) {
-			s += " << " + variableName;
-		}
-		s += " << std::endl;";
-		return s;
+	if (variableName == "") {
+		return "";
+	}
+	std::string rowStr = std::to_string(state->file->row + 1);
+	if (isCExtension(getExtension(state->file->filename))) {
+		std::string escapedVar = variableName;
+		escapedVar = replace(escapedVar, "\\", "\\\\");
+		escapedVar = replace(escapedVar, "\"", "\\\"");
+		escapedVar = replace(escapedVar, "%", "%%");
+		return "printf(\"" + rowStr + " " + escapedVar + ": %d\\n\", " + variableName + ");";
 	} else {
-		std::string s = "console.log('" + rowStr + "', " + "'" + replace(variableName, "'", "\\'") + "'";
-		if (showValue) {
-			s += ", " + variableName;
-		}
+		std::string s = "console.log('" + rowStr + " " + replace(variableName, "'", "\\'") + "'";
+		s += ", " + variableName;
 		s += ");";
 		return s;
 	}

@@ -4,6 +4,7 @@
 #include "util/testTypingKeys.h"
 #include "util/testAutocomplete.h"
 #include "util/testString.h"
+#include "util/testInsertLoggingCode.h"
 
 auto color_white = "\033[0m";
 auto color_green = "\033[1;32m";
@@ -37,6 +38,7 @@ int main()
 	printSuiteRun(testTypingKeys());
 	printSuiteRun(testAutocomplete());
 	printSuiteRun(testString());
+	printSuiteRun(testInsertLoggingCode());
 	printf("\n    pass: %d\n", pass);
 	printf("    fail: %d\n", fail);
 	if (fail > 0) {

@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 
-void toggleLoggingCode(State *state, std::string variableName, bool showValue);
-std::string getLoggingCode(State *state, uint32_t row, std::string variableName, bool showValue);
+void toggleLoggingCode(State *state, std::string variableName);
+std::string getLoggingCode(State *state, std::string variableName);
 void removeAllLoggingCode(State *state);
 std::string getLoggingRegex(State *state);

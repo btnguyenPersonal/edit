@@ -1,5 +1,36 @@
 ## tasks
 - more tests
+	[x] string
+	[x] autocomplete
+	[x] save
+	[x] read
+	[x] sanity
+	[x] typingKeys
+	[ ] insertLoggingCode
+	[ ] movement
+	[ ] clipboard
+	[ ] fileops
+	[ ] getBounds
+	[ ] comment
+	[ ] indent
+	[ ] display
+	[ ] external
+	[ ] harpoon
+	[ ] keys
+	[ ] grep
+	[ ] find
+	[ ] cleanup
+	[ ] dirSplit
+	[ ] history
+	[ ] visual
+	[ ] textedit
+	[ ] search
+	[ ] repeat
+	[ ] render
+	[ ] fileExplorerNode
+	[ ] fileExplorerKeys
+	[ ] multicursorKeys
+	[ ] normalKeys
 
 - maybe have autocomplete also scan the other harpooned files?
 

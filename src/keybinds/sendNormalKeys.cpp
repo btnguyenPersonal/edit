@@ -496,7 +496,7 @@ void sendNormalKeys(State *state, int32_t c)
 	} else if (c == 'm') {
 		initVisual(state, SELECT);
 		setStateFromWordPosition(state, getWordPosition(state->file->data[state->file->row], state->file->col));
-		toggleLoggingCode(state, getInVisual(state), true);
+		toggleLoggingCode(state, getInVisual(state));
 		state->mode = NORMAL;
 		setDotCommand(state, c);
 	} else if (c == ctrl('w')) {

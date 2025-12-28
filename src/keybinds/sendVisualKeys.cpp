@@ -518,7 +518,7 @@ bool sendVisualKeys(State *state, char c, bool onlyMotions)
 	} else if (!onlyMotions && c == 'm') {
 		logDotCommand(state);
 		if (state->visualType == SELECT || state->visualType == LINE) {
-			toggleLoggingCode(state, getInVisual(state, false), true);
+			toggleLoggingCode(state, getInVisual(state, false));
 		}
 		state->mode = NORMAL;
 	} else if (!onlyMotions && c == ':') {
