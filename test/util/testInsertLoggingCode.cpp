@@ -15,12 +15,57 @@ struct testSuiteRun testInsertLoggingCode()
 	}
 
 	{
+		State *state = new State("./test-file.h", { "test", "printf(\"hi\\n\");", "printf(\"normal%d\\n\", d);" });
+		toggleLoggingCode(state, "test");
+		output.push_back({ "getLoggingCode c 5", compare(state->file->data, { "test", "printf(\"1 test: %d\\n\", test);", "printf(\"hi\\n\");", "printf(\"normal%d\\n\", d);" }) });
+		toggleLoggingCode(state, "test");
+		output.push_back({ "getLoggingCode c 6", compare(state->file->data, { "test", "printf(\"hi\\n\");", "printf(\"normal%d\\n\", d);" }) });
+		toggleLoggingCode(state, "test");
+		toggleLoggingCode(state, "test2");
+		toggleLoggingCode(state, "test3");
+		toggleLoggingCode(state, "test4");
+		state->file->row = 6;
+		toggleLoggingCode(state, "vec()");
+		output.push_back({ "getLoggingCode c 7", compare(state->file->data, {
+			"test",
+			"printf(\"1 test4: %d\\n\", test4);",
+			"printf(\"1 test3: %d\\n\", test3);",
+			"printf(\"1 test2: %d\\n\", test2);",
+			"printf(\"1 test: %d\\n\", test);",
+			"printf(\"hi\\n\");",
+			"printf(\"normal%d\\n\", d);",
+	                "printf(\"7 vec(): %d\\n\", vec());"
+		}) });
+		removeAllLoggingCode(state);
+		output.push_back({ "removeAllLoggingCode c 0", compare(state->file->data, { "test", "printf(\"hi\\n\");", "printf(\"normal%d\\n\", d);" }) });
+	}
+
+	{
+		State *state = new State("./test-file.h", { "function (param) {", "    return 0;", "}" });
+		toggleLoggingCode(state, "param");
+		output.push_back({ "getLoggingCode c 8", compare(state->file->data, { "function (param) {", "    printf(\"1 param: %d\\n\", param);", "    return 0;", "}" }) });
+		toggleLoggingCode(state, "param");
+		output.push_back({ "getLoggingCode c 9", compare(state->file->data, { "function (param) {", "    return 0;", "}" }) });
+		removeAllLoggingCode(state);
+		output.push_back({ "removeAllLoggingCode c 1", compare(state->file->data, { "function (param) {", "    return 0;", "}" }) });
+	}
+
+	{
 		State *state = new State("./test-file.js", { "" });
 		output.push_back({ "getLoggingCode js 0", compare(getLoggingCode(state, ""), "") });
 		output.push_back({ "getLoggingCode js 1", compare(getLoggingCode(state, "temp"), "console.log('1 temp', temp);") });
 		output.push_back({ "getLoggingCode js 2", compare(getLoggingCode(state, "temp + y"), "console.log('1 temp + y', temp + y);") });
 		output.push_back({ "getLoggingCode js 3", compare(getLoggingCode(state, "temp\\"), "console.log('1 temp\\', temp\\);") });
 		output.push_back({ "getLoggingCode js 4", compare(getLoggingCode(state, "'temp'"), "console.log('1 \\'temp\\'', 'temp');") });
+	}
+
+	{
+		State *state = new State("./test-file.js", { "" });
+		output.push_back({ "getLoggingCode js 5", compare(getLoggingCode(state, ""), "") });
+		output.push_back({ "getLoggingCode js 6", compare(getLoggingCode(state, "temp"), "console.log('1 temp', temp);") });
+		output.push_back({ "getLoggingCode js 7", compare(getLoggingCode(state, "temp + y"), "console.log('1 temp + y', temp + y);") });
+		output.push_back({ "getLoggingCode js 8", compare(getLoggingCode(state, "temp\\"), "console.log('1 temp\\', temp\\);") });
+		output.push_back({ "getLoggingCode js 9", compare(getLoggingCode(state, "'temp'"), "console.log('1 \\'temp\\'', 'temp');") });
 	}
 
 	return { "test/util/testInsertLoggingCode.cpp", output };

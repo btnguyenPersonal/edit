@@ -6,7 +6,7 @@
 	[x] read
 	[x] sanity
 	[x] typingKeys
-	[ ] insertLoggingCode
+	[x] insertLoggingCode
 	[ ] movement
 	[ ] clipboard
 	[ ] fileops

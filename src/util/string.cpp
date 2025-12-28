@@ -75,6 +75,14 @@ std::vector<std::string> splitByChar(const std::string &text, char c)
 	return clip;
 }
 
+std::string getPrintableString(std::string s)
+{
+	std::string output = s;
+	output = replace(output, "\\", "\\\\");
+	output = replace(output, "\"", "\\\"");
+	return output;
+}
+
 std::string replace(std::string str, const std::string &from, const std::string &to)
 {
 	size_t pos = 0;

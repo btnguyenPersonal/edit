@@ -4,6 +4,7 @@
 #include <vector>
 #include <cstdint>
 
+std::string getPrintableString(std::string s);
 uint32_t buildNumberFromString(const std::string &s);
 std::vector<std::string> splitByChar(const std::string &text, char c);
 std::string replace(std::string str, const std::string &from, const std::string &to);

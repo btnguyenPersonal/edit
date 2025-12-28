@@ -7,9 +7,38 @@
 #include <string>
 #include <vector>
 
-static bool isCExtension(std::string extension)
+bool isCExtension(std::string extension)
 {
 	return extension == "h" || extension == "c" || extension == "cc" || extension == "cpp";
+}
+
+std::string getLoggingCode(State *state, std::string variableName)
+{
+	if (variableName == "") {
+		return "";
+	}
+	std::string rowStr = std::to_string(state->file->row + 1);
+	if (isCExtension(getExtension(state->file->filename))) {
+		std::string escapedVar = getPrintableString(variableName);
+		escapedVar = replace(escapedVar, "%", "%%");
+		return "printf(\"" + rowStr + " " + escapedVar + ": %d\\n\", " + variableName + ");";
+	} else {
+		std::string s = "console.log('" + rowStr + " " + replace(variableName, "'", "\\'") + "'";
+		s += ", " + variableName;
+		s += ");";
+		return s;
+	}
+}
+
+std::string getLoggingRegex(State *state)
+{
+	std::string pattern = "";
+	if (isCExtension(getExtension(state->file->filename))) {
+		pattern = "printf\\(\"[0-9]+ .+?\\);";
+	} else {
+		pattern = "console\\.log\\('[0-9]+', .+?\\);";
+	}
+	return pattern;
 }
 
 void toggleLoggingCode(State *state, std::string variableName)
@@ -26,19 +55,10 @@ void toggleLoggingCode(State *state, std::string variableName)
 			return;
 		}
 	}
-	state->file->data.insert(state->file->data.begin() + state->file->row + 1, loggingCode);
-	indentLine(state, state->file->row + 1);
-}
-
-std::string getLoggingRegex(State *state)
-{
-	std::string pattern = "";
-	if (isCExtension(getExtension(state->file->filename))) {
-		pattern = "printf(\"[0-9]+ .+?);";
-	} else {
-		pattern = "console\\.log\\('[0-9]+', .+?\\);";
+	if (state->file->row < state->file->data.size()) {
+		state->file->data.insert(state->file->data.begin() + state->file->row + 1, loggingCode);
+		indentLine(state, state->file->row + 1);
 	}
-	return pattern;
 }
 
 void removeAllLoggingCode(State *state)
@@ -53,22 +73,3 @@ void removeAllLoggingCode(State *state)
 	}
 }
 
-std::string getLoggingCode(State *state, std::string variableName)
-{
-	if (variableName == "") {
-		return "";
-	}
-	std::string rowStr = std::to_string(state->file->row + 1);
-	if (isCExtension(getExtension(state->file->filename))) {
-		std::string escapedVar = variableName;
-		escapedVar = replace(escapedVar, "\\", "\\\\");
-		escapedVar = replace(escapedVar, "\"", "\\\"");
-		escapedVar = replace(escapedVar, "%", "%%");
-		return "printf(\"" + rowStr + " " + escapedVar + ": %d\\n\", " + variableName + ");";
-	} else {
-		std::string s = "console.log('" + rowStr + " " + replace(variableName, "'", "\\'") + "'";
-		s += ", " + variableName;
-		s += ");";
-		return s;
-	}
-}

@@ -137,5 +137,14 @@ struct testSuiteRun testString()
 		output.push_back({ "getIndexFirstNonSpace 6", compareInt(getIndexFirstNonSpace("			%s/from/to/g", '	'), 3) });
 	}
 
+	{
+		output.push_back({ "getPrintableString 0", compare(getPrintableString(""), "") });
+		output.push_back({ "getPrintableString 0", compare(getPrintableString("%s/from/to/g"), "%s/from/to/g") });
+		output.push_back({ "getPrintableString 0", compare(getPrintableString("\""), "\\\"") });
+		output.push_back({ "getPrintableString 0", compare(getPrintableString("\\"), "\\\\") });
+		output.push_back({ "getPrintableString 0", compare(getPrintableString("\\\""), "\\\\\\\"") });
+		output.push_back({ "getPrintableString 0", compare(getPrintableString("%"), "%") });
+	}
+
 	return { "test/util/testString.cpp", output };
 }

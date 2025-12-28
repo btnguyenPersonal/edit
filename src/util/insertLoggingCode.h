@@ -4,7 +4,8 @@
 #include <string>
 #include <vector>
 
-void toggleLoggingCode(State *state, std::string variableName);
+bool isCExtension(std::string extension);
 std::string getLoggingCode(State *state, std::string variableName);
-void removeAllLoggingCode(State *state);
 std::string getLoggingRegex(State *state);
+void toggleLoggingCode(State *state, std::string variableName);
+void removeAllLoggingCode(State *state);

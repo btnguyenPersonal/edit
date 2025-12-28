@@ -1,4 +1,5 @@
 #include "compare.h"
+#include "string.h"
 #include "modes.h"
 #include <cstdint>
 
@@ -15,7 +16,7 @@ std::string print(std::string prefix, std::string name, std::vector<std::string>
 	for (uint32_t i = 0; i < a.size(); i++) {
 		output += prefix;
 		output += "    \"";
-		output += a[i];
+		output += getPrintableString(a[i]);
 		output += "\"\n";
 	}
 	output += prefix;
@@ -71,7 +72,7 @@ std::string print(std::string prefix, std::string name, std::string a)
 	output += prefix;
 	output += name;
 	output += ": \"";
-	output += a;
+	output += getPrintableString(a);
 	output += "\"\n";
 	return output;
 }
