@@ -1,8 +1,12 @@
 #include "string.h"
+#include "assert.h"
 
 uint32_t buildNumberFromString(const std::string &s)
 {
 	uint32_t output = 0;
+	if (!isNumber(s)) {
+		return output;
+	}
 	for (uint32_t i = 0; i < s.length(); i++) {
 		output *= 10;
 		switch (s[i]) {
@@ -37,6 +41,7 @@ uint32_t buildNumberFromString(const std::string &s)
 			output += 9;
 			break;
 		default:
+			assert(false);
 			break;
 		}
 	}
@@ -45,8 +50,8 @@ uint32_t buildNumberFromString(const std::string &s)
 
 int32_t getIndexFirstNonSpace(const std::string &s, char indentCharacter)
 {
-	int32_t i;
-	for (i = 0; i < (int32_t)s.length(); i++) {
+	int32_t i = 0;
+	for (; i < (int32_t)s.length(); i++) {
 		if (s[i] != indentCharacter) {
 			return i;
 		}
@@ -66,25 +71,25 @@ std::vector<std::string> splitByChar(const std::string &text, char c)
 			line += text[i];
 		}
 	}
-	if (line != "") {
-		clip.push_back(line);
-	}
+	clip.push_back(line);
 	return clip;
 }
 
 std::string replace(std::string str, const std::string &from, const std::string &to)
 {
 	size_t pos = 0;
-	while ((pos = str.find(from, pos)) != std::string::npos) {
-		str.replace(pos, from.length(), to);
-		pos += to.length();
+	if (from.length() > 0) {
+		while ((pos = str.find(from, pos)) != std::string::npos) {
+			str.replace(pos, from.length(), to);
+			pos += to.length();
+		}
 	}
 	return str;
 }
 
 bool isWhitespace(char c)
 {
-	return std::isspace(c) || c == '\t';
+	return c == ' ' || c == '\t';
 }
 
 bool isAlphanumeric(char c)
@@ -111,7 +116,7 @@ std::string safeSubstring(const std::string &str, std::size_t pos)
 bool isNumber(const std::string &s)
 {
 	for (uint32_t i = 0; i < s.length(); i++) {
-		if (i > '0' && i < '9') {
+		if (s[i] < '0' || '9' < s[i]) {
 			return false;
 		}
 	}

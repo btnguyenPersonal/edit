@@ -1,5 +1,7 @@
 #pragma once
 
+#include <ncurses.h>
+
 #define assert(condition)                                                                                                 \
 	if (!(condition)) {                                                                                               \
 		endwin();                                                                                                 \

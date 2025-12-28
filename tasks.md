@@ -1,4 +1,8 @@
 ## tasks
+- more tests
+
+- maybe have autocomplete also scan the other harpooned files?
+
 - improve build time! it is unbearable!!
 
 	- build as one translation unit
@@ -16,8 +20,6 @@
 	- more compiler flags
 	- remove make
 	- performance indicators
-
-- more tests
 
 - editing new file indicator [NEW] on right side??
 

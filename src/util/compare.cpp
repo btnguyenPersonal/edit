@@ -88,6 +88,29 @@ struct boolWithError compare(std::string result, std::string expect)
 	return { output, "" };
 }
 
+std::string printInt(std::string prefix, std::string name, int32_t a)
+{
+	std::string output = "";
+	output += prefix;
+	output += name;
+	output += ": ";
+	output += std::to_string(a);
+	output += "\n";
+	return output;
+}
+
+struct boolWithError compareInt(int32_t result, int32_t expect)
+{
+	bool output = true;
+	if (result != expect) {
+		output = false;
+	}
+	if (output == false) {
+		return { output, printInt(PRE, RES, result) + printInt(PRE, EXP, expect) };
+	}
+	return { output, "" };
+}
+
 std::string print(std::string prefix, std::string name, uint32_t a)
 {
 	std::string output = "";
