@@ -116,6 +116,7 @@ struct Recording {
 
 class State {
     public:
+	std::mutex renderMutex;
 	std::mutex findMutex;
 	std::mutex grepMutex;
 	FileExplorerNode *fileExplorer;

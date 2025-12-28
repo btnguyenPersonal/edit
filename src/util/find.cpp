@@ -93,15 +93,18 @@ std::vector<std::filesystem::path> find(const std::filesystem::path &dir_path, c
 
 void findDispatch(State *state, std::string query)
 {
+	std::vector<std::filesystem::path> output;
 	try {
-		std::vector<std::filesystem::path> output = find(std::filesystem::current_path(), query);
-		state->findMutex.lock();
-		if (query == state->find.query) {
-			state->findOutput = output;
-		}
-		state->shouldReRender = true;
-		state->findMutex.unlock();
+		output = find(std::filesystem::current_path(), query);
 	} catch (const std::exception &e) {}
+	state->findMutex.lock();
+	if (query == state->find.query) {
+		state->findOutput = output;
+	}
+	state->findMutex.unlock();
+	state->renderMutex.lock();
+	state->shouldReRender = true;
+	state->renderMutex.unlock();
 }
 
 void generateFindOutput(State *state)

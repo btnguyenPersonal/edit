@@ -1,6 +1,7 @@
 #include "../util/state.h"
 #include "../util/keys.h"
 #include "../keybinds/mainLoop.h"
+#include <ncurses.h>
 #include <random>
 #include <vector>
 
@@ -39,6 +40,10 @@ void fuzzSendKeys(int testnum, int iterations = 1000)
 		for (uint32_t i = 0; i < randVec.size(); i++) {
 			char key = randVec[i];
 			printf("%s %s\n", getMode(state->mode).c_str(), getEscapedChar(key, true).c_str());
+			mainLoop(state, ERR);
+			mainLoop(state, ERR);
+			mainLoop(state, ERR);
+			mainLoop(state, ERR);
 			mainLoop(state, key);
 		}
 	} catch (const std::exception &e) {
@@ -78,6 +83,12 @@ int main()
 	// testValues(state, {"<C-G>", "Z", "<C-O>", "<C-P>", "p", "<C-@>", "1", "<C-J>", "M", "5"});
 	// State *state = new State("./test-file.h");
 	// testValues(state, {"z", "v", "<C-@>", "<C-H>", "T", "*", ".", "2", "=", "."});
+	// State *state = new State("./test-file.h");
+	// testValues(state, {"V", "=", ".", "<C-P>", "<C-]>", "U", "<Esc>", "Y", "h", "p"});
+	// State *state = new State("./test-file.h");
+	// testValues(state, {"l", "<C-I>", "#", "h", "<C-I>", "<C-V>", "o", "<C-J>", "|", "d"});
+	// State *state = new State("./test-file.h");
+	// testValues(state, {"<C-E>", "8", "<C-G>", "G", "b", "g", "J", "u", "u", "<C-L>"});
 	for (uint32_t i = 0; i < 1000000; i++) {
 		fuzzSendKeys(i, 10);
 	}

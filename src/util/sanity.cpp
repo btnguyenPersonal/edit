@@ -20,7 +20,9 @@ void sanityCheckGrepSelection(State *state)
 
 void sanityCheckFindSelection(State *state)
 {
+	state->findMutex.lock();
 	sanityCheckQuery(state->find, state->findOutput.size());
+	state->findMutex.unlock();
 }
 
 void sanityCheckQuery(Query &query, uint32_t len)

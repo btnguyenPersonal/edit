@@ -167,15 +167,18 @@ std::vector<grepMatch> grepFiles(std::filesystem::path dir_path, std::string que
 
 void grepDispatch(State *state, std::string query, std::string path, bool showAllGrep)
 {
+	std::vector<grepMatch> output;
 	try {
-		std::vector<grepMatch> output = grepFiles(path == "" ? std::filesystem::current_path() : std::filesystem::path(path), query, showAllGrep);
-		state->grepMutex.lock();
-		if (query == state->grep.query) {
-			state->grepOutput = output;
-		}
-		state->shouldReRender = true;
-		state->grepMutex.unlock();
+		output = grepFiles(path == "" ? std::filesystem::current_path() : std::filesystem::path(path), query, showAllGrep);
 	} catch (const std::exception &e) {}
+	state->grepMutex.lock();
+	if (query == state->grep.query) {
+		state->grepOutput = output;
+	}
+	state->grepMutex.unlock();
+	state->renderMutex.lock();
+	state->shouldReRender = true;
+	state->renderMutex.unlock();
 }
 
 void generateGrepOutput(State *state, bool resetCursor)
