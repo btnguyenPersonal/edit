@@ -1,9 +1,6 @@
 #include "testMovement.h"
 #include "../../src/util/movement.h"
 
-// TODO remove
-#include "../../src/util/render.h"
-
 struct testSuiteRun testMovement()
 {
 	std::vector<struct testRun> output = std::vector<struct testRun>();
