@@ -97,7 +97,7 @@ void autocompleteCommandLinePath(State *state, bool reverse)
 {
 	if (state->commandLine.query.length() > 1 && safeSubstring(state->commandLine.query, 0, 2) == "e ") {
 		std::string currentPathQuery = state->commandLine.query.substr(2);
-		struct DirSplit dirSplit = getCurrentDirSplit(state, currentPathQuery);
+		struct DirSplit dirSplit = getCurrentDirSplit(currentPathQuery);
 		std::string currentUncompleted = dirSplit.currentUncompleted;
 		std::string lastDirectory = dirSplit.lastDirectory;
 		std::vector<std::string> filesInLastDirectory;
@@ -191,7 +191,7 @@ void sendCommandLineKeys(State *state, int32_t c)
 		} catch (const std::exception &e) {}
 	} else if (c == KEY_BACKSPACE || c == 127) {
 		if (state->commandLine.query.length() > 1 && safeSubstring(state->commandLine.query, 0, 2) == "e ") {
-			struct DirSplit dirSplit = getCurrentDirSplit(state, state->commandLine.query.substr(2));
+			struct DirSplit dirSplit = getCurrentDirSplit(state->commandLine.query.substr(2));
 			if (dirSplit.currentUncompleted.length() == 0) {
 				bool found = false;
 				int32_t num = 0;

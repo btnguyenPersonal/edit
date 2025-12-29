@@ -1,7 +1,7 @@
 #include "dirSplit.h"
 #include "string.h"
 
-struct DirSplit getCurrentDirSplit(State *state, std::string currentPathQuery)
+struct DirSplit getCurrentDirSplit(std::string currentPathQuery)
 {
 	DirSplit output = {};
 	if (currentPathQuery.length() == 1) {

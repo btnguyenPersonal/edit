@@ -92,7 +92,7 @@ void locateNodeModule(State *state, std::string vis)
 	}
 }
 
-void createFolder(State *state, std::filesystem::path path, std::string name)
+void createFolder(std::filesystem::path path, std::string name)
 {
 	std::filesystem::path fullPath = path / name;
 	std::filesystem::create_directories(fullPath);

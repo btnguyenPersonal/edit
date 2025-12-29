@@ -40,7 +40,7 @@ void sendDiffKeys(State *state, int32_t c)
 		if (state->prevKeys != "") {
 			state->prevKeys = "";
 		} else if (state->viewingDiff) {
-			state->logLines = getLogLines(state);
+			state->logLines = getLogLines();
 			state->viewingDiff = false;
 			state->diffIndex = 0;
 		} else {

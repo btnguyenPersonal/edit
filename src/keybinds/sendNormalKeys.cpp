@@ -366,7 +366,7 @@ void sendNormalKeys(State *state, int32_t c)
 			state->file->row = state->mark.mark;
 		}
 	} else if (c == ctrl('q')) {
-		state->logLines = getLogLines(state);
+		state->logLines = getLogLines();
 		state->diffLines = getDiffLines(state);
 		state->viewingDiff = true;
 		state->mode = DIFF;

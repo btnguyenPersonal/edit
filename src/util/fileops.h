@@ -7,7 +7,7 @@ bool locateFileAbsolute(State *state, std::string vis);
 bool locateFileRelative(State *state, std::string vis, std::vector<std::string> extensions);
 void locateNodeModule(State *state, std::string vis);
 void createFile(State *state, std::filesystem::path path, std::string name);
-void createFolder(State *state, std::filesystem::path path, std::string name);
+void createFolder(std::filesystem::path path, std::string name);
 void rename(State *state, const std::filesystem::path &oldPath, const std::string &newName);
 std::filesystem::path getUniqueFilePath(const std::filesystem::path &basePath);
 std::string normalizeFilename(std::string filename);

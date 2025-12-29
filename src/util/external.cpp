@@ -28,7 +28,7 @@ std::vector<std::string> getDiffLines(State *state)
 	return gitDiffLines;
 }
 
-std::vector<std::string> getLogLines(State *state)
+std::vector<std::string> getLogLines()
 {
 	std::vector<std::string> gitLogLines = { "current" };
 	std::vector<std::string> temp = splitByChar(runCommand("git log --oneline | cat 2>/dev/null"), '\n');

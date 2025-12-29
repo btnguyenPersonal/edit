@@ -8,4 +8,4 @@ struct DirSplit {
 	std::string lastDirectory;
 };
 
-struct DirSplit getCurrentDirSplit(State *state, std::string currentPathQuery);
+struct DirSplit getCurrentDirSplit(std::string currentPathQuery);

@@ -71,10 +71,10 @@ void sendFileExplorerKeys(State *state, int32_t c)
 			std::string name = prompt(state, "");
 			if (name != "") {
 				if (node->isFolder) {
-					createFolder(state, node->path.string(), name);
+					createFolder(node->path.string(), name);
 					node->refresh();
 				} else {
-					createFolder(state, node->path.parent_path().string(), name);
+					createFolder(node->path.parent_path().string(), name);
 					node->parent->refresh();
 				}
 			}
