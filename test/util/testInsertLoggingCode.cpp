@@ -70,6 +70,14 @@ struct testSuiteRun testInsertLoggingCode()
 		output.push_back({ "getLoggingCode js 9", compare(getLoggingCode(state, "'temp'"), "console.log('1 \\'temp\\'', 'temp');") });
 	}
 
+	{
+		State *state = new State("./test-file.js", { "function (param) {", "    return 0;", "}" });
+		toggleLoggingCode(state, "param");
+		toggleLoggingCode(state, "\"\\all the escape/sequenc%s in one thing\\\"");
+		removeAllLoggingCode(state);
+		output.push_back({ "removeAllLoggingCode c 1", compare(state->file->data, { "function (param) {", "    return 0;", "}" }) });
+	}
+
 	return { "test/util/testInsertLoggingCode.cpp", output };
 }
 

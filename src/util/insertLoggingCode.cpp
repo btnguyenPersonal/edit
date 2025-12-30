@@ -36,7 +36,7 @@ std::string getLoggingRegex(State *state)
 	if (isCExtension(getExtension(state->file->filename))) {
 		pattern = "printf\\(\"[0-9]+ .+?\\);";
 	} else {
-		pattern = "console\\.log\\('[0-9]+', .+?\\);";
+		pattern = "console\\.log\\('[0-9]+ .+?\\);";
 	}
 	return pattern;
 }
