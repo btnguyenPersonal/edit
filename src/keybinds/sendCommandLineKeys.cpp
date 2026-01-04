@@ -184,11 +184,13 @@ void sendCommandLineKeys(State *state, int32_t c)
 	} else if (c == KEY_BTAB) {
 		try {
 			autocompleteCommandLinePath(state, true);
-		} catch (const std::exception &e) {}
+		} catch (const std::exception &e) {
+		}
 	} else if (c == ctrl('i')) {
 		try {
 			autocompleteCommandLinePath(state, false);
-		} catch (const std::exception &e) {}
+		} catch (const std::exception &e) {
+		}
 	} else if (c == KEY_BACKSPACE || c == 127) {
 		if (state->commandLine.query.length() > 1 && safeSubstring(state->commandLine.query, 0, 2) == "e ") {
 			struct DirSplit dirSplit = getCurrentDirSplit(state->commandLine.query.substr(2));

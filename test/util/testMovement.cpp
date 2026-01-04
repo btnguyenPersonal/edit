@@ -18,7 +18,6 @@ struct testSuiteRun testMovement()
 		output.push_back({ "left 1", compare(state->file->col, 0) });
 	}
 
-
 	{
 		State *state = new State("./test-file.h", { "aaaaaaaa" });
 		state->file->col = 5;
@@ -169,4 +168,3 @@ struct testSuiteRun testMovement()
 
 	return { "test/util/testMovement.cpp", output };
 }
-

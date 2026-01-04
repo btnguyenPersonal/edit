@@ -122,12 +122,12 @@ std::vector<grepMatch> grepFiles(std::filesystem::path dir_path, std::string que
 		stack.pop_back();
 
 		std::error_code error;
-		for (const std::filesystem::directory_entry& entry : std::filesystem::directory_iterator(dir, error)) {
+		for (const std::filesystem::directory_entry &entry : std::filesystem::directory_iterator(dir, error)) {
 			if (error) {
 				continue;
 			}
 
-			const std::filesystem::path& path = entry.path();
+			const std::filesystem::path &path = entry.path();
 
 			if (!allowAllFiles && shouldIgnoreFile(path)) {
 				continue;
@@ -170,7 +170,8 @@ void grepDispatch(State *state, std::string query, std::string path, bool showAl
 	std::vector<grepMatch> output;
 	try {
 		output = grepFiles(path == "" ? std::filesystem::current_path() : std::filesystem::path(path), query, showAllGrep);
-	} catch (const std::exception &e) {}
+	} catch (const std::exception &e) {
+	}
 	state->grepMutex.lock();
 	if (query == state->grep.query) {
 		state->grepOutput = output;

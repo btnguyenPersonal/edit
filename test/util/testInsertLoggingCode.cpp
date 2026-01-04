@@ -26,16 +26,7 @@ struct testSuiteRun testInsertLoggingCode()
 		toggleLoggingCode(state, "test4");
 		state->file->row = 6;
 		toggleLoggingCode(state, "vec()");
-		output.push_back({ "getLoggingCode c 7", compare(state->file->data, {
-			"test",
-			"printf(\"1 test4: %d\\n\", test4);",
-			"printf(\"1 test3: %d\\n\", test3);",
-			"printf(\"1 test2: %d\\n\", test2);",
-			"printf(\"1 test: %d\\n\", test);",
-			"printf(\"hi\\n\");",
-			"printf(\"normal%d\\n\", d);",
-	                "printf(\"7 vec(): %d\\n\", vec());"
-		}) });
+		output.push_back({ "getLoggingCode c 7", compare(state->file->data, { "test", "printf(\"1 test4: %d\\n\", test4);", "printf(\"1 test3: %d\\n\", test3);", "printf(\"1 test2: %d\\n\", test2);", "printf(\"1 test: %d\\n\", test);", "printf(\"hi\\n\");", "printf(\"normal%d\\n\", d);", "printf(\"7 vec(): %d\\n\", vec());" }) });
 		removeAllLoggingCode(state);
 		output.push_back({ "removeAllLoggingCode c 0", compare(state->file->data, { "test", "printf(\"hi\\n\");", "printf(\"normal%d\\n\", d);" }) });
 	}
@@ -80,4 +71,3 @@ struct testSuiteRun testInsertLoggingCode()
 
 	return { "test/util/testInsertLoggingCode.cpp", output };
 }
-

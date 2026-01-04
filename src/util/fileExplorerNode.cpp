@@ -115,7 +115,8 @@ void FileExplorerNode::refresh()
 			this->children = newChildren;
 			this->sortChildren();
 		}
-	} catch (const std::exception &e) {}
+	} catch (const std::exception &e) {
+	}
 }
 
 void FileExplorerNode::remove()
@@ -135,7 +136,8 @@ void FileExplorerNode::open()
 			}
 			this->sortChildren();
 		}
-	} catch (const std::exception &e) {}
+	} catch (const std::exception &e) {
+	}
 }
 
 FileExplorerNode *FileExplorerNode::getNode(int32_t n)

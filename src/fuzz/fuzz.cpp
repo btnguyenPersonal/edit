@@ -115,7 +115,7 @@ SUMMARY: ThreadSanitizer: allocation-size-too-big (/home/ben/git/edit/build/fuzz
 make: *** [Makefile:95: fuzz] Error 66
 */
 
-/*
+	/*
 	State *state = new State("./test-file.h");
 	testValues(state, {"'", "<C-Q>", "G", "Y", "<C-M>", "?", "<C-J>", "S", "9", "L"});
 NORMAL '
@@ -128,7 +128,7 @@ DIFF <C-J>
 Error during fuzzing: basic_string::_M_create
 make: *** [Makefile:95: fuzz] Error 1
 */
-/*
+	/*
 	State *state = new State("./test-file.h");
 	testValues(state, {"8", "<C-G>", "[", "<C-H>", "g", "<C-J>", "<C-_>", "<C-T>", "<C-I>", "'"});
 NORMAL 8

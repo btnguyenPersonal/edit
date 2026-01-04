@@ -8,4 +8,3 @@ void debug(State *state)
 	system("sleep 2");
 	endwin();
 }
-

@@ -56,12 +56,12 @@ std::vector<std::filesystem::path> find(const std::filesystem::path &dir_path, c
 		stack.pop_back();
 
 		std::error_code error;
-		for (const std::filesystem::directory_entry& entry : std::filesystem::directory_iterator(dir, error)) {
+		for (const std::filesystem::directory_entry &entry : std::filesystem::directory_iterator(dir, error)) {
 			if (error) {
 				continue;
 			}
 
-			const std::filesystem::path& path = entry.path();
+			const std::filesystem::path &path = entry.path();
 
 			if (shouldIgnoreFile(path)) {
 				continue;
@@ -96,7 +96,8 @@ void findDispatch(State *state, std::string query)
 	std::vector<std::filesystem::path> output;
 	try {
 		output = find(std::filesystem::current_path(), query);
-	} catch (const std::exception &e) {}
+	} catch (const std::exception &e) {
+	}
 	state->findMutex.lock();
 	if (query == state->find.query) {
 		state->findOutput = output;
