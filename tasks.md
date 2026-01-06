@@ -1,8 +1,6 @@
 ## tasks
 - std::atomic shouldReRender
 
-- search replace copy ctrl v
-
 - more tests
 	[x] string
 	[x] autocomplete
