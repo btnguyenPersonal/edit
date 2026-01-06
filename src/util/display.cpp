@@ -1,5 +1,7 @@
 #include "display.h"
 #include "fileops.h"
+#include "defines.h"
+
 #include <ncurses.h>
 
 bool isOffScreenVertical(State *state)
@@ -9,7 +11,7 @@ bool isOffScreenVertical(State *state)
 	}
 	uint32_t windowRow = state->file->windowPosition.row;
 	uint32_t rowsBelow = 0;
-	while (windowRow < state->file->data.size() && rowsBelow + 1 < state->maxY) {
+	while (windowRow < state->file->data.size() && rowsBelow + STATUS_BAR_LENGTH < state->maxY) {
 		if (state->file->row == windowRow && getDisplayRows(state, state->file->row) <= state->maxY) {
 			return false;
 		}
