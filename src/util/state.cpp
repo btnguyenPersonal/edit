@@ -208,7 +208,6 @@ void State::init()
 	this->maxY = 24;
 	this->viewingDiff = false;
 	this->showAllGrep = false;
-	this->shouldReRender = false;
 	this->fileExplorer = nullptr;
 	this->file = nullptr;
 	this->commandLineState = { 0, "", "" };

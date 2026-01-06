@@ -13,10 +13,9 @@ void mainLoop(State *state, int32_t c)
 		history(state, c);
 		renderScreen(state);
 	} else {
-		if (state->shouldReRender) { // TODO(ben) not have a lock() unlock() every single loop that I'm not pressing a key, this gives me sanitize address errors
+		if (!state->shouldNotReRender.test_and_set()) {
 			renderScreen(state);
 			state->renderMutex.lock();
-			state->shouldReRender = false;
 			state->renderMutex.unlock();
 		}
 	}

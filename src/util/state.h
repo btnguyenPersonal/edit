@@ -9,6 +9,7 @@
 #include <vector>
 #include <mutex>
 #include <map>
+#include <atomic>
 
 struct buildError {
 	std::string filename;
@@ -133,7 +134,7 @@ class State {
 	Query search;
 	Bounds replaceBounds;
 	VisualType visualType;
-	bool shouldReRender;
+	std::atomic_flag shouldNotReRender;
 	bool searchBackwards;
 	bool pasteAsBlock;
 	bool dontRecordKey;

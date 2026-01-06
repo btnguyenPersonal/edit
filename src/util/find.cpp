@@ -104,7 +104,7 @@ void findDispatch(State *state, std::string query)
 	}
 	state->findMutex.unlock();
 	state->renderMutex.lock();
-	state->shouldReRender = true;
+	state->shouldNotReRender.clear();
 	state->renderMutex.unlock();
 }
 

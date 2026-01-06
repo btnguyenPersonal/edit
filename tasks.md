@@ -1,6 +1,4 @@
 ## tasks
-- std::atomic shouldReRender
-
 - more tests
 	[x] string
 	[x] autocomplete
