@@ -598,6 +598,12 @@ bool startsWithSymbol(State *state, uint32_t row, std::string symbol)
 	return false;
 }
 
+struct colorOverrides {
+	std::string name;
+	int32_t color;
+	int32_t pos;
+};
+
 bool pushColorOverrides(State *state, int32_t row, int32_t col, std::string name, int color, std::vector<int> *colorOverrides)
 {
 	if (safeSubstring(state->file->data[row], col, name.length()) == name) {
@@ -609,17 +615,20 @@ bool pushColorOverrides(State *state, int32_t row, int32_t col, std::string name
 	return false;
 }
 
-void determineColorOverrides(State *state, int32_t row, int32_t col, std::vector<int> *colorOverrides)
+std::vector<colorOverrides> determineColorOverrides(State *state, int32_t row)
 {
-	if (pushColorOverrides(state, row, col, "TODO", invertColor(RED), colorOverrides)) {
-		return;
+	std::vector<colorOverrides> overrides = {
+		{ "TODO", invertColor(RED), -1 },
+		{ "NOTE", invertColor(GREEN), -1 },
+		{ "IMPORTANT", invertColor(YELLOW), -1 },
+	};
+	for (uint32_t i = 0; i < overrides.size(); i++) {
+		size_t pos = state->file->data[state->file->row].find(overrides[i].name);
+		if (pos != std::string::npos) {
+			overrides[i].pos = pos;
+		}
 	}
-	if (pushColorOverrides(state, row, col, "NOTE", invertColor(GREEN), colorOverrides)) {
-		return;
-	}
-	if (pushColorOverrides(state, row, col, "IMPORTANT", invertColor(YELLOW), colorOverrides)) {
-		return;
-	}
+	return overrides;
 }
 
 int32_t renderLineContent(State *state, int32_t row, int32_t renderRow, Cursor *cursor, bool multiLineComment, bool changeVisualColor)
@@ -627,6 +636,8 @@ int32_t renderLineContent(State *state, int32_t row, int32_t renderRow, Cursor *
 	std::vector<Pixel> pixels = std::vector<Pixel>();
 	std::vector<Pixel> replacePixels = std::vector<Pixel>();
 	int visualColor = changeVisualColor ? invertColor(YELLOW) : invertColor(RED);
+
+	std::vector<colorOverrides> overrides = determineColorOverrides(state, row);
 
 	if (isRowColInVisual(state, row, 0) && state->file->data[row].length() == 0) {
 		insertPixels(state, &pixels, " ", visualColor);
@@ -689,41 +700,49 @@ int32_t renderLineContent(State *state, int32_t row, int32_t renderRow, Cursor *
 			}
 
 			if (colorOverrides.size() == 0) {
-				determineColorOverrides(state, row, col, &colorOverrides);
+				for (uint32_t i = 0; i < overrides.size(); i++) {
+					if ((int32_t)col == overrides[i].pos) {
+						for (uint32_t j = 0; j < overrides[i].name.length(); j++) {
+							colorOverrides.push_back(overrides[i].color);
+						}
+					}
+				}
 			}
 
 			if (!inString && safeSubstring(state->file->data[row], col, state->file->commentSymbol.length()) == state->file->commentSymbol && state->file->commentSymbol != "") {
 				isComment = true;
 			}
 
-			int32_t color = getColorFromChar(c);
-			if (state->matching.row == (uint32_t)row && state->matching.col == col && (state->matching.row != state->file->row || state->matching.col != state->file->col)) {
-				color = invertColor(GREY);
-			} else {
-				if (state->showGrep && searchCounter != 0) {
-					color = getSearchColor(state, row, startOfSearch, state->grep.query, true);
-				} else if (searchCounter != 0 && ((state->searching && !state->replacing) || (state->replacing && isTextInReplaceBounds(state, row)))) {
-					color = getSearchColor(state, row, startOfSearch, state->search.query, false);
-				} else if ((int32_t)state->file->row == row && state->file->col == col && col < state->file->data[row].length() && state->file->data[row][col] == '\t') {
-					color = invertColor(WHITE);
-				} else {
-					if (isMergeConflict(state->file->data[row])) {
-						color = RED;
-					} else if (isComment) {
-						color = GREEN;
-					} else if (inString && getExtension(state->file->filename) != "md" && getExtension(state->file->filename) != "txt") {
-						color = CYAN;
-					} else {
-						color = getColorFromChar(state->file->data[row][col]);
-					}
-					if (isRowColInVisual(state, row, col)) {
-						color = visualColor;
-					}
-				}
-			}
+			int32_t color;
 			if (colorOverrides.size() != 0) {
 				color = colorOverrides.back();
 				colorOverrides.pop_back();
+			} else {
+				color = getColorFromChar(c);
+				if (state->matching.row == (uint32_t)row && state->matching.col == col && (state->matching.row != state->file->row || state->matching.col != state->file->col)) {
+					color = invertColor(GREY);
+				} else {
+					if (state->showGrep && searchCounter != 0) {
+						color = getSearchColor(state, row, startOfSearch, state->grep.query, true);
+					} else if (searchCounter != 0 && ((state->searching && !state->replacing) || (state->replacing && isTextInReplaceBounds(state, row)))) {
+						color = getSearchColor(state, row, startOfSearch, state->search.query, false);
+					} else if ((int32_t)state->file->row == row && state->file->col == col && col < state->file->data[row].length() && state->file->data[row][col] == '\t') {
+						color = invertColor(WHITE);
+					} else {
+						if (isMergeConflict(state->file->data[row])) {
+							color = RED;
+						} else if (isComment) {
+							color = GREEN;
+						} else if (inString && getExtension(state->file->filename) != "md" && getExtension(state->file->filename) != "txt") {
+							color = CYAN;
+						} else {
+							color = getColorFromChar(state->file->data[row][col]);
+						}
+						if (isRowColInVisual(state, row, col)) {
+							color = visualColor;
+						}
+					}
+				}
 			}
 
 			if (col >= state->file->windowPosition.col) {
