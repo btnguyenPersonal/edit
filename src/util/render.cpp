@@ -151,7 +151,7 @@ int32_t getModeColor(State *state)
 	if (state->mode == NORMAL) {
 		return WHITE;
 	} else if (state->mode == INSERT) {
-		return BLUE;
+		return RED;
 	} else if (state->mode == GREP) {
 		return GREEN;
 	} else if (state->mode == FIND) {
@@ -216,7 +216,7 @@ int32_t renderStatusBar(State *state)
 	} else if (state->mode == GREP) {
 		state->grepMutex.lock();
 		prefix = state->grepPath + "> ";
-		insertPixels(state, &pixels, prefix + state->grep.query, state->showAllGrep ? BLUE : GREEN);
+		insertPixels(state, &pixels, prefix + state->grep.query, state->showAllGrep ? CYAN : GREEN);
 		insertPixels(state, &pixels, "  ", WHITE);
 		insertPixels(state, &pixels, std::to_string(state->grep.selection + 1), WHITE);
 		insertPixels(state, &pixels, " of ", WHITE);
@@ -310,7 +310,7 @@ int32_t getSearchColor(State *state, int32_t row, uint32_t startOfSearch, std::s
 	if (state->file->row == (uint32_t)row && startOfSearch + query.length() >= state->file->col && startOfSearch <= state->file->col) {
 		return invertColor(grep ? GREEN : MAGENTA);
 	} else {
-		return invertColor(grep ? BLUE : CYAN);
+		return invertColor(grep ? CYAN : CYAN);
 	}
 }
 
