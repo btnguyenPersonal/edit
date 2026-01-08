@@ -444,6 +444,8 @@ std::string getBlame(State *state, int32_t i)
 
 Cursor renderVisibleLines(State *state, bool changeVisualColor)
 {
+	std::chrono::time_point<std::chrono::high_resolution_clock> start, end;
+
 	Cursor cursor{ -1, -1 };
 	int32_t currentRenderRow = STATUS_BAR_LENGTH;
 	bool multiLineComment = false;
@@ -871,6 +873,7 @@ void renderScreen(State *state, bool fullRedraw)
 	if (fullRedraw) {
 		clear();
 	}
+
 	try {
 		erase();
 		bool noLineNum = false;

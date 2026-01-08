@@ -7,7 +7,7 @@
 
 void mainLoop(State *state, int32_t c)
 {
-	auto start = std::chrono::high_resolution_clock::now();
+	std::chrono::time_point<std::chrono::high_resolution_clock> start = std::chrono::high_resolution_clock::now();
 
 	if (c != ERR) {
 		sendKeys(state, c);
@@ -18,7 +18,7 @@ void mainLoop(State *state, int32_t c)
 		renderScreen(state);
 	}
 
-	auto end = std::chrono::high_resolution_clock::now();
+	std::chrono::time_point<std::chrono::high_resolution_clock> end = std::chrono::high_resolution_clock::now();
 
 	auto elapsed = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
 	if (elapsed < std::chrono::microseconds(1000)) {
