@@ -37,9 +37,14 @@ void printCheckpoints(std::vector<timer> &timers)
 			current.num++;
 		}
 		aggregatedTimers.push_back(current);
+		aggregatedTimer total = {};
+		total.name = "total";
 		for (uint32_t i = 0; i < aggregatedTimers.size(); i++) {
 			printf("%30s(%d): %d μs\n", aggregatedTimers[i].name.c_str(), aggregatedTimers[i].num, aggregatedTimers[i].totalElapsed);
+			total.totalElapsed += aggregatedTimers[i].totalElapsed;
+			total.num ++;
 		}
+		printf("%30s(%d): %d μs\n", total.name.c_str(), total.num, total.totalElapsed);
 		printf("\n");
 		timers.clear();
 		system("sleep 0.1");
