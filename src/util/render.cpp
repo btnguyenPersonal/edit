@@ -595,11 +595,18 @@ bool endsWithSymbol(State *state, uint32_t row, std::string symbol)
 
 bool startsWithSymbol(State *state, uint32_t row, std::string symbol)
 {
+	uint32_t symbolIndex = 0;
 	for (uint32_t i = 0; i < state->file->data[row].length(); i++) {
-		if (safeSubstring(state->file->data[row], i, symbol.length()) == symbol) {
-			return true;
-		} else if (!(state->file->data[row][i] == '\t' || state->file->data[row][i] == ' ')) {
-			return false;
+		char c = state->file->data[row][i];
+		if (c == '\t' || c == ' ') {
+			continue;
+		} else if (c == symbol[symbolIndex]) {
+			symbolIndex++;
+			if (symbolIndex == symbol.length()) {
+				return true;
+			}
+		} else {
+			break;
 		}
 	}
 	return false;
