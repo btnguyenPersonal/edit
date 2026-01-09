@@ -472,9 +472,9 @@ Cursor renderVisibleLines(State *state, bool changeVisualColor)
 		}
 	}
 
-	end = std::chrono::high_resolution_clock::now();
-	auto elapsed = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
-	state->status = std::to_string(elapsed.count());
+	// end = std::chrono::high_resolution_clock::now();
+	// auto elapsed = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+	// state->status = std::to_string(elapsed.count());
 	return cursor;
 }
 

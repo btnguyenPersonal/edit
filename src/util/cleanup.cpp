@@ -13,6 +13,9 @@
 
 void cleanup(State *state, char c)
 {
+	std::chrono::time_point<std::chrono::high_resolution_clock> start, end;
+	start = std::chrono::high_resolution_clock::now();
+
 	if (state->mode == NORMAL && !state->file) {
 		endwin();
 		exit(0);
@@ -48,6 +51,10 @@ void cleanup(State *state, char c)
 		realignHarpoon(state);
 	}
 	state->dontRecordKey = false;
+
+	end = std::chrono::high_resolution_clock::now();
+	auto elapsed = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+	state->status = std::to_string(elapsed.count());
 }
 
 void history(State *state, char c)
