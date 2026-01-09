@@ -38,7 +38,7 @@ void printCheckpoints(std::vector<timer> &timers)
 		}
 		aggregatedTimers.push_back(current);
 		for (uint32_t i = 0; i < aggregatedTimers.size(); i++) {
-			printf("%30s(%d): %d\n", aggregatedTimers[i].name.c_str(), aggregatedTimers[i].num, aggregatedTimers[i].totalElapsed);
+			printf("%30s(%d): %d μs\n", aggregatedTimers[i].name.c_str(), aggregatedTimers[i].num, aggregatedTimers[i].totalElapsed);
 		}
 		printf("\n");
 		timers.clear();
