@@ -130,13 +130,13 @@ struct testSuiteRun testMovement()
 
 		output.push_back({ "down 3", compare(state->file->row, 22) });
 		output.push_back({ "down 3", compare(state->file->col, 0) });
-		output.push_back({ "down 3", compare(state->file->windowPosition.row, 0) });
+		output.push_back({ "down 3", compare(state->file->windowPosition.row, 1) });
 
 		down(state);
 
 		output.push_back({ "down 4", compare(state->file->row, 23) });
 		output.push_back({ "down 4", compare(state->file->col, 0) });
-		output.push_back({ "down 4", compare(state->file->windowPosition.row, 1) });
+		output.push_back({ "down 4", compare(state->file->windowPosition.row, 2) });
 	}
 
 	{
@@ -157,13 +157,13 @@ struct testSuiteRun testMovement()
 
 		output.push_back({ "down 5", compare(state->file->row, 22) });
 		output.push_back({ "down 5", compare(state->file->col, 1000) });
-		output.push_back({ "down 5", compare(state->file->windowPosition.row, 0) });
+		output.push_back({ "down 5", compare(state->file->windowPosition.row, 1) });
 
 		down(state);
 
 		output.push_back({ "down 6", compare(state->file->row, 23) });
 		output.push_back({ "down 6", compare(state->file->col, 1000) });
-		output.push_back({ "down 6", compare(state->file->windowPosition.row, 1) });
+		output.push_back({ "down 6", compare(state->file->windowPosition.row, 2) });
 	}
 
 	return { "test/util/testMovement.cpp", output };

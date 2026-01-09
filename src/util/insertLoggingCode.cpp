@@ -18,7 +18,7 @@ std::string getLoggingCode(State *state, std::string variableName)
 		return "";
 	}
 	std::string rowStr = std::to_string(state->file->row + 1);
-	if (isCExtension(getExtension(state->file->filename))) {
+	if (isCExtension(state->extension)) {
 		std::string escapedVar = getPrintableString(variableName);
 		escapedVar = replace(escapedVar, "%", "%%");
 		return "printf(\"" + rowStr + " " + escapedVar + ": %d\\n\", " + variableName + ");";
@@ -30,10 +30,21 @@ std::string getLoggingCode(State *state, std::string variableName)
 	}
 }
 
+std::string getLoggingSearch(State *state)
+{
+	std::string pattern = "";
+	if (isCExtension(state->extension)) {
+		pattern = "printf(";
+	} else {
+		pattern = "console.log(";
+	}
+	return pattern;
+}
+
 std::string getLoggingRegex(State *state)
 {
 	std::string pattern = "";
-	if (isCExtension(getExtension(state->file->filename))) {
+	if (isCExtension(state->extension)) {
 		pattern = "printf\\(\"[0-9]+ .+?\\);";
 	} else {
 		pattern = "console\\.log\\('[0-9]+ .+?\\);";

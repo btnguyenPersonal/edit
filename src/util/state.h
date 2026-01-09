@@ -158,6 +158,7 @@ class State {
 	uint32_t maxX;
 	uint32_t maxY;
 	CommandLineAutocompleteState commandLineState;
+	std::string extension;
 	std::string clipboard;
 	std::string prompt;
 	std::string buildDir;
