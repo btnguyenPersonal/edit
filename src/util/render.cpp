@@ -625,7 +625,7 @@ std::vector<colorOverrides> determineColorOverrides(State *state, int32_t row)
 		{ "IMPORTANT", invertColor(YELLOW), -1 },
 	};
 	for (uint32_t i = 0; i < overrides.size(); i++) {
-		size_t pos = state->file->data[state->file->row].find(overrides[i].name);
+		size_t pos = state->file->data[row].find(overrides[i].name);
 		if (pos != std::string::npos) {
 			overrides[i].pos = pos;
 		}
