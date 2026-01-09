@@ -3,6 +3,13 @@
 #include <vector>
 #include <chrono>
 #include <string>
+#include <algorithm>
+
+struct aggregatedTimer {
+	std::string name;
+	uint32_t totalElapsed;
+	uint32_t num;
+};
 
 struct timer {
 	std::string name;

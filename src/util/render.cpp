@@ -460,6 +460,7 @@ Cursor renderVisibleLines(State *state, bool changeVisualColor)
 	bool checkAgain = false;
 	for (int32_t i = 0; i < (int32_t)state->file->data.size() && i < (int32_t)(state->maxY + state->file->windowPosition.row) - 1; i++) {
 		checkAgain = false;
+		startCheckpoint("checkMultiLineCommentStart", state->timers);
 		if (!isLargeFile(state)) {
 			if (startsWithSymbol(state, i, "/*")) {
 				multiLineComment = true;
@@ -467,9 +468,12 @@ Cursor renderVisibleLines(State *state, bool changeVisualColor)
 			}
 		}
 		if (i >= (int32_t)state->file->windowPosition.row) {
+			startCheckpoint("renderLineNumber", state->timers);
 			renderLineNumber(state, i, currentRenderRow);
+			startCheckpoint("renderLineContent", state->timers);
 			currentRenderRow = renderLineContent(state, i, currentRenderRow, &cursor, multiLineComment, changeVisualColor);
 		}
+		startCheckpoint("checkMultiLineCommentEnd", state->timers);
 		if (!isLargeFile(state)) {
 			if (startsWithSymbol(state, i, "*/")) {
 				multiLineComment = false;
