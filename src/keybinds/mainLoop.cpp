@@ -22,6 +22,6 @@ void mainLoop(State *state, int32_t c)
 
 	auto elapsed = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
 	if (elapsed < std::chrono::microseconds(1000)) {
-		std::this_thread::sleep_for(std::chrono::microseconds(1000) - elapsed);
+		std::this_thread::sleep_for(std::chrono::milliseconds(1));
 	}
 }

@@ -30,7 +30,7 @@ void sendKeys(State *state, int32_t c)
 		state->keys.push_back({ state->mode, getEscapedChar(c, false) });
 	}
 	state->showGrep = false;
-	state->status = std::string("");
+	// state->status = std::string("");
 	state->searchFail = false;
 	state->showFileStack = false;
 	state->searching = state->mode == SEARCH;

@@ -87,9 +87,8 @@ int32_t renderPixels(State *state, int32_t r, int32_t c, std::vector<Pixel> pixe
 	int32_t row = r;
 	int32_t col = c;
 	for (uint32_t i = 0; i < pixels.size(); i++) {
-		attron(COLOR_PAIR(pixels[i].color));
+		attrset(COLOR_PAIR(pixels[i].color));
 		mvaddch(row, col, pixels[i].c);
-		attroff(COLOR_PAIR(pixels[i].color));
 		if ((uint32_t)col + 1 >= state->maxX) {
 			if (wrap && state->options.wordwrap) {
 				row++;
@@ -445,6 +444,7 @@ std::string getBlame(State *state, int32_t i)
 Cursor renderVisibleLines(State *state, bool changeVisualColor)
 {
 	std::chrono::time_point<std::chrono::high_resolution_clock> start, end;
+	start = std::chrono::high_resolution_clock::now();
 
 	Cursor cursor{ -1, -1 };
 	int32_t currentRenderRow = STATUS_BAR_LENGTH;
@@ -471,6 +471,10 @@ Cursor renderVisibleLines(State *state, bool changeVisualColor)
 			}
 		}
 	}
+
+	end = std::chrono::high_resolution_clock::now();
+	auto elapsed = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+	state->status = std::to_string(elapsed.count());
 	return cursor;
 }
 
@@ -516,7 +520,9 @@ void renderLineNumber(State *state, int32_t row, int32_t renderRow)
 
 	insertPixels(state, &pixels, padTo(std::to_string(row + 1), state->lineNumSize, ' '), getLineNumberColor(state, row));
 
+	std::chrono::time_point<std::chrono::high_resolution_clock> start = std::chrono::high_resolution_clock::now();
 	auto color = getMarkColor(state, row);
+	std::chrono::time_point<std::chrono::high_resolution_clock> end = std::chrono::high_resolution_clock::now();
 	insertPixels(state, &pixels, color == BLACK ? " " : "|", color);
 
 	if (state->mode == BLAME) {
@@ -525,6 +531,10 @@ void renderLineNumber(State *state, int32_t row, int32_t renderRow)
 
 	int32_t border = state->fileExplorerOpen ? state->fileExplorerSize : 0;
 	renderPixels(state, renderRow, border, pixels, false);
+
+	auto elapsed = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+
+	// state->status = std::to_string(elapsed.count());
 }
 
 Cursor renderLogLines(State *state)
@@ -625,7 +635,7 @@ std::vector<colorOverrides> determineColorOverrides(State *state, int32_t row)
 		{ "IMPORTANT", invertColor(YELLOW), -1 },
 	};
 	for (uint32_t i = 0; i < overrides.size(); i++) {
-		size_t pos = state->file->data[state->file->row].find(overrides[i].name);
+		size_t pos = state->file->data[row].find(overrides[i].name);
 		if (pos != std::string::npos) {
 			overrides[i].pos = pos;
 		}
@@ -635,12 +645,14 @@ std::vector<colorOverrides> determineColorOverrides(State *state, int32_t row)
 
 int32_t renderLineContent(State *state, int32_t row, int32_t renderRow, Cursor *cursor, bool multiLineComment, bool changeVisualColor)
 {
+	std::chrono::time_point<std::chrono::high_resolution_clock> start, end;
 	std::vector<Pixel> pixels = std::vector<Pixel>();
 	std::vector<Pixel> replacePixels = std::vector<Pixel>();
 	int visualColor = changeVisualColor ? invertColor(YELLOW) : invertColor(RED);
 
 	std::vector<colorOverrides> overrides = determineColorOverrides(state, row);
 
+	start = std::chrono::high_resolution_clock::now();
 	if (isRowColInVisual(state, row, 0) && state->file->data[row].length() == 0) {
 		insertPixels(state, &pixels, " ", visualColor);
 		if (state->file->row == (uint32_t)row) {
@@ -790,6 +802,7 @@ int32_t renderLineContent(State *state, int32_t row, int32_t renderRow, Cursor *
 			pixels[i] = replacePixels[i];
 		}
 	}
+
 	return renderRow + renderPixels(state, renderRow, getLineNumberOffset(state), pixels, true);
 }
 
@@ -874,38 +887,34 @@ void renderScreen(State *state, bool fullRedraw)
 		clear();
 	}
 
-	try {
-		erase();
-		bool noLineNum = false;
-		Cursor editorCursor = {};
-		Cursor fileExplorerCursor = {};
-		if (state->mode == FIND) {
-			renderFindOutput(state);
-		} else if (state->mode == DIFF) {
-			if (state->viewingDiff) {
-				editorCursor = renderDiff(state);
-			} else {
-				editorCursor = renderLogLines(state);
-			}
-			noLineNum = true;
-		} else if (state->mode == GREP) {
-			renderGrepOutput(state);
+	erase();
+	bool noLineNum = false;
+	Cursor editorCursor = {};
+	Cursor fileExplorerCursor = {};
+	if (state->mode == FIND) {
+		renderFindOutput(state);
+	} else if (state->mode == DIFF) {
+		if (state->viewingDiff) {
+			editorCursor = renderDiff(state);
 		} else {
-			editorCursor = renderVisibleLines(state, fullRedraw);
-			if (state->fileExplorerOpen) {
-				fileExplorerCursor = renderFileExplorer(state);
-			}
+			editorCursor = renderLogLines(state);
 		}
-		if (state->showFileStack) {
-			renderFileStack(state);
+		noLineNum = true;
+	} else if (state->mode == GREP) {
+		renderGrepOutput(state);
+	} else {
+		editorCursor = renderVisibleLines(state, fullRedraw);
+		if (state->fileExplorerOpen) {
+			fileExplorerCursor = renderFileExplorer(state);
 		}
-		int32_t cursorOnStatusBar = renderStatusBar(state);
-		moveCursor(state, cursorOnStatusBar, editorCursor, fileExplorerCursor, noLineNum);
-		wnoutrefresh(stdscr);
-		doupdate();
-	} catch (const std::exception &e) {
-		state->status = std::string("something went wrong while rendering") + e.what();
 	}
+	if (state->showFileStack) {
+		renderFileStack(state);
+	}
+	int32_t cursorOnStatusBar = renderStatusBar(state);
+	moveCursor(state, cursorOnStatusBar, editorCursor, fileExplorerCursor, noLineNum);
+	wnoutrefresh(stdscr);
+	doupdate();
 }
 
 void initTerminal()
