@@ -187,7 +187,6 @@ int32_t renderStatusBar(State *state)
 	std::string prefix;
 	std::vector<Pixel> pixels = std::vector<Pixel>();
 
-
 	if (state->status.length() > 0) {
 		prefix = "";
 		insertPixels(state, &pixels, prefix + state->status, RED);

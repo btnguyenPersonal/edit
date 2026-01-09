@@ -21,9 +21,7 @@ void printCheckpoints(std::vector<timer> &timers)
 {
 	if (timers.size() > 0) {
 		endLastCheckpoint(timers);
-		std::sort(timers.begin(), timers.end(), [](struct timer a, struct timer b) {
-			return a.name < b.name;
-		});
+		std::sort(timers.begin(), timers.end(), [](struct timer a, struct timer b) { return a.name < b.name; });
 		std::vector<aggregatedTimer> aggregatedTimers;
 		std::string lastName = timers[0].name;
 		aggregatedTimer current = {};
@@ -47,4 +45,3 @@ void printCheckpoints(std::vector<timer> &timers)
 		system("sleep 0.1");
 	}
 }
-

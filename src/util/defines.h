@@ -25,4 +25,3 @@
 #define WHITE 9
 #define DIFFGREEN 100
 #define DIFFRED 101
-
