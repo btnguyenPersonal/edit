@@ -1,4 +1,8 @@
 ## tasks
+- use default terminal selection (should be able to copy directly with cmd c)
+- ctrl a e home end
+- ctrl r crash
+- paste into terminal fast dont have to use gp gy
 - more tests
 	[x] string
 	[x] autocomplete
@@ -7,6 +11,7 @@
 	[x] sanity
 	[x] typingKeys
 	[x] insertLoggingCode
+	[ ] render
 	[ ] movement
 	[ ] clipboard
 	[ ] fileops
@@ -26,7 +31,6 @@
 	[ ] textedit
 	[ ] search
 	[ ] repeat
-	[ ] render
 	[ ] fileExplorerNode
 	[ ] fileExplorerKeys
 	[ ] multicursorKeys
