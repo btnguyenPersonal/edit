@@ -3,6 +3,7 @@
 #include "modes.h"
 #include "visualType.h"
 #include "bounds.h"
+#include "perf.h"
 #include "fileExplorerNode.h"
 #include <filesystem>
 #include <string>
@@ -119,6 +120,8 @@ class State {
     public:
 	std::mutex findMutex;
 	std::mutex grepMutex;
+	bool debug;
+	std::vector<timer> timers;
 	FileExplorerNode *fileExplorer;
 	Mark mark;
 	Mode mode;

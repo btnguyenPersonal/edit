@@ -18,6 +18,7 @@
 #include "string.h"
 #include "ctrl.h"
 #include "defines.h"
+#include "perf.h"
 #include "assert.h"
 
 #include <ncurses.h>
@@ -883,6 +884,14 @@ void renderScreen(State *state)
 
 void renderScreen(State *state, bool fullRedraw)
 {
+	if (state->debug) {
+		endwin();
+		printCheckpoints(state->timers);
+		initTerminal();
+	}
+
+	startCheckpoint("clear and erase", state->timers);
+
 	if (fullRedraw) {
 		clear();
 	}
@@ -892,29 +901,41 @@ void renderScreen(State *state, bool fullRedraw)
 	Cursor editorCursor = {};
 	Cursor fileExplorerCursor = {};
 	if (state->mode == FIND) {
+		startCheckpoint("renderFindOutput", state->timers);
 		renderFindOutput(state);
 	} else if (state->mode == DIFF) {
 		if (state->viewingDiff) {
+			startCheckpoint("renderDiff", state->timers);
 			editorCursor = renderDiff(state);
 		} else {
+			startCheckpoint("renderLogLines", state->timers);
 			editorCursor = renderLogLines(state);
 		}
 		noLineNum = true;
 	} else if (state->mode == GREP) {
+		startCheckpoint("renderGrepOutput", state->timers);
 		renderGrepOutput(state);
 	} else {
+		startCheckpoint("renderVisibleLines", state->timers);
 		editorCursor = renderVisibleLines(state, fullRedraw);
 		if (state->fileExplorerOpen) {
+			startCheckpoint("renderFileExplorer", state->timers);
 			fileExplorerCursor = renderFileExplorer(state);
 		}
 	}
 	if (state->showFileStack) {
+		startCheckpoint("renderFileStack", state->timers);
 		renderFileStack(state);
 	}
+	startCheckpoint("renderStatusBar", state->timers);
 	int32_t cursorOnStatusBar = renderStatusBar(state);
+	startCheckpoint("moveCursor", state->timers);
 	moveCursor(state, cursorOnStatusBar, editorCursor, fileExplorerCursor, noLineNum);
+	startCheckpoint("wnoutrefresh and doupdate", state->timers);
 	wnoutrefresh(stdscr);
 	doupdate();
+
+	endLastCheckpoint(state->timers);
 }
 
 void initTerminal()

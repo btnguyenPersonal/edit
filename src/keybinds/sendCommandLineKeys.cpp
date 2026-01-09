@@ -52,6 +52,8 @@ void evaluateCommandLineQuery(State *state)
 				exit(0);
 			}
 		}
+	} else if (state->commandLine.query == "debug") {
+		state->debug = !state->debug;
 	} else if (state->commandLine.query == "w") {
 		trimTrailingWhitespace(state);
 		saveFile(state);
