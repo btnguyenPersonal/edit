@@ -18,6 +18,7 @@
 #include "string.h"
 #include "ctrl.h"
 #include "defines.h"
+#include "assert.h"
 
 #include <ncurses.h>
 
@@ -87,9 +88,8 @@ int32_t renderPixels(State *state, int32_t r, int32_t c, std::vector<Pixel> pixe
 	int32_t row = r;
 	int32_t col = c;
 	for (uint32_t i = 0; i < pixels.size(); i++) {
-		attron(COLOR_PAIR(pixels[i].color));
+		attrset(COLOR_PAIR(pixels[i].color));
 		mvaddch(row, col, pixels[i].c);
-		attroff(COLOR_PAIR(pixels[i].color));
 		if ((uint32_t)col + 1 >= state->maxX) {
 			if (wrap && state->options.wordwrap) {
 				row++;
@@ -186,22 +186,23 @@ int32_t renderStatusBar(State *state)
 	std::string prefix;
 	std::vector<Pixel> pixels = std::vector<Pixel>();
 
-	for (uint32_t i = 0; i < state->harpoon[state->workspace].list.size(); i++) {
-		std::string file = state->harpoon[state->workspace].list[i];
-		bool current = state->file && file == state->file->filename && state->harpoon[state->workspace].index == i;
-		insertPixels(state, &pixels, minimize_filename(file), current ? invertColor(WHITE) : GREY);
-		insertPixels(state, &pixels, ' ', WHITE);
-		insertPixels(state, &pixels, ' ', WHITE);
-	}
-	renderPixels(state, 0, 0, pixels, false);
-
-	pixels.clear();
 
 	if (state->status.length() > 0) {
 		prefix = "";
 		insertPixels(state, &pixels, prefix + state->status, RED);
-		renderPixels(state, 1, 0, pixels, false);
+		renderPixels(state, 0, 0, pixels, false);
+	} else {
+		for (uint32_t i = 0; i < state->harpoon[state->workspace].list.size(); i++) {
+			std::string file = state->harpoon[state->workspace].list[i];
+			bool current = state->file && file == state->file->filename && state->harpoon[state->workspace].index == i;
+			insertPixels(state, &pixels, minimize_filename(file), current ? invertColor(WHITE) : GREY);
+			insertPixels(state, &pixels, ' ', WHITE);
+			insertPixels(state, &pixels, ' ', WHITE);
+		}
+		renderPixels(state, 0, 0, pixels, false);
 	}
+
+	pixels.clear();
 
 	if (state->mode == NAMING) {
 		prefix = state->prompt + " ";
@@ -317,11 +318,21 @@ int32_t getSearchColor(State *state, int32_t row, uint32_t startOfSearch, std::s
 bool isMergeConflict(const std::string &str)
 {
 	const std::vector<std::string> markers = { "<<<<<<<", "=======", ">>>>>>>", "|||||||" };
-	for (const auto &marker : markers) {
-		if (str.length() >= marker.length()) {
-			if (str.substr(0, marker.length()) == marker) {
-				return true;
+	int32_t selectedMarker = -1;
+	if (str.length() == 7) {
+		for (uint32_t i = 0; i < markers.size(); i++) {
+			if (str[0] == markers[i][0]) {
+				selectedMarker = i;
+				break;
 			}
+		}
+		if (selectedMarker != -1) {
+			for (uint32_t i = 0; i < markers[selectedMarker].length(); i++) {
+				if (str[i] != markers[selectedMarker][i]) {
+					return false;
+				}
+			}
+			return true;
 		}
 	}
 	return false;
@@ -329,40 +340,38 @@ bool isMergeConflict(const std::string &str)
 
 bool isRowColInVisual(State *state, uint32_t i, uint32_t j)
 {
-	if (state->mode == VISUAL) {
-		uint32_t minR;
-		uint32_t minC;
-		uint32_t maxR;
-		uint32_t maxC;
-		if (state->file->row < state->visual.row) {
-			minR = state->file->row;
-			minC = state->file->col;
-			maxR = state->visual.row;
-			maxC = state->visual.col;
-		} else {
-			minR = state->visual.row;
-			minC = state->visual.col;
-			maxR = state->file->row;
-			maxC = state->file->col;
+	uint32_t minR;
+	uint32_t minC;
+	uint32_t maxR;
+	uint32_t maxC;
+	if (state->file->row < state->visual.row) {
+		minR = state->file->row;
+		minC = state->file->col;
+		maxR = state->visual.row;
+		maxC = state->visual.col;
+	} else {
+		minR = state->visual.row;
+		minC = state->visual.col;
+		maxR = state->file->row;
+		maxC = state->file->col;
+	}
+	if (state->visualType == LINE) {
+		if (minR <= i && i <= maxR) {
+			return true;
 		}
-		if (state->visualType == LINE) {
-			if (minR <= i && i <= maxR) {
-				return true;
-			}
-		} else if (state->visualType == BLOCK) {
-			if (minR <= i && i <= maxR) {
-				return (minC <= j && j <= maxC) || (maxC <= j && j <= minC);
-			}
-		} else if (state->visualType == SELECT) {
-			if (minR < i && i < maxR) {
-				return true;
-			} else if (minR == i && maxR == i) {
-				return (minC <= j && j <= maxC) || (maxC <= j && j <= minC);
-			} else if (minR == i) {
-				return minC <= j;
-			} else if (maxR == i) {
-				return maxC >= j;
-			}
+	} else if (state->visualType == BLOCK) {
+		if (minR <= i && i <= maxR) {
+			return (minC <= j && j <= maxC) || (maxC <= j && j <= minC);
+		}
+	} else if (state->visualType == SELECT) {
+		if (minR < i && i < maxR) {
+			return true;
+		} else if (minR == i && maxR == i) {
+			return (minC <= j && j <= maxC) || (maxC <= j && j <= minC);
+		} else if (minR == i) {
+			return minC <= j;
+		} else if (maxR == i) {
+			return maxC >= j;
 		}
 	}
 	return false;
@@ -444,8 +453,6 @@ std::string getBlame(State *state, int32_t i)
 
 Cursor renderVisibleLines(State *state, bool changeVisualColor)
 {
-	std::chrono::time_point<std::chrono::high_resolution_clock> start, end;
-
 	Cursor cursor{ -1, -1 };
 	int32_t currentRenderRow = STATUS_BAR_LENGTH;
 	bool multiLineComment = false;
@@ -471,6 +478,7 @@ Cursor renderVisibleLines(State *state, bool changeVisualColor)
 			}
 		}
 	}
+
 	return cursor;
 }
 
@@ -487,14 +495,11 @@ int32_t getLineNumberColor(State *state, int32_t row)
 
 int32_t getMarkColor(State *state, int32_t row)
 {
-	bool logging = std::regex_search(state->file->data[row], std::regex(getLoggingRegex(state)));
-	bool endsWithSpace = state->file->data[row].length() > 0 && isWhitespace(state->file->data[row].back());
-	bool isOnMark = (int32_t)state->mark.mark == row && state->mark.filename == state->file->filename;
-	if (endsWithSpace && state->mode != INSERT) {
+	if (state->file->data[row].length() > 0 && isWhitespace(state->file->data[row].back()) && state->mode != INSERT) {
 		return RED;
-	} else if (getLoggingRegex(state) != "" && logging) {
+	} else if (state->file->data[row].find(getLoggingSearch(state)) != std::string::npos) {
 		return YELLOW;
-	} else if (isOnMark) {
+	} else if ((int32_t)state->mark.mark == row && state->mark.filename == state->file->filename) {
 		return CYAN;
 	} else {
 		return BLACK;
@@ -641,7 +646,7 @@ int32_t renderLineContent(State *state, int32_t row, int32_t renderRow, Cursor *
 
 	std::vector<colorOverrides> overrides = determineColorOverrides(state, row);
 
-	if (isRowColInVisual(state, row, 0) && state->file->data[row].length() == 0) {
+	if (state->mode == VISUAL && isRowColInVisual(state, row, 0) && state->file->data[row].length() == 0) {
 		insertPixels(state, &pixels, " ", visualColor);
 		if (state->file->row == (uint32_t)row) {
 			cursor->row = renderRow;
@@ -659,22 +664,23 @@ int32_t renderLineContent(State *state, int32_t row, int32_t renderRow, Cursor *
 		}
 		bool foundCursor = false;
 		std::vector<int> colorOverrides;
-
+		bool mergeConflict = isMergeConflict(state->file->data[row]);
+		// TODO(ben): make this happen on overrun instead of initial every time (or getDisplayRows(state, row) not so damn slow)
+		// if (getDisplayRows(state, row) > state->maxY) {
+		// 	int32_t width = ((int32_t)state->maxX - getLineNumberOffset(state));
+		// 	int32_t offset = ((((int32_t)state->maxY / 2) - 1) * width) + (width / 2);
+		// 	if (state->file->col > (uint32_t)offset) {
+		// 		col = state->file->col - offset;
+		// 		cursor->row = (state->maxY / 2) + 1;
+		// 		cursor->col = width / 2;
+		// 		foundCursor = true;
+		// 		insertPixels(state, &replacePixels, '.', GREY);
+		// 		insertPixels(state, &replacePixels, '.', GREY);
+		// 		insertPixels(state, &replacePixels, '.', GREY);
+		// 		insertPixels(state, &replacePixels, '>', GREY);
+		// 	}
+		// }
 		uint32_t col = 0;
-		if (getDisplayRows(state, row) > state->maxY) {
-			int32_t width = ((int32_t)state->maxX - getLineNumberOffset(state));
-			int32_t offset = ((((int32_t)state->maxY / 2) - 1) * width) + (width / 2);
-			if (state->file->col > (uint32_t)offset) {
-				col = state->file->col - offset;
-				cursor->row = (state->maxY / 2) + 1;
-				cursor->col = width / 2;
-				foundCursor = true;
-				insertPixels(state, &replacePixels, '.', GREY);
-				insertPixels(state, &replacePixels, '.', GREY);
-				insertPixels(state, &replacePixels, '.', GREY);
-				insertPixels(state, &replacePixels, '>', GREY);
-			}
-		}
 		for (; col < state->file->data[row].length(); col++) {
 			char c = state->file->data[row][col];
 
@@ -720,7 +726,6 @@ int32_t renderLineContent(State *state, int32_t row, int32_t renderRow, Cursor *
 				color = colorOverrides.back();
 				colorOverrides.pop_back();
 			} else {
-				color = getColorFromChar(c);
 				if (state->matching.row == (uint32_t)row && state->matching.col == col && (state->matching.row != state->file->row || state->matching.col != state->file->col)) {
 					color = invertColor(GREY);
 				} else {
@@ -731,16 +736,16 @@ int32_t renderLineContent(State *state, int32_t row, int32_t renderRow, Cursor *
 					} else if ((int32_t)state->file->row == row && state->file->col == col && col < state->file->data[row].length() && state->file->data[row][col] == '\t') {
 						color = invertColor(WHITE);
 					} else {
-						if (isMergeConflict(state->file->data[row])) {
+						if (mergeConflict) {
 							color = RED;
 						} else if (isComment) {
 							color = GREEN;
-						} else if (inString && getExtension(state->file->filename) != "md" && getExtension(state->file->filename) != "txt") {
+						} else if (inString) {
 							color = CYAN;
 						} else {
-							color = getColorFromChar(state->file->data[row][col]);
+							color = getColorFromChar(c);
 						}
-						if (isRowColInVisual(state, row, col)) {
+						if (state->mode == VISUAL && isRowColInVisual(state, row, col)) {
 							color = visualColor;
 						}
 					}
@@ -772,11 +777,11 @@ int32_t renderLineContent(State *state, int32_t row, int32_t renderRow, Cursor *
 					}
 				}
 			}
-
 			if (searchCounter != 0) {
 				searchCounter -= 1;
 			}
 		}
+
 		if (state->file->row == (uint32_t)row) {
 			if (!foundCursor && state->file->col >= state->file->data[row].length()) {
 				cursor->row = renderRow;
@@ -790,6 +795,7 @@ int32_t renderLineContent(State *state, int32_t row, int32_t renderRow, Cursor *
 			pixels[i] = replacePixels[i];
 		}
 	}
+
 	return renderRow + renderPixels(state, renderRow, getLineNumberOffset(state), pixels, true);
 }
 
@@ -874,38 +880,34 @@ void renderScreen(State *state, bool fullRedraw)
 		clear();
 	}
 
-	try {
-		erase();
-		bool noLineNum = false;
-		Cursor editorCursor = {};
-		Cursor fileExplorerCursor = {};
-		if (state->mode == FIND) {
-			renderFindOutput(state);
-		} else if (state->mode == DIFF) {
-			if (state->viewingDiff) {
-				editorCursor = renderDiff(state);
-			} else {
-				editorCursor = renderLogLines(state);
-			}
-			noLineNum = true;
-		} else if (state->mode == GREP) {
-			renderGrepOutput(state);
+	erase();
+	bool noLineNum = false;
+	Cursor editorCursor = {};
+	Cursor fileExplorerCursor = {};
+	if (state->mode == FIND) {
+		renderFindOutput(state);
+	} else if (state->mode == DIFF) {
+		if (state->viewingDiff) {
+			editorCursor = renderDiff(state);
 		} else {
-			editorCursor = renderVisibleLines(state, fullRedraw);
-			if (state->fileExplorerOpen) {
-				fileExplorerCursor = renderFileExplorer(state);
-			}
+			editorCursor = renderLogLines(state);
 		}
-		if (state->showFileStack) {
-			renderFileStack(state);
+		noLineNum = true;
+	} else if (state->mode == GREP) {
+		renderGrepOutput(state);
+	} else {
+		editorCursor = renderVisibleLines(state, fullRedraw);
+		if (state->fileExplorerOpen) {
+			fileExplorerCursor = renderFileExplorer(state);
 		}
-		int32_t cursorOnStatusBar = renderStatusBar(state);
-		moveCursor(state, cursorOnStatusBar, editorCursor, fileExplorerCursor, noLineNum);
-		wnoutrefresh(stdscr);
-		doupdate();
-	} catch (const std::exception &e) {
-		state->status = std::string("something went wrong while rendering") + e.what();
 	}
+	if (state->showFileStack) {
+		renderFileStack(state);
+	}
+	int32_t cursorOnStatusBar = renderStatusBar(state);
+	moveCursor(state, cursorOnStatusBar, editorCursor, fileExplorerCursor, noLineNum);
+	wnoutrefresh(stdscr);
+	doupdate();
 }
 
 void initTerminal()

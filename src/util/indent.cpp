@@ -144,7 +144,7 @@ int32_t getIndentLevel(State *state, uint32_t row)
 	int32_t indentLevel = getNumLeadingIndentCharacters(state, prevLine);
 	uint32_t indentSize = getIndentSize(state);
 
-	if (hasHTML(prevLine, getExtension(state->file->filename))) {
+	if (hasHTML(prevLine, state->extension)) {
 		int32_t tagType = EMPTY;
 		int32_t tagStack = 0;
 		for (uint32_t i = 0; i < prevLine.length(); i++) {
@@ -184,7 +184,7 @@ int32_t getIndentLevel(State *state, uint32_t row)
 		}
 	}
 
-	if (hasHTML(currLine, getExtension(state->file->filename))) {
+	if (hasHTML(currLine, state->extension)) {
 		int32_t tagType = EMPTY;
 		int32_t tagStack = 0;
 		for (uint32_t i = 0; i < currLine.length(); i++) {

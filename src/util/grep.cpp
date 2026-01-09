@@ -214,10 +214,9 @@ void changeToGrepFile(State *state)
 
 void findDefinitionFromGrepOutput(State *state, std::string s)
 {
-	std::string extension = getExtension(state->file->filename);
 	for (uint32_t i = 0; i < state->grepOutput.size(); i++) {
 		if (state->grepOutput[i].line.back() == '(' || state->grepOutput[i].line.back() == '{') {
-			if (isFunctionLine(state->grepOutput[i].line, s, extension)) {
+			if (isFunctionLine(state->grepOutput[i].line, s, state->extension)) {
 				state->grep.selection = i;
 				changeToGrepFile(state);
 			}

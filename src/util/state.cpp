@@ -136,6 +136,7 @@ void State::reloadFile(const std::string &filename)
 	this->currentFile = this->files.size() - 1;
 	this->file = file;
 	this->loadAllConfigFiles();
+	this->extension = getExtension(this->file->filename);
 	this->mode = NORMAL;
 	this->file->row = pos.row;
 	this->file->col = pos.col;
@@ -167,6 +168,7 @@ void State::changeFile(const std::string &filename)
 		this->file = file;
 	}
 	this->loadAllConfigFiles();
+	this->extension = getExtension(this->file->filename);
 	this->mode = NORMAL;
 }
 
@@ -256,6 +258,7 @@ void State::init()
 	this->grep = { std::string(""), 0, 0 };
 	this->prevKeys = std::string("");
 	this->status = std::string("");
+	this->extension = std::string("");
 	this->searchFail = false;
 	this->mode = FIND;
 	this->dotCommand = std::vector<std::string>();
@@ -281,6 +284,7 @@ void State::init(const std::string &name, const std::vector<std::string> &data)
 	this->mode = NORMAL;
 	this->fileStack = { name };
 	this->fileStackIndex = 0;
+	this->extension = getExtension(this->file->filename);
 }
 
 State::State()
