@@ -456,10 +456,10 @@ Cursor renderVisibleLines(State *state, bool changeVisualColor)
 	Cursor cursor{ -1, -1 };
 	int32_t currentRenderRow = STATUS_BAR_LENGTH;
 	bool multiLineComment = false;
-	bool checkAgain = false;
+	// bool checkAgain = false;
 	for (int32_t i = 0; i < (int32_t)state->file->data.size() && i < (int32_t)(state->maxY + state->file->windowPosition.row) - 1; i++) {
-		checkAgain = false;
 		// TODO(ben): this is ~2 microseconds per line, which adds up in large files (parallel? or just evalute changed lines somehow?)
+		// checkAgain = false;
 		// startCheckpoint("checkMultiLineCommentStart", state->timers);
 		// if (!isLargeFile(state)) {
 		// 	if (startsWithSymbol(state, i, "/*")) {
