@@ -177,7 +177,6 @@ void grepDispatch(State *state, std::string query, std::string path, bool showAl
 		state->grepOutput = output;
 	}
 	state->grepMutex.unlock();
-	state->shouldNotReRender.clear();
 }
 
 void generateGrepOutput(State *state, bool resetCursor)
