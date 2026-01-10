@@ -57,14 +57,14 @@ int32_t invertColor(int32_t color)
 }
 
 struct Pixel {
-	char c;
+	chtype c;
 	int32_t color;
 };
 
 std::vector<Pixel> toPixels(State *state, std::string s, int32_t color, uint32_t size)
 {
 	std::vector<Pixel> pixels = std::vector<Pixel>();
-	for (char c : s) {
+	for (chtype c : s) {
 		if (' ' <= c && c <= '~') {
 			pixels.push_back({ c, color });
 		} else if (c == '\t') {
@@ -103,15 +103,18 @@ int32_t renderPixels(State *state, int32_t r, int32_t c, std::vector<Pixel> pixe
 	return row - r + 1;
 }
 
-void insertPixels(State *state, std::vector<Pixel> *pixels, std::string s, int32_t color)
+// TODO(ben): remove state
+void insertPixels(State *state, std::vector<Pixel> *pixels, chtype c, int32_t color)
 {
-	std::vector<Pixel> tmp = toPixels(state, s, color, pixels->size());
-	pixels->insert(std::end(*pixels), std::begin(tmp), std::end(tmp));
+	pixels.push_back({ c, color });
 }
 
-void insertPixels(State *state, std::vector<Pixel> *pixels, char c, int32_t color)
+// TODO(ben): remove state
+void insertPixels(State *state, std::vector<Pixel> *pixels, std::string s, int32_t color)
 {
-	insertPixels(state, pixels, std::string("") + c, color);
+	for (uint32_t i = 0; i < s.length(); s++) {
+		insertPixels(state, pixels, s[i], color);
+	}
 }
 
 void renderFileStack(State *state)
@@ -757,9 +760,6 @@ int32_t renderLineContent(State *state, int32_t row, int32_t renderRow, Cursor *
 						} else {
 							color = getColorFromChar(c);
 						}
-						if (state->mode == VISUAL && isRowColInVisual(state, row, col)) {
-							color = visualColor;
-						}
 					}
 				}
 			}
@@ -771,6 +771,9 @@ int32_t renderLineContent(State *state, int32_t row, int32_t renderRow, Cursor *
 					col += state->search.query.length() - 1;
 					searchCounter = 0;
 				} else {
+					if (state->mode == VISUAL && isRowColInVisual(state, row, col)) {
+						c = (int32_t)((chtype)c | A_STANDOUT);
+					}
 					insertPixels(state, &pixels, c, color);
 				}
 				if (!foundCursor && state->file->row == (uint32_t)row && state->file->col == col) {
