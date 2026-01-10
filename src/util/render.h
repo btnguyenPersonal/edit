@@ -29,6 +29,6 @@ int32_t getSearchColor(State *state, int32_t row, uint32_t startOfSearch);
 uint32_t renderAutoComplete(State *state, int32_t row, uint32_t col, uint32_t renderCol);
 std::string getRenderBlameString(State *state);
 void renderLineNumber(State *state, int32_t row, int32_t renderRow);
-int32_t renderLineContent(State *state, int32_t row, int32_t renderRow, Cursor *cursor, bool multiLineComment, bool changeVisualColor);
+int32_t renderLineContent(State *state, int32_t row, int32_t renderRow, Cursor *cursor, bool multiLineComment);
 bool endsWithSymbol(State *state, uint32_t row, std::string symbol);
 bool startsWithSymbol(State *state, uint32_t row, std::string symbol);

@@ -449,7 +449,7 @@ std::string getBlame(State *state, int32_t i)
 	}
 }
 
-Cursor renderVisibleLines(State *state, bool changeVisualColor)
+Cursor renderVisibleLines(State *state)
 {
 	Cursor cursor{ -1, -1 };
 	int32_t currentRenderRow = STATUS_BAR_LENGTH;
@@ -469,7 +469,7 @@ Cursor renderVisibleLines(State *state, bool changeVisualColor)
 			startCheckpoint("renderLineNumber", state->timers);
 			renderLineNumber(state, i, currentRenderRow);
 			startCheckpoint("renderLineContent", state->timers);
-			currentRenderRow = renderLineContent(state, i, currentRenderRow, &cursor, multiLineComment, changeVisualColor);
+			currentRenderRow = renderLineContent(state, i, currentRenderRow, &cursor, multiLineComment);
 		}
 		// startCheckpoint("checkMultiLineCommentEnd", state->timers);
 		// if (!isLargeFile(state)) {
@@ -648,11 +648,10 @@ std::vector<colorOverrides> determineColorOverrides(State *state, int32_t row)
 	return overrides;
 }
 
-int32_t renderLineContent(State *state, int32_t row, int32_t renderRow, Cursor *cursor, bool multiLineComment, bool changeVisualColor)
+int32_t renderLineContent(State *state, int32_t row, int32_t renderRow, Cursor *cursor, bool multiLineComment)
 {
 	std::vector<Pixel> pixels = std::vector<Pixel>();
 	std::vector<Pixel> replacePixels = std::vector<Pixel>();
-	int visualColor = changeVisualColor ? invertColor(YELLOW) : invertColor(RED);
 
 	std::vector<colorOverrides> overrides = determineColorOverrides(state, row);
 
@@ -916,7 +915,7 @@ void renderScreen(State *state, bool fullRedraw)
 		renderGrepOutput(state);
 	} else {
 		startCheckpoint("renderVisibleLines", state->timers);
-		editorCursor = renderVisibleLines(state, fullRedraw);
+		editorCursor = renderVisibleLines(state);
 		if (state->fileExplorerOpen) {
 			startCheckpoint("renderFileExplorer", state->timers);
 			fileExplorerCursor = renderFileExplorer(state);
