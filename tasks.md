@@ -34,9 +34,7 @@
 	[ ] normalKeys
 
 compat:
-	- use cursor as invisible with inverted
 	- mouse
-	- replace state->maxX state->maxY with LINES and COLUMNS
 
 perf:
 	- use trace() to see all the ncurses calls

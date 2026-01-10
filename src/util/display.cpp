@@ -121,6 +121,26 @@ bool isWindowPositionInvalid(State *state)
 	return false;
 }
 
+uint32_t getColFromDisplay(State *state, int32_t row, int32_t col)
+{
+	if (state->options.indent_style == "tab") {
+		uint32_t sum = 0;
+		for (uint32_t i = 0; i < state->file->data[state->file->row].length(); i++) {
+			if (state->file->data[state->file->row][i] == '\t') {
+				sum += state->options.indent_size;
+			} else {
+				sum++;
+			}
+			if ((int32_t)sum > col) {
+				return i;
+			}
+		}
+		return sum;
+	} else {
+		return state->file->col;
+	}
+}
+
 uint32_t getDisplayCol(State *state)
 {
 	if (state->options.indent_style == "tab") {

@@ -112,7 +112,7 @@ struct CommandLineAutocompleteState {
 };
 
 struct Recording {
-	bool on;
+	bool on;p
 	char c;
 };
 

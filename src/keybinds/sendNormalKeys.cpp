@@ -25,6 +25,7 @@
 #include "../util/ctrl.h"
 #include "../util/string.h"
 #include "../util/repeat.h"
+#include "../util/defines.h"
 #include "sendKeys.h"
 #include "sendVisualKeys.h"
 #include <ncurses.h>
@@ -36,7 +37,14 @@ void sendNormalKeys(State *state, int32_t c)
 	if (c == KEY_MOUSE) {
 		MEVENT event;
 		if (getmouse(&event) == OK) {
-			if (event.bstate & BUTTON4_PRESSED) {
+			if (event.bstate & BUTTON1_PRESSED) {
+				if (event.y >= STATUS_BAR_LENGTH) {
+					state->file->row = state->file->windowPosition.row + (event.y - STATUS_BAR_LENGTH);
+				}
+				if (event.x >= (int32_t)getLineNumberOffset(state)) {
+					state->file->col = getColFromDisplay(state, state->file->row, event.x - getLineNumberOffset(state));
+				}
+			} else if (event.bstate & BUTTON4_PRESSED) {
 				upScreen(state);
 #ifdef __APPLE__
 			} else if (event.bstate & 0x8000000) {

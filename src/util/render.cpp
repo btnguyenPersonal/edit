@@ -970,5 +970,6 @@ void initTerminal()
 	use_default_colors();
 	set_escdelay(0);
 	initColors();
+	mouseinterval(1);
 	mousemask(ALL_MOUSE_EVENTS | REPORT_MOUSE_POSITION, NULL);
 }
