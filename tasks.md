@@ -43,6 +43,7 @@ perf:
 	- multiline comments render fast
 	- very long lines render fast
 	- paste into terminal fast dont have to use gp gy
+	- speed up history somehow, takes even longer for large files
 
 crash:
 	- ctrl r crash
