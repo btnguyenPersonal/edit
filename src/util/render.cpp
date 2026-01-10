@@ -874,8 +874,6 @@ void renderScreen(State *state)
 
 void renderScreen(State *state, bool fullRedraw)
 {
-	curs_set(0);
-
 	startCheckpoint("clear and erase", state->timers);
 
 	if (fullRedraw) {
@@ -922,8 +920,6 @@ void renderScreen(State *state, bool fullRedraw)
 	doupdate();
 
 	endLastCheckpoint(state->timers);
-
-	curs_set(1);
 }
 
 void initTerminal()

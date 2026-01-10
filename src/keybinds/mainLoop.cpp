@@ -21,11 +21,13 @@ void mainLoop(State *state)
 
 		startCheckpoint("==== editor logic ====", state->timers);
 
-		bool changed = false;
+		int32_t cachedHistoryPosition = -1;
+		if (state->file) {
+			cachedHistoryPosition = state->file->historyPosition;
+		}
 
 		int32_t c;
 		while ((c = getch()) != ERR) {
-			changed = true;
 			startCheckpoint("sendKeys" + c, state->timers);
 			sendKeys(state, c);
 			startCheckpoint("cleanup" + c, state->timers);
@@ -35,7 +37,7 @@ void mainLoop(State *state)
 		}
 
 
-		if (changed) {
+		if (state->file && cachedHistoryPosition != state->file->historyPosition) {
 			startCheckpoint("autosaveFile", state->timers);
 			autosaveFile(state);
 		}
