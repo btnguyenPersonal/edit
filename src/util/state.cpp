@@ -17,6 +17,7 @@
 File *getFile(const std::string &name, const std::vector<std::string> &data)
 {
 	File *file = new File();
+	file->newFile = !std::filesystem::is_regular_file(name);
 	file->filename = name;
 	file->data = data;
 	file->previousState = data;

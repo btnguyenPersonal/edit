@@ -259,6 +259,9 @@ int32_t renderStatusBar(State *state)
 	std::string file;
 	if (state->file) {
 		file = std::string("\"") + setStringToLength(state->file->filename, state->maxX - (pixels.size() + 2), true) + "\"";
+		if (state->file->newFile) {
+			file += "[NEW]";
+		}
 	}
 	std::string rightSide = prevKeys + mode + file;
 	auto tmp = rightSide.length() + pixels.size();
@@ -268,7 +271,7 @@ int32_t renderStatusBar(State *state)
 	insertPixels(state, &pixels, prevKeys, WHITE);
 	insertPixels(state, &pixels, mode, getModeColor(state));
 	if (state->file) {
-		insertPixels(state, &pixels, file, state->file->lastSave != state->file->historyPosition ? GREY : WHITE);
+		insertPixels(state, &pixels, file, state->file->lastSave != state->file->historyPosition || state->file->newFile ? GREY : WHITE);
 	}
 
 	renderPixels(state, 1, 0, pixels, false);
@@ -746,7 +749,7 @@ int32_t renderLineContent(State *state, int32_t row, int32_t renderRow, Cursor *
 					if (state->mode == VISUAL && isRowColInVisual(state, row, col)) {
 						ch |= A_STANDOUT;
 					}
-					if (state->file->row == (uint32_t)row && state->file->col == col) {
+					if (!foundCursor && state->file->row == (uint32_t)row && state->file->col == col) {
 						ch |= A_REVERSE;
 						foundCursor = true;
 						cursor->row = renderRow;
@@ -762,6 +765,11 @@ int32_t renderLineContent(State *state, int32_t row, int32_t renderRow, Cursor *
 				if (!isLargeFile(state) && state->file->row == (uint32_t)row && state->file->col == col + 1) {
 					if (state->mode == INSERT || state->mode == MULTICURSOR) {
 						if (state->file->col + 1 >= state->file->data[state->file->row].length() || !isAlphanumeric(state->file->data[state->file->row][state->file->col])) {
+							if (!foundCursor) {
+								foundCursor = true;
+								cursor->row = renderRow;
+								cursor->col = pixels.size();
+							}
 							insertPixels(state, &pixels, autocomplete(state, getCurrentWord(state)), GREY);
 						}
 					}

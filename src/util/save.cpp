@@ -15,6 +15,7 @@ void saveFile(State *state)
 			}
 		}
 		file.close();
+		state->file->newFile = false;
 		state->file->lastSave = state->file->historyPosition;
 	}
 }
