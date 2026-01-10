@@ -11,13 +11,32 @@ void mainLoop(State *state)
 {
 	std::chrono::time_point<std::chrono::high_resolution_clock> nextFrame = std::chrono::high_resolution_clock::now() + FRAME_TIME;
 	while (true) {
+		if (state->debug) {
+			endwin();
+			printCheckpoints(state->timers);
+			initTerminal();
+		} else {
+			clearCheckpoints(state->timers);
+		}
+
+		startCheckpoint("==== editor logic ====", state->timers);
+
 		int32_t c;
 		while ((c = getch()) != ERR) {
+			startCheckpoint("sendKeys" + c, state->timers);
 			sendKeys(state, c);
+			startCheckpoint("cleanup" + c, state->timers);
 			cleanup(state, c);
+			startCheckpoint("history" + c, state->timers);
 			history(state, c);
-			autosaveFile(state);
 		}
+
+		startCheckpoint("preRenderCleanup", state->timers);
+		preRenderCleanup(state);
+		startCheckpoint("autosaveFile", state->timers);
+		autosaveFile(state);
+
+		startCheckpoint("==== render logic ====", state->timers);
 
 		renderScreen(state);
 

@@ -888,14 +888,6 @@ void renderScreen(State *state)
 
 void renderScreen(State *state, bool fullRedraw)
 {
-	if (state->debug) {
-		endwin();
-		printCheckpoints(state->timers);
-		initTerminal();
-	} else {
-		clearCheckpoints(state->timers);
-	}
-
 	startCheckpoint("clear and erase", state->timers);
 
 	if (fullRedraw) {

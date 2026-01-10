@@ -33,21 +33,25 @@ void cleanup(State *state, char c)
 		if (state->options.insert_final_newline) {
 			insertFinalEmptyNewline(state);
 		}
-		if (isWindowPositionInvalid(state)) {
-			centerScreen(state);
-		}
-		assert(state->file->windowPosition.row <= state->file->row);
-		assert(state->file->windowPosition.row + state->maxY >= state->file->row);
 		if (state->recording.on && !state->dontRecordKey) {
 			recordMacroCommand(state, c);
 		}
 		if (!state->file->jumplist.touched) {
 			recordJumpList(state);
 		}
-		state->matching = matchIt(state);
 		realignHarpoon(state);
 	}
 	state->dontRecordKey = false;
+}
+
+void preRenderCleanup(State *state)
+{
+	state->matching = matchIt(state);
+	if (isWindowPositionInvalid(state)) {
+		centerScreen(state);
+	}
+	assert(state->file->windowPosition.row <= state->file->row);
+	assert(state->file->windowPosition.row + state->maxY >= state->file->row);
 }
 
 void history(State *state, char c)
