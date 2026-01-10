@@ -29,9 +29,6 @@ int32_t main(int32_t argc, char *argv[])
 	sanityCheckDocumentEmpty(state);
 	calcWindowBounds(state);
 	renderScreen(state);
-	while (true) {
-		c = getch();
-		mainLoop(state, c);
-	}
+	mainLoop(state);
 	return 0;
 }

@@ -42,10 +42,15 @@ void printCheckpoints(std::vector<timer> &timers)
 		for (uint32_t i = 0; i < aggregatedTimers.size(); i++) {
 			printf("%30s(%d): %d μs\n", aggregatedTimers[i].name.c_str(), aggregatedTimers[i].num, aggregatedTimers[i].totalElapsed);
 			total.totalElapsed += aggregatedTimers[i].totalElapsed;
-			total.num ++;
+			total.num++;
+		}
+		if (total.totalElapsed > 16666) {
+			printf("\033[31m");
+		} else {
+			printf("\033[32m");
 		}
 		printf("%30s(%d): %d μs\n", total.name.c_str(), total.num, total.totalElapsed);
-		printf("\n");
+		printf("\033[0m\n");
 		clearCheckpoints(timers);
 		system("sleep 0.1");
 	}

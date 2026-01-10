@@ -5,24 +5,26 @@
 #include <thread>
 #include <chrono>
 
-void mainLoop(State *state, int32_t c)
+constexpr std::chrono::microseconds FRAME_TIME = std::chrono::microseconds(16666); // 60 fps
+
+void mainLoop(State *state)
 {
-	std::chrono::time_point<std::chrono::high_resolution_clock> start = std::chrono::high_resolution_clock::now();
+	std::chrono::time_point<std::chrono::high_resolution_clock> nextFrame = std::chrono::high_resolution_clock::now() + FRAME_TIME;
+	while (true) {
+		int32_t c;
+		while ((c = getch()) != ERR) {
+			sendKeys(state, c);
+			cleanup(state, c);
+			history(state, c);
+			autosaveFile(state);
+		}
 
-	if (c != ERR) {
-		sendKeys(state, c);
-		cleanup(state, c);
-		history(state, c);
-		autosaveFile(state);
 		renderScreen(state);
-	} else if (!state->shouldNotReRender.test_and_set()) {
-		renderScreen(state);
-	}
 
-	std::chrono::time_point<std::chrono::high_resolution_clock> end = std::chrono::high_resolution_clock::now();
-
-	std::chrono::microseconds elapsed = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
-	if (elapsed < std::chrono::microseconds(1000)) {
-		std::this_thread::sleep_for(std::chrono::microseconds(1000) - elapsed);
+		auto now = std::chrono::high_resolution_clock::now();
+		if (now < nextFrame) {
+			std::this_thread::sleep_until(nextFrame);
+		}
+		nextFrame += FRAME_TIME;
 	}
 }
