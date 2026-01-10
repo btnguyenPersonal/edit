@@ -93,7 +93,7 @@ uint32_t getNormalizedCol(State *state, uint32_t hardCol)
 
 uint32_t isLargeFile(State *state)
 {
-	return state->file && state->file->data.size() > 50000;
+	return state->file && state->file->data.size() >= 3000;
 }
 
 bool isColTooSmall(State *state)

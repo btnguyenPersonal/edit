@@ -21,3 +21,4 @@ struct timer {
 void startCheckpoint(const std::string &name, std::vector<timer> &timers);
 void printCheckpoints(std::vector<timer> &timers);
 void endLastCheckpoint(std::vector<timer> &timers);
+void clearCheckpoints(std::vector<timer> &timers);

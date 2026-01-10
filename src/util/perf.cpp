@@ -46,7 +46,12 @@ void printCheckpoints(std::vector<timer> &timers)
 		}
 		printf("%30s(%d): %d μs\n", total.name.c_str(), total.num, total.totalElapsed);
 		printf("\n");
-		timers.clear();
+		clearCheckpoints(timers);
 		system("sleep 0.1");
 	}
+}
+
+void clearCheckpoints(std::vector<timer> &timers)
+{
+	timers.clear();
 }

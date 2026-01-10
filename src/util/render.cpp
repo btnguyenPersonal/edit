@@ -778,7 +778,7 @@ int32_t renderLineContent(State *state, int32_t row, int32_t renderRow, Cursor *
 					cursor->col = pixels.size() > 0 ? pixels.size() - 1 : 0;
 					foundCursor = true;
 				}
-				if (state->file->row == (uint32_t)row && state->file->col == col + 1) {
+				if (!isLargeFile(state) && state->file->row == (uint32_t)row && state->file->col == col + 1) {
 					if (state->mode == INSERT || state->mode == MULTICURSOR) {
 						if (state->file->col + 1 >= state->file->data[state->file->row].length() || !isAlphanumeric(state->file->data[state->file->row][state->file->col])) {
 							cursor->row = renderRow;
@@ -892,6 +892,8 @@ void renderScreen(State *state, bool fullRedraw)
 		endwin();
 		printCheckpoints(state->timers);
 		initTerminal();
+	} else {
+		clearCheckpoints(state->timers);
 	}
 
 	startCheckpoint("clear and erase", state->timers);

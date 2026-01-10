@@ -13,6 +13,7 @@ void mainLoop(State *state, int32_t c)
 		sendKeys(state, c);
 		cleanup(state, c);
 		history(state, c);
+		autosaveFile(state);
 		renderScreen(state);
 	} else if (!state->shouldNotReRender.test_and_set()) {
 		renderScreen(state);

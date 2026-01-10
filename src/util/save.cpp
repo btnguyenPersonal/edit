@@ -3,7 +3,6 @@
 
 void saveFile(State *state)
 {
-	state->file->lastSave = state->file->historyPosition;
 	if (!state->dontSave) {
 		std::ofstream file(state->file->filename);
 		if (!state->file->data.empty()) {
@@ -16,5 +15,6 @@ void saveFile(State *state)
 			}
 		}
 		file.close();
+		state->file->lastSave = state->file->historyPosition;
 	}
 }
