@@ -519,12 +519,7 @@ bool sendVisualKeys(State *state, char c, bool onlyMotions)
 		}
 		state->mode = NORMAL;
 	} else if (!onlyMotions && c == ':') {
-		if (state->visualType == SELECT || state->visualType == LINE) {
-			std::string vis = getInVisual(state, false);
-			state->commandLine.query = "gs/" + vis + "/";
-			state->commandLine.cursor = 3 + vis.length() + 1;
-			state->mode = COMMAND;
-		}
+		state->mode = COMMAND;
 	} else if (c == ctrl('f')) {
 		if (state->visualType == LINE) {
 			state->replaceBounds = getBounds(state);

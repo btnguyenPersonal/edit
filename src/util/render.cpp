@@ -550,7 +550,7 @@ void renderLineNumber(State *state, int32_t row, int32_t renderRow)
 		insertPixels(state, &pixels, getBlame(state, row), getBlameColor(state, row));
 	}
 
-	int32_t border = state->fileExplorerOpen ? state->fileExplorerSize : 0;
+	int32_t border = state->explorer.open ? state->explorer.size : 0;
 	renderPixels(state, renderRow, border, pixels, false);
 }
 
@@ -864,21 +864,21 @@ int32_t renderFileExplorerNode(State *state, FileExplorerNode *node, int32_t r, 
 	}
 	int32_t row = r + 1;
 	std::vector<Pixel> pixels = std::vector<Pixel>();
-	if (row - state->fileExplorerWindowLine > 0) {
-		auto displayRow = row - state->fileExplorerWindowLine + 1;
+	if (row - state->explorer.windowLine > 0) {
+		auto displayRow = row - state->explorer.windowLine + 1;
 		insertPixels(state, &pixels, startingSpaces, GREY);
 		if (node->isFolder) {
 			insertPixel(state, &pixels, node->isOpen ? 'v' : '>', GREY);
 			insertPixel(state, &pixels, ' ', GREY);
 		}
-		if (state->fileExplorerIndex == r) {
+		if (state->explorer.index == r) {
 			cursor.row = displayRow;
 			cursor.col = pixels.size();
 		}
 		insertPixels(state, &pixels, node->name, color);
-		if (pixels.size() > state->fileExplorerSize) {
+		if (pixels.size() > state->explorer.size) {
 			auto size = pixels.size();
-			for (uint32_t i = state->fileExplorerSize; i < size + 1; i++) {
+			for (uint32_t i = state->explorer.size; i < size + 1; i++) {
 				pixels.pop_back();
 			}
 			insertPixel(state, &pixels, '~', color);
@@ -896,7 +896,7 @@ int32_t renderFileExplorerNode(State *state, FileExplorerNode *node, int32_t r, 
 Cursor renderFileExplorer(State *state)
 {
 	Cursor cursor{ -1, -1 };
-	renderFileExplorerNode(state, state->fileExplorer, 0, std::string(""), cursor);
+	renderFileExplorerNode(state, state->explorer.root, 0, std::string(""), cursor);
 	return cursor;
 }
 
@@ -928,7 +928,7 @@ void renderScreen(State *state, bool fullRedraw)
 	} else {
 		startCheckpoint("renderVisibleLines", state->timers);
 		editorCursor = renderVisibleLines(state);
-		if (state->fileExplorerOpen) {
+		if (state->explorer.open) {
 			startCheckpoint("renderFileExplorer", state->timers);
 			fileExplorerCursor = renderFileExplorer(state);
 		}

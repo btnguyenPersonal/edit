@@ -429,13 +429,14 @@ void sendNormalKeys(State *state, int32_t c)
 	} else if (c == ctrl('t')) {
 		if (!state->dontSave) {
 			state->mode = FILEEXPLORER;
-			if (!state->fileExplorerOpen) {
-				state->fileExplorer = new FileExplorerNode(std::filesystem::current_path());
-				state->fileExplorer->open();
-				state->fileExplorerIndex = state->fileExplorer->expand(state->file->filename);
+			if (!state->explorer.open) {
+				delete state->explorer.root;
+				state->explorer.root = new FileExplorerNode(std::filesystem::current_path());
+				state->explorer.root->open();
+				state->explorer.index = state->explorer.root->expand(state->file->filename);
 				centerFileExplorer(state);
 			}
-			state->fileExplorerOpen = true;
+			state->explorer.open = true;
 		}
 	} else if (c == ctrl('s')) {
 		getAndAddNumber(state, state->file->row, state->file->col, -1);

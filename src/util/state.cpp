@@ -205,13 +205,18 @@ bool State::resetState(const std::string &filename)
 
 void State::init()
 {
+	this->explorer = {};
+	this->explorer.root = nullptr;
+	this->explorer.open = false;
+	this->explorer.size = 40;
+	this->explorer.windowLine = 0;
+	this->explorer.index = 0;
 	this->lastMacro = 'w';
 	this->skipSetHardCol = false;
 	this->maxX = 80;
 	this->maxY = 24;
 	this->viewingDiff = false;
 	this->showAllGrep = false;
-	this->fileExplorer = nullptr;
 	this->file = nullptr;
 	this->commandLineState = { 0, "", "" };
 	this->currentFile = 0;
@@ -219,15 +224,11 @@ void State::init()
 	this->showGrep = false;
 	this->diffIndex = 0;
 	this->logIndex = 0;
-	this->fileExplorerOpen = false;
 	this->pasteAsBlock = false;
 	this->prevSearch = { ' ', ' ' };
 	this->replaceBounds = { 0, 0, 0, 0 };
 	this->searchBackwards = false;
 	this->lineNumSize = 5;
-	this->fileExplorerSize = 40;
-	this->fileExplorerWindowLine = 0;
-	this->fileExplorerIndex = 0;
 	this->buildDir = ".";
 	this->prompt = "";
 	this->mark = { "", 0 };
@@ -304,8 +305,8 @@ State::~State()
 	}
 	this->file = nullptr;
 
-	delete this->fileExplorer;
-	this->fileExplorer = nullptr;
+	delete this->explorer.root;
+	this->explorer.root = nullptr;
 }
 
 State::State(const std::string &name, const std::vector<std::string> &data)

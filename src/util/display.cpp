@@ -175,8 +175,8 @@ void calcWindowBounds(State *state)
 void refocusFileExplorer(State *state, bool changeMode)
 {
 	auto normalizedFilename = normalizeFilename(state->file->filename);
-	if (state->fileExplorerOpen) {
-		state->fileExplorerIndex = state->fileExplorer->expand(normalizedFilename);
+	if (state->explorer.open) {
+		state->explorer.index = state->explorer.root->expand(normalizedFilename);
 		centerFileExplorer(state);
 	}
 	if (changeMode) {
@@ -184,14 +184,24 @@ void refocusFileExplorer(State *state, bool changeMode)
 	}
 }
 
+void putCursorBackOnScreenFileExplorer(State *state)
+{
+	int32_t height = state->maxY - STATUS_BAR_LENGTH;
+	if (state->explorer.index >= height + state->explorer.windowLine) {
+		state->explorer.windowLine++;
+	} else if (state->explorer.index < state->explorer.windowLine) {
+		state->explorer.windowLine--;
+	}
+}
+
 void centerFileExplorer(State *state)
 {
-	if ((state->fileExplorerIndex - ((int32_t)state->maxY / 2)) > 0) {
-		if (state->fileExplorer->getTotalChildren() > ((int32_t)state->maxY)) {
-			state->fileExplorerWindowLine = (state->fileExplorerIndex - ((int32_t)state->maxY / 2));
+	if ((state->explorer.index - ((int32_t)state->maxY / 2)) > 0) {
+		if (state->explorer.root->getTotalChildren() > ((int32_t)state->maxY)) {
+			state->explorer.windowLine = (state->explorer.index - ((int32_t)state->maxY / 2));
 		}
 	} else {
-		state->fileExplorerWindowLine = 0;
+		state->explorer.windowLine = 0;
 	}
 }
 
@@ -201,8 +211,8 @@ uint32_t getLineNumberOffset(State *state)
 	if (state->mode == BLAME) {
 		offset += state->blameSize;
 	}
-	if (state->fileExplorerOpen) {
-		offset += state->fileExplorerSize;
+	if (state->explorer.open) {
+		offset += state->explorer.size;
 	}
 	return offset;
 }

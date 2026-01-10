@@ -112,8 +112,16 @@ struct CommandLineAutocompleteState {
 };
 
 struct Recording {
-	bool on;p
+	bool on;
 	char c;
+};
+
+struct FileExplorer {
+	FileExplorerNode *root;
+	bool open;
+	int32_t index;
+	int32_t windowLine;
+	uint32_t size;
 };
 
 class State {
@@ -122,9 +130,9 @@ class State {
 	std::mutex grepMutex;
 	bool debug;
 	std::vector<timer> timers;
-	FileExplorerNode *fileExplorer;
 	Mark mark;
 	Mode mode;
+	FileExplorer explorer;
 	Options options;
 	PrevSearch prevSearch;
 	Position matching;
@@ -140,7 +148,6 @@ class State {
 	bool pasteAsBlock;
 	bool dontRecordKey;
 	bool dontSave;
-	bool fileExplorerOpen;
 	bool playingCommand;
 	Recording recording;
 	bool replacing;
@@ -155,8 +162,6 @@ class State {
 	bool viewingDiff;
 	int32_t blameSize;
 	int32_t buildErrorIndex;
-	int32_t fileExplorerIndex;
-	int32_t fileExplorerWindowLine;
 	uint32_t maxX;
 	uint32_t maxY;
 	CommandLineAutocompleteState commandLineState;
@@ -183,7 +188,6 @@ class State {
 	struct Position visual;
 	int32_t lastMacro;
 	uint32_t currentFile;
-	uint32_t fileExplorerSize;
 	uint32_t fileStackIndex;
 	uint32_t lineNumSize;
 	uint32_t workspace;

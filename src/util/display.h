@@ -2,6 +2,7 @@
 
 #include "state.h"
 
+void putCursorBackOnScreenFileExplorer(State *state);
 uint32_t getColFromDisplay(State *state, int32_t row, int32_t col);
 bool isOffScreenVertical(State *state);
 uint32_t getCenteredWindowPosition(State *state);
