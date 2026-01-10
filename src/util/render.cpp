@@ -640,7 +640,6 @@ int32_t renderLineContent(State *state, int32_t row, int32_t renderRow, Cursor *
 	if (state->mode == VISUAL && isRowColInVisual(state, row, 0) && state->file->data[row].length() == 0) {
 		chtype ch = ' ' | A_STANDOUT;
 		if (state->file->row == (uint32_t)row) {
-			ch |= A_REVERSE;
 			cursor->row = renderRow;
 			cursor->col = 0;
 		}
@@ -782,9 +781,10 @@ int32_t renderLineContent(State *state, int32_t row, int32_t renderRow, Cursor *
 
 		if (state->file->row == (uint32_t)row) {
 			if (!foundCursor && state->file->col >= state->file->data[row].length()) {
+				foundCursor = true;
 				cursor->row = renderRow;
 				cursor->col = getDisplayLength(state, state->file->data[row]);
-				foundCursor = true;
+				insertPixel(state, &pixels, ' ' | A_REVERSE, WHITE);
 			}
 		}
 	}
@@ -874,13 +874,15 @@ void renderScreen(State *state)
 
 void renderScreen(State *state, bool fullRedraw)
 {
+	curs_set(0);
+
 	startCheckpoint("clear and erase", state->timers);
 
 	if (fullRedraw) {
 		clear();
 	}
-
 	erase();
+
 	bool noLineNum = false;
 	Cursor editorCursor = {};
 	Cursor fileExplorerCursor = {};
@@ -920,6 +922,8 @@ void renderScreen(State *state, bool fullRedraw)
 	doupdate();
 
 	endLastCheckpoint(state->timers);
+
+	curs_set(1);
 }
 
 void initTerminal()
