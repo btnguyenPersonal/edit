@@ -28,11 +28,11 @@ void mainLoop(State *state)
 
 		int32_t c;
 		while ((c = getch()) != ERR) {
-			startCheckpoint("sendKeys" + c, state->timers);
+			startCheckpoint("sendKeys", state->timers);
 			sendKeys(state, c);
-			startCheckpoint("cleanup" + c, state->timers);
+			startCheckpoint("cleanup", state->timers);
 			cleanup(state, c);
-			startCheckpoint("history" + c, state->timers);
+			startCheckpoint("history", state->timers);
 			history(state, c);
 		}
 
