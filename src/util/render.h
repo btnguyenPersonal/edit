@@ -9,6 +9,11 @@ struct Cursor {
 	int32_t col;
 };
 
+struct Pixel {
+	chtype c;
+	int32_t color;
+};
+
 void insertPixels(State *state, std::vector<Pixel> *pixels, chtype c, int32_t color);
 void insertPixels(State *state, std::vector<Pixel> *pixels, std::string s, int32_t color);
 int32_t invertColor(int32_t color);

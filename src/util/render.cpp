@@ -4,9 +4,9 @@
 #include <string>
 #include <vector>
 
+#include "render.h"
 #include "insertLoggingCode.h"
 #include "modes.h"
-#include "render.h"
 #include "state.h"
 #include "autocomplete.h"
 #include "dirSplit.h"
@@ -56,33 +56,28 @@ int32_t invertColor(int32_t color)
 	return color + 20;
 }
 
-struct Pixel {
-	chtype c;
-	int32_t color;
-};
-
-std::vector<Pixel> toPixels(State *state, std::string s, int32_t color, uint32_t size)
-{
-	std::vector<Pixel> pixels = std::vector<Pixel>();
-	for (chtype c : s) {
-		if (' ' <= c && c <= '~') {
-			pixels.push_back({ c, color });
-		} else if (c == '\t') {
-			if (state->options.indent_style == "tab") {
-				for (uint32_t i = (size + pixels.size()) % state->options.indent_size; i < state->options.indent_size; i++) {
-					pixels.push_back({ ' ', color == WHITE ? GREY : color });
-				}
-			} else {
-				pixels.push_back({ ' ', color == WHITE ? GREY : color });
-			}
-		} else if (' ' <= unctrl(c) && unctrl(c) <= '~') {
-			pixels.push_back({ unctrl(c), invertColor(MAGENTA) });
-		} else {
-			pixels.push_back({ ' ', invertColor(MAGENTA) });
-		}
-	}
-	return pixels;
-}
+// std::vector<Pixel> toPixels(State *state, std::string s, int32_t color, uint32_t size)
+// {
+// 	std::vector<Pixel> pixels = std::vector<Pixel>();
+// 	for (chtype c : s) {
+// 		if (' ' <= c && c <= '~') {
+// 			pixels.push_back({ c, color });
+// 		} else if (c == '\t') {
+// 			if (state->options.indent_style == "tab") {
+// 				for (uint32_t i = (size + pixels.size()) % state->options.indent_size; i < state->options.indent_size; i++) {
+// 					pixels.push_back({ ' ', color == WHITE ? GREY : color });
+// 				}
+// 			} else {
+// 				pixels.push_back({ ' ', color == WHITE ? GREY : color });
+// 			}
+// 		} else if (' ' <= unctrl(c) && unctrl(c) <= '~') {
+// 			pixels.push_back({ unctrl(c), invertColor(MAGENTA) });
+// 		} else {
+// 			pixels.push_back({ ' ', invertColor(MAGENTA) });
+// 		}
+// 	}
+// 	return pixels;
+// }
 
 int32_t renderPixels(State *state, int32_t r, int32_t c, std::vector<Pixel> pixels, bool wrap)
 {
@@ -104,16 +99,16 @@ int32_t renderPixels(State *state, int32_t r, int32_t c, std::vector<Pixel> pixe
 }
 
 // TODO(ben): remove state
-void insertPixels(State *state, std::vector<Pixel> *pixels, chtype c, int32_t color)
+void insertPixel(State *state, std::vector<Pixel> *pixels, chtype c, int32_t color)
 {
-	pixels.push_back({ c, color });
+	pixels->push_back({ c, color });
 }
 
 // TODO(ben): remove state
 void insertPixels(State *state, std::vector<Pixel> *pixels, std::string s, int32_t color)
 {
-	for (uint32_t i = 0; i < s.length(); s++) {
-		insertPixels(state, pixels, s[i], color);
+	for (uint32_t i = 0; i < s.length(); i++) {
+		insertPixel(state, pixels, s[i], color);
 	}
 }
 
@@ -199,8 +194,8 @@ int32_t renderStatusBar(State *state)
 			std::string file = state->harpoon[state->workspace].list[i];
 			bool current = state->file && file == state->file->filename && state->harpoon[state->workspace].index == i;
 			insertPixels(state, &pixels, minimize_filename(file), current ? invertColor(WHITE) : GREY);
-			insertPixels(state, &pixels, ' ', WHITE);
-			insertPixels(state, &pixels, ' ', WHITE);
+			insertPixel(state, &pixels, ' ', WHITE);
+			insertPixel(state, &pixels, ' ', WHITE);
 		}
 		renderPixels(state, 0, 0, pixels, false);
 	}
@@ -662,7 +657,9 @@ int32_t renderLineContent(State *state, int32_t row, int32_t renderRow, Cursor *
 	std::vector<colorOverrides> overrides = determineColorOverrides(state, row);
 
 	if (state->mode == VISUAL && isRowColInVisual(state, row, 0) && state->file->data[row].length() == 0) {
-		insertPixels(state, &pixels, " ", visualColor);
+		chtype ch = ' ';
+		ch |= A_STANDOUT;
+		insertPixel(state, &pixels, ch, WHITE);
 		if (state->file->row == (uint32_t)row) {
 			cursor->row = renderRow;
 			cursor->col = 0;
@@ -771,10 +768,11 @@ int32_t renderLineContent(State *state, int32_t row, int32_t renderRow, Cursor *
 					col += state->search.query.length() - 1;
 					searchCounter = 0;
 				} else {
+					chtype ch = c;
 					if (state->mode == VISUAL && isRowColInVisual(state, row, col)) {
-						c = (int32_t)((chtype)c | A_STANDOUT);
+						ch |= A_STANDOUT;
 					}
-					insertPixels(state, &pixels, c, color);
+					insertPixel(state, &pixels, ch, color);
 				}
 				if (!foundCursor && state->file->row == (uint32_t)row && state->file->col == col) {
 					cursor->row = renderRow;
@@ -852,8 +850,8 @@ int32_t renderFileExplorerNode(State *state, FileExplorerNode *node, int32_t r, 
 		auto displayRow = row - state->fileExplorerWindowLine + 1;
 		insertPixels(state, &pixels, startingSpaces, GREY);
 		if (node->isFolder) {
-			insertPixels(state, &pixels, node->isOpen ? 'v' : '>', GREY);
-			insertPixels(state, &pixels, ' ', GREY);
+			insertPixel(state, &pixels, node->isOpen ? 'v' : '>', GREY);
+			insertPixel(state, &pixels, ' ', GREY);
 		}
 		if (state->fileExplorerIndex == r) {
 			cursor.row = displayRow;
@@ -865,7 +863,7 @@ int32_t renderFileExplorerNode(State *state, FileExplorerNode *node, int32_t r, 
 			for (uint32_t i = state->fileExplorerSize; i < size + 1; i++) {
 				pixels.pop_back();
 			}
-			insertPixels(state, &pixels, "~", color);
+			insertPixel(state, &pixels, '~', color);
 		}
 		renderPixels(state, displayRow, 0, pixels, false);
 	}
