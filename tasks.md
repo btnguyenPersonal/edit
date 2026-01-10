@@ -2,7 +2,6 @@
 - multiline comments render fast
 - very long lines render fast
 - use default terminal selection (should be able to copy directly with cmd c)
-- ctrl a e home end
 - ctrl r crash
 - paste into terminal fast dont have to use gp gy
 - more tests

@@ -138,15 +138,6 @@ uint32_t getDisplayCol(State *state)
 	}
 }
 
-uint32_t getLastCharIndex(State *state)
-{
-	if (state->file->data[state->file->row].length() != 0) {
-		return state->file->data[state->file->row].length() - 1;
-	} else {
-		return 0;
-	}
-}
-
 void calcWindowBounds(State *state)
 {
 	int32_t y, x;

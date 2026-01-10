@@ -48,6 +48,15 @@ uint32_t buildNumberFromString(const std::string &s)
 	return output;
 }
 
+uint32_t getIndexLast(const std::string &s)
+{
+	if (s.length() != 0) {
+		return s.length() - 1;
+	} else {
+		return 0;
+	}
+}
+
 int32_t getIndexFirstNonSpace(const std::string &s, char indentCharacter)
 {
 	int32_t i = 0;

@@ -41,10 +41,10 @@ void sendFindKeys(State *state, int32_t c)
 			backspace(&state->find);
 			state->find.selection = 0;
 		}
-	} else if (c == ctrl('a')) {
+	} else if (c == ctrl('a') || c == KEY_HOME) {
 		state->selectAll = false;
 		moveCursorStart(&state->find);
-	} else if (c == ctrl('e')) {
+	} else if (c == ctrl('e') || c == KEY_END) {
 		state->selectAll = false;
 		moveCursorEnd(&state->find);
 	} else if (c == ctrl('g')) {

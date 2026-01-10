@@ -31,9 +31,9 @@ void sendGrepKeys(State *state, int32_t c)
 		state->find.selection = 0;
 		state->selectAll = false;
 		state->mode = FIND;
-	} else if (c == ctrl('a')) {
+	} else if (c == ctrl('a') || c == KEY_HOME) {
 		moveCursorStart(&state->grep);
-	} else if (c == ctrl('e')) {
+	} else if (c == ctrl('e') || c == KEY_END) {
 		moveCursorEnd(&state->grep);
 	} else if (c == ctrl('t')) {
 		state->showAllGrep = !state->showAllGrep;

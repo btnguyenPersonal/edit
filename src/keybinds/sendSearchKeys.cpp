@@ -47,17 +47,17 @@ void sendSearchKeys(State *state, int32_t c)
 		} else {
 			moveCursorRight(&state->search);
 		}
-	} else if (c == ctrl('e')) {
-		if (state->replacing) {
-			moveCursorEnd(&state->replace);
-		} else {
-			moveCursorEnd(&state->search);
-		}
-	} else if (c == ctrl('a')) {
+	} else if (c == ctrl('a') || c == KEY_HOME) {
 		if (state->replacing) {
 			moveCursorStart(&state->replace);
 		} else {
 			moveCursorStart(&state->search);
+		}
+	} else if (c == ctrl('e') || c == KEY_END) {
+		if (state->replacing) {
+			moveCursorEnd(&state->replace);
+		} else {
+			moveCursorEnd(&state->search);
 		}
 	} else if (c == ctrl('r')) {
 		state->replacing = true;

@@ -2,6 +2,8 @@
 
 #include <ncurses.h>
 
+#define STATUS_BAR_LENGTH 2
+
 #define _COLOR_BLACK COLOR_BLACK
 #define _COLOR_GREY 8
 #define _COLOR_RED COLOR_RED
@@ -11,8 +13,6 @@
 #define _COLOR_MAGENTA COLOR_MAGENTA
 #define _COLOR_CYAN COLOR_CYAN
 #define _COLOR_WHITE COLOR_WHITE
-
-#define STATUS_BAR_LENGTH 2
 
 #define BLACK 1
 #define GREY 2

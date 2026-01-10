@@ -4,6 +4,7 @@
 #include <vector>
 #include <cstdint>
 
+uint32_t getIndexLast(const std::string &s);
 std::string getPrintableString(std::string s);
 uint32_t buildNumberFromString(const std::string &s);
 std::vector<std::string> splitByChar(const std::string &text, char c);

@@ -78,6 +78,11 @@ void sendTypingKeys(State *state, int32_t c)
 		state->file->col += 1;
 	} else if (c == ctrl('v')) {
 		state->prevKeys = 'v';
+	} else if (c == ctrl('a') || c == KEY_HOME) {
+		state->file->col = getIndexFirstNonSpace(state->file->data[state->file->row], getIndentCharacter(state));
+	} else if (c == ctrl('e') || c == KEY_END) {
+		state->file->col = getIndexLast(state->file->data[state->file->row]);
+		right(state);
 	} else if (c == ctrl('i')) { // TAB
 		std::string completion = autocomplete(state, getCurrentWord(state));
 		if (safeSubstring(state->file->data[state->file->row], state->file->col, completion.length()) != completion) {

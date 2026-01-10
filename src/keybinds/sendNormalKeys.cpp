@@ -418,8 +418,6 @@ void sendNormalKeys(State *state, int32_t c)
 		backspaceAll(&state->search);
 		state->mode = SEARCH;
 		state->searchBackwards = false;
-	} else if (c == '^') {
-		state->file->col = getIndexFirstNonSpace(state->file->data[state->file->row], getIndentCharacter(state));
 	} else if (c == ctrl('t')) {
 		if (!state->dontSave) {
 			state->mode = FILEEXPLORER;
@@ -461,8 +459,10 @@ void sendNormalKeys(State *state, int32_t c)
 		backspaceAll(&state->replace);
 	} else if (c == '0') {
 		state->file->col = 0;
-	} else if (c == '$') {
-		state->file->col = getLastCharIndex(state);
+	} else if (c == '^' || c == KEY_HOME) {
+		state->file->col = getIndexFirstNonSpace(state->file->data[state->file->row], getIndentCharacter(state));
+	} else if (c == '$' || c == KEY_END) {
+		state->file->col = getIndexLast(state->file->data[state->file->row]);
 	} else if (c == 'z') {
 		fixColOverMax(state);
 		state->file->windowPosition.col = 0;

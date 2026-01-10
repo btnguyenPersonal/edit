@@ -56,7 +56,7 @@ void indentLineWhenTypingLastChar(State *state)
 	if (!autoIndentDisabledFileType(state->file->filename)) {
 		if (state->file->col + 1 == state->file->data[state->file->row].length()) {
 			indentLine(state);
-			state->file->col = getLastCharIndex(state);
+			state->file->col = getIndexLast(state->file->data[state->file->row]);
 		}
 	}
 }
