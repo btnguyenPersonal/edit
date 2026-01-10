@@ -69,9 +69,6 @@ improve build time! it is unbearable!!
 	- remove make
 	- performance indicators
 
-editing new file indicator [NEW] on right side??
-- also turn off autosave
-
 repeat number keys
 
 W and B
