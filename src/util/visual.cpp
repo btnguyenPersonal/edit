@@ -203,6 +203,9 @@ WordPosition findParentheses(const std::string &str, char openParen, char closeP
 
 Position matchIt(State *state)
 {
+	if (!state->file) {
+		return { 0, 0 };
+	}
 	if (state->file->col < state->file->data[state->file->row].length()) {
 		char firstParen = state->file->data[state->file->row][state->file->col];
 		int32_t stack = 0;

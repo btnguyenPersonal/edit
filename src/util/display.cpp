@@ -6,6 +6,9 @@
 
 bool isOffScreenVertical(State *state)
 {
+	if (!state->file) {
+		return false;
+	}
 	if (state->file->row < state->file->windowPosition.row) {
 		return true;
 	}

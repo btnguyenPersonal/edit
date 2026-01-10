@@ -44,16 +44,6 @@ void cleanup(State *state, char c)
 	state->dontRecordKey = false;
 }
 
-void preRenderCleanup(State *state)
-{
-	state->matching = matchIt(state);
-	if (isWindowPositionInvalid(state)) {
-		centerScreen(state);
-	}
-	assert(state->file->windowPosition.row <= state->file->row);
-	assert(state->file->windowPosition.row + state->maxY >= state->file->row);
-}
-
 void history(State *state, char c)
 {
 	if (state->mode == NORMAL) {
@@ -67,9 +57,23 @@ void history(State *state, char c)
 	}
 }
 
+void preRenderCleanup(State *state)
+{
+	if (state->file) {
+		state->matching = matchIt(state);
+		if (isWindowPositionInvalid(state)) {
+			centerScreen(state);
+		}
+		assert(state->file->windowPosition.row <= state->file->row);
+		assert(state->file->windowPosition.row + state->maxY >= state->file->row);
+	}
+}
+
 void autosaveFile(State* state)
 {
-	if (state->options.autosave && !state->runningAsRoot && !state->dontRecordKey && !isLargeFile(state)) {
-		saveFile(state);
+	if (state->file) {
+		if (state->options.autosave && !state->runningAsRoot && !state->dontRecordKey && !isLargeFile(state)) {
+			saveFile(state);
+		}
 	}
 }

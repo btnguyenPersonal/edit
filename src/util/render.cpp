@@ -738,7 +738,7 @@ int32_t renderLineContent(State *state, int32_t row, int32_t renderRow, Cursor *
 				color = colorOverrides.back();
 				colorOverrides.pop_back();
 			} else {
-				if (state->matching.row == (uint32_t)row && state->matching.col == col && (state->matching.row != state->file->row || state->matching.col != state->file->col)) {
+				if (state->file && state->matching.row == (uint32_t)row && state->matching.col == col && (state->matching.row != state->file->row || state->matching.col != state->file->col)) {
 					color = invertColor(GREY);
 				} else {
 					if (state->showGrep && searchCounter != 0) {
