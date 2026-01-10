@@ -769,7 +769,12 @@ int32_t renderLineContent(State *state, int32_t row, int32_t renderRow, Cursor *
 								cursor->row = renderRow;
 								cursor->col = pixels.size();
 							}
-							insertPixels(state, &pixels, autocomplete(state, getCurrentWord(state)), GREY);
+							std::string completion = autocomplete(state, getCurrentWord(state));
+							for (uint32_t i = 0; i < completion.length(); i++) {
+								chtype ch = completion[i];
+								ch |= A_ITALIC;
+								insertPixel(state, &pixels, ch, GREY);
+							}
 						}
 					}
 				}
