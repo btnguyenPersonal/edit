@@ -14,6 +14,7 @@ I implemented the vim keys that I use, here are the extra ones I added on top
 ### normal mode
 
 |key|description|
+|:---:|:---:|
 | space | bookmark current file |
 | ctrl h | move bookmark left one space |
 | ctrl l | move bookmark right one space |
@@ -51,6 +52,8 @@ I implemented the vim keys that I use, here are the extra ones I added on top
 
 ## insert mode
 
+|key|description|
+|:---:|:---:|
 | ctrl t | insert tab |
 | ctrl v + any character | insert ctrl version of character |
 | TAB | autocomplete |
@@ -111,6 +114,7 @@ indent_size = 4
 indent_style = space
 ```
 
-autosave = false kinda doesn't work well with multiple files since I reload the full file each time
-wordwrap = false also doesn't work well with tabs
+autosave = false kinda doesn't work well with multiple files since I reload the full file each time wip
+
+wordwrap = false also doesn't work well with tabs yet wip
 
