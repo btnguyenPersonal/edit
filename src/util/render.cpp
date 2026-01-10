@@ -23,6 +23,14 @@
 
 #include <ncurses.h>
 
+struct PixelPos {
+	Pixel pixel;
+	int32_t r;
+	int32_t c;
+};
+
+static std::vector<PixelPos> screenPixels;
+
 void initColors()
 {
 	init_pair(BLACK, _COLOR_BLACK, -1);
@@ -61,8 +69,11 @@ int32_t renderPixels(State *state, int32_t r, int32_t c, std::vector<Pixel> pixe
 	int32_t row = r;
 	int32_t col = c;
 	for (uint32_t i = 0; i < pixels.size(); i++) {
-		attrset(COLOR_PAIR(pixels[i].color));
-		mvaddch(row, col, pixels[i].c);
+		PixelPos temp = {};
+		temp.pixel = pixels[i];
+		temp.r = row;
+		temp.c = col;
+		screenPixels.push_back(temp);
 		if ((uint32_t)col + 1 >= state->maxX) {
 			if (wrap && state->options.wordwrap) {
 				row++;
@@ -73,6 +84,20 @@ int32_t renderPixels(State *state, int32_t r, int32_t c, std::vector<Pixel> pixe
 		}
 	}
 	return row - r + 1;
+}
+
+void renderScreenPixels(bool fullRedraw)
+{
+	if (fullRedraw) {
+		clear();
+	}
+	erase();
+
+	for (uint32_t i = 0; i < screenPixels.size(); i++) {
+		attrset(COLOR_PAIR(screenPixels[i].pixel.color));
+		mvaddch(screenPixels[i].r, screenPixels[i].c, screenPixels[i].pixel.c);
+	}
+	screenPixels.clear();
 }
 
 void insertPixel(State *state, std::vector<Pixel> *pixels, chtype c, int32_t color)
@@ -879,13 +904,6 @@ void renderScreen(State *state)
 
 void renderScreen(State *state, bool fullRedraw)
 {
-	startCheckpoint("clear and erase", state->timers);
-
-	if (fullRedraw) {
-		clear();
-	}
-	erase();
-
 	bool noLineNum = false;
 	Cursor editorCursor = {};
 	Cursor fileExplorerCursor = {};
@@ -918,11 +936,12 @@ void renderScreen(State *state, bool fullRedraw)
 	}
 	startCheckpoint("renderStatusBar", state->timers);
 	int32_t cursorOnStatusBar = renderStatusBar(state);
+	startCheckpoint("renderScreenPixels", state->timers);
+	renderScreenPixels(fullRedraw);
 	startCheckpoint("moveCursor", state->timers);
 	moveCursor(state, cursorOnStatusBar, editorCursor, fileExplorerCursor, noLineNum);
-	startCheckpoint("wnoutrefresh and doupdate", state->timers);
-	wnoutrefresh(stdscr);
-	doupdate();
+	startCheckpoint("refresh", state->timers);
+	refresh();
 
 	endLastCheckpoint(state->timers);
 }
