@@ -81,6 +81,7 @@ struct File {
 	uint32_t col;
 	uint32_t hardCol;
 	uint32_t row;
+	bool newFile;
 };
 
 struct Query {

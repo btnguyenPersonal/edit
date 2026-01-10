@@ -1,9 +1,5 @@
 ## tasks
-- multiline comments render fast
-- very long lines render fast
-- use default terminal selection (should be able to copy directly with cmd c)
-- ctrl r crash
-- paste into terminal fast dont have to use gp gy
+
 - more tests
 	[x] string
 	[x] autocomplete
@@ -37,9 +33,25 @@
 	[ ] multicursorKeys
 	[ ] normalKeys
 
-- maybe have autocomplete also scan the other harpooned files?
+compat:
+	- use cursor as invisible with inverted
+	- mouse
+	- replace state->maxX state->maxY with LINES and COLUMNS
 
-- improve build time! it is unbearable!!
+perf:
+	- use trace() to see all the ncurses calls
+	- multiline comments render fast
+	- very long lines render fast
+	- paste into terminal fast dont have to use gp gy
+
+crash:
+	- ctrl r crash
+
+improve autocomplete:
+	- autocomplete allow pressing tab multiple times
+	- maybe have autocomplete also scan the other harpooned files?
+
+improve build time! it is unbearable!!
 
 	- build as one translation unit
 	- see what dependencies are bloating it out & replace
@@ -57,13 +69,14 @@
 	- remove make
 	- performance indicators
 
-- editing new file indicator [NEW] on right side??
+editing new file indicator [NEW] on right side??
+- also turn off autosave
 
-- repeat number keys
+repeat number keys
 
-- W and B
+W and B
 
-- ts-server integration (do it for real this time)
+ts-server integration (do it for real this time)
 
 instead of comparing with the previousState and generating the diff every time, could compute the state->file->data hash and store that
 if could get all of the edits to instead of use raw std::string, go through some abstraction layer, could make undo and file hash compute

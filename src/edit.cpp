@@ -28,7 +28,6 @@ int32_t main(int32_t argc, char *argv[])
 	initTerminal();
 	sanityCheckDocumentEmpty(state);
 	calcWindowBounds(state);
-	renderScreen(state);
 	mainLoop(state);
 	return 0;
 }
