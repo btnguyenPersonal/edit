@@ -21,8 +21,11 @@ void mainLoop(State *state)
 
 		startCheckpoint("==== editor logic ====", state->timers);
 
+		bool changed = false;
+
 		int32_t c;
 		while ((c = getch()) != ERR) {
+			changed = true;
 			startCheckpoint("sendKeys" + c, state->timers);
 			sendKeys(state, c);
 			startCheckpoint("cleanup" + c, state->timers);
@@ -31,10 +34,14 @@ void mainLoop(State *state)
 			history(state, c);
 		}
 
+
+		if (changed) {
+			startCheckpoint("autosaveFile", state->timers);
+			autosaveFile(state);
+		}
+
 		startCheckpoint("preRenderCleanup", state->timers);
 		preRenderCleanup(state);
-		startCheckpoint("autosaveFile", state->timers);
-		autosaveFile(state);
 
 		startCheckpoint("==== render logic ====", state->timers);
 

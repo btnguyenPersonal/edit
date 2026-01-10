@@ -8,7 +8,6 @@
 #include "../util/query.h"
 #include "../util/state.h"
 #include "../util/grep.h"
-#include "../util/render.h"
 #include "../util/movement.h"
 #include "../util/visual.h"
 #include "../util/search.h"
@@ -487,11 +486,9 @@ bool sendVisualKeys(State *state, char c, bool onlyMotions)
 	} else if (state->prevKeys == "g" && (c == 'p' || c == 'P')) {
 		logDotCommand(state);
 		Bounds b = pasteVisual(state, getFromClipboard(state, true));
-		highlightRenderBounds(state, b);
 		state->mode = NORMAL;
 		state->prevKeys = "";
 	} else if (state->prevKeys == "g" && c == 'y') {
-		renderScreen(state, true);
 		logDotCommand(state);
 		auto pos = copyInVisualSystem(state);
 		state->file->row = pos.row;

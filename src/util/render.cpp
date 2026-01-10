@@ -56,29 +56,6 @@ int32_t invertColor(int32_t color)
 	return color + 20;
 }
 
-// std::vector<Pixel> toPixels(State *state, std::string s, int32_t color, uint32_t size)
-// {
-// 	std::vector<Pixel> pixels = std::vector<Pixel>();
-// 	for (chtype c : s) {
-// 		if (' ' <= c && c <= '~') {
-// 			pixels.push_back({ c, color });
-// 		} else if (c == '\t') {
-// 			if (state->options.indent_style == "tab") {
-// 				for (uint32_t i = (size + pixels.size()) % state->options.indent_size; i < state->options.indent_size; i++) {
-// 					pixels.push_back({ ' ', color == WHITE ? GREY : color });
-// 				}
-// 			} else {
-// 				pixels.push_back({ ' ', color == WHITE ? GREY : color });
-// 			}
-// 		} else if (' ' <= unctrl(c) && unctrl(c) <= '~') {
-// 			pixels.push_back({ unctrl(c), invertColor(MAGENTA) });
-// 		} else {
-// 			pixels.push_back({ ' ', invertColor(MAGENTA) });
-// 		}
-// 	}
-// 	return pixels;
-// }
-
 int32_t renderPixels(State *state, int32_t r, int32_t c, std::vector<Pixel> pixels, bool wrap)
 {
 	int32_t row = r;
@@ -100,16 +77,17 @@ int32_t renderPixels(State *state, int32_t r, int32_t c, std::vector<Pixel> pixe
 
 void insertPixel(State *state, std::vector<Pixel> *pixels, chtype c, int32_t color)
 {
-	if ((char)c == '\t') {
+	if ((char)(c & A_CHARTEXT) == '\t') {
+		chtype flags = c & A_ATTRIBUTES;
 		if (state->options.indent_style == "tab") {
 			uint32_t i = pixels->size() % state->options.indent_size;
 			for (; i < state->options.indent_size; i++) {
-				pixels->push_back({ ' ', color });
+				pixels->push_back({ ' ' | flags, color });
 			}
 		} else {
 			pixels->push_back({ ' ', color == WHITE ? GREY : color });
 		}
-	} else if (' ' <= (char)c && (char)c <= '~') {
+	} else if (' ' <= (char)(c & A_CHARTEXT) && (char)(c & A_CHARTEXT) <= '~') {
 		pixels->push_back({ c, color });
 	} else {
 		pixels->push_back({ ' ', invertColor(MAGENTA) });
@@ -626,29 +604,19 @@ bool startsWithSymbol(State *state, uint32_t row, std::string symbol)
 	return false;
 }
 
-struct colorOverrides {
+struct override {
 	std::string name;
 	int32_t color;
+	chtype flags;
 	int32_t pos;
 };
 
-bool pushColorOverrides(State *state, int32_t row, int32_t col, std::string name, int color, std::vector<int> *colorOverrides)
+std::vector<override> determineKeywordOverrides(State *state, int32_t row)
 {
-	if (safeSubstring(state->file->data[row], col, name.length()) == name) {
-		for (uint32_t i = 0; i < name.length(); i++) {
-			colorOverrides->push_back(color);
-		}
-		return true;
-	}
-	return false;
-}
-
-std::vector<colorOverrides> determineColorOverrides(State *state, int32_t row)
-{
-	std::vector<colorOverrides> overrides = {
-		{ "TODO", invertColor(RED), -1 },
-		{ "NOTE", invertColor(GREEN), -1 },
-		{ "IMPORTANT", invertColor(YELLOW), -1 },
+	std::vector<override> overrides = {
+		{ "TODO", RED, A_UNDERLINE|A_BOLD, -1 },
+		{ "NOTE", GREEN, A_UNDERLINE|A_BOLD, -1 },
+		{ "IMPORTANT", YELLOW, A_UNDERLINE|A_BOLD, -1 },
 	};
 	for (uint32_t i = 0; i < overrides.size(); i++) {
 		size_t pos = state->file->data[row].find(overrides[i].name);
@@ -664,16 +632,16 @@ int32_t renderLineContent(State *state, int32_t row, int32_t renderRow, Cursor *
 	std::vector<Pixel> pixels = std::vector<Pixel>();
 	std::vector<Pixel> replacePixels = std::vector<Pixel>();
 
-	std::vector<colorOverrides> overrides = determineColorOverrides(state, row);
+	std::vector<override> keywordOverrides = determineKeywordOverrides(state, row);
 
 	if (state->mode == VISUAL && isRowColInVisual(state, row, 0) && state->file->data[row].length() == 0) {
-		chtype ch = ' ';
-		ch |= A_STANDOUT;
-		insertPixel(state, &pixels, ch, WHITE);
+		chtype ch = ' ' | A_STANDOUT;
 		if (state->file->row == (uint32_t)row) {
+			ch |= A_REVERSE;
 			cursor->row = renderRow;
 			cursor->col = 0;
 		}
+		insertPixel(state, &pixels, ch, WHITE);
 	} else {
 		bool inString = false;
 		bool skipNext = false;
@@ -685,7 +653,7 @@ int32_t renderLineContent(State *state, int32_t row, int32_t renderRow, Cursor *
 			isComment = true;
 		}
 		bool foundCursor = false;
-		std::vector<int> colorOverrides;
+		std::vector<override> overrides;
 		bool mergeConflict = isMergeConflict(state->file->data[row]);
 		// TODO(ben): make this happen on overrun instead of initial every time (or getDisplayRows(state, row) not so damn slow)
 		// if (getDisplayRows(state, row) > state->maxY) {
@@ -729,11 +697,11 @@ int32_t renderLineContent(State *state, int32_t row, int32_t renderRow, Cursor *
 				}
 			}
 
-			if (colorOverrides.size() == 0) {
-				for (uint32_t i = 0; i < overrides.size(); i++) {
-					if ((int32_t)col == overrides[i].pos) {
-						for (uint32_t j = 0; j < overrides[i].name.length(); j++) {
-							colorOverrides.push_back(overrides[i].color);
+			if (overrides.size() == 0) {
+				for (uint32_t i = 0; i < keywordOverrides.size(); i++) {
+					if ((int32_t)col == keywordOverrides[i].pos) {
+						for (uint32_t j = 0; j < keywordOverrides[i].name.length(); j++) {
+							overrides.push_back(keywordOverrides[i]);
 						}
 					}
 				}
@@ -744,29 +712,22 @@ int32_t renderLineContent(State *state, int32_t row, int32_t renderRow, Cursor *
 			}
 
 			int32_t color;
-			if (colorOverrides.size() != 0) {
-				color = colorOverrides.back();
-				colorOverrides.pop_back();
+			if (state->file && state->matching.row == (uint32_t)row && state->matching.col == col && (state->matching.row != state->file->row || state->matching.col != state->file->col)) {
+				color = invertColor(GREY);
 			} else {
-				if (state->file && state->matching.row == (uint32_t)row && state->matching.col == col && (state->matching.row != state->file->row || state->matching.col != state->file->col)) {
-					color = invertColor(GREY);
+				if (state->showGrep && searchCounter != 0) {
+					color = getSearchColor(state, row, startOfSearch, state->grep.query, true);
+				} else if (searchCounter != 0 && ((state->searching && !state->replacing) || (state->replacing && isTextInReplaceBounds(state, row)))) {
+					color = getSearchColor(state, row, startOfSearch, state->search.query, false);
 				} else {
-					if (state->showGrep && searchCounter != 0) {
-						color = getSearchColor(state, row, startOfSearch, state->grep.query, true);
-					} else if (searchCounter != 0 && ((state->searching && !state->replacing) || (state->replacing && isTextInReplaceBounds(state, row)))) {
-						color = getSearchColor(state, row, startOfSearch, state->search.query, false);
-					} else if ((int32_t)state->file->row == row && state->file->col == col && col < state->file->data[row].length() && state->file->data[row][col] == '\t') {
-						color = invertColor(WHITE);
+					if (mergeConflict) {
+						color = RED;
+					} else if (isComment) {
+						color = GREEN;
+					} else if (inString) {
+						color = CYAN;
 					} else {
-						if (mergeConflict) {
-							color = RED;
-						} else if (isComment) {
-							color = GREEN;
-						} else if (inString) {
-							color = CYAN;
-						} else {
-							color = getColorFromChar(c);
-						}
+						color = getColorFromChar(c);
 					}
 				}
 			}
@@ -779,22 +740,28 @@ int32_t renderLineContent(State *state, int32_t row, int32_t renderRow, Cursor *
 					searchCounter = 0;
 				} else {
 					chtype ch = c;
+					if (isComment) {
+						ch |= A_ITALIC|A_DIM;
+					}
 					if (state->mode == VISUAL && isRowColInVisual(state, row, col)) {
 						ch |= A_STANDOUT;
 					}
+					if (state->file->row == (uint32_t)row && state->file->col == col) {
+						ch |= A_REVERSE;
+						foundCursor = true;
+						cursor->row = renderRow;
+						cursor->col = pixels.size();
+					}
+					if (overrides.size() > 0) {
+						color = overrides.back().color;
+						ch |= overrides.back().flags;
+						overrides.pop_back();
+					}
 					insertPixel(state, &pixels, ch, color);
-				}
-				if (!foundCursor && state->file->row == (uint32_t)row && state->file->col == col) {
-					cursor->row = renderRow;
-					cursor->col = pixels.size() > 0 ? pixels.size() - 1 : 0;
-					foundCursor = true;
 				}
 				if (!isLargeFile(state) && state->file->row == (uint32_t)row && state->file->col == col + 1) {
 					if (state->mode == INSERT || state->mode == MULTICURSOR) {
 						if (state->file->col + 1 >= state->file->data[state->file->row].length() || !isAlphanumeric(state->file->data[state->file->row][state->file->col])) {
-							cursor->row = renderRow;
-							cursor->col = pixels.size() > 0 ? pixels.size() : 0;
-							foundCursor = true;
 							insertPixels(state, &pixels, autocomplete(state, getCurrentWord(state)), GREY);
 						}
 					}
