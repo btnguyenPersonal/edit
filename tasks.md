@@ -1,10 +1,5 @@
 ## tasks
-- replace state->maxX state->maxY with LINES and COLUMNS
-- multiline comments render fast
-- very long lines render fast
-- use default terminal selection (should be able to copy directly with cmd c)
-- ctrl r crash
-- paste into terminal fast dont have to use gp gy
+
 - more tests
 	[x] string
 	[x] autocomplete
@@ -38,6 +33,18 @@
 	[ ] multicursorKeys
 	[ ] normalKeys
 
+compat:
+	- mouse
+	- replace state->maxX state->maxY with LINES and COLUMNS
+
+perf:
+	- use trace() to see all the ncurses calls
+	- multiline comments render fast
+	- very long lines render fast
+	- paste into terminal fast dont have to use gp gy
+
+crash:
+	- ctrl r crash
 - maybe have autocomplete also scan the other harpooned files?
 
 - improve build time! it is unbearable!!

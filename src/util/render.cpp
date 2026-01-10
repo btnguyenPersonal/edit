@@ -98,13 +98,24 @@ int32_t renderPixels(State *state, int32_t r, int32_t c, std::vector<Pixel> pixe
 	return row - r + 1;
 }
 
-// TODO(ben): remove state
 void insertPixel(State *state, std::vector<Pixel> *pixels, chtype c, int32_t color)
 {
-	pixels->push_back({ c, color });
+	if ((char)c == '\t') {
+		if (state->options.indent_style == "tab") {
+			uint32_t i = pixels->size() % state->options.indent_size;
+			for (; i < state->options.indent_size; i++) {
+				pixels->push_back({ ' ', color });
+			}
+		} else {
+			pixels->push_back({ ' ', color == WHITE ? GREY : color });
+		}
+	} else if (' ' <= (char)c && (char)c <= '~') {
+		pixels->push_back({ c, color });
+	} else {
+		pixels->push_back({ ' ', invertColor(MAGENTA) });
+	}
 }
 
-// TODO(ben): remove state
 void insertPixels(State *state, std::vector<Pixel> *pixels, std::string s, int32_t color)
 {
 	for (uint32_t i = 0; i < s.length(); i++) {
