@@ -90,8 +90,9 @@ void renderScreenPixels(bool fullRedraw)
 {
 	if (fullRedraw) {
 		clear();
+	} else {
+		erase();
 	}
-	erase();
 
 	for (uint32_t i = 0; i < screenPixels.size(); i++) {
 		attrset(COLOR_PAIR(screenPixels[i].pixel.color));

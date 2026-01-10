@@ -32,10 +32,10 @@ void mainLoop(State *state)
 			sendKeys(state, c);
 			startCheckpoint("cleanup", state->timers);
 			cleanup(state, c);
-			startCheckpoint("history", state->timers);
-			history(state, c);
 		}
 
+		startCheckpoint("history", state->timers);
+		history(state, c);
 
 		if (state->file && cachedHistoryPosition != state->file->historyPosition) {
 			startCheckpoint("autosaveFile", state->timers);
