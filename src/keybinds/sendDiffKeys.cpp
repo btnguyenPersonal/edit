@@ -3,6 +3,7 @@
 #include "../util/movement.h"
 #include "../util/string.h"
 #include "../util/ctrl.h"
+#include "../util/switchMode.h"
 
 void upLog(State *state)
 {
@@ -35,7 +36,7 @@ void downDiff(State *state)
 void sendDiffKeys(State *state, int32_t c)
 {
 	if (c == 'q') {
-		state->mode = NORMAL;
+		switchMode(state, NORMAL);
 	} else if (c == 27) { // ESC
 		if (state->prevKeys != "") {
 			state->prevKeys = "";
@@ -44,7 +45,7 @@ void sendDiffKeys(State *state, int32_t c)
 			state->viewingDiff = false;
 			state->diffIndex = 0;
 		} else {
-			state->mode = NORMAL;
+			switchMode(state, NORMAL);
 		}
 	} else if (c == ctrl('u') || c == 'u') {
 		for (uint32_t i = 0; i < state->maxY / 2; i++) {

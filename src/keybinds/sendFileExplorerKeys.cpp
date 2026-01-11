@@ -9,6 +9,7 @@
 #include "../util/display.h"
 #include "../util/ctrl.h"
 #include "../util/defines.h"
+#include "../util/switchMode.h"
 #include <ncurses.h>
 #include <string>
 #include <vector>
@@ -72,10 +73,10 @@ void sendFileExplorerKeys(State *state, int32_t c)
 				return;
 			}
 		} else if (c == 27) { // ESC
-			state->mode = NORMAL;
+			switchMode(state, NORMAL);
 			state->explorer.open = false;
 		} else if (c == ctrl('t')) {
-			state->mode = NORMAL;
+			switchMode(state, NORMAL);
 		} else if (c == '-') {
 			state->explorer.windowLine = 0;
 			state->explorer.index = 0;
@@ -100,7 +101,7 @@ void sendFileExplorerKeys(State *state, int32_t c)
 				node->parent->refresh();
 			}
 		} else if (c == ':') {
-			state->mode = COMMAND;
+			switchMode(state, COMMAND);
 		} else if (c == 'X') {
 			auto node = state->explorer.root->getNode(state->explorer.index);
 			if (node->parent != nullptr) {
@@ -116,7 +117,7 @@ void sendFileExplorerKeys(State *state, int32_t c)
 			if (node->isFolder) {
 				state->explorer.open = false;
 				state->grepPath = node->path;
-				state->mode = GREP;
+				switchMode(state, GREP);
 				state->showAllGrep = false;
 				generateGrepOutput(state, true);
 			} else {
@@ -189,7 +190,7 @@ void sendFileExplorerKeys(State *state, int32_t c)
 			state->status = relativePath;
 			copyToClipboard(state, relativePath, false);
 			state->explorer.open = false;
-			state->mode = NORMAL;
+			switchMode(state, NORMAL);
 		} else if (c == 'f') {
 			auto node = state->explorer.root->getNode(state->explorer.index);
 			if (node->isFolder) {
@@ -203,7 +204,7 @@ void sendFileExplorerKeys(State *state, int32_t c)
 				auto relativePath = std::filesystem::relative(node->path.string(), baseDir);
 				state->resetState(relativePath);
 			}
-			state->mode = FILEEXPLORER;
+			switchMode(state, FILEEXPLORER);
 		} else if (c == '\n') {
 			pressEnterFileExplorer(state);
 		} else {

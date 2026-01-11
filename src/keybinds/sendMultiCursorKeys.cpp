@@ -9,6 +9,7 @@
 #include "../util/ctrl.h"
 #include "../util/string.h"
 #include "../util/repeat.h"
+#include "../util/switchMode.h"
 #include "sendVisualKeys.h"
 #include <ncurses.h>
 #include <string>
@@ -20,7 +21,7 @@ void sendMultiCursorKeys(State *state, int32_t c)
 	Bounds bounds = getBounds(state);
 	if (c == 27) { // ESC
 		left(state);
-		state->mode = NORMAL;
+		switchMode(state, NORMAL);
 		setDotCommand(state, state->motion);
 		state->motion.clear();
 		return;

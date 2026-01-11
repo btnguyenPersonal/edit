@@ -11,6 +11,7 @@
 #include "../util/external.h"
 #include "../util/ctrl.h"
 #include "../util/string.h"
+#include "../util/switchMode.h"
 #include <ncurses.h>
 #include <string>
 #include <vector>
@@ -159,7 +160,7 @@ void sendCommandLineKeys(State *state, int32_t c)
 {
 	if (c == 27) { // ESC
 		backspaceAll(&state->commandLine);
-		state->mode = NORMAL;
+		switchPrevMode(state);
 	} else if (' ' <= c && c <= '~') {
 		add(&state->commandLine, c);
 	} else if (c == ctrl('t')) {
@@ -227,7 +228,7 @@ void sendCommandLineKeys(State *state, int32_t c)
 	} else if (c == '\n') {
 		evaluateCommandLineQuery(state);
 		backspaceAll(&state->commandLine);
-		state->mode = NORMAL;
+		switchPrevMode(state);
 	}
 	if (c != ctrl('i') && c != KEY_BTAB) {
 		state->commandLineState = { 0, "", "" };

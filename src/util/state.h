@@ -5,6 +5,7 @@
 #include "bounds.h"
 #include "perf.h"
 #include "fileExplorerNode.h"
+
 #include <filesystem>
 #include <string>
 #include <vector>
@@ -132,6 +133,7 @@ class State {
 	std::vector<timer> timers;
 	Mark mark;
 	Mode mode;
+	Mode prevMode;
 	FileExplorer explorer;
 	Options options;
 	PrevSearch prevSearch;

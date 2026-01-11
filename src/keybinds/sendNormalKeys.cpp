@@ -26,6 +26,7 @@
 #include "../util/string.h"
 #include "../util/repeat.h"
 #include "../util/defines.h"
+#include "../util/switchMode.h"
 #include "sendKeys.h"
 #include "sendVisualKeys.h"
 #include <ncurses.h>
@@ -129,7 +130,7 @@ void sendNormalKeys(State *state, int32_t c)
 			state->motion.clear();
 			state->file->row = tempRow;
 			state->file->col = tempCol;
-			state->mode = NORMAL;
+			switchMode(state, NORMAL);
 		}
 		state->dotCommand.push_back(getEscapedChar(c));
 		state->dontRecordKey = false;
@@ -173,7 +174,7 @@ void sendNormalKeys(State *state, int32_t c)
 				state->motion.clear();
 				state->file->row = tempRow;
 				state->file->col = tempCol;
-				state->mode = NORMAL;
+				switchMode(state, NORMAL);
 			}
 
 			state->dotCommand.push_back(getEscapedChar(c));
@@ -181,7 +182,7 @@ void sendNormalKeys(State *state, int32_t c)
 		state->dontRecordKey = false;
 		return;
 	} else if (state->prevKeys == "g" && c == '/') {
-		state->mode = SEARCH;
+		switchMode(state, SEARCH);
 	} else if (state->prevKeys == "g" && c == 'r') {
 		initVisual(state, SELECT);
 		setStateFromWordPosition(state, getWordPosition(state->file->data[state->file->row], state->file->col));
@@ -247,7 +248,7 @@ void sendNormalKeys(State *state, int32_t c)
 	} else if (state->prevKeys != "") {
 		state->prevKeys = "";
 	} else if (c == ':') {
-		state->mode = COMMAND;
+		switchMode(state, COMMAND);
 	} else if (c == '<') {
 		deindent(state);
 		state->file->col = getIndexFirstNonSpace(state->file->data[state->file->row], getIndentCharacter(state));
@@ -297,7 +298,7 @@ void sendNormalKeys(State *state, int32_t c)
 		initVisual(state, SELECT);
 		setStateFromWordPosition(state, getWordPosition(state->file->data[state->file->row], state->file->col));
 		setQuery(&state->grep, getInVisual(state));
-		state->mode = GREP;
+		switchMode(state, GREP);
 		state->showAllGrep = false;
 		generateGrepOutput(state, true);
 	} else if (c == '*') {
@@ -316,29 +317,29 @@ void sendNormalKeys(State *state, int32_t c)
 		centerScreen(state);
 	} else if (c == ctrl('g')) {
 		state->showAllGrep = false;
-		state->mode = GREP;
+		switchMode(state, GREP);
 		generateGrepOutput(state, false);
 	} else if (c == ctrl('p')) {
-		state->mode = FIND;
+		switchMode(state, FIND);
 		state->selectAll = true;
 	} else if (c == ctrl('v')) {
-		state->mode = VISUAL;
+		switchMode(state, VISUAL);
 		initVisual(state, BLOCK);
 	} else if (c == 'v') {
-		state->mode = VISUAL;
+		switchMode(state, VISUAL);
 		initVisual(state, SELECT);
 	} else if (c == 'V') {
-		state->mode = VISUAL;
+		switchMode(state, VISUAL);
 		initVisual(state, LINE);
 	} else if (c == 'b') {
 		state->file->col = b(state);
 	} else if (c == 'w') {
 		state->file->col = w(state);
 	} else if (c == 'i') {
-		state->mode = INSERT;
+		switchMode(state, INSERT);
 	} else if (c == 'a') {
 		right(state);
-		state->mode = INSERT;
+		switchMode(state, INSERT);
 	} else if (c == ctrl('u')) {
 		upHalfScreen(state);
 	} else if (c == ctrl('d')) {
@@ -346,10 +347,10 @@ void sendNormalKeys(State *state, int32_t c)
 	} else if (c == 'o') {
 		insertEmptyLineBelow(state);
 		down(state);
-		state->mode = INSERT;
+		switchMode(state, INSERT);
 	} else if (c == 'O') {
 		insertEmptyLine(state);
-		state->mode = INSERT;
+		switchMode(state, INSERT);
 	} else if (c == 'Y') {
 		fixColOverMax(state);
 		copyToClipboard(state, safeSubstring(state->file->data[state->file->row], state->file->col), false);
@@ -361,13 +362,13 @@ void sendNormalKeys(State *state, int32_t c)
 		fixColOverMax(state);
 		copyToClipboard(state, safeSubstring(state->file->data[state->file->row], state->file->col), false);
 		state->file->data[state->file->row] = state->file->data[state->file->row].substr(0, state->file->col);
-		state->mode = INSERT;
+		switchMode(state, INSERT);
 	} else if (c == 'I') {
 		state->file->col = getIndexFirstNonSpace(state->file->data[state->file->row], getIndentCharacter(state));
-		state->mode = INSERT;
+		switchMode(state, INSERT);
 	} else if (c == 'A') {
 		state->file->col = state->file->data[state->file->row].length();
-		state->mode = INSERT;
+		switchMode(state, INSERT);
 	} else if (c == '\'') {
 		if (state->mark.filename != "") {
 			state->resetState(state->mark.filename);
@@ -377,7 +378,7 @@ void sendNormalKeys(State *state, int32_t c)
 		state->logLines = getLogLines();
 		state->diffLines = getDiffLines(state);
 		state->viewingDiff = true;
-		state->mode = DIFF;
+		switchMode(state, DIFF);
 	} else if (c == 'M') {
 		state->mark = { state->file->filename, state->file->row };
 	} else if (c == 'N') {
@@ -420,15 +421,15 @@ void sendNormalKeys(State *state, int32_t c)
 		setDotCommand(state, c);
 	} else if (c == '?') {
 		backspaceAll(&state->search);
-		state->mode = SEARCH;
+		switchMode(state, SEARCH);
 		state->searchBackwards = true;
 	} else if (c == '/') {
 		backspaceAll(&state->search);
-		state->mode = SEARCH;
+		switchMode(state, SEARCH);
 		state->searchBackwards = false;
 	} else if (c == ctrl('t')) {
 		if (!state->dontSave) {
-			state->mode = FILEEXPLORER;
+			switchMode(state, FILEEXPLORER);
 			if (!state->explorer.open) {
 				delete state->explorer.root;
 				state->explorer.root = new FileExplorerNode(std::filesystem::current_path());
@@ -446,7 +447,7 @@ void sendNormalKeys(State *state, int32_t c)
 		if (state->file->col < state->file->data[state->file->row].length()) {
 			copyToClipboard(state, state->file->data[state->file->row].substr(state->file->col, 1), false);
 			state->file->data[state->file->row] = state->file->data[state->file->row].substr(0, state->file->col) + state->file->data[state->file->row].substr(state->file->col + 1);
-			state->mode = INSERT;
+			switchMode(state, INSERT);
 		}
 	} else if (c == 'x') {
 		if (state->file->col < state->file->data[state->file->row].length()) {
@@ -456,14 +457,14 @@ void sendNormalKeys(State *state, int32_t c)
 		setDotCommand(state, c);
 	} else if (c == ctrl('y')) {
 		state->file->col = 0;
-		state->mode = BLAME;
+		switchMode(state, BLAME);
 		try {
 			state->blame = getGitBlame(state->file->filename);
 		} catch (const std::exception &e) {
 			state->status = "git blame error";
 		}
 	} else if (c == ctrl('f')) {
-		state->mode = SEARCH;
+		switchMode(state, SEARCH);
 		state->replacing = true;
 		backspaceAll(&state->replace);
 	} else if (c == '0') {
@@ -506,7 +507,7 @@ void sendNormalKeys(State *state, int32_t c)
 		initVisual(state, SELECT);
 		setStateFromWordPosition(state, getWordPosition(state->file->data[state->file->row], state->file->col));
 		toggleLoggingCode(state, getInVisual(state));
-		state->mode = NORMAL;
+		switchMode(state, NORMAL);
 		setDotCommand(state, c);
 	} else if (c == ctrl('w')) {
 		jumpToPrevHarpoon(state);
@@ -521,7 +522,7 @@ void sendNormalKeys(State *state, int32_t c)
 	} else if (c == 'H') {
 		state->commandLine.query = std::string("e ") + std::filesystem::canonical(state->file->filename).string();
 		state->commandLine.cursor = state->commandLine.query.length();
-		state->mode = COMMAND;
+		switchMode(state, COMMAND);
 	} else if (c == 'G') {
 		state->file->row = state->file->data.size() - 1;
 		state->file->col = getNormalizedCol(state, state->file->hardCol);

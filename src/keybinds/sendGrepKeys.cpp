@@ -7,6 +7,7 @@
 #include "../util/grep.h"
 #include "../util/find.h"
 #include "../util/movement.h"
+#include "../util/switchMode.h"
 #include "../util/ctrl.h"
 #include <ncurses.h>
 #include <string>
@@ -17,7 +18,7 @@ void sendGrepKeys(State *state, int32_t c)
 	state->grepMutex.lock();
 	std::string cachedGrepString = state->grep.query;
 	if (c == 27) { // ESC
-		state->mode = NORMAL;
+		switchMode(state, NORMAL);
 	} else if (c == KEY_LEFT) {
 		moveCursorLeft(&state->grep);
 	} else if (c == KEY_RIGHT) {
@@ -30,7 +31,7 @@ void sendGrepKeys(State *state, int32_t c)
 		generateFindOutput(state);
 		state->find.selection = 0;
 		state->selectAll = false;
-		state->mode = FIND;
+		switchMode(state, FIND);
 	} else if (c == ctrl('a') || c == KEY_HOME) {
 		moveCursorStart(&state->grep);
 	} else if (c == ctrl('e') || c == KEY_END) {
@@ -65,13 +66,13 @@ void sendGrepKeys(State *state, int32_t c)
 			std::filesystem::path currentDir = ((std::filesystem::path)state->file->filename).parent_path();
 			std::filesystem::path relativePath = std::filesystem::relative(selectedFile, currentDir);
 			copyToClipboard(state, relativePath.string(), false);
-			state->mode = NORMAL;
+			switchMode(state, NORMAL);
 		}
 	} else if (c == ctrl('y')) {
 		if (state->grep.selection < state->grepOutput.size()) {
 			std::filesystem::path selectedFile = state->grepOutput[state->grep.selection].path.string();
 			copyToClipboard(state, selectedFile, false);
-			state->mode = NORMAL;
+			switchMode(state, NORMAL);
 		}
 	} else if (c == ctrl('v')) {
 		add(&state->grep, getFromClipboard(state, true));

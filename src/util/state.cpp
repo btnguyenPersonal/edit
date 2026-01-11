@@ -1,5 +1,4 @@
 #include "state.h"
-#include "modes.h"
 #include "visualType.h"
 #include "keys.h"
 #include "read.h"
@@ -263,6 +262,7 @@ void State::init()
 	this->extension = std::string("");
 	this->searchFail = false;
 	this->mode = FIND;
+	this->mode = NORMAL;
 	this->dotCommand = std::vector<std::string>();
 	this->macroCommand = std::map<char, std::vector<std::string> >();
 	this->playingCommand = false;

@@ -5,6 +5,7 @@
 #include "../util/state.h"
 #include "../util/search.h"
 #include "../util/ctrl.h"
+#include "../util/switchMode.h"
 #include <climits>
 #include <ncurses.h>
 
@@ -14,7 +15,7 @@ void sendSearchKeys(State *state, int32_t c)
 		state->searching = false;
 		state->replacing = false;
 		state->replaceBounds = { 0, 0, 0, 0 };
-		state->mode = NORMAL;
+		switchMode(state, NORMAL);
 	} else if (c == ctrl('t')) {
 		if (state->replacing) {
 			add(&state->replace, '\t');
@@ -87,7 +88,7 @@ void sendSearchKeys(State *state, int32_t c)
 		}
 		state->replacing = false;
 		state->replaceBounds = { 0, 0, 0, 0 };
-		state->mode = NORMAL;
+		switchMode(state, NORMAL);
 		return;
 	}
 	bool result = state->searchBackwards ? setSearchResultReverse(state, true) : setSearchResult(state);

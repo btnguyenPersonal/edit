@@ -10,6 +10,7 @@
 #include "../util/string.h"
 #include "../util/ctrl.h"
 #include "../util/repeat.h"
+#include "../util/switchMode.h"
 #include <ncurses.h>
 #include <string>
 #include <vector>
@@ -39,7 +40,7 @@ void sendTypingKeys(State *state, int32_t c)
 		}
 	} else if (c == 27) { // ESC
 		left(state);
-		state->mode = NORMAL;
+		switchMode(state, NORMAL);
 		setDotCommand(state, state->motion);
 		state->motion.clear();
 		state->prevKeys = "";

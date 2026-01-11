@@ -7,6 +7,7 @@
 #include "../util/grep.h"
 #include "../util/find.h"
 #include "../util/ctrl.h"
+#include "../util/switchMode.h"
 #include <ncurses.h>
 #include <string>
 #include <vector>
@@ -17,7 +18,7 @@ void sendFindKeys(State *state, int32_t c)
 	std::string cachedFileString = state->find.query;
 	if (c == 27) { // ESC
 		state->selectAll = false;
-		state->mode = NORMAL;
+		switchMode(state, NORMAL);
 	} else if (' ' <= c && c <= '~') {
 		if (state->selectAll == true) {
 			backspaceAll(&state->find);
@@ -52,7 +53,7 @@ void sendFindKeys(State *state, int32_t c)
 		generateGrepOutput(state, true);
 		state->grep.selection = 0;
 		state->selectAll = false;
-		state->mode = GREP;
+		switchMode(state, GREP);
 	} else if (c == ctrl('l')) {
 		state->selectAll = false;
 		backspaceAll(&state->find);
@@ -86,14 +87,14 @@ void sendFindKeys(State *state, int32_t c)
 			std::filesystem::path currentDir = ((std::filesystem::path)state->file->filename).parent_path();
 			std::filesystem::path relativePath = std::filesystem::relative(selectedFile, currentDir);
 			copyToClipboard(state, relativePath.string(), false);
-			state->mode = NORMAL;
+			switchMode(state, NORMAL);
 		}
 	} else if (c == ctrl('y')) {
 		if (state->find.selection < state->findOutput.size()) {
 			state->selectAll = false;
 			auto selectedFile = state->findOutput[state->find.selection].string();
 			copyToClipboard(state, selectedFile, false);
-			state->mode = NORMAL;
+			switchMode(state, NORMAL);
 		}
 	} else if (c == ctrl('v')) {
 		if (state->selectAll == true) {

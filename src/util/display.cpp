@@ -1,6 +1,7 @@
 #include "display.h"
 #include "fileops.h"
 #include "defines.h"
+#include "switchMode.h"
 
 #include <ncurses.h>
 
@@ -180,7 +181,7 @@ void refocusFileExplorer(State *state, bool changeMode)
 		centerFileExplorer(state);
 	}
 	if (changeMode) {
-		state->mode = FILEEXPLORER;
+		switchMode(state, FILEEXPLORER);
 	}
 }
 
