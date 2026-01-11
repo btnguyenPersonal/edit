@@ -88,7 +88,6 @@ int32_t renderPixels(State *state, int32_t r, int32_t c, std::vector<Pixel> pixe
 
 void renderScreenPixels(bool fullRedraw)
 {
-	curs_set(0);
 	if (fullRedraw) {
 		clear();
 	} else {
@@ -849,7 +848,6 @@ void moveCursor(State *state, int32_t cursorOnStatusBar, Cursor editorCursor, Cu
 			move(row, col + getLineNumberOffset(state));
 		}
 	}
-	curs_set(1);
 }
 
 int32_t renderFileExplorerNode(State *state, FileExplorerNode *node, int32_t r, std::string startingSpaces, Cursor &cursor)

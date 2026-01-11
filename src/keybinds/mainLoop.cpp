@@ -26,16 +26,21 @@ void mainLoop(State *state)
 			cachedHistoryPosition = state->file->historyPosition;
 		}
 
-		int32_t c;
+		bool sentKey = false;
+
+		int32_t c = ERR;
 		while ((c = getch()) != ERR) {
 			startCheckpoint("sendKeys", state->timers);
 			sendKeys(state, c);
 			startCheckpoint("cleanup", state->timers);
 			cleanup(state, c);
+			sentKey = true;
 		}
 
-		startCheckpoint("history", state->timers);
-		history(state, c);
+		if (sentKey) {
+			startCheckpoint("history", state->timers);
+			history(state, c);
+		}
 
 		if (state->file && cachedHistoryPosition != state->file->historyPosition) {
 			startCheckpoint("autosaveFile", state->timers);
