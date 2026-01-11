@@ -643,9 +643,9 @@ struct override {
 std::vector<override> determineKeywordOverrides(State *state, int32_t row)
 {
 	std::vector<override> overrides = {
-		{ "TODO", RED, A_UNDERLINE|A_BOLD, -1 },
-		{ "NOTE", GREEN, A_UNDERLINE|A_BOLD, -1 },
-		{ "IMPORTANT", YELLOW, A_UNDERLINE|A_BOLD, -1 },
+		{ "TODO", RED, A_UNDERLINE | A_BOLD, -1 },
+		{ "NOTE", GREEN, A_UNDERLINE | A_BOLD, -1 },
+		{ "IMPORTANT", YELLOW, A_UNDERLINE | A_BOLD, -1 },
 	};
 	for (uint32_t i = 0; i < overrides.size(); i++) {
 		size_t pos = state->file->data[row].find(overrides[i].name);
@@ -769,7 +769,7 @@ int32_t renderLineContent(State *state, int32_t row, int32_t renderRow, Cursor *
 				} else {
 					chtype ch = c;
 					if (isComment) {
-						ch |= A_ITALIC|A_DIM;
+						ch |= A_ITALIC | A_DIM;
 					}
 					if (state->mode == VISUAL && isRowColInVisual(state, row, col)) {
 						ch |= A_STANDOUT;

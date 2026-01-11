@@ -12,4 +12,3 @@ void switchMode(State *state, Mode mode)
 	state->prevMode = state->mode;
 	state->mode = mode;
 }
-

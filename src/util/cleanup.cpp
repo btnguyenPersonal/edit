@@ -69,7 +69,7 @@ void preRenderCleanup(State *state)
 	}
 }
 
-void autosaveFile(State* state)
+void autosaveFile(State *state)
 {
 	if (state->file) {
 		if (state->options.autosave && !state->runningAsRoot && !state->file->newFile && !state->dontRecordKey && !isLargeFile(state)) {
