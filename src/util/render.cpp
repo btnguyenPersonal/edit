@@ -775,7 +775,6 @@ int32_t renderLineContent(State *state, int32_t row, int32_t renderRow, Cursor *
 						ch |= A_STANDOUT;
 					}
 					if (!foundCursor && state->file->row == (uint32_t)row && state->file->col == col) {
-						ch |= A_REVERSE;
 						foundCursor = true;
 						cursor->row = renderRow;
 						cursor->col = pixels.size();
