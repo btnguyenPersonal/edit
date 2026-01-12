@@ -5,7 +5,7 @@
 #include <thread>
 #include <chrono>
 
-constexpr std::chrono::microseconds FRAME_TIME = std::chrono::microseconds(16666); // 60 fps
+constexpr std::chrono::microseconds FRAME_TIME = std::chrono::microseconds(16666); // 60hz render rate max
 
 void mainLoop(State *state)
 {
@@ -49,15 +49,15 @@ void mainLoop(State *state)
 			autosaveFile(state);
 		}
 
-		startCheckpoint("preRenderCleanup", state->timers);
-		preRenderCleanup(state);
+		if (sentKey || !state->shouldNotReRender.test_and_set()) {
+			startCheckpoint("preRenderCleanup", state->timers);
+			preRenderCleanup(state);
 
-		startCheckpoint("==== render logic ====", state->timers);
+			startCheckpoint("==== render logic ====", state->timers);
+			renderScreen(state);
+		}
 
-		renderScreen(state);
-
-		auto now = std::chrono::high_resolution_clock::now();
-		if (now < nextFrame) {
+		if (std::chrono::high_resolution_clock::now() < nextFrame) {
 			std::this_thread::sleep_until(nextFrame);
 		}
 		nextFrame += FRAME_TIME;

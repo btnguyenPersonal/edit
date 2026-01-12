@@ -11,6 +11,7 @@
 #include <vector>
 #include <mutex>
 #include <map>
+#include <atomic>
 
 struct buildError {
 	std::string filename;
@@ -127,6 +128,7 @@ struct FileExplorer {
 
 class State {
     public:
+	std::atomic_flag shouldNotReRender;
 	std::mutex findMutex;
 	std::mutex grepMutex;
 	bool debug;
