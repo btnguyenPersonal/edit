@@ -262,7 +262,7 @@ void State::init()
 	this->extension = std::string("");
 	this->searchFail = false;
 	this->mode = FIND;
-	this->mode = NORMAL;
+	this->prevMode = NORMAL;
 	this->dotCommand = std::vector<std::string>();
 	this->macroCommand = std::map<char, std::vector<std::string> >();
 	this->playingCommand = false;
