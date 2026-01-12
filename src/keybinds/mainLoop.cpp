@@ -29,7 +29,9 @@ void mainLoop(State *state)
 		bool sentKey = false;
 
 		int32_t c = ERR;
-		while ((c = getch()) != ERR) {
+		int32_t temp = ERR;
+		while ((temp = getch()) != ERR) {
+			c = temp;
 			startCheckpoint("sendKeys", state->timers);
 			sendKeys(state, c);
 			startCheckpoint("cleanup", state->timers);
