@@ -8,7 +8,6 @@
 
 int32_t main(int32_t argc, char *argv[])
 {
-	int32_t c;
 	State *state;
 	std::string filename;
 	if (argc >= 2) {
