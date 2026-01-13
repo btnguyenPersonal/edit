@@ -1,6 +1,6 @@
 #include "../util/state.h"
 #include "../util/keys.h"
-#include "../keybinds/mainLoop.h"
+#include "../util/computeFrame.h"
 #include <ncurses.h>
 #include <random>
 #include <vector>
@@ -40,11 +40,8 @@ void fuzzSendKeys(int testnum, int iterations = 1000)
 		for (uint32_t i = 0; i < randVec.size(); i++) {
 			char key = randVec[i];
 			printf("%s %s\n", getMode(state->mode).c_str(), getEscapedChar(key, true).c_str());
-			mainLoop(state, ERR);
-			mainLoop(state, ERR);
-			mainLoop(state, ERR);
-			mainLoop(state, ERR);
-			mainLoop(state, key);
+			ungetch(key);
+			computeFrame(state);
 		}
 	} catch (const std::exception &e) {
 		printf("Error during fuzzing: %s\n", e.what());
@@ -57,7 +54,8 @@ void testValues(State *state, std::vector<std::string> v)
 	for (uint32_t i = 0; i < v.size(); i++) {
 		char key = getUnEscapedChar(v[i]);
 		printf("%s %s\n", getMode(state->mode).c_str(), getEscapedChar(key, true).c_str());
-		mainLoop(state, key);
+		ungetch(key);
+		computeFrame(state);
 	}
 }
 
