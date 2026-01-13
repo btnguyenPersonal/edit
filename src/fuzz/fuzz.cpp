@@ -20,6 +20,7 @@ void fuzzSendKeys(int testnum, int iterations = 1000)
 		for (int i = 0; i < iterations; i++) {
 			randVec.push_back(keypresses[dis(gen)]);
 		}
+		printf("\t// iteration #%d\n", testnum);
 		printf("\tState *state = new State(\"./test-file.h\");\n");
 		printf("\ttestValues(state, {");
 		for (uint32_t i = 0; i < randVec.size(); i++) {
