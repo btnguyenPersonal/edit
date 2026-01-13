@@ -43,10 +43,13 @@ void fuzzSendKeys(int testnum, int iterations = 1000)
 			ungetch(key);
 			computeFrame(state);
 		}
+		delete state;
 	} catch (const std::exception &e) {
+		delete state;
 		printf("Error during fuzzing: %s\n", e.what());
 		exit(1);
 	}
+	return;
 }
 
 void testValues(State *state, std::vector<std::string> v)
