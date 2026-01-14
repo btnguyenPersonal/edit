@@ -21,9 +21,9 @@ std::string getLoggingCode(State *state, std::string variableName)
 	if (isCExtension(state->extension)) {
 		std::string escapedVar = getPrintableString(variableName);
 		escapedVar = replace(escapedVar, "%", "%%");
-		return "printf(\"" + rowStr + " " + escapedVar + ": %d\\n\", " + variableName + ");";
+		return "printf(\" " + rowStr + " " + escapedVar + ": %d\\n\", " + variableName + ");";
 	} else {
-		std::string s = "console.log('" + rowStr + " " + replace(variableName, "'", "\\'") + "'";
+		std::string s = "console.log(' " + rowStr + " " + replace(variableName, "'", "\\'") + "'";
 		s += ", " + variableName;
 		s += ");";
 		return s;
@@ -34,9 +34,9 @@ std::string getLoggingSearch(State *state)
 {
 	std::string pattern = "";
 	if (isCExtension(state->extension)) {
-		pattern = "printf(";
+		pattern = "printf(\" ";
 	} else {
-		pattern = "console.log(";
+		pattern = "console.log(' ";
 	}
 	return pattern;
 }
@@ -45,9 +45,9 @@ std::string getLoggingRegex(State *state)
 {
 	std::string pattern = "";
 	if (isCExtension(state->extension)) {
-		pattern = "printf\\(\"[0-9]+ .+?\\);";
+		pattern = "printf\\(\" [0-9]+ .+?\\);";
 	} else {
-		pattern = "console\\.log\\('[0-9]+ .+?\\);";
+		pattern = "console\\.log\\(' [0-9]+ .+?\\);";
 	}
 	return pattern;
 }
