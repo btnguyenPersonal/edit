@@ -59,9 +59,9 @@ std::string getLoggingRegex(State *state)
 {
 	std::string pattern = "";
 	if (isCExtension(state->extension)) {
-		pattern = "printf\\(\"#### [0-9]+ .+?\\);";
+		pattern = "printf\\(\"#### .+?\\);";
 	} else {
-		pattern = "console\\.log\\('#### [0-9]+ .+?\\);";
+		pattern = "console\\.log\\('#### .+?\\);";
 	}
 	return pattern;
 }
