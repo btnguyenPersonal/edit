@@ -212,6 +212,16 @@ void sendNormalKeys(State *state, int32_t c)
 		state->file->col = getNormalizedCol(state, state->file->hardCol);
 		state->skipSetHardCol = true;
 		state->prevKeys = "";
+	} else if (state->prevKeys == "g" && c == 'm') {
+		insertLoggingCode(state, getLoggingCode(state, ""));
+		down(state);
+		state->file->col = 0;
+		state->file->col = findNextChar(state, '#');
+		for (uint32_t i = 0; i < 5; i++) {
+			right(state);
+		}
+		switchMode(state, INSERT);
+		state->prevKeys = "";
 	} else if (state->prevKeys == "g" && c == ctrl('u')) {
 		for (uint32_t i = 0; i < state->maxY / 2; i++) {
 			upVisual(state);

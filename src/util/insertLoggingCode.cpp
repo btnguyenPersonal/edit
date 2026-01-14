@@ -14,17 +14,31 @@ bool isCExtension(std::string extension)
 
 std::string getLoggingCode(State *state, std::string variableName)
 {
-	if (variableName == "") {
-		return "";
-	}
 	std::string rowStr = std::to_string(state->file->row + 1);
 	if (isCExtension(state->extension)) {
-		std::string escapedVar = getPrintableString(variableName);
-		escapedVar = replace(escapedVar, "%", "%%");
-		return "printf(\"#### " + rowStr + " " + escapedVar + ": %d\\n\", " + variableName + ");";
+		std::string ret = "printf(\"#### ";
+		if (variableName != "") {
+			ret += rowStr;
+			std::string escapedVar = getPrintableString(variableName);
+			escapedVar = replace(escapedVar, "%", "%%");
+			ret += " " + escapedVar;
+			ret += ": %d";
+		}
+		ret += "\\n\"";
+		if (variableName != "") {
+			ret += ", " + variableName;
+		}
+		ret += ");";
+		return ret;
 	} else {
-		std::string s = "console.log('#### " + rowStr + " " + replace(variableName, "'", "\\'") + "'";
-		s += ", " + variableName;
+		std::string s = "console.log('#### ";
+		if (variableName != "") {
+			s += rowStr + " " + replace(variableName, "'", "\\'");
+		}
+		s += "'";
+		if (variableName != "") {
+			s += ", " + variableName;
+		}
 		s += ");";
 		return s;
 	}
@@ -52,6 +66,14 @@ std::string getLoggingRegex(State *state)
 	return pattern;
 }
 
+void insertLoggingCode(State *state, std::string loggingCode)
+{
+	if (state->file->row < state->file->data.size()) {
+		state->file->data.insert(state->file->data.begin() + state->file->row + 1, loggingCode);
+		indentLine(state, state->file->row + 1);
+	}
+}
+
 void toggleLoggingCode(State *state, std::string variableName)
 {
 	std::string loggingCode = getLoggingCode(state, variableName);
@@ -66,10 +88,7 @@ void toggleLoggingCode(State *state, std::string variableName)
 			return;
 		}
 	}
-	if (state->file->row < state->file->data.size()) {
-		state->file->data.insert(state->file->data.begin() + state->file->row + 1, loggingCode);
-		indentLine(state, state->file->row + 1);
-	}
+	insertLoggingCode(state, loggingCode);
 }
 
 void removeAllLoggingCode(State *state)
