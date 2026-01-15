@@ -177,7 +177,14 @@ void copyPathToClipboard(State *state, const std::string &filePath)
 		return;
 	}
 
+#ifdef __APPLE__
+	std::string command = "osascript -e 'set the clipboard to POSIX file \"" + escapeForShell(filePath) + "\"'";
+	runCommand(command);
+#elif defined(__linux__)
 	osc52copy("file://" + filePath);
+#else
+#error "Platform not supported"
+#endif
 }
 
 Bounds pasteVisual(State *state, std::string text)
