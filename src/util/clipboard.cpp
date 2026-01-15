@@ -1,5 +1,5 @@
 #include "clipboard.h"
-// TODO remove this
+// TODO(ben): remove this eventually
 #include "../keybinds/sendVisualKeys.h"
 #include "indent.h"
 #include "state.h"
@@ -11,6 +11,8 @@
 #include "string.h"
 #include <string>
 #include <vector>
+#include <unistd.h>
+#include <fcntl.h>
 
 std::string getFromClipboard(State *state, bool useSystemClipboard)
 {
@@ -283,22 +285,71 @@ Bounds pasteAfter(State *state, std::string text)
 	return bounds;
 }
 
+#include <string>
+
+static const char b64_table[] =
+"ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+"abcdefghijklmnopqrstuvwxyz"
+"0123456789+/";
+
+std::string base64_encode(const std::string& input) {
+	std::string output;
+	int val = 0;
+	int valb = -6;
+
+	for (unsigned char c : input) {
+		val = (val << 8) + c;
+		valb += 8;
+		while (valb >= 0) {
+			output.push_back(b64_table[(val >> valb) & 0x3F]);
+			valb -= 6;
+		}
+	}
+
+	if (valb > -6) {
+		output.push_back(
+			b64_table[((val << 8) >> (valb + 8)) & 0x3F]
+		);
+	}
+
+	while (output.size() % 4) {
+		output.push_back('=');
+	}
+
+	return output;
+}
+
 void copyToClipboard(State *state, const std::string &clip, bool useSystemClipboard)
 {
 	state->clipboard = clip;
 	if (!useSystemClipboard || state->dontRecordKey) {
 		return;
 	}
-#ifdef __APPLE__
-	FILE *pipe = popen("pbcopy", "w");
-#elif defined(__linux__)
-	FILE *pipe = popen("[ \"$XDG_SESSION_TYPE\" = \"wayland\" ] && command -v wl-copy >/dev/null 2>&1 && wl-copy || xclip -selection clipboard", "w");
-#else
-#error "OS not supported"
-#endif
-	if (pipe != nullptr) {
-		fwrite(clip.c_str(), sizeof(char), clip.size(), pipe);
-		pclose(pipe);
+// #ifdef __APPLE__
+// 	FILE *pipe = popen("pbcopy", "w");
+// #elif defined(__linux__)
+// 	FILE *pipe = popen("[ \"$XDG_SESSION_TYPE\" = \"wayland\" ] && command -v wl-copy >/dev/null 2>&1 && wl-copy || xclip -selection clipboard", "w");
+// #else
+// #error "OS not supported"
+// #endif
+// 	if (pipe != nullptr) {
+// 		fwrite(clip.c_str(), sizeof(char), clip.size(), pipe);
+// 		pclose(pipe);
+// 	}
+	std::string encoded = base64_encode(clip);
+	std::string seq;
+	if (getenv("TMUX")) {
+		// tmux-safe OSC 52
+		seq = "\033Ptmux;\033\033]52;c;" + encoded + "\033\033\\\033\\";
+	} else {
+		// direct terminal
+		seq = "\033]52;c;" + encoded + "\033\\";
 	}
+	int fd = open("/dev/tty", O_WRONLY);
+	if (fd != -1) {
+		write(fd, seq.data(), seq.size());
+		close(fd);
+	}
+
 	state->pasteAsBlock = false;
 }
