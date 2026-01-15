@@ -35,9 +35,9 @@ void downDiff(State *state)
 
 void sendDiffKeys(State *state, int32_t c)
 {
-	if (c == 'q') {
+	if (c == 27) { // ESC
 		switchMode(state, NORMAL);
-	} else if (c == 27) { // ESC
+	} else if (c == 'q') {
 		if (state->prevKeys != "") {
 			state->prevKeys = "";
 		} else if (state->viewingDiff) {

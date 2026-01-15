@@ -33,9 +33,6 @@
 	[ ] multicursorKeys
 	[ ] normalKeys
 
-compat:
-	- mouse
-
 perf:
 	- use trace() to see all the ncurses calls
 	- multiline comments render fast
@@ -71,6 +68,12 @@ improve build time! it is unbearable!!
 repeat number keys
 
 W and B
+
+fix find sorting algorithm
+
+add ability to just cmd or ctrl c in visual and have it copy
+
+vaw motion
 
 ts-server integration (do it for real this time)
 
