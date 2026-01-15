@@ -329,17 +329,6 @@ void copyToClipboard(State *state, const std::string &clip, bool useSystemClipbo
 	if (!useSystemClipboard || state->dontRecordKey) {
 		return;
 	}
-// #ifdef __APPLE__
-// 	FILE *pipe = popen("pbcopy", "w");
-// #elif defined(__linux__)
-// 	FILE *pipe = popen("[ \"$XDG_SESSION_TYPE\" = \"wayland\" ] && command -v wl-copy >/dev/null 2>&1 && wl-copy || xclip -selection clipboard", "w");
-// #else
-// #error "OS not supported"
-// #endif
-// 	if (pipe != nullptr) {
-// 		fwrite(clip.c_str(), sizeof(char), clip.size(), pipe);
-// 		pclose(pipe);
-// 	}
 	osc52copy(clip);
 	state->pasteAsBlock = false;
 }
