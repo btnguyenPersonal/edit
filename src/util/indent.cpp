@@ -53,7 +53,7 @@ void deindent(State *state)
 
 void indentLineWhenTypingLastChar(State *state)
 {
-	if (!autoIndentDisabledFileType(state->file->filename)) {
+	if (!autoIndentDisabledFileType(state)) {
 		if (state->file->col + 1 == state->file->data[state->file->row].length()) {
 			indentLine(state);
 			state->file->col = getIndexLast(state->file->data[state->file->row]);
@@ -61,19 +61,30 @@ void indentLineWhenTypingLastChar(State *state)
 	}
 }
 
+bool isFirstNonSpace(State *state)
+{
+	char indentChar = getIndentCharacter(state);
+	for (int32_t i = (int32_t)state->file->col - 1; i >= 0; i--) {
+		if (state->file->data[state->file->row][i] != indentChar) {
+			return false;
+		}
+	}
+	return true;
+}
+
 void indentLineWhenTypingFirstChar(State *state)
 {
-	if (!autoIndentDisabledFileType(state->file->filename)) {
-		if ((int32_t)state->file->col == getIndexFirstNonSpace(state->file->data[state->file->row], getIndentCharacter(state))) {
+	if (!autoIndentDisabledFileType(state)) {
+		if (isFirstNonSpace(state)) {
 			indentLine(state);
 			state->file->col = getIndexFirstNonSpace(state->file->data[state->file->row], getIndentCharacter(state));
 		}
 	}
 }
 
-bool autoIndentDisabledFileType(std::string filename)
+bool autoIndentDisabledFileType(State *state)
 {
-	if (getExtension(filename) == "py") {
+	if (state->extension == "py") {
 		return true;
 	}
 	return false;
