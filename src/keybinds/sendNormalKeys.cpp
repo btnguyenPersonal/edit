@@ -27,6 +27,7 @@
 #include "../util/repeat.h"
 #include "../util/defines.h"
 #include "../util/switchMode.h"
+#include "../util/tsServer.h"
 #include "sendKeys.h"
 #include "sendVisualKeys.h"
 #include <ncurses.h>
@@ -551,6 +552,8 @@ void sendNormalKeys(State *state, int32_t c)
 			state->file->col = state->file->jumplist.list[state->file->jumplist.index].col;
 			state->file->jumplist.touched = true;
 		}
+	} else if (c == '!') {
+		startTsServer(state);
 	}
 	if (state->mode != NORMAL) {
 		state->motion.clear();

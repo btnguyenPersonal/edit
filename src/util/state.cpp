@@ -273,6 +273,8 @@ void State::init()
 	this->showFileStack = false;
 	this->fileStackIndex = 0;
 	this->motion = std::vector<int32_t>();
+	this->tsServerStatus = "";
+	this->tsServerRunning.store(false);
 	this->setDefaultOptions();
 }
 

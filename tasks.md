@@ -75,7 +75,7 @@ add ability to just cmd or ctrl c in visual and have it copy
 
 vaw motion
 
-ts-server integration (do it for real this time)
+[x] ts-server integration (do it for real this time)
 
 instead of comparing with the previousState and generating the diff every time, could compute the state->file->data hash and store that
 if could get all of the edits to instead of use raw std::string, go through some abstraction layer, could make undo and file hash compute

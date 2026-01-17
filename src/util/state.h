@@ -131,6 +131,7 @@ class State {
 	std::atomic_flag shouldNotReRender;
 	std::mutex findMutex;
 	std::mutex grepMutex;
+	std::mutex tsServerMutex;
 	bool debug;
 	std::vector<timer> timers;
 	Mark mark;
@@ -176,6 +177,7 @@ class State {
 	std::string grepPath;
 	std::string prevKeys;
 	std::string status;
+	std::string tsServerStatus;
 	File *file;
 	std::vector<File *> files;
 	std::vector<grepMatch> grepOutput;
@@ -185,6 +187,7 @@ class State {
 	std::vector<std::string> logLines;
 	std::vector<std::string> blame;
 	std::vector<std::string> dotCommand;
+	std::atomic<bool> tsServerRunning;
 	std::vector<std::string> fileStack;
 	std::map<char, std::vector<std::string> > macroCommand;
 	std::vector<Harpoon> harpoon;

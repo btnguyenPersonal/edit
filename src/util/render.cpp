@@ -200,9 +200,10 @@ int32_t renderStatusBar(State *state)
 	std::string prefix;
 	std::vector<Pixel> pixels = std::vector<Pixel>();
 
-	if (state->status.length() > 0) {
+	if (state->status.length() > 0 || state->tsServerStatus.length() > 0) {
 		prefix = "";
 		insertPixels(state, &pixels, prefix + state->status, RED);
+		insertPixels(state, &pixels, prefix + state->tsServerStatus, WHITE);
 		renderPixels(state, 0, 0, pixels, false);
 	} else {
 		for (uint32_t i = 0; i < state->harpoon[state->workspace].list.size(); i++) {
