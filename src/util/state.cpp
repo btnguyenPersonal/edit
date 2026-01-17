@@ -264,6 +264,7 @@ void State::init()
 	this->mode = FIND;
 	this->prevMode = NORMAL;
 	this->dotCommand = std::vector<std::string>();
+	this->tsErrors = std::vector<TSError>();
 	this->macroCommand = std::map<char, std::vector<std::string> >();
 	this->playingCommand = false;
 	this->recording = { false, 'w' };
@@ -274,6 +275,8 @@ void State::init()
 	this->fileStackIndex = 0;
 	this->motion = std::vector<int32_t>();
 	this->tsServerStatus = "";
+	this->tsServerInput = nullptr;
+	this->tsServerOutput = nullptr;
 	this->tsServerRunning.store(false);
 	this->setDefaultOptions();
 }

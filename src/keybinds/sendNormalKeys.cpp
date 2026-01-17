@@ -196,6 +196,14 @@ void sendNormalKeys(State *state, int32_t c)
 		unCommentBlock(state);
 		state->prevKeys = "";
 		setDotCommand(state, { 'g', c });
+	} else if (state->prevKeys == "g" && c == 'd') {
+		state->tsErrors = getTSErrors(state);
+		if (state->tsErrors.empty()) {
+			state->status = "No TypeScript errors found";
+		} else {
+			state->status = "Found " + std::to_string(state->tsErrors.size()) + " TypeScript errors";
+		}
+		state->prevKeys = "";
 	} else if (state->prevKeys == "g" && c == 't') {
 		trimTrailingWhitespace(state);
 		state->prevKeys = "";

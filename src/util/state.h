@@ -49,6 +49,13 @@ struct Position {
 	uint32_t col;
 };
 
+struct TSError {
+	int32_t line;
+	int32_t column;
+	std::string message;
+	std::string severity;
+};
+
 struct WordPosition {
 	uint32_t min;
 	uint32_t max;
@@ -178,6 +185,8 @@ class State {
 	std::string prevKeys;
 	std::string status;
 	std::string tsServerStatus;
+	FILE *tsServerInput;
+	FILE *tsServerOutput;
 	File *file;
 	std::vector<File *> files;
 	std::vector<grepMatch> grepOutput;
@@ -187,6 +196,7 @@ class State {
 	std::vector<std::string> logLines;
 	std::vector<std::string> blame;
 	std::vector<std::string> dotCommand;
+	std::vector<TSError> tsErrors;
 	std::atomic<bool> tsServerRunning;
 	std::vector<std::string> fileStack;
 	std::map<char, std::vector<std::string> > macroCommand;
