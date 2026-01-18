@@ -69,8 +69,6 @@ repeat number keys
 
 W and B
 
-fix find sorting algorithm
-
 add ability to just cmd or ctrl c in visual and have it copy
 
 vaw motion
