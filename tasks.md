@@ -1,5 +1,7 @@
 ## tasks
 
+- autoload (maybe every 60s it checks if current file has been updated and shows the like vim load w/ diff??)
+
 - more tests
 	[x] string
 	[x] autocomplete

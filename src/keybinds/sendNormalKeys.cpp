@@ -27,6 +27,7 @@
 #include "../util/repeat.h"
 #include "../util/defines.h"
 #include "../util/switchMode.h"
+#include "../util/tsServer.h"
 #include "sendKeys.h"
 #include "sendVisualKeys.h"
 #include <ncurses.h>
@@ -311,6 +312,8 @@ void sendNormalKeys(State *state, int32_t c)
 		switchMode(state, GREP);
 		state->showAllGrep = false;
 		generateGrepOutput(state, true);
+	} else if (c == '!') {
+		tsHelloWorld(state, 3236503);
 	} else if (c == '*') {
 		initVisual(state, SELECT);
 		setStateFromWordPosition(state, getWordPosition(state->file->data[state->file->row], state->file->col));
