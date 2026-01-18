@@ -42,6 +42,13 @@ void computeFrame(State *state)
 		autosaveFile(state);
 	}
 
+	state->frameCounter++;
+	if (state->frameCounter >= 60) {
+		state->frameCounter = 0;
+		startCheckpoint("autoloadFile", state->timers);
+		autoloadFile(state);
+	}
+
 	if (sentKey || !state->shouldNotReRender.test_and_set()) {
 		startCheckpoint("preRenderCleanup", state->timers);
 		preRenderCleanup(state);

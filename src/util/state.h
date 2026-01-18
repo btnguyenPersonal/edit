@@ -74,6 +74,7 @@ struct File {
 	Jumplist jumplist;
 	int32_t historyPosition;
 	int32_t lastSave;
+	std::filesystem::file_time_type lastModified;
 	std::string commentSymbol;
 	std::string filename;
 	std::vector<std::string> data;
@@ -100,6 +101,7 @@ struct PrevSearch {
 struct Options {
 	bool wordwrap;
 	bool autosave;
+	bool autoload;
 	uint32_t keysSize;
 	int32_t maxHarpoon;
 	bool insert_final_newline;
@@ -168,6 +170,7 @@ class State {
 	int32_t buildErrorIndex;
 	uint32_t maxX;
 	uint32_t maxY;
+	uint32_t frameCounter;
 	CommandLineAutocompleteState commandLineState;
 	std::string extension;
 	std::string clipboard;

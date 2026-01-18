@@ -8,3 +8,4 @@ void preRenderCleanup(State *state);
 void cleanup(State *state, char c);
 void history(State *state, char c);
 void autosaveFile(State *state);
+void autoloadFile(State *state);

@@ -10,6 +10,7 @@
 #include "movement.h"
 #include "ctrl.h"
 #include <ncurses.h>
+#include <filesystem>
 
 void cleanup(State *state, char c)
 {
@@ -75,5 +76,18 @@ void autosaveFile(State *state)
 		if (state->options.autosave && !state->runningAsRoot && !state->file->newFile && !state->dontRecordKey && !isLargeFile(state)) {
 			saveFile(state);
 		}
+	}
+}
+
+void autoloadFile(State *state)
+{
+	if (state->file && state->options.autoload && !state->file->newFile) {
+		try {
+			auto currentModified = std::filesystem::last_write_time(state->file->filename);
+			if (currentModified > state->file->lastModified) {
+				state->reloadFile(state->file->filename);
+			}
+			state->shouldNotReRender.clear();
+		} catch (...) {}
 	}
 }

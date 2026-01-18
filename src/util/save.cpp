@@ -1,5 +1,6 @@
 #include "save.h"
 #include <fstream>
+#include <filesystem>
 
 void saveFile(State *state)
 {
@@ -17,5 +18,6 @@ void saveFile(State *state)
 		file.close();
 		state->file->newFile = false;
 		state->file->lastSave = state->file->historyPosition;
+		state->file->lastModified = std::filesystem::last_write_time(state->file->filename);
 	}
 }

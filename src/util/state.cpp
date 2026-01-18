@@ -29,6 +29,9 @@ File *getFile(const std::string &name, const std::vector<std::string> &data)
 	file->row = 0;
 	file->col = 0;
 	file->hardCol = 0;
+	if (!file->newFile) {
+		file->lastModified = std::filesystem::last_write_time(name);
+	}
 	return file;
 }
 
@@ -98,6 +101,7 @@ void State::readBoolConfigValue(bool &option, const std::string &configValue, co
 void State::readConfigLine(const std::string &line)
 {
 	this->readBoolConfigValue(this->options.autosave, "autosave", line);
+	this->readBoolConfigValue(this->options.autoload, "autoload", line);
 	this->readBoolConfigValue(this->options.wordwrap, "wordwrap", line);
 	this->readBoolConfigValue(this->options.insert_final_newline, "insert_final_newline", line);
 	this->readStringConfigValue(this->options.indent_style, "indent_style", line);
@@ -108,6 +112,7 @@ void State::setDefaultOptions()
 {
 	this->options.insert_final_newline = false;
 	this->options.autosave = true;
+	this->options.autoload = true;
 	this->options.keysSize = 30;
 	this->options.maxHarpoon = 100;
 	this->options.wordwrap = true;
@@ -140,6 +145,9 @@ void State::reloadFile(const std::string &filename)
 	this->mode = NORMAL;
 	this->file->row = pos.row;
 	this->file->col = pos.col;
+	if (!this->file->newFile) {
+		this->file->lastModified = std::filesystem::last_write_time(name);
+	}
 }
 
 void State::changeFile(const std::string &filename)
@@ -154,6 +162,9 @@ void State::changeFile(const std::string &filename)
 		if (this->files[i]->filename == name) {
 			this->file = this->files[i];
 			this->file->data = readFile(name);
+			if (!this->file->newFile) {
+				this->file->lastModified = std::filesystem::last_write_time(name);
+			}
 			found = true;
 			break;
 		}
@@ -273,6 +284,7 @@ void State::init()
 	this->showFileStack = false;
 	this->fileStackIndex = 0;
 	this->motion = std::vector<int32_t>();
+	this->frameCounter = 0;
 	this->setDefaultOptions();
 }
 
