@@ -1,0 +1,167 @@
+diff --git a/src/util/computeFrame.cpp b/src/util/computeFrame.cpp
+index 48846d6..f841fed 100644
+--- a/src/util/computeFrame.cpp
++++ b/src/util/computeFrame.cpp
+@@ -37,11 +37,15 @@ void computeFrame(State *state)
+ 		history(state, c);
+ 	}
+ 
++	startCheckpoint("==== autosaveFile logic ====", state->timers);
++
+ 	if (state->file && cachedHistoryPosition != state->file->historyPosition) {
+ 		startCheckpoint("autosaveFile", state->timers);
+ 		autosaveFile(state);
+ 	}
+ 
++	startCheckpoint("==== autoloadFile logic ====", state->timers);
++
+ 	state->frameCounter++;
+ 	if (state->frameCounter >= 60) {
+ 		state->frameCounter = 0;
+@@ -49,6 +53,8 @@ void computeFrame(State *state)
+ 		autoloadFile(state);
+ 	}
+ 
++	endLastCheckpoint(state->timers);
++
+ 	if (sentKey || !state->shouldNotReRender.test_and_set()) {
+ 		startCheckpoint("preRenderCleanup", state->timers);
+ 		preRenderCleanup(state);
+diff --git a/src/util/render.cpp b/src/util/render.cpp
+index 74d281a..92f2198 100644
+--- a/src/util/render.cpp
++++ b/src/util/render.cpp
+@@ -702,62 +702,66 @@ int32_t renderLineContent(State *state, int32_t row, int32_t renderRow, Cursor *
+ 		for (; col < state->file->data[row].length(); col++) {
+ 			char c = state->file->data[row][col];
+ 
+-			if (skipNext) {
+-				skipNext = false;
+-			} else if (inString && c == '\\') {
+-				skipNext = true;
+-			} else if (!inString && (c == '"' || c == '`' || c == '\'')) {
+-				inString = true;
+-				stringType = c;
+-			} else if (inString && c == stringType) {
+-				inString = false;
+-			}
+-
+-			if (state->showGrep) {
+-				if (searchCounter == 0 && isInQuery(state, row, col, state->grep.query)) {
+-					searchCounter = state->grep.query.length();
+-					startOfSearch = col;
++			int32_t color;
++			if (col < 3000) {
++				if (skipNext) {
++					skipNext = false;
++				} else if (inString && c == '\\') {
++					skipNext = true;
++				} else if (!inString && (c == '"' || c == '`' || c == '\'')) {
++					inString = true;
++					stringType = c;
++				} else if (inString && c == stringType) {
++					inString = false;
+ 				}
+-			} else {
+-				if (searchCounter == 0 && isInQuery(state, row, col, state->search.query)) {
+-					searchCounter = state->search.query.length();
+-					startOfSearch = col;
++
++				if (state->showGrep) {
++					if (searchCounter == 0 && isInQuery(state, row, col, state->grep.query)) {
++						searchCounter = state->grep.query.length();
++						startOfSearch = col;
++					}
++				} else {
++					if (searchCounter == 0 && isInQuery(state, row, col, state->search.query)) {
++						searchCounter = state->search.query.length();
++						startOfSearch = col;
++					}
+ 				}
+-			}
+ 
+-			if (overrides.size() == 0) {
+-				for (uint32_t i = 0; i < keywordOverrides.size(); i++) {
+-					if ((int32_t)col == keywordOverrides[i].pos) {
+-						for (uint32_t j = 0; j < keywordOverrides[i].name.length(); j++) {
+-							overrides.push_back(keywordOverrides[i]);
++				if (overrides.size() == 0) {
++					for (uint32_t i = 0; i < keywordOverrides.size(); i++) {
++						if ((int32_t)col == keywordOverrides[i].pos) {
++							for (uint32_t j = 0; j < keywordOverrides[i].name.length(); j++) {
++								overrides.push_back(keywordOverrides[i]);
++							}
+ 						}
+ 					}
+ 				}
+-			}
+ 
+-			if (!inString && safeSubstring(state->file->data[row], col, state->file->commentSymbol.length()) == state->file->commentSymbol && state->file->commentSymbol != "") {
+-				isComment = true;
+-			}
++				if (!inString && safeSubstring(state->file->data[row], col, state->file->commentSymbol.length()) == state->file->commentSymbol && state->file->commentSymbol != "") {
++					isComment = true;
++				}
+ 
+-			int32_t color;
+-			if (state->file && state->matching.row == (uint32_t)row && state->matching.col == col && (state->matching.row != state->file->row || state->matching.col != state->file->col)) {
+-				color = invertColor(GREY);
+-			} else {
+-				if (state->showGrep && searchCounter != 0) {
+-					color = getSearchColor(state, row, startOfSearch, state->grep.query, true);
+-				} else if (searchCounter != 0 && ((state->searching && !state->replacing) || (state->replacing && isTextInReplaceBounds(state, row)))) {
+-					color = getSearchColor(state, row, startOfSearch, state->search.query, false);
++				if (state->file && state->matching.row == (uint32_t)row && state->matching.col == col && (state->matching.row != state->file->row || state->matching.col != state->file->col)) {
++					color = invertColor(GREY);
+ 				} else {
+-					if (mergeConflict) {
+-						color = RED;
+-					} else if (isComment) {
+-						color = GREEN;
+-					} else if (inString) {
+-						color = CYAN;
++					if (state->showGrep && searchCounter != 0) {
++						color = getSearchColor(state, row, startOfSearch, state->grep.query, true);
++					} else if (searchCounter != 0 && ((state->searching && !state->replacing) || (state->replacing && isTextInReplaceBounds(state, row)))) {
++						color = getSearchColor(state, row, startOfSearch, state->search.query, false);
+ 					} else {
+-						color = getColorFromChar(c);
++						if (mergeConflict) {
++							color = RED;
++						} else if (isComment) {
++							color = GREEN;
++						} else if (inString) {
++							color = CYAN;
++						} else {
++							color = getColorFromChar(c);
++						}
+ 					}
+ 				}
++			} else {
++				color = WHITE;
+ 			}
+ 
+ 			if (col >= state->file->windowPosition.col) {
+diff --git a/tasks.md b/tasks.md
+index be85c67..5d5086e 100644
+--- a/tasks.md
++++ b/tasks.md
+@@ -65,12 +65,16 @@ improve build time! it is unbearable!!
+ 	- remove make
+ 	- performance indicators
+ 
++remove ncurses capturing all keyboard input, why is it so slow?? is that as fast as it goes??
++
++make word wrap work well with tabs when windowPos.col > 0
++
++clean up paste functions in clipboard
++
+ repeat number keys
+ 
+ W and B
+ 
+-add ability to just cmd or ctrl c in visual and have it copy
+-
+ vaw motion
+ 
+ ts-server integration (do it for real this time)
