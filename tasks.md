@@ -65,7 +65,14 @@ improve build time! it is unbearable!!
 	- remove make
 	- performance indicators
 
+get multiline cached and only recalculated every second
+
+make sure checkpoints aren't getting calculated every time when not in debug
+
+get veryvery long line editing working
+
 remove ncurses capturing all keyboard input, why is it so slow?? is that as fast as it goes??
+- faster way to do input, needs to work for pasting a million lines
 
 make word wrap work well with tabs when windowPos.col > 0
 
