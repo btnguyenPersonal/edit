@@ -37,10 +37,14 @@ void computeFrame(State *state)
 		history(state, c);
 	}
 
+	startCheckpoint("==== autosaveFile logic ====", state->timers);
+
 	if (state->file && cachedHistoryPosition != state->file->historyPosition) {
 		startCheckpoint("autosaveFile", state->timers);
 		autosaveFile(state);
 	}
+
+	startCheckpoint("==== autoloadFile logic ====", state->timers);
 
 	state->frameCounter++;
 	if (state->frameCounter >= 60) {
@@ -48,6 +52,8 @@ void computeFrame(State *state)
 		startCheckpoint("autoloadFile", state->timers);
 		autoloadFile(state);
 	}
+
+	endLastCheckpoint(state->timers);
 
 	if (sentKey || !state->shouldNotReRender.test_and_set()) {
 		startCheckpoint("preRenderCleanup", state->timers);

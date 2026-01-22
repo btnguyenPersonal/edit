@@ -65,11 +65,15 @@ improve build time! it is unbearable!!
 	- remove make
 	- performance indicators
 
+remove ncurses capturing all keyboard input, why is it so slow?? is that as fast as it goes??
+
+make word wrap work well with tabs when windowPos.col > 0
+
+clean up paste functions in clipboard
+
 repeat number keys
 
 W and B
-
-add ability to just cmd or ctrl c in visual and have it copy
 
 vaw motion
 

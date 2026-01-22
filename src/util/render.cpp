@@ -702,62 +702,66 @@ int32_t renderLineContent(State *state, int32_t row, int32_t renderRow, Cursor *
 		for (; col < state->file->data[row].length(); col++) {
 			char c = state->file->data[row][col];
 
-			if (skipNext) {
-				skipNext = false;
-			} else if (inString && c == '\\') {
-				skipNext = true;
-			} else if (!inString && (c == '"' || c == '`' || c == '\'')) {
-				inString = true;
-				stringType = c;
-			} else if (inString && c == stringType) {
-				inString = false;
-			}
-
-			if (state->showGrep) {
-				if (searchCounter == 0 && isInQuery(state, row, col, state->grep.query)) {
-					searchCounter = state->grep.query.length();
-					startOfSearch = col;
+			int32_t color;
+			if (col < 3000) {
+				if (skipNext) {
+					skipNext = false;
+				} else if (inString && c == '\\') {
+					skipNext = true;
+				} else if (!inString && (c == '"' || c == '`' || c == '\'')) {
+					inString = true;
+					stringType = c;
+				} else if (inString && c == stringType) {
+					inString = false;
 				}
-			} else {
-				if (searchCounter == 0 && isInQuery(state, row, col, state->search.query)) {
-					searchCounter = state->search.query.length();
-					startOfSearch = col;
-				}
-			}
 
-			if (overrides.size() == 0) {
-				for (uint32_t i = 0; i < keywordOverrides.size(); i++) {
-					if ((int32_t)col == keywordOverrides[i].pos) {
-						for (uint32_t j = 0; j < keywordOverrides[i].name.length(); j++) {
-							overrides.push_back(keywordOverrides[i]);
+				if (state->showGrep) {
+					if (searchCounter == 0 && isInQuery(state, row, col, state->grep.query)) {
+						searchCounter = state->grep.query.length();
+						startOfSearch = col;
+					}
+				} else {
+					if (searchCounter == 0 && isInQuery(state, row, col, state->search.query)) {
+						searchCounter = state->search.query.length();
+						startOfSearch = col;
+					}
+				}
+
+				if (overrides.size() == 0) {
+					for (uint32_t i = 0; i < keywordOverrides.size(); i++) {
+						if ((int32_t)col == keywordOverrides[i].pos) {
+							for (uint32_t j = 0; j < keywordOverrides[i].name.length(); j++) {
+								overrides.push_back(keywordOverrides[i]);
+							}
 						}
 					}
 				}
-			}
 
-			if (!inString && safeSubstring(state->file->data[row], col, state->file->commentSymbol.length()) == state->file->commentSymbol && state->file->commentSymbol != "") {
-				isComment = true;
-			}
+				if (!inString && safeSubstring(state->file->data[row], col, state->file->commentSymbol.length()) == state->file->commentSymbol && state->file->commentSymbol != "") {
+					isComment = true;
+				}
 
-			int32_t color;
-			if (state->file && state->matching.row == (uint32_t)row && state->matching.col == col && (state->matching.row != state->file->row || state->matching.col != state->file->col)) {
-				color = invertColor(GREY);
-			} else {
-				if (state->showGrep && searchCounter != 0) {
-					color = getSearchColor(state, row, startOfSearch, state->grep.query, true);
-				} else if (searchCounter != 0 && ((state->searching && !state->replacing) || (state->replacing && isTextInReplaceBounds(state, row)))) {
-					color = getSearchColor(state, row, startOfSearch, state->search.query, false);
+				if (state->file && state->matching.row == (uint32_t)row && state->matching.col == col && (state->matching.row != state->file->row || state->matching.col != state->file->col)) {
+					color = invertColor(GREY);
 				} else {
-					if (mergeConflict) {
-						color = RED;
-					} else if (isComment) {
-						color = GREEN;
-					} else if (inString) {
-						color = CYAN;
+					if (state->showGrep && searchCounter != 0) {
+						color = getSearchColor(state, row, startOfSearch, state->grep.query, true);
+					} else if (searchCounter != 0 && ((state->searching && !state->replacing) || (state->replacing && isTextInReplaceBounds(state, row)))) {
+						color = getSearchColor(state, row, startOfSearch, state->search.query, false);
 					} else {
-						color = getColorFromChar(c);
+						if (mergeConflict) {
+							color = RED;
+						} else if (isComment) {
+							color = GREEN;
+						} else if (inString) {
+							color = CYAN;
+						} else {
+							color = getColorFromChar(c);
+						}
 					}
 				}
+			} else {
+				color = WHITE;
 			}
 
 			if (col >= state->file->windowPosition.col) {
