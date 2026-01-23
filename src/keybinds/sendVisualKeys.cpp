@@ -419,8 +419,16 @@ bool sendVisualKeys(State *state, char c, bool onlyMotions)
 	} else if (state->prevKeys == "i" && c == 'w') {
 		setStateFromWordPosition(state, getWordPosition(state->file->data[state->file->row], state->file->col));
 		state->prevKeys = "";
+	} else if (state->prevKeys == "a" && c == 'w') {
+		setStateFromWordPosition(state, getWordPosition(state->file->data[state->file->row], state->file->col));
+		moveRightIfEmpty(state);
+		state->prevKeys = "";
 	} else if (state->prevKeys == "i" && c == 'W') {
 		setStateFromWordPosition(state, getBigWordPosition(state->file->data[state->file->row], state->file->col));
+		state->prevKeys = "";
+	} else if (state->prevKeys == "a" && c == 'W') {
+		setStateFromWordPosition(state, getBigWordPosition(state->file->data[state->file->row], state->file->col));
+		moveRightIfEmpty(state);
 		state->prevKeys = "";
 	} else if (state->prevKeys == "i" && c == 'p') {
 		state->visualType = LINE;

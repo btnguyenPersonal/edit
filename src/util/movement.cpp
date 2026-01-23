@@ -30,6 +30,14 @@ bool isOnLastVisualLine(State *state)
 	return state->file->col > lastLineStarts;
 }
 
+void moveRightIfEmpty(State *state)
+{
+	std::string current = state->file->data[state->file->row];
+	if (state->file->col + 1 < current.length() && (current[state->file->col + 1] == ' ')) {
+		right(state);
+	}
+}
+
 uint32_t w(State *state)
 {
 	fixColOverMax(state);

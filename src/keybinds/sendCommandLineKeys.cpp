@@ -1,4 +1,5 @@
 #include "sendCommandLineKeys.h"
+#include "sendVisualKeys.h"
 #include "../util/clipboard.h"
 #include "../util/render.h"
 #include "../util/modes.h"
@@ -180,10 +181,18 @@ void sendCommandLineKeys(State *state, int32_t c)
 				state->commandLine.query = 'g' + state->commandLine.query;
 				state->commandLine.cursor += 1;
 			}
+		} else {
+			state->commandLine.query = "gs///g";
+			state->commandLine.cursor = 3;
 		}
 	} else if (c == ctrl('r')) {
 		struct searchReplace temp = getSearchReplace(state->commandLine.query);
-		add(&state->commandLine, temp.first);
+		if (temp.first == "" && state->prevMode == VISUAL) {
+			add(&state->commandLine, getInVisual(state));
+			state->commandLine.cursor += 1;
+		} else {
+			add(&state->commandLine, temp.first);
+		}
 	} else if (c == KEY_BTAB) {
 		try {
 			autocompleteCommandLinePath(state, true);

@@ -9,8 +9,6 @@ void computeFrame(State *state)
 		endwin();
 		printCheckpoints(state->timers);
 		initTerminal();
-	} else {
-		clearCheckpoints(state->timers);
 	}
 
 	startCheckpoint("==== editor logic ====", state->timers);

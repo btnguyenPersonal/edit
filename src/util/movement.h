@@ -2,6 +2,7 @@
 
 #include "state.h"
 
+void moveRightIfEmpty(State *state);
 void centerScreen(State *state);
 int32_t findChar(State *state, bool reverse, char c);
 int32_t toChar(State *state, bool reverse, char c);

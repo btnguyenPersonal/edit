@@ -82,8 +82,6 @@ repeat number keys
 
 W and B
 
-vaw motion
-
 ts-server integration (do it for real this time)
 
 instead of comparing with the previousState and generating the diff every time, could compute the state->file->data hash and store that

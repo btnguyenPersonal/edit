@@ -108,7 +108,7 @@ std::string replace(std::string str, const std::string &from, const std::string 
 
 bool isWhitespace(char c)
 {
-	return c == ' ' || c == '\t';
+	return c == ' ' || c == '\t' || c == '\n';
 }
 
 bool isAlphanumeric(char c)
