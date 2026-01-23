@@ -160,8 +160,9 @@ void pasteFileFromClipboard(State *state, const std::string &destFolder)
 		} else {
 			std::filesystem::copy(sourcePath, destPath, std::filesystem::copy_options::overwrite_existing);
 		}
+		state->status = std::string("pasted: ") + destPath.string();
 	} catch (const std::exception &e) {
-		state->status = "File paste failed: " + std::string(e.what());
+		state->status = "file paste failed: " + std::string(e.what());
 	}
 }
 
@@ -169,11 +170,11 @@ void copyPathToClipboard(State *state, const std::string &filePath)
 {
 	std::filesystem::path fsPath(filePath);
 	if (!std::filesystem::exists(fsPath)) {
-		state->status = "Path does not exist: " + filePath;
+		state->status = "path does not exist: " + filePath;
 		return;
 	}
 	if (!std::filesystem::is_regular_file(fsPath) && !std::filesystem::is_directory(fsPath)) {
-		state->status = "Path is neither a file nor a directory: " + filePath;
+		state->status = "path is neither a file nor a directory: " + filePath;
 		return;
 	}
 

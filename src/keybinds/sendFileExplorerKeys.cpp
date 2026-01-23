@@ -149,7 +149,6 @@ void sendFileExplorerKeys(State *state, int32_t c)
 					createFile(state, node->path.parent_path().string(), name);
 					node->parent->refresh();
 				}
-				refocusFileExplorer(state, true);
 			}
 		} else if (c == 'p' || c == 'P') {
 			auto node = state->explorer.root->getNode(state->explorer.index);
@@ -162,7 +161,9 @@ void sendFileExplorerKeys(State *state, int32_t c)
 			}
 		} else if (c == 'y') {
 			auto node = state->explorer.root->getNode(state->explorer.index);
-			copyPathToClipboard(state, node->path.string());
+			std::string path = node->path.string();
+			copyPathToClipboard(state, path);
+			state->status = std::string("copied: ") + path;
 		} else if (c == ctrl('u')) {
 			for (uint32_t i = 0; i < state->maxY / 2; i++) {
 				if (state->explorer.index > 0) {
