@@ -50,6 +50,11 @@ improve autocomplete:
 
 don't move file explorer cursor all the time, and just press = to refocus
 
+Use  the  addchstr()  family  of functions for fast screen-painting of
+   text  when  you  know the text doesn't contain any control characters.
+   Try  to  make  attribute changes infrequent on your screens. Don't use
+   the immedok() option!
+
 copy/paste to system clipboard in background
 
 get multiline cached and only recalculated every second

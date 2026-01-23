@@ -30,6 +30,8 @@ struct PixelPos {
 };
 
 static std::vector<PixelPos> screenPixels;
+static bool hasColor = false;
+static bool has256Color = false;
 
 void initColors()
 {
@@ -539,7 +541,6 @@ int32_t getBlameColor(State *state, int32_t row)
 void renderLineNumber(State *state, int32_t row, int32_t renderRow)
 {
 	std::vector<Pixel> pixels = std::vector<Pixel>();
-
 	insertPixels(state, &pixels, padTo(std::to_string(row + 1), state->lineNumSize, ' '), getLineNumberColor(state, row));
 
 	auto color = getMarkColor(state, row);
@@ -593,9 +594,17 @@ Cursor renderDiff(State *state)
 		} else if (state->diffLines[i].length() > 2 && state->diffLines[i][0] == '-' && state->diffLines[i][1] == '-' && state->diffLines[i][2] == '-') {
 			color = WHITE;
 		} else if (state->diffLines[i].length() > 0 && state->diffLines[i][0] == '+') {
-			color = DIFFGREEN;
+			if (has256Color) {
+				color = DIFFGREEN;
+			} else {
+				color = GREEN;
+			}
 		} else if (state->diffLines[i].length() > 0 && state->diffLines[i][0] == '-') {
-			color = DIFFRED;
+			if (has256Color) {
+				color = DIFFRED;
+			} else {
+				color = RED;
+			}
 		} else if (state->diffLines[i].length() > 0 && state->diffLines[i][0] == '@') {
 			color = CYAN;
 		}
@@ -703,7 +712,7 @@ int32_t renderLineContent(State *state, int32_t row, int32_t renderRow, Cursor *
 			char c = state->file->data[row][col];
 
 			int32_t color;
-			if (col < 3000) {
+			if (hasColor && col < 3000) {
 				if (skipNext) {
 					skipNext = false;
 				} else if (inString && c == '\\') {
@@ -957,17 +966,9 @@ void initTerminal()
 	keypad(stdscr, true);
 	nodelay(stdscr, true);
 	noecho();
-	if (has_colors() == false) {
-		endwin();
-		printf("Your terminal does not support color\n");
-		exit(1);
-	}
+	hasColor = has_colors();
 	start_color();
-	if (COLORS < 256) {
-		endwin();
-		printf("Your terminal does not support 256 colors\n");
-		exit(1);
-	}
+	has256Color = COLORS < 256;
 	use_default_colors();
 	set_escdelay(0);
 	initColors();
