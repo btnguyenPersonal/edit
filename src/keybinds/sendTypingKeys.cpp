@@ -11,6 +11,7 @@
 #include "../util/ctrl.h"
 #include "../util/repeat.h"
 #include "../util/switchMode.h"
+#include "../util/textbuffer.h"
 #include <ncurses.h>
 #include <string>
 #include <vector>
@@ -18,9 +19,7 @@
 void insertNewline(State *state)
 {
 	fixColOverMax(state);
-	std::string current = state->file->data[state->file->row];
-	state->file->data[state->file->row] = current.substr(0, state->file->col);
-	state->file->data.insert(state->file->data.begin() + state->file->row + 1, safeSubstring(current, state->file->col));
+	textbuffer_splitLine(state, state->file->row, state->file->col);
 	state->file->row += 1;
 	state->file->col = 0;
 }
@@ -34,8 +33,7 @@ void sendTypingKeys(State *state, int32_t c)
 		if (c == '\n') {
 			insertNewline(state);
 		} else {
-			std::string current = state->file->data[state->file->row];
-			state->file->data[state->file->row] = current.substr(0, state->file->col) + (char)c + current.substr(state->file->col);
+			textbuffer_insertChar(state, state->file->row, state->file->col, c);
 			state->file->col += 1;
 		}
 	} else if (c == 27) { // ESC
@@ -49,23 +47,21 @@ void sendTypingKeys(State *state, int32_t c)
 		insertNewline(state);
 	} else if (c == KEY_BACKSPACE || c == 127) {
 		if (state->file->col > 0) {
-			std::string current = state->file->data[state->file->row];
-			state->file->data[state->file->row] = current.substr(0, state->file->col - 1) + current.substr(state->file->col);
+			textbuffer_deleteChar(state, state->file->row, state->file->col - 1);
 			state->file->col -= 1;
 		} else if (state->file->row > 0) {
-			state->file->col = state->file->data[state->file->row - 1].length();
-			state->file->data[state->file->row - 1] += state->file->data[state->file->row];
-			state->file->data.erase(state->file->data.begin() + state->file->row);
+			state->file->col = textbuffer_getLineLength(state, state->file->row - 1);
+			textbuffer_joinLines(state, state->file->row - 1, state->file->row);
 			state->file->row -= 1;
 		}
 	} else if (c == ctrl('w')) {
-		std::string current = state->file->data[state->file->row];
+		std::string current = textbuffer_getLine(state, state->file->row);
 		uint32_t index = b(state);
-		state->file->data[state->file->row] = current.substr(0, index) + current.substr(state->file->col);
+		std::string newContent = current.substr(0, index) + current.substr(state->file->col);
+		textbuffer_replaceRange(state, state->file->row, state->file->row, { newContent });
 		state->file->col = index;
 	} else if (' ' <= c && c <= '~') {
-		std::string current = state->file->data[state->file->row];
-		state->file->data[state->file->row] = current.substr(0, state->file->col) + (char)c + current.substr(state->file->col);
+		textbuffer_insertChar(state, state->file->row, state->file->col, c);
 		if (c == ':') {
 			indentLineWhenTypingLastChar(state);
 		}
@@ -74,21 +70,21 @@ void sendTypingKeys(State *state, int32_t c)
 		}
 		state->file->col += 1;
 	} else if (c == ctrl('t')) {
-		std::string current = state->file->data[state->file->row];
-		state->file->data[state->file->row] = current.substr(0, state->file->col) + '\t' + current.substr(state->file->col);
+		textbuffer_insertChar(state, state->file->row, state->file->col, '\t');
 		state->file->col += 1;
 	} else if (c == ctrl('v')) {
 		state->prevKeys = 'v';
 	} else if (c == ctrl('a') || c == KEY_HOME) {
-		state->file->col = getIndexFirstNonSpace(state->file->data[state->file->row], getIndentCharacter(state));
+		state->file->col = getIndexFirstNonSpace(textbuffer_getLine(state, state->file->row), getIndentCharacter(state));
 	} else if (c == ctrl('e') || c == KEY_END) {
-		state->file->col = getIndexLast(state->file->data[state->file->row]);
+		state->file->col = getIndexLast(textbuffer_getLine(state, state->file->row));
 		right(state);
 	} else if (c == ctrl('i')) { // TAB
 		std::string completion = autocomplete(state, getCurrentWord(state));
-		if (safeSubstring(state->file->data[state->file->row], state->file->col, completion.length()) != completion) {
-			std::string current = state->file->data[state->file->row];
-			state->file->data[state->file->row] = current.substr(0, state->file->col) + completion + safeSubstring(current, state->file->col);
+		if (safeSubstring(textbuffer_getLine(state, state->file->row), state->file->col, completion.length()) != completion) {
+			for (size_t i = 0; i < completion.length(); i++) {
+				textbuffer_insertChar(state, state->file->row, state->file->col + i, completion[i]);
+			}
 			state->file->col += completion.length();
 		}
 	} else if (c == KEY_LEFT) {

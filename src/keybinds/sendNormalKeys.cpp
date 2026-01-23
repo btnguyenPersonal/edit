@@ -27,6 +27,7 @@
 #include "../util/repeat.h"
 #include "../util/defines.h"
 #include "../util/switchMode.h"
+#include "../util/textbuffer.h"
 #include "sendKeys.h"
 #include "sendVisualKeys.h"
 #include <ncurses.h>
@@ -102,8 +103,8 @@ void sendNormalKeys(State *state, int32_t c)
 		state->dontRecordKey = true;
 		state->prevKeys = "";
 	} else if (state->prevKeys == "r") {
-		if (state->file->col < state->file->data[state->file->row].length() && ' ' <= c && c <= '~') {
-			state->file->data[state->file->row] = safeSubstring(state->file->data[state->file->row], 0, state->file->col) + (char)c + safeSubstring(state->file->data[state->file->row], state->file->col + 1);
+		if (textbuffer_isValidPosition(state, state->file->row, state->file->col) && ' ' <= c && c <= '~') {
+			textbuffer_replaceChar(state, state->file->row, state->file->col, c);
 		}
 		setDotCommand(state, { 'r', c });
 		state->prevKeys = "";
@@ -185,7 +186,7 @@ void sendNormalKeys(State *state, int32_t c)
 		switchMode(state, SEARCH);
 	} else if (state->prevKeys == "g" && c == 'r') {
 		initVisual(state, SELECT);
-		setStateFromWordPosition(state, getWordPosition(state->file->data[state->file->row], state->file->col));
+		setStateFromWordPosition(state, getWordPosition(textbuffer_getLine(state, state->file->row), state->file->col));
 		setQuery(&state->grep, getInVisual(state));
 		generateGrepOutput(state, true);
 		findDefinitionFromGrepOutput(state, getInVisual(state));
@@ -261,11 +262,11 @@ void sendNormalKeys(State *state, int32_t c)
 		switchMode(state, COMMAND);
 	} else if (c == '<') {
 		deindent(state);
-		state->file->col = getIndexFirstNonSpace(state->file->data[state->file->row], getIndentCharacter(state));
+		state->file->col = getIndexFirstNonSpace(textbuffer_getLine(state, state->file->row), getIndentCharacter(state));
 		setDotCommand(state, c);
 	} else if (c == '>') {
 		indent(state);
-		state->file->col = getIndexFirstNonSpace(state->file->data[state->file->row], getIndentCharacter(state));
+		state->file->col = getIndexFirstNonSpace(textbuffer_getLine(state, state->file->row), getIndentCharacter(state));
 		setDotCommand(state, c);
 	} else if (c == 'u') {
 		if (state->file->historyPosition >= 0) {
@@ -306,14 +307,14 @@ void sendNormalKeys(State *state, int32_t c)
 		right(state);
 	} else if (c == '#') {
 		initVisual(state, SELECT);
-		setStateFromWordPosition(state, getWordPosition(state->file->data[state->file->row], state->file->col));
+		setStateFromWordPosition(state, getWordPosition(textbuffer_getLine(state, state->file->row), state->file->col));
 		setQuery(&state->grep, getInVisual(state));
 		switchMode(state, GREP);
 		state->showAllGrep = false;
 		generateGrepOutput(state, true);
 	} else if (c == '*') {
 		initVisual(state, SELECT);
-		setStateFromWordPosition(state, getWordPosition(state->file->data[state->file->row], state->file->col));
+		setStateFromWordPosition(state, getWordPosition(textbuffer_getLine(state, state->file->row), state->file->col));
 		setQuery(&state->search, getInVisual(state));
 		state->searching = true;
 		state->file->col += 1;
@@ -363,18 +364,20 @@ void sendNormalKeys(State *state, int32_t c)
 		switchMode(state, INSERT);
 	} else if (c == 'Y') {
 		fixColOverMax(state);
-		copyToClipboard(state, safeSubstring(state->file->data[state->file->row], state->file->col), false);
+		copyToClipboard(state, safeSubstring(textbuffer_getLine(state, state->file->row), state->file->col), false);
 	} else if (c == 'D') {
 		fixColOverMax(state);
-		copyToClipboard(state, safeSubstring(state->file->data[state->file->row], state->file->col), false);
-		state->file->data[state->file->row] = state->file->data[state->file->row].substr(0, state->file->col);
+		copyToClipboard(state, safeSubstring(textbuffer_getLine(state, state->file->row), state->file->col), false);
+		std::string newContent = safeSubstring(textbuffer_getLine(state, state->file->row), 0, state->file->col);
+		textbuffer_replaceRange(state, state->file->row, state->file->row, { newContent });
 	} else if (c == 'C') {
 		fixColOverMax(state);
-		copyToClipboard(state, safeSubstring(state->file->data[state->file->row], state->file->col), false);
-		state->file->data[state->file->row] = state->file->data[state->file->row].substr(0, state->file->col);
+		copyToClipboard(state, safeSubstring(textbuffer_getLine(state, state->file->row), state->file->col), false);
+		std::string newContent = safeSubstring(textbuffer_getLine(state, state->file->row), 0, state->file->col);
+		textbuffer_replaceRange(state, state->file->row, state->file->row, { newContent });
 		switchMode(state, INSERT);
 	} else if (c == 'I') {
-		state->file->col = getIndexFirstNonSpace(state->file->data[state->file->row], getIndentCharacter(state));
+		state->file->col = getIndexFirstNonSpace(textbuffer_getLine(state, state->file->row), getIndentCharacter(state));
 		switchMode(state, INSERT);
 	} else if (c == 'A') {
 		state->file->col = state->file->data[state->file->row].length();
@@ -414,19 +417,21 @@ void sendNormalKeys(State *state, int32_t c)
 		}
 		state->dontRecordKey = true;
 	} else if (c == 'K') {
-		state->file->col = state->file->data[state->file->row].length();
-		if (state->file->row + 1 < state->file->data.size()) {
-			ltrim(state->file->data[state->file->row + 1]);
-			state->file->data[state->file->row] += " " + state->file->data[state->file->row + 1];
-			state->file->data.erase(state->file->data.begin() + state->file->row + 1);
+		state->file->col = textbuffer_getLineLength(state, state->file->row);
+		if (state->file->row + 1 < textbuffer_getLineCount(state)) {
+			std::string nextLine = textbuffer_getLine(state, state->file->row + 1);
+			ltrim(nextLine);
+			std::string currentLine = textbuffer_getLine(state, state->file->row);
+			textbuffer_replaceRange(state, state->file->row, state->file->row + 1, { currentLine + " " + nextLine });
 		}
 		setDotCommand(state, c);
 	} else if (c == 'J') {
-		state->file->col = state->file->data[state->file->row].length();
-		if (state->file->row + 1 < state->file->data.size()) {
-			ltrim(state->file->data[state->file->row + 1]);
-			state->file->data[state->file->row] += state->file->data[state->file->row + 1];
-			state->file->data.erase(state->file->data.begin() + state->file->row + 1);
+		state->file->col = textbuffer_getLineLength(state, state->file->row);
+		if (state->file->row + 1 < textbuffer_getLineCount(state)) {
+			std::string nextLine = textbuffer_getLine(state, state->file->row + 1);
+			ltrim(nextLine);
+			std::string currentLine = textbuffer_getLine(state, state->file->row);
+			textbuffer_replaceRange(state, state->file->row, state->file->row + 1, { currentLine + nextLine });
 		}
 		setDotCommand(state, c);
 	} else if (c == '?') {
@@ -453,10 +458,15 @@ void sendNormalKeys(State *state, int32_t c)
 	} else if (c == ctrl('a')) {
 		getAndAddNumber(state, state->file->row, state->file->col, 1);
 	} else if (c == 's') {
-		if (state->file->col < state->file->data[state->file->row].length()) {
-			copyToClipboard(state, state->file->data[state->file->row].substr(state->file->col, 1), false);
-			state->file->data[state->file->row] = state->file->data[state->file->row].substr(0, state->file->col) + state->file->data[state->file->row].substr(state->file->col + 1);
+		if (textbuffer_isValidPosition(state, state->file->row, state->file->col)) {
+			copyToClipboard(state, textbuffer_getLine(state, state->file->row).substr(state->file->col, 1), false);
+			textbuffer_deleteChar(state, state->file->row, state->file->col);
 			switchMode(state, INSERT);
+		}
+	} else if (c == 'x') {
+		if (textbuffer_isValidPosition(state, state->file->row, state->file->col)) {
+			copyToClipboard(state, textbuffer_getLine(state, state->file->row).substr(state->file->col, 1), false);
+			textbuffer_deleteChar(state, state->file->row, state->file->col);
 		}
 	} else if (c == 'x') {
 		if (state->file->col < state->file->data[state->file->row].length()) {
@@ -479,9 +489,9 @@ void sendNormalKeys(State *state, int32_t c)
 	} else if (c == '0') {
 		state->file->col = 0;
 	} else if (c == '^' || c == KEY_HOME) {
-		state->file->col = getIndexFirstNonSpace(state->file->data[state->file->row], getIndentCharacter(state));
+		state->file->col = getIndexFirstNonSpace(textbuffer_getLine(state, state->file->row), getIndentCharacter(state));
 	} else if (c == '$' || c == KEY_END) {
-		state->file->col = getIndexLast(state->file->data[state->file->row]);
+		state->file->col = getIndexLast(textbuffer_getLine(state, state->file->row));
 	} else if (c == 'z') {
 		fixColOverMax(state);
 		state->file->windowPosition.col = 0;
@@ -505,16 +515,16 @@ void sendNormalKeys(State *state, int32_t c)
 		clearHarpoon(state);
 	} else if (c == 'e') {
 		toggleComment(state);
-		state->file->col = getIndexFirstNonSpace(state->file->data[state->file->row], getIndentCharacter(state));
+		state->file->col = getIndexFirstNonSpace(textbuffer_getLine(state, state->file->row), getIndentCharacter(state));
 	} else if (c == '=') {
 		indentLine(state);
-		state->file->col = getIndexFirstNonSpace(state->file->data[state->file->row], getIndentCharacter(state));
+		state->file->col = getIndexFirstNonSpace(textbuffer_getLine(state, state->file->row), getIndentCharacter(state));
 	} else if (c == 'Q') {
 		removeAllLoggingCode(state);
 		setDotCommand(state, c);
 	} else if (c == 'm') {
 		initVisual(state, SELECT);
-		setStateFromWordPosition(state, getWordPosition(state->file->data[state->file->row], state->file->col));
+		setStateFromWordPosition(state, getWordPosition(textbuffer_getLine(state, state->file->row), state->file->col));
 		toggleLoggingCode(state, getInVisual(state));
 		switchMode(state, NORMAL);
 		setDotCommand(state, c);

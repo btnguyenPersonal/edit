@@ -18,6 +18,7 @@
 #include "../util/textedit.h"
 #include "../util/repeat.h"
 #include "../util/switchMode.h"
+#include "../util/textbuffer.h"
 #include <string>
 #include <vector>
 
@@ -49,14 +50,14 @@ void replaceAllWithChar(State *state, int32_t c)
 	if (state->visualType == SELECT) {
 		uint32_t col = bounds.minC;
 		for (uint32_t row = bounds.minR; row < bounds.maxR; row++) {
-			while (col < state->file->data[row].size()) {
-				state->file->data[row][col] = c;
+			while (col < textbuffer_getLineLength(state, row)) {
+				textbuffer_replaceChar(state, row, col, c);
 				col++;
 			}
 			col = 0;
 		}
-		while (col <= bounds.maxC && col < state->file->data[bounds.maxR].size()) {
-			state->file->data[bounds.maxR][col] = c;
+		while (col <= bounds.maxC && col < textbuffer_getLineLength(state, bounds.maxR)) {
+			textbuffer_replaceChar(state, bounds.maxR, col, c);
 			col++;
 		}
 	} else if (state->visualType == BLOCK) {
@@ -64,15 +65,15 @@ void replaceAllWithChar(State *state, int32_t c)
 		uint32_t max = std::max(bounds.minC, bounds.maxC);
 		for (uint32_t row = bounds.minR; row <= bounds.maxR; row++) {
 			for (uint32_t col = min; col <= max; col++) {
-				if (col < state->file->data[row].size()) {
-					state->file->data[row][col] = c;
+				if (col < textbuffer_getLineLength(state, row)) {
+					textbuffer_replaceChar(state, row, col, c);
 				}
 			}
 		}
 	} else if (state->visualType == LINE) {
 		for (uint32_t row = bounds.minR; row <= bounds.maxR; row++) {
-			for (uint32_t col = 0; col < state->file->data[row].size(); col++) {
-				state->file->data[row][col] = c;
+			for (uint32_t col = 0; col < textbuffer_getLineLength(state, row); col++) {
+				textbuffer_replaceChar(state, row, col, c);
 			}
 		}
 	}
@@ -132,12 +133,12 @@ void sortReverseLines(State *state)
 	Bounds bounds = getBounds(state);
 	std::vector<std::string> lines;
 	for (uint32_t i = bounds.minR; i <= bounds.maxR; i++) {
-		lines.push_back(state->file->data[i]);
+		lines.push_back(textbuffer_getLine(state, i));
 	}
 	std::sort(lines.begin(), lines.end(), std::greater<>());
 	int32_t index = 0;
 	for (uint32_t i = bounds.minR; i <= bounds.maxR; i++) {
-		state->file->data[i] = lines[index];
+		textbuffer_replaceRange(state, i, i, { lines[index] });
 		index++;
 	}
 }
@@ -147,12 +148,12 @@ void sortLines(State *state)
 	Bounds bounds = getBounds(state);
 	std::vector<std::string> lines;
 	for (uint32_t i = bounds.minR; i <= bounds.maxR; i++) {
-		lines.push_back(state->file->data[i]);
+		lines.push_back(textbuffer_getLine(state, i));
 	}
 	std::sort(lines.begin(), lines.end());
 	int32_t index = 0;
 	for (uint32_t i = bounds.minR; i <= bounds.maxR; i++) {
-		state->file->data[i] = lines[index];
+		textbuffer_replaceRange(state, i, i, { lines[index] });
 		index++;
 	}
 }
@@ -170,7 +171,7 @@ void surroundParagraph(State *state, bool includeLastLine)
 {
 	auto start = state->file->row;
 	for (int32_t i = (int32_t)start; i >= 0; i--) {
-		if (state->file->data[i] == "") {
+		if (textbuffer_getLine(state, i) == "") {
 			break;
 		} else {
 			start = i;
@@ -179,7 +180,7 @@ void surroundParagraph(State *state, bool includeLastLine)
 	state->visual.row = start;
 	auto end = state->file->row;
 	for (uint32_t i = state->file->row; i < state->file->data.size(); i++) {
-		if (state->file->data[i] == "") {
+		if (textbuffer_getLine(state, i) == "") {
 			if (includeLastLine) {
 				end = i;
 			}
@@ -193,9 +194,9 @@ void surroundParagraph(State *state, bool includeLastLine)
 
 bool isValidMoveableChunk(State *state, Bounds bounds)
 {
-	int32_t start = getNumLeadingIndentCharacters(state, state->file->data[bounds.minR]);
+	int32_t start = getNumLeadingIndentCharacters(state, textbuffer_getLine(state, bounds.minR));
 	for (uint32_t i = bounds.minR + 1; i <= bounds.maxR; i++) {
-		if (getNumLeadingIndentCharacters(state, state->file->data[i]) < start && state->file->data[i] != "") {
+		if (getNumLeadingIndentCharacters(state, textbuffer_getLine(state, i)) < start && textbuffer_getLine(state, i) != "") {
 			return false;
 		}
 	}
@@ -215,14 +216,14 @@ std::string getInVisual(State *state, bool addNewlines)
 		uint32_t min = std::min(bounds.minC, bounds.maxC);
 		uint32_t max = std::max(bounds.minC, bounds.maxC);
 		for (uint32_t i = bounds.minR; i <= bounds.maxR; i++) {
-			clip += safeSubstring(state->file->data[i], min, max + 1 - min);
+			clip += safeSubstring(textbuffer_getLine(state, i), min, max + 1 - min);
 			if (addNewlines) {
 				clip += "\n";
 			}
 		}
 	} else if (state->visualType == LINE) {
 		for (size_t i = bounds.minR; i <= bounds.maxR; i++) {
-			clip += state->file->data[i];
+			clip += textbuffer_getLine(state, i);
 			if (addNewlines) {
 				clip += "\n";
 			}
@@ -230,8 +231,9 @@ std::string getInVisual(State *state, bool addNewlines)
 	} else if (state->visualType == SELECT) {
 		uint32_t index = bounds.minC;
 		for (size_t i = bounds.minR; i < bounds.maxR; i++) {
-			while (index < state->file->data[i].size()) {
-				clip += state->file->data[i][index];
+			std::string line = textbuffer_getLine(state, i);
+			while (index < line.size()) {
+				clip += line[index];
 				index += 1;
 			}
 			index = 0;
@@ -239,7 +241,7 @@ std::string getInVisual(State *state, bool addNewlines)
 				clip += "\n";
 			}
 		}
-		clip += safeSubstring(state->file->data[bounds.maxR], index, bounds.maxC - index + 1);
+		clip += safeSubstring(textbuffer_getLine(state, bounds.maxR), index, bounds.maxC - index + 1);
 	}
 	return clip;
 }
@@ -251,8 +253,8 @@ Position changeInVisual(State *state)
 	pos.row = bounds.minR;
 	pos.col = bounds.minC;
 	if (state->visualType == LINE) {
-		state->file->data.erase(state->file->data.begin() + bounds.minR, state->file->data.begin() + bounds.maxR);
-		state->file->data[bounds.minR] = std::string("");
+		textbuffer_deleteRange(state, bounds.minR, bounds.maxR - 1);
+		textbuffer_insertLine(state, bounds.minR, "");
 	} else if (state->visualType == BLOCK) {
 		deleteInVisual(state);
 		uint32_t min = std::min(bounds.minC, bounds.maxC);
@@ -260,14 +262,13 @@ Position changeInVisual(State *state)
 	} else if (state->visualType == SELECT) {
 		std::string firstPart = "";
 		std::string secondPart = "";
-		if (bounds.minC <= state->file->data[bounds.minR].length()) {
-			firstPart = safeSubstring(state->file->data[bounds.minR], 0, bounds.minC);
+		if (bounds.minC <= textbuffer_getLineLength(state, bounds.minR)) {
+			firstPart = safeSubstring(textbuffer_getLine(state, bounds.minR), 0, bounds.minC);
 		}
-		if (bounds.maxC < state->file->data[bounds.maxR].length()) {
-			secondPart = safeSubstring(state->file->data[bounds.maxR], bounds.maxC + 1);
+		if (bounds.maxC < textbuffer_getLineLength(state, bounds.maxR)) {
+			secondPart = safeSubstring(textbuffer_getLine(state, bounds.maxR), bounds.maxC + 1);
 		}
-		state->file->data[bounds.minR] = firstPart + secondPart;
-		state->file->data.erase(state->file->data.begin() + bounds.minR + 1, state->file->data.begin() + bounds.maxR + 1);
+		textbuffer_replaceRange(state, bounds.minR, bounds.maxR, { firstPart + secondPart });
 	}
 	return pos;
 }
@@ -369,13 +370,13 @@ bool sendVisualKeys(State *state, char c, bool onlyMotions)
 		state->file->col = findNextChar(state, c);
 		state->prevKeys = "";
 	} else if (state->prevKeys == "i" && c == '`') {
-		setStateFromWordPosition(state, findQuoteBounds(state->file->data[state->file->row], '`', state->file->col, false));
+		setStateFromWordPosition(state, findQuoteBounds(textbuffer_getLine(state, state->file->row), '`', state->file->col, false));
 		state->prevKeys = "";
 	} else if (state->prevKeys == "a" && c == '`') {
 		setStateFromWordPosition(state, findQuoteBounds(state->file->data[state->file->row], '`', state->file->col, true));
 		state->prevKeys = "";
 	} else if (state->prevKeys == "i" && c == '"') {
-		setStateFromWordPosition(state, findQuoteBounds(state->file->data[state->file->row], '"', state->file->col, false));
+		setStateFromWordPosition(state, findQuoteBounds(textbuffer_getLine(state, state->file->row), '"', state->file->col, false));
 		state->prevKeys = "";
 	} else if (state->prevKeys == "a" && c == '"') {
 		setStateFromWordPosition(state, findQuoteBounds(state->file->data[state->file->row], '"', state->file->col, true));
@@ -414,20 +415,20 @@ bool sendVisualKeys(State *state, char c, bool onlyMotions)
 		setStateFromWordPosition(state, findParentheses(state->file->data[state->file->row], '{', '}', state->file->col, false));
 		state->prevKeys = "";
 	} else if (state->prevKeys == "i" && c == 'b') {
-		setStateFromWordPosition(state, findParentheses(state->file->data[state->file->row], '(', ')', state->file->col, false));
+		setStateFromWordPosition(state, findParentheses(textbuffer_getLine(state, state->file->row), '(', ')', state->file->col, false));
 		state->prevKeys = "";
 	} else if (state->prevKeys == "i" && c == 'w') {
-		setStateFromWordPosition(state, getWordPosition(state->file->data[state->file->row], state->file->col));
+		setStateFromWordPosition(state, getWordPosition(textbuffer_getLine(state, state->file->row), state->file->col));
 		state->prevKeys = "";
 	} else if (state->prevKeys == "a" && c == 'w') {
-		setStateFromWordPosition(state, getWordPosition(state->file->data[state->file->row], state->file->col));
+		setStateFromWordPosition(state, getWordPosition(textbuffer_getLine(state, state->file->row), state->file->col));
 		moveRightIfEmpty(state);
 		state->prevKeys = "";
 	} else if (state->prevKeys == "i" && c == 'W') {
-		setStateFromWordPosition(state, getBigWordPosition(state->file->data[state->file->row], state->file->col));
+		setStateFromWordPosition(state, getBigWordPosition(textbuffer_getLine(state, state->file->row), state->file->col));
 		state->prevKeys = "";
 	} else if (state->prevKeys == "a" && c == 'W') {
-		setStateFromWordPosition(state, getBigWordPosition(state->file->data[state->file->row], state->file->col));
+		setStateFromWordPosition(state, getBigWordPosition(textbuffer_getLine(state, state->file->row), state->file->col));
 		moveRightIfEmpty(state);
 		state->prevKeys = "";
 	} else if (state->prevKeys == "i" && c == 'p') {
@@ -534,19 +535,19 @@ bool sendVisualKeys(State *state, char c, bool onlyMotions)
 			state->replaceBounds = getBounds(state);
 		} else if (state->visualType == SELECT) {
 			state->search.query = getInVisual(state);
-			state->replaceBounds = { state->file->row, state->file->row, 0, (uint32_t)state->file->data[state->file->row].length() };
+			state->replaceBounds = { state->file->row, state->file->row, 0, textbuffer_getLineLength(state, state->file->row) };
 		}
 		if (state->search.query != "") {
 			state->replacing = true;
 		}
 		switchMode(state, SEARCH);
 	} else if (c == '^') {
-		state->file->col = getIndexFirstNonSpace(state->file->data[state->file->row], getIndentCharacter(state));
+		state->file->col = getIndexFirstNonSpace(textbuffer_getLine(state, state->file->row), getIndentCharacter(state));
 	} else if (c == '0') {
 		state->file->col = 0;
 	} else if (c == '$') {
-		if (state->file->data[state->file->row].length() != 0) {
-			state->file->col = state->file->data[state->file->row].length() - 1;
+		if (textbuffer_getLineLength(state, state->file->row) != 0) {
+			state->file->col = textbuffer_getLineLength(state, state->file->row) - 1;
 		} else {
 			state->file->col = 0;
 		}
@@ -601,13 +602,13 @@ bool sendVisualKeys(State *state, char c, bool onlyMotions)
 		Bounds bounds = getBounds(state);
 		if (bounds.minR > 0) {
 			if (isValidMoveableChunk(state, bounds)) {
-				auto temp = state->file->data[bounds.minR - 1];
+				auto temp = textbuffer_getLine(state, bounds.minR - 1);
 				state->file->data.erase(state->file->data.begin() + bounds.minR - 1);
 				state->file->data.insert(state->file->data.begin() + bounds.maxR, temp);
 				state->file->row = bounds.minR - 1;
 				state->visual.row = bounds.maxR - 1;
 				indentRange(state);
-				state->file->col = getIndexFirstNonSpace(state->file->data[state->file->row], getIndentCharacter(state));
+				state->file->col = getIndexFirstNonSpace(textbuffer_getLine(state, state->file->row), getIndentCharacter(state));
 			} else {
 				state->status = "not a valid moveable chunk";
 			}
@@ -616,13 +617,13 @@ bool sendVisualKeys(State *state, char c, bool onlyMotions)
 		Bounds bounds = getBounds(state);
 		if (bounds.maxR + 1 < state->file->data.size()) {
 			if (isValidMoveableChunk(state, bounds)) {
-				auto temp = state->file->data[bounds.maxR + 1];
+				auto temp = textbuffer_getLine(state, bounds.maxR + 1);
 				state->file->data.erase(state->file->data.begin() + bounds.maxR + 1);
 				state->file->data.insert(state->file->data.begin() + bounds.minR, temp);
 				state->file->row = bounds.minR + 1;
 				state->visual.row = bounds.maxR + 1;
 				indentRange(state);
-				state->file->col = getIndexFirstNonSpace(state->file->data[state->file->row], getIndentCharacter(state));
+				state->file->col = getIndexFirstNonSpace(textbuffer_getLine(state, state->file->row), getIndentCharacter(state));
 			} else {
 				state->status = "not a valid moveable chunk";
 			}
@@ -647,7 +648,7 @@ bool sendVisualKeys(State *state, char c, bool onlyMotions)
 		}
 		state->file->row = bounds.minR;
 		state->visual.row = bounds.maxR;
-		state->file->col = getIndexFirstNonSpace(state->file->data[state->file->row], getIndentCharacter(state));
+		state->file->col = getIndexFirstNonSpace(textbuffer_getLine(state, state->file->row), getIndentCharacter(state));
 		switchMode(state, NORMAL);
 	} else if (c == '%') {
 		auto pos = matchIt(state);
@@ -671,7 +672,7 @@ bool sendVisualKeys(State *state, char c, bool onlyMotions)
 		}
 		state->file->row = bounds.minR;
 		state->visual.row = bounds.maxR;
-		state->file->col = getIndexFirstNonSpace(state->file->data[state->file->row], getIndentCharacter(state));
+		state->file->col = getIndexFirstNonSpace(textbuffer_getLine(state, state->file->row), getIndentCharacter(state));
 		switchMode(state, NORMAL);
 	} else if (!onlyMotions && c == '>') {
 		logDotCommand(state);
@@ -683,7 +684,7 @@ bool sendVisualKeys(State *state, char c, bool onlyMotions)
 		}
 		state->file->row = bounds.minR;
 		state->visual.row = bounds.maxR;
-		state->file->col = getIndexFirstNonSpace(state->file->data[state->file->row], getIndentCharacter(state));
+		state->file->col = getIndexFirstNonSpace(textbuffer_getLine(state, state->file->row), getIndentCharacter(state));
 		switchMode(state, NORMAL);
 	} else if (!onlyMotions && (c == 'p' || c == 'P')) {
 		logDotCommand(state);
@@ -713,7 +714,7 @@ bool sendVisualKeys(State *state, char c, bool onlyMotions)
 		Bounds bounds = getBounds(state);
 		toggleCommentLines(state, bounds);
 		state->file->row = bounds.minR;
-		state->file->col = getIndexFirstNonSpace(state->file->data[state->file->row], getIndentCharacter(state));
+		state->file->col = getIndexFirstNonSpace(textbuffer_getLine(state, state->file->row), getIndentCharacter(state));
 		switchMode(state, NORMAL);
 	} else if (c == 'o') {
 		auto tempRow = state->file->row;
