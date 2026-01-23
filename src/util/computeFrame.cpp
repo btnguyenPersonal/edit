@@ -18,26 +18,21 @@ void computeFrame(State *state)
 		cachedHistoryPosition = state->file->historyPosition;
 	}
 
+	bool sentKey = false;
 	int32_t c = ERR;
-	std::vector<char*> userInput;
-	char temp[4096];
-	while (getnstr(temp, 4096) == OK) {
-		userInput.push_back(temp);
+	int32_t temp = ERR;
+	while ((temp = getch()) != ERR) {
+		c = temp;
+		startCheckpoint(state->debug, "sendKeys", state->timers);
+		sendKeys(state, c);
+		startCheckpoint(state->debug, "cleanup", state->timers);
+		cleanup(state, c);
+		sentKey = true;
 	}
-	state->status = std::to_string(userInput.size());
-
-	// for (uint32_t i = 0; i < userInput.size(); i++) {
-	// 	c = userInput[i];
-	// 	startCheckpoint(state->debug, "sendKeys", state->timers);
-	// 	sendKeys(state, c);
-	// 	startCheckpoint(state->debug, "cleanup", state->timers);
-	// 	cleanup(state, c);
-	// }
-
-	// if (userInput.size() > 0) {
-	// 	startCheckpoint(state->debug, "history", state->timers);
-	// 	history(state, c);
-	// }
+	if (sentKey) {
+		startCheckpoint(state->debug, "history", state->timers);
+		history(state, c);
+	}
 
 	startCheckpoint(state->debug, "==== autosaveFile logic ====", state->timers);
 
@@ -57,7 +52,7 @@ void computeFrame(State *state)
 
 	endLastCheckpoint(state->debug, state->timers);
 
-	if (userInput.size() > 0 || !state->shouldNotReRender.test_and_set()) {
+	if (sentKey || !state->shouldNotReRender.test_and_set()) {
 		startCheckpoint(state->debug, "preRenderCleanup", state->timers);
 		preRenderCleanup(state);
 
