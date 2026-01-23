@@ -42,32 +42,15 @@ perf:
 
 crash:
 	- ctrl r crash
+	- wrap all the places we use std::filesystem in try/catch
 
 improve autocomplete:
 	- autocomplete allow pressing tab multiple times
 	- maybe have autocomplete also scan the other harpooned files?
 
-improve build time! it is unbearable!!
-
-	- build as one translation unit
-	- see what dependencies are bloating it out & replace
-		- ncurses
-		- string
-		- vector
-		- fstream
-		- algorithm
-		- climits
-		- cstdint
-		- map
-		- mutex
-	- compiler flags turn off exceptions
-	- more compiler flags
-	- remove make
-	- performance indicators
+copy/paste in background
 
 get multiline cached and only recalculated every second
-
-make sure checkpoints aren't getting calculated every time when not in debug
 
 get veryvery long line editing working
 
