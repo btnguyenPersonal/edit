@@ -10,6 +10,7 @@
 #include "../util/ctrl.h"
 #include "../util/defines.h"
 #include "../util/switchMode.h"
+#include "../util/sanity.h"
 #include <ncurses.h>
 #include <string>
 #include <vector>
@@ -159,6 +160,10 @@ void sendFileExplorerKeys(State *state, int32_t c)
 				pasteFileFromClipboard(state, node->path.parent_path().string());
 				node->parent->refresh();
 			}
+		} else if (c == 'z') {
+			centerFileExplorer(state);
+		} else if (c == '=') {
+			refocusFileExplorer(state, false);
 		} else if (c == 'y') {
 			auto node = state->explorer.root->getNode(state->explorer.index);
 			std::string path = node->path.string();
@@ -212,15 +217,7 @@ void sendFileExplorerKeys(State *state, int32_t c)
 			return;
 		}
 		putCursorBackOnScreenFileExplorer(state);
-		if (state->explorer.windowLine < 0) {
-			state->explorer.windowLine = 0;
-		}
-		if (state->explorer.index >= state->explorer.root->getTotalChildren()) {
-			state->explorer.index = state->explorer.root->getTotalChildren() - 1;
-		}
-		if (state->explorer.index < 0) {
-			state->explorer.index = 0;
-		}
+		sanityCheckExplorer(state);
 	} catch (const std::exception &e) {
 		state->status = "something went wrong with fileExplorer" + std::string(e.what());
 	}

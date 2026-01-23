@@ -11,6 +11,19 @@ void resetValidCursorState(State *state)
 	}
 }
 
+void sanityCheckExplorer(State* state)
+{
+	if (state->explorer.windowLine < 0) {
+		state->explorer.windowLine = 0;
+	}
+	if (state->explorer.index < 0) {
+		state->explorer.index = 0;
+	} else if (state->explorer.index >= state->explorer.root->getTotalChildren()) {
+		state->explorer.index = state->explorer.root->getTotalChildren() - 1;
+	}
+}
+
+
 void sanityCheckGrepSelection(State *state)
 {
 	state->grepMutex.lock();

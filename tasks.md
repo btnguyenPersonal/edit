@@ -48,7 +48,9 @@ improve autocomplete:
 	- autocomplete allow pressing tab multiple times
 	- maybe have autocomplete also scan the other harpooned files?
 
-copy/paste in background
+don't move file explorer cursor all the time, and just press = to refocus
+
+copy/paste to system clipboard in background
 
 get multiline cached and only recalculated every second
 

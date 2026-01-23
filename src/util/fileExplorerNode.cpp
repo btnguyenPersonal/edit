@@ -95,8 +95,7 @@ void FileExplorerNode::sortChildren()
 void FileExplorerNode::refresh()
 {
 	try {
-		if (this->isFolder) {
-			this->isOpen = true;
+		if (this->isFolder && this->isOpen) {
 			std::vector<FileExplorerNode *> newChildren;
 			bool found = false;
 			for (const std::filesystem::directory_entry &entry : std::filesystem::directory_iterator(this->path)) {
@@ -113,6 +112,9 @@ void FileExplorerNode::refresh()
 				}
 			}
 			this->children = newChildren;
+			for (uint32_t i = 0; i < this->children.size(); i++) {
+				this->children[i]->refresh();
+			}
 			this->sortChildren();
 		}
 	} catch (const std::exception &e) {
