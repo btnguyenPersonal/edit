@@ -4,6 +4,7 @@
 #include "state.h"
 #include "textedit.h"
 #include "fileops.h"
+#include "textbuffer.h"
 #include <climits>
 #include <string>
 #include <vector>
@@ -85,20 +86,23 @@ void toggleComment(State *state)
 
 void toggleCommentHelper(State *state, uint32_t row, int32_t commentIndex)
 {
-	std::string line = state->file->data[row];
+	std::string line = textbuffer_getLine(state, row);
 	if (commentIndex == -1) {
 		int32_t i = getNumLeadingIndentCharacters(state, line);
 		if (isCommentWithSpace(state, line)) {
-			state->file->data[row] = line.substr(0, i) + line.substr(i + state->file->commentSymbol.length() + 1);
+			std::string newContent = line.substr(0, i) + line.substr(i + state->file->commentSymbol.length() + 1);
+			textbuffer_replaceLine(state, row, newContent);
 			return;
 		} else if (isComment(state, line)) {
-			state->file->data[row] = line.substr(0, i) + line.substr(i + state->file->commentSymbol.length());
+			std::string newContent = line.substr(0, i) + line.substr(i + state->file->commentSymbol.length());
+			textbuffer_replaceLine(state, row, newContent);
 			return;
 		}
 	}
 	if (line.length() != 0) {
 		int32_t spaces = commentIndex != -1 ? commentIndex : getNumLeadingIndentCharacters(state, line);
-		state->file->data[row] = line.substr(0, spaces) + state->file->commentSymbol + ' ' + line.substr(spaces);
+		std::string newContent = line.substr(0, spaces) + state->file->commentSymbol + ' ' + line.substr(spaces);
+		textbuffer_replaceLine(state, row, newContent);
 	}
 }
 
@@ -118,7 +122,7 @@ void toggleCommentLines(State *state, Bounds bounds)
 {
 	bool foundNonComment = false;
 	for (size_t i = bounds.minR; i <= bounds.maxR; i++) {
-		if (!isComment(state, state->file->data[i]) && state->file->data[i] != "") {
+		if (!isComment(state, textbuffer_getLine(state, i)) && textbuffer_getLine(state, i) != "") {
 			foundNonComment = true;
 			break;
 		}
@@ -127,8 +131,8 @@ void toggleCommentLines(State *state, Bounds bounds)
 	if (foundNonComment) {
 		minIndentLevel = INT_MAX;
 		for (size_t i = bounds.minR; i <= bounds.maxR; i++) {
-			int32_t indent = getNumLeadingIndentCharacters(state, state->file->data[i]);
-			if (indent < minIndentLevel && state->file->data[i] != "") {
+			int32_t indent = getNumLeadingIndentCharacters(state, textbuffer_getLine(state, i));
+			if (indent < minIndentLevel && textbuffer_getLine(state, i) != "") {
 				minIndentLevel = indent;
 			}
 		}

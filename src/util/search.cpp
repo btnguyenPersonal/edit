@@ -2,6 +2,7 @@
 #include "string.h"
 #include "sanity.h"
 #include "movement.h"
+#include "textbuffer.h"
 #include <regex>
 #include <fstream>
 
@@ -111,8 +112,11 @@ void replaceAll(State *state, const std::string &query, const std::string &repla
 			return;
 		}
 		size_t startPos = 0;
-		while ((startPos = state->file->data[i].find(query, startPos)) != std::string::npos) {
-			state->file->data[i].replace(startPos, query.length(), replace);
+		std::string line = textbuffer_getLine(state, i);
+		while ((startPos = line.find(query, startPos)) != std::string::npos) {
+			line.replace(startPos, query.length(), replace);
+			textbuffer_replaceLine(state, i, line);
+			startPos += replace.length();
 			startPos += replace.length();
 		}
 	}
@@ -217,8 +221,10 @@ void replaceCurrentLine(State *state, const std::string &query, const std::strin
 		return;
 	}
 	size_t startPos = 0;
-	while ((startPos = state->file->data[state->file->row].find(query, startPos)) != std::string::npos) {
-		state->file->data[state->file->row].replace(startPos, query.length(), replace);
+	std::string line = textbuffer_getLine(state, state->file->row);
+	while ((startPos = line.find(query, startPos)) != std::string::npos) {
+		line.replace(startPos, query.length(), replace);
+		textbuffer_replaceLine(state, state->file->row, line);
 		startPos += replace.length();
 	}
 }

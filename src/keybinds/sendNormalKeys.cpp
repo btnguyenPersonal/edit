@@ -369,12 +369,12 @@ void sendNormalKeys(State *state, int32_t c)
 		fixColOverMax(state);
 		copyToClipboard(state, safeSubstring(textbuffer_getLine(state, state->file->row), state->file->col), false);
 		std::string newContent = safeSubstring(textbuffer_getLine(state, state->file->row), 0, state->file->col);
-		textbuffer_replaceRange(state, state->file->row, state->file->row, { newContent });
+		textbuffer_replaceLine(state, state->file->row, newContent);
 	} else if (c == 'C') {
 		fixColOverMax(state);
 		copyToClipboard(state, safeSubstring(textbuffer_getLine(state, state->file->row), state->file->col), false);
 		std::string newContent = safeSubstring(textbuffer_getLine(state, state->file->row), 0, state->file->col);
-		textbuffer_replaceRange(state, state->file->row, state->file->row, { newContent });
+		textbuffer_replaceLine(state, state->file->row, newContent);
 		switchMode(state, INSERT);
 	} else if (c == 'I') {
 		state->file->col = getIndexFirstNonSpace(textbuffer_getLine(state, state->file->row), getIndentCharacter(state));
@@ -469,9 +469,11 @@ void sendNormalKeys(State *state, int32_t c)
 			textbuffer_deleteChar(state, state->file->row, state->file->col);
 		}
 	} else if (c == 'x') {
-		if (state->file->col < state->file->data[state->file->row].length()) {
-			copyToClipboard(state, state->file->data[state->file->row].substr(state->file->col, 1), false);
-			state->file->data[state->file->row] = state->file->data[state->file->row].substr(0, state->file->col) + state->file->data[state->file->row].substr(state->file->col + 1);
+		if (textbuffer_isValidPosition(state, state->file->row, state->file->col)) {
+			copyToClipboard(state, textbuffer_getLine(state, state->file->row).substr(state->file->col, 1), false);
+			std::string line = textbuffer_getLine(state, state->file->row);
+			std::string newContent = line.substr(0, state->file->col) + line.substr(state->file->col + 1);
+			textbuffer_replaceLine(state, state->file->row, newContent);
 		}
 		setDotCommand(state, c);
 	} else if (c == ctrl('y')) {

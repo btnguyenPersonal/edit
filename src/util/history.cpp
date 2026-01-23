@@ -2,6 +2,7 @@
 #include "state.h"
 #include "assert.h"
 #include "keys.h"
+#include "textbuffer.h"
 #include <climits>
 #include <ncurses.h>
 #include <string>
@@ -16,14 +17,14 @@ uint32_t applyDiff(State *state, std::vector<diffLine> diff, bool reverse)
 				min = diff[i].lineNum;
 			}
 			if (!diff[i].add) {
-				if (diff[i].lineNum < state->file->data.size()) {
-					state->file->data.insert(state->file->data.begin() + diff[i].lineNum, diff[i].line);
+				if (diff[i].lineNum < textbuffer_getLineCount(state)) {
+					textbuffer_insertLine(state, diff[i].lineNum, diff[i].line);
 				} else {
-					state->file->data.push_back(diff[i].line);
+					textbuffer_insertLine(state, textbuffer_getLineCount(state), diff[i].line);
 				}
 			} else {
-				if (diff[i].lineNum < state->file->data.size()) {
-					state->file->data.erase(state->file->data.begin() + diff[i].lineNum);
+				if (diff[i].lineNum < textbuffer_getLineCount(state)) {
+					textbuffer_deleteLine(state, diff[i].lineNum);
 				}
 			}
 		}
@@ -33,14 +34,14 @@ uint32_t applyDiff(State *state, std::vector<diffLine> diff, bool reverse)
 				min = diff[i].lineNum;
 			}
 			if (diff[i].add) {
-				if (diff[i].lineNum < state->file->data.size()) {
-					state->file->data.insert(state->file->data.begin() + diff[i].lineNum, diff[i].line);
+				if (diff[i].lineNum < textbuffer_getLineCount(state)) {
+					textbuffer_insertLine(state, diff[i].lineNum, diff[i].line);
 				} else {
-					state->file->data.push_back(diff[i].line);
+					textbuffer_insertLine(state, textbuffer_getLineCount(state), diff[i].line);
 				}
 			} else {
-				if (diff[i].lineNum < state->file->data.size()) {
-					state->file->data.erase(state->file->data.begin() + diff[i].lineNum);
+				if (diff[i].lineNum < textbuffer_getLineCount(state)) {
+					textbuffer_deleteLine(state, diff[i].lineNum);
 				}
 			}
 		}

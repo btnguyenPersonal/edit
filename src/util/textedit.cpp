@@ -1,5 +1,6 @@
 #include "textedit.h"
 #include "string.h"
+#include "textbuffer.h"
 
 void getAndAddNumber(State *state, uint32_t row, uint32_t col, int32_t num)
 {
@@ -29,7 +30,9 @@ void getAndAddNumber(State *state, uint32_t row, uint32_t col, int32_t num)
 			} else {
 				temp += num;
 			}
-			state->file->data[row] = state->file->data[row].substr(0, startPos) + std::to_string(temp) + safeSubstring(state->file->data[row], startPos + number.length());
+			std::string line = textbuffer_getLine(state, row);
+			std::string newContent = line.substr(0, startPos) + std::to_string(temp) + safeSubstring(line, startPos + number.length());
+			textbuffer_replaceLine(state, row, newContent);
 		} catch (const std::exception &e) {
 			state->status = "number too large";
 		}
@@ -51,12 +54,12 @@ std::string setStringToLength(const std::string &s, uint32_t length, bool showTi
 
 void insertEmptyLineBelow(State *state)
 {
-	state->file->data.insert(state->file->data.begin() + state->file->row + 1, "");
+	textbuffer_insertLine(state, state->file->row + 1, "");
 }
 
 void insertEmptyLine(State *state)
 {
-	state->file->data.insert(state->file->data.begin() + state->file->row, "");
+	textbuffer_insertLine(state, state->file->row, "");
 }
 
 std::string padTo(const std::string &str, const uint32_t num, const char paddingChar)
@@ -70,12 +73,12 @@ std::string padTo(const std::string &str, const uint32_t num, const char padding
 
 void swapCase(State *state, uint32_t r, uint32_t c)
 {
-	if (c < state->file->data[r].length()) {
-		char tmp = state->file->data[r][c];
+	if (textbuffer_isValidPosition(state, r, c)) {
+		char tmp = textbuffer_getChar(state, r, c);
 		if (isupper(tmp)) {
-			state->file->data[r][c] = std::tolower(tmp);
+			textbuffer_replaceChar(state, r, c, std::tolower(tmp));
 		} else if (islower(tmp)) {
-			state->file->data[r][c] = std::toupper(tmp);
+			textbuffer_replaceChar(state, r, c, std::toupper(tmp));
 		}
 	}
 }
@@ -83,8 +86,8 @@ void swapCase(State *state, uint32_t r, uint32_t c)
 void insertFinalEmptyNewline(State *state)
 {
 	if (state->file) {
-		if (state->file->data.size() > 0 && state->file->data[state->file->data.size() - 1] != "") {
-			state->file->data.push_back("");
+		if (textbuffer_getLineCount(state) > 0 && textbuffer_getLine(state, textbuffer_getLineCount(state) - 1) != "") {
+			textbuffer_insertLine(state, textbuffer_getLineCount(state), "");
 		}
 	}
 }

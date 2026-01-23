@@ -8,6 +8,7 @@
 #include "insertLoggingCode.h"
 #include "modes.h"
 #include "state.h"
+#include "textbuffer.h"
 #include "autocomplete.h"
 #include "dirSplit.h"
 #include "search.h"
@@ -397,8 +398,8 @@ bool isRowColInVisual(State *state, uint32_t i, uint32_t j)
 
 bool isInQuery(State *state, uint32_t row, uint32_t col, std::string query)
 {
-	if (query != "" && col + query.length() <= state->file->data[row].length()) {
-		if (query == safeSubstring(state->file->data[row], col, query.length())) {
+	if (query != "" && col + query.length() <= textbuffer_getLineLength(state, row)) {
+		if (query == safeSubstring(textbuffer_getLine(state, row), col, query.length())) {
 			return true;
 		}
 	}
@@ -518,9 +519,9 @@ int32_t getLineNumberColor(State *state, int32_t row)
 
 int32_t getMarkColor(State *state, int32_t row)
 {
-	if (state->file->data[row].length() > 0 && isWhitespace(state->file->data[row].back()) && state->mode != INSERT) {
+	if (textbuffer_getLineLength(state, row) > 0 && isWhitespace(textbuffer_getLine(state, row).back()) && state->mode != INSERT) {
 		return RED;
-	} else if (state->file->data[row].find(getLoggingSearch(state)) != std::string::npos) {
+	} else if (textbuffer_getLine(state, row).find(getLoggingSearch(state)) != std::string::npos) {
 		return YELLOW;
 	} else if ((int32_t)state->mark.mark == row && state->mark.filename == state->file->filename) {
 		return CYAN;
@@ -626,8 +627,8 @@ bool endsWithSymbol(State *state, uint32_t row, std::string symbol)
 bool startsWithSymbol(State *state, uint32_t row, std::string symbol)
 {
 	uint32_t symbolIndex = 0;
-	for (uint32_t i = 0; i < state->file->data[row].length(); i++) {
-		char c = state->file->data[row][i];
+	for (uint32_t i = 0; i < textbuffer_getLineLength(state, row); i++) {
+		char c = textbuffer_getChar(state, row, i);
 		if (c == '\t' || c == ' ') {
 			continue;
 		} else if (c == symbol[symbolIndex]) {
@@ -657,7 +658,7 @@ std::vector<override> determineKeywordOverrides(State *state, int32_t row)
 		{ "IMPORTANT", YELLOW, A_UNDERLINE | A_BOLD, -1 },
 	};
 	for (uint32_t i = 0; i < overrides.size(); i++) {
-		size_t pos = state->file->data[row].find(overrides[i].name);
+		size_t pos = textbuffer_getLine(state, row).find(overrides[i].name);
 		if (pos != std::string::npos) {
 			overrides[i].pos = pos;
 		}
@@ -709,7 +710,7 @@ int32_t renderLineContent(State *state, int32_t row, int32_t renderRow, Cursor *
 			}
 		}
 		endLastCheckpoint(state, state->timers);
-		for (; col < state->file->data[row].length(); col++) {
+		for (; col < textbuffer_getLineLength(state, row); col++) {
 			char c = state->file->data[row][col];
 
 			int32_t color;

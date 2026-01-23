@@ -1,10 +1,12 @@
 #include "movement.h"
-#include "assert.h"
+#include "state.h"
+#include "string.h"
+#include "textbuffer.h"
+#include "display.h"
 #include "sanity.h"
 #include "comment.h"
 #include "indent.h"
-#include "display.h"
-#include "string.h"
+#include "assert.h"
 
 int32_t findChar(State *state, bool reverse, char c)
 {
@@ -41,13 +43,13 @@ void moveRightIfEmpty(State *state)
 uint32_t w(State *state)
 {
 	fixColOverMax(state);
-	bool space = state->file->data[state->file->row][state->file->col] == ' ';
-	for (uint32_t i = state->file->col + 1; i < state->file->data[state->file->row].size(); i += 1) {
-		if (state->file->data[state->file->row][i] == ' ') {
+	bool space = textbuffer_getChar(state, state->file->row, state->file->col) == ' ';
+	for (uint32_t i = state->file->col + 1; i < textbuffer_getLineLength(state, state->file->row); i += 1) {
+		if (textbuffer_getChar(state, state->file->row, i) == ' ') {
 			space = true;
-		} else if (space && state->file->data[state->file->row][i] != ' ') {
+		} else if (space && textbuffer_getChar(state, state->file->row, i) != ' ') {
 			return i;
-		} else if (isAlphanumeric(state->file->data[state->file->row][state->file->col]) != isAlphanumeric(state->file->data[state->file->row][i])) {
+		} else if (isAlphanumeric(textbuffer_getChar(state, state->file->row, state->file->col)) != isAlphanumeric(textbuffer_getChar(state, state->file->row, i))) {
 			return i;
 		}
 	}
@@ -57,21 +59,34 @@ uint32_t w(State *state)
 uint32_t b(State *state)
 {
 	fixColOverMax(state);
-	if (state->file->col == 0 || state->file->data[state->file->row].empty()) {
+	if (state->file->col == 0 || textbuffer_getLine(state, state->file->row).empty()) {
 		return 0;
 	}
 	int32_t i = state->file->col - 1;
-	while (i >= 0 && state->file->data[state->file->row][i] == ' ') {
+	while (i >= 0 && textbuffer_getChar(state, state->file->row, i) == ' ') {
 		i--;
 	}
 	if (i < 0) {
 		return 0;
 	}
+	int32_t movement_i = state->file->col - 1;
+	while (movement_i >= 0 && textbuffer_getChar(state, state->file->row, movement_i) == ' ') {
+		movement_i--;
+	}
+	if (movement_i < 0) {
+		return 0;
+	}
+	bool movement_isAlnum = isAlphanumeric(textbuffer_getChar(state, state->file->row, movement_i));
+	for (movement_i -= 1; movement_i >= 0; movement_i--) {
+		if (textbuffer_getChar(state, state->file->row, movement_i) == ' ') {
+			return movement_i + 1;
+		}
+	}
 	bool isAlnum = isAlphanumeric(state->file->data[state->file->row][i]);
 	for (i -= 1; i >= 0; i--) {
-		if (state->file->data[state->file->row][i] == ' ') {
+		if (textbuffer_getChar(state, state->file->row, i) == ' ') {
 			return i + 1;
-		} else if ((isAlphanumeric(state->file->data[state->file->row][i])) != isAlnum) {
+		} else if ((isAlphanumeric(textbuffer_getChar(state, state->file->row, i))) != isAlnum) {
 			return i + 1;
 		}
 	}
@@ -82,8 +97,8 @@ uint32_t findNextChar(State *state, char c)
 {
 	state->prevSearch.type = 'f';
 	state->prevSearch.search = c;
-	for (uint32_t i = state->file->col + 1; i < state->file->data[state->file->row].length(); i++) {
-		if (state->file->data[state->file->row][i] == c) {
+	for (uint32_t i = state->file->col + 1; i < textbuffer_getLineLength(state, state->file->row); i++) {
+		if (textbuffer_getChar(state, state->file->row, i) == c) {
 			return i;
 		}
 	}
@@ -95,8 +110,8 @@ uint32_t toNextChar(State *state, char c)
 	state->prevSearch.type = 't';
 	state->prevSearch.search = c;
 	uint32_t index = state->file->col;
-	for (uint32_t i = state->file->col + 1; i < state->file->data[state->file->row].length(); i++) {
-		if (state->file->data[state->file->row][i] == c) {
+	for (uint32_t i = state->file->col + 1; i < textbuffer_getLineLength(state, state->file->row); i++) {
+		if (textbuffer_getChar(state, state->file->row, i) == c) {
 			return index;
 		} else {
 			index = i;
@@ -110,8 +125,8 @@ uint32_t findPrevChar(State *state, char c)
 	state->prevSearch.type = 'F';
 	state->prevSearch.search = c;
 	for (int32_t i = state->file->col - 1; i >= 0; i--) {
-		if (i < (int32_t)state->file->data[state->file->row].length()) {
-			if (state->file->data[state->file->row][i] == c) {
+		if (i < (int32_t)textbuffer_getLineLength(state, state->file->row)) {
+			if (textbuffer_getChar(state, state->file->row, i) == c) {
 				return (int32_t)i;
 			}
 		}

@@ -99,31 +99,39 @@ void changeCaseVisual(State *state, bool upper, bool swap)
 	if (state->visualType == SELECT) {
 		uint32_t col = bounds.minC;
 		for (uint32_t row = bounds.minR; row < bounds.maxR; row++) {
-			while (col < state->file->data[row].size()) {
-				state->file->data[row][col] = changeCase(state->file->data[row][col], upper, swap);
+			std::string line = textbuffer_getLine(state, row);
+			while (col < line.size()) {
+				line[col] = changeCase(line[col], upper, swap);
 				col++;
 			}
+			textbuffer_replaceLine(state, row, line);
 			col = 0;
 		}
-		while (col <= bounds.maxC && col < state->file->data[bounds.maxR].size()) {
-			state->file->data[bounds.maxR][col] = changeCase(state->file->data[bounds.maxR][col], upper, swap);
+		std::string lastLine = textbuffer_getLine(state, bounds.maxR);
+		while (col <= bounds.maxC && col < lastLine.size()) {
+			lastLine[col] = changeCase(lastLine[col], upper, swap);
 			col++;
 		}
+		textbuffer_replaceLine(state, bounds.maxR, lastLine);
 	} else if (state->visualType == BLOCK) {
 		uint32_t min = std::min(bounds.minC, bounds.maxC);
 		uint32_t max = std::max(bounds.minC, bounds.maxC);
 		for (uint32_t row = bounds.minR; row <= bounds.maxR; row++) {
+			std::string line = textbuffer_getLine(state, row);
 			for (uint32_t col = min; col <= max; col++) {
-				if (col < state->file->data[row].size()) {
-					state->file->data[row][col] = changeCase(state->file->data[row][col], upper, swap);
+				if (col < line.size()) {
+					line[col] = changeCase(line[col], upper, swap);
 				}
 			}
+			textbuffer_replaceLine(state, row, line);
 		}
 	} else if (state->visualType == LINE) {
 		for (uint32_t row = bounds.minR; row <= bounds.maxR; row++) {
-			for (uint32_t col = 0; col < state->file->data[row].size(); col++) {
-				state->file->data[row][col] = changeCase(state->file->data[row][col], upper, swap);
+			std::string line = textbuffer_getLine(state, row);
+			for (uint32_t col = 0; col < line.size(); col++) {
+				line[col] = changeCase(line[col], upper, swap);
 			}
+			textbuffer_replaceLine(state, row, line);
 		}
 	}
 }
@@ -138,7 +146,7 @@ void sortReverseLines(State *state)
 	std::sort(lines.begin(), lines.end(), std::greater<>());
 	int32_t index = 0;
 	for (uint32_t i = bounds.minR; i <= bounds.maxR; i++) {
-		textbuffer_replaceRange(state, i, i, { lines[index] });
+		textbuffer_replaceLine(state, i, lines[index]);
 		index++;
 	}
 }
@@ -153,7 +161,7 @@ void sortLines(State *state)
 	std::sort(lines.begin(), lines.end());
 	int32_t index = 0;
 	for (uint32_t i = bounds.minR; i <= bounds.maxR; i++) {
-		textbuffer_replaceRange(state, i, i, { lines[index] });
+		textbuffer_replaceLine(state, i, lines[index]);
 		index++;
 	}
 }
@@ -302,27 +310,29 @@ Position deleteInVisual(State *state)
 	pos.row = bounds.minR;
 	pos.col = bounds.minC;
 	if (state->visualType == LINE) {
-		state->file->data.erase(state->file->data.begin() + bounds.minR, state->file->data.begin() + bounds.maxR + 1);
+		textbuffer_deleteRange(state, bounds.minR, bounds.maxR);
 	} else if (state->visualType == BLOCK) {
 		uint32_t min = std::min(bounds.minC, bounds.maxC);
 		uint32_t max = std::max(bounds.minC, bounds.maxC);
 		for (uint32_t i = bounds.minR; i <= bounds.maxR; i++) {
-			std::string firstPart = safeSubstring(state->file->data[i], 0, min);
-			std::string secondPart = safeSubstring(state->file->data[i], max + 1);
-			state->file->data[i] = firstPart + secondPart;
+			std::string line = textbuffer_getLine(state, i);
+			std::string firstPart = safeSubstring(line, 0, min);
+			std::string secondPart = safeSubstring(line, max + 1);
+			std::string newContent = firstPart + secondPart;
+			textbuffer_replaceLine(state, i, newContent);
 		}
 		pos.col = min;
 	} else if (state->visualType == SELECT) {
 		std::string firstPart = "";
 		std::string secondPart = "";
-		if (bounds.minC <= state->file->data[bounds.minR].length()) {
-			firstPart = safeSubstring(state->file->data[bounds.minR], 0, bounds.minC);
+		if (bounds.minC <= textbuffer_getLineLength(state, bounds.minR)) {
+			firstPart = safeSubstring(textbuffer_getLine(state, bounds.minR), 0, bounds.minC);
 		}
-		if (bounds.maxC < state->file->data[bounds.maxR].length()) {
-			secondPart = safeSubstring(state->file->data[bounds.maxR], bounds.maxC + 1);
+		if (bounds.maxC < textbuffer_getLineLength(state, bounds.maxR)) {
+			secondPart = safeSubstring(textbuffer_getLine(state, bounds.maxR), bounds.maxC + 1);
 		}
-		state->file->data[bounds.minR] = firstPart + secondPart;
-		state->file->data.erase(state->file->data.begin() + bounds.minR + 1, state->file->data.begin() + bounds.maxR + 1);
+		std::string newContent = firstPart + secondPart;
+		textbuffer_replaceRange(state, bounds.minR, bounds.maxR, { newContent });
 	}
 	return pos;
 }
@@ -603,8 +613,8 @@ bool sendVisualKeys(State *state, char c, bool onlyMotions)
 		if (bounds.minR > 0) {
 			if (isValidMoveableChunk(state, bounds)) {
 				auto temp = textbuffer_getLine(state, bounds.minR - 1);
-				state->file->data.erase(state->file->data.begin() + bounds.minR - 1);
-				state->file->data.insert(state->file->data.begin() + bounds.maxR, temp);
+				textbuffer_deleteLine(state, bounds.minR - 1);
+				textbuffer_insertLine(state, bounds.maxR, temp);
 				state->file->row = bounds.minR - 1;
 				state->visual.row = bounds.maxR - 1;
 				indentRange(state);
@@ -615,11 +625,11 @@ bool sendVisualKeys(State *state, char c, bool onlyMotions)
 		}
 	} else if (!onlyMotions && c == 'J') {
 		Bounds bounds = getBounds(state);
-		if (bounds.maxR + 1 < state->file->data.size()) {
+		if (bounds.maxR + 1 < textbuffer_getLineCount(state)) {
 			if (isValidMoveableChunk(state, bounds)) {
 				auto temp = textbuffer_getLine(state, bounds.maxR + 1);
-				state->file->data.erase(state->file->data.begin() + bounds.maxR + 1);
-				state->file->data.insert(state->file->data.begin() + bounds.minR, temp);
+				textbuffer_deleteLine(state, bounds.maxR + 1);
+				textbuffer_insertLine(state, bounds.minR, temp);
 				state->file->row = bounds.minR + 1;
 				state->visual.row = bounds.maxR + 1;
 				indentRange(state);
@@ -639,7 +649,7 @@ bool sendVisualKeys(State *state, char c, bool onlyMotions)
 	} else if (!onlyMotions && c == ctrl('v')) {
 		state->visualType = BLOCK;
 	} else if (c == 'G') {
-		state->file->row = state->file->data.size() - 1;
+		state->file->row = textbuffer_getLineCount(state) - 1;
 	} else if (!onlyMotions && c == '=') {
 		logDotCommand(state);
 		Bounds bounds = getBounds(state);

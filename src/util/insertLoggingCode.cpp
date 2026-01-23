@@ -3,6 +3,7 @@
 #include "indent.h"
 #include "fileops.h"
 #include "textedit.h"
+#include "textbuffer.h"
 #include <regex>
 #include <string>
 #include <vector>
@@ -68,8 +69,8 @@ std::string getLoggingRegex(State *state)
 
 void insertLoggingCode(State *state, std::string loggingCode)
 {
-	if (state->file->row < state->file->data.size()) {
-		state->file->data.insert(state->file->data.begin() + state->file->row + 1, loggingCode);
+	if (state->file->row < textbuffer_getLineCount(state)) {
+		textbuffer_insertLine(state, state->file->row + 1, loggingCode);
 		indentLine(state, state->file->row + 1);
 	}
 }
@@ -80,24 +81,22 @@ void toggleLoggingCode(State *state, std::string variableName)
 	if (loggingCode == "") {
 		return;
 	}
-	if (state->file->row + 1 < state->file->data.size()) {
-		auto nextLine = state->file->data[state->file->row + 1];
-		ltrim(nextLine);
+	if (state->file->row + 1 < textbuffer_getLineCount(state)) {
+		auto nextLine = textbuffer_getLine(state, state->file->row + 1);
 		if (nextLine == loggingCode) {
-			state->file->data.erase(state->file->data.begin() + state->file->row + 1);
-			return;
+			textbuffer_deleteLine(state, state->file->row + 1);
 		}
 	}
-	insertLoggingCode(state, loggingCode);
 }
 
 void removeAllLoggingCode(State *state)
 {
 	std::string logPattern = getLoggingRegex(state);
 	if (logPattern != "") {
-		for (int32_t i = state->file->data.size() - 1; i >= 0; i--) {
-			if (std::regex_search(state->file->data[i], std::regex(logPattern))) {
-				state->file->data.erase(state->file->data.begin() + i);
+		for (int32_t i = textbuffer_getLineCount(state) - 1; i >= 0; i--) {
+			std::string line = textbuffer_getLine(state, i);
+			if (std::regex_search(line, std::regex(logPattern))) {
+				textbuffer_deleteLine(state, i);
 			}
 		}
 	}

@@ -1,4 +1,5 @@
 #include "sanity.h"
+#include "textbuffer.h"
 
 void resetValidCursorState(State *state)
 {
@@ -11,7 +12,7 @@ void resetValidCursorState(State *state)
 	}
 }
 
-void sanityCheckExplorer(State* state)
+void sanityCheckExplorer(State *state)
 {
 	if (state->explorer.windowLine < 0) {
 		state->explorer.windowLine = 0;
@@ -22,7 +23,6 @@ void sanityCheckExplorer(State* state)
 		state->explorer.index = state->explorer.root->getTotalChildren() - 1;
 	}
 }
-
 
 void sanityCheckGrepSelection(State *state)
 {
@@ -52,8 +52,8 @@ void sanityCheckQuery(Query &query, uint32_t len)
 void sanityCheckDocumentEmpty(State *state)
 {
 	if (state->file) {
-		if (state->file->data.size() == 0) {
-			state->file->data.push_back("");
+		if (textbuffer_getLineCount(state) == 0) {
+			textbuffer_insertLine(state, 0, "");
 		}
 	}
 }
@@ -72,10 +72,10 @@ void fixColOverMax(State *state)
 void sanityCheckRowOutOfBounds(State *state)
 {
 	if (state->file) {
-		if (state->file->data.size() == 0) {
+		if (textbuffer_getLineCount(state) == 0) {
 			state->file->row = 0;
-		} else if (state->file->row >= state->file->data.size()) {
-			state->file->row = state->file->data.size() - 1;
+		} else if (state->file->row >= textbuffer_getLineCount(state)) {
+			state->file->row = textbuffer_getLineCount(state) - 1;
 		}
 	}
 }

@@ -4,6 +4,7 @@
 #include "fileops.h"
 #include "display.h"
 #include "textedit.h"
+#include "textbuffer.h"
 #include <string>
 #include <vector>
 
@@ -37,18 +38,22 @@ char getIndentCharacter(State *state)
 
 void indent(State *state)
 {
+	std::string line = textbuffer_getLine(state, state->file->row);
 	for (uint32_t i = 0; i < getIndentSize(state); i++) {
-		state->file->data[state->file->row] = getIndentCharacter(state) + state->file->data[state->file->row];
+		line = getIndentCharacter(state) + line;
 	}
+	textbuffer_replaceLine(state, state->file->row, line);
 }
 
 void deindent(State *state)
 {
+	std::string line = textbuffer_getLine(state, state->file->row);
 	for (uint32_t i = 0; i < getIndentSize(state); i++) {
-		if (state->file->data[state->file->row].substr(0, 1) == std::string("") + getIndentCharacter(state)) {
-			state->file->data[state->file->row] = state->file->data[state->file->row].substr(1);
+		if (line.substr(0, 1) == std::string("") + getIndentCharacter(state)) {
+			line = line.substr(1);
 		}
 	}
+	textbuffer_replaceLine(state, state->file->row, line);
 }
 
 void indentLineWhenTypingLastChar(State *state)
@@ -245,24 +250,28 @@ int32_t getIndentLevel(State *state, uint32_t row)
 
 void indentLine(State *state, uint32_t row)
 {
-	ltrim(state->file->data[row]);
-	if (state->file->data[row].length() != 0) {
+	std::string line = textbuffer_getLine(state, row);
+	ltrim(line);
+	if (line.length() != 0) {
 		int32_t indentLevel = getIndentLevel(state, row);
 		for (int32_t i = 0; i < indentLevel; i++) {
-			state->file->data[row] = getIndentCharacter(state) + state->file->data[row];
+			line = getIndentCharacter(state) + line;
 		}
 	}
+	textbuffer_replaceLine(state, row, line);
 }
 
 void indentLine(State *state)
 {
-	ltrim(state->file->data[state->file->row]);
-	if (state->file->data[state->file->row].length() != 0) {
+	std::string line = textbuffer_getLine(state, state->file->row);
+	ltrim(line);
+	if (line.length() != 0) {
 		int32_t indentLevel = getIndentLevel(state, state->file->row);
 		for (int32_t i = 0; i < indentLevel; i++) {
-			state->file->data[state->file->row] = getIndentCharacter(state) + state->file->data[state->file->row];
+			line = getIndentCharacter(state) + line;
 		}
 	}
+	textbuffer_replaceLine(state, state->file->row, line);
 }
 
 void indentRange(State *state)
@@ -277,18 +286,21 @@ void indentRange(State *state)
 	int32_t indentDifference = getIndentLevel(state, state->file->row) - getNumLeadingIndentCharacters(state, state->file->data[firstNonEmptyRow]);
 	if (indentDifference > 0) {
 		for (int32_t i = state->file->row; i <= (int32_t)state->visual.row; i++) {
-			if (state->file->data[i] != "") {
+			std::string line = textbuffer_getLine(state, i);
+			if (line != "") {
 				for (int32_t j = 0; j < indentDifference; j++) {
-					state->file->data[i] = getIndentCharacter(state) + state->file->data[i];
+					line = getIndentCharacter(state) + line;
 				}
+				textbuffer_replaceLine(state, i, line);
 			}
 		}
 	} else if (indentDifference < 0) {
 		for (int32_t i = state->file->row; i <= (int32_t)state->visual.row; i++) {
-			if (state->file->data[i] != "") {
+			std::string line = textbuffer_getLine(state, i);
+			if (line != "") {
 				for (int32_t j = 0; j < -1 * indentDifference; j++) {
-					if (state->file->data[i].length() > 0 && state->file->data[i][0] == getIndentCharacter(state)) {
-						state->file->data[i] = safeSubstring(state->file->data[i], 1);
+					if (line.length() > 0 && line[0] == getIndentCharacter(state)) {
+						line = safeSubstring(line, 1);
 					}
 				}
 			}

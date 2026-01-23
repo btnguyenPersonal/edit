@@ -122,17 +122,6 @@ void textbuffer_replaceChar(State *state, uint32_t row, uint32_t col, char c)
 	textbuffer_markModified(state);
 }
 
-char textbuffer_getChar(State *state, uint32_t row, uint32_t col)
-{
-	validateState(state);
-	if (!isValidRow(state, row) || col >= state->file->data[row].length()) {
-		return '\0';
-	}
-	return state->file->data[row][col];
-}
-
-// === LINE OPERATIONS ===
-
 void textbuffer_insertLine(State *state, uint32_t row, const std::string &line)
 {
 	validateState(state);
@@ -188,15 +177,6 @@ void textbuffer_joinLines(State *state, uint32_t row1, uint32_t row2)
 	textbuffer_markModified(state);
 }
 
-const std::string &textbuffer_getLine(State *state, uint32_t row)
-{
-	validateState(state);
-	assert(isValidRow(state, row) && "Invalid row for getLine");
-	return state->file->data[row];
-}
-
-// === RANGE OPERATIONS ===
-
 void textbuffer_insertRange(State *state, uint32_t row, const std::vector<std::string> &lines)
 {
 	validateState(state);
@@ -226,34 +206,4 @@ void textbuffer_replaceRange(State *state, uint32_t startRow, uint32_t endRow, c
 	textbuffer_deleteRange(state, startRow, endRow);
 	textbuffer_insertRange(state, startRow, lines);
 	textbuffer_markModified(state);
-}
-
-// === UTILITY OPERATIONS ===
-
-uint32_t textbuffer_getLineCount(State *state)
-{
-	validateState(state);
-	return static_cast<uint32_t>(state->file->data.size());
-}
-
-uint32_t textbuffer_getLineLength(State *state, uint32_t row)
-{
-	validateState(state);
-	if (!isValidRow(state, row)) {
-		return 0;
-	}
-	return static_cast<uint32_t>(state->file->data[row].length());
-}
-
-bool textbuffer_isValidPosition(State *state, uint32_t row, uint32_t col)
-{
-	return isValidState(state) && isValidRow(state, row) && isValidCol(state, row, col);
-}
-
-// === READ-ONLY ACCESS ===
-
-const std::vector<std::string> &textbuffer_getLines(State *state)
-{
-	validateState(state);
-	return state->file->data;
 }

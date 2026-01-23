@@ -9,17 +9,18 @@
 #include "textedit.h"
 #include "external.h"
 #include "string.h"
+#include "textbuffer.h"
 #include <string>
 #include <vector>
 #include <unistd.h>
 #include <fcntl.h>
 
-static const char b64_table[] =
-"ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-"abcdefghijklmnopqrstuvwxyz"
-"0123456789+/";
+static const char b64_table[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+				"abcdefghijklmnopqrstuvwxyz"
+				"0123456789+/";
 
-std::string base64_encode(const std::string& input) {
+std::string base64_encode(const std::string &input)
+{
 	std::string output;
 	int val = 0;
 	int valb = -6;
@@ -34,9 +35,7 @@ std::string base64_encode(const std::string& input) {
 	}
 
 	if (valb > -6) {
-		output.push_back(
-			b64_table[((val << 8) >> (valb + 8)) & 0x3F]
-		);
+		output.push_back(b64_table[((val << 8) >> (valb + 8)) & 0x3F]);
 	}
 
 	while (output.size() % 4) {
@@ -202,9 +201,11 @@ Bounds pasteVisual(State *state, std::string text)
 		auto pos = changeInVisual(state);
 		state->file->row = pos.row;
 		state->file->col = pos.col;
-		std::string current = state->file->data[state->file->row];
-		state->file->data[state->file->row] = current.substr(0, state->file->col);
-		state->file->data.insert(state->file->data.begin() + state->file->row + 1, current.substr(state->file->col));
+		std::string current = textbuffer_getLine(state, state->file->row);
+		std::string prefix = current.substr(0, state->file->col);
+		std::string suffix = current.substr(state->file->col);
+		textbuffer_splitLine(state, state->file->row, state->file->col);
+		textbuffer_insertLine(state, state->file->row + 1, suffix);
 		state->file->row += 1;
 		state->file->col = 0;
 		indentLine(state);
@@ -214,33 +215,36 @@ Bounds pasteVisual(State *state, std::string text)
 		state->file->col = pos.col;
 	}
 	Bounds bounds = { state->file->row, state->file->row, state->file->col, state->file->col };
-	if (state->file->data.size() == 0) {
+	if (textbuffer_getLineCount(state) == 0) {
 		for (uint32_t i = 0; i < clip.size(); i++) {
-			state->file->data.push_back(clip[i]);
+			textbuffer_insertLine(state, i, clip[i]);
 		}
 		bounds.minC = 0;
 		bounds.maxC = 999999;
 		bounds.maxR += clip.size();
 	} else if (!text.empty() && text.back() == '\n') {
-		state->file->data.insert(state->file->data.begin() + state->file->row, clip.begin(), clip.end());
+		textbuffer_insertRange(state, state->file->row, clip);
 		bounds.minC = 0;
 		bounds.maxC = 999999;
 		bounds.maxR += clip.size();
 	} else if (clip.size() > 0) {
-		std::string current = state->file->data[state->file->row];
-		state->file->data[state->file->row] = current.substr(0, state->file->col);
-		state->file->data[state->file->row] += clip[0];
+		std::string current = textbuffer_getLine(state, state->file->row);
+		std::string newContent = current.substr(0, state->file->col) + clip[0];
+		textbuffer_replaceLine(state, state->file->row, newContent);
 		int32_t lastRow = state->file->row;
 		if (clip.size() > 1) {
-			state->file->data.insert(state->file->data.begin() + state->file->row + 1, clip.begin() + 1, clip.end());
+			std::vector<std::string> remainingLines(clip.begin() + 1, clip.end());
+			textbuffer_insertRange(state, state->file->row + 1, remainingLines);
 		}
 		for (int32_t i = 1; i < (int32_t)clip.size(); i++) {
 			int32_t r = i + state->file->row;
 			lastRow = r;
 		}
 		bounds.maxR = lastRow;
-		bounds.maxC = state->file->data[lastRow].length();
-		state->file->data[lastRow] += safeSubstring(current, state->file->col);
+		std::string lastLine = textbuffer_getLine(state, lastRow);
+		std::string finalLine = lastLine + safeSubstring(current, state->file->col);
+		textbuffer_replaceLine(state, lastRow, finalLine);
+		bounds.maxC = finalLine.length();
 	}
 	return bounds;
 }
@@ -250,39 +254,44 @@ Bounds paste(State *state, std::string text)
 	std::vector<std::string> clip = splitByChar(text, '\n');
 	Bounds bounds = { state->file->row, state->file->row, state->file->col, state->file->col };
 	fixColOverMax(state);
-	if (state->file->data.size() == 0) {
+	if (textbuffer_getLineCount(state) == 0) {
 		for (uint32_t i = 0; i < clip.size(); i++) {
-			state->file->data.push_back(clip[i]);
+			textbuffer_insertLine(state, i, clip[i]);
 		}
 	} else if (!text.empty() && state->pasteAsBlock) {
 		for (int32_t i = 0; i < (int32_t)clip.size(); i++) {
-			if (state->file->row + i >= state->file->data.size()) {
-				state->file->data.push_back("");
+			if (state->file->row + i >= textbuffer_getLineCount(state)) {
+				textbuffer_insertLine(state, textbuffer_getLineCount(state), "");
 			}
-			std::string front = safeSubstring(state->file->data[state->file->row + i], 0, state->file->col);
-			std::string back = safeSubstring(state->file->data[state->file->row + i], state->file->col);
-			state->file->data[state->file->row + i] = front + clip[i] + back;
+			std::string line = textbuffer_getLine(state, state->file->row + i);
+			std::string front = safeSubstring(line, 0, state->file->col);
+			std::string back = safeSubstring(line, state->file->col);
+			std::string newContent = front + clip[i] + back;
+			textbuffer_replaceLine(state, state->file->row + i, newContent);
 		}
 	} else if (!text.empty() && text.back() == '\n') {
-		state->file->data.insert(state->file->data.begin() + state->file->row, clip.begin(), clip.end());
+		textbuffer_insertRange(state, state->file->row, clip);
 		bounds.minC = 0;
 		bounds.maxC = 999999;
 		bounds.maxR += clip.size();
 	} else if (clip.size() > 0) {
-		std::string current = state->file->data[state->file->row];
-		state->file->data[state->file->row] = current.substr(0, state->file->col);
-		state->file->data[state->file->row] += clip[0];
+		std::string current = textbuffer_getLine(state, state->file->row);
+		std::string newContent = current.substr(0, state->file->col) + clip[0];
+		textbuffer_replaceLine(state, state->file->row, newContent);
 		int32_t lastRow = state->file->row;
 		if (clip.size() > 1) {
-			state->file->data.insert(state->file->data.begin() + state->file->row + 1, clip.begin() + 1, clip.end());
+			std::vector<std::string> remainingLines(clip.begin() + 1, clip.end());
+			textbuffer_insertRange(state, state->file->row + 1, remainingLines);
 		}
 		for (int32_t i = 1; i < (int32_t)clip.size(); i++) {
 			int32_t r = i + state->file->row;
 			lastRow = r;
 		}
 		bounds.maxR = lastRow;
-		bounds.maxC = state->file->data[lastRow].length();
-		state->file->data[lastRow] += current.substr(state->file->col);
+		std::string lastLine = textbuffer_getLine(state, lastRow);
+		std::string finalLine = lastLine + current.substr(state->file->col);
+		textbuffer_replaceLine(state, lastRow, finalLine);
+		bounds.maxC = finalLine.length();
 	}
 	return bounds;
 }
@@ -294,39 +303,44 @@ Bounds pasteAfter(State *state, std::string text)
 	fixColOverMax(state);
 	if (!text.empty() && state->pasteAsBlock) {
 		for (int32_t i = 0; i < (int32_t)clip.size(); i++) {
-			if (state->file->row + i >= state->file->data.size()) {
-				state->file->data.push_back("");
+			if (state->file->row + i >= textbuffer_getLineCount(state)) {
+				textbuffer_insertLine(state, textbuffer_getLineCount(state), "");
 			}
-			std::string front = safeSubstring(state->file->data[state->file->row + i], 0, state->file->col + 1);
-			std::string back = safeSubstring(state->file->data[state->file->row + i], state->file->col + 1);
-			state->file->data[state->file->row + i] = front + clip[i] + back;
+			std::string line = textbuffer_getLine(state, state->file->row + i);
+			std::string front = safeSubstring(line, 0, state->file->col + 1);
+			std::string back = safeSubstring(line, state->file->col + 1);
+			std::string newContent = front + clip[i] + back;
+			textbuffer_replaceLine(state, state->file->row + i, newContent);
 		}
 	} else if (!text.empty() && text.back() == '\n') {
-		state->file->data.insert(state->file->data.begin() + state->file->row + 1, clip.begin(), clip.end());
+		textbuffer_insertRange(state, state->file->row + 1, clip);
 		bounds.minR += 1;
 		bounds.minC = 0;
 		bounds.maxC = 999999;
 		bounds.maxR += clip.size();
 	} else if (clip.size() > 0) {
 		bounds.minC += 1;
-		std::string current = state->file->data[state->file->row];
+		std::string current = textbuffer_getLine(state, state->file->row);
 		int32_t breakCol = state->file->col;
-		if (state->file->col + 1 <= state->file->data[state->file->row].length()) {
+		if (state->file->col + 1 <= current.length()) {
 			breakCol = state->file->col + 1;
 		}
-		state->file->data[state->file->row] = current.substr(0, breakCol);
-		state->file->data[state->file->row] += clip[0];
+		std::string newContent = current.substr(0, breakCol) + clip[0];
+		textbuffer_replaceLine(state, state->file->row, newContent);
 		int32_t lastRow = state->file->row;
 		if (clip.size() > 1) {
-			state->file->data.insert(state->file->data.begin() + state->file->row + 1, clip.begin() + 1, clip.end());
+			std::vector<std::string> remainingLines(clip.begin() + 1, clip.end());
+			textbuffer_insertRange(state, state->file->row + 1, remainingLines);
 		}
 		for (int32_t i = 1; i < (int32_t)clip.size(); i++) {
 			int32_t r = i + state->file->row;
 			lastRow = r;
 		}
 		bounds.maxR = lastRow;
-		bounds.maxC = state->file->data[lastRow].length();
-		state->file->data[lastRow] += current.substr(breakCol);
+		std::string lastLine = textbuffer_getLine(state, lastRow);
+		std::string finalLine = lastLine + current.substr(breakCol);
+		textbuffer_replaceLine(state, lastRow, finalLine);
+		bounds.maxC = finalLine.length();
 	}
 	return bounds;
 }
