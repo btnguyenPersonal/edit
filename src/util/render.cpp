@@ -426,9 +426,11 @@ void renderGrepOutput(State *state)
 		line += ":";
 		line += std::to_string(state->grepOutput[i].lineNum);
 		line += " ";
-		line += state->grepOutput[i].line;
 		line = safeSubstring(line, 0, state->maxX);
-		insertPixels(state, &pixels, line, color);
+		insertPixels(state, &pixels, line, GREEN);
+		std::string rest = state->grepOutput[i].line;
+		rest = safeSubstring(rest, 0, state->maxX - line.length());
+		insertPixels(state, &pixels, rest, color);
 		renderPixels(state, renderIndex, 0, pixels, false);
 		renderIndex++;
 	}
