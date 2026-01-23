@@ -50,13 +50,27 @@ std::string trimComment(State *state, std::string line)
 {
 	std::string outputLine = line;
 	bool foundNonSpace = false;
+	bool skipNext = false;
+	bool inString = false;
+	char stringType = 'E';
 	for (size_t i = 0; i < line.length(); i++) {
-		if (line.substr(i, state->file->commentSymbol.length()) == state->file->commentSymbol) {
+		char c = line[i];
+		if (skipNext) {
+			skipNext = false;
+		} else if (inString && c == '\\') {
+			skipNext = true;
+		} else if (!inString && (c == '"' || c == '`' || c == '\'')) {
+			inString = true;
+			stringType = c;
+		} else if (inString && c == stringType) {
+			inString = false;
+		}
+		if (!inString && line.substr(i, state->file->commentSymbol.length()) == state->file->commentSymbol) {
 			if (foundNonSpace == true) {
 				outputLine = line.substr(0, i);
 			}
 			break;
-		} else if (line[i] != getIndentCharacter(state)) {
+		} else if (c != getIndentCharacter(state)) {
 			foundNonSpace = true;
 		}
 	}
