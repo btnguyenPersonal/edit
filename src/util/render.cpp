@@ -476,7 +476,7 @@ Cursor renderVisibleLines(State *state)
 	for (int32_t i = 0; i < (int32_t)state->file->data.size() && i < (int32_t)(state->maxY + state->file->windowPosition.row) - 1; i++) {
 		// TODO(ben): this is ~2 microseconds per line, which adds up in large files (parallel? or just evalute changed lines somehow?)
 		// checkAgain = false;
-		// startCheckpoint("checkMultiLineCommentStart", state->timers);
+		// startCheckpoint(state->debug, "checkMultiLineCommentStart", state->timers);
 		// if (!isLargeFile(state)) {
 		// 	if (startsWithSymbol(state, i, "/*")) {
 		// 		multiLineComment = true;
@@ -484,12 +484,12 @@ Cursor renderVisibleLines(State *state)
 		// 	}
 		// }
 		if (i >= (int32_t)state->file->windowPosition.row) {
-			startCheckpoint("renderLineNumber", state->timers);
+			startCheckpoint(state->debug, "renderLineNumber", state->timers);
 			renderLineNumber(state, i, currentRenderRow);
-			startCheckpoint("renderLineContent", state->timers);
+			startCheckpoint(state->debug, "renderLineContent", state->timers);
 			currentRenderRow = renderLineContent(state, i, currentRenderRow, &cursor, multiLineComment);
 		}
-		// startCheckpoint("checkMultiLineCommentEnd", state->timers);
+		// startCheckpoint(state->debug, "checkMultiLineCommentEnd", state->timers);
 		// if (!isLargeFile(state)) {
 		// 	if (startsWithSymbol(state, i, "*/")) {
 		// 		multiLineComment = false;
@@ -912,42 +912,42 @@ void renderScreen(State *state, bool fullRedraw)
 	Cursor editorCursor = {};
 	Cursor fileExplorerCursor = {};
 	if (state->mode == FIND) {
-		startCheckpoint("renderFindOutput", state->timers);
+		startCheckpoint(state->debug, "renderFindOutput", state->timers);
 		renderFindOutput(state);
 	} else if (state->mode == DIFF) {
 		if (state->viewingDiff) {
-			startCheckpoint("renderDiff", state->timers);
+			startCheckpoint(state->debug, "renderDiff", state->timers);
 			editorCursor = renderDiff(state);
 		} else {
-			startCheckpoint("renderLogLines", state->timers);
+			startCheckpoint(state->debug, "renderLogLines", state->timers);
 			editorCursor = renderLogLines(state);
 		}
 		noLineNum = true;
 	} else if (state->mode == GREP) {
-		startCheckpoint("renderGrepOutput", state->timers);
+		startCheckpoint(state->debug, "renderGrepOutput", state->timers);
 		renderGrepOutput(state);
 	} else {
-		startCheckpoint("renderVisibleLines", state->timers);
+		startCheckpoint(state->debug, "renderVisibleLines", state->timers);
 		editorCursor = renderVisibleLines(state);
 		if (state->explorer.open) {
-			startCheckpoint("renderFileExplorer", state->timers);
+			startCheckpoint(state->debug, "renderFileExplorer", state->timers);
 			fileExplorerCursor = renderFileExplorer(state);
 		}
 	}
 	if (state->showFileStack) {
-		startCheckpoint("renderFileStack", state->timers);
+		startCheckpoint(state->debug, "renderFileStack", state->timers);
 		renderFileStack(state);
 	}
-	startCheckpoint("renderStatusBar", state->timers);
+	startCheckpoint(state->debug, "renderStatusBar", state->timers);
 	int32_t cursorOnStatusBar = renderStatusBar(state);
-	startCheckpoint("moveCursor", state->timers);
-	startCheckpoint("renderScreenPixels", state->timers);
+	startCheckpoint(state->debug, "moveCursor", state->timers);
+	startCheckpoint(state->debug, "renderScreenPixels", state->timers);
 	renderScreenPixels(fullRedraw);
 	moveCursor(state, cursorOnStatusBar, editorCursor, fileExplorerCursor, noLineNum);
-	startCheckpoint("refresh", state->timers);
+	startCheckpoint(state->debug, "refresh", state->timers);
 	refresh();
 
-	endLastCheckpoint(state->timers);
+	endLastCheckpoint(state->debug, state->timers);
 }
 
 void initTerminal()

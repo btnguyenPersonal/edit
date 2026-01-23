@@ -1,26 +1,28 @@
 #include "perf.h"
 
-void endLastCheckpoint(std::vector<timer> &timers)
+void endLastCheckpoint(bool debug, std::vector<timer> &timers)
 {
-	if (timers.size() > 0 && !timers.back().closed) {
+	if (debug && timers.size() > 0 && !timers.back().closed) {
 		timers.back().end = std::chrono::high_resolution_clock::now();
 		timers.back().closed = true;
 	}
 }
 
-void startCheckpoint(const std::string &name, std::vector<timer> &timers)
+void startCheckpoint(bool debug, const std::string &name, std::vector<timer> &timers)
 {
-	endLastCheckpoint(timers);
-	struct timer current = {};
-	current.name = name;
-	current.start = std::chrono::high_resolution_clock::now();
-	timers.push_back(current);
+	if (debug) {
+		endLastCheckpoint(debug, timers);
+		struct timer current = {};
+		current.name = name;
+		current.start = std::chrono::high_resolution_clock::now();
+		timers.push_back(current);
+	}
 }
 
-void printCheckpoints(std::vector<timer> &timers)
+void printCheckpoints(bool debug, std::vector<timer> &timers)
 {
-	if (timers.size() > 0) {
-		endLastCheckpoint(timers);
+	if (debug && timers.size() > 0) {
+		endLastCheckpoint(debug, timers);
 		std::sort(timers.begin(), timers.end(), [](struct timer a, struct timer b) { return a.name < b.name; });
 		std::vector<aggregatedTimer> aggregatedTimers;
 		std::string lastName = timers[0].name;
@@ -51,12 +53,14 @@ void printCheckpoints(std::vector<timer> &timers)
 		}
 		printf("%30s(%d): %d μs\n", total.name.c_str(), total.num, total.totalElapsed);
 		printf("\033[0m\n");
-		clearCheckpoints(timers);
+		clearCheckpoints(debug, timers);
 		system("sleep 0.1");
 	}
 }
 
-void clearCheckpoints(std::vector<timer> &timers)
+void clearCheckpoints(bool debug, std::vector<timer> &timers)
 {
-	timers.clear();
+	if (debug) {
+		timers.clear();
+	}
 }

@@ -1,9 +1,10 @@
 #pragma once
 
+#include "perf.h"
+#include "timer.h"
 #include "modes.h"
 #include "visualType.h"
 #include "bounds.h"
-#include "perf.h"
 #include "fileExplorerNode.h"
 
 #include <filesystem>

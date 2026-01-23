@@ -7,11 +7,11 @@ void computeFrame(State *state)
 {
 	if (state->debug) {
 		endwin();
-		printCheckpoints(state->timers);
+		printCheckpoints(state->debug, state->timers);
 		initTerminal();
 	}
 
-	startCheckpoint("==== editor logic ====", state->timers);
+	startCheckpoint(state->debug, "==== editor logic ====", state->timers);
 
 	int32_t cachedHistoryPosition = -1;
 	if (state->file) {
@@ -23,41 +23,41 @@ void computeFrame(State *state)
 	int32_t temp = ERR;
 	while ((temp = getch()) != ERR) {
 		c = temp;
-		startCheckpoint("sendKeys", state->timers);
+		startCheckpoint(state->debug, "sendKeys", state->timers);
 		sendKeys(state, c);
-		startCheckpoint("cleanup", state->timers);
+		startCheckpoint(state->debug, "cleanup", state->timers);
 		cleanup(state, c);
 		sentKey = true;
 	}
 
 	if (sentKey) {
-		startCheckpoint("history", state->timers);
+		startCheckpoint(state->debug, "history", state->timers);
 		history(state, c);
 	}
 
-	startCheckpoint("==== autosaveFile logic ====", state->timers);
+	startCheckpoint(state->debug, "==== autosaveFile logic ====", state->timers);
 
 	if (state->file && cachedHistoryPosition != state->file->historyPosition) {
-		startCheckpoint("autosaveFile", state->timers);
+		startCheckpoint(state->debug, "autosaveFile", state->timers);
 		autosaveFile(state);
 	}
 
-	startCheckpoint("==== autoloadFile logic ====", state->timers);
+	startCheckpoint(state->debug, "==== autoloadFile logic ====", state->timers);
 
 	state->frameCounter++;
 	if (state->frameCounter >= 60) {
 		state->frameCounter = 0;
-		startCheckpoint("autoloadFile", state->timers);
+		startCheckpoint(state->debug, "autoloadFile", state->timers);
 		autoloadFile(state);
 	}
 
-	endLastCheckpoint(state->timers);
+	endLastCheckpoint(state->debug, state->timers);
 
 	if (sentKey || !state->shouldNotReRender.test_and_set()) {
-		startCheckpoint("preRenderCleanup", state->timers);
+		startCheckpoint(state->debug, "preRenderCleanup", state->timers);
 		preRenderCleanup(state);
 
-		startCheckpoint("==== render logic ====", state->timers);
+		startCheckpoint(state->debug, "==== render logic ====", state->timers);
 		renderScreen(state);
 	}
 }
