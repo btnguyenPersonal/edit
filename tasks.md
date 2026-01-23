@@ -55,6 +55,9 @@ Use  the  addchstr()  family  of functions for fast screen-painting of
    Try  to  make  attribute changes infrequent on your screens. Don't use
    the immedok() option!
 
+use getnstr(); << don't know how this works with mouse input
+(maybe do some kind of test to see if there is two inputs, then use ungetch and start using getnstr() <- note backspace will work with this)
+
 copy/paste to system clipboard in background
 
 get multiline cached and only recalculated every second
@@ -69,6 +72,8 @@ make word wrap work well with tabs when windowPos.col > 0
 clean up paste functions in clipboard
 
 repeat number keys
+
+make grep have syntax highlighting or at least make filename:row a different color
 
 W and B
 
