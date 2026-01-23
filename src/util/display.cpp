@@ -47,7 +47,9 @@ uint32_t getDisplayLength(State *state, std::string s)
 			if (s[i] == '\t') {
 				output += state->options.indent_size;
 			} else {
-				output++;
+				// NOTE(ben): disregard all tabs in middle of strings
+				output += (s.length() - i);
+				break;
 			}
 		}
 		return output;

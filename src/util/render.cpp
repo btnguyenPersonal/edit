@@ -692,22 +692,23 @@ int32_t renderLineContent(State *state, int32_t row, int32_t renderRow, Cursor *
 		bool foundCursor = false;
 		std::vector<override> overrides;
 		bool mergeConflict = isMergeConflict(state->file->data[row]);
-		// TODO(ben): make this happen on overrun instead of initial every time (or getDisplayRows(state, row) not so damn slow)
-		// if (getDisplayRows(state, row) > state->maxY) {
-		// 	int32_t width = ((int32_t)state->maxX - getLineNumberOffset(state));
-		// 	int32_t offset = ((((int32_t)state->maxY / 2) - 1) * width) + (width / 2);
-		// 	if (state->file->col > (uint32_t)offset) {
-		// 		col = state->file->col - offset;
-		// 		cursor->row = (state->maxY / 2) + 1;
-		// 		cursor->col = width / 2;
-		// 		foundCursor = true;
-		// 		insertPixels(state, &replacePixels, '.', GREY);
-		// 		insertPixels(state, &replacePixels, '.', GREY);
-		// 		insertPixels(state, &replacePixels, '.', GREY);
-		// 		insertPixels(state, &replacePixels, '>', GREY);
-		// 	}
-		// }
 		uint32_t col = 0;
+		startCheckpoint(state, "Overrun check", state->timers);
+		if (getDisplayRows(state, row) > state->maxY) {
+			int32_t width = ((int32_t)state->maxX - getLineNumberOffset(state));
+			int32_t offset = ((((int32_t)state->maxY / 2) - 1) * width) + (width / 2);
+			if (state->file->col > (uint32_t)offset) {
+				col = state->file->col - offset;
+				cursor->row = (state->maxY / 2) + 1;
+				cursor->col = width / 2;
+				foundCursor = true;
+				insertPixel(state, &replacePixels, '.', GREY);
+				insertPixel(state, &replacePixels, '.', GREY);
+				insertPixel(state, &replacePixels, '.', GREY);
+				insertPixel(state, &replacePixels, '>', GREY);
+			}
+		}
+		endLastCheckpoint(state, state->timers);
 		for (; col < state->file->data[row].length(); col++) {
 			char c = state->file->data[row][col];
 
