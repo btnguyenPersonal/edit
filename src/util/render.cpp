@@ -416,18 +416,21 @@ void renderGrepOutput(State *state)
 	}
 	uint32_t renderIndex = STATUS_BAR_LENGTH;
 	int32_t color;
+	int32_t fileColor;
 	for (uint32_t i = index; i < state->grepOutput.size() && i < index + state->maxY; i++) {
 		std::vector<Pixel> pixels = std::vector<Pixel>();
 		color = isTestFile(state->grepOutput[i].path.string()) ? YELLOW : WHITE;
+		fileColor = GREEN;
 		if (i == state->grep.selection) {
 			color = invertColor(color);
+			fileColor = invertColor(fileColor);
 		}
 		std::string line = state->grepOutput[i].path.string();
 		line += ":";
 		line += std::to_string(state->grepOutput[i].lineNum);
 		line += " ";
 		line = safeSubstring(line, 0, state->maxX);
-		insertPixels(state, &pixels, line, GREEN);
+		insertPixels(state, &pixels, line, fileColor);
 		std::string rest = state->grepOutput[i].line;
 		rest = safeSubstring(rest, 0, state->maxX - line.length());
 		insertPixels(state, &pixels, rest, color);
