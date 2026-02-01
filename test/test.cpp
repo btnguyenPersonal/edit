@@ -6,6 +6,7 @@
 #include "util/testString.h"
 #include "util/testInsertLoggingCode.h"
 #include "util/testMovement.h"
+#include "util/testRender.h"
 
 auto color_white = "\033[0m";
 auto color_green = "\033[1;32m";
@@ -41,6 +42,7 @@ int main()
 	printSuiteRun(testString());
 	printSuiteRun(testInsertLoggingCode());
 	printSuiteRun(testMovement());
+	printSuiteRun(testRender());
 	printf("\n    pass: %d\n", pass);
 	printf("    fail: %d\n", fail);
 	if (fail > 0) {
