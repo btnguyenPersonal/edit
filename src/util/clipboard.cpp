@@ -14,12 +14,12 @@
 #include <unistd.h>
 #include <fcntl.h>
 
-static const char b64_table[] =
-"ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-"abcdefghijklmnopqrstuvwxyz"
-"0123456789+/";
+static const char b64_table[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+				"abcdefghijklmnopqrstuvwxyz"
+				"0123456789+/";
 
-std::string base64_encode(const std::string& input) {
+std::string base64_encode(const std::string &input)
+{
 	std::string output;
 	int val = 0;
 	int valb = -6;
@@ -34,9 +34,7 @@ std::string base64_encode(const std::string& input) {
 	}
 
 	if (valb > -6) {
-		output.push_back(
-			b64_table[((val << 8) >> (valb + 8)) & 0x3F]
-		);
+		output.push_back(b64_table[((val << 8) >> (valb + 8)) & 0x3F]);
 	}
 
 	while (output.size() % 4) {

@@ -3,7 +3,7 @@
 #include "state.h"
 #include "query.h"
 
-void sanityCheckExplorer(State* state);
+void sanityCheckExplorer(State *state);
 void resetValidCursorState(State *state);
 void sanityCheckQuery(Query &query, uint32_t len);
 void fixColOverMax(State *state);

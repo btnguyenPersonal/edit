@@ -3,4 +3,3 @@
 #include "state.h"
 
 void computeFrame(State *state);
-

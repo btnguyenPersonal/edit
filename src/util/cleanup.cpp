@@ -88,6 +88,7 @@ void autoloadFile(State *state)
 				state->reloadFile(state->file->filename);
 			}
 			state->shouldNotReRender.clear();
-		} catch (...) {}
+		} catch (...) {
+		}
 	}
 }

@@ -11,7 +11,7 @@ void resetValidCursorState(State *state)
 	}
 }
 
-void sanityCheckExplorer(State* state)
+void sanityCheckExplorer(State *state)
 {
 	if (state->explorer.windowLine < 0) {
 		state->explorer.windowLine = 0;
@@ -22,7 +22,6 @@ void sanityCheckExplorer(State* state)
 		state->explorer.index = state->explorer.root->getTotalChildren() - 1;
 	}
 }
-
 
 void sanityCheckGrepSelection(State *state)
 {
