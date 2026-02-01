@@ -974,7 +974,7 @@ void initTerminal()
 	noecho();
 	hasColor = has_colors();
 	start_color();
-	has256Color = COLORS < 256;
+	has256Color = COLORS >= 256;
 	use_default_colors();
 	set_escdelay(0);
 	initColors();
