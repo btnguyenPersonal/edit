@@ -1,4 +1,5 @@
 #include "testEasilyBreakableThings.h"
+#include "debug.h"
 
 struct testSuiteRun testEasilyBreakableThings()
 {
@@ -7,8 +8,123 @@ struct testSuiteRun testEasilyBreakableThings()
 	{
 		State *state = new State("./test-file.h", { "" });
 		initTerminal();
-		system("sleep 2");
+		ungetch('q');
+		computeFrame(state);
+		ungetch('w');
+		computeFrame(state);
+		ungetch('a');
+		computeFrame(state);
+		ungetch('b');
+		computeFrame(state);
+		ungetch('b');
+		computeFrame(state);
+		ungetch('b');
+		computeFrame(state);
+		ungetch('b');
+		computeFrame(state);
+		ungetch('b');
+		computeFrame(state);
+		ungetch('b');
+		computeFrame(state);
+		ungetch('b');
+		computeFrame(state);
+		ungetch('b');
+		computeFrame(state);
+		ungetch(ctrl('h'));
+		computeFrame(state);
+		ungetch(KEY_BACKSPACE);
+		computeFrame(state);
+		ungetch(KEY_BACKSPACE);
+		computeFrame(state);
+		ungetch(KEY_BACKSPACE);
+		computeFrame(state);
+		ungetch(127);
+		computeFrame(state);
+		ungetch(127);
+		computeFrame(state);
+		ungetch(127);
+		computeFrame(state);
+		ungetch(KEY_ESCAPE);
+		computeFrame(state);
+		ungetch('q');
+		computeFrame(state);
+		ungetch('@');
+		computeFrame(state);
+		ungetch('w');
+		computeFrame(state);
+		ungetch('@');
+		computeFrame(state);
+		ungetch('w');
+		computeFrame(state);
+		ungetch('@');
+		computeFrame(state);
+		ungetch('w');
+		computeFrame(state);
+		ungetch('@');
+		computeFrame(state);
+		ungetch('w');
+		computeFrame(state);
+		ungetch('@');
+		computeFrame(state);
+		ungetch('w');
+		computeFrame(state);
 		endwin();
+		output.push_back({ "backspace and 127 and ctrl('h') work with macro", compare(state->file->data, { "bbbbbb" }) });
+	}
+
+	{
+		State *state = new State("./test-file.h", { "" });
+		initTerminal();
+		ungetch('a');
+		computeFrame(state);
+		ungetch('b');
+		computeFrame(state);
+		ungetch('b');
+		computeFrame(state);
+		ungetch('b');
+		computeFrame(state);
+		ungetch('b');
+		computeFrame(state);
+		ungetch('b');
+		computeFrame(state);
+		ungetch('b');
+		computeFrame(state);
+		ungetch('b');
+		computeFrame(state);
+		ungetch('b');
+		computeFrame(state);
+		ungetch(ctrl('h'));
+		computeFrame(state);
+		ungetch(KEY_BACKSPACE);
+		computeFrame(state);
+		ungetch(KEY_BACKSPACE);
+		computeFrame(state);
+		ungetch(KEY_BACKSPACE);
+		computeFrame(state);
+		ungetch(127);
+		computeFrame(state);
+		ungetch(127);
+		computeFrame(state);
+		ungetch(127);
+		computeFrame(state);
+		ungetch(KEY_ESCAPE);
+		computeFrame(state);
+		ungetch('q');
+		computeFrame(state);
+		ungetch('.');
+		computeFrame(state);
+		ungetch('.');
+		computeFrame(state);
+		ungetch('.');
+		computeFrame(state);
+		ungetch('.');
+		computeFrame(state);
+		ungetch('.');
+		computeFrame(state);
+		ungetch('.');
+		computeFrame(state);
+		endwin();
+		output.push_back({ "backspace and 127 and ctrl('h') work with dot", compare(state->file->data, { "bbbbbb" }) });
 	}
 
 	return { "test/util/testEasilyBreakableThings.cpp", output };

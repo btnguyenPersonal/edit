@@ -215,6 +215,7 @@ bool State::resetState(const std::string &filename)
 
 void State::init()
 {
+	this->debug = false;
 	this->explorer = {};
 	this->explorer.root = nullptr;
 	this->explorer.open = false;

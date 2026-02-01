@@ -25,3 +25,5 @@
 #define WHITE 9
 #define DIFFGREEN 100
 #define DIFFRED 101
+
+#define KEY_ESCAPE 27
