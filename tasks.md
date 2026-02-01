@@ -44,6 +44,8 @@ crash:
 	- ctrl r crash
 	- wrap all the places we use std::filesystem in try/catch
 
+- getColForDisplay threadsanitize
+
 improve autocomplete:
 	- autocomplete allow pressing tab multiple times
 	- maybe have autocomplete also scan the other harpooned files?
