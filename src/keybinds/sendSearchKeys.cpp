@@ -6,12 +6,13 @@
 #include "../util/search.h"
 #include "../util/ctrl.h"
 #include "../util/switchMode.h"
+#include "../util/defines.h"
 #include <climits>
 #include <ncurses.h>
 
 void sendSearchKeys(State *state, int32_t c)
 {
-	if (c == 27) { // ESC
+	if (c == KEY_ESCAPE) {
 		state->searching = false;
 		state->replacing = false;
 		state->replaceBounds = { 0, 0, 0, 0 };

@@ -55,7 +55,7 @@ void sendNormalKeys(State *state, int32_t c)
 				downScreen(state);
 			}
 		}
-	} else if (c == 27) { // ESC
+	} else if (c == KEY_ESCAPE) {
 		state->prevKeys = "";
 		state->motion.clear();
 	} else if (state->prevKeys == "T") {

@@ -9,6 +9,7 @@
 #include "../util/movement.h"
 #include "../util/switchMode.h"
 #include "../util/ctrl.h"
+#include "../util/defines.h"
 #include <ncurses.h>
 #include <string>
 #include <vector>
@@ -17,7 +18,7 @@ void sendGrepKeys(State *state, int32_t c)
 {
 	state->grepMutex.lock();
 	std::string cachedGrepString = state->grep.query;
-	if (c == 27) { // ESC
+	if (c == KEY_ESCAPE) {
 		switchMode(state, NORMAL);
 	} else if (c == KEY_LEFT) {
 		moveCursorLeft(&state->grep);

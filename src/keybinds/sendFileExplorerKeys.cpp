@@ -73,7 +73,7 @@ void sendFileExplorerKeys(State *state, int32_t c)
 				}
 				return;
 			}
-		} else if (c == 27) { // ESC
+		} else if (c == KEY_ESCAPE) {
 			switchMode(state, NORMAL);
 			state->explorer.open = false;
 		} else if (c == ctrl('t')) {

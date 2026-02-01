@@ -11,6 +11,7 @@
 #include "../util/ctrl.h"
 #include "../util/repeat.h"
 #include "../util/switchMode.h"
+#include "../util/defines.h"
 #include <ncurses.h>
 #include <string>
 #include <vector>
@@ -38,7 +39,7 @@ void sendTypingKeys(State *state, int32_t c)
 			state->file->data[state->file->row] = current.substr(0, state->file->col) + (char)c + current.substr(state->file->col);
 			state->file->col += 1;
 		}
-	} else if (c == 27) { // ESC
+	} else if (c == KEY_ESCAPE) {
 		left(state);
 		switchMode(state, NORMAL);
 		setDotCommand(state, state->motion);

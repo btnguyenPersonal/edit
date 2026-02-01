@@ -13,6 +13,7 @@
 #include "../util/ctrl.h"
 #include "../util/string.h"
 #include "../util/switchMode.h"
+#include "../util/defines.h"
 #include <ncurses.h>
 #include <string>
 #include <vector>
@@ -159,7 +160,7 @@ void autocompleteCommandLinePath(State *state, bool reverse)
 
 void sendCommandLineKeys(State *state, int32_t c)
 {
-	if (c == 27) { // ESC
+	if (c == KEY_ESCAPE) {
 		backspaceAll(&state->commandLine);
 		switchPrevMode(state);
 	} else if (' ' <= c && c <= '~') {

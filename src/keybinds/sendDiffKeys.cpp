@@ -4,6 +4,7 @@
 #include "../util/string.h"
 #include "../util/ctrl.h"
 #include "../util/switchMode.h"
+#include "../util/defines.h"
 
 void upLog(State *state)
 {
@@ -35,7 +36,7 @@ void downDiff(State *state)
 
 void sendDiffKeys(State *state, int32_t c)
 {
-	if (c == 27) { // ESC
+	if (c == KEY_ESCAPE) {
 		switchMode(state, NORMAL);
 	} else if (c == 'q') {
 		if (state->prevKeys != "") {

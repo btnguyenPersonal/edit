@@ -8,6 +8,7 @@
 #include "../util/find.h"
 #include "../util/ctrl.h"
 #include "../util/switchMode.h"
+#include "../util/defines.h"
 #include <ncurses.h>
 #include <string>
 #include <vector>
@@ -16,7 +17,7 @@ void sendFindKeys(State *state, int32_t c)
 {
 	state->findMutex.lock();
 	std::string cachedFileString = state->find.query;
-	if (c == 27) { // ESC
+	if (c == KEY_ESCAPE) {
 		state->selectAll = false;
 		switchMode(state, NORMAL);
 	} else if (' ' <= c && c <= '~') {

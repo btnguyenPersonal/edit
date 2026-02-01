@@ -129,4 +129,3 @@ struct testSuiteRun testEasilyBreakableThings()
 
 	return { "test/util/testEasilyBreakableThings.cpp", output };
 }
-

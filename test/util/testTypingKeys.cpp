@@ -12,7 +12,7 @@ struct testSuiteRun testTypingKeys()
 
 	{
 		State *state = new State("./test-file.h", { "" });
-		sendTypingKeys(state, 27);
+		sendTypingKeys(state, KEY_ESCAPE);
 		output.push_back({ "sendTypingKeys <Esc> should set mode to NORMAL", compare(state->mode, NORMAL) });
 	}
 
@@ -21,7 +21,7 @@ struct testSuiteRun testTypingKeys()
 		sendTypingKeys(state, 'a');
 		sendTypingKeys(state, 'b');
 		sendTypingKeys(state, 'c');
-		sendTypingKeys(state, 27);
+		sendTypingKeys(state, KEY_ESCAPE);
 		std::vector<std::string> expect = { "a", "b", "c", "<Esc>" };
 		output.push_back({ "sendTypingKeys <Esc> should set dotCommand to abcESC when abcESC is input", compare(state->dotCommand, expect) });
 		output.push_back({ "sendTypingKeys <Esc> should move the cursor left one", compare(state->file->col, 2) });

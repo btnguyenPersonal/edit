@@ -1,5 +1,6 @@
 #include "prompt.h"
 #include "ctrl.h"
+#include "defines.h"
 
 std::string prompt(State *state, std::string startingValue)
 {
@@ -12,7 +13,7 @@ std::string prompt(State *state, std::string startingValue)
 	while (true) {
 		c = getch();
 		if (c != ERR) {
-			if (c == 27) { // ESC
+			if (c == KEY_ESCAPE) {
 				backspaceAll(&state->name);
 				state->mode = prevMode;
 				return "";

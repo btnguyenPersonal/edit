@@ -10,4 +10,3 @@
 #include <ncurses.h>
 
 struct testSuiteRun testEasilyBreakableThings();
-

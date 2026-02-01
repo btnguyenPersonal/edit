@@ -18,6 +18,7 @@
 #include "../util/textedit.h"
 #include "../util/repeat.h"
 #include "../util/switchMode.h"
+#include "../util/defines.h"
 #include <string>
 #include <vector>
 
@@ -353,7 +354,7 @@ void logDotCommand(State *state)
 bool sendVisualKeys(State *state, char c, bool onlyMotions)
 {
 	recordMotion(state, c);
-	if (c == 27) { // ESC
+	if (c == KEY_ESCAPE) {
 		switchMode(state, NORMAL);
 		logDotCommand(state);
 	} else if (state->prevKeys == "T") {

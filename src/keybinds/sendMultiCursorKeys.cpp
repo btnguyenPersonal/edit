@@ -10,6 +10,7 @@
 #include "../util/string.h"
 #include "../util/repeat.h"
 #include "../util/switchMode.h"
+#include "../util/defines.h"
 #include "sendVisualKeys.h"
 #include <ncurses.h>
 #include <string>
@@ -19,7 +20,7 @@ void sendMultiCursorKeys(State *state, int32_t c)
 {
 	recordMotion(state, c);
 	Bounds bounds = getBounds(state);
-	if (c == 27) { // ESC
+	if (c == KEY_ESCAPE) {
 		left(state);
 		switchMode(state, NORMAL);
 		setDotCommand(state, state->motion);

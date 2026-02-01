@@ -6,13 +6,14 @@
 #include "../util/external.h"
 #include "../util/ctrl.h"
 #include "../util/switchMode.h"
+#include "../util/defines.h"
 #include <ncurses.h>
 #include <string>
 #include <vector>
 
 void sendBlameKeys(State *state, int32_t c)
 {
-	if (c == 27) { // ESC
+	if (c == KEY_ESCAPE) {
 		switchMode(state, NORMAL);
 	} else if (c == 'k') {
 		up(state);
