@@ -148,9 +148,9 @@ struct testSuiteRun testTypingKeys()
 		state->file->row = 2;
 		state->file->col = 1000;
 		for (uint32_t i = 0; i < 1000; i++) {
-			sendTypingKeys(state, KEY_BACKSPACE);
+			sendTypingKeys(state, ctrl('h'));
 		}
-		output.push_back({ "sendTypingKeys KEY_BACKSPACE should delete everything if starting at the end", compare(state->file->data, { "" }) });
+		output.push_back({ "sendTypingKeys ctrl('h') should delete everything if starting at the end", compare(state->file->data, { "" }) });
 	}
 
 	{
@@ -158,25 +158,25 @@ struct testSuiteRun testTypingKeys()
 		state->file->row = 2;
 		state->file->col = 1000;
 		for (uint32_t i = 0; i < 1000; i++) {
-			sendTypingKeys(state, 127);
+			sendTypingKeys(state, ctrl('h'));
 		}
-		output.push_back({ "sendTypingKeys 127 should delete everything if starting at the end", compare(state->file->data, { "" }) });
+		output.push_back({ "sendTypingKeys ctrl('h') should delete everything if starting at the end", compare(state->file->data, { "" }) });
 	}
 
 	{
 		State *state = new State("./test-file.h", { "    Hello World", "    Hello World", "    Hello World" });
 		state->file->row = 2;
 		state->file->col = 0;
-		sendTypingKeys(state, KEY_BACKSPACE);
-		output.push_back({ "sendTypingKeys KEY_BACKSPACE should delete newlines", compare(state->file->data, { "    Hello World", "    Hello World    Hello World" }) });
+		sendTypingKeys(state, ctrl('h'));
+		output.push_back({ "sendTypingKeys ctrl('h') should delete newlines", compare(state->file->data, { "    Hello World", "    Hello World    Hello World" }) });
 	}
 
 	{
 		State *state = new State("./test-file.h", { "    Hello World", "    Hello World", "    Hello World" });
 		state->file->row = 2;
 		state->file->col = 1000;
-		sendTypingKeys(state, KEY_BACKSPACE);
-		output.push_back({ "sendTypingKeys KEY_BACKSPACE should delete normal characters", compare(state->file->data, { "    Hello World", "    Hello World", "    Hello Worl" }) });
+		sendTypingKeys(state, ctrl('h'));
+		output.push_back({ "sendTypingKeys ctrl('h') should delete normal characters", compare(state->file->data, { "    Hello World", "    Hello World", "    Hello Worl" }) });
 	}
 
 	{

@@ -14,7 +14,7 @@
 
 int32_t cleanKey(int32_t c)
 {
-	if (c == KEY_BACKSPACE) {
+	if (c == KEY_BACKSPACE || c == 127) {
 		return ctrl('h');
 	}
 	return c;
