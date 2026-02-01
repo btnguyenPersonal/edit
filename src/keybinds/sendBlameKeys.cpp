@@ -26,7 +26,7 @@ void sendBlameKeys(State *state, int32_t c)
 		upHalfScreen(state);
 	} else if (c == ctrl('d')) {
 		downHalfScreen(state);
-	} else if (c == KEY_BACKSPACE || c == ctrl('h')) {
+	} else if (c == ctrl('h')) {
 		if (state->blameSize - 5 > 10) {
 			state->blameSize -= 5;
 		}

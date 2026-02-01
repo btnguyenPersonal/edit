@@ -26,14 +26,14 @@ void computeFrame(State *state)
 		startCheckpoint(state->debug, "autoloadFile", state->timers);
 		autoloadFile(state);
 		startCheckpoint(state->debug, "cleanup", state->timers);
-		cleanup(state, ' ');
+		cleanup(state);
 	}
 
 	bool sentKey = false;
 	int32_t c = ERR;
 	int32_t temp = ERR;
 	while ((temp = getch()) != ERR) {
-		c = temp;
+		c = cleanKey(temp);
 		startCheckpoint(state->debug, "sendKeys", state->timers);
 		sendKeys(state, c);
 		startCheckpoint(state->debug, "cleanup", state->timers);

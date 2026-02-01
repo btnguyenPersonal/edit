@@ -22,7 +22,7 @@ std::string prompt(State *state, std::string startingValue)
 				moveCursorLeft(&state->name);
 			} else if (c == KEY_RIGHT) {
 				moveCursorRight(&state->name);
-			} else if (c == KEY_BACKSPACE || c == 127) {
+			} else if (c == ctrl('h')) {
 				backspace(&state->name);
 			} else if (c == ctrl('l')) {
 				backspaceAll(&state->name);

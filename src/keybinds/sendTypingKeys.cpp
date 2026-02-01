@@ -47,7 +47,7 @@ void sendTypingKeys(State *state, int32_t c)
 		return;
 	} else if (c == '\n') {
 		insertNewline(state);
-	} else if (c == KEY_BACKSPACE || c == 127) {
+	} else if (c == ctrl('h')) {
 		if (state->file->col > 0) {
 			std::string current = state->file->data[state->file->row];
 			state->file->data[state->file->row] = current.substr(0, state->file->col - 1) + current.substr(state->file->col);

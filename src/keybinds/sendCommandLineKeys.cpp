@@ -203,7 +203,7 @@ void sendCommandLineKeys(State *state, int32_t c)
 			autocompleteCommandLinePath(state, false);
 		} catch (const std::exception &e) {
 		}
-	} else if (c == KEY_BACKSPACE || c == 127) {
+	} else if (c == ctrl('h')) {
 		if (state->commandLine.query.length() > 1 && safeSubstring(state->commandLine.query, 0, 2) == "e ") {
 			struct DirSplit dirSplit = getCurrentDirSplit(state->commandLine.query.substr(2));
 			if (dirSplit.currentUncompleted.length() == 0) {

@@ -117,11 +117,7 @@ void recordMacroCommand(State *state, char c)
 
 void recordMotion(State *state, int32_t c)
 {
-	if (c == KEY_BACKSPACE) {
-		state->motion.push_back(127);
-	} else {
-		state->motion.push_back(c);
-	}
+	state->motion.push_back(c);
 }
 
 void forwardFileStack(State *state)

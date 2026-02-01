@@ -33,7 +33,7 @@ void sendFindKeys(State *state, int32_t c)
 	} else if (c == KEY_RIGHT) {
 		state->selectAll = false;
 		moveCursorRight(&state->find);
-	} else if (c == KEY_BACKSPACE || c == 127) {
+	} else if (c == ctrl('h')) {
 		if (state->selectAll == true) {
 			backspaceAll(&state->find);
 			state->find.selection = 0;

@@ -84,7 +84,7 @@ void sendFileExplorerKeys(State *state, int32_t c)
 			auto node = state->explorer.root->getNode(state->explorer.index);
 			node->close();
 			node->open();
-		} else if (c == KEY_BACKSPACE || c == ctrl('h')) {
+		} else if (c == ctrl('h')) {
 			if (state->explorer.size - 5 > 10) {
 				state->explorer.size -= 5;
 			}

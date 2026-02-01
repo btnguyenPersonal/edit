@@ -23,7 +23,7 @@ void sendGrepKeys(State *state, int32_t c)
 		moveCursorLeft(&state->grep);
 	} else if (c == KEY_RIGHT) {
 		moveCursorRight(&state->grep);
-	} else if (c == KEY_BACKSPACE || c == 127) {
+	} else if (c == ctrl('h')) {
 		backspace(&state->grep);
 		state->grep.selection = 0;
 	} else if (c == ctrl('g')) {

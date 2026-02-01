@@ -24,8 +24,6 @@ void sendKeys(State *state, int32_t c)
 	}
 	if (c == KEY_MOUSE) {
 		state->keys.push_back({ state->mode, getEscapedChar('\xFF', false) });
-	} else if (c == KEY_BACKSPACE) {
-		state->keys.push_back({ state->mode, getEscapedChar(127, false) });
 	} else {
 		state->keys.push_back({ state->mode, getEscapedChar(c, false) });
 	}

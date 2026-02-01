@@ -25,7 +25,7 @@ void sendMultiCursorKeys(State *state, int32_t c)
 		setDotCommand(state, state->motion);
 		state->motion.clear();
 		return;
-	} else if (c == KEY_BACKSPACE || c == 127) {
+	} else if (c == ctrl('h')) {
 		if (state->file->col > 0) {
 			for (uint32_t i = bounds.minR; i <= bounds.maxR; i++) {
 				std::string current = state->file->data[i];

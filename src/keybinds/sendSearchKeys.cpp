@@ -28,7 +28,7 @@ void sendSearchKeys(State *state, int32_t c)
 		} else {
 			add(&state->search, c);
 		}
-	} else if (c == KEY_BACKSPACE || c == 127) {
+	} else if (c == ctrl('h')) {
 		if (state->replacing) {
 			backspace(&state->replace);
 		} else {

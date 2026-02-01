@@ -495,7 +495,7 @@ void sendNormalKeys(State *state, int32_t c)
 		setDotCommand(state, c);
 	} else if (c == ctrl('l')) {
 		moveHarpoonRight(state);
-	} else if (c == KEY_BACKSPACE || c == ctrl('h')) {
+	} else if (c == ctrl('h')) {
 		moveHarpoonLeft(state);
 	} else if (c == ctrl('x')) {
 		if (eraseHarpoon(state)) {

@@ -12,7 +12,15 @@
 #include <ncurses.h>
 #include <filesystem>
 
-void cleanup(State *state, char c)
+int32_t cleanKey(int32_t c)
+{
+	if (c == KEY_BACKSPACE) {
+		return ctrl('h');
+	}
+	return c;
+}
+
+void cleanup(State *state)
 {
 	if (state->mode == NORMAL && !state->file) {
 		endwin();
@@ -34,15 +42,20 @@ void cleanup(State *state, char c)
 		if (state->options.insert_final_newline) {
 			insertFinalEmptyNewline(state);
 		}
-		if (state->recording.on && !state->dontRecordKey) {
-			recordMacroCommand(state, c);
-		}
 		if (!state->file->jumplist.touched) {
 			recordJumpList(state);
 		}
 		realignHarpoon(state);
 	}
 	state->dontRecordKey = false;
+}
+
+void cleanup(State *state, char c)
+{
+	if (state->recording.on && !state->dontRecordKey) {
+		recordMacroCommand(state, c);
+	}
+	cleanup(state);
 }
 
 void history(State *state, char c)
