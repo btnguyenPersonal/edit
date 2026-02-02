@@ -8,6 +8,8 @@
 	[x] sanity
 	[x] typingKeys
 	[x] insertLoggingCode
+	[ ] fileExplorerNode <- have moved up higher because fuzzing has proven them buggy
+	[ ] fileExplorerKeys
 	[ ] render
 	[ ] movement
 	[ ] clipboard
@@ -28,8 +30,6 @@
 	[ ] textedit
 	[ ] search
 	[ ] repeat
-	[ ] fileExplorerNode
-	[ ] fileExplorerKeys
 	[ ] multicursorKeys
 	[ ] normalKeys
 
