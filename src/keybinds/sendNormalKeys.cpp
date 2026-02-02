@@ -94,12 +94,16 @@ void sendNormalKeys(State *state, int32_t c)
 			}
 		}
 	} else if (state->prevKeys == "q") {
-		if (!state->recording.on) {
-			state->recording.c = std::tolower((char)c);
-			state->macroCommand[state->recording.c].clear();
+		if ('a' <= c && c <= 'z') {
+			if (!state->recording.on) {
+				state->recording.c = std::tolower((char)c);
+				state->macroCommand[state->recording.c].clear();
+			}
+			state->recording.on = !state->recording.on;
+			state->dontRecordKey = true;
+		} else {
+			state->status = "invalid macro key";
 		}
-		state->recording.on = !state->recording.on;
-		state->dontRecordKey = true;
 		state->prevKeys = "";
 	} else if (state->prevKeys == "r") {
 		if (state->file->col < state->file->data[state->file->row].length() && ' ' <= c && c <= '~') {
