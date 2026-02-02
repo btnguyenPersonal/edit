@@ -84,16 +84,16 @@ struct testSuiteRun testRender()
 	}
 
 	{
-		output.push_back({ "getColorFromChar 0", compare(getPrintColor(getColorFromChar('a')), getPrintColor(WHITE)) });
-		output.push_back({ "getColorFromChar 0", compare(getPrintColor(getColorFromChar('[')), getPrintColor(GREEN)) });
-		output.push_back({ "getColorFromChar 0", compare(getPrintColor(getColorFromChar(']')), getPrintColor(GREEN)) });
-		output.push_back({ "getColorFromChar 0", compare(getPrintColor(getColorFromChar('{')), getPrintColor(MAGENTA)) });
-		output.push_back({ "getColorFromChar 0", compare(getPrintColor(getColorFromChar('}')), getPrintColor(MAGENTA)) });
-		output.push_back({ "getColorFromChar 0", compare(getPrintColor(getColorFromChar('(')), getPrintColor(YELLOW)) });
-		output.push_back({ "getColorFromChar 0", compare(getPrintColor(getColorFromChar(')')), getPrintColor(YELLOW)) });
-		output.push_back({ "getColorFromChar 0", compare(getPrintColor(getColorFromChar('\'')), getPrintColor(CYAN)) });
-		output.push_back({ "getColorFromChar 0", compare(getPrintColor(getColorFromChar('"')), getPrintColor(CYAN)) });
-		output.push_back({ "getColorFromChar 0", compare(getPrintColor(getColorFromChar('`')), getPrintColor(CYAN)) });
+		output.push_back({ "getColorFromChar 1", compare(getPrintColor(getColorFromChar('a')), getPrintColor(WHITE)) });
+		output.push_back({ "getColorFromChar 2", compare(getPrintColor(getColorFromChar('[')), getPrintColor(GREEN)) });
+		output.push_back({ "getColorFromChar 3", compare(getPrintColor(getColorFromChar(']')), getPrintColor(GREEN)) });
+		output.push_back({ "getColorFromChar 4", compare(getPrintColor(getColorFromChar('{')), getPrintColor(MAGENTA)) });
+		output.push_back({ "getColorFromChar 5", compare(getPrintColor(getColorFromChar('}')), getPrintColor(MAGENTA)) });
+		output.push_back({ "getColorFromChar 6", compare(getPrintColor(getColorFromChar('(')), getPrintColor(YELLOW)) });
+		output.push_back({ "getColorFromChar 7", compare(getPrintColor(getColorFromChar(')')), getPrintColor(YELLOW)) });
+		output.push_back({ "getColorFromChar 8", compare(getPrintColor(getColorFromChar('\'')), getPrintColor(CYAN)) });
+		output.push_back({ "getColorFromChar 9", compare(getPrintColor(getColorFromChar('"')), getPrintColor(CYAN)) });
+		output.push_back({ "getColorFromChar 10", compare(getPrintColor(getColorFromChar('`')), getPrintColor(CYAN)) });
 	}
 
 	return { "test/util/testRender.cpp", output };

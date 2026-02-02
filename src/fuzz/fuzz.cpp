@@ -1,6 +1,8 @@
 #include "../util/state.h"
 #include "../util/keys.h"
 #include "../util/computeFrame.h"
+#include "../util/render.h"
+#include "../../test/util/debug.h"
 #include <ncurses.h>
 #include <random>
 #include <vector>
@@ -16,12 +18,12 @@ void fuzzSendKeys(int testnum, int iterations = 1000)
 	State *state = new State("./test-file.h");
 
 	try {
+		initTerminal();
 		std::vector<char> randVec;
 		for (int i = 0; i < iterations; i++) {
 			randVec.push_back(keypresses[dis(gen)]);
 		}
 		printf("\t// iteration #%d\n", testnum);
-		printf("\tState *state = new State(\"./test-file.h\");\n");
 		printf("\ttestValues(state, {");
 		for (uint32_t i = 0; i < randVec.size(); i++) {
 			if (i != 0) {
@@ -40,61 +42,56 @@ void fuzzSendKeys(int testnum, int iterations = 1000)
 		printf("});\n");
 		for (uint32_t i = 0; i < randVec.size(); i++) {
 			char key = randVec[i];
-			printf("%s %s\n", getMode(state->mode).c_str(), getEscapedChar(key, true).c_str());
 			ungetch(key);
 			computeFrame(state);
 		}
-		delete state;
+		endwin();
 	} catch (const std::exception &e) {
-		delete state;
+		endwin();
 		printf("Error during fuzzing: %s\n", e.what());
 		exit(1);
 	}
-	return;
 }
 
 void testValues(State *state, std::vector<std::string> v)
 {
-	for (uint32_t i = 0; i < v.size(); i++) {
-		char key = getUnEscapedChar(v[i]);
-		printf("%s %s\n", getMode(state->mode).c_str(), getEscapedChar(key, true).c_str());
-		ungetch(key);
-		computeFrame(state);
+	try {
+		initTerminal();
+		for (uint32_t i = 0; i < v.size(); i++) {
+			char key = getUnEscapedChar(v[i]);
+			ungetch(key);
+			computeFrame(state);
+			debug(state);
+		}
+		endwin();
+	} catch (const std::exception &e) {
+		endwin();
+		printf("Error during fuzzing: %s\n", e.what());
+		exit(1);
 	}
 }
 
 int main()
 {
-	// State *state = new State("./test-file.h");
+	State *state = new State("./test-file.h");
 	// testValues(state, {"E", "N", "<C-O>", ">", ">", "l", "<C-^>", " \\\\", "3", "<C-P>"});
-	// State *state = new State("./test-file.h");
 	// testValues(state, {"r", "~", "Q", ">", "V", "I", "p", "<C-A>", "<C-K>", "<C-@>"});
-	// State *state = new State("./test-file.h");
 	// testValues(state, {"{", "~", "5", "r", "<Space>", "<C-O>", "<C-_>", "d", "G", "<C-]>"});
-	// State *state = new State("./test-file.h");
 	// testValues(state, {"|", "<C-A>", "'", "<C-U>", "U", "#", "7", "T", ":", "l"});
-	// State *state = new State("./test-file.h");
 	// testValues(state, {")", "n", "S", "b", "#", "<C-_>", ";", "c", "(", "<C-Q>"});
-	// State *state = new State("./test-file.h");
 	// testValues(state, {"%", "[", "'", "+", "<C-E>", "}", "=", "<C-P>", "3", "X"});
-	// State *state = new State("./test-file.h");
 	// testValues(state, {"M", "K", "p", "J", "]", "]", "T", "A", "<C-J>", "k"});
-	// State *state = new State("./test-file.h");
 	// testValues(state, {"H", "<C-I>", "/", "<C-Q>", "'", "<C-H>", "3", "w", "2", "#"});
-	// State *state = new State("./test-file.h");
 	// testValues(state, {"<C-G>", "Z", "<C-O>", "<C-P>", "p", "<C-@>", "1", "<C-J>", "M", "5"});
-	// State *state = new State("./test-file.h");
 	// testValues(state, {"z", "v", "<C-@>", "<C-H>", "T", "*", ".", "2", "=", "."});
-	// State *state = new State("./test-file.h");
 	// testValues(state, {"V", "=", ".", "<C-P>", "<C-]>", "U", "<Esc>", "Y", "h", "p"});
-	// State *state = new State("./test-file.h");
 	// testValues(state, {"l", "<C-I>", "#", "h", "<C-I>", "<C-V>", "o", "<C-J>", "|", "d"});
-	// State *state = new State("./test-file.h");
 	// testValues(state, {"<C-E>", "8", "<C-G>", "G", "b", "g", "J", "u", "u", "<C-L>"});
-	// State *state = new State("./test-file.h");
 	// testValues(state, {"<C-G>", "E", "<C-V>", "<C-I>", "G", "<C-J>", "<C-O>", "$", "<C-M>", "."});
+	// testValues(state, {"m", "'", "!", "d", "&", "<C-V>", "<C-E>", ":", "<C-R>", "L"});
+	// testValues(state, {"w", "v", "Q", "<C-P>", "1", "&", ":", "<C-R>", "k", "j"});
 	for (uint32_t i = 0; i < 1000000; i++) {
-		fuzzSendKeys(i, 10);
+		fuzzSendKeys(i, 100);
 	}
 	return 0;
 }

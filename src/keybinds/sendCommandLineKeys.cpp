@@ -189,8 +189,8 @@ void sendCommandLineKeys(State *state, int32_t c)
 	} else if (c == ctrl('r')) {
 		struct searchReplace temp = getSearchReplace(state->commandLine.query);
 		if (temp.first == "" && state->prevMode == VISUAL) {
-			add(&state->commandLine, getInVisual(state));
-			state->commandLine.cursor += 1;
+			std::string temp = getInVisual(state);
+			add(&state->commandLine, temp);
 		} else {
 			add(&state->commandLine, temp.first);
 		}

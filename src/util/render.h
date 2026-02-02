@@ -23,6 +23,7 @@ int32_t renderStatusBar(State *state);
 Cursor renderVisibleLines(State *state);
 void renderScreen(State *state);
 void renderScreen(State *state, bool fullRedraw);
+void renderScreenPixels(bool fullRedraw);
 void initTerminal();
 void printChar(State *state, int32_t row, int32_t col, char c, int32_t color);
 void printChar(State *state, int &row, int &col, char c, int32_t color, bool advance);
