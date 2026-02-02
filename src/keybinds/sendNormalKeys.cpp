@@ -202,6 +202,23 @@ void sendNormalKeys(State *state, int32_t c)
 		state->status = state->file->filename;
 		copyToClipboard(state, state->file->filename, true);
 		state->prevKeys = "";
+	} else if (state->prevKeys == "g" && c == 'f') {
+		state->prevKeys = "";
+		std::vector<std::string> extensions = { "", ".js", ".jsx", ".ts", ".tsx" };
+		std::string vis;
+		bool found = false;
+		initVisual(state, SELECT);
+		sendVisualKeys(state, 'i', true);
+		sendVisualKeys(state, '\'', true);
+		vis = getInVisual(state, false);
+		found = locateFile(state, vis, extensions);
+		switchMode(state, NORMAL);
+		if (!found) {
+			sendVisualKeys(state, 'i', true);
+			sendVisualKeys(state, '"', true);
+			vis = getInVisual(state, false);
+			locateFile(state, vis, extensions);
+		}
 	} else if (state->prevKeys == "g" && c == 'Y') {
 		std::string absPath = std::filesystem::canonical(state->file->filename);
 		state->status = absPath;
