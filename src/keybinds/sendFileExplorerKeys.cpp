@@ -94,23 +94,27 @@ void sendFileExplorerKeys(State *state, int32_t c)
 			auto node = state->explorer.root->getNode(state->explorer.index);
 			node->refresh();
 		} else if (c == 'R') {
-			auto node = state->explorer.root->getNode(state->explorer.index);
-			state->prompt = "renaming " + node->name + ":";
-			std::string name = prompt(state, node->name);
-			if (name != "") {
-				rename(state, node->path, name);
-				node->parent->refresh();
+			if (state->explorer.index != 0) {
+				auto node = state->explorer.root->getNode(state->explorer.index);
+				state->prompt = "renaming " + node->name + ":";
+				std::string name = prompt(state, node->name);
+				if (name != "") {
+					rename(state, node->path, name);
+					node->parent->refresh();
+				}
 			}
 		} else if (c == ':') {
 			switchMode(state, COMMAND);
 		} else if (c == 'X') {
-			auto node = state->explorer.root->getNode(state->explorer.index);
-			if (node->parent != nullptr) {
-				try {
-					node->remove();
-					node->parent->refresh();
-				} catch (const std::exception &e) {
-					state->status = "remove failed";
+			if (state->explorer.index != 0) {
+				auto node = state->explorer.root->getNode(state->explorer.index);
+				if (node->parent != nullptr) {
+					try {
+						node->remove();
+						node->parent->refresh();
+					} catch (const std::exception &e) {
+						state->status = "remove failed";
+					}
 				}
 			}
 		} else if (c == ctrl('g')) {
