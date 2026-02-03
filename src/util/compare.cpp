@@ -58,6 +58,53 @@ std::string getPrintColor(int32_t color)
 	}
 }
 
+std::string print(std::string prefix, std::string name, std::vector<PixelPos> a)
+{
+	std::string output = "";
+	output += prefix;
+	output += name;
+	output += ": [\n";
+	for (uint32_t i = 0; i < a.size(); i++) {
+		output += prefix;
+		output += "    {\n";
+		output += prefix;
+		output += "         pixel: " + std::string("{ ") + (char)(a[i].pixel.c & A_CHARTEXT) + ", " + getPrintColor(a[i].pixel.color) + " },\n";
+		output += prefix;
+		output += "         r: " + std::to_string(a[i].r) + ",\n";
+		output += prefix;
+		output += "         c: " + std::to_string(a[i].c) + ",\n";
+		output += prefix;
+		output += "    },\n";
+	}
+	output += prefix;
+	output += "]\n";
+	return output;
+}
+
+struct boolWithError compare(std::vector<PixelPos> result, std::vector<PixelPos> expect)
+{
+	bool output = true;
+	if (result.size() != expect.size()) {
+		output = false;
+	} else {
+		for (uint32_t i = 0; i < result.size(); i++) {
+			if (
+				result[i].pixel.c != expect[i].pixel.c
+				|| result[i].pixel.color != expect[i].pixel.color
+				|| result[i].r != expect[i].r
+				|| result[i].c != expect[i].c
+			) {
+				output = false;
+				break;
+			}
+		}
+	}
+	if (output == false) {
+		return { output, print(PRE, RES, result) + print(PRE, EXP, expect) };
+	}
+	return { output, "" };
+}
+
 std::string print(std::string prefix, std::string name, std::vector<Pixel> a)
 {
 	std::string output = "";

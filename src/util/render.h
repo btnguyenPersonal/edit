@@ -14,6 +14,14 @@ struct Pixel {
 	int32_t color;
 };
 
+struct PixelPos {
+	Pixel pixel;
+	int32_t r;
+	int32_t c;
+};
+
+int32_t renderPixels(State *state, int32_t r, int32_t c, std::vector<Pixel> pixels, bool wrap);
+std::vector<PixelPos> getScreenPixels();
 int32_t getColorFromChar(char c);
 void insertPixel(State *state, std::vector<Pixel> *pixels, chtype c, int32_t color);
 void insertPixels(State *state, std::vector<Pixel> *pixels, std::string s, int32_t color);

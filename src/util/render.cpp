@@ -23,12 +23,6 @@
 
 #include <ncurses.h>
 
-struct PixelPos {
-	Pixel pixel;
-	int32_t r;
-	int32_t c;
-};
-
 static std::vector<PixelPos> screenPixels;
 static bool hasColor = false;
 static bool has256Color = false;
@@ -86,6 +80,11 @@ int32_t renderPixels(State *state, int32_t r, int32_t c, std::vector<Pixel> pixe
 		}
 	}
 	return row - r + 1;
+}
+
+std::vector<PixelPos> getScreenPixels()
+{
+	return screenPixels;
 }
 
 void renderScreenPixels(bool fullRedraw)

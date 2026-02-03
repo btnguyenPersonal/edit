@@ -13,6 +13,7 @@ struct boolWithError {
 };
 
 std::string getPrintColor(int32_t color);
+std::string print(std::string prefix, std::string name, std::vector<PixelPos> a);
 std::string print(std::string prefix, std::string name, std::vector<Pixel> a);
 std::string print(std::string prefix, std::string name, bool a);
 std::string printInt(std::string prefix, std::string name, int32_t a);
@@ -21,6 +22,7 @@ std::string print(std::string prefix, std::string name, std::vector<char> a);
 std::string print(std::string prefix, std::string name, std::vector<std::string> a);
 std::string print(std::string prefix, std::string name, uint32_t a);
 std::string printMode(std::string prefix, std::string name, uint32_t a);
+struct boolWithError compare(std::vector<PixelPos> result, std::vector<PixelPos> expect);
 struct boolWithError compare(std::vector<Pixel> result, std::vector<Pixel> expect);
 struct boolWithError compare(Mode result, Mode expect);
 struct boolWithError compare(bool a, bool b);
