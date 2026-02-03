@@ -117,22 +117,22 @@ struct testSuiteRun testRender() {
 		insertPixels(state, &pixels, "abcdef", RED);
 		renderPixels(state, 0, 0, pixels, false);
 		output.push_back({"should render the inserted pixels to screenPixels at 0, 0",
-				  compare(
-				      getScreenPixels(),
-				      {
-					  {{'a', WHITE}, 0, 0},
-					  {{'b', WHITE}, 0, 1},
-					  {{'c', WHITE}, 0, 2},
-					  {{'d', WHITE}, 0, 3},
-					  {{'e', WHITE}, 0, 4},
-					  {{'f', WHITE}, 0, 5},
-					  {{'a', RED}, 0, 6},
-					  {{'b', RED}, 0, 7},
-					  {{'c', RED}, 0, 8},
-					  {{'d', RED}, 0, 9},
-					  {{'e', RED}, 0, 10},
-					  {{'f', RED}, 0, 11},
-				      })});
+			compare(
+				getScreenPixels(),
+				{
+					{{'a', WHITE}, 0, 0},
+					{{'b', WHITE}, 0, 1},
+					{{'c', WHITE}, 0, 2},
+					{{'d', WHITE}, 0, 3},
+					{{'e', WHITE}, 0, 4},
+					{{'f', WHITE}, 0, 5},
+					{{'a', RED}, 0, 6},
+					{{'b', RED}, 0, 7},
+					{{'c', RED}, 0, 8},
+					{{'d', RED}, 0, 9},
+					{{'e', RED}, 0, 10},
+					{{'f', RED}, 0, 11},
+				})});
 	}
 
 	return {"test/util/testRender.cpp", output};

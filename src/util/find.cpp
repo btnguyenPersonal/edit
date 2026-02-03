@@ -142,8 +142,7 @@ std::vector<std::filesystem::path> find(const std::filesystem::path &dir_path, c
 		if (matchA == matchB) {
 			return a.string() < b.string();
 		}
-		return matchA > matchB;
-	});
+		return matchA > matchB; });
 	return matching_files;
 }
 

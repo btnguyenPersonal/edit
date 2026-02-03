@@ -626,9 +626,9 @@ struct override {
 
 std::vector<override> determineKeywordOverrides(State *state, int32_t row) {
 	std::vector<override> overrides = {
-	    {"TODO", RED, A_UNDERLINE | A_BOLD, -1},
-	    {"NOTE", GREEN, A_UNDERLINE | A_BOLD, -1},
-	    {"IMPORTANT", YELLOW, A_UNDERLINE | A_BOLD, -1},
+		{"TODO", RED, A_UNDERLINE | A_BOLD, -1},
+		{"NOTE", GREEN, A_UNDERLINE | A_BOLD, -1},
+		{"IMPORTANT", YELLOW, A_UNDERLINE | A_BOLD, -1},
 	};
 	for (uint32_t i = 0; i < overrides.size(); i++) {
 		size_t pos = state->file->data[row].find(overrides[i].name);

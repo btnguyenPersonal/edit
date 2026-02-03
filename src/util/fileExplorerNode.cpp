@@ -81,8 +81,7 @@ void FileExplorerNode::sortChildren() {
 		} else if (!a->isFolder && b->isFolder) {
 			return false;
 		}
-		return a->name < b->name;
-	});
+		return a->name < b->name; });
 }
 
 void FileExplorerNode::refresh() {
