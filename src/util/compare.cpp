@@ -1,14 +1,13 @@
 #include "compare.h"
-#include "string.h"
 #include "modes.h"
+#include "string.h"
 #include <cstdint>
 
 const std::string PRE = "            ";
 const std::string RES = "result";
 const std::string EXP = "expect";
 
-std::string getPrintColor(int32_t color)
-{
+std::string getPrintColor(int32_t color) {
 	if (color == BLACK) {
 		return "BLACK";
 	} else if (color == GREY) {
@@ -58,8 +57,7 @@ std::string getPrintColor(int32_t color)
 	}
 }
 
-std::string print(std::string prefix, std::string name, std::vector<PixelPos> a)
-{
+std::string print(std::string prefix, std::string name, std::vector<PixelPos> a) {
 	std::string output = "";
 	output += prefix;
 	output += name;
@@ -81,32 +79,27 @@ std::string print(std::string prefix, std::string name, std::vector<PixelPos> a)
 	return output;
 }
 
-struct boolWithError compare(std::vector<PixelPos> result, std::vector<PixelPos> expect)
-{
+struct boolWithError compare(std::vector<PixelPos> result, std::vector<PixelPos> expect) {
 	bool output = true;
 	if (result.size() != expect.size()) {
 		output = false;
 	} else {
 		for (uint32_t i = 0; i < result.size(); i++) {
-			if (
-				result[i].pixel.c != expect[i].pixel.c
-				|| result[i].pixel.color != expect[i].pixel.color
-				|| result[i].r != expect[i].r
-				|| result[i].c != expect[i].c
-			) {
+			bool pixelDifferent = result[i].pixel.c != expect[i].pixel.c || result[i].pixel.color != expect[i].pixel.color;
+			bool locationDifferent = result[i].r != expect[i].r || result[i].c != expect[i].c;
+			if (pixelDifferent || locationDifferent) {
 				output = false;
 				break;
 			}
 		}
 	}
 	if (output == false) {
-		return { output, print(PRE, RES, result) + print(PRE, EXP, expect) };
+		return {output, print(PRE, RES, result) + print(PRE, EXP, expect)};
 	}
-	return { output, "" };
+	return {output, ""};
 }
 
-std::string print(std::string prefix, std::string name, std::vector<Pixel> a)
-{
+std::string print(std::string prefix, std::string name, std::vector<Pixel> a) {
 	std::string output = "";
 	output += prefix;
 	output += name;
@@ -122,8 +115,7 @@ std::string print(std::string prefix, std::string name, std::vector<Pixel> a)
 	return output;
 }
 
-struct boolWithError compare(std::vector<Pixel> result, std::vector<Pixel> expect)
-{
+struct boolWithError compare(std::vector<Pixel> result, std::vector<Pixel> expect) {
 	bool output = true;
 	if (result.size() != expect.size()) {
 		output = false;
@@ -136,13 +128,12 @@ struct boolWithError compare(std::vector<Pixel> result, std::vector<Pixel> expec
 		}
 	}
 	if (output == false) {
-		return { output, print(PRE, RES, result) + print(PRE, EXP, expect) };
+		return {output, print(PRE, RES, result) + print(PRE, EXP, expect)};
 	}
-	return { output, "" };
+	return {output, ""};
 }
 
-std::string print(std::string prefix, std::string name, std::vector<std::string> a)
-{
+std::string print(std::string prefix, std::string name, std::vector<std::string> a) {
 	std::string output = "";
 	output += prefix;
 	output += name;
@@ -158,8 +149,7 @@ std::string print(std::string prefix, std::string name, std::vector<std::string>
 	return output;
 }
 
-struct boolWithError compare(std::vector<std::string> result, std::vector<std::string> expect)
-{
+struct boolWithError compare(std::vector<std::string> result, std::vector<std::string> expect) {
 	bool output = true;
 	if (result.size() != expect.size()) {
 		output = false;
@@ -172,13 +162,12 @@ struct boolWithError compare(std::vector<std::string> result, std::vector<std::s
 		}
 	}
 	if (output == false) {
-		return { output, print(PRE, RES, result) + print(PRE, EXP, expect) };
+		return {output, print(PRE, RES, result) + print(PRE, EXP, expect)};
 	}
-	return { output, "" };
+	return {output, ""};
 }
 
-std::string print(std::string prefix, std::string name, bool a)
-{
+std::string print(std::string prefix, std::string name, bool a) {
 	std::string output = "";
 	output += prefix;
 	output += name;
@@ -188,20 +177,18 @@ std::string print(std::string prefix, std::string name, bool a)
 	return output;
 }
 
-struct boolWithError compare(bool result, bool expect)
-{
+struct boolWithError compare(bool result, bool expect) {
 	bool output = true;
 	if (result != expect) {
 		output = false;
 	}
 	if (output == false) {
-		return { output, print(PRE, RES, result) + print(PRE, EXP, expect) };
+		return {output, print(PRE, RES, result) + print(PRE, EXP, expect)};
 	}
-	return { output, "" };
+	return {output, ""};
 }
 
-std::string print(std::string prefix, std::string name, std::string a)
-{
+std::string print(std::string prefix, std::string name, std::string a) {
 	std::string output = "";
 	output += prefix;
 	output += name;
@@ -211,20 +198,18 @@ std::string print(std::string prefix, std::string name, std::string a)
 	return output;
 }
 
-struct boolWithError compare(std::string result, std::string expect)
-{
+struct boolWithError compare(std::string result, std::string expect) {
 	bool output = true;
 	if (result != expect) {
 		output = false;
 	}
 	if (output == false) {
-		return { output, print(PRE, RES, result) + print(PRE, EXP, expect) };
+		return {output, print(PRE, RES, result) + print(PRE, EXP, expect)};
 	}
-	return { output, "" };
+	return {output, ""};
 }
 
-std::string printInt(std::string prefix, std::string name, int32_t a)
-{
+std::string printInt(std::string prefix, std::string name, int32_t a) {
 	std::string output = "";
 	output += prefix;
 	output += name;
@@ -234,20 +219,18 @@ std::string printInt(std::string prefix, std::string name, int32_t a)
 	return output;
 }
 
-struct boolWithError compareInt(int32_t result, int32_t expect)
-{
+struct boolWithError compareInt(int32_t result, int32_t expect) {
 	bool output = true;
 	if (result != expect) {
 		output = false;
 	}
 	if (output == false) {
-		return { output, printInt(PRE, RES, result) + printInt(PRE, EXP, expect) };
+		return {output, printInt(PRE, RES, result) + printInt(PRE, EXP, expect)};
 	}
-	return { output, "" };
+	return {output, ""};
 }
 
-std::string print(std::string prefix, std::string name, uint32_t a)
-{
+std::string print(std::string prefix, std::string name, uint32_t a) {
 	std::string output = "";
 	output += prefix;
 	output += name;
@@ -257,20 +240,18 @@ std::string print(std::string prefix, std::string name, uint32_t a)
 	return output;
 }
 
-struct boolWithError compare(uint32_t result, uint32_t expect)
-{
+struct boolWithError compare(uint32_t result, uint32_t expect) {
 	bool output = true;
 	if (result != expect) {
 		output = false;
 	}
 	if (output == false) {
-		return { output, print(PRE, RES, result) + print(PRE, EXP, expect) };
+		return {output, print(PRE, RES, result) + print(PRE, EXP, expect)};
 	}
-	return { output, "" };
+	return {output, ""};
 }
 
-std::string printMode(std::string prefix, std::string name, uint32_t a)
-{
+std::string printMode(std::string prefix, std::string name, uint32_t a) {
 	std::string output = "";
 	output += prefix;
 	output += name;
@@ -280,14 +261,13 @@ std::string printMode(std::string prefix, std::string name, uint32_t a)
 	return output;
 }
 
-struct boolWithError compare(Mode result, Mode expect)
-{
+struct boolWithError compare(Mode result, Mode expect) {
 	bool output = true;
 	if (result != expect) {
 		output = false;
 	}
 	if (output == false) {
-		return { output, printMode(PRE, RES, result) + printMode(PRE, EXP, expect) };
+		return {output, printMode(PRE, RES, result) + printMode(PRE, EXP, expect)};
 	}
-	return { output, "" };
+	return {output, ""};
 }

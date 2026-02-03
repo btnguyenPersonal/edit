@@ -1,8 +1,7 @@
 #include "textedit.h"
 #include "string.h"
 
-void getAndAddNumber(State *state, uint32_t row, uint32_t col, int32_t num)
-{
+void getAndAddNumber(State *state, uint32_t row, uint32_t col, int32_t num) {
 	if (col < state->file->data[row].length() && std::isdigit(state->file->data[row][col])) {
 		std::string number;
 		int32_t startPos = col;
@@ -36,8 +35,7 @@ void getAndAddNumber(State *state, uint32_t row, uint32_t col, int32_t num)
 	}
 }
 
-std::string setStringToLength(const std::string &s, uint32_t length, bool showTilde)
-{
+std::string setStringToLength(const std::string &s, uint32_t length, bool showTilde) {
 	if (s.length() <= length) {
 		return s;
 	} else {
@@ -49,18 +47,15 @@ std::string setStringToLength(const std::string &s, uint32_t length, bool showTi
 	}
 }
 
-void insertEmptyLineBelow(State *state)
-{
+void insertEmptyLineBelow(State *state) {
 	state->file->data.insert(state->file->data.begin() + state->file->row + 1, "");
 }
 
-void insertEmptyLine(State *state)
-{
+void insertEmptyLine(State *state) {
 	state->file->data.insert(state->file->data.begin() + state->file->row, "");
 }
 
-std::string padTo(const std::string &str, const uint32_t num, const char paddingChar)
-{
+std::string padTo(const std::string &str, const uint32_t num, const char paddingChar) {
 	auto tmp = str;
 	if (num > str.size()) {
 		tmp.insert(0, num - str.size(), paddingChar);
@@ -68,8 +63,7 @@ std::string padTo(const std::string &str, const uint32_t num, const char padding
 	return tmp;
 }
 
-void swapCase(State *state, uint32_t r, uint32_t c)
-{
+void swapCase(State *state, uint32_t r, uint32_t c) {
 	if (c < state->file->data[r].length()) {
 		char tmp = state->file->data[r][c];
 		if (isupper(tmp)) {
@@ -80,8 +74,7 @@ void swapCase(State *state, uint32_t r, uint32_t c)
 	}
 }
 
-void insertFinalEmptyNewline(State *state)
-{
+void insertFinalEmptyNewline(State *state) {
 	if (state->file) {
 		if (state->file->data.size() > 0 && state->file->data[state->file->data.size() - 1] != "") {
 			state->file->data.push_back("");
@@ -89,18 +82,15 @@ void insertFinalEmptyNewline(State *state)
 	}
 }
 
-void rtrim(std::string &s)
-{
+void rtrim(std::string &s) {
 	s.erase(std::find_if(s.rbegin(), s.rend(), [](unsigned char ch) { return !isWhitespace(ch); }).base(), s.end());
 }
 
-void ltrim(std::string &s)
-{
+void ltrim(std::string &s) {
 	s.erase(s.begin(), std::find_if(s.begin(), s.end(), [](unsigned char ch) { return !isWhitespace(ch); }));
 }
 
-void trimTrailingWhitespace(State *state)
-{
+void trimTrailingWhitespace(State *state) {
 	for (uint32_t i = 0; i < state->file->data.size(); i++) {
 		rtrim(state->file->data[i]);
 	}

@@ -1,15 +1,13 @@
 #include "perf.h"
 
-void endLastCheckpoint(bool debug, std::vector<timer> &timers)
-{
+void endLastCheckpoint(bool debug, std::vector<timer> &timers) {
 	if (debug && timers.size() > 0 && !timers.back().closed) {
 		timers.back().end = std::chrono::high_resolution_clock::now();
 		timers.back().closed = true;
 	}
 }
 
-void startCheckpoint(bool debug, const std::string &name, std::vector<timer> &timers)
-{
+void startCheckpoint(bool debug, const std::string &name, std::vector<timer> &timers) {
 	if (debug) {
 		endLastCheckpoint(debug, timers);
 		struct timer current = {};
@@ -19,8 +17,7 @@ void startCheckpoint(bool debug, const std::string &name, std::vector<timer> &ti
 	}
 }
 
-void printCheckpoints(bool debug, std::vector<timer> &timers)
-{
+void printCheckpoints(bool debug, std::vector<timer> &timers) {
 	if (debug && timers.size() > 0) {
 		endLastCheckpoint(debug, timers);
 		std::sort(timers.begin(), timers.end(), [](struct timer a, struct timer b) { return a.name < b.name; });
@@ -58,8 +55,7 @@ void printCheckpoints(bool debug, std::vector<timer> &timers)
 	}
 }
 
-void clearCheckpoints(bool debug, std::vector<timer> &timers)
-{
+void clearCheckpoints(bool debug, std::vector<timer> &timers) {
 	if (debug) {
 		timers.clear();
 	}

@@ -1,25 +1,32 @@
 #include "grep.h"
+#include "fileops.h"
 #include "ignore.h"
 #include "search.h"
-#include "fileops.h"
 
-#include <fstream>
-#include <thread>
-#include <mutex>
 #include <algorithm>
+#include <fstream>
+#include <mutex>
+#include <thread>
 
 const static int32_t THREAD_MAX = 5;
 
-bool isFunctionLine(std::string line, std::string s, std::string extension)
-{
-	std::vector<std::vector<std::string> > functionStrings;
+bool isFunctionLine(std::string line, std::string s, std::string extension) {
+	std::vector<std::vector<std::string>> functionStrings;
 	if (extension == "js" || extension == "jsx" || extension == "ts" || extension == "tsx") {
 		functionStrings = {
-			{ "enum", " {" }, { "async", "" }, { "class", " {" }, { " ", " (" }, { " ", "(" }, { "const", " " }, { "function", "(" }, { "struct", " {" }, { "interface", " {" },
+		    {"enum", " {"},
+		    {"async", ""},
+		    {"class", " {"},
+		    {" ", " ("},
+		    {" ", "("},
+		    {"const", " "},
+		    {"function", "("},
+		    {"struct", " {"},
+		    {"interface", " {"},
 		};
 	} else if (extension == "c" || extension == "cc" || extension == "cpp" || extension == "h" || extension == "hpp") {
 		functionStrings = {
-			{ "", "(" },
+		    {"", "("},
 		};
 	}
 	for (uint32_t i = 0; i < functionStrings.size(); i++) {
@@ -30,13 +37,11 @@ bool isFunctionLine(std::string line, std::string s, std::string extension)
 	return false;
 }
 
-bool sortByLineNum(const grepMatch &first, const grepMatch &second)
-{
+bool sortByLineNum(const grepMatch &first, const grepMatch &second) {
 	return first.lineNum < second.lineNum;
 }
 
-bool sortByFileType(const grepMatch &first, const grepMatch &second)
-{
+bool sortByFileType(const grepMatch &first, const grepMatch &second) {
 	std::string firstFile = first.path.string();
 	std::string secondFile = second.path.string();
 	if (isTestFile(firstFile) && !isTestFile(secondFile)) {
@@ -51,8 +56,7 @@ bool sortByFileType(const grepMatch &first, const grepMatch &second)
 	return firstFile < secondFile;
 }
 
-bool sortAllMatches(const std::vector<grepMatch> &first, const std::vector<grepMatch> &second)
-{
+bool sortAllMatches(const std::vector<grepMatch> &first, const std::vector<grepMatch> &second) {
 	if (first.size() == 0) {
 		return false;
 	} else if (second.size() == 0) {
@@ -63,8 +67,7 @@ bool sortAllMatches(const std::vector<grepMatch> &first, const std::vector<grepM
 	return sortByFileType(firstGrep, secondGrep);
 }
 
-void grepFile(const std::filesystem::path &file_path, const std::string &query, const std::filesystem::path &dir_path, std::mutex &allMatchesMutex, std::vector<std::vector<grepMatch> > &allMatches)
-{
+void grepFile(const std::filesystem::path &file_path, const std::string &query, const std::filesystem::path &dir_path, std::mutex &allMatchesMutex, std::vector<std::vector<grepMatch>> &allMatches) {
 	auto relativePath = file_path.lexically_relative(dir_path);
 	std::vector<grepMatch> matches;
 	std::ifstream file(file_path);
@@ -88,8 +91,7 @@ void grepFile(const std::filesystem::path &file_path, const std::string &query, 
 	allMatchesMutex.unlock();
 }
 
-void grepThread(const std::string &query, const std::filesystem::path &dir_path, std::mutex &allMatchesMutex, std::vector<std::vector<grepMatch> > &allMatches, std::mutex &allFilesMutex, std::vector<std::filesystem::path> &allFiles)
-{
+void grepThread(const std::string &query, const std::filesystem::path &dir_path, std::mutex &allMatchesMutex, std::vector<std::vector<grepMatch>> &allMatches, std::mutex &allFilesMutex, std::vector<std::filesystem::path> &allFiles) {
 	std::filesystem::path file;
 	bool done = false;
 	do {
@@ -107,9 +109,8 @@ void grepThread(const std::string &query, const std::filesystem::path &dir_path,
 	} while (!done);
 }
 
-std::vector<grepMatch> grepFiles(std::filesystem::path dir_path, std::string query, bool allowAllFiles)
-{
-	std::vector<std::vector<grepMatch> > allMatches;
+std::vector<grepMatch> grepFiles(std::filesystem::path dir_path, std::string query, bool allowAllFiles) {
+	std::vector<std::vector<grepMatch>> allMatches;
 	std::mutex allMatchesMutex;
 	std::vector<std::filesystem::path> allFiles;
 	std::mutex allFilesMutex;
@@ -165,8 +166,7 @@ std::vector<grepMatch> grepFiles(std::filesystem::path dir_path, std::string que
 	return output;
 }
 
-void grepDispatch(State *state, std::string query, std::string path, bool showAllGrep)
-{
+void grepDispatch(State *state, std::string query, std::string path, bool showAllGrep) {
 	std::vector<grepMatch> output;
 	try {
 		output = grepFiles(path == "" ? std::filesystem::current_path() : std::filesystem::path(path), query, showAllGrep);
@@ -180,8 +180,7 @@ void grepDispatch(State *state, std::string query, std::string path, bool showAl
 	state->shouldNotReRender.clear();
 }
 
-void generateGrepOutput(State *state, bool resetCursor)
-{
+void generateGrepOutput(State *state, bool resetCursor) {
 	if (state->grep.query == "") {
 		state->grepMutex.lock();
 		state->grepOutput.clear();
@@ -198,8 +197,7 @@ void generateGrepOutput(State *state, bool resetCursor)
 	}
 }
 
-void changeToGrepFile(State *state)
-{
+void changeToGrepFile(State *state) {
 	if (state->grep.selection < state->grepOutput.size()) {
 		std::filesystem::path selectedFile = state->grepOutput[state->grep.selection].path;
 		if (state->grepPath != "") {
@@ -212,8 +210,7 @@ void changeToGrepFile(State *state)
 	}
 }
 
-void findDefinitionFromGrepOutput(State *state, std::string s)
-{
+void findDefinitionFromGrepOutput(State *state, std::string s) {
 	for (uint32_t i = 0; i < state->grepOutput.size(); i++) {
 		if (state->grepOutput[i].line.back() == '(' || state->grepOutput[i].line.back() == '{') {
 			if (isFunctionLine(state->grepOutput[i].line, s, state->extension)) {

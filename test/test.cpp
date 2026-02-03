@@ -1,13 +1,13 @@
-#include "util/testSave.h"
-#include "util/testRead.h"
-#include "util/testSanityChecks.h"
-#include "util/testTypingKeys.h"
 #include "util/testAutocomplete.h"
-#include "util/testString.h"
+#include "util/testEasilyBreakableThings.h"
 #include "util/testInsertLoggingCode.h"
 #include "util/testMovement.h"
+#include "util/testRead.h"
 #include "util/testRender.h"
-#include "util/testEasilyBreakableThings.h"
+#include "util/testSanityChecks.h"
+#include "util/testSave.h"
+#include "util/testString.h"
+#include "util/testTypingKeys.h"
 
 auto color_white = "\033[0m";
 auto color_green = "\033[1;32m";
@@ -15,10 +15,9 @@ auto color_red = "\033[1;31m";
 
 uint32_t pass = 0;
 uint32_t fail = 0;
-struct testSuiteRun failures = { "failures", {} };
+struct testSuiteRun failures = {"failures", {}};
 
-void printSuiteRun(struct testSuiteRun suite)
-{
+void printSuiteRun(struct testSuiteRun suite) {
 	printf("    %s\n", suite.file.c_str());
 	for (uint32_t i = 0; i < suite.runs.size(); i++) {
 		if (suite.runs[i].result.equal) {
@@ -33,8 +32,7 @@ void printSuiteRun(struct testSuiteRun suite)
 	}
 }
 
-int main()
-{
+int main() {
 	printSuiteRun(testSave());
 	printSuiteRun(testRead());
 	printSuiteRun(testSanityChecks());

@@ -1,21 +1,20 @@
 #include "sendGrepKeys.h"
 #include "../util/clipboard.h"
-#include "../util/render.h"
-#include "../util/modes.h"
-#include "../util/query.h"
-#include "../util/state.h"
-#include "../util/grep.h"
-#include "../util/find.h"
-#include "../util/movement.h"
-#include "../util/switchMode.h"
 #include "../util/ctrl.h"
 #include "../util/defines.h"
+#include "../util/find.h"
+#include "../util/grep.h"
+#include "../util/modes.h"
+#include "../util/movement.h"
+#include "../util/query.h"
+#include "../util/render.h"
+#include "../util/state.h"
+#include "../util/switchMode.h"
 #include <ncurses.h>
 #include <string>
 #include <vector>
 
-void sendGrepKeys(State *state, int32_t c)
-{
+void sendGrepKeys(State *state, int32_t c) {
 	state->grepMutex.lock();
 	std::string cachedGrepString = state->grep.query;
 	if (c == KEY_ESCAPE) {

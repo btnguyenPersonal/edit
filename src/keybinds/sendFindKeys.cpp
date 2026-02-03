@@ -1,20 +1,19 @@
 #include "sendFindKeys.h"
 #include "../util/clipboard.h"
-#include "../util/modes.h"
-#include "../util/render.h"
-#include "../util/query.h"
-#include "../util/state.h"
-#include "../util/grep.h"
-#include "../util/find.h"
 #include "../util/ctrl.h"
-#include "../util/switchMode.h"
 #include "../util/defines.h"
+#include "../util/find.h"
+#include "../util/grep.h"
+#include "../util/modes.h"
+#include "../util/query.h"
+#include "../util/render.h"
+#include "../util/state.h"
+#include "../util/switchMode.h"
 #include <ncurses.h>
 #include <string>
 #include <vector>
 
-void sendFindKeys(State *state, int32_t c)
-{
+void sendFindKeys(State *state, int32_t c) {
 	state->findMutex.lock();
 	std::string cachedFileString = state->find.query;
 	if (c == KEY_ESCAPE) {

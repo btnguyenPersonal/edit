@@ -1,8 +1,7 @@
 #include "autocomplete.h"
 #include "string.h"
 
-std::string autocomplete(State *state, const std::string &query)
-{
+std::string autocomplete(State *state, const std::string &query) {
 	if (query == "") {
 		return "";
 	}

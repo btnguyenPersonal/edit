@@ -1,18 +1,17 @@
 #include "sendBlameKeys.h"
 #include "../util/clipboard.h"
-#include "../util/modes.h"
-#include "../util/state.h"
-#include "../util/movement.h"
-#include "../util/external.h"
 #include "../util/ctrl.h"
-#include "../util/switchMode.h"
 #include "../util/defines.h"
+#include "../util/external.h"
+#include "../util/modes.h"
+#include "../util/movement.h"
+#include "../util/state.h"
+#include "../util/switchMode.h"
 #include <ncurses.h>
 #include <string>
 #include <vector>
 
-void sendBlameKeys(State *state, int32_t c)
-{
+void sendBlameKeys(State *state, int32_t c) {
 	if (c == KEY_ESCAPE) {
 		switchMode(state, NORMAL);
 	} else if (c == 'k') {

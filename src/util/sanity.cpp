@@ -1,7 +1,6 @@
 #include "sanity.h"
 
-void resetValidCursorState(State *state)
-{
+void resetValidCursorState(State *state) {
 	if (state->file->data[state->file->row].length() <= state->file->col) {
 		if (state->file->data[state->file->row].length() != 0) {
 			state->file->col = state->file->data[state->file->row].length() - 1;
@@ -11,8 +10,7 @@ void resetValidCursorState(State *state)
 	}
 }
 
-void sanityCheckExplorer(State *state)
-{
+void sanityCheckExplorer(State *state) {
 	if (state->explorer.windowLine < 0) {
 		state->explorer.windowLine = 0;
 	}
@@ -23,22 +21,19 @@ void sanityCheckExplorer(State *state)
 	}
 }
 
-void sanityCheckGrepSelection(State *state)
-{
+void sanityCheckGrepSelection(State *state) {
 	state->grepMutex.lock();
 	sanityCheckQuery(state->grep, state->grepOutput.size());
 	state->grepMutex.unlock();
 }
 
-void sanityCheckFindSelection(State *state)
-{
+void sanityCheckFindSelection(State *state) {
 	state->findMutex.lock();
 	sanityCheckQuery(state->find, state->findOutput.size());
 	state->findMutex.unlock();
 }
 
-void sanityCheckQuery(Query &query, uint32_t len)
-{
+void sanityCheckQuery(Query &query, uint32_t len) {
 	if (query.selection >= len) {
 		if (len > 0) {
 			query.selection = len - 1;
@@ -48,8 +43,7 @@ void sanityCheckQuery(Query &query, uint32_t len)
 	}
 }
 
-void sanityCheckDocumentEmpty(State *state)
-{
+void sanityCheckDocumentEmpty(State *state) {
 	if (state->file) {
 		if (state->file->data.size() == 0) {
 			state->file->data.push_back("");
@@ -57,8 +51,7 @@ void sanityCheckDocumentEmpty(State *state)
 	}
 }
 
-void fixColOverMax(State *state)
-{
+void fixColOverMax(State *state) {
 	if (state->file) {
 		sanityCheckDocumentEmpty(state);
 		sanityCheckRowOutOfBounds(state);
@@ -68,8 +61,7 @@ void fixColOverMax(State *state)
 	}
 }
 
-void sanityCheckRowOutOfBounds(State *state)
-{
+void sanityCheckRowOutOfBounds(State *state) {
 	if (state->file) {
 		if (state->file->data.size() == 0) {
 			state->file->row = 0;

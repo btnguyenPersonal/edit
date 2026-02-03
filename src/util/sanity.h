@@ -1,7 +1,7 @@
 #pragma once
 
-#include "state.h"
 #include "query.h"
+#include "state.h"
 
 void sanityCheckExplorer(State *state);
 void resetValidCursorState(State *state);

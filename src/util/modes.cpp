@@ -1,7 +1,6 @@
 #include "modes.h"
 
-std::string getMode(uint32_t mode)
-{
+std::string getMode(uint32_t mode) {
 	switch (mode) {
 	case 0:
 		return "VISUAL";

@@ -1,9 +1,8 @@
 #include "keys.h"
-#include <string>
 #include <ncurses.h>
+#include <string>
 
-char getUnEscapedChar(std::string s)
-{
+char getUnEscapedChar(std::string s) {
 	if (s == "C-@") {
 		return '\x00';
 	} else if (s == "<C-A>") {
@@ -81,13 +80,11 @@ char getUnEscapedChar(std::string s)
 	}
 }
 
-std::string getEscapedChar(char c)
-{
+std::string getEscapedChar(char c) {
 	return getEscapedChar(c, false);
 }
 
-std::string getEscapedChar(char c, bool space)
-{
+std::string getEscapedChar(char c, bool space) {
 	switch (c) {
 	case '\xFF': // KEY_MOUSE
 		return "";

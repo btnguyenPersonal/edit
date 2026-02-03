@@ -1,41 +1,36 @@
 #include "sendDiffKeys.h"
+#include "../util/ctrl.h"
+#include "../util/defines.h"
 #include "../util/external.h"
 #include "../util/movement.h"
 #include "../util/string.h"
-#include "../util/ctrl.h"
 #include "../util/switchMode.h"
-#include "../util/defines.h"
 
-void upLog(State *state)
-{
+void upLog(State *state) {
 	if (state->logIndex > 0) {
 		state->logIndex--;
 	}
 }
 
-void downLog(State *state)
-{
+void downLog(State *state) {
 	if (state->logIndex + 1 < state->logLines.size()) {
 		state->logIndex++;
 	}
 }
 
-void upDiff(State *state)
-{
+void upDiff(State *state) {
 	if (state->diffIndex > 0) {
 		state->diffIndex--;
 	}
 }
 
-void downDiff(State *state)
-{
+void downDiff(State *state) {
 	if (state->diffIndex + 1 < state->diffLines.size()) {
 		state->diffIndex++;
 	}
 }
 
-void sendDiffKeys(State *state, int32_t c)
-{
+void sendDiffKeys(State *state, int32_t c) {
 	if (c == KEY_ESCAPE) {
 		switchMode(state, NORMAL);
 	} else if (c == 'q') {

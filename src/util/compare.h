@@ -1,11 +1,11 @@
 #pragma once
 
-#include "modes.h"
 #include "defines.h"
+#include "modes.h"
 #include "render.h"
-#include <vector>
-#include <string>
 #include <cstdint>
+#include <string>
+#include <vector>
 
 struct boolWithError {
 	bool equal;

@@ -1,19 +1,19 @@
 #include "sendCommandLineKeys.h"
-#include "sendVisualKeys.h"
 #include "../util/clipboard.h"
-#include "../util/render.h"
+#include "../util/ctrl.h"
+#include "../util/defines.h"
+#include "../util/external.h"
+#include "../util/fileops.h"
 #include "../util/modes.h"
 #include "../util/query.h"
-#include "../util/state.h"
+#include "../util/render.h"
 #include "../util/save.h"
 #include "../util/search.h"
-#include "../util/fileops.h"
-#include "../util/textedit.h"
-#include "../util/external.h"
-#include "../util/ctrl.h"
+#include "../util/state.h"
 #include "../util/string.h"
 #include "../util/switchMode.h"
-#include "../util/defines.h"
+#include "../util/textedit.h"
+#include "sendVisualKeys.h"
 #include <ncurses.h>
 #include <string>
 #include <vector>
@@ -23,9 +23,8 @@ struct searchReplace {
 	std::string second;
 };
 
-struct searchReplace getSearchReplace(std::string query)
-{
-	struct searchReplace output = { "", "" };
+struct searchReplace getSearchReplace(std::string query) {
+	struct searchReplace output = {"", ""};
 	uint32_t slashesFound = 0;
 	for (uint32_t i = 0; i < query.length(); i++) {
 		if (query[i] == '/') {
@@ -39,8 +38,7 @@ struct searchReplace getSearchReplace(std::string query)
 	return output;
 }
 
-void evaluateCommandLineQuery(State *state)
-{
+void evaluateCommandLineQuery(State *state) {
 	if (state->commandLine.query == "q!") {
 		if (!state->dontSave) {
 			endwin();
@@ -69,7 +67,7 @@ void evaluateCommandLineQuery(State *state)
 		}
 	} else if (state->commandLine.query.substr(0, 1) == "e") {
 		if (state->commandLine.query.length() > 2) {
-			locateFile(state, safeSubstring(state->commandLine.query, 2), { "" });
+			locateFile(state, safeSubstring(state->commandLine.query, 2), {""});
 		}
 	} else if (state->commandLine.query.substr(0, 1) == "s") {
 		struct searchReplace temp = getSearchReplace(state->commandLine.query);
@@ -98,8 +96,7 @@ void evaluateCommandLineQuery(State *state)
 	}
 }
 
-void autocompleteCommandLinePath(State *state, bool reverse)
-{
+void autocompleteCommandLinePath(State *state, bool reverse) {
 	if (state->commandLine.query.length() > 1 && safeSubstring(state->commandLine.query, 0, 2) == "e ") {
 		std::string currentPathQuery = state->commandLine.query.substr(2);
 		struct DirSplit dirSplit = getCurrentDirSplit(currentPathQuery);
@@ -108,7 +105,7 @@ void autocompleteCommandLinePath(State *state, bool reverse)
 		std::vector<std::string> filesInLastDirectory;
 		if (lastDirectory != "" && std::filesystem::exists(lastDirectory) && std::filesystem::is_directory(lastDirectory)) {
 			if (state->commandLineState.lastDirectory != lastDirectory) {
-				state->commandLineState = { 0, currentUncompleted, lastDirectory };
+				state->commandLineState = {0, currentUncompleted, lastDirectory};
 			}
 			int32_t skipsLeft = state->commandLineState.skips;
 			for (const std::filesystem::directory_entry &entry : std::filesystem::directory_iterator(lastDirectory)) {
@@ -158,8 +155,7 @@ void autocompleteCommandLinePath(State *state, bool reverse)
 	}
 }
 
-void sendCommandLineKeys(State *state, int32_t c)
-{
+void sendCommandLineKeys(State *state, int32_t c) {
 	if (c == KEY_ESCAPE) {
 		backspaceAll(&state->commandLine);
 		switchPrevMode(state);
@@ -241,6 +237,6 @@ void sendCommandLineKeys(State *state, int32_t c)
 		switchPrevMode(state);
 	}
 	if (c != ctrl('i') && c != KEY_BTAB) {
-		state->commandLineState = { 0, "", "" };
+		state->commandLineState = {0, "", ""};
 	}
 }

@@ -2,8 +2,7 @@
 #include "ctrl.h"
 #include "defines.h"
 
-std::string prompt(State *state, std::string startingValue)
-{
+std::string prompt(State *state, std::string startingValue) {
 	auto prevMode = state->mode;
 	state->mode = NAMING;
 	backspaceAll(&state->name);

@@ -1,3 +1,5 @@
 #pragma once
 
-enum VisualType { LINE, BLOCK, SELECT };
+enum VisualType { LINE,
+		  BLOCK,
+		  SELECT };

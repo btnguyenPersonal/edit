@@ -4,8 +4,7 @@
 #include <fstream>
 #include <regex>
 
-bool locateFile(State *state, std::string vis, std::vector<std::string> extensions)
-{
+bool locateFile(State *state, std::string vis, std::vector<std::string> extensions) {
 	ltrim(vis);
 	rtrim(vis);
 	bool result = locateFileRelative(state, vis, extensions);
@@ -15,8 +14,7 @@ bool locateFile(State *state, std::string vis, std::vector<std::string> extensio
 	return result;
 }
 
-bool locateFileAbsolute(State *state, std::string vis)
-{
+bool locateFileAbsolute(State *state, std::string vis) {
 	std::string path = vis;
 	try {
 		if (path.length() > 0 && path[0] == '~') {
@@ -42,8 +40,7 @@ bool locateFileAbsolute(State *state, std::string vis)
 	return false;
 }
 
-bool locateFileRelative(State *state, std::string vis, std::vector<std::string> extensions)
-{
+bool locateFileRelative(State *state, std::string vis, std::vector<std::string> extensions) {
 	if (getExtension(vis) == "js") {
 		for (int32_t i = vis.length() - 1; i >= 0; i--) {
 			if (vis[i] == '.') {
@@ -69,8 +66,7 @@ bool locateFileRelative(State *state, std::string vis, std::vector<std::string> 
 	return false;
 }
 
-void locateNodeModule(State *state, std::string vis)
-{
+void locateNodeModule(State *state, std::string vis) {
 	try {
 		std::filesystem::path filePath(state->file->filename);
 		std::filesystem::path dir = filePath.parent_path();
@@ -92,14 +88,12 @@ void locateNodeModule(State *state, std::string vis)
 	}
 }
 
-void createFolder(std::filesystem::path path, std::string name)
-{
+void createFolder(std::filesystem::path path, std::string name) {
 	std::filesystem::path fullPath = path / name;
 	std::filesystem::create_directories(fullPath);
 }
 
-void createFile(State *state, std::filesystem::path path, std::string name)
-{
+void createFile(State *state, std::filesystem::path path, std::string name) {
 	std::filesystem::path fullPath = path / name;
 	auto uniquePath = getUniqueFilePath(fullPath);
 	std::ofstream file(fullPath);
@@ -109,8 +103,7 @@ void createFile(State *state, std::filesystem::path path, std::string name)
 	file.close();
 }
 
-void rename(State *state, const std::filesystem::path &oldPath, const std::string &newName)
-{
+void rename(State *state, const std::filesystem::path &oldPath, const std::string &newName) {
 	if (!std::filesystem::exists(oldPath)) {
 		state->status = "path does not exist";
 		return;
@@ -130,8 +123,7 @@ void rename(State *state, const std::filesystem::path &oldPath, const std::strin
 	}
 }
 
-std::filesystem::path getUniqueFilePath(const std::filesystem::path &basePath)
-{
+std::filesystem::path getUniqueFilePath(const std::filesystem::path &basePath) {
 	if (!std::filesystem::exists(basePath)) {
 		return basePath;
 	}
@@ -148,8 +140,7 @@ std::filesystem::path getUniqueFilePath(const std::filesystem::path &basePath)
 	}
 }
 
-std::string normalizeFilename(std::string filename)
-{
+std::string normalizeFilename(std::string filename) {
 	std::string current_path = std::filesystem::current_path().string() + "/";
 	if (filename.substr(0, current_path.length()) == current_path) {
 		return filename.substr(current_path.length());
@@ -158,8 +149,7 @@ std::string normalizeFilename(std::string filename)
 	}
 }
 
-std::string minimize_filename(std::string filename)
-{
+std::string minimize_filename(std::string filename) {
 	std::vector<std::string> parts = splitByChar(filename, '/');
 	std::string minimized;
 	for (size_t i = 0; i < parts.size() - 1; ++i) {
@@ -174,8 +164,7 @@ std::string minimize_filename(std::string filename)
 	return minimized;
 }
 
-std::string getRelativeToLastAndRoute(State *state)
-{
+std::string getRelativeToLastAndRoute(State *state) {
 	if (state->fileStackIndex == 0) {
 		return "";
 	}
@@ -192,8 +181,7 @@ std::string getRelativeToLastAndRoute(State *state)
 	return relativePath;
 }
 
-std::string getRelativeToCurrent(State *state, std::string p)
-{
+std::string getRelativeToCurrent(State *state, std::string p) {
 	std::filesystem::path currentDir = std::filesystem::path(std::string("./") + state->file->filename).parent_path();
 	auto relativePath = std::filesystem::relative(p, currentDir).string();
 	if (safeSubstring(relativePath, 0, 3) != "../") {
@@ -202,8 +190,7 @@ std::string getRelativeToCurrent(State *state, std::string p)
 	return relativePath;
 }
 
-std::string getExtension(const std::string &filename)
-{
+std::string getExtension(const std::string &filename) {
 	if (filename == "") {
 		return "";
 	}
@@ -213,16 +200,14 @@ std::string getExtension(const std::string &filename)
 	return (dotPosition != std::string::npos && dotPosition != 0) ? file.substr(dotPosition + 1) : file;
 }
 
-bool isLineFileRegex(std::string line)
-{
+bool isLineFileRegex(std::string line) {
 	if (line.length() > 1) {
 		return line.front() == '[' && line.back() == ']';
 	}
 	return false;
 }
 
-bool matchesEditorConfigGlob(const std::string &pattern, const std::string &filepath)
-{
+bool matchesEditorConfigGlob(const std::string &pattern, const std::string &filepath) {
 	// TODO somehow do the real glob matching instead of this regex hack
 	auto cleanPattern = safeSubstring(pattern, 1, pattern.length() - 2);
 	cleanPattern = replace(cleanPattern, ",", "|");

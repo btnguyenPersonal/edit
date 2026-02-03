@@ -1,40 +1,39 @@
 #include "sendNormalKeys.h"
+#include "../util/assert.h"
+#include "../util/cleanup.h"
 #include "../util/clipboard.h"
 #include "../util/comment.h"
-#include "../util/render.h"
+#include "../util/ctrl.h"
+#include "../util/defines.h"
+#include "../util/display.h"
+#include "../util/external.h"
+#include "../util/fileops.h"
+#include "../util/grep.h"
+#include "../util/harpoon.h"
 #include "../util/history.h"
 #include "../util/indent.h"
 #include "../util/insertLoggingCode.h"
-#include "../util/modes.h"
-#include "../util/query.h"
-#include "../util/state.h"
-#include "../util/visualType.h"
-#include "../util/assert.h"
-#include "../util/cleanup.h"
 #include "../util/keys.h"
-#include "../util/grep.h"
-#include "../util/sanity.h"
+#include "../util/modes.h"
 #include "../util/movement.h"
-#include "../util/visual.h"
-#include "../util/search.h"
-#include "../util/fileops.h"
-#include "../util/display.h"
-#include "../util/textedit.h"
-#include "../util/external.h"
-#include "../util/harpoon.h"
-#include "../util/ctrl.h"
-#include "../util/string.h"
+#include "../util/query.h"
+#include "../util/render.h"
 #include "../util/repeat.h"
-#include "../util/defines.h"
+#include "../util/sanity.h"
+#include "../util/search.h"
+#include "../util/state.h"
+#include "../util/string.h"
 #include "../util/switchMode.h"
+#include "../util/textedit.h"
+#include "../util/visual.h"
+#include "../util/visualType.h"
 #include "sendKeys.h"
 #include "sendVisualKeys.h"
 #include <ncurses.h>
 #include <string>
 #include <vector>
 
-void sendNormalKeys(State *state, int32_t c)
-{
+void sendNormalKeys(State *state, int32_t c) {
 	if (c == KEY_MOUSE) {
 		MEVENT event;
 		if (getmouse(&event) == OK) {
@@ -109,7 +108,7 @@ void sendNormalKeys(State *state, int32_t c)
 		if (state->file->col < state->file->data[state->file->row].length() && ' ' <= c && c <= '~') {
 			state->file->data[state->file->row] = safeSubstring(state->file->data[state->file->row], 0, state->file->col) + (char)c + safeSubstring(state->file->data[state->file->row], state->file->col + 1);
 		}
-		setDotCommand(state, { 'r', c });
+		setDotCommand(state, {'r', c});
 		state->prevKeys = "";
 	} else if ((state->prevKeys[0] == 'y' || state->prevKeys[0] == 'd' || state->prevKeys[0] == 'c') && state->prevKeys.length() == 2) {
 		state->dontRecordKey = true;
@@ -198,7 +197,7 @@ void sendNormalKeys(State *state, int32_t c)
 	} else if (state->prevKeys == "g" && c == 'e') {
 		unCommentBlock(state);
 		state->prevKeys = "";
-		setDotCommand(state, { 'g', c });
+		setDotCommand(state, {'g', c});
 	} else if (state->prevKeys == "g" && c == 't') {
 		trimTrailingWhitespace(state);
 		state->prevKeys = "";
@@ -208,7 +207,7 @@ void sendNormalKeys(State *state, int32_t c)
 		state->prevKeys = "";
 	} else if (state->prevKeys == "g" && c == 'f') {
 		state->prevKeys = "";
-		std::vector<std::string> extensions = { "", ".js", ".jsx", ".ts", ".tsx" };
+		std::vector<std::string> extensions = {"", ".js", ".jsx", ".ts", ".tsx"};
 		std::string vis;
 		bool found = false;
 		initVisual(state, SELECT);
@@ -411,7 +410,7 @@ void sendNormalKeys(State *state, int32_t c)
 		state->viewingDiff = true;
 		switchMode(state, DIFF);
 	} else if (c == 'M') {
-		state->mark = { state->file->filename, state->file->row };
+		state->mark = {state->file->filename, state->file->row};
 	} else if (c == 'N') {
 		state->searching = true;
 		searchNextResult(state, !state->searchBackwards);

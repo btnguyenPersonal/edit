@@ -1,21 +1,20 @@
 #include "sendSearchKeys.h"
 #include "../util/clipboard.h"
+#include "../util/ctrl.h"
+#include "../util/defines.h"
 #include "../util/modes.h"
 #include "../util/query.h"
-#include "../util/state.h"
 #include "../util/search.h"
-#include "../util/ctrl.h"
+#include "../util/state.h"
 #include "../util/switchMode.h"
-#include "../util/defines.h"
 #include <climits>
 #include <ncurses.h>
 
-void sendSearchKeys(State *state, int32_t c)
-{
+void sendSearchKeys(State *state, int32_t c) {
 	if (c == KEY_ESCAPE) {
 		state->searching = false;
 		state->replacing = false;
-		state->replaceBounds = { 0, 0, 0, 0 };
+		state->replaceBounds = {0, 0, 0, 0};
 		switchMode(state, NORMAL);
 	} else if (c == ctrl('t')) {
 		if (state->replacing) {
@@ -88,7 +87,7 @@ void sendSearchKeys(State *state, int32_t c)
 			replaceAll(state, state->search.query, state->replace.query);
 		}
 		state->replacing = false;
-		state->replaceBounds = { 0, 0, 0, 0 };
+		state->replaceBounds = {0, 0, 0, 0};
 		switchMode(state, NORMAL);
 		return;
 	}

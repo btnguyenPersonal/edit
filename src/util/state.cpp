@@ -1,27 +1,26 @@
 #include "state.h"
-#include "visualType.h"
+#include "comment.h"
+#include "fileops.h"
 #include "keys.h"
 #include "read.h"
 #include "string.h"
-#include "fileops.h"
-#include "comment.h"
+#include "visualType.h"
+#include <filesystem>
+#include <fstream>
+#include <map>
 #include <ncurses.h>
 #include <string>
-#include <filesystem>
-#include <vector>
-#include <map>
 #include <unistd.h>
-#include <fstream>
+#include <vector>
 
-File *getFile(const std::string &name, const std::vector<std::string> &data)
-{
+File *getFile(const std::string &name, const std::vector<std::string> &data) {
 	File *file = new File();
 	file->newFile = !std::filesystem::is_regular_file(name);
 	file->filename = name;
 	file->data = data;
 	file->previousState = data;
 	file->commentSymbol = getCommentSymbol(name);
-	file->history = std::vector<std::vector<diffLine> >();
+	file->history = std::vector<std::vector<diffLine>>();
 	file->historyPosition = -1;
 	file->lastSave = -1;
 	file->windowPosition.row = 0;
@@ -35,8 +34,7 @@ File *getFile(const std::string &name, const std::vector<std::string> &data)
 	return file;
 }
 
-void State::loadAllConfigFiles()
-{
+void State::loadAllConfigFiles() {
 	if (this->file) {
 		try {
 			auto homeEnv = getenv("HOME");
@@ -52,8 +50,7 @@ void State::loadAllConfigFiles()
 	}
 }
 
-void State::loadConfigFile(const std::string &fileLocation)
-{
+void State::loadConfigFile(const std::string &fileLocation) {
 	auto config = readFile(fileLocation);
 	bool found = false;
 	for (uint32_t i = 0; i < config.size(); i++) {
@@ -69,24 +66,21 @@ void State::loadConfigFile(const std::string &fileLocation)
 	}
 }
 
-void State::readStringConfigValue(std::string &option, const std::string &configValue, const std::string &line)
-{
+void State::readStringConfigValue(std::string &option, const std::string &configValue, const std::string &line) {
 	std::string prefix = configValue + " = ";
 	if (safeSubstring(line, 0, prefix.length()) == prefix) {
 		option = safeSubstring(line, prefix.length());
 	}
 }
 
-void State::readUintConfigValue(uint32_t &option, const std::string &configValue, const std::string &line)
-{
+void State::readUintConfigValue(uint32_t &option, const std::string &configValue, const std::string &line) {
 	std::string prefix = configValue + " = ";
 	if (safeSubstring(line, 0, prefix.length()) == prefix) {
 		option = stoi(safeSubstring(line, prefix.length()));
 	}
 }
 
-void State::readBoolConfigValue(bool &option, const std::string &configValue, const std::string &line)
-{
+void State::readBoolConfigValue(bool &option, const std::string &configValue, const std::string &line) {
 	std::string prefix = configValue + " = ";
 	if (safeSubstring(line, 0, prefix.length()) == prefix) {
 		std::string s = safeSubstring(line, prefix.length());
@@ -98,8 +92,7 @@ void State::readBoolConfigValue(bool &option, const std::string &configValue, co
 	}
 }
 
-void State::readConfigLine(const std::string &line)
-{
+void State::readConfigLine(const std::string &line) {
 	this->readBoolConfigValue(this->options.autosave, "autosave", line);
 	this->readBoolConfigValue(this->options.autoload, "autoload", line);
 	this->readBoolConfigValue(this->options.wordwrap, "wordwrap", line);
@@ -108,8 +101,7 @@ void State::readConfigLine(const std::string &line)
 	this->readUintConfigValue(this->options.indent_size, "indent_size", line);
 }
 
-void State::setDefaultOptions()
-{
+void State::setDefaultOptions() {
 	this->options.insert_final_newline = false;
 	this->options.autosave = true;
 	this->options.autoload = true;
@@ -120,9 +112,8 @@ void State::setDefaultOptions()
 	this->options.indent_style = "space";
 }
 
-void State::reloadFile(const std::string &filename)
-{
-	Position pos = { this->file->row, this->file->col };
+void State::reloadFile(const std::string &filename) {
+	Position pos = {this->file->row, this->file->col};
 	auto name = normalizeFilename(filename);
 	if (!std::filesystem::is_regular_file(name)) {
 		this->status = "file not found: " + name;
@@ -150,8 +141,7 @@ void State::reloadFile(const std::string &filename)
 	}
 }
 
-void State::changeFile(const std::string &filename)
-{
+void State::changeFile(const std::string &filename) {
 	auto name = normalizeFilename(filename);
 	if (!std::filesystem::is_regular_file(name)) {
 		this->status = "file not found: " + name;
@@ -183,8 +173,7 @@ void State::changeFile(const std::string &filename)
 	this->mode = NORMAL;
 }
 
-void State::pushFileStack(const std::string &filename)
-{
+void State::pushFileStack(const std::string &filename) {
 	if (filename != "") {
 		for (auto it = this->fileStack.begin(); it != this->fileStack.end();) {
 			if (*it == filename) {
@@ -197,8 +186,7 @@ void State::pushFileStack(const std::string &filename)
 	}
 }
 
-bool State::resetState(const std::string &filename)
-{
+bool State::resetState(const std::string &filename) {
 	auto name = normalizeFilename(filename);
 	if (!std::filesystem::is_regular_file(name.c_str())) {
 		this->status = "file not found: " + name;
@@ -213,8 +201,7 @@ bool State::resetState(const std::string &filename)
 	return true;
 }
 
-void State::init()
-{
+void State::init() {
 	this->debug = false;
 	this->explorer = {};
 	this->explorer.root = nullptr;
@@ -229,21 +216,21 @@ void State::init()
 	this->viewingDiff = false;
 	this->showAllGrep = false;
 	this->file = nullptr;
-	this->commandLineState = { 0, "", "" };
+	this->commandLineState = {0, "", ""};
 	this->currentFile = 0;
 	this->runningAsRoot = geteuid() == 0;
 	this->showGrep = false;
 	this->diffIndex = 0;
 	this->logIndex = 0;
 	this->pasteAsBlock = false;
-	this->prevSearch = { ' ', ' ' };
-	this->replaceBounds = { 0, 0, 0, 0 };
+	this->prevSearch = {' ', ' '};
+	this->replaceBounds = {0, 0, 0, 0};
 	this->searchBackwards = false;
 	this->lineNumSize = 5;
 	this->buildDir = ".";
 	this->prompt = "";
-	this->mark = { "", 0 };
-	this->matching = { 0, 0 };
+	this->mark = {"", 0};
+	this->matching = {0, 0};
 	this->searching = false;
 	this->dontSave = true;
 	this->replacing = false;
@@ -254,7 +241,7 @@ void State::init()
 	this->blame = std::vector<std::string>();
 	this->harpoon = std::vector<Harpoon>();
 	for (uint32_t i = 0; i < 10; i++) {
-		this->harpoon.push_back({ 0, std::vector<std::string>() });
+		this->harpoon.push_back({0, std::vector<std::string>()});
 	}
 	this->workspace = 0;
 	this->grepOutput = std::vector<grepMatch>();
@@ -262,13 +249,13 @@ void State::init()
 	this->visualType = SELECT;
 	this->visual.row = 0;
 	this->visual.col = 0;
-	this->name = { std::string(""), 0, 0 };
-	this->search = { std::string(""), 0, 0 };
-	this->replace = { std::string(""), 0, 0 };
-	this->commandLine = { std::string(""), 0, 0 };
-	this->find = { std::string(""), 0, 0 };
+	this->name = {std::string(""), 0, 0};
+	this->search = {std::string(""), 0, 0};
+	this->replace = {std::string(""), 0, 0};
+	this->commandLine = {std::string(""), 0, 0};
+	this->find = {std::string(""), 0, 0};
 	this->grepPath = "";
-	this->grep = { std::string(""), 0, 0 };
+	this->grep = {std::string(""), 0, 0};
 	this->prevKeys = std::string("");
 	this->status = std::string("");
 	this->extension = std::string("");
@@ -276,9 +263,9 @@ void State::init()
 	this->mode = FIND;
 	this->prevMode = NORMAL;
 	this->dotCommand = std::vector<std::string>();
-	this->macroCommand = std::map<char, std::vector<std::string> >();
+	this->macroCommand = std::map<char, std::vector<std::string>>();
 	this->playingCommand = false;
-	this->recording = { false, 'w' };
+	this->recording = {false, 'w'};
 	this->selectAll = false;
 	this->dontRecordKey = false;
 	this->fileStack = std::vector<std::string>();
@@ -289,26 +276,23 @@ void State::init()
 	this->setDefaultOptions();
 }
 
-void State::init(const std::string &name, const std::vector<std::string> &data)
-{
+void State::init(const std::string &name, const std::vector<std::string> &data) {
 	this->init();
 	File *file = getFile(name, data);
 	this->files.push_back(file);
 	this->currentFile = this->files.size() - 1;
 	this->file = file;
 	this->mode = NORMAL;
-	this->fileStack = { name };
+	this->fileStack = {name};
 	this->fileStackIndex = 0;
 	this->extension = getExtension(this->file->filename);
 }
 
-State::State()
-{
+State::State() {
 	this->init();
 }
 
-State::~State()
-{
+State::~State() {
 	delete this->file;
 
 	for (auto f : this->files) {
@@ -322,17 +306,15 @@ State::~State()
 	this->explorer.root = nullptr;
 }
 
-State::State(const std::string &name, const std::vector<std::string> &data)
-{
+State::State(const std::string &name, const std::vector<std::string> &data) {
 	this->init(name, data);
 }
 
-State::State(const std::string &filename)
-{
+State::State(const std::string &filename) {
 	std::string name = normalizeFilename(filename);
 	std::vector<std::string> data;
 	if (!std::filesystem::is_regular_file(name.c_str())) {
-		data = { "" };
+		data = {""};
 	} else {
 		data = readFile(name);
 	}

@@ -2,28 +2,27 @@
 #include "../util/bounds.h"
 #include "../util/clipboard.h"
 #include "../util/comment.h"
+#include "../util/ctrl.h"
+#include "../util/defines.h"
+#include "../util/fileops.h"
+#include "../util/grep.h"
+#include "../util/history.h"
 #include "../util/indent.h"
 #include "../util/insertLoggingCode.h"
 #include "../util/modes.h"
-#include "../util/query.h"
-#include "../util/state.h"
-#include "../util/grep.h"
 #include "../util/movement.h"
-#include "../util/visual.h"
-#include "../util/search.h"
-#include "../util/fileops.h"
-#include "../util/history.h"
-#include "../util/ctrl.h"
-#include "../util/string.h"
-#include "../util/textedit.h"
+#include "../util/query.h"
 #include "../util/repeat.h"
+#include "../util/search.h"
+#include "../util/state.h"
+#include "../util/string.h"
 #include "../util/switchMode.h"
-#include "../util/defines.h"
+#include "../util/textedit.h"
+#include "../util/visual.h"
 #include <string>
 #include <vector>
 
-Bounds getBounds(State *state)
-{
+Bounds getBounds(State *state) {
 	Bounds bounds;
 	if (state->file->row < state->visual.row) {
 		bounds.minR = state->file->row;
@@ -44,8 +43,7 @@ Bounds getBounds(State *state)
 	return bounds;
 }
 
-void replaceAllWithChar(State *state, int32_t c)
-{
+void replaceAllWithChar(State *state, int32_t c) {
 	Bounds bounds = getBounds(state);
 	if (state->visualType == SELECT) {
 		uint32_t col = bounds.minC;
@@ -79,8 +77,7 @@ void replaceAllWithChar(State *state, int32_t c)
 	}
 }
 
-char changeCase(char c, bool upper, bool swap)
-{
+char changeCase(char c, bool upper, bool swap) {
 	if (swap) {
 		if (std::isupper(c)) {
 			return std::tolower(c);
@@ -93,8 +90,7 @@ char changeCase(char c, bool upper, bool swap)
 	}
 }
 
-void changeCaseVisual(State *state, bool upper, bool swap)
-{
+void changeCaseVisual(State *state, bool upper, bool swap) {
 	Bounds bounds = getBounds(state);
 	if (state->visualType == SELECT) {
 		uint32_t col = bounds.minC;
@@ -128,8 +124,7 @@ void changeCaseVisual(State *state, bool upper, bool swap)
 	}
 }
 
-void sortReverseLines(State *state)
-{
+void sortReverseLines(State *state) {
 	Bounds bounds = getBounds(state);
 	std::vector<std::string> lines;
 	for (uint32_t i = bounds.minR; i <= bounds.maxR; i++) {
@@ -143,8 +138,7 @@ void sortReverseLines(State *state)
 	}
 }
 
-void sortLines(State *state)
-{
+void sortLines(State *state) {
 	Bounds bounds = getBounds(state);
 	std::vector<std::string> lines;
 	for (uint32_t i = bounds.minR; i <= bounds.maxR; i++) {
@@ -158,8 +152,7 @@ void sortLines(State *state)
 	}
 }
 
-void setStateFromWordPosition(State *state, WordPosition pos)
-{
+void setStateFromWordPosition(State *state, WordPosition pos) {
 	if (pos.min != 0 || pos.max != 0) {
 		state->visual.col = pos.min;
 		state->file->col = pos.max;
@@ -167,8 +160,7 @@ void setStateFromWordPosition(State *state, WordPosition pos)
 	}
 }
 
-void surroundParagraph(State *state, bool includeLastLine)
-{
+void surroundParagraph(State *state, bool includeLastLine) {
 	auto start = state->file->row;
 	for (int32_t i = (int32_t)start; i >= 0; i--) {
 		if (state->file->data[i] == "") {
@@ -192,8 +184,7 @@ void surroundParagraph(State *state, bool includeLastLine)
 	state->file->row = end;
 }
 
-bool isValidMoveableChunk(State *state, Bounds bounds)
-{
+bool isValidMoveableChunk(State *state, Bounds bounds) {
 	int32_t start = getNumLeadingIndentCharacters(state, state->file->data[bounds.minR]);
 	for (uint32_t i = bounds.minR + 1; i <= bounds.maxR; i++) {
 		if (getNumLeadingIndentCharacters(state, state->file->data[i]) < start && state->file->data[i] != "") {
@@ -203,13 +194,11 @@ bool isValidMoveableChunk(State *state, Bounds bounds)
 	return true;
 }
 
-std::string getInVisual(State *state)
-{
+std::string getInVisual(State *state) {
 	return getInVisual(state, true);
 }
 
-std::string getInVisual(State *state, bool addNewlines)
-{
+std::string getInVisual(State *state, bool addNewlines) {
 	Bounds bounds = getBounds(state);
 	std::string clip = "";
 	if (state->visualType == BLOCK) {
@@ -245,8 +234,7 @@ std::string getInVisual(State *state, bool addNewlines)
 	return clip;
 }
 
-Position changeInVisual(State *state)
-{
+Position changeInVisual(State *state) {
 	Bounds bounds = getBounds(state);
 	Position pos = Position();
 	pos.row = bounds.minR;
@@ -273,8 +261,7 @@ Position changeInVisual(State *state)
 	return pos;
 }
 
-Position copyInVisualSystem(State *state)
-{
+Position copyInVisualSystem(State *state) {
 	Bounds bounds = getBounds(state);
 	Position pos = Position();
 	pos.row = bounds.minR;
@@ -284,8 +271,7 @@ Position copyInVisualSystem(State *state)
 	return pos;
 }
 
-Position copyInVisual(State *state)
-{
+Position copyInVisual(State *state) {
 	Bounds bounds = getBounds(state);
 	Position pos = Position();
 	pos.row = bounds.minR;
@@ -295,8 +281,7 @@ Position copyInVisual(State *state)
 	return pos;
 }
 
-Position deleteInVisual(State *state)
-{
+Position deleteInVisual(State *state) {
 	Bounds bounds = getBounds(state);
 	Position pos = Position();
 	pos.row = bounds.minR;
@@ -327,8 +312,7 @@ Position deleteInVisual(State *state)
 	return pos;
 }
 
-void swapChars(std::vector<int32_t> &v, int32_t x, int32_t y)
-{
+void swapChars(std::vector<int32_t> &v, int32_t x, int32_t y) {
 	for (uint32_t i = 0; i < v.size(); i++) {
 		if (v[i] == x) {
 			v[i] = y;
@@ -338,8 +322,7 @@ void swapChars(std::vector<int32_t> &v, int32_t x, int32_t y)
 	}
 }
 
-void logDotCommand(State *state)
-{
+void logDotCommand(State *state) {
 	if (state->file->row < state->visual.row) {
 		swapChars(state->motion, 'j', 'k');
 		swapChars(state->motion, '[', ']');
@@ -351,8 +334,7 @@ void logDotCommand(State *state)
 	state->motion.clear();
 }
 
-bool sendVisualKeys(State *state, char c, bool onlyMotions)
-{
+bool sendVisualKeys(State *state, char c, bool onlyMotions) {
 	recordMotion(state, c);
 	if (c == KEY_ESCAPE) {
 		switchMode(state, NORMAL);
@@ -471,7 +453,7 @@ bool sendVisualKeys(State *state, char c, bool onlyMotions)
 		state->prevKeys = "";
 	} else if (!onlyMotions && state->prevKeys == "g" && c == 'f') {
 		if (state->visualType == SELECT || state->visualType == LINE) {
-			std::vector<std::string> extensions = { "", ".js", ".jsx", ".ts", ".tsx" };
+			std::vector<std::string> extensions = {"", ".js", ".jsx", ".ts", ".tsx"};
 			std::string vis = getInVisual(state, false);
 			locateFile(state, vis, extensions);
 		}
@@ -535,7 +517,7 @@ bool sendVisualKeys(State *state, char c, bool onlyMotions)
 			state->replaceBounds = getBounds(state);
 		} else if (state->visualType == SELECT) {
 			state->search.query = getInVisual(state);
-			state->replaceBounds = { state->file->row, state->file->row, 0, (uint32_t)state->file->data[state->file->row].length() };
+			state->replaceBounds = {state->file->row, state->file->row, 0, (uint32_t)state->file->data[state->file->row].length()};
 		}
 		if (state->search.query != "") {
 			state->replacing = true;

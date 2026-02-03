@@ -1,25 +1,24 @@
 #include "clipboard.h"
 // TODO(ben): remove this eventually
 #include "../keybinds/sendVisualKeys.h"
-#include "indent.h"
-#include "state.h"
-#include "sanity.h"
 #include "bounds.h"
-#include "fileops.h"
-#include "textedit.h"
 #include "external.h"
+#include "fileops.h"
+#include "indent.h"
+#include "sanity.h"
+#include "state.h"
 #include "string.h"
-#include <string>
-#include <vector>
-#include <unistd.h>
+#include "textedit.h"
 #include <fcntl.h>
+#include <string>
+#include <unistd.h>
+#include <vector>
 
 static const char b64_table[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 				"abcdefghijklmnopqrstuvwxyz"
 				"0123456789+/";
 
-std::string base64_encode(const std::string &input)
-{
+std::string base64_encode(const std::string &input) {
 	std::string output;
 	int val = 0;
 	int valb = -6;
@@ -44,8 +43,7 @@ std::string base64_encode(const std::string &input)
 	return output;
 }
 
-void osc52copy(std::string clip)
-{
+void osc52copy(std::string clip) {
 	std::string encoded = base64_encode(clip);
 	std::string seq;
 	if (getenv("TMUX")) {
@@ -60,8 +58,7 @@ void osc52copy(std::string clip)
 	}
 }
 
-std::string getFromClipboard(State *state, bool useSystemClipboard)
-{
+std::string getFromClipboard(State *state, bool useSystemClipboard) {
 	if (!useSystemClipboard || state->dontRecordKey) {
 		return state->clipboard;
 	}
@@ -81,8 +78,7 @@ std::string getFromClipboard(State *state, bool useSystemClipboard)
 	return output;
 }
 
-std::string escapeForShell(const std::string &s)
-{
+std::string escapeForShell(const std::string &s) {
 	std::string output = "";
 	for (char c : s) {
 		if (c == '\'') {
@@ -94,8 +90,7 @@ std::string escapeForShell(const std::string &s)
 	return output;
 }
 
-std::string getFileFromClipboard()
-{
+std::string getFileFromClipboard() {
 #ifdef __APPLE__
 	FILE *pipe = popen("osascript -e 'POSIX path of (the clipboard as «class furl»)'", "r");
 #elif defined(__linux__)
@@ -123,8 +118,7 @@ std::string getFileFromClipboard()
 	return result;
 }
 
-void pasteFileFromClipboard(State *state, const std::string &destFolder)
-{
+void pasteFileFromClipboard(State *state, const std::string &destFolder) {
 	try {
 		std::string sourcePathStr = getFileFromClipboard();
 		state->status = sourcePathStr;
@@ -164,8 +158,7 @@ void pasteFileFromClipboard(State *state, const std::string &destFolder)
 	}
 }
 
-void copyPathToClipboard(State *state, const std::string &filePath)
-{
+void copyPathToClipboard(State *state, const std::string &filePath) {
 	std::filesystem::path fsPath(filePath);
 	if (!std::filesystem::exists(fsPath)) {
 		state->status = "path does not exist: " + filePath;
@@ -186,8 +179,7 @@ void copyPathToClipboard(State *state, const std::string &filePath)
 #endif
 }
 
-Bounds pasteVisual(State *state, std::string text)
-{
+Bounds pasteVisual(State *state, std::string text) {
 	std::vector<std::string> clip = splitByChar(text, '\n');
 	fixColOverMax(state);
 	bool isClipLine = !text.empty() && text.back() == '\n';
@@ -211,7 +203,7 @@ Bounds pasteVisual(State *state, std::string text)
 		state->file->row = pos.row;
 		state->file->col = pos.col;
 	}
-	Bounds bounds = { state->file->row, state->file->row, state->file->col, state->file->col };
+	Bounds bounds = {state->file->row, state->file->row, state->file->col, state->file->col};
 	if (state->file->data.size() == 0) {
 		for (uint32_t i = 0; i < clip.size(); i++) {
 			state->file->data.push_back(clip[i]);
@@ -243,10 +235,9 @@ Bounds pasteVisual(State *state, std::string text)
 	return bounds;
 }
 
-Bounds paste(State *state, std::string text)
-{
+Bounds paste(State *state, std::string text) {
 	std::vector<std::string> clip = splitByChar(text, '\n');
-	Bounds bounds = { state->file->row, state->file->row, state->file->col, state->file->col };
+	Bounds bounds = {state->file->row, state->file->row, state->file->col, state->file->col};
 	fixColOverMax(state);
 	if (state->file->data.size() == 0) {
 		for (uint32_t i = 0; i < clip.size(); i++) {
@@ -285,10 +276,9 @@ Bounds paste(State *state, std::string text)
 	return bounds;
 }
 
-Bounds pasteAfter(State *state, std::string text)
-{
+Bounds pasteAfter(State *state, std::string text) {
 	std::vector<std::string> clip = splitByChar(text, '\n');
-	Bounds bounds = { state->file->row, state->file->row, state->file->col, state->file->col };
+	Bounds bounds = {state->file->row, state->file->row, state->file->col, state->file->col};
 	fixColOverMax(state);
 	if (!text.empty() && state->pasteAsBlock) {
 		for (int32_t i = 0; i < (int32_t)clip.size(); i++) {
@@ -329,8 +319,7 @@ Bounds pasteAfter(State *state, std::string text)
 	return bounds;
 }
 
-void copyToClipboard(State *state, const std::string &clip, bool useSystemClipboard)
-{
+void copyToClipboard(State *state, const std::string &clip, bool useSystemClipboard) {
 	state->clipboard = clip;
 	if (!useSystemClipboard || state->dontRecordKey) {
 		return;

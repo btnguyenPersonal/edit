@@ -1,14 +1,13 @@
 #include "indent.h"
 #include "comment.h"
-#include "string.h"
-#include "fileops.h"
 #include "display.h"
+#include "fileops.h"
+#include "string.h"
 #include "textedit.h"
 #include <string>
 #include <vector>
 
-uint32_t getIndent(State *state, const std::string &str)
-{
+uint32_t getIndent(State *state, const std::string &str) {
 	for (uint32_t i = 0; i < str.length(); i++) {
 		if (str[i] != getIndentCharacter(state)) {
 			return i;
@@ -17,16 +16,14 @@ uint32_t getIndent(State *state, const std::string &str)
 	return 0;
 }
 
-uint32_t getIndentSize(State *state)
-{
+uint32_t getIndentSize(State *state) {
 	if (state->options.indent_style == "tab") {
 		return 1;
 	}
 	return state->options.indent_size;
 }
 
-char getIndentCharacter(State *state)
-{
+char getIndentCharacter(State *state) {
 	if (state->options.indent_style == "tab") {
 		return '\t';
 	} else if (state->options.indent_style == "space") {
@@ -35,15 +32,13 @@ char getIndentCharacter(State *state)
 	return 'E';
 }
 
-void indent(State *state)
-{
+void indent(State *state) {
 	for (uint32_t i = 0; i < getIndentSize(state); i++) {
 		state->file->data[state->file->row] = getIndentCharacter(state) + state->file->data[state->file->row];
 	}
 }
 
-void deindent(State *state)
-{
+void deindent(State *state) {
 	for (uint32_t i = 0; i < getIndentSize(state); i++) {
 		if (state->file->data[state->file->row].substr(0, 1) == std::string("") + getIndentCharacter(state)) {
 			state->file->data[state->file->row] = state->file->data[state->file->row].substr(1);
@@ -51,8 +46,7 @@ void deindent(State *state)
 	}
 }
 
-void indentLineWhenTypingLastChar(State *state)
-{
+void indentLineWhenTypingLastChar(State *state) {
 	if (!autoIndentDisabledFileType(state)) {
 		if (state->file->col + 1 == state->file->data[state->file->row].length()) {
 			indentLine(state);
@@ -61,8 +55,7 @@ void indentLineWhenTypingLastChar(State *state)
 	}
 }
 
-bool isFirstNonSpace(State *state)
-{
+bool isFirstNonSpace(State *state) {
 	char indentChar = getIndentCharacter(state);
 	for (int32_t i = (int32_t)state->file->col - 1; i >= 0; i--) {
 		if (state->file->data[state->file->row][i] != indentChar) {
@@ -72,8 +65,7 @@ bool isFirstNonSpace(State *state)
 	return true;
 }
 
-void indentLineWhenTypingFirstChar(State *state)
-{
+void indentLineWhenTypingFirstChar(State *state) {
 	if (!autoIndentDisabledFileType(state)) {
 		if (isFirstNonSpace(state)) {
 			indentLine(state);
@@ -82,16 +74,14 @@ void indentLineWhenTypingFirstChar(State *state)
 	}
 }
 
-bool autoIndentDisabledFileType(State *state)
-{
+bool autoIndentDisabledFileType(State *state) {
 	if (state->extension == "py") {
 		return true;
 	}
 	return false;
 }
 
-int32_t getNumLeadingIndentCharacters(State *state, std::string s)
-{
+int32_t getNumLeadingIndentCharacters(State *state, std::string s) {
 	int32_t num = 0;
 	for (uint32_t i = 0; i < s.length(); i++) {
 		if (s[i] == getIndentCharacter(state)) {
@@ -103,8 +93,7 @@ int32_t getNumLeadingIndentCharacters(State *state, std::string s)
 	return num;
 }
 
-std::string getPrevLine(State *state, uint32_t row)
-{
+std::string getPrevLine(State *state, uint32_t row) {
 	for (int32_t i = row - 1; i >= 0; i--) {
 		if (state->file->data[i] != "") {
 			return state->file->data[i];
@@ -113,8 +102,7 @@ std::string getPrevLine(State *state, uint32_t row)
 	return "";
 }
 
-std::string trim(const std::string &str)
-{
+std::string trim(const std::string &str) {
 	size_t first = str.find_first_not_of(' ');
 	if (std::string::npos == first) {
 		return str;
@@ -123,8 +111,7 @@ std::string trim(const std::string &str)
 	return str.substr(first, (last - first + 1));
 }
 
-bool hasHTML(std::string line, std::string extension)
-{
+bool hasHTML(std::string line, std::string extension) {
 	if (extension == "js" || extension == "jsx" || extension == "ts" || extension == "tsx" || extension == "html") {
 		auto trimmed = trim(line);
 		if (trimmed.empty()) {
@@ -146,8 +133,7 @@ enum TagType {
 	CLOSE,
 };
 
-int32_t getIndentLevel(State *state, uint32_t row)
-{
+int32_t getIndentLevel(State *state, uint32_t row) {
 	std::string prevLine = getPrevLine(state, row);
 	prevLine = trimComment(state, prevLine);
 	std::string currLine = state->file->data[row];
@@ -243,8 +229,7 @@ int32_t getIndentLevel(State *state, uint32_t row)
 	return indentLevel;
 }
 
-void indentLine(State *state, uint32_t row)
-{
+void indentLine(State *state, uint32_t row) {
 	ltrim(state->file->data[row]);
 	if (state->file->data[row].length() != 0) {
 		int32_t indentLevel = getIndentLevel(state, row);
@@ -254,8 +239,7 @@ void indentLine(State *state, uint32_t row)
 	}
 }
 
-void indentLine(State *state)
-{
+void indentLine(State *state) {
 	ltrim(state->file->data[state->file->row]);
 	if (state->file->data[state->file->row].length() != 0) {
 		int32_t indentLevel = getIndentLevel(state, state->file->row);
@@ -265,8 +249,7 @@ void indentLine(State *state)
 	}
 }
 
-void indentRange(State *state)
-{
+void indentRange(State *state) {
 	uint32_t firstNonEmptyRow = state->file->row;
 	for (int32_t i = state->file->row; i <= (int32_t)state->visual.row; i++) {
 		if (state->file->data[i] != "") {

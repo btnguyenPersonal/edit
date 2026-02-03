@@ -1,23 +1,22 @@
 #include "sendMultiCursorKeys.h"
-#include "../util/bounds.h"
-#include "../util/modes.h"
-#include "../util/state.h"
 #include "../util/autocomplete.h"
-#include "../util/movement.h"
-#include "../util/search.h"
-#include "../util/history.h"
+#include "../util/bounds.h"
 #include "../util/ctrl.h"
-#include "../util/string.h"
-#include "../util/repeat.h"
-#include "../util/switchMode.h"
 #include "../util/defines.h"
+#include "../util/history.h"
+#include "../util/modes.h"
+#include "../util/movement.h"
+#include "../util/repeat.h"
+#include "../util/search.h"
+#include "../util/state.h"
+#include "../util/string.h"
+#include "../util/switchMode.h"
 #include "sendVisualKeys.h"
 #include <ncurses.h>
 #include <string>
 #include <vector>
 
-void sendMultiCursorKeys(State *state, int32_t c)
-{
+void sendMultiCursorKeys(State *state, int32_t c) {
 	recordMotion(state, c);
 	Bounds bounds = getBounds(state);
 	if (c == KEY_ESCAPE) {

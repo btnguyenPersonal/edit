@@ -1,13 +1,13 @@
 #pragma once
 
-#include <vector>
-#include <string>
-#include <filesystem>
 #include <algorithm>
+#include <filesystem>
 #include <stack>
+#include <string>
+#include <vector>
 
 class FileExplorerNode {
-    public:
+      public:
 	std::filesystem::path path;
 	std::string name;
 	bool isFolder;

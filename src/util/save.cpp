@@ -1,9 +1,8 @@
 #include "save.h"
-#include <fstream>
 #include <filesystem>
+#include <fstream>
 
-void saveFile(State *state)
-{
+void saveFile(State *state) {
 	if (!state->dontSave) {
 		std::ofstream file(state->file->filename);
 		if (!state->file->data.empty()) {

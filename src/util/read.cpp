@@ -1,12 +1,11 @@
 #include "read.h"
 #include <fstream>
 
-std::vector<std::string> readFile(const std::string &filename)
-{
+std::vector<std::string> readFile(const std::string &filename) {
 	std::ifstream file(filename);
 
 	if (!file.is_open()) {
-		return { "" };
+		return {""};
 	}
 
 	std::string line;

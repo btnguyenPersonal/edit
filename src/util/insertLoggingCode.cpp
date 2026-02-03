@@ -1,19 +1,17 @@
 #include "insertLoggingCode.h"
-#include "string.h"
-#include "indent.h"
 #include "fileops.h"
+#include "indent.h"
+#include "string.h"
 #include "textedit.h"
 #include <regex>
 #include <string>
 #include <vector>
 
-bool isCExtension(std::string extension)
-{
+bool isCExtension(std::string extension) {
 	return extension == "h" || extension == "c" || extension == "cc" || extension == "cpp";
 }
 
-std::string getLoggingCode(State *state, std::string variableName)
-{
+std::string getLoggingCode(State *state, std::string variableName) {
 	std::string rowStr = std::to_string(state->file->row + 1);
 	if (isCExtension(state->extension)) {
 		std::string ret = "printf(\"#### ";
@@ -44,8 +42,7 @@ std::string getLoggingCode(State *state, std::string variableName)
 	}
 }
 
-std::string getLoggingSearch(State *state)
-{
+std::string getLoggingSearch(State *state) {
 	std::string pattern = "";
 	if (isCExtension(state->extension)) {
 		pattern = "printf(\"#### ";
@@ -55,8 +52,7 @@ std::string getLoggingSearch(State *state)
 	return pattern;
 }
 
-std::string getLoggingRegex(State *state)
-{
+std::string getLoggingRegex(State *state) {
 	std::string pattern = "";
 	if (isCExtension(state->extension)) {
 		pattern = "printf\\(\"#### .+?\\);";
@@ -66,16 +62,14 @@ std::string getLoggingRegex(State *state)
 	return pattern;
 }
 
-void insertLoggingCode(State *state, std::string loggingCode)
-{
+void insertLoggingCode(State *state, std::string loggingCode) {
 	if (state->file->row < state->file->data.size()) {
 		state->file->data.insert(state->file->data.begin() + state->file->row + 1, loggingCode);
 		indentLine(state, state->file->row + 1);
 	}
 }
 
-void toggleLoggingCode(State *state, std::string variableName)
-{
+void toggleLoggingCode(State *state, std::string variableName) {
 	std::string loggingCode = getLoggingCode(state, variableName);
 	if (loggingCode == "") {
 		return;
@@ -91,8 +85,7 @@ void toggleLoggingCode(State *state, std::string variableName)
 	insertLoggingCode(state, loggingCode);
 }
 
-void removeAllLoggingCode(State *state)
-{
+void removeAllLoggingCode(State *state) {
 	std::string logPattern = getLoggingRegex(state);
 	if (logPattern != "") {
 		for (int32_t i = state->file->data.size() - 1; i >= 0; i--) {

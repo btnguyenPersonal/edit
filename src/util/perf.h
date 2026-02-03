@@ -2,10 +2,10 @@
 
 #include "state.h"
 #include "timer.h"
-#include <vector>
+#include <algorithm>
 #include <chrono>
 #include <string>
-#include <algorithm>
+#include <vector>
 
 void startCheckpoint(bool debug, const std::string &name, std::vector<timer> &timers);
 void printCheckpoints(bool debug, std::vector<timer> &timers);

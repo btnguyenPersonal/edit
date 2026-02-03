@@ -1,8 +1,8 @@
 #pragma once
 
+#include <cstdint>
 #include <string>
 #include <vector>
-#include <cstdint>
 
 uint32_t getIndexLast(const std::string &s);
 std::string getPrintableString(std::string s);

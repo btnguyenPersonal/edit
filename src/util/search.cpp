@@ -1,12 +1,11 @@
 #include "search.h"
-#include "string.h"
-#include "sanity.h"
 #include "movement.h"
-#include <regex>
+#include "sanity.h"
+#include "string.h"
 #include <fstream>
+#include <regex>
 
-bool setSearchResultCurrentLine(State *state, const std::string &query)
-{
+bool setSearchResultCurrentLine(State *state, const std::string &query) {
 	std::string line = state->file->data[state->file->row];
 	size_t index = line.find(query);
 	if (index != std::string::npos) {
@@ -16,8 +15,7 @@ bool setSearchResultCurrentLine(State *state, const std::string &query)
 	return false;
 }
 
-void searchNextResult(State *state, bool reverse)
-{
+void searchNextResult(State *state, bool reverse) {
 	if (reverse) {
 		bool result = setSearchResultReverse(state, false);
 		if (result == false) {
@@ -36,8 +34,7 @@ void searchNextResult(State *state, bool reverse)
 	}
 }
 
-void repeatPrevLineSearch(State *state, bool reverse)
-{
+void repeatPrevLineSearch(State *state, bool reverse) {
 	char temp = state->prevSearch.type;
 	switch (state->prevSearch.type) {
 	case 'f':
@@ -58,8 +55,7 @@ void repeatPrevLineSearch(State *state, bool reverse)
 	state->prevSearch.type = temp;
 }
 
-bool setSearchResultReverse(State *state, bool allowCurrent)
-{
+bool setSearchResultReverse(State *state, bool allowCurrent) {
 	if (state->search.query == "") {
 		return false;
 	}
@@ -98,8 +94,7 @@ bool setSearchResultReverse(State *state, bool allowCurrent)
 	return false;
 }
 
-void replaceAll(State *state, const std::string &query, const std::string &replace)
-{
+void replaceAll(State *state, const std::string &query, const std::string &replace) {
 	uint32_t i = 0;
 	uint32_t max = state->file->data.size();
 	if (state->replaceBounds.minR != 0 || state->replaceBounds.maxR != 0) {
@@ -118,8 +113,7 @@ void replaceAll(State *state, const std::string &query, const std::string &repla
 	}
 }
 
-bool setSearchResult(State *state)
-{
+bool setSearchResult(State *state) {
 	if (state->search.query == "") {
 		return false;
 	}
@@ -149,8 +143,7 @@ bool setSearchResult(State *state)
 	return false;
 }
 
-void replaceAllGlobally(State *state, const std::string &query, const std::string &replace)
-{
+void replaceAllGlobally(State *state, const std::string &query, const std::string &replace) {
 	if (query.empty()) {
 		state->status = "query empty";
 		return;
@@ -211,8 +204,7 @@ void replaceAllGlobally(State *state, const std::string &query, const std::strin
 	state->status = modified_count > 0 ? "replaced in " + std::to_string(modified_count) + " files" : "no matches found";
 }
 
-void replaceCurrentLine(State *state, const std::string &query, const std::string &replace)
-{
+void replaceCurrentLine(State *state, const std::string &query, const std::string &replace) {
 	if (query.empty()) {
 		return;
 	}
@@ -223,8 +215,7 @@ void replaceCurrentLine(State *state, const std::string &query, const std::strin
 	}
 }
 
-std::string getCurrentWord(State *state)
-{
+std::string getCurrentWord(State *state) {
 	std::string currentWord = "";
 	for (int32_t i = (int32_t)state->file->col - 1; i >= 0; i--) {
 		if (isAlphanumeric(state->file->data[state->file->row][i])) {

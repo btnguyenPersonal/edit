@@ -1,12 +1,11 @@
 #include "display.h"
-#include "fileops.h"
 #include "defines.h"
+#include "fileops.h"
 #include "switchMode.h"
 
 #include <ncurses.h>
 
-bool isOffScreenVertical(State *state)
-{
+bool isOffScreenVertical(State *state) {
 	if (!state->file) {
 		return false;
 	}
@@ -25,8 +24,7 @@ bool isOffScreenVertical(State *state)
 	return true;
 }
 
-uint32_t getCenteredWindowPosition(State *state)
-{
+uint32_t getCenteredWindowPosition(State *state) {
 	uint32_t windowRow = state->file->row;
 	uint32_t rowsAbove = getDisplayRows(state, state->file->row, state->file->col);
 	while (windowRow > 0 && rowsAbove < state->maxY / 2) {
@@ -39,8 +37,7 @@ uint32_t getCenteredWindowPosition(State *state)
 	return windowRow;
 }
 
-uint32_t getDisplayLength(State *state, std::string s)
-{
+uint32_t getDisplayLength(State *state, std::string s) {
 	if (state->options.indent_style == "tab") {
 		uint32_t output = 0;
 		for (uint32_t i = 0; i < s.length(); i++) {
@@ -58,8 +55,7 @@ uint32_t getDisplayLength(State *state, std::string s)
 	}
 }
 
-uint32_t getDisplayRows(State *state, uint32_t r, uint32_t c)
-{
+uint32_t getDisplayRows(State *state, uint32_t r, uint32_t c) {
 	if (!state->options.wordwrap) {
 		return 1;
 	}
@@ -67,16 +63,14 @@ uint32_t getDisplayRows(State *state, uint32_t r, uint32_t c)
 	return 1 + physicalCol / (state->maxX - getLineNumberOffset(state));
 }
 
-uint32_t getDisplayRows(State *state, uint32_t r)
-{
+uint32_t getDisplayRows(State *state, uint32_t r) {
 	if (!state->options.wordwrap) {
 		return 1;
 	}
 	return 1 + getDisplayLength(state, state->file->data[r]) / (state->maxX - getLineNumberOffset(state));
 }
 
-uint32_t getNormalizedCol(State *state, uint32_t hardCol)
-{
+uint32_t getNormalizedCol(State *state, uint32_t hardCol) {
 	if (state->options.indent_style != "tab") {
 		return state->file->col;
 	}
@@ -97,25 +91,21 @@ uint32_t getNormalizedCol(State *state, uint32_t hardCol)
 	return output;
 }
 
-uint32_t isLargeFile(State *state)
-{
+uint32_t isLargeFile(State *state) {
 	return state->file && state->file->data.size() >= 3000;
 }
 
-bool isColTooSmall(State *state)
-{
+bool isColTooSmall(State *state) {
 	uint32_t col = getDisplayCol(state);
 	return col < state->file->windowPosition.col;
 }
 
-bool isColTooBig(State *state)
-{
+bool isColTooBig(State *state) {
 	uint32_t col = getDisplayCol(state);
 	return (int32_t)col - (int32_t)state->file->windowPosition.col > (int32_t)state->maxX - (int32_t)getLineNumberOffset(state) - 1;
 }
 
-bool isWindowPositionInvalid(State *state)
-{
+bool isWindowPositionInvalid(State *state) {
 	if (isOffScreenVertical(state)) {
 		return true;
 	} else if (!state->options.wordwrap && (isColTooSmall(state) || isColTooBig(state))) {
@@ -124,8 +114,7 @@ bool isWindowPositionInvalid(State *state)
 	return false;
 }
 
-uint32_t getColFromDisplay(State *state, int32_t row, int32_t col)
-{
+uint32_t getColFromDisplay(State *state, int32_t row, int32_t col) {
 	if (state->options.indent_style == "tab") {
 		uint32_t sum = 0;
 		for (uint32_t i = 0; i < state->file->data[state->file->row].length(); i++) {
@@ -144,8 +133,7 @@ uint32_t getColFromDisplay(State *state, int32_t row, int32_t col)
 	}
 }
 
-uint32_t getDisplayCol(State *state)
-{
+uint32_t getDisplayCol(State *state) {
 	if (state->options.indent_style == "tab") {
 		uint32_t sum = 0;
 		for (uint32_t i = 0; i < state->file->col && i < state->file->data[state->file->row].length(); i++) {
@@ -161,8 +149,7 @@ uint32_t getDisplayCol(State *state)
 	}
 }
 
-void calcWindowBounds(State *state)
-{
+void calcWindowBounds(State *state) {
 	int32_t y, x;
 	getmaxyx(stdscr, y, x);
 	if (y == -1) {
@@ -175,8 +162,7 @@ void calcWindowBounds(State *state)
 	state->maxX = x;
 }
 
-void refocusFileExplorer(State *state, bool changeMode)
-{
+void refocusFileExplorer(State *state, bool changeMode) {
 	auto normalizedFilename = normalizeFilename(state->file->filename);
 	if (state->explorer.open) {
 		state->explorer.index = state->explorer.root->expand(normalizedFilename);
@@ -187,8 +173,7 @@ void refocusFileExplorer(State *state, bool changeMode)
 	}
 }
 
-void putCursorBackOnScreenFileExplorer(State *state)
-{
+void putCursorBackOnScreenFileExplorer(State *state) {
 	int32_t height = state->maxY - STATUS_BAR_LENGTH;
 	if (state->explorer.index >= height + state->explorer.windowLine) {
 		state->explorer.windowLine++;
@@ -197,8 +182,7 @@ void putCursorBackOnScreenFileExplorer(State *state)
 	}
 }
 
-void centerFileExplorer(State *state)
-{
+void centerFileExplorer(State *state) {
 	if ((state->explorer.index - ((int32_t)state->maxY / 2)) > 0) {
 		if (state->explorer.root->getTotalChildren() > ((int32_t)state->maxY)) {
 			state->explorer.windowLine = (state->explorer.index - ((int32_t)state->maxY / 2));
@@ -208,8 +192,7 @@ void centerFileExplorer(State *state)
 	}
 }
 
-uint32_t getLineNumberOffset(State *state)
-{
+uint32_t getLineNumberOffset(State *state) {
 	uint32_t offset = state->lineNumSize + 1;
 	if (state->mode == BLAME) {
 		offset += state->blameSize;

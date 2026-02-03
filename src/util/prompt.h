@@ -1,9 +1,9 @@
 #pragma once
 
-#include "state.h"
+#include "clipboard.h"
+#include "modes.h"
 #include "query.h"
 #include "render.h"
-#include "modes.h"
-#include "clipboard.h"
+#include "state.h"
 
 std::string prompt(State *state, std::string startingValue);

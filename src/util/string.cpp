@@ -1,8 +1,7 @@
 #include "string.h"
 #include "assert.h"
 
-uint32_t buildNumberFromString(const std::string &s)
-{
+uint32_t buildNumberFromString(const std::string &s) {
 	uint32_t output = 0;
 	if (!isNumber(s)) {
 		return output;
@@ -48,8 +47,7 @@ uint32_t buildNumberFromString(const std::string &s)
 	return output;
 }
 
-uint32_t getIndexLast(const std::string &s)
-{
+uint32_t getIndexLast(const std::string &s) {
 	if (s.length() != 0) {
 		return s.length() - 1;
 	} else {
@@ -57,8 +55,7 @@ uint32_t getIndexLast(const std::string &s)
 	}
 }
 
-int32_t getIndexFirstNonSpace(const std::string &s, char indentCharacter)
-{
+int32_t getIndexFirstNonSpace(const std::string &s, char indentCharacter) {
 	int32_t i = 0;
 	for (; i < (int32_t)s.length(); i++) {
 		if (s[i] != indentCharacter) {
@@ -68,8 +65,7 @@ int32_t getIndexFirstNonSpace(const std::string &s, char indentCharacter)
 	return i;
 }
 
-std::vector<std::string> splitByChar(const std::string &text, char c)
-{
+std::vector<std::string> splitByChar(const std::string &text, char c) {
 	std::vector<std::string> clip;
 	std::string line = "";
 	for (uint32_t i = 0; i < text.length(); i++) {
@@ -86,16 +82,14 @@ std::vector<std::string> splitByChar(const std::string &text, char c)
 	return clip;
 }
 
-std::string getPrintableString(std::string s)
-{
+std::string getPrintableString(std::string s) {
 	std::string output = s;
 	output = replace(output, "\\", "\\\\");
 	output = replace(output, "\"", "\\\"");
 	return output;
 }
 
-std::string replace(std::string str, const std::string &from, const std::string &to)
-{
+std::string replace(std::string str, const std::string &from, const std::string &to) {
 	size_t pos = 0;
 	if (from.length() > 0) {
 		while ((pos = str.find(from, pos)) != std::string::npos) {
@@ -106,34 +100,29 @@ std::string replace(std::string str, const std::string &from, const std::string 
 	return str;
 }
 
-bool isWhitespace(char c)
-{
+bool isWhitespace(char c) {
 	return c == ' ' || c == '\t' || c == '\n';
 }
 
-bool isAlphanumeric(char c)
-{
+bool isAlphanumeric(char c) {
 	return std::isalnum(c) || c == '_' ? 1 : 0;
 }
 
-std::string safeSubstring(const std::string &str, std::size_t pos, std::size_t len)
-{
+std::string safeSubstring(const std::string &str, std::size_t pos, std::size_t len) {
 	if (pos >= str.size()) {
 		return "";
 	}
 	return str.substr(pos, len);
 }
 
-std::string safeSubstring(const std::string &str, std::size_t pos)
-{
+std::string safeSubstring(const std::string &str, std::size_t pos) {
 	if (pos >= str.size()) {
 		return "";
 	}
 	return str.substr(pos);
 }
 
-bool isNumber(const std::string &s)
-{
+bool isNumber(const std::string &s) {
 	for (uint32_t i = 0; i < s.length(); i++) {
 		if (s[i] < '0' || '9' < s[i]) {
 			return false;

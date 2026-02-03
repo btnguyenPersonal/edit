@@ -1,12 +1,11 @@
 #include "testEasilyBreakableThings.h"
 #include "debug.h"
 
-struct testSuiteRun testEasilyBreakableThings()
-{
+struct testSuiteRun testEasilyBreakableThings() {
 	std::vector<struct testRun> output = std::vector<struct testRun>();
 
 	{
-		State *state = new State("./test-file.h", { "" });
+		State *state = new State("./test-file.h", {""});
 		initTerminal();
 		ungetch('q');
 		computeFrame(state);
@@ -69,11 +68,11 @@ struct testSuiteRun testEasilyBreakableThings()
 		ungetch('w');
 		computeFrame(state);
 		endwin();
-		output.push_back({ "backspace and 127 and ctrl('h') work with macro", compare(state->file->data, { "bbbbbb" }) });
+		output.push_back({"backspace and 127 and ctrl('h') work with macro", compare(state->file->data, {"bbbbbb"})});
 	}
 
 	{
-		State *state = new State("./test-file.h", { "" });
+		State *state = new State("./test-file.h", {""});
 		initTerminal();
 		ungetch('a');
 		computeFrame(state);
@@ -124,8 +123,8 @@ struct testSuiteRun testEasilyBreakableThings()
 		ungetch('.');
 		computeFrame(state);
 		endwin();
-		output.push_back({ "backspace and 127 and ctrl('h') work with dot", compare(state->file->data, { "bbbbbb" }) });
+		output.push_back({"backspace and 127 and ctrl('h') work with dot", compare(state->file->data, {"bbbbbb"})});
 	}
 
-	return { "test/util/testEasilyBreakableThings.cpp", output };
+	return {"test/util/testEasilyBreakableThings.cpp", output};
 }

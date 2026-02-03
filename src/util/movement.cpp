@@ -1,13 +1,12 @@
 #include "movement.h"
 #include "assert.h"
-#include "sanity.h"
 #include "comment.h"
-#include "indent.h"
 #include "display.h"
+#include "indent.h"
+#include "sanity.h"
 #include "string.h"
 
-int32_t findChar(State *state, bool reverse, char c)
-{
+int32_t findChar(State *state, bool reverse, char c) {
 	if (reverse) {
 		return findPrevChar(state, c);
 	} else {
@@ -15,8 +14,7 @@ int32_t findChar(State *state, bool reverse, char c)
 	}
 }
 
-int32_t toChar(State *state, bool reverse, char c)
-{
+int32_t toChar(State *state, bool reverse, char c) {
 	if (reverse) {
 		return toPrevChar(state, c);
 	} else {
@@ -24,22 +22,19 @@ int32_t toChar(State *state, bool reverse, char c)
 	}
 }
 
-bool isOnLastVisualLine(State *state)
-{
+bool isOnLastVisualLine(State *state) {
 	auto lastLineStarts = (state->maxX - getLineNumberOffset(state)) * (state->file->data[state->file->row].length() / (state->maxX - getLineNumberOffset(state)));
 	return state->file->col > lastLineStarts;
 }
 
-void moveRightIfEmpty(State *state)
-{
+void moveRightIfEmpty(State *state) {
 	std::string current = state->file->data[state->file->row];
 	if (state->file->col + 1 < current.length() && (current[state->file->col + 1] == ' ')) {
 		right(state);
 	}
 }
 
-uint32_t w(State *state)
-{
+uint32_t w(State *state) {
 	fixColOverMax(state);
 	bool space = state->file->data[state->file->row][state->file->col] == ' ';
 	for (uint32_t i = state->file->col + 1; i < state->file->data[state->file->row].size(); i += 1) {
@@ -54,8 +49,7 @@ uint32_t w(State *state)
 	return state->file->col;
 }
 
-uint32_t b(State *state)
-{
+uint32_t b(State *state) {
 	fixColOverMax(state);
 	if (state->file->col == 0 || state->file->data[state->file->row].empty()) {
 		return 0;
@@ -78,8 +72,7 @@ uint32_t b(State *state)
 	return 0;
 }
 
-uint32_t findNextChar(State *state, char c)
-{
+uint32_t findNextChar(State *state, char c) {
 	state->prevSearch.type = 'f';
 	state->prevSearch.search = c;
 	for (uint32_t i = state->file->col + 1; i < state->file->data[state->file->row].length(); i++) {
@@ -90,8 +83,7 @@ uint32_t findNextChar(State *state, char c)
 	return state->file->col;
 }
 
-uint32_t toNextChar(State *state, char c)
-{
+uint32_t toNextChar(State *state, char c) {
 	state->prevSearch.type = 't';
 	state->prevSearch.search = c;
 	uint32_t index = state->file->col;
@@ -105,8 +97,7 @@ uint32_t toNextChar(State *state, char c)
 	return state->file->col;
 }
 
-uint32_t findPrevChar(State *state, char c)
-{
+uint32_t findPrevChar(State *state, char c) {
 	state->prevSearch.type = 'F';
 	state->prevSearch.search = c;
 	for (int32_t i = state->file->col - 1; i >= 0; i--) {
@@ -119,8 +110,7 @@ uint32_t findPrevChar(State *state, char c)
 	return state->file->col;
 }
 
-uint32_t toPrevChar(State *state, char c)
-{
+uint32_t toPrevChar(State *state, char c) {
 	state->prevSearch.type = 'T';
 	state->prevSearch.search = c;
 	int32_t index = state->file->col;
@@ -136,8 +126,7 @@ uint32_t toPrevChar(State *state, char c)
 	return state->file->col;
 }
 
-uint32_t getPrevEmptyLine(State *state)
-{
+uint32_t getPrevEmptyLine(State *state) {
 	bool hitNonEmpty = false;
 	for (int32_t i = (int32_t)state->file->row; i >= 0; i--) {
 		if (state->file->data[i] != "") {
@@ -149,8 +138,7 @@ uint32_t getPrevEmptyLine(State *state)
 	return state->file->row;
 }
 
-uint32_t getNextEmptyLine(State *state)
-{
+uint32_t getNextEmptyLine(State *state) {
 	bool hitNonEmpty = false;
 	for (uint32_t i = state->file->row; i < state->file->data.size(); i++) {
 		if (state->file->data[i] != "") {
@@ -162,8 +150,7 @@ uint32_t getNextEmptyLine(State *state)
 	return state->file->row;
 }
 
-uint32_t getPrevLineSameIndent(State *state)
-{
+uint32_t getPrevLineSameIndent(State *state) {
 	uint32_t current = getIndent(state, trimLeadingComment(state, state->file->data[state->file->row]));
 	for (int32_t i = (int32_t)state->file->row - 1; i >= 0; i--) {
 		if (current == getIndent(state, trimLeadingComment(state, state->file->data[i])) && state->file->data[i] != "") {
@@ -173,8 +160,7 @@ uint32_t getPrevLineSameIndent(State *state)
 	return state->file->row;
 }
 
-uint32_t getNextLineSameIndent(State *state)
-{
+uint32_t getNextLineSameIndent(State *state) {
 	uint32_t current = getIndent(state, trimLeadingComment(state, state->file->data[state->file->row]));
 	for (uint32_t i = state->file->row + 1; i < state->file->data.size(); i++) {
 		if (current == getIndent(state, trimLeadingComment(state, state->file->data[i])) && state->file->data[i] != "") {
@@ -184,8 +170,7 @@ uint32_t getNextLineSameIndent(State *state)
 	return state->file->row;
 }
 
-void down(State *state)
-{
+void down(State *state) {
 	if (state->file->row < state->file->data.size() - 1) {
 		state->file->row += 1;
 		state->file->col = getNormalizedCol(state, state->file->hardCol);
@@ -198,8 +183,7 @@ void down(State *state)
 	}
 }
 
-void downVisual(State *state)
-{
+void downVisual(State *state) {
 	if (isOnLastVisualLine(state)) {
 		if (state->file->row < state->file->data.size() - 1) {
 			state->file->row += 1;
@@ -214,16 +198,14 @@ void downVisual(State *state)
 	}
 }
 
-void left(State *state)
-{
+void left(State *state) {
 	fixColOverMax(state);
 	if (state->file->col > 0) {
 		state->file->col -= 1;
 	}
 }
 
-void right(State *state)
-{
+void right(State *state) {
 	fixColOverMax(state);
 	assert(state->file->row < state->file->data.size());
 	if (state->file->col < state->file->data[state->file->row].length()) {
@@ -231,8 +213,7 @@ void right(State *state)
 	}
 }
 
-void up(State *state)
-{
+void up(State *state) {
 	if (state->file->row > 0) {
 		state->file->row -= 1;
 		state->file->col = getNormalizedCol(state, state->file->hardCol);
@@ -243,8 +224,7 @@ void up(State *state)
 	}
 }
 
-void upVisual(State *state)
-{
+void upVisual(State *state) {
 	auto visualCol = state->file->col;
 	if (visualCol > state->file->data[state->file->row].length()) {
 		visualCol = state->file->data[state->file->row].length();
@@ -263,8 +243,7 @@ void upVisual(State *state)
 	}
 }
 
-void upScreen(State *state)
-{
+void upScreen(State *state) {
 	if (state->file->row > 0) {
 		state->file->row -= 1;
 		state->file->windowPosition.row -= 1;
@@ -273,8 +252,7 @@ void upScreen(State *state)
 	}
 }
 
-void downScreen(State *state)
-{
+void downScreen(State *state) {
 	if (state->file->row < state->file->data.size() - 1) {
 		state->file->row += 1;
 		state->file->windowPosition.row += 1;
@@ -283,8 +261,7 @@ void downScreen(State *state)
 	}
 }
 
-void upHalfScreen(State *state)
-{
+void upHalfScreen(State *state) {
 	for (uint32_t i = 0; i < state->maxY / 2; i++) {
 		if (state->file->row > 0) {
 			state->file->row -= 1;
@@ -295,8 +272,7 @@ void upHalfScreen(State *state)
 	state->skipSetHardCol = true;
 }
 
-void downHalfScreen(State *state)
-{
+void downHalfScreen(State *state) {
 	for (uint32_t i = 0; i < state->maxY / 2; i++) {
 		if (state->file->row < state->file->data.size() - 1) {
 			state->file->row += 1;
@@ -307,8 +283,7 @@ void downHalfScreen(State *state)
 	state->skipSetHardCol = true;
 }
 
-void centerScreen(State *state)
-{
+void centerScreen(State *state) {
 	if (state->file) {
 		state->file->windowPosition.row = getCenteredWindowPosition(state);
 		uint32_t col = getDisplayCol(state);

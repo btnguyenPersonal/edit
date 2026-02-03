@@ -1,22 +1,21 @@
 #include "sendFileExplorerKeys.h"
-#include "../util/fileExplorerNode.h"
 #include "../util/clipboard.h"
-#include "../util/modes.h"
-#include "../util/state.h"
-#include "../util/prompt.h"
-#include "../util/grep.h"
-#include "../util/fileops.h"
-#include "../util/display.h"
 #include "../util/ctrl.h"
 #include "../util/defines.h"
-#include "../util/switchMode.h"
+#include "../util/display.h"
+#include "../util/fileExplorerNode.h"
+#include "../util/fileops.h"
+#include "../util/grep.h"
+#include "../util/modes.h"
+#include "../util/prompt.h"
 #include "../util/sanity.h"
+#include "../util/state.h"
+#include "../util/switchMode.h"
 #include <ncurses.h>
 #include <string>
 #include <vector>
 
-void pressEnterFileExplorer(State *state)
-{
+void pressEnterFileExplorer(State *state) {
 	auto node = state->explorer.root->getNode(state->explorer.index);
 	if (node->isFolder) {
 		if (node->isOpen) {
@@ -32,8 +31,7 @@ void pressEnterFileExplorer(State *state)
 	}
 }
 
-void sendFileExplorerKeys(State *state, int32_t c)
-{
+void sendFileExplorerKeys(State *state, int32_t c) {
 	try {
 		if (c == KEY_MOUSE) {
 			MEVENT event;

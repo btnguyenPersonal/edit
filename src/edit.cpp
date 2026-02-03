@@ -1,13 +1,12 @@
+#include "util/display.h"
+#include "util/find.h"
 #include "util/mainLoop.h"
 #include "util/render.h"
-#include "util/state.h"
-#include "util/find.h"
 #include "util/sanity.h"
-#include "util/display.h"
+#include "util/state.h"
 #include <cstdint>
 
-int32_t main(int32_t argc, char *argv[])
-{
+int32_t main(int32_t argc, char *argv[]) {
 	State *state;
 	std::string filename;
 	if (argc >= 2) {

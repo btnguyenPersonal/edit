@@ -87,7 +87,7 @@ $(BUILD_DIR)/%.o: $(TEST_UTIL_DIR)/%.cpp
 	$(CC) -c $< -o $@ $(CFLAGS) $(SANITIZEFLAGS) $(DEPFLAGS)
 
 format:
-	find . -iname "*.cpp" -o -iname "*.h" | xargs clang-format -i
+	find . -iname "*.cpp" -o -iname "*.h" | xargs clang-format -i --style="{BasedOnStyle: LLVM, IndentWidth: 8, UseTab: Always, ColumnLimit: 0, SortIncludes: true}"
 
 dev:
 	make all && $(MAIN_EXECUTABLE) test-file.h

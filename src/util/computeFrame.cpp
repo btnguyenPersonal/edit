@@ -1,10 +1,9 @@
 #include "computeFrame.h"
-#include "render.h"
-#include "cleanup.h"
 #include "../keybinds/sendKeys.h"
+#include "cleanup.h"
+#include "render.h"
 
-void computeFrame(State *state)
-{
+void computeFrame(State *state) {
 	if (state->debug) {
 		endwin();
 		printCheckpoints(state->debug, state->timers);

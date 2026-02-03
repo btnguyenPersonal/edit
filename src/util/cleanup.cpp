@@ -1,27 +1,25 @@
-#include "assert.h"
-#include "history.h"
 #include "cleanup.h"
-#include "save.h"
-#include "sanity.h"
-#include "visual.h"
-#include "display.h"
-#include "textedit.h"
-#include "harpoon.h"
-#include "movement.h"
+#include "assert.h"
 #include "ctrl.h"
-#include <ncurses.h>
+#include "display.h"
+#include "harpoon.h"
+#include "history.h"
+#include "movement.h"
+#include "sanity.h"
+#include "save.h"
+#include "textedit.h"
+#include "visual.h"
 #include <filesystem>
+#include <ncurses.h>
 
-int32_t cleanKey(int32_t c)
-{
+int32_t cleanKey(int32_t c) {
 	if (c == KEY_BACKSPACE || c == 127) {
 		return ctrl('h');
 	}
 	return c;
 }
 
-void cleanup(State *state)
-{
+void cleanup(State *state) {
 	if (state->mode == NORMAL && !state->file) {
 		endwin();
 		exit(0);
@@ -50,16 +48,14 @@ void cleanup(State *state)
 	state->dontRecordKey = false;
 }
 
-void cleanup(State *state, char c)
-{
+void cleanup(State *state, char c) {
 	if (state->recording.on && !state->dontRecordKey) {
 		recordMacroCommand(state, c);
 	}
 	cleanup(state);
 }
 
-void history(State *state, char c)
-{
+void history(State *state, char c) {
 	if (state->mode == NORMAL) {
 		std::vector<diffLine> diff = generateDiff(state->file->previousState, state->file->data);
 		state->file->previousState = state->file->data;
@@ -71,8 +67,7 @@ void history(State *state, char c)
 	}
 }
 
-void preRenderCleanup(State *state)
-{
+void preRenderCleanup(State *state) {
 	if (state->file) {
 		state->matching = matchIt(state);
 		if (isWindowPositionInvalid(state)) {
@@ -83,8 +78,7 @@ void preRenderCleanup(State *state)
 	}
 }
 
-void autosaveFile(State *state)
-{
+void autosaveFile(State *state) {
 	if (state->file) {
 		if (state->options.autosave && !state->runningAsRoot && !state->file->newFile && !state->dontRecordKey && !isLargeFile(state)) {
 			saveFile(state);
@@ -92,8 +86,7 @@ void autosaveFile(State *state)
 	}
 }
 
-void autoloadFile(State *state)
-{
+void autoloadFile(State *state) {
 	if (state->file && state->options.autoload && !state->file->newFile) {
 		try {
 			auto currentModified = std::filesystem::last_write_time(state->file->filename);

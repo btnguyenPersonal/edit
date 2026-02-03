@@ -1,23 +1,22 @@
 #include "sendTypingKeys.h"
+#include "../util/autocomplete.h"
+#include "../util/ctrl.h"
+#include "../util/defines.h"
+#include "../util/history.h"
 #include "../util/indent.h"
 #include "../util/modes.h"
-#include "../util/state.h"
-#include "../util/sanity.h"
-#include "../util/autocomplete.h"
 #include "../util/movement.h"
-#include "../util/search.h"
-#include "../util/history.h"
-#include "../util/string.h"
-#include "../util/ctrl.h"
 #include "../util/repeat.h"
+#include "../util/sanity.h"
+#include "../util/search.h"
+#include "../util/state.h"
+#include "../util/string.h"
 #include "../util/switchMode.h"
-#include "../util/defines.h"
 #include <ncurses.h>
 #include <string>
 #include <vector>
 
-void insertNewline(State *state)
-{
+void insertNewline(State *state) {
 	fixColOverMax(state);
 	std::string current = state->file->data[state->file->row];
 	state->file->data[state->file->row] = current.substr(0, state->file->col);
@@ -26,8 +25,7 @@ void insertNewline(State *state)
 	state->file->col = 0;
 }
 
-void sendTypingKeys(State *state, int32_t c)
-{
+void sendTypingKeys(State *state, int32_t c) {
 	fixColOverMax(state);
 	recordMotion(state, c);
 	if (state->prevKeys == "v") {

@@ -1,18 +1,18 @@
 #pragma once
 
-#include "perf.h"
-#include "timer.h"
-#include "modes.h"
-#include "visualType.h"
 #include "bounds.h"
 #include "fileExplorerNode.h"
+#include "modes.h"
+#include "perf.h"
+#include "timer.h"
+#include "visualType.h"
 
+#include <atomic>
 #include <filesystem>
+#include <map>
+#include <mutex>
 #include <string>
 #include <vector>
-#include <mutex>
-#include <map>
-#include <atomic>
 
 struct buildError {
 	std::string filename;
@@ -27,10 +27,7 @@ struct grepMatch {
 	std::string line;
 
 	grepMatch(const std::filesystem::path &p, int32_t num, const std::string &l)
-		: path(p)
-		, lineNum(num)
-		, line(l)
-	{
+	    : path(p), lineNum(num), line(l) {
 	}
 };
 
@@ -80,7 +77,7 @@ struct File {
 	std::string filename;
 	std::vector<std::string> data;
 	std::vector<std::string> previousState;
-	std::vector<std::vector<diffLine> > history;
+	std::vector<std::vector<diffLine>> history;
 	struct Position windowPosition;
 	uint32_t col;
 	uint32_t hardCol;
@@ -130,7 +127,7 @@ struct FileExplorer {
 };
 
 class State {
-    public:
+      public:
 	std::atomic_flag shouldNotReRender;
 	std::mutex findMutex;
 	std::mutex grepMutex;
@@ -190,7 +187,7 @@ class State {
 	std::vector<std::string> blame;
 	std::vector<std::string> dotCommand;
 	std::vector<std::string> fileStack;
-	std::map<char, std::vector<std::string> > macroCommand;
+	std::map<char, std::vector<std::string>> macroCommand;
 	std::vector<Harpoon> harpoon;
 	std::vector<ModeKey> keys;
 	struct Position visual;

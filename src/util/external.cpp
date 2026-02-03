@@ -1,9 +1,8 @@
 #include "external.h"
-#include "textedit.h"
 #include "string.h"
+#include "textedit.h"
 
-std::vector<std::string> getDiffLines(State *state)
-{
+std::vector<std::string> getDiffLines(State *state) {
 	std::vector<std::string> gitDiffLines;
 	std::string hash = "";
 	if (state->logIndex != 0) {
@@ -23,14 +22,13 @@ std::vector<std::string> getDiffLines(State *state)
 	}
 	gitDiffLines = splitByChar(runCommand(command), '\n');
 	if (hash == "" && gitDiffLines.size() == 0) {
-		return { "No local changes" };
+		return {"No local changes"};
 	}
 	return gitDiffLines;
 }
 
-std::vector<std::string> getLogLines()
-{
-	std::vector<std::string> gitLogLines = { "current" };
+std::vector<std::string> getLogLines() {
+	std::vector<std::string> gitLogLines = {"current"};
 	std::vector<std::string> temp = splitByChar(runCommand("git log --oneline | cat 2>/dev/null"), '\n');
 	for (uint32_t i = 0; i < temp.size(); i++) {
 		gitLogLines.push_back(temp[i]);
@@ -38,8 +36,7 @@ std::vector<std::string> getLogLines()
 	return gitLogLines;
 }
 
-std::string getGitHash(State *state)
-{
+std::string getGitHash(State *state) {
 	std::string command = std::string("git blame -l -L ") + std::to_string(state->file->row + 1) + ",+1 " + state->file->filename + " | awk '{print $1}'";
 	std::string line = runCommand(command);
 	rtrim(line);
@@ -49,8 +46,7 @@ std::string getGitHash(State *state)
 	return line;
 }
 
-std::vector<std::string> getGitBlame(const std::string &filename)
-{
+std::vector<std::string> getGitBlame(const std::string &filename) {
 	std::vector<std::string> blameLines;
 	std::string command = "git --no-pager blame ./" + filename + " --date=short 2>/dev/null | awk '{print $1, $2, $3, $4, \")\"}'";
 	blameLines = splitByChar(runCommand(command), '\n');
@@ -58,8 +54,7 @@ std::vector<std::string> getGitBlame(const std::string &filename)
 	return blameLines;
 }
 
-std::string runCommand(std::string command)
-{
+std::string runCommand(std::string command) {
 	std::string output = "";
 	char temp[4096];
 	FILE *fp = popen(command.c_str(), "r");

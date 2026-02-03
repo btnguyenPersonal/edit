@@ -1,10 +1,9 @@
-#include "ignore.h"
 #include "find.h"
+#include "ignore.h"
 
 #include <thread>
 
-bool isAllLowercase(const std::string &str)
-{
+bool isAllLowercase(const std::string &str) {
 	for (char ch : str) {
 		if (!std::islower(ch) && !std::isspace(ch)) {
 			return false;
@@ -13,8 +12,7 @@ bool isAllLowercase(const std::string &str)
 	return true;
 }
 
-int32_t maxConsecutiveMatch(const std::filesystem::path &filePath, const std::string &query)
-{
+int32_t maxConsecutiveMatch(const std::filesystem::path &filePath, const std::string &query) {
 	if (query.empty()) {
 		return 0;
 	}
@@ -98,8 +96,7 @@ int32_t maxConsecutiveMatch(const std::filesystem::path &filePath, const std::st
 	return caseInsensitiveScore;
 }
 
-std::vector<std::filesystem::path> find(const std::filesystem::path &dir_path, const std::string &query)
-{
+std::vector<std::filesystem::path> find(const std::filesystem::path &dir_path, const std::string &query) {
 	std::vector<std::filesystem::path> matching_files;
 	std::unordered_map<std::filesystem::path, int32_t> cache;
 	std::vector<std::filesystem::path> stack;
@@ -150,8 +147,7 @@ std::vector<std::filesystem::path> find(const std::filesystem::path &dir_path, c
 	return matching_files;
 }
 
-void findDispatch(State *state, std::string query)
-{
+void findDispatch(State *state, std::string query) {
 	std::vector<std::filesystem::path> output;
 	try {
 		output = find(std::filesystem::current_path(), query);
@@ -165,8 +161,7 @@ void findDispatch(State *state, std::string query)
 	state->shouldNotReRender.clear();
 }
 
-void generateFindOutput(State *state)
-{
+void generateFindOutput(State *state) {
 	std::string query = state->find.query;
 	std::thread worker(findDispatch, state, query);
 	worker.detach();

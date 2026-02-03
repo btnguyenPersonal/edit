@@ -1,15 +1,14 @@
 #include "comment.h"
 #include "bounds.h"
+#include "fileops.h"
 #include "indent.h"
 #include "state.h"
 #include "textedit.h"
-#include "fileops.h"
 #include <climits>
 #include <string>
 #include <vector>
 
-std::string getCommentSymbol(const std::string &filename)
-{
+std::string getCommentSymbol(const std::string &filename) {
 	std::string extension = getExtension(filename);
 	if (extension == "js" || extension == "jsx" || extension == "ts" || extension == "tsx" || extension == "cc" || extension == "cpp" || extension == "hpp" || extension == "c" || extension == "h" || extension == "java" || extension == "cs" || extension == "go" || extension == "php" || extension == "rs" || extension == "css" || extension == "scss" || extension == "vb" || extension == "lua") {
 		return "//";
@@ -28,8 +27,7 @@ std::string getCommentSymbol(const std::string &filename)
 	}
 }
 
-std::string trimLeadingComment(State *state, std::string line)
-{
+std::string trimLeadingComment(State *state, std::string line) {
 	std::string outputLine = line;
 	for (size_t i = 0; i < line.length(); i++) {
 		if (line[i] != getIndentCharacter(state)) {
@@ -46,8 +44,7 @@ std::string trimLeadingComment(State *state, std::string line)
 	return outputLine;
 }
 
-std::string trimComment(State *state, std::string line)
-{
+std::string trimComment(State *state, std::string line) {
 	std::string outputLine = line;
 	bool foundNonSpace = false;
 	bool skipNext = false;
@@ -78,13 +75,11 @@ std::string trimComment(State *state, std::string line)
 	return outputLine;
 }
 
-void toggleComment(State *state)
-{
+void toggleComment(State *state) {
 	toggleCommentHelper(state, state->file->row, -1);
 }
 
-void toggleCommentHelper(State *state, uint32_t row, int32_t commentIndex)
-{
+void toggleCommentHelper(State *state, uint32_t row, int32_t commentIndex) {
 	std::string line = state->file->data[row];
 	if (commentIndex == -1) {
 		int32_t i = getNumLeadingIndentCharacters(state, line);
@@ -102,20 +97,17 @@ void toggleCommentHelper(State *state, uint32_t row, int32_t commentIndex)
 	}
 }
 
-bool isCommentWithSpace(State *state, std::string line)
-{
+bool isCommentWithSpace(State *state, std::string line) {
 	ltrim(line);
 	return line.substr(0, state->file->commentSymbol.length() + 1) == state->file->commentSymbol + ' ';
 }
 
-bool isComment(State *state, std::string line)
-{
+bool isComment(State *state, std::string line) {
 	ltrim(line);
 	return line.substr(0, state->file->commentSymbol.length()) == state->file->commentSymbol;
 }
 
-void toggleCommentLines(State *state, Bounds bounds)
-{
+void toggleCommentLines(State *state, Bounds bounds) {
 	bool foundNonComment = false;
 	for (size_t i = bounds.minR; i <= bounds.maxR; i++) {
 		if (!isComment(state, state->file->data[i]) && state->file->data[i] != "") {
@@ -138,8 +130,7 @@ void toggleCommentLines(State *state, Bounds bounds)
 	}
 }
 
-void unCommentBlock(State *state)
-{
+void unCommentBlock(State *state) {
 	bool foundComment = false;
 	Bounds bounds;
 	bounds.minC = 0;

@@ -1,8 +1,8 @@
 #pragma once
 
-#include <string>
-#include <cstdint>
 #include <chrono>
+#include <cstdint>
+#include <string>
 
 struct aggregatedTimer {
 	std::string name;

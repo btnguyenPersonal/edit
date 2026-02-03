@@ -1,7 +1,6 @@
 #include "harpoon.h"
 
-void moveHarpoonRight(State *state)
-{
+void moveHarpoonRight(State *state) {
 	if (state->harpoon[state->workspace].index + 1 < state->harpoon[state->workspace].list.size()) {
 		auto temp = state->harpoon[state->workspace].list[state->harpoon[state->workspace].index];
 		state->harpoon[state->workspace].list[state->harpoon[state->workspace].index] = state->harpoon[state->workspace].list[state->harpoon[state->workspace].index + 1];
@@ -10,8 +9,7 @@ void moveHarpoonRight(State *state)
 	}
 }
 
-void moveHarpoonLeft(State *state)
-{
+void moveHarpoonLeft(State *state) {
 	if (state->harpoon[state->workspace].index > 0 && state->harpoon[state->workspace].index < state->harpoon[state->workspace].list.size()) {
 		auto temp = state->harpoon[state->workspace].list[state->harpoon[state->workspace].index];
 		state->harpoon[state->workspace].list[state->harpoon[state->workspace].index] = state->harpoon[state->workspace].list[state->harpoon[state->workspace].index - 1];
@@ -20,8 +18,7 @@ void moveHarpoonLeft(State *state)
 	}
 }
 
-bool eraseHarpoon(State *state)
-{
+bool eraseHarpoon(State *state) {
 	if (state->harpoon[state->workspace].index < state->harpoon[state->workspace].list.size()) {
 		state->harpoon[state->workspace].list.erase(state->harpoon[state->workspace].list.begin() + state->harpoon[state->workspace].index);
 		return true;
@@ -29,14 +26,12 @@ bool eraseHarpoon(State *state)
 	return false;
 }
 
-void clearHarpoon(State *state)
-{
+void clearHarpoon(State *state) {
 	state->harpoon[state->workspace].index = 0;
 	state->harpoon[state->workspace].list.clear();
 }
 
-void jumpToPrevHarpoon(State *state)
-{
+void jumpToPrevHarpoon(State *state) {
 	if (state->harpoon[state->workspace].index > 0) {
 		jumpToHarpoon(state, state->harpoon[state->workspace].index - 1);
 	} else {
@@ -44,8 +39,7 @@ void jumpToPrevHarpoon(State *state)
 	}
 }
 
-void jumpToNextHarpoon(State *state)
-{
+void jumpToNextHarpoon(State *state) {
 	if (state->harpoon[state->workspace].index + 1 < state->harpoon[state->workspace].list.size()) {
 		jumpToHarpoon(state, state->harpoon[state->workspace].index + 1);
 	} else {
@@ -53,13 +47,11 @@ void jumpToNextHarpoon(State *state)
 	}
 }
 
-void focusHarpoon(State *state)
-{
+void focusHarpoon(State *state) {
 	jumpToHarpoon(state, state->harpoon[state->workspace].index);
 }
 
-void realignHarpoon(State *state)
-{
+void realignHarpoon(State *state) {
 	for (uint32_t i = 0; i < state->harpoon[state->workspace].list.size(); i++) {
 		if (state->harpoon[state->workspace].list[i] == state->file->filename) {
 			state->harpoon[state->workspace].index = i;
@@ -67,8 +59,7 @@ void realignHarpoon(State *state)
 	}
 }
 
-bool containsHarpoon(State *state)
-{
+bool containsHarpoon(State *state) {
 	for (uint32_t i = 0; i < state->harpoon[state->workspace].list.size(); i++) {
 		if (state->file->filename == state->harpoon[state->workspace].list[i]) {
 			return true;
@@ -77,8 +68,7 @@ bool containsHarpoon(State *state)
 	return false;
 }
 
-bool createNewestHarpoon(State *state)
-{
+bool createNewestHarpoon(State *state) {
 	if (containsHarpoon(state)) {
 		return false;
 	}
@@ -91,8 +81,7 @@ bool createNewestHarpoon(State *state)
 	return true;
 }
 
-bool jumpToHarpoon(State *state, uint32_t num)
-{
+bool jumpToHarpoon(State *state, uint32_t num) {
 	if (num < state->harpoon[state->workspace].list.size()) {
 		if (!state->resetState(state->harpoon[state->workspace].list[num])) {
 			state->harpoon[state->workspace].list.erase(state->harpoon[state->workspace].list.begin() + num);
