@@ -1,4 +1,5 @@
 #include "testAutocomplete.h"
+#include "../../src/util/harpoon.h"
 
 struct testSuiteRun testAutocomplete() {
 	std::vector<struct testRun> output = std::vector<struct testRun>();
@@ -76,6 +77,23 @@ struct testSuiteRun testAutocomplete() {
 	{
 		State *state = new State("./test-file.h", {"function(", "function2()", "function()", "function()", "function2()"});
 		output.push_back({"autocomplete picks the smaller non-current one", compare(autocomplete(state, "function"), std::string("2"))});
+	}
+
+	{
+		State *state = new State("./test-file.h", {"function(", "function2()", "function2()", "function()", "function2()"});
+		createNewestHarpoon(state);
+		state->resetState("test/util/testAutocomplete.cpp");
+		createNewestHarpoon(state);
+		state->file->data = {"function(", "function3()", "function()", "function()", "function3()"};
+		output.push_back({"autocomplete weights current file more if it is both harpooned and on its own", compare(autocomplete(state, "function"), std::string("3"))});
+	}
+
+	{
+		State *state = new State("./test-file.h", {"function(", "function2()", "function2()", "function()", "function2()"});
+		createNewestHarpoon(state);
+		state->resetState("test/util/testAutocomplete.cpp");
+		state->file->data = {"function(", "function3()", "function()", "function()", "function3()"};
+		output.push_back({"autocomplete weights current file less if it is not harpooned", compare(autocomplete(state, "function"), std::string("2"))});
 	}
 
 	return {"test/util/testAutocomplete.cpp", output};

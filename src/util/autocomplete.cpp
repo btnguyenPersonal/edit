@@ -42,6 +42,12 @@ std::string autocomplete(State *state, const std::string &query) {
 			}
 		}
 	}
+	for (const auto &pair : state->file->words) {
+		if (pair.first.substr(0, query.length()) == query) {
+			// NOTE(ben): this weights words in current file twice as much
+			totalWords[pair.first] += pair.second;
+		}
+	}
 	for (const auto &pair : totalWords) {
 		if (pair.second > maxCount && pair.first != query) {
 			mostCommonWord = pair.first;
