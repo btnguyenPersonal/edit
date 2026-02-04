@@ -86,6 +86,9 @@ void evaluateCommandLineQuery(State *state) {
 		} else {
 			replaceAll(state, "\t", std::string(state->options.indent_size, ' '));
 		}
+	} else if (state->commandLine.query.length() == 3 && safeSubstring(state->commandLine.query, 0, 2) == "w=" && isNumber(safeSubstring(state->commandLine.query, 2))) {
+		uint32_t number = buildNumberFromString(safeSubstring(state->commandLine.query, 2));
+		state->workspace = number;
 	} else if (isNumber(state->commandLine.query)) {
 		uint32_t number = buildNumberFromString(state->commandLine.query);
 		if (number > 0) {
