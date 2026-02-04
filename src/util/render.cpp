@@ -58,25 +58,33 @@ int32_t invertColor(int32_t color) {
 	return color + 20;
 }
 
-int32_t renderPixels(State *state, int32_t r, int32_t c, std::vector<Pixel> pixels, bool wrap) {
+int32_t renderPixels(State *state, int32_t r, int32_t c, std::vector<Pixel> pixels, bool wrap, uint32_t cutoff) {
 	int32_t row = r;
 	int32_t col = c;
 	for (uint32_t i = 0; i < pixels.size(); i++) {
-		PixelPos temp = {};
-		temp.pixel = pixels[i];
-		temp.r = row;
-		temp.c = col;
-		screenPixels.push_back(temp);
-		if ((uint32_t)col + 1 >= state->maxX) {
-			if (wrap && state->options.wordwrap) {
-				row++;
-				col = getLineNumberOffset(state);
+		if (i >= cutoff) {
+			PixelPos temp = {};
+			temp.pixel = pixels[i];
+			temp.r = row;
+			temp.c = col;
+			screenPixels.push_back(temp);
+			if ((uint32_t)col + 1 >= state->maxX) {
+				if (wrap && state->options.wordwrap) {
+					row++;
+					col = getLineNumberOffset(state);
+				} else {
+					break;
+				}
+			} else {
+				col++;
 			}
-		} else {
-			col++;
 		}
 	}
 	return row - r + 1;
+}
+
+int32_t renderPixels(State *state, int32_t r, int32_t c, std::vector<Pixel> pixels, bool wrap) {
+	return renderPixels(state, r, c, pixels, wrap, 0);
 }
 
 std::vector<PixelPos> getScreenPixels() {
@@ -747,46 +755,44 @@ int32_t renderLineContent(State *state, int32_t row, int32_t renderRow, Cursor *
 				color = WHITE;
 			}
 
-			if (col >= state->file->windowPosition.col) {
-				bool shouldReplace = state->replacing && searchCounter != 0 && isTextInReplaceBounds(state, row);
-				if (shouldReplace) {
-					insertPixels(state, &pixels, state->replace.query, color);
-					col += state->search.query.length() - 1;
-					searchCounter = 0;
-				} else {
-					chtype ch = c;
-					if (isComment) {
-						ch |= A_ITALIC | A_DIM;
-					}
-					if (state->mode == VISUAL && isRowColInVisual(state, row, col)) {
-						ch |= A_STANDOUT;
-					}
-					if (!foundCursor && state->file->row == (uint32_t)row && state->file->col == col) {
-						foundCursor = true;
-						cursor->row = renderRow;
-						cursor->col = pixels.size();
-					}
-					if (overrides.size() > 0) {
-						color = overrides.back().color;
-						ch |= overrides.back().flags;
-						overrides.pop_back();
-					}
-					insertPixel(state, &pixels, ch, color);
+			bool shouldReplace = state->replacing && searchCounter != 0 && isTextInReplaceBounds(state, row);
+			if (shouldReplace) {
+				insertPixels(state, &pixels, state->replace.query, color);
+				col += state->search.query.length() - 1;
+				searchCounter = 0;
+			} else {
+				chtype ch = c;
+				if (isComment) {
+					ch |= A_ITALIC | A_DIM;
 				}
-				if (!isLargeFile(state) && state->file->row == (uint32_t)row && state->file->col == col + 1) {
-					if (state->mode == INSERT || state->mode == MULTICURSOR) {
-						if (state->file->col + 1 >= state->file->data[state->file->row].length() || !isAlphanumeric(state->file->data[state->file->row][state->file->col])) {
-							if (!foundCursor) {
-								foundCursor = true;
-								cursor->row = renderRow;
-								cursor->col = pixels.size();
-							}
-							std::string completion = autocomplete(state, getCurrentWord(state));
-							for (uint32_t i = 0; i < completion.length(); i++) {
-								chtype ch = completion[i];
-								ch |= A_ITALIC;
-								insertPixel(state, &pixels, ch, GREY);
-							}
+				if (state->mode == VISUAL && isRowColInVisual(state, row, col)) {
+					ch |= A_STANDOUT;
+				}
+				if (!foundCursor && state->file->row == (uint32_t)row && state->file->col == col) {
+					foundCursor = true;
+					cursor->row = renderRow;
+					cursor->col = pixels.size();
+				}
+				if (overrides.size() > 0) {
+					color = overrides.back().color;
+					ch |= overrides.back().flags;
+					overrides.pop_back();
+				}
+				insertPixel(state, &pixels, ch, color);
+			}
+			if (!isLargeFile(state) && state->file->row == (uint32_t)row && state->file->col == col + 1) {
+				if (state->mode == INSERT || state->mode == MULTICURSOR) {
+					if (state->file->col + 1 >= state->file->data[state->file->row].length() || !isAlphanumeric(state->file->data[state->file->row][state->file->col])) {
+						if (!foundCursor) {
+							foundCursor = true;
+							cursor->row = renderRow;
+							cursor->col = pixels.size();
+						}
+						std::string completion = autocomplete(state, getCurrentWord(state));
+						for (uint32_t i = 0; i < completion.length(); i++) {
+							chtype ch = completion[i];
+							ch |= A_ITALIC;
+							insertPixel(state, &pixels, ch, GREY);
 						}
 					}
 				}
@@ -811,7 +817,7 @@ int32_t renderLineContent(State *state, int32_t row, int32_t renderRow, Cursor *
 		}
 	}
 
-	return renderRow + renderPixels(state, renderRow, getLineNumberOffset(state), pixels, true);
+	return renderRow + renderPixels(state, renderRow, getLineNumberOffset(state), pixels, true, state->file->windowPosition.col);
 }
 
 void moveCursor(State *state, int32_t cursorOnStatusBar, Cursor editorCursor, Cursor fileExplorerCursor, bool noLineNum) {
@@ -821,7 +827,7 @@ void moveCursor(State *state, int32_t cursorOnStatusBar, Cursor editorCursor, Cu
 		move(fileExplorerCursor.row, fileExplorerCursor.col);
 	} else {
 		auto row = editorCursor.row;
-		auto col = editorCursor.col;
+		auto col = editorCursor.col - state->file->windowPosition.col;
 		uint32_t len = state->maxX - getLineNumberOffset(state);
 		if (state->options.wordwrap && (uint32_t)col + 1 >= len) {
 			row += col / len;
