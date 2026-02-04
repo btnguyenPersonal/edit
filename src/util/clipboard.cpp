@@ -14,9 +14,7 @@
 #include <unistd.h>
 #include <vector>
 
-static const char b64_table[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-				"abcdefghijklmnopqrstuvwxyz"
-				"0123456789+/";
+static const char b64_table[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
 std::string base64_encode(const std::string &input) {
 	std::string output;
@@ -106,8 +104,9 @@ std::string getFileFromClipboard() {
 	char buffer[128];
 	std::string result = "";
 	while (!feof(pipe)) {
-		if (fgets(buffer, 128, pipe) != nullptr)
+		if (fgets(buffer, 128, pipe) != nullptr) {
 			result += buffer;
+		}
 	}
 	pclose(pipe);
 

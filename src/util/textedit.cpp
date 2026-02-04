@@ -83,9 +83,7 @@ void insertFinalEmptyNewline(State *state) {
 }
 
 void rtrim(std::string &s) {
-	s.erase(std::find_if(s.rbegin(), s.rend(), [](unsigned char ch) { return !isWhitespace(ch); })
-			.base(),
-		s.end());
+	s.erase(std::find_if(s.rbegin(), s.rend(), [](unsigned char ch) { return !isWhitespace(ch); }).base(), s.end());
 }
 
 void ltrim(std::string &s) {

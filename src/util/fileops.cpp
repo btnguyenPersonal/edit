@@ -4,6 +4,10 @@
 #include <fstream>
 #include <regex>
 
+bool isCExtension(std::string extension) {
+	return extension == "h" || extension == "c" || extension == "cc" || extension == "cpp";
+}
+
 bool locateFile(State *state, std::string vis, std::vector<std::string> extensions) {
 	ltrim(vis);
 	rtrim(vis);

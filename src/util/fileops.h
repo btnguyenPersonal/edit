@@ -2,6 +2,7 @@
 
 #include "state.h"
 
+bool isCExtension(std::string extension);
 bool locateFile(State *state, std::string vis, std::vector<std::string> extensions);
 bool locateFileAbsolute(State *state, std::string vis);
 bool locateFileRelative(State *state, std::string vis, std::vector<std::string> extensions);

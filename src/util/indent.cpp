@@ -95,7 +95,7 @@ int32_t getNumLeadingIndentCharacters(State *state, std::string s) {
 
 std::string getPrevLine(State *state, uint32_t row) {
 	for (int32_t i = row - 1; i >= 0; i--) {
-		if (state->file->data[i] != "") {
+		if (state->file->data[i] != "" && !(isCExtension(state->extension) && state->file->data[i].length() > 0 && state->file->data[i][0] == '#')) {
 			return state->file->data[i];
 		}
 	}
@@ -208,7 +208,9 @@ int32_t getIndentLevel(State *state, uint32_t row) {
 		}
 	} else {
 		for (uint32_t i = 0; i < currLine.length(); i++) {
-			if (currLine.substr(i, state->file->commentSymbol.length()) == state->file->commentSymbol) {
+			if (isCExtension(state->extension) && i == 0 && currLine[i] == '#') {
+				return 0;
+			} else if (currLine.substr(i, state->file->commentSymbol.length()) == state->file->commentSymbol) {
 				break;
 			} else if (currLine.substr(i, std::string("default:").length()) == "default:") {
 				if (i == 0) {

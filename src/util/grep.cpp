@@ -75,13 +75,14 @@ void grepFile(const std::filesystem::path &file_path, const std::string &query, 
 	int32_t lineNumber = 0;
 	while (std::getline(file, line)) {
 		lineNumber++;
+		struct grepMatch match = { relativePath, lineNumber, line };
 		try {
 			if (line.find(query) != std::string::npos) {
-				matches.emplace_back(relativePath, lineNumber, line);
+				matches.emplace_back(match);
 			}
 		} catch (const std::exception &e) {
 			// TODO something flaky here but can't be bothered to fix it
-			matches.emplace_back(relativePath, lineNumber, line);
+			matches.emplace_back(match);
 		}
 	}
 	file.close();

@@ -27,10 +27,12 @@ int32_t maxConsecutiveMatch(const std::filesystem::path &filePath, const std::st
 	std::string queryLower = to_lower(query);
 
 	auto isWordBoundary = [&](const std::string &str, size_t pos) {
-		if (pos == 0)
+		if (pos == 0) {
 			return true;
-		if (pos >= str.length())
+		}
+		if (pos >= str.length()) {
 			return true;
+		}
 		char prev = str[pos - 1];
 		char curr = str[pos];
 		return (std::isalnum(prev) && !std::isalnum(curr)) || (!std::isalnum(prev) && std::isalnum(curr));
@@ -142,7 +144,8 @@ std::vector<std::filesystem::path> find(const std::filesystem::path &dir_path, c
 		if (matchA == matchB) {
 			return a.string() < b.string();
 		}
-		return matchA > matchB; });
+		return matchA > matchB;
+	});
 	return matching_files;
 }
 

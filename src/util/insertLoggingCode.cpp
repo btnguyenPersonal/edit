@@ -7,10 +7,6 @@
 #include <string>
 #include <vector>
 
-bool isCExtension(std::string extension) {
-	return extension == "h" || extension == "c" || extension == "cc" || extension == "cpp";
-}
-
 std::string getLoggingCode(State *state, std::string variableName) {
 	std::string rowStr = std::to_string(state->file->row + 1);
 	if (isCExtension(state->extension)) {
