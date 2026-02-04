@@ -114,7 +114,3 @@ indent_size = 4
 indent_style = space
 ```
 
-autosave = false kinda doesn't work well with multiple files since I reload the full file each time wip
-
-wordwrap = false also doesn't work well with tabs yet wip
-
