@@ -4,6 +4,7 @@
 #include "keys.h"
 #include "read.h"
 #include "string.h"
+#include "autocomplete.h"
 #include "visualType.h"
 #include <filesystem>
 #include <fstream>
@@ -31,6 +32,7 @@ File *getFile(const std::string &name, const std::vector<std::string> &data) {
 	if (!file->newFile) {
 		file->lastModified = std::filesystem::last_write_time(name);
 	}
+	calcWords(file);
 	return file;
 }
 

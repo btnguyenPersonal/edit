@@ -15,7 +15,6 @@ void fuzzSendKeys(int testnum, int iterations = 1000) {
 
 	std::uniform_int_distribution<> dis(0, keypresses.size() - 1);
 	State *state = new State("./test-file.h");
-	state->dontSave = false;
 
 	try {
 		initTerminal();

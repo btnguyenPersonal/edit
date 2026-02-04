@@ -70,6 +70,7 @@ remove ncurses capturing all keyboard input, why is it so slow?? is that as fast
 - faster way to do input, needs to work for pasting a million lines
 
 make word wrap work well with tabs when windowPos.col > 0
+- make a windowLineCounter when rendering and just start at 0 and have a renderPixels cut off before x amount
 
 clean up paste functions in clipboard
 
