@@ -8,6 +8,7 @@
 #include "util/testSave.h"
 #include "util/testString.h"
 #include "util/testTypingKeys.h"
+#include "util/ratchet.h"
 
 auto color_white = "\033[0m";
 auto color_green = "\033[1;32m";
@@ -32,6 +33,17 @@ void printSuiteRun(struct testSuiteRun suite) {
 	}
 }
 
+void printPassFail() {
+	printf("\n");
+	printf("    pass: %d\n", pass);
+	printf("    fail: %d\n", fail);
+	if (fail > 0) {
+		printf("\n");
+		printSuiteRun(failures);
+		return 1;
+	}
+}
+
 int main() {
 	printSuiteRun(testSave());
 	printSuiteRun(testRead());
@@ -43,11 +55,6 @@ int main() {
 	printSuiteRun(testMovement());
 	printSuiteRun(testRender());
 	printSuiteRun(testEasilyBreakableThings());
-	printf("\n    pass: %d\n", pass);
-	printf("    fail: %d\n", fail);
-	if (fail > 0) {
-		printf("\n");
-		printSuiteRun(failures);
-		return 1;
-	}
+	printSuiteRun(ratchet());
+	printPassFail();
 }
