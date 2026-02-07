@@ -4,6 +4,5 @@
 void debug(State *state) {
 	initTerminal();
 	renderScreen(state);
-	system("sleep 0.1");
 	endwin();
 }
