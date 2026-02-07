@@ -178,66 +178,10 @@ void copyPathToClipboard(State *state, const std::string &filePath) {
 #endif
 }
 
-Bounds pasteVisual(State *state, std::string text) {
+Bounds paste(State *state, std::string text, uint32_t offset) {
 	std::vector<std::string> clip = splitByChar(text, '\n');
 	fixColOverMax(state);
-	bool isClipLine = !text.empty() && text.back() == '\n';
-	if (state->visualType == LINE && !isClipLine) {
-		auto pos = deleteInVisual(state);
-		state->file->row = pos.row;
-		state->file->col = pos.col;
-		insertEmptyLine(state);
-	} else if (state->visualType == SELECT && isClipLine) {
-		auto pos = changeInVisual(state);
-		state->file->row = pos.row;
-		state->file->col = pos.col;
-		std::string current = state->file->data[state->file->row];
-		state->file->data[state->file->row] = current.substr(0, state->file->col);
-		state->file->data.insert(state->file->data.begin() + state->file->row + 1, current.substr(state->file->col));
-		state->file->row += 1;
-		state->file->col = 0;
-		indentLine(state);
-	} else {
-		auto pos = deleteInVisual(state);
-		state->file->row = pos.row;
-		state->file->col = pos.col;
-	}
 	Bounds bounds = {state->file->row, state->file->row, state->file->col, state->file->col};
-	if (state->file->data.size() == 0) {
-		for (uint32_t i = 0; i < clip.size(); i++) {
-			state->file->data.push_back(clip[i]);
-		}
-		bounds.minC = 0;
-		bounds.maxC = 999999;
-		bounds.maxR += clip.size();
-	} else if (!text.empty() && text.back() == '\n') {
-		state->file->data.insert(state->file->data.begin() + state->file->row, clip.begin(), clip.end());
-		bounds.minC = 0;
-		bounds.maxC = 999999;
-		bounds.maxR += clip.size();
-	} else if (clip.size() > 0) {
-		std::string current = state->file->data[state->file->row];
-		state->file->data[state->file->row] = current.substr(0, state->file->col);
-		state->file->data[state->file->row] += clip[0];
-		int32_t lastRow = state->file->row;
-		if (clip.size() > 1) {
-			state->file->data.insert(state->file->data.begin() + state->file->row + 1, clip.begin() + 1, clip.end());
-		}
-		for (int32_t i = 1; i < (int32_t)clip.size(); i++) {
-			int32_t r = i + state->file->row;
-			lastRow = r;
-		}
-		bounds.maxR = lastRow;
-		bounds.maxC = state->file->data[lastRow].length();
-		state->file->data[lastRow] += safeSubstring(current, state->file->col);
-	}
-	return bounds;
-}
-
-Bounds paste(State *state, std::string text) {
-	std::vector<std::string> clip = splitByChar(text, '\n');
-	Bounds bounds = {state->file->row, state->file->row, state->file->col, state->file->col};
-	fixColOverMax(state);
 	if (state->file->data.size() == 0) {
 		for (uint32_t i = 0; i < clip.size(); i++) {
 			state->file->data.push_back(clip[i]);
@@ -247,59 +191,22 @@ Bounds paste(State *state, std::string text) {
 			if (state->file->row + i >= state->file->data.size()) {
 				state->file->data.push_back("");
 			}
-			std::string front = safeSubstring(state->file->data[state->file->row + i], 0, state->file->col);
-			std::string back = safeSubstring(state->file->data[state->file->row + i], state->file->col);
+			std::string front = safeSubstring(state->file->data[state->file->row + i], 0, state->file->col + offset);
+			std::string back = safeSubstring(state->file->data[state->file->row + i], state->file->col + offset);
 			state->file->data[state->file->row + i] = front + clip[i] + back;
 		}
 	} else if (!text.empty() && text.back() == '\n') {
-		state->file->data.insert(state->file->data.begin() + state->file->row, clip.begin(), clip.end());
+		state->file->data.insert(state->file->data.begin() + state->file->row + offset, clip.begin(), clip.end());
+		bounds.minR += offset;
 		bounds.minC = 0;
 		bounds.maxC = 999999;
 		bounds.maxR += clip.size();
 	} else if (clip.size() > 0) {
-		std::string current = state->file->data[state->file->row];
-		state->file->data[state->file->row] = current.substr(0, state->file->col);
-		state->file->data[state->file->row] += clip[0];
-		int32_t lastRow = state->file->row;
-		if (clip.size() > 1) {
-			state->file->data.insert(state->file->data.begin() + state->file->row + 1, clip.begin() + 1, clip.end());
-		}
-		for (int32_t i = 1; i < (int32_t)clip.size(); i++) {
-			int32_t r = i + state->file->row;
-			lastRow = r;
-		}
-		bounds.maxR = lastRow;
-		bounds.maxC = state->file->data[lastRow].length();
-		state->file->data[lastRow] += current.substr(state->file->col);
-	}
-	return bounds;
-}
-
-Bounds pasteAfter(State *state, std::string text) {
-	std::vector<std::string> clip = splitByChar(text, '\n');
-	Bounds bounds = {state->file->row, state->file->row, state->file->col, state->file->col};
-	fixColOverMax(state);
-	if (!text.empty() && state->pasteAsBlock) {
-		for (int32_t i = 0; i < (int32_t)clip.size(); i++) {
-			if (state->file->row + i >= state->file->data.size()) {
-				state->file->data.push_back("");
-			}
-			std::string front = safeSubstring(state->file->data[state->file->row + i], 0, state->file->col + 1);
-			std::string back = safeSubstring(state->file->data[state->file->row + i], state->file->col + 1);
-			state->file->data[state->file->row + i] = front + clip[i] + back;
-		}
-	} else if (!text.empty() && text.back() == '\n') {
-		state->file->data.insert(state->file->data.begin() + state->file->row + 1, clip.begin(), clip.end());
-		bounds.minR += 1;
-		bounds.minC = 0;
-		bounds.maxC = 999999;
-		bounds.maxR += clip.size();
-	} else if (clip.size() > 0) {
-		bounds.minC += 1;
+		bounds.minC += offset;
 		std::string current = state->file->data[state->file->row];
 		int32_t breakCol = state->file->col;
-		if (state->file->col + 1 <= state->file->data[state->file->row].length()) {
-			breakCol = state->file->col + 1;
+		if (state->file->col + offset <= state->file->data[state->file->row].length()) {
+			breakCol = state->file->col + offset;
 		}
 		state->file->data[state->file->row] = current.substr(0, breakCol);
 		state->file->data[state->file->row] += clip[0];
@@ -316,6 +223,29 @@ Bounds pasteAfter(State *state, std::string text) {
 		state->file->data[lastRow] += current.substr(breakCol);
 	}
 	return bounds;
+}
+
+Bounds pasteVisual(State *state, std::string text) {
+	std::vector<std::string> clip = splitByChar(text, '\n');
+	fixColOverMax(state);
+	bool isClipLine = !text.empty() && text.back() == '\n';
+
+	if (state->visualType == SELECT && isClipLine) {
+		auto pos = changeInVisual(state);
+		state->file->row = pos.row;
+		state->file->col = pos.col;
+		std::string current = state->file->data[state->file->row];
+		state->file->data[state->file->row] = current.substr(0, state->file->col);
+		state->file->data.insert(state->file->data.begin() + state->file->row + 1, current.substr(state->file->col));
+		state->file->row += 1;
+		state->file->col = 0;
+		indentLine(state);
+	} else {
+		auto pos = deleteInVisual(state);
+		state->file->row = pos.row;
+		state->file->col = pos.col;
+	}
+	return paste(state, text, 0);
 }
 
 void copyToClipboard(State *state, const std::string &clip, bool useSystemClipboard) {

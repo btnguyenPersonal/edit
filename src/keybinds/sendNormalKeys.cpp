@@ -264,12 +264,12 @@ void sendNormalKeys(State *state, int32_t c) {
 		copyToClipboard(state, path, false);
 		state->prevKeys = "";
 	} else if (state->prevKeys == "g" && c == 'P') {
-		Bounds b = paste(state, getFromClipboard(state, true));
+		Bounds b = paste(state, getFromClipboard(state, true), 0);
 		highlightRenderBounds(state, b);
 		setDotCommand(state, c);
 		state->prevKeys = "";
 	} else if (state->prevKeys == "g" && c == 'p') {
-		Bounds b = pasteAfter(state, getFromClipboard(state, true));
+		Bounds b = paste(state, getFromClipboard(state, true), 1);
 		highlightRenderBounds(state, b);
 		setDotCommand(state, c);
 		state->prevKeys = "";
@@ -508,10 +508,10 @@ void sendNormalKeys(State *state, int32_t c) {
 		centerScreen(state);
 		renderScreen(state, true);
 	} else if (c == 'P') {
-		paste(state, getFromClipboard(state, false));
+		paste(state, getFromClipboard(state, false), 0);
 		setDotCommand(state, c);
 	} else if (c == 'p') {
-		pasteAfter(state, getFromClipboard(state, false));
+		paste(state, getFromClipboard(state, false), 1);
 		setDotCommand(state, c);
 	} else if (c == ctrl('l')) {
 		moveHarpoonRight(state);
