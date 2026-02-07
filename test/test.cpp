@@ -40,7 +40,6 @@ void printPassFail() {
 	if (fail > 0) {
 		printf("\n");
 		printSuiteRun(failures);
-		return 1;
 	}
 }
 
