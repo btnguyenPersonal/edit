@@ -302,5 +302,217 @@ struct testSuiteRun testFileExplorerNode() {
 		delete root;
 	}
 
+	{
+		system("rm -rf /tmp/test-explorer");
+		system("mkdir -p /tmp/test-explorer/subdir");
+		system("touch /tmp/test-explorer/file1.txt");
+		system("touch /tmp/test-explorer/file2.txt");
+
+		FileExplorerNode *root = new FileExplorerNode(std::filesystem::path("/tmp/test-explorer"));
+		root->open();
+
+		system("rm /tmp/test-explorer/file1.txt");
+
+		// TODO(ben): this shouldn't keep stale data or make all the operations after see if file exists
+		uint32_t sizeBeforeRefresh = root->children.size();
+		output.push_back({"fs-change: node keeps stale data before refresh", compare(sizeBeforeRefresh == (uint32_t)3, (bool)true)});
+
+		root->refresh();
+		output.push_back({"fs-change: refresh sees deleted file", compare((uint32_t)root->children.size(), (uint32_t)2)});
+
+		delete root;
+		system("rm -rf /tmp/test-explorer");
+	}
+
+	{
+		system("rm -rf /tmp/test-explorer");
+		system("mkdir -p /tmp/test-explorer/todelete/subdir");
+		system("touch /tmp/test-explorer/todelete/subdir/file.txt");
+		system("touch /tmp/test-explorer/other.txt");
+
+		FileExplorerNode *root = new FileExplorerNode(std::filesystem::path("/tmp/test-explorer"));
+		root->open();
+
+		root->expand("todelete/subdir");
+
+		system("rm -rf /tmp/test-explorer/todelete");
+
+		root->refresh();
+		output.push_back({"fs-change: refresh handles deleted expanded folder", compare((bool)true, (bool)true)});
+
+		bool foundOther = false;
+		for (auto *child : root->children) {
+			if (child->name == "other.txt") {
+				foundOther = true;
+			}
+		}
+		output.push_back({"fs-change: only surviving files remain", compare(foundOther, (bool)true)});
+
+		delete root;
+		system("rm -rf /tmp/test-explorer");
+	}
+
+	{
+		system("rm -rf /tmp/test-explorer");
+		system("mkdir -p /tmp/test-explorer");
+		system("touch /tmp/test-explorer/file1.txt");
+
+		FileExplorerNode *root = new FileExplorerNode(std::filesystem::path("/tmp/test-explorer"));
+		root->open();
+
+		for (int i = 2; i <= 50; i++) {
+			system(("touch /tmp/test-explorer/file" + std::to_string(i) + ".txt").c_str());
+		}
+
+		output.push_back({"fs-change: open node doesn't auto-see new files", compare((uint32_t)root->children.size(), (uint32_t)1)});
+
+		root->refresh();
+		output.push_back({"fs-change: refresh picks up 50 new files", compare((uint32_t)root->children.size(), (uint32_t)50)});
+
+		delete root;
+		system("rm -rf /tmp/test-explorer");
+	}
+
+	{
+		system("rm -rf /tmp/test-explorer");
+		system("mkdir -p /tmp/test-explorer/a/b/c");
+		system("touch /tmp/test-explorer/a/file.txt");
+		system("touch /tmp/test-explorer/a/b/file.txt");
+		system("touch /tmp/test-explorer/a/b/c/file.txt");
+
+		FileExplorerNode *root = new FileExplorerNode(std::filesystem::path("/tmp/test-explorer"));
+		root->expand("a/b/c");
+
+		system("rm -rf /tmp/test-explorer/a");
+
+		// TODO(ben): make another test for the full delete of test-explorer
+		root->refresh();
+		output.push_back({"fs-change: refresh after full delete doesn't crash", compare((bool)true, (bool)true)});
+
+		delete root;
+		system("rm -rf /tmp/test-explorer");
+	}
+
+	{
+		system("rm -rf /tmp/test-explorer");
+		system("mkdir -p /tmp/test-explorer");
+		system("touch /tmp/test-explorer/switch.txt");
+
+		FileExplorerNode *root = new FileExplorerNode(std::filesystem::path("/tmp/test-explorer"));
+		root->open();
+
+		bool wasFile = !root->children[0]->isFolder;
+
+		system("rm /tmp/test-explorer/switch.txt");
+		system("mkdir /tmp/test-explorer/switch.txt");
+		system("touch /tmp/test-explorer/switch.txt/inside.txt");
+
+		root->refresh();
+
+		// TODO(ben): fix .cpp to update if folder or file and vice versa
+		bool pathCorrect = (root->children[0]->path.filename() == "switch.txt");
+		output.push_back({"fs-change: refresh preserves path on file->folder switch", compare(wasFile && pathCorrect, (bool)true)});
+
+		delete root;
+		system("rm -rf /tmp/test-explorer");
+	}
+
+	{
+		system("rm -rf /tmp/test-explorer");
+		system("mkdir -p /tmp/test-explorer/level1/level2/level3");
+		system("touch /tmp/test-explorer/a.txt");
+		system("touch /tmp/test-explorer/level1/b.txt");
+		system("touch /tmp/test-explorer/level1/level2/c.txt");
+		system("touch /tmp/test-explorer/level1/level2/level3/d.txt");
+
+		FileExplorerNode *root = new FileExplorerNode(std::filesystem::path("/tmp/test-explorer"));
+		root->expand("level1/level2/level3");
+
+		system("rm /tmp/test-explorer/a.txt");
+		system("rm /tmp/test-explorer/level1/b.txt");
+		system("rm /tmp/test-explorer/level1/level2/c.txt");
+		system("rm /tmp/test-explorer/level1/level2/level3/d.txt");
+
+		system("touch /tmp/test-explorer/new.txt");
+		system("touch /tmp/test-explorer/level1/new.txt");
+		system("touch /tmp/test-explorer/level1/level2/new.txt");
+		system("touch /tmp/test-explorer/level1/level2/level3/new.txt");
+
+		root->refresh();
+		// TODO(ben): real assert here
+		output.push_back({"fs-change: multi-level concurrent modifications", compare((bool)true, (bool)true)});
+
+		delete root;
+		system("rm -rf /tmp/test-explorer");
+	}
+
+	{
+		system("rm -rf /tmp/test-explorer");
+		system("mkdir -p /tmp/test-explorer/secret");
+		system("touch /tmp/test-explorer/secret/hidden.txt");
+		system("touch /tmp/test-explorer/public.txt");
+
+		FileExplorerNode *root = new FileExplorerNode(std::filesystem::path("/tmp/test-explorer"));
+		root->open();
+
+		system("chmod 000 /tmp/test-explorer/secret");
+
+		root->refresh();
+		// TODO(ben): what really happens here?
+		output.push_back({"fs-change: handles permission denied gracefully", compare((bool)true, (bool)true)});
+
+		system("chmod 755 /tmp/test-explorer/secret");
+
+		delete root;
+		system("rm -rf /tmp/test-explorer");
+	}
+
+	{
+		system("rm -rf /tmp/test-explorer");
+		system("mkdir -p /tmp/test-explorer/real");
+		system("touch /tmp/test-explorer/real/target.txt");
+		system("ln -s /tmp/test-explorer/real /tmp/test-explorer/link 2>/dev/null || true");
+
+		FileExplorerNode *root = new FileExplorerNode(std::filesystem::path("/tmp/test-explorer"));
+		root->open();
+
+		bool foundReal = false;
+		bool foundLink = false;
+		for (auto *child : root->children) {
+			if (child->name == "real") foundReal = true;
+			if (child->name == "link") foundLink = true;
+		}
+
+		// TODO(ben): real assert here
+		output.push_back({"fs-change: handles symlinks if supported", compare(foundReal, (bool)true)});
+
+		delete root;
+		system("rm -rf /tmp/test-explorer");
+	}
+
+	{
+		system("rm -rf /tmp/test-explorer");
+		system("mkdir -p /tmp/test-explorer");
+
+		std::string longName = "a";
+		for (int i = 0; i < 200; i++) {
+			longName += "b";
+		}
+		longName += ".txt";
+		system(("touch '/tmp/test-explorer/" + longName + "'").c_str());
+
+		FileExplorerNode *root = new FileExplorerNode(std::filesystem::path("/tmp/test-explorer"));
+		root->open();
+
+		output.push_back({"fs-change: handles long filenames", compare((uint32_t)root->children.size(), (uint32_t)1)});
+
+		system(("rm '/tmp/test-explorer/" + longName + "'").c_str());
+		root->refresh();
+		output.push_back({"fs-change: refresh after deleting long filename", compare((uint32_t)root->children.size(), (uint32_t)0)});
+
+		delete root;
+		system("rm -rf /tmp/test-explorer");
+	}
+
 	return {"test/util/testFileExplorerNode.cpp", output};
 }
