@@ -288,11 +288,13 @@ void sendNormalKeys(State *state, int32_t c) {
 		state->file->col = getIndexFirstNonSpace(state->file->data[state->file->row], getIndentCharacter(state));
 		setDotCommand(state, c);
 	} else if (c == 'u') {
+		state->dontComputeHistory = true;
 		if (state->file->historyPosition >= 0) {
 			state->file->row = applyDiff(state, state->file->history[state->file->historyPosition], true);
 			state->file->historyPosition--;
 		}
 	} else if (c == ctrl('r')) {
+		state->dontComputeHistory = true;
 		if (state->file->historyPosition < ((int32_t)state->file->history.size()) - 1) {
 			state->file->row = applyDiff(state, state->file->history[state->file->historyPosition + 1], false);
 			state->file->historyPosition++;

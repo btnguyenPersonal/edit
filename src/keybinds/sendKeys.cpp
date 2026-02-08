@@ -21,6 +21,7 @@ void sendKeys(State *state, int32_t c) {
 	if (state->mode != FIND && state->mode != GREP) {
 		assert(state->file);
 	}
+	state->dontComputeHistory = false;
 	if (c == KEY_MOUSE) {
 		state->keys.push_back({state->mode, getEscapedChar('\xFF', false)});
 	} else {

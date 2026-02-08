@@ -270,6 +270,7 @@ void State::init() {
 	this->recording = {false, 'w'};
 	this->selectAll = false;
 	this->dontRecordKey = false;
+	this->dontComputeHistory = false;
 	this->fileStack = std::vector<std::string>();
 	this->showFileStack = false;
 	this->fileStackIndex = 0;

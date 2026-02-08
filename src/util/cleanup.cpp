@@ -57,13 +57,13 @@ void cleanup(State *state, char c) {
 
 void history(State *state, char c) {
 	if (state->mode == NORMAL) {
-		std::vector<diffLine> diff = generateDiff(state->file->previousState, state->file->data);
-		state->file->previousState = state->file->data;
-		if (diff.size() != 0) {
-			if (c != ctrl('r') && c != 'u') {
+		if (!state->dontComputeHistory) {
+			std::vector<diffLine> diff = generateDiff(state->file->previousState, state->file->data);
+			if (diff.size() != 0) {
 				recordHistory(state, diff);
 			}
 		}
+		state->file->previousState = state->file->data;
 	}
 }
 

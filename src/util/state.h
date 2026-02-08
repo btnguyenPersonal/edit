@@ -148,6 +148,7 @@ class State {
 		bool searchBackwards;
 		bool pasteAsBlock;
 		bool dontRecordKey;
+		bool dontComputeHistory;
 		bool dontSave;
 		bool playingCommand;
 		Recording recording;
