@@ -13,7 +13,7 @@
 #include "../util/string.h"
 #include "../util/switchMode.h"
 #include "../util/textedit.h"
-#include "sendVisualKeys.h"
+#include "../util/visual.h"
 #include <ncurses.h>
 #include <string>
 #include <vector>

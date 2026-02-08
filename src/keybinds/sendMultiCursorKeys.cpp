@@ -11,7 +11,7 @@
 #include "../util/state.h"
 #include "../util/string.h"
 #include "../util/switchMode.h"
-#include "sendVisualKeys.h"
+#include "../util/visual.h"
 #include <ncurses.h>
 #include <string>
 #include <vector>

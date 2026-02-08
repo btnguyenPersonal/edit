@@ -1,6 +1,10 @@
 #include "visual.h"
 #include "render.h"
 #include "string.h"
+#include "repeat.h"
+#include "indent.h"
+#include "ctrl.h"
+#include "clipboard.h"
 
 bool isOpenParen(char c) {
 	return c == '(' || c == '{' || c == '[';
@@ -243,3 +247,316 @@ Position matchIt(State *state) {
 	}
 	return {state->file->row, state->file->col};
 }
+
+Bounds getBounds(State *state) {
+	Bounds bounds;
+	if (state->file->row < state->visual.row) {
+		bounds.minR = state->file->row;
+		bounds.minC = state->file->col;
+		bounds.maxR = state->visual.row;
+		bounds.maxC = state->visual.col;
+	} else if (state->file->row > state->visual.row) {
+		bounds.minR = state->visual.row;
+		bounds.minC = state->visual.col;
+		bounds.maxR = state->file->row;
+		bounds.maxC = state->file->col;
+	} else {
+		bounds.minR = state->visual.row;
+		bounds.maxR = state->file->row;
+		bounds.minC = std::min(state->file->col, state->visual.col);
+		bounds.maxC = std::max(state->file->col, state->visual.col);
+	}
+	return bounds;
+}
+
+void replaceAllWithChar(State *state, int32_t c) {
+	Bounds bounds = getBounds(state);
+	if (state->visualType == SELECT) {
+		uint32_t col = bounds.minC;
+		for (uint32_t row = bounds.minR; row < bounds.maxR; row++) {
+			while (col < state->file->data[row].size()) {
+				state->file->data[row][col] = c;
+				col++;
+			}
+			col = 0;
+		}
+		while (col <= bounds.maxC && col < state->file->data[bounds.maxR].size()) {
+			state->file->data[bounds.maxR][col] = c;
+			col++;
+		}
+	} else if (state->visualType == BLOCK) {
+		uint32_t min = std::min(bounds.minC, bounds.maxC);
+		uint32_t max = std::max(bounds.minC, bounds.maxC);
+		for (uint32_t row = bounds.minR; row <= bounds.maxR; row++) {
+			for (uint32_t col = min; col <= max; col++) {
+				if (col < state->file->data[row].size()) {
+					state->file->data[row][col] = c;
+				}
+			}
+		}
+	} else if (state->visualType == LINE) {
+		for (uint32_t row = bounds.minR; row <= bounds.maxR; row++) {
+			for (uint32_t col = 0; col < state->file->data[row].size(); col++) {
+				state->file->data[row][col] = c;
+			}
+		}
+	}
+}
+
+char changeCase(char c, bool upper, bool swap) {
+	if (swap) {
+		if (std::isupper(c)) {
+			return std::tolower(c);
+		}
+		return std::toupper(c);
+	} else if (upper) {
+		return std::toupper(c);
+	} else {
+		return std::tolower(c);
+	}
+}
+
+void changeCaseVisual(State *state, bool upper, bool swap) {
+	Bounds bounds = getBounds(state);
+	if (state->visualType == SELECT) {
+		uint32_t col = bounds.minC;
+		for (uint32_t row = bounds.minR; row < bounds.maxR; row++) {
+			while (col < state->file->data[row].size()) {
+				state->file->data[row][col] = changeCase(state->file->data[row][col], upper, swap);
+				col++;
+			}
+			col = 0;
+		}
+		while (col <= bounds.maxC && col < state->file->data[bounds.maxR].size()) {
+			state->file->data[bounds.maxR][col] = changeCase(state->file->data[bounds.maxR][col], upper, swap);
+			col++;
+		}
+	} else if (state->visualType == BLOCK) {
+		uint32_t min = std::min(bounds.minC, bounds.maxC);
+		uint32_t max = std::max(bounds.minC, bounds.maxC);
+		for (uint32_t row = bounds.minR; row <= bounds.maxR; row++) {
+			for (uint32_t col = min; col <= max; col++) {
+				if (col < state->file->data[row].size()) {
+					state->file->data[row][col] = changeCase(state->file->data[row][col], upper, swap);
+				}
+			}
+		}
+	} else if (state->visualType == LINE) {
+		for (uint32_t row = bounds.minR; row <= bounds.maxR; row++) {
+			for (uint32_t col = 0; col < state->file->data[row].size(); col++) {
+				state->file->data[row][col] = changeCase(state->file->data[row][col], upper, swap);
+			}
+		}
+	}
+}
+
+void sortReverseLines(State *state) {
+	Bounds bounds = getBounds(state);
+	std::vector<std::string> lines;
+	for (uint32_t i = bounds.minR; i <= bounds.maxR; i++) {
+		lines.push_back(state->file->data[i]);
+	}
+	std::sort(lines.begin(), lines.end(), std::greater<>());
+	int32_t index = 0;
+	for (uint32_t i = bounds.minR; i <= bounds.maxR; i++) {
+		state->file->data[i] = lines[index];
+		index++;
+	}
+}
+
+void sortLines(State *state) {
+	Bounds bounds = getBounds(state);
+	std::vector<std::string> lines;
+	for (uint32_t i = bounds.minR; i <= bounds.maxR; i++) {
+		lines.push_back(state->file->data[i]);
+	}
+	std::sort(lines.begin(), lines.end());
+	int32_t index = 0;
+	for (uint32_t i = bounds.minR; i <= bounds.maxR; i++) {
+		state->file->data[i] = lines[index];
+		index++;
+	}
+}
+
+void setStateFromWordPosition(State *state, WordPosition pos) {
+	if (pos.min != 0 || pos.max != 0) {
+		state->visual.col = pos.min;
+		state->file->col = pos.max;
+		state->visual.row = state->file->row;
+	}
+}
+
+void surroundParagraph(State *state, bool includeLastLine) {
+	auto start = state->file->row;
+	for (int32_t i = (int32_t)start; i >= 0; i--) {
+		if (state->file->data[i] == "") {
+			break;
+		} else {
+			start = i;
+		}
+	}
+	state->visual.row = start;
+	auto end = state->file->row;
+	for (uint32_t i = state->file->row; i < state->file->data.size(); i++) {
+		if (state->file->data[i] == "") {
+			if (includeLastLine) {
+				end = i;
+			}
+			break;
+		} else {
+			end = i;
+		}
+	}
+	state->file->row = end;
+}
+
+bool isValidMoveableChunk(State *state, Bounds bounds) {
+	int32_t start = getNumLeadingIndentCharacters(state, state->file->data[bounds.minR]);
+	for (uint32_t i = bounds.minR + 1; i <= bounds.maxR; i++) {
+		if (getNumLeadingIndentCharacters(state, state->file->data[i]) < start && state->file->data[i] != "") {
+			return false;
+		}
+	}
+	return true;
+}
+
+std::string getInVisual(State *state) {
+	return getInVisual(state, true);
+}
+
+std::string getInVisual(State *state, bool addNewlines) {
+	Bounds bounds = getBounds(state);
+	std::string clip = "";
+	if (state->visualType == BLOCK) {
+		uint32_t min = std::min(bounds.minC, bounds.maxC);
+		uint32_t max = std::max(bounds.minC, bounds.maxC);
+		for (uint32_t i = bounds.minR; i <= bounds.maxR; i++) {
+			clip += safeSubstring(state->file->data[i], min, max + 1 - min);
+			if (addNewlines) {
+				clip += "\n";
+			}
+		}
+	} else if (state->visualType == LINE) {
+		for (size_t i = bounds.minR; i <= bounds.maxR; i++) {
+			clip += state->file->data[i];
+			if (addNewlines) {
+				clip += "\n";
+			}
+		}
+	} else if (state->visualType == SELECT) {
+		uint32_t index = bounds.minC;
+		for (size_t i = bounds.minR; i < bounds.maxR; i++) {
+			while (index < state->file->data[i].size()) {
+				clip += state->file->data[i][index];
+				index += 1;
+			}
+			index = 0;
+			if (addNewlines) {
+				clip += "\n";
+			}
+		}
+		clip += safeSubstring(state->file->data[bounds.maxR], index, bounds.maxC - index + 1);
+	}
+	return clip;
+}
+
+Position changeInVisual(State *state) {
+	Bounds bounds = getBounds(state);
+	Position pos = Position();
+	pos.row = bounds.minR;
+	pos.col = bounds.minC;
+	if (state->visualType == LINE) {
+		state->file->data.erase(state->file->data.begin() + bounds.minR, state->file->data.begin() + bounds.maxR);
+		state->file->data[bounds.minR] = std::string("");
+	} else if (state->visualType == BLOCK) {
+		deleteInVisual(state);
+		uint32_t min = std::min(bounds.minC, bounds.maxC);
+		pos.col = min;
+	} else if (state->visualType == SELECT) {
+		std::string firstPart = "";
+		std::string secondPart = "";
+		if (bounds.minC <= state->file->data[bounds.minR].length()) {
+			firstPart = safeSubstring(state->file->data[bounds.minR], 0, bounds.minC);
+		}
+		if (bounds.maxC < state->file->data[bounds.maxR].length()) {
+			secondPart = safeSubstring(state->file->data[bounds.maxR], bounds.maxC + 1);
+		}
+		state->file->data[bounds.minR] = firstPart + secondPart;
+		state->file->data.erase(state->file->data.begin() + bounds.minR + 1, state->file->data.begin() + bounds.maxR + 1);
+	}
+	return pos;
+}
+
+Position copyInVisualSystem(State *state) {
+	Bounds bounds = getBounds(state);
+	Position pos = Position();
+	pos.row = bounds.minR;
+	pos.col = bounds.minC;
+	copyToClipboard(state, getInVisual(state), true);
+	state->pasteAsBlock = state->mode == VISUAL && state->visualType == BLOCK;
+	return pos;
+}
+
+Position copyInVisual(State *state) {
+	Bounds bounds = getBounds(state);
+	Position pos = Position();
+	pos.row = bounds.minR;
+	pos.col = bounds.minC;
+	copyToClipboard(state, getInVisual(state), false);
+	state->pasteAsBlock = state->mode == VISUAL && state->visualType == BLOCK;
+	return pos;
+}
+
+Position deleteInVisual(State *state) {
+	Bounds bounds = getBounds(state);
+	Position pos = Position();
+	pos.row = bounds.minR;
+	pos.col = bounds.minC;
+	if (state->visualType == LINE) {
+		state->file->data.erase(state->file->data.begin() + bounds.minR, state->file->data.begin() + bounds.maxR + 1);
+	} else if (state->visualType == BLOCK) {
+		uint32_t min = std::min(bounds.minC, bounds.maxC);
+		uint32_t max = std::max(bounds.minC, bounds.maxC);
+		for (uint32_t i = bounds.minR; i <= bounds.maxR; i++) {
+			std::string firstPart = safeSubstring(state->file->data[i], 0, min);
+			std::string secondPart = safeSubstring(state->file->data[i], max + 1);
+			state->file->data[i] = firstPart + secondPart;
+		}
+		pos.col = min;
+	} else if (state->visualType == SELECT) {
+		std::string firstPart = "";
+		std::string secondPart = "";
+		if (bounds.minC <= state->file->data[bounds.minR].length()) {
+			firstPart = safeSubstring(state->file->data[bounds.minR], 0, bounds.minC);
+		}
+		if (bounds.maxC < state->file->data[bounds.maxR].length()) {
+			secondPart = safeSubstring(state->file->data[bounds.maxR], bounds.maxC + 1);
+		}
+		state->file->data[bounds.minR] = firstPart + secondPart;
+		state->file->data.erase(state->file->data.begin() + bounds.minR + 1, state->file->data.begin() + bounds.maxR + 1);
+	}
+	return pos;
+}
+
+void swapChars(std::vector<int32_t> &v, int32_t x, int32_t y) {
+	for (uint32_t i = 0; i < v.size(); i++) {
+		if (v[i] == x) {
+			v[i] = y;
+		} else if (v[i] == y) {
+			v[i] = x;
+		}
+	}
+}
+
+void logDotCommand(State *state) {
+	if (state->file->row < state->visual.row) {
+		swapChars(state->motion, 'j', 'k');
+		swapChars(state->motion, '[', ']');
+		swapChars(state->motion, '{', '}');
+		swapChars(state->motion, ctrl('u'), ctrl('d'));
+	}
+	setDotCommand(state, state->motion);
+	state->prevKeys = "";
+	state->motion.clear();
+}
+

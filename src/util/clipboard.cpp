@@ -1,6 +1,5 @@
 #include "clipboard.h"
-// TODO(ben): remove this eventually
-#include "../keybinds/sendVisualKeys.h"
+#include "visual.h"
 #include "bounds.h"
 #include "external.h"
 #include "fileops.h"
