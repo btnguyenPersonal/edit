@@ -1,5 +1,6 @@
 #include "util/testAutocomplete.h"
 #include "util/testEasilyBreakableThings.h"
+#include "util/testFileExplorerNode.h"
 #include "util/testHistory.h"
 #include "util/testInsertLoggingCode.h"
 #include "util/testMovement.h"
@@ -56,6 +57,7 @@ int main() {
 	printSuiteRun(testRender());
 	printSuiteRun(testEasilyBreakableThings());
 	printSuiteRun(testHistory());
+	printSuiteRun(testFileExplorerNode());
 	printSuiteRun(ratchet());
 	printPassFail();
 }

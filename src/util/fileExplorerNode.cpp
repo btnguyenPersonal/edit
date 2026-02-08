@@ -18,6 +18,9 @@ void FileExplorerNode::close() {
 }
 
 int32_t FileExplorerNode::getChildIndex(FileExplorerNode *node) {
+	if (node == nullptr) {
+		return 0;
+	}
 	FileExplorerNode *current = this;
 	int32_t output = 0;
 	for (uint32_t j = 0; j < current->children.size(); j++) {

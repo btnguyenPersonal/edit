@@ -136,5 +136,209 @@ struct testSuiteRun testHistory() {
 		});
 	}
 
+	{
+		State *state = new State("./test-file.h", {"original"});
+		std::string originalData = state->file->data[0];
+		int32_t originalHistoryPosition = state->file->historyPosition;
+
+		sendKeys(state, 'u');
+		cleanup(state, 'u');
+		history(state, 'u');
+
+		output.push_back({
+			"undo at start should not change data",
+			compare(state->file->data[0] == originalData, true)
+		});
+		output.push_back({
+			"undo at start should not change historyPosition",
+			compare(state->file->historyPosition == originalHistoryPosition, true)
+		});
+	}
+
+	{
+		State *state = new State("./test-file.h", {"original"});
+		std::string originalData = state->file->data[0];
+		int32_t originalHistoryPosition = state->file->historyPosition;
+
+		sendKeys(state, ctrl('r'));
+		cleanup(state, ctrl('r'));
+		history(state, ctrl('r'));
+
+		output.push_back({
+			"redo when nothing to redo should not change data",
+			compare(state->file->data[0] == originalData, true)
+		});
+		output.push_back({
+			"redo when nothing to redo should not change historyPosition",
+			compare(state->file->historyPosition == originalHistoryPosition, true)
+		});
+	}
+
+	{
+		State *state = new State("./test-file.h", {"initial"});
+
+		for (int i = 0; i < 10; i++) {
+			sendKeys(state, 'x');
+			cleanup(state, 'x');
+			history(state, 'x');
+		}
+
+		std::string dataAfterChanges = state->file->data[0];
+
+		for (int i = 0; i < 10; i++) {
+			sendKeys(state, 'u');
+			cleanup(state, 'u');
+			history(state, 'u');
+		}
+
+		output.push_back({
+			"mass undo should restore original data",
+			compare(state->file->data[0] == "initial", true)
+		});
+
+		for (int i = 0; i < 10; i++) {
+			sendKeys(state, ctrl('r'));
+			cleanup(state, ctrl('r'));
+			history(state, ctrl('r'));
+		}
+
+		output.push_back({
+			"mass redo should restore data after changes",
+			compare(state->file->data[0] == dataAfterChanges, true)
+		});
+	}
+
+	{
+		State *state = new State("./test-file.h", {"start"});
+
+		sendKeys(state, 'x');
+		cleanup(state, 'x');
+		history(state, 'x');
+
+		std::string afterFirst = state->file->data[0];
+
+		sendKeys(state, 'u');
+		cleanup(state, 'u');
+		history(state, 'u');
+
+		sendKeys(state, ctrl('r'));
+		cleanup(state, ctrl('r'));
+		history(state, ctrl('r'));
+
+		output.push_back({
+			"complex: redo after undo restores change",
+			compare(state->file->data[0] == afterFirst, true)
+		});
+
+		sendKeys(state, 'x');
+		cleanup(state, 'x');
+		history(state, 'x');
+
+		sendKeys(state, 'u');
+		cleanup(state, 'u');
+		history(state, 'u');
+
+		sendKeys(state, 'u');
+		cleanup(state, 'u');
+		history(state, 'u');
+
+		output.push_back({
+			"complex: double undo goes back to start",
+			compare(state->file->data[0] == "start", true)
+		});
+	}
+
+	{
+		State *state = new State("./test-file.h", {"truncation test"});
+
+		sendKeys(state, 'x');
+		cleanup(state, 'x');
+		history(state, 'x');
+
+		sendKeys(state, 'x');
+		cleanup(state, 'x');
+		history(state, 'x');
+
+		uint32_t historySizeBefore = state->file->history.size();
+
+		sendKeys(state, 'u');
+		cleanup(state, 'u');
+		history(state, 'u');
+
+		int32_t positionAfterUndo = state->file->historyPosition;
+
+		sendKeys(state, 'x');
+		cleanup(state, 'x');
+		history(state, 'x');
+
+		output.push_back({
+			"truncation: history size should be 2 after truncate",
+			compare((uint32_t)state->file->history.size(), (uint32_t)2)
+		});
+
+		output.push_back({
+			"truncation: position should be at end after new edit",
+			compareInt(state->file->historyPosition, 1)
+		});
+	}
+
+	{
+		State *state = new State("./test-file.h", {"overflow test"});
+
+		sendKeys(state, 'x');
+		cleanup(state, 'x');
+		history(state, 'x');
+
+		std::string originalData = state->file->data[0];
+		int32_t originalPosition = state->file->historyPosition;
+
+		for (int i = 0; i < 20; i++) {
+			sendKeys(state, 'u');
+			cleanup(state, 'u');
+			history(state, 'u');
+		}
+
+		output.push_back({
+			"overflow: position should be -1 after many undos",
+			compareInt(state->file->historyPosition, -1)
+		});
+
+		for (int i = 0; i < 20; i++) {
+			sendKeys(state, ctrl('r'));
+			cleanup(state, ctrl('r'));
+			history(state, ctrl('r'));
+		}
+
+		output.push_back({
+			"overflow: position should be at last entry after many redos",
+			compareInt(state->file->historyPosition, originalPosition)
+		});
+	}
+
+	{
+		State *state = new State("./test-file.h", {"interleaved"});
+
+		sendKeys(state, 'x');
+		cleanup(state, 'x');
+		history(state, 'x');
+
+		int32_t pos1 = state->file->historyPosition;
+
+		for (int i = 0; i < 5; i++) {
+			sendKeys(state, 'u');
+			cleanup(state, 'u');
+			history(state, 'u');
+
+			sendKeys(state, ctrl('r'));
+			cleanup(state, ctrl('r'));
+			history(state, ctrl('r'));
+		}
+
+		output.push_back({
+			"interleaved: undo/redo cycle returns to same position",
+			compareInt(state->file->historyPosition, pos1)
+		});
+	}
+
 	return {"testHistory", output};
 }
