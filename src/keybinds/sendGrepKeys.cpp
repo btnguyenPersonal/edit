@@ -17,7 +17,7 @@
 void sendGrepKeys(State *state, int32_t c) {
 	state->grepMutex.lock();
 	std::string cachedGrepString = state->grep.query;
-	if (c == KEY_ESCAPE) {
+	if (c == KEY_ESCAPE || c == ctrl('c')) {
 		switchMode(state, NORMAL);
 	} else if (c == KEY_LEFT) {
 		moveCursorLeft(&state->grep);

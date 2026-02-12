@@ -10,9 +10,45 @@
 
 std::string getCommentSymbol(const std::string &filename) {
 	std::string extension = getExtension(filename);
-	if (extension == "js" || extension == "jsx" || extension == "ts" || extension == "tsx" || extension == "cc" || extension == "cpp" || extension == "hpp" || extension == "c" || extension == "h" || extension == "java" || extension == "cs" || extension == "go" || extension == "php" || extension == "rs" || extension == "css" || extension == "scss" || extension == "vb" || extension == "lua") {
+	if (
+		extension == "js"
+		|| extension == "jsx"
+		|| extension == "ts"
+		|| extension == "tsx"
+		|| extension == "cc"
+		|| extension == "cpp"
+		|| extension == "hpp"
+		|| extension == "c"
+		|| extension == "h"
+		|| extension == "java"
+		|| extension == "cs"
+		|| extension == "go"
+		|| extension == "php"
+		|| extension == "rs"
+		|| extension == "css"
+		|| extension == "scss"
+		|| extension == "vb"
+		|| extension == "lua"
+		|| extension == "scad"
+	) {
 		return "//";
-	} else if (extension == "py" || extension == "sh" || extension == "bash" || extension == "rb" || extension == "pl" || extension == "pm" || extension == "r" || extension == "yaml" || extension == "yml" || extension == "bashrc" || extension == "zshrc" || extension == "Makefile" || extension == "md" || extension == "gitignore" || extension == "env") {
+	} else if (
+		extension == "py"
+		|| extension == "sh"
+		|| extension == "bash"
+		|| extension == "rb"
+		|| extension == "pl"
+		|| extension == "pm"
+		|| extension == "r"
+		|| extension == "yaml"
+		|| extension == "yml"
+		|| extension == "bashrc"
+		|| extension == "zshrc"
+		|| extension == "Makefile"
+		|| extension == "md"
+		|| extension == "gitignore"
+		|| extension == "env"
+	) {
 		return "#";
 	} else if (extension == "html" || extension == "xml" || extension == "xhtml" || extension == "svg") {
 		return "<!--";
