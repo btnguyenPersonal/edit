@@ -40,8 +40,6 @@ perf:
 	- paste into terminal fast dont have to use gp gy
 	- speed up history somehow, takes even longer for large files
 
-fix mouse not going to col
-
 crash:
 	- ctrl r crash
 	- wrap all the places we use std::filesystem in try/catch

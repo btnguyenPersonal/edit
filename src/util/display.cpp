@@ -129,7 +129,7 @@ uint32_t getColFromDisplay(State *state, int32_t row, int32_t col) {
 		}
 		return sum;
 	} else {
-		return state->file->col;
+		return col;
 	}
 }
 
