@@ -90,6 +90,14 @@ void FileExplorerNode::sortChildren() {
 
 void FileExplorerNode::refresh() {
 	try {
+		if (!this->isFolder && std::filesystem::is_directory(this->path)) {
+			this->isFolder = true;
+		}
+		if (this->isFolder && !std::filesystem::is_directory(this->path)) {
+			this->isFolder = false;
+			this->isOpen = false;
+			this->children.clear();
+		}
 		if (this->isFolder && this->isOpen) {
 			std::vector<FileExplorerNode *> newChildren;
 			bool found = false;

@@ -313,7 +313,6 @@ struct testSuiteRun testFileExplorerNode() {
 
 		system("rm /tmp/test-explorer/file1.txt");
 
-		// TODO(ben): this shouldn't keep stale data or make all the operations after see if file exists
 		uint32_t sizeBeforeRefresh = root->children.size();
 		output.push_back({"fs-change: node keeps stale data before refresh", compare(sizeBeforeRefresh == (uint32_t)3, (bool)true)});
 
@@ -385,13 +384,14 @@ struct testSuiteRun testFileExplorerNode() {
 
 		system("rm -rf /tmp/test-explorer/a");
 
-		// TODO(ben): make another test for the full delete of test-explorer
 		root->refresh();
 		output.push_back({"fs-change: refresh after full delete doesn't crash", compare((bool)true, (bool)true)});
 
 		delete root;
 		system("rm -rf /tmp/test-explorer");
 	}
+
+	// TODO(ben): make another test for the full delete of test-explorer root folder
 
 	{
 		system("rm -rf /tmp/test-explorer");
@@ -409,9 +409,33 @@ struct testSuiteRun testFileExplorerNode() {
 
 		root->refresh();
 
-		// TODO(ben): fix .cpp to update if folder or file and vice versa
 		bool pathCorrect = (root->children[0]->path.filename() == "switch.txt");
 		output.push_back({"fs-change: refresh preserves path on file->folder switch", compare(wasFile && pathCorrect, (bool)true)});
+		output.push_back({"fs-change: refresh sets isFolder to false on file->folder switch", compare((bool)root->children[0]->isFolder, true)});
+
+		delete root;
+		system("rm -rf /tmp/test-explorer");
+	}
+
+	{
+		system("rm -rf /tmp/test-explorer");
+		system("mkdir -p /tmp/test-explorer/switch.txt");
+		system("touch /tmp/test-explorer/switch.txt/inside.txt");
+
+		FileExplorerNode *root = new FileExplorerNode(std::filesystem::path("/tmp/test-explorer"));
+		root->open();
+
+		bool wasFolder = root->children[0]->isFolder;
+
+		system("rm -rf /tmp/test-explorer/switch.txt");
+		system("mkdir -p /tmp/test-explorer");
+		system("touch /tmp/test-explorer/switch.txt");
+
+		root->refresh();
+
+		bool pathCorrect = (root->children[0]->path.filename() == "switch.txt");
+		output.push_back({"fs-change: refresh preserves path on file->folder switch", compare(wasFolder && pathCorrect, (bool)true)});
+		output.push_back({"fs-change: refresh sets isFolder to false on file->folder switch", compare((bool)root->children[0]->isFolder, false)});
 
 		delete root;
 		system("rm -rf /tmp/test-explorer");

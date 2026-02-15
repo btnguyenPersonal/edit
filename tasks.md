@@ -34,6 +34,7 @@
 	[ ] normalKeys
 
 perf:
+	- look into cleaning up explorer->root.children correctly?? does it have dangling pointers?
 	- use trace() to see all the ncurses calls
 	- multiline comments render fast
 	- very long lines render fast
