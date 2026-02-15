@@ -50,8 +50,6 @@ improve autocomplete:
 	- autocomplete allow pressing tab multiple times
 	- maybe have autocomplete also scan the other harpooned files?
 
-don't move file explorer cursor all the time, and just press = to refocus
-
 Use  the  addchstr()  family  of functions for fast screen-painting of
    text  when  you  know the text doesn't contain any control characters.
    Try  to  make  attribute changes infrequent on your screens. Don't use
@@ -59,8 +57,6 @@ Use  the  addchstr()  family  of functions for fast screen-painting of
 
 use getnstr(); << don't know how this works with mouse input
 (maybe do some kind of test to see if there is two inputs, then use ungetch and start using getnstr() <- note backspace will work with this)
-
-copy/paste to system clipboard in background
 
 get multiline cached and only recalculated every second
 
@@ -70,8 +66,6 @@ remove ncurses capturing all keyboard input, why is it so slow?? is that as fast
 - faster way to do input, needs to work for pasting a million lines
 
 get rid of wrap bool in renderPixels, make renderPixelsWrap
-
-clean up paste functions in clipboard
 
 repeat number keys
 

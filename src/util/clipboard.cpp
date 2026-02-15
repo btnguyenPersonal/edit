@@ -55,8 +55,18 @@ void osc52copy(std::string clip) {
 	}
 }
 
+bool useLocalClipboard(State *state, bool useSystemClipboard) {
+	if (state->dontRecordKey) {
+		return true;
+	}
+	if (state->options.use_system_clipboard) {
+		return false;
+	}
+	return !useSystemClipboard;
+}
+
 std::string getFromClipboard(State *state, bool useSystemClipboard) {
-	if (!useSystemClipboard || state->dontRecordKey) {
+	if (useLocalClipboard(state, useSystemClipboard)) {
 		return state->clipboard;
 	}
 	state->pasteAsBlock = false;
@@ -249,7 +259,7 @@ Bounds pasteVisual(State *state, std::string text) {
 
 void copyToClipboard(State *state, const std::string &clip, bool useSystemClipboard) {
 	state->clipboard = clip;
-	if (!useSystemClipboard || state->dontRecordKey) {
+	if (useLocalClipboard(state, useSystemClipboard)) {
 		return;
 	}
 	osc52copy(clip);

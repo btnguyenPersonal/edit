@@ -98,6 +98,7 @@ void State::readConfigLine(const std::string &line) {
 	this->readBoolConfigValue(this->options.autosave, "autosave", line);
 	this->readBoolConfigValue(this->options.autoload, "autoload", line);
 	this->readBoolConfigValue(this->options.wordwrap, "wordwrap", line);
+	this->readBoolConfigValue(this->options.use_system_clipboard, "use_system_clipboard", line);
 	this->readBoolConfigValue(this->options.insert_final_newline, "insert_final_newline", line);
 	this->readStringConfigValue(this->options.indent_style, "indent_style", line);
 	this->readUintConfigValue(this->options.indent_size, "indent_size", line);
