@@ -25,6 +25,7 @@ void computeFrame(State *state) {
 		startCheckpoint(state->debug, "autoloadFile", state->timers);
 		autoloadFile(state);
 		startCheckpoint(state->debug, "cleanup", state->timers);
+		state->skipSetHardCol = true;
 		cleanup(state);
 	}
 

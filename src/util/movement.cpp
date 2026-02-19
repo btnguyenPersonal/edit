@@ -174,8 +174,8 @@ void down(State *state) {
 	if (state->file->row < state->file->data.size() - 1) {
 		state->file->row += 1;
 		state->file->col = getNormalizedCol(state, state->file->hardCol);
-		state->skipSetHardCol = true;
 	}
+	state->skipSetHardCol = true;
 	if (isOffScreenVertical(state)) {
 		while (isOffScreenVertical(state) && state->file->windowPosition.row <= state->file->data.size()) {
 			state->file->windowPosition.row += 1;
@@ -217,8 +217,8 @@ void up(State *state) {
 	if (state->file->row > 0) {
 		state->file->row -= 1;
 		state->file->col = getNormalizedCol(state, state->file->hardCol);
-		state->skipSetHardCol = true;
 	}
+	state->skipSetHardCol = true;
 	if (isOffScreenVertical(state)) {
 		state->file->windowPosition.row -= 1;
 	}
@@ -248,8 +248,8 @@ void upScreen(State *state) {
 		state->file->row -= 1;
 		state->file->windowPosition.row -= 1;
 		state->file->col = getNormalizedCol(state, state->file->hardCol);
-		state->skipSetHardCol = true;
 	}
+	state->skipSetHardCol = true;
 }
 
 void downScreen(State *state) {
@@ -257,8 +257,8 @@ void downScreen(State *state) {
 		state->file->row += 1;
 		state->file->windowPosition.row += 1;
 		state->file->col = getNormalizedCol(state, state->file->hardCol);
-		state->skipSetHardCol = true;
 	}
+	state->skipSetHardCol = true;
 }
 
 void upHalfScreen(State *state) {
