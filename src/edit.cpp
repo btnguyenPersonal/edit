@@ -36,7 +36,7 @@ int32_t main(int32_t argc, char *argv[]) {
 		for (uint32_t i = 0; i < command.length(); i++) {
 			sendKeys(state, command[i]);
 			cleanup(state, command[i]);
-			history(state, command[i]);
+			history(state);
 		}
 		saveFile(state);
 	} else {

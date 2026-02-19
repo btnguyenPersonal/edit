@@ -13,7 +13,7 @@ struct testSuiteRun testHistory() {
 
 		sendKeys(state, 'x');
 		cleanup(state, 'x');
-		history(state, 'x');
+		history(state);
 
 		output.push_back({
 			"normal command recorded",
@@ -33,14 +33,14 @@ struct testSuiteRun testHistory() {
 
 		sendKeys(state, 'x');
 		cleanup(state, 'x');
-		history(state, 'x');
+		history(state);
 
 		std::string dataBeforeUndo = state->file->data[0];
 		uint32_t historySizeBeforeUndo = state->file->history.size();
 
 		sendKeys(state, 'u');
 		cleanup(state, 'u');
-		history(state, 'u');
+		history(state);
 
 		output.push_back({
 			"undo command not recorded",
@@ -62,17 +62,17 @@ struct testSuiteRun testHistory() {
 		State *state = new State("./test-file.h", {"hello"});
 		sendKeys(state, 'x');
 		cleanup(state, 'x');
-		history(state, 'x');
+		history(state);
 		sendKeys(state, 'u');
 		cleanup(state, 'u');
-		history(state, 'u');
+		history(state);
 
 		std::string dataBeforeRedo = state->file->data[0];
 		uint32_t historySizeBeforeRedo = state->file->history.size();
 
 		sendKeys(state, ctrl('r'));
 		cleanup(state, ctrl('r'));
-		history(state, ctrl('r'));
+		history(state);
 
 		output.push_back({
 			"redo command not recorded",
@@ -94,10 +94,10 @@ struct testSuiteRun testHistory() {
 
 		sendKeys(state, 'g');
 		cleanup(state, 'g');
-		history(state, 'g');
+		history(state);
 		sendKeys(state, 'u');
 		cleanup(state, 'u');
-		history(state, 'u');
+		history(state);
 
 		output.push_back({
 			"visual 'u' command recorded",
@@ -115,7 +115,7 @@ struct testSuiteRun testHistory() {
 
 		sendKeys(state, 'u');
 		cleanup(state, 'u');
-		history(state, 'u');
+		history(state);
 
 		sendKeys(state, 'x');
 
@@ -143,7 +143,7 @@ struct testSuiteRun testHistory() {
 
 		sendKeys(state, 'u');
 		cleanup(state, 'u');
-		history(state, 'u');
+		history(state);
 
 		output.push_back({
 			"undo at start should not change data",
@@ -162,7 +162,7 @@ struct testSuiteRun testHistory() {
 
 		sendKeys(state, ctrl('r'));
 		cleanup(state, ctrl('r'));
-		history(state, ctrl('r'));
+		history(state);
 
 		output.push_back({
 			"redo when nothing to redo should not change data",
@@ -180,7 +180,7 @@ struct testSuiteRun testHistory() {
 		for (int i = 0; i < 10; i++) {
 			sendKeys(state, 'x');
 			cleanup(state, 'x');
-			history(state, 'x');
+			history(state);
 		}
 
 		std::string dataAfterChanges = state->file->data[0];
@@ -188,7 +188,7 @@ struct testSuiteRun testHistory() {
 		for (int i = 0; i < 10; i++) {
 			sendKeys(state, 'u');
 			cleanup(state, 'u');
-			history(state, 'u');
+			history(state);
 		}
 
 		output.push_back({
@@ -199,7 +199,7 @@ struct testSuiteRun testHistory() {
 		for (int i = 0; i < 10; i++) {
 			sendKeys(state, ctrl('r'));
 			cleanup(state, ctrl('r'));
-			history(state, ctrl('r'));
+			history(state);
 		}
 
 		output.push_back({
@@ -213,17 +213,17 @@ struct testSuiteRun testHistory() {
 
 		sendKeys(state, 'x');
 		cleanup(state, 'x');
-		history(state, 'x');
+		history(state);
 
 		std::string afterFirst = state->file->data[0];
 
 		sendKeys(state, 'u');
 		cleanup(state, 'u');
-		history(state, 'u');
+		history(state);
 
 		sendKeys(state, ctrl('r'));
 		cleanup(state, ctrl('r'));
-		history(state, ctrl('r'));
+		history(state);
 
 		output.push_back({
 			"complex: redo after undo restores change",
@@ -232,15 +232,15 @@ struct testSuiteRun testHistory() {
 
 		sendKeys(state, 'x');
 		cleanup(state, 'x');
-		history(state, 'x');
+		history(state);
 
 		sendKeys(state, 'u');
 		cleanup(state, 'u');
-		history(state, 'u');
+		history(state);
 
 		sendKeys(state, 'u');
 		cleanup(state, 'u');
-		history(state, 'u');
+		history(state);
 
 		output.push_back({
 			"complex: double undo goes back to start",
@@ -253,23 +253,23 @@ struct testSuiteRun testHistory() {
 
 		sendKeys(state, 'x');
 		cleanup(state, 'x');
-		history(state, 'x');
+		history(state);
 
 		sendKeys(state, 'x');
 		cleanup(state, 'x');
-		history(state, 'x');
+		history(state);
 
 		uint32_t historySizeBefore = state->file->history.size();
 
 		sendKeys(state, 'u');
 		cleanup(state, 'u');
-		history(state, 'u');
+		history(state);
 
 		int32_t positionAfterUndo = state->file->historyPosition;
 
 		sendKeys(state, 'x');
 		cleanup(state, 'x');
-		history(state, 'x');
+		history(state);
 
 		output.push_back({
 			"truncation: history size should be 2 after truncate",
@@ -287,7 +287,7 @@ struct testSuiteRun testHistory() {
 
 		sendKeys(state, 'x');
 		cleanup(state, 'x');
-		history(state, 'x');
+		history(state);
 
 		std::string originalData = state->file->data[0];
 		int32_t originalPosition = state->file->historyPosition;
@@ -295,7 +295,7 @@ struct testSuiteRun testHistory() {
 		for (int i = 0; i < 20; i++) {
 			sendKeys(state, 'u');
 			cleanup(state, 'u');
-			history(state, 'u');
+			history(state);
 		}
 
 		output.push_back({
@@ -306,7 +306,7 @@ struct testSuiteRun testHistory() {
 		for (int i = 0; i < 20; i++) {
 			sendKeys(state, ctrl('r'));
 			cleanup(state, ctrl('r'));
-			history(state, ctrl('r'));
+			history(state);
 		}
 
 		output.push_back({
@@ -320,18 +320,18 @@ struct testSuiteRun testHistory() {
 
 		sendKeys(state, 'x');
 		cleanup(state, 'x');
-		history(state, 'x');
+		history(state);
 
 		int32_t pos1 = state->file->historyPosition;
 
 		for (int i = 0; i < 5; i++) {
 			sendKeys(state, 'u');
 			cleanup(state, 'u');
-			history(state, 'u');
+			history(state);
 
 			sendKeys(state, ctrl('r'));
 			cleanup(state, ctrl('r'));
-			history(state, ctrl('r'));
+			history(state);
 		}
 
 		output.push_back({

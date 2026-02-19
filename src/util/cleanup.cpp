@@ -55,7 +55,7 @@ void cleanup(State *state, char c) {
 	cleanup(state);
 }
 
-void history(State *state, char c) {
+void history(State *state) {
 	if (state->mode == NORMAL) {
 		if (!state->dontComputeHistory) {
 			std::vector<diffLine> diff = generateDiff(state->file->previousState, state->file->data);

@@ -89,30 +89,30 @@ int main() {
 	sendFindKeys(state, 's');
 	generateFindOutput(state);
 	cleanup(state, 's');
-	history(state, 's');
+	history(state);
 	renderScreen(state, false);
 
 	sendFindKeys(state, 't');
 	generateFindOutput(state);
 	cleanup(state, 't');
-	history(state, 't');
+	history(state);
 	renderScreen(state, false);
 
 	sendFindKeys(state, 'a');
 	generateFindOutput(state);
 	cleanup(state, 'a');
-	history(state, 'a');
+	history(state);
 	renderScreen(state, false);
 
 	sendFindKeys(state, 't');
 	generateFindOutput(state);
 	cleanup(state, 't');
-	history(state, 't');
+	history(state);
 	renderScreen(state, false);
 
 	sendFindKeys(state, 'e');
 	generateFindOutput(state);
 	cleanup(state, 'e');
-	history(state, 'e');
+	history(state);
 	renderScreen(state, false);
 }

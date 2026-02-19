@@ -41,7 +41,7 @@ void computeFrame(State *state) {
 	}
 	if (sentKey) {
 		startCheckpoint(state->debug, "history", state->timers);
-		history(state, c);
+		history(state);
 	}
 
 	startCheckpoint(state->debug, "==== autosaveFile logic ====", state->timers);
