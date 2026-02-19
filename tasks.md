@@ -1,5 +1,7 @@
 ## tasks
 
+- dont be bad, use a debugger
+
 - more tests
 	[x] string
 	[x] autocomplete
