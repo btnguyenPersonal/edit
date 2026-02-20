@@ -6,6 +6,8 @@ does gdb have a way to set breakpoints from a file?
 thinking gdb --breakpoints=~/.config/e/%home%git%ben%edit.breakpoints ./build/e
 ^ put in Makefile
 keybinds to make breakpoints on command, is there some way to make it easier??
+keybind jump between all breakpoints in project
+is there a way to get from gdb where your debugging cursor is, could autoload that so editor is always there?
 
 - more tests
 	[x] string
