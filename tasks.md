@@ -9,6 +9,8 @@ keybinds to make breakpoints on command, is there some way to make it easier??
 keybind jump between all breakpoints in project
 is there a way to get from gdb where your debugging cursor is, could autoload that so editor is always there?
 
+reconnect to open editor if already on same current directory and trying to open with the +15 rowNum version?
+
 - more tests
 	[x] string
 	[x] autocomplete
