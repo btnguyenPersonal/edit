@@ -205,6 +205,10 @@ void sendNormalKeys(State *state, int32_t c) {
 		state->status = state->file->filename;
 		copyToClipboard(state, state->file->filename, true);
 		state->prevKeys = "";
+	} else if (state->prevKeys == "g" && c == ':') {
+		state->status = state->file->filename + ":" + std::to_string(state->file->row + 1);
+		copyToClipboard(state, state->status, true);
+		state->prevKeys = "";
 	} else if (state->prevKeys == "g" && c == 'f') {
 		state->prevKeys = "";
 		std::vector<std::string> extensions = {"", ".js", ".jsx", ".ts", ".tsx"};

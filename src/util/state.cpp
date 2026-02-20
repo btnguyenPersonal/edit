@@ -106,6 +106,7 @@ void State::readConfigLine(const std::string &line) {
 
 void State::setDefaultOptions() {
 	this->options.insert_final_newline = false;
+	this->options.use_system_clipboard = true;
 	this->options.autosave = true;
 	this->options.autoload = true;
 	this->options.keysSize = 30;
