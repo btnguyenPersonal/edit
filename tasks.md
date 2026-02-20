@@ -1,6 +1,11 @@
 ## tasks
 
 - dont be bad, use a debugger
+- debugger mass save breakpoints and delete breakpoints based on debugger file, and point to correct one when launching gdb
+does gdb have a way to set breakpoints from a file?
+thinking gdb --breakpoints=~/.config/e/%home%git%ben%edit.breakpoints ./build/e
+^ put in Makefile
+keybinds to make breakpoints on command, is there some way to make it easier??
 
 - more tests
 	[x] string
