@@ -674,7 +674,7 @@ int32_t renderLineContent(State *state, int32_t row, int32_t renderRow, Cursor *
 		std::vector<override> overrides;
 		bool mergeConflict = isMergeConflict(state->file->data[row]);
 		uint32_t col = 0;
-		startCheckpoint(state, "Overrun check", state->timers);
+		startCheckpoint(state->debug, "Overrun check", state->timers);
 		if (getDisplayRows(state, row) > state->maxY) {
 			int32_t width = ((int32_t)state->maxX - getLineNumberOffset(state));
 			int32_t offset = ((((int32_t)state->maxY / 2) - 1) * width) + (width / 2);

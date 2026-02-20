@@ -3,7 +3,7 @@ CC = clang++
 NPROCS := $(shell nproc 2>/dev/null || sysctl -n hw.logicalcpu)
 MAKEFLAGS += --jobs=$(NPROCS)
 
-CFLAGS   = -O2 -pedantic -Wextra -Werror -Wundef -Wmain -Wswitch-default -Wswitch-enum -Wpointer-arith -Wcast-align -Wunreachable-code -Wno-unused -Wall -std=c++17
+CFLAGS   = -O0 -g -pedantic -Wextra -Werror -Wundef -Wmain -Wswitch-default -Wswitch-enum -Wpointer-arith -Wcast-align -Wunreachable-code -Wno-unused -Wall -std=c++17
 # SANITIZEFLAGS = -fsanitize=thread -fno-sanitize-recover=all
 # getColFromDisplay
 LDFLAGS  = -lncurses -pthread
@@ -87,7 +87,7 @@ $(BUILD_DIR)/%.o: $(TEST_UTIL_DIR)/%.cpp
 	$(CC) -c $< -o $@ $(CFLAGS) $(SANITIZEFLAGS) $(DEPFLAGS)
 
 format:
-	find . -iname "*.cpp" -o -iname "*.h" | xargs -I "{}" e {} ggVG=
+	find . -iname "*.cpp" -o -iname "*.h" | xargs -I "{}" +1 e {} ggVG=
 
 dev:
 	make all && $(MAIN_EXECUTABLE) test-file.h

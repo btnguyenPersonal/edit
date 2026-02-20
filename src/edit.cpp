@@ -2,11 +2,13 @@
 #include "util/display.h"
 #include "util/find.h"
 #include "util/mainLoop.h"
+#include "util/movement.h"
 #include "util/cleanup.h"
 #include "util/render.h"
 #include "util/save.h"
 #include "util/sanity.h"
 #include "util/state.h"
+#include "util/string.h"
 #include <cstdint>
 #include <ncurses.h>
 
@@ -16,12 +18,27 @@ int32_t main(int32_t argc, char *argv[]) {
 	if (argc >= 2) {
 		filename = argv[1];
 	}
-	std::string command;
+	std::string rowString;
 	if (argc >= 3) {
-		command = argv[2];
+		rowString = safeSubstring(argv[1], 1);
+		filename = argv[2];
+	}
+	std::string command;
+	if (argc >= 4) {
+		command = argv[3];
 	}
 	if (!filename.empty()) {
 		state = new State(filename);
+		if (!rowString.empty()) {
+			try {
+				auto row = stoi(rowString);
+				if (row > 0) {
+					state->file->row = row - 1;
+					centerScreen(state);
+				}
+			} catch (...) {
+			}
+		}
 	} else {
 		state = new State();
 		if (state->runningAsRoot) {

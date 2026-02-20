@@ -316,13 +316,21 @@ State::State(const std::string &name, const std::vector<std::string> &data) {
 }
 
 State::State(const std::string &filename) {
-	std::string name = normalizeFilename(filename);
+	std::vector<std::string> name = splitByChar(normalizeFilename(filename), ':');
 	std::vector<std::string> data;
-	if (!std::filesystem::is_regular_file(name.c_str())) {
-		data = {""};
-	} else {
-		data = readFile(name);
+	if (name.size() > 0) {
+		if (!std::filesystem::is_regular_file(name[0].c_str())) {
+			data = {""};
+		} else {
+			data = readFile(name[0]);
+		}
+		this->init(name[0], data);
+		this->loadAllConfigFiles();
+		if (name.size() == 2) {
+			try {
+				this->file->row = stoi(name[1]);
+			} catch (...) {
+			}
+		}
 	}
-	this->init(name, data);
-	this->loadAllConfigFiles();
 }
