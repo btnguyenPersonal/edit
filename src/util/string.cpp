@@ -122,9 +122,16 @@ std::string safeSubstring(const std::string &str, std::size_t pos) {
 	return str.substr(pos);
 }
 
+bool isNumber(char c) {
+	if (c < '0' || '9' < c) {
+		return false;
+	}
+	return true;
+}
+
 bool isNumber(const std::string &s) {
 	for (uint32_t i = 0; i < s.length(); i++) {
-		if (s[i] < '0' || '9' < s[i]) {
+		if (isNumber(s[i])) {
 			return false;
 		}
 	}

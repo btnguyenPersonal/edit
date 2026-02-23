@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 
+bool isNumber(char c);
 uint32_t getIndexLast(const std::string &s);
 std::string getPrintableString(std::string s);
 uint32_t buildNumberFromString(const std::string &s);

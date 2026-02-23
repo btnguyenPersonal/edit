@@ -213,6 +213,7 @@ void State::init() {
 	this->explorer.size = 40;
 	this->explorer.windowLine = 0;
 	this->explorer.index = 0;
+	this->numRepeats = 0;
 	this->lastMacro = 'w';
 	this->skipSetHardCol = false;
 	this->maxX = 80;

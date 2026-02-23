@@ -287,10 +287,16 @@ int32_t renderStatusBar(State *state) {
 		}
 	}
 	std::string rightSide = prevKeys + mode + file;
+	if (state->numRepeats > 0) {
+		rightSide = std::to_string(state->numRepeats) + rightSide;
+	}
 	auto tmp = rightSide.length() + pixels.size();
 	auto len = state->maxX > tmp ? state->maxX - tmp : 0;
 	prefix = std::string(len, ' ');
 	insertPixels(state, &pixels, prefix, WHITE);
+	if (state->numRepeats > 0) {
+		insertPixels(state, &pixels, std::to_string(state->numRepeats), RED);
+	}
 	insertPixels(state, &pixels, prevKeys, WHITE);
 	insertPixels(state, &pixels, mode, getModeColor(state));
 	if (state->file) {

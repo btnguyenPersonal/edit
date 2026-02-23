@@ -62,6 +62,8 @@ improve autocomplete:
 	- autocomplete allow pressing tab multiple times
 	- maybe have autocomplete also scan the other harpooned files?
 
+fix crash on moving explorer all the way (prob blame as well)
+
 Use  the  addchstr()  family  of functions for fast screen-painting of
    text  when  you  know the text doesn't contain any control characters.
    Try  to  make  attribute changes infrequent on your screens. Don't use
@@ -80,6 +82,10 @@ remove ncurses capturing all keyboard input, why is it so slow?? is that as fast
 get rid of wrap bool in renderPixels, make renderPixelsWrap
 
 repeat number keys
+- need to restructure everything to be based on resolution (dip resolves to a valid command) then if it is valid, then it will get used
+- otherwise thrown away
+- the useCommand() gets wrapped inside of the numRepeats
+- also separate moving and editing
 
 W and B
 

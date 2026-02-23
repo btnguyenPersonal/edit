@@ -163,6 +163,7 @@ class State {
 		bool showGrep;
 		bool skipSetHardCol;
 		bool viewingDiff;
+		int32_t numRepeats;
 		int32_t blameSize;
 		int32_t buildErrorIndex;
 		uint32_t maxX;
