@@ -44,9 +44,9 @@ void osc52copy(std::string clip) {
 	std::string encoded = base64_encode(clip);
 	std::string seq;
 	if (getenv("TMUX")) {
-		seq = "\033Ptmux;\033\033]52;c;" + encoded + "\033\033\\\033\\";
+		seq = "\033Ptmux;\033\033]52;c;" + encoded + "\a\033\\";
 	} else {
-		seq = "\033]52;c;" + encoded + "\033\\";
+		seq = "\033]52;c;" + encoded + "\a";
 	}
 	int fd = open("/dev/tty", O_WRONLY);
 	if (fd != -1) {
