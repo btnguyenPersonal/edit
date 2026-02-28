@@ -280,6 +280,8 @@ void sendNormalKeys(State *state, int32_t c) {
 		state->prevKeys = "";
 	} else if (state->prevKeys != "") {
 		state->prevKeys = "";
+	} else if (state->numRepeats == 0 && c == '0') {
+		state->file->col = 0;
 	} else if (isNumber(c)) {
 		if (state->numRepeats < 100000) {
 			state->numRepeats *= 10;
@@ -511,8 +513,6 @@ void sendNormalKeys(State *state, int32_t c) {
 		switchMode(state, SEARCH);
 		state->replacing = true;
 		backspaceAll(&state->replace);
-	} else if (c == '0') {
-		state->file->col = 0;
 	} else if (c == '^' || c == KEY_HOME) {
 		state->file->col = getIndexFirstNonSpace(state->file->data[state->file->row], getIndentCharacter(state));
 	} else if (c == '$' || c == KEY_END) {
