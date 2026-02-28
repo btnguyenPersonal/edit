@@ -3,7 +3,7 @@ CC = clang++
 NPROCS := $(shell nproc 2>/dev/null || sysctl -n hw.logicalcpu)
 MAKEFLAGS += --jobs=$(NPROCS)
 
-CFLAGS   = -O0 -g -pedantic -Wextra -Werror -Wundef -Wmain -Wswitch-default -Wswitch-enum -Wpointer-arith -Wcast-align -Wunreachable-code -Wno-unused -Wall -std=c++17
+CFLAGS   = -O0 -ggdb -pedantic -Wextra -Werror -Wundef -Wmain -Wswitch-default -Wswitch-enum -Wpointer-arith -Wcast-align -Wunreachable-code -Wno-unused -Wall -std=c++17
 # SANITIZEFLAGS = -fsanitize=thread -fno-sanitize-recover=all
 # getColFromDisplay
 LDFLAGS  = -lncurses -pthread
