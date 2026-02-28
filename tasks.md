@@ -73,6 +73,9 @@ Use  the  addchstr()  family  of functions for fast screen-painting of
    Try  to  make  attribute changes infrequent on your screens. Don't use
    the immedok() option!
 
+https://gist.github.com/rexim/48d7087bfc8ba2c28a8b0b3aa3183558
+^ pure c vector-like thing, switch data to this?? would be fun
+
 use getnstr(); << don't know how this works with mouse input
 (maybe do some kind of test to see if there is two inputs, then use ungetch and start using getnstr() <- note backspace will work with this)
 
