@@ -44,9 +44,9 @@ void osc52copy(std::string clip) {
 	std::string encoded = base64_encode(clip);
 	std::string seq;
 	if (getenv("TMUX")) {
-		seq = "\033Ptmux;\033\033]52;c;" + encoded + "\a\033\\";
+		seq = "\033Ptmux;\033\033]52;c;" + encoded + "\033\033\\\033\\";
 	} else {
-		seq = "\033]52;c;" + encoded + "\a";
+		seq = "\033]52;c;" + encoded + "\033\\";
 	}
 	int fd = open("/dev/tty", O_WRONLY);
 	if (fd != -1) {
@@ -79,9 +79,6 @@ std::string getFromClipboard(State *state, bool useSystemClipboard) {
 #error "Platform not supported"
 #endif
 	std::string output = runCommand(command);
-	if (output.length() > 0 && output.back() == '\n') {
-		output.pop_back();
-	}
 	return output;
 }
 
