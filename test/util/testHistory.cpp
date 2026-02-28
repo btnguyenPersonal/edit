@@ -259,13 +259,9 @@ struct testSuiteRun testHistory() {
 		cleanup(state, 'x');
 		history(state);
 
-		uint32_t historySizeBefore = state->file->history.size();
-
 		sendKeys(state, 'u');
 		cleanup(state, 'u');
 		history(state);
-
-		int32_t positionAfterUndo = state->file->historyPosition;
 
 		sendKeys(state, 'x');
 		cleanup(state, 'x');

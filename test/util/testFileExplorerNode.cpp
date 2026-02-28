@@ -201,7 +201,7 @@ struct testSuiteRun testFileExplorerNode() {
 
 		if (otherRoot->children.size() > 0) {
 			int32_t idx = root->getChildIndex(otherRoot->children[0]);
-			output.push_back({"getChildIndex with foreign node should not crash", compare((bool)true, (bool)true)});
+			output.push_back({"getChildIndex with foreign node should not crash", compareInt((int32_t)idx, (int32_t)1)});
 		}
 
 		int32_t idx = root->getChildIndex(nullptr);
@@ -503,12 +503,16 @@ struct testSuiteRun testFileExplorerNode() {
 		bool foundReal = false;
 		bool foundLink = false;
 		for (auto *child : root->children) {
-			if (child->name == "real") foundReal = true;
-			if (child->name == "link") foundLink = true;
+			if (child->name == "real") {
+				foundReal = true;
+			}
+			if (child->name == "link") {
+				foundLink = true;
+			}
 		}
 
-		// TODO(ben): real assert here
 		output.push_back({"fs-change: handles symlinks if supported", compare(foundReal, (bool)true)});
+		output.push_back({"fs-change: handles symlinks if supported", compare(foundLink, (bool)true)});
 
 		delete root;
 		system("rm -rf /tmp/test-explorer");

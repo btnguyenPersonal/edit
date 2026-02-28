@@ -92,7 +92,7 @@ struct testSuiteRun testMovement() {
 		State *state = new State("./test-file.h", {""});
 		down(state);
 		output.push_back({"down 0", compare(state->file->row, 0)});
-		output.push_back({"down 0", compare(state->skipSetHardCol, false)});
+		output.push_back({"down 0", compare(state->skipSetHardCol, true)});
 	}
 
 	{

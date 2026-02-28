@@ -2,6 +2,7 @@
 #include "../keybinds/sendKeys.h"
 #include "cleanup.h"
 #include "render.h"
+#include "string.h"
 
 void computeFrame(State *state) {
 	if (state->debug) {

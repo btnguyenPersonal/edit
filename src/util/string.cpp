@@ -131,7 +131,7 @@ bool isNumber(char c) {
 
 bool isNumber(const std::string &s) {
 	for (uint32_t i = 0; i < s.length(); i++) {
-		if (isNumber(s[i])) {
+		if (!isNumber(s[i])) {
 			return false;
 		}
 	}

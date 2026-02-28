@@ -55,7 +55,6 @@ void sendNormalKeys(State *state, int32_t c) {
 			}
 		}
 	} else if (c == KEY_ESCAPE) {
-		state->numRepeats = 0;
 		state->prevKeys = "";
 		state->motion.clear();
 	} else if (state->prevKeys == "T") {
@@ -280,16 +279,8 @@ void sendNormalKeys(State *state, int32_t c) {
 		state->prevKeys = "";
 	} else if (state->prevKeys != "") {
 		state->prevKeys = "";
-	} else if (state->numRepeats == 0 && c == '0') {
+	} else if (c == '0') {
 		state->file->col = 0;
-	} else if (isNumber(c)) {
-		if (state->numRepeats < 100000) {
-			state->numRepeats *= 10;
-			state->numRepeats += stoi(std::string("") + (char)c);
-		} else {
-			state->numRepeats = 0;
-			state->status = "numRepeats too large";
-		}
 	} else if (c == ' ') {
 		createNewestHarpoon(state);
 	} else if (c == ':') {
