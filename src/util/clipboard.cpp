@@ -76,6 +76,11 @@ std::string getFromClipboard(State *state, bool useSystemClipboard) {
 #error "Platform not supported"
 #endif
 	std::string output = runCommand(command);
+
+	if (output.length() > 0 && output.back() == '\n') {
+		output.pop_back();
+	}
+
 	return output;
 }
 
