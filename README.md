@@ -107,7 +107,6 @@ Mode for settings or saving or quitting.
 
 .editorconfig (default settings)
 ```
-use_system_clipboard = false
 wordwrap = true
 autosave = true
 insert_final_newline = false

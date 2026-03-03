@@ -94,7 +94,6 @@ struct PrevSearch {
 };
 
 struct Options {
-	bool use_system_clipboard;
 	bool wordwrap;
 	bool autosave;
 	bool autoload;

@@ -59,9 +59,6 @@ bool useLocalClipboard(State *state, bool useSystemClipboard) {
 	if (state->dontRecordKey) {
 		return true;
 	}
-	if (state->options.use_system_clipboard) {
-		return false;
-	}
 	return !useSystemClipboard;
 }
 
