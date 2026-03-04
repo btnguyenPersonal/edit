@@ -1,6 +1,7 @@
 #include "prompt.h"
 #include "ctrl.h"
 #include "defines.h"
+#include "cleanup.h"
 
 std::string prompt(State *state, std::string startingValue) {
 	auto prevMode = state->mode;
@@ -8,9 +9,9 @@ std::string prompt(State *state, std::string startingValue) {
 	backspaceAll(&state->name);
 	setQuery(&state->name, startingValue);
 	renderScreen(state);
-	int32_t c;
+	int32_t c = ERR;
 	while (true) {
-		c = getch();
+		c = cleanKey(getch());
 		if (c != ERR) {
 			if (c == KEY_ESCAPE) {
 				backspaceAll(&state->name);
