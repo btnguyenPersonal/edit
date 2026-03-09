@@ -61,6 +61,13 @@ crash:
 	- wrap all the places we use std::filesystem in try/catch
 
 reduce state by a lot, throw out all the trash that we don't need, or put them into more pointers
+- combine all the flags into a uint32 | flags
+- selectAll on query
+- move more things (diff, log, blame) to commandLine only, free up all the keybinds
+- problematic
+	- dontComputeHistory
+	- dontRecordKey
+	- dontSave
 
 improve autocomplete:
 	- autocomplete allow pressing tab multiple times
@@ -80,6 +87,8 @@ use getnstr(); << don't know how this works with mouse input
 (maybe do some kind of test to see if there is two inputs, then use ungetch and start using getnstr() <- note backspace will work with this)
 
 get multiline cached and only recalculated every second
+
+zero width crash
 
 get veryvery long line editing working
 
