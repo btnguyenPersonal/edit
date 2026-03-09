@@ -218,7 +218,6 @@ void State::init() {
 	this->viewingDiff = false;
 	this->showAllGrep = false;
 	this->file = nullptr;
-	this->commandLineState = {0, "", ""};
 	this->currentFile = 0;
 	this->runningAsRoot = geteuid() == 0;
 	this->showGrep = false;

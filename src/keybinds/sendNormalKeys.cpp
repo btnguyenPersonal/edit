@@ -344,14 +344,6 @@ void sendNormalKeys(State *state, int32_t c) {
 		setStateFromWordPosition(state, getWordPosition(state->file->data[state->file->row], state->file->col));
 		setQuery(&state->search, getInVisual(state));
 		state->searching = true;
-		state->file->col += 1;
-		uint32_t temp_col = state->file->col;
-		uint32_t temp_row = state->file->row;
-		bool result = setSearchResult(state);
-		if (result == false) {
-			state->file->row = temp_row;
-			state->file->col = temp_col - 1;
-		}
 		centerScreen(state);
 	} else if (c == ctrl('g')) {
 		state->showAllGrep = false;
@@ -554,10 +546,6 @@ void sendNormalKeys(State *state, int32_t c) {
 		state->file->col = pos.col;
 	} else if (c == '\\') {
 		state->reloadFile(state->file->filename);
-	} else if (c == 'H') {
-		state->commandLine.query = std::string("e ") + std::filesystem::canonical(state->file->filename).string();
-		state->commandLine.cursor = state->commandLine.query.length();
-		switchMode(state, COMMAND);
 	} else if (c == 'G') {
 		state->file->row = state->file->data.size() - 1;
 		state->file->col = getNormalizedCol(state, state->file->hardCol);

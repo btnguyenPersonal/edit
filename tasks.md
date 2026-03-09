@@ -60,7 +60,7 @@ crash:
 	- ctrl r crash
 	- wrap all the places we use std::filesystem in try/catch
 
-- getColForDisplay threadsanitize
+reduce state by a lot, throw out all the trash that we don't need, or put them into more pointers
 
 improve autocomplete:
 	- autocomplete allow pressing tab multiple times
