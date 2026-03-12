@@ -1,6 +1,7 @@
 #include "find.h"
 #include "ignore.h"
 
+#include <chrono>
 #include <thread>
 
 bool isAllLowercase(const std::string &str) {
@@ -96,6 +97,28 @@ int32_t maxConsecutiveMatch(const std::filesystem::path &filePath, const std::st
 	caseInsensitiveScore += fileStr.length() / 20;
 
 	return caseInsensitiveScore;
+}
+
+int32_t recencyBonus(const std::filesystem::directory_entry &entry) {
+	std::error_code ec;
+	auto modTime = entry.last_write_time(ec);
+	if (ec) {
+		return 0;
+	}
+
+	auto now = std::filesystem::file_time_type::clock::now();
+	auto age = std::chrono::duration_cast<std::chrono::hours>(now - modTime).count();
+
+	if (age < 1) {
+		return 10;
+	} else if (age < 24) {
+		return 8;
+	} else if (age < 24 * 7) {
+		return 5;
+	} else if (age < 24 * 30) {
+		return 2;
+	}
+	return 0;
 }
 
 std::vector<std::filesystem::path> find(const std::filesystem::path &dir_path, const std::string &query) {
