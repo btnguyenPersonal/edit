@@ -100,6 +100,15 @@ std::string replace(std::string str, const std::string &from, const std::string 
 	return str;
 }
 
+bool isAllWhitespace(std::string s) {
+	for (uint32_t i = 0; i < s.length(); i++) {
+		if (!isWhitespace(s[i])) {
+			return false;
+		}
+	}
+	return true;
+}
+
 bool isWhitespace(char c) {
 	return c == ' ' || c == '\t' || c == '\n';
 }

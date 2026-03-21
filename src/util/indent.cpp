@@ -7,6 +7,31 @@
 #include <string>
 #include <vector>
 
+bool isOpenParen(char c) {
+	return c == '(' || c == '{' || c == '[';
+}
+
+bool isCloseParen(char c) {
+	return c == ')' || c == '}' || c == ']';
+}
+
+char getCorrespondingParen(char c) {
+	if (c == '(') {
+		return ')';
+	} else if (c == '{') {
+		return '}';
+	} else if (c == '[') {
+		return ']';
+	} else if (c == ')') {
+		return '(';
+	} else if (c == '}') {
+		return '{';
+	} else if (c == ']') {
+		return '[';
+	}
+	return ')';
+}
+
 uint32_t getIndent(State *state, const std::string &str) {
 	for (uint32_t i = 0; i < str.length(); i++) {
 		if (str[i] != getIndentCharacter(state)) {
@@ -239,6 +264,15 @@ void indentLine(State *state, uint32_t row) {
 			state->file->data[row] = getIndentCharacter(state) + state->file->data[row];
 		}
 	}
+}
+
+void indentLineForce(State *state) {
+	ltrim(state->file->data[state->file->row]);
+	int32_t indentLevel = getIndentLevel(state, state->file->row);
+	for (int32_t i = 0; i < indentLevel; i++) {
+		state->file->data[state->file->row] = getIndentCharacter(state) + state->file->data[state->file->row];
+	}
+	state->file->col += indentLevel;
 }
 
 void indentLine(State *state) {

@@ -6,31 +6,6 @@
 #include "ctrl.h"
 #include "clipboard.h"
 
-bool isOpenParen(char c) {
-	return c == '(' || c == '{' || c == '[';
-}
-
-bool isCloseParen(char c) {
-	return c == ')' || c == '}' || c == ']';
-}
-
-char getCorrespondingParen(char c) {
-	if (c == '(') {
-		return ')';
-	} else if (c == '{') {
-		return '}';
-	} else if (c == '[') {
-		return ']';
-	} else if (c == ')') {
-		return '(';
-	} else if (c == '}') {
-		return '{';
-	} else if (c == ']') {
-		return '[';
-	}
-	return ')';
-}
-
 void initVisual(State *state, VisualType visualType) {
 	state->visualType = visualType;
 	state->visual.row = state->file->row;

@@ -378,9 +378,11 @@ void sendNormalKeys(State *state, int32_t c) {
 		insertEmptyLineBelow(state);
 		down(state);
 		switchMode(state, INSERT);
+		indentLineForce(state);
 	} else if (c == 'O') {
 		insertEmptyLine(state);
 		switchMode(state, INSERT);
+		indentLineForce(state);
 	} else if (c == 'Y') {
 		fixColOverMax(state);
 		copyToClipboard(state, safeSubstring(state->file->data[state->file->row], state->file->col), false);

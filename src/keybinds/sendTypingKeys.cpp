@@ -32,6 +32,7 @@ void sendTypingKeys(State *state, int32_t c) {
 		state->prevKeys = "";
 		if (c == '\n') {
 			insertNewline(state);
+			indentLineForce(state);
 		} else {
 			std::string current = state->file->data[state->file->row];
 			state->file->data[state->file->row] = current.substr(0, state->file->col) + (char)c + current.substr(state->file->col);
@@ -43,9 +44,13 @@ void sendTypingKeys(State *state, int32_t c) {
 		setDotCommand(state, state->motion);
 		state->motion.clear();
 		state->prevKeys = "";
+		if (isAllWhitespace(state->file->data[state->file->row])) {
+			state->file->data[state->file->row] = "";
+		}
 		return;
 	} else if (c == '\n') {
 		insertNewline(state);
+		indentLineForce(state);
 	} else if (c == ctrl('h')) {
 		if (state->file->col > 0) {
 			std::string current = state->file->data[state->file->row];
@@ -65,10 +70,7 @@ void sendTypingKeys(State *state, int32_t c) {
 	} else if (' ' <= c && c <= '~') {
 		std::string current = state->file->data[state->file->row];
 		state->file->data[state->file->row] = current.substr(0, state->file->col) + (char)c + current.substr(state->file->col);
-		if (c == ':') {
-			indentLineWhenTypingLastChar(state);
-		}
-		if (c != ' ') {
+		if (isCloseParen(c)) {
 			indentLineWhenTypingFirstChar(state);
 		}
 		state->file->col += 1;

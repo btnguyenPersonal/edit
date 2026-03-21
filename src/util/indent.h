@@ -4,10 +4,14 @@
 #include <string>
 #include <vector>
 
+bool isOpenParen(char c);
+bool isCloseParen(char c);
+char getCorrespondingParen(char c);
 uint32_t getIndent(const std::string &str);
 char getIndentCharacter(State *state);
 uint32_t getIndentSize(State *state);
 uint32_t getIndent(State *state, const std::string &str);
+void indentLineForce(State *state);
 void indent(State *state);
 void deindent(State *state);
 void indentLineWhenTypingLastChar(State *state);
