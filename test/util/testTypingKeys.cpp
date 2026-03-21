@@ -134,6 +134,16 @@ struct testSuiteRun testTypingKeys() {
 	}
 
 	{
+		State *state = new State("./test-file.h", {"function () {"});
+		state->file->row = 0;
+		sendTypingKeys(state, KEY_END);
+		sendTypingKeys(state, '\n');
+		output.push_back({"sendTypingKeys \\n should output a newline character and indent", compare(state->file->data, {"function () {", "    "})});
+		sendTypingKeys(state, '}');
+		output.push_back({"sendTypingKeys } should de-indent", compare(state->file->data, {"function () {", "}"})});
+	}
+
+	{
 		State *state = new State("./test-file.h", {"    Hello World", "    Hello World", "    Hello World"});
 		state->file->row = 1;
 		state->file->col = 1;
@@ -192,7 +202,7 @@ struct testSuiteRun testTypingKeys() {
 		state->file->col = 1000;
 		insertNewline(state);
 		sendTypingKeys(state, 'a');
-		output.push_back({"sendTypingKeys typing at the start of a newline should indent", compare(state->file->data, {"    Hello World", "    Hello World", "    Hello World", "    a"})});
+		output.push_back({"sendTypingKeys typing at the start of a newline should not indent", compare(state->file->data, {"    Hello World", "    Hello World", "    Hello World", "a"})});
 	}
 
 	{
@@ -239,7 +249,7 @@ struct testSuiteRun testTypingKeys() {
 		for (char c = ' '; c <= '~'; c++) {
 			sendTypingKeys(state, c);
 		}
-		output.push_back({"sendTypingKeys should print all valid characters", compare(state->file->data, {"!\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~"})});
+		output.push_back({"sendTypingKeys should print all valid characters", compare(state->file->data, {" !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~"})});
 	}
 
 	return {"test/util/testTypingKeys.cpp", output};

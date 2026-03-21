@@ -71,15 +71,6 @@ void deindent(State *state) {
 	}
 }
 
-void indentLineWhenTypingLastChar(State *state) {
-	if (!autoIndentDisabledFileType(state)) {
-		if (state->file->col + 1 == state->file->data[state->file->row].length()) {
-			indentLine(state);
-			state->file->col = getIndexLast(state->file->data[state->file->row]);
-		}
-	}
-}
-
 bool isFirstNonSpace(State *state) {
 	char indentChar = getIndentCharacter(state);
 	for (int32_t i = (int32_t)state->file->col - 1; i >= 0; i--) {
@@ -88,22 +79,6 @@ bool isFirstNonSpace(State *state) {
 		}
 	}
 	return true;
-}
-
-void indentLineWhenTypingFirstChar(State *state) {
-	if (!autoIndentDisabledFileType(state)) {
-		if (isFirstNonSpace(state)) {
-			indentLine(state);
-			state->file->col = getIndexFirstNonSpace(state->file->data[state->file->row], getIndentCharacter(state));
-		}
-	}
-}
-
-bool autoIndentDisabledFileType(State *state) {
-	if (state->extension == "py") {
-		return true;
-	}
-	return false;
 }
 
 int32_t getNumLeadingIndentCharacters(State *state, std::string s) {

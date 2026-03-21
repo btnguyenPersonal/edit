@@ -14,8 +14,6 @@ uint32_t getIndent(State *state, const std::string &str);
 void indentLineForce(State *state);
 void indent(State *state);
 void deindent(State *state);
-void indentLineWhenTypingLastChar(State *state);
-void indentLineWhenTypingFirstChar(State *state);
 bool autoIndentDisabledFileType(State *state);
 bool isFirstNonSpace(State *state);
 int32_t getNumLeadingIndentCharacters(State *state, std::string s);
