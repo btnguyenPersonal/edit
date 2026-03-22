@@ -664,6 +664,7 @@ int32_t renderLineContent(State *state, int32_t row, int32_t renderRow, Cursor *
 	} else {
 		bool inString = false;
 		bool skipNext = false;
+		bool shouldRenderStrings = getShouldRenderStrings(state->file->filename);
 		char stringType = 'E';
 		uint32_t searchCounter = 0;
 		uint32_t startOfSearch = 0;
@@ -696,15 +697,17 @@ int32_t renderLineContent(State *state, int32_t row, int32_t renderRow, Cursor *
 
 			int32_t color;
 			if (hasColor && col < 3000) {
-				if (skipNext) {
-					skipNext = false;
-				} else if (inString && c == '\\') {
-					skipNext = true;
-				} else if (!inString && (c == '"' || c == '`' || c == '\'')) {
-					inString = true;
-					stringType = c;
-				} else if (inString && c == stringType) {
-					inString = false;
+				if (shouldRenderStrings) {
+					if (skipNext) {
+						skipNext = false;
+					} else if (inString && c == '\\') {
+						skipNext = true;
+					} else if (!inString && (c == '"' || c == '`' || c == '\'')) {
+						inString = true;
+						stringType = c;
+					} else if (inString && c == stringType) {
+						inString = false;
+					}
 				}
 
 				if (state->showGrep) {

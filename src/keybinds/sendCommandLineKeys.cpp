@@ -44,6 +44,8 @@ void evaluateCommandLineQuery(State *state) {
 			endwin();
 			exit(0);
 		}
+	} else if (state->commandLine.query == "a") {
+		state->options.autosave = !state->options.autosave;
 	} else if (state->commandLine.query == "q") {
 		if (!state->dontSave) {
 			if (state->file->lastSave != state->file->historyPosition) {

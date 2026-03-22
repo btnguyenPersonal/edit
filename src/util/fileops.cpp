@@ -204,6 +204,15 @@ std::string getExtension(const std::string &filename) {
 	return (dotPosition != std::string::npos && dotPosition != 0) ? file.substr(dotPosition + 1) : file;
 }
 
+bool getShouldRenderStrings(const std::string &filename) {
+	std::string extension = getExtension(filename);
+	return !(
+		extension == "test"
+		|| extension == "txt"
+		|| extension == "md"
+	);
+}
+
 bool isLineFileRegex(std::string line) {
 	if (line.length() > 1) {
 		return line.front() == '[' && line.back() == ']';

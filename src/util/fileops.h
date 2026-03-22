@@ -15,6 +15,7 @@ std::string normalizeFilename(std::string filename);
 std::string minimize_filename(std::string filename);
 std::string getRelativeToLastAndRoute(State *state);
 std::string getExtension(const std::string &filename);
+bool getShouldRenderStrings(const std::string &filename);
 bool isLineFileRegex(std::string line);
 bool matchesEditorConfigGlob(const std::string &pattern, const std::string &filepath);
 std::string getRelativeToCurrent(State *state, std::string p);
