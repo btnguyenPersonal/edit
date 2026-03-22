@@ -14,9 +14,14 @@ void saveFile(State *state) {
 				file.seekp(-1, std::ios::end);
 			}
 		}
+		bool fail = file.fail();
 		file.close();
-		state->file->newFile = false;
-		state->file->lastSave = state->file->historyPosition;
-		state->file->lastModified = std::filesystem::last_write_time(state->file->filename);
+		if (fail) {
+			state->status = "file write failed";
+		} else {
+			state->file->newFile = false;
+			state->file->lastSave = state->file->historyPosition;
+			state->file->lastModified = std::filesystem::last_write_time(state->file->filename);
+		}
 	}
 }
