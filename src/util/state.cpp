@@ -32,6 +32,7 @@ File *getFile(const std::string &name, const std::vector<std::string> &data) {
 	if (!file->newFile) {
 		file->lastModified = std::filesystem::last_write_time(name);
 	}
+	file->lastVisual = {false, {0, 0}, {0, 0}, LINE};
 	calcWords(file);
 	return file;
 }

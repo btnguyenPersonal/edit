@@ -2,6 +2,7 @@
 
 #include "state.h"
 
+void setToLastVisual(State *state);
 void replaceAllWithChar(State *state, int32_t c);
 char changeCase(char c, bool upper, bool swap);
 void changeCaseVisual(State *state, bool upper, bool swap);

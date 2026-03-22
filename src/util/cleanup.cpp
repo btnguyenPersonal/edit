@@ -36,6 +36,13 @@ void cleanup(State *state) {
 		state->skipSetHardCol = false;
 		if (state->mode == INSERT) {
 			fixColOverMax(state);
+		} else if (state->mode == VISUAL) {
+			state->file->lastVisual = {
+				true,
+				{ state->file->row, state->file->col },
+				{ state->visual.row, state->visual.col },
+				state->visualType
+			};
 		}
 		if (state->options.insert_final_newline) {
 			insertFinalEmptyNewline(state);

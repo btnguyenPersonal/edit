@@ -6,6 +6,7 @@
 #include "../util/defines.h"
 #include "../util/fileops.h"
 #include "../util/grep.h"
+#include "../util/find.h"
 #include "../util/history.h"
 #include "../util/indent.h"
 #include "../util/insertLoggingCode.h"
@@ -261,11 +262,15 @@ bool sendVisualKeys(State *state, char c, bool onlyMotions) {
 			switchMode(state, NORMAL);
 			setSearchResult(state);
 		}
-	} else if (!onlyMotions && c == '#') {
+	} else if (!onlyMotions && (c == '#' || c == ctrl('g'))) {
 		setQuery(&state->grep, getInVisual(state, false));
 		switchMode(state, GREP);
 		state->showAllGrep = false;
 		generateGrepOutput(state, true);
+	} else if (!onlyMotions && c == ctrl('p')) {
+		setQuery(&state->find, getInVisual(state, false));
+		switchMode(state, FIND);
+		generateFindOutput(state);
 	} else if (c == 'l') {
 		right(state);
 	} else if (!onlyMotions && c == 'K') {

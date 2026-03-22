@@ -194,6 +194,10 @@ void sendNormalKeys(State *state, int32_t c) {
 		findDefinitionFromGrepOutput(state, getInVisual(state));
 		centerScreen(state);
 		state->prevKeys = "";
+	} else if (state->prevKeys == "g" && c == 'v') {
+		setToLastVisual(state);
+		state->prevKeys = "";
+		setDotCommand(state, {'g', c});
 	} else if (state->prevKeys == "g" && c == 'e') {
 		unCommentBlock(state);
 		state->prevKeys = "";

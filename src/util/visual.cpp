@@ -6,6 +6,17 @@
 #include "ctrl.h"
 #include "clipboard.h"
 
+void setToLastVisual(State *state) {
+	if (state->file->lastVisual.touched == true) {
+		state->visualType = state->file->lastVisual.type;
+		state->file->row = state->file->lastVisual.cur.row;
+		state->file->col = state->file->lastVisual.cur.col;
+		state->visual.row = state->file->lastVisual.vis.row;
+		state->visual.col = state->file->lastVisual.vis.col;
+		state->mode = VISUAL;
+	}
+}
+
 void initVisual(State *state, VisualType visualType) {
 	state->visualType = visualType;
 	state->visual.row = state->file->row;

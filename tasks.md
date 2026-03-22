@@ -1,5 +1,7 @@
 ## tasks
 
+- warning if in readonly and not using sudo
+
 - dont be bad, use a debugger
 - debugger mass save breakpoints and delete breakpoints based on debugger file, and point to correct one when launching gdb
 does gdb have a way to set breakpoints from a file?

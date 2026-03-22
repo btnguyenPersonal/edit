@@ -64,6 +64,13 @@ struct Jumplist {
 	std::vector<Position> list;
 };
 
+struct LastVisual {
+	bool touched;
+	Position cur;
+	Position vis;
+	VisualType type;
+};
+
 struct File {
 	Jumplist jumplist;
 	int32_t historyPosition;
@@ -80,6 +87,7 @@ struct File {
 	uint32_t hardCol;
 	uint32_t row;
 	bool newFile;
+	LastVisual lastVisual;
 };
 
 struct Query {
