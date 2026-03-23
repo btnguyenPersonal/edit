@@ -215,4 +215,6 @@ class State {
 		void changeFile(const std::string &filename);
 		void setDefaultOptions();
 		void print(const std::string &filename, bool printGrep, bool printArchives);
+		const std::string getRow(uint32_t r);
+		uint32_t getSize();
 	};

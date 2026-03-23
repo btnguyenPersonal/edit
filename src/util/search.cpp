@@ -22,14 +22,14 @@ void searchNextResult(State *state, bool reverse) {
 			state->searchFail = true;
 		}
 	} else {
-		state->file->col += 1;
-		uint32_t temp_col = state->file->col;
 		uint32_t temp_row = state->file->row;
+		uint32_t temp_col = state->file->col;
+		state->file->col += 1;
 		bool result = setSearchResult(state);
 		if (result == false) {
 			state->searchFail = true;
 			state->file->row = temp_row;
-			state->file->col = temp_col - 1;
+			state->file->col = temp_col;
 		}
 	}
 }
@@ -69,7 +69,7 @@ bool setSearchResultReverse(State *state, bool allowCurrent) {
 	uint32_t row = initialRow;
 	bool isFirst = true;
 	do {
-		std::string line = isFirst ? state->file->data[row].substr(0, col) : state->file->data[row];
+		std::string line = isFirst ? state->getRow(row).substr(0, col) : state->getRow(row);
 		size_t index = line.rfind(state->search.query);
 		if (index != std::string::npos) {
 			state->file->row = row;
@@ -77,14 +77,15 @@ bool setSearchResultReverse(State *state, bool allowCurrent) {
 			return true;
 		}
 		if (row == 0) {
-			row = state->file->data.size() - 1;
+			uint32_t size = state->getSize();
+			row = size == 0 ? size : size - 1;
 		} else {
 			row--;
 		}
 		isFirst = false;
 	} while (row != initialRow);
-	// try last row again
-	std::string line = state->file->data[row];
+	// try initialRow again
+	std::string line = state->getRow(initialRow);
 	size_t index = line.rfind(state->search.query);
 	if (index != std::string::npos) {
 		state->file->row = row;

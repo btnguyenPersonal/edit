@@ -53,6 +53,14 @@ void State::loadAllConfigFiles() {
 	}
 }
 
+uint32_t State::getSize() {
+	return this->file->data.size();
+}
+
+const std::string State::getRow(uint32_t r) {
+	return this->file->data[r];
+}
+
 void State::loadConfigFile(const std::string &fileLocation) {
 	auto config = readFile(fileLocation);
 	bool found = false;
