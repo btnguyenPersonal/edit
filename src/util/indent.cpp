@@ -212,14 +212,6 @@ int32_t getIndentLevel(State *state, uint32_t row) {
 				return 0;
 			} else if (currLine.substr(i, state->file->commentSymbol.length()) == state->file->commentSymbol) {
 				break;
-			} else if (currLine.substr(i, std::string("default:").length()) == "default:") {
-				if (i == 0) {
-					indentLevel -= indentSize;
-				}
-			} else if (currLine.substr(i, std::string("case ").length()) == "case ") {
-				if (i == 0) {
-					indentLevel -= indentSize;
-				}
 			} else if (currLine[i] == ')' || currLine[i] == '}' || currLine[i] == ']') {
 				if (i == 0) {
 					indentLevel -= indentSize;
