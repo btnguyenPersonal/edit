@@ -410,11 +410,6 @@ void sendNormalKeys(State *state, int32_t c) {
 			state->resetState(state->mark.filename);
 			state->file->row = state->mark.mark;
 		}
-	} else if (c == ctrl('q')) {
-		state->logLines = getLogLines();
-		state->diffLines = getDiffLines(state);
-		state->viewingDiff = true;
-		switchMode(state, DIFF);
 	} else if (c == 'M') {
 		state->mark = {state->file->filename, state->file->row};
 	} else if (c == 'N') {
@@ -490,14 +485,6 @@ void sendNormalKeys(State *state, int32_t c) {
 			state->file->data[state->file->row] = state->file->data[state->file->row].substr(0, state->file->col) + state->file->data[state->file->row].substr(state->file->col + 1);
 		}
 		setDotCommand(state, c);
-	} else if (c == ctrl('y')) {
-		state->file->col = 0;
-		switchMode(state, BLAME);
-		try {
-			state->blame = getGitBlame(state->file->filename);
-		} catch (const std::exception &e) {
-			state->status = "git blame error";
-		}
 	} else if (c == ctrl('f')) {
 		switchMode(state, SEARCH);
 		state->replacing = true;

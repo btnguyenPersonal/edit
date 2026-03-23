@@ -63,7 +63,6 @@ crash:
 reduce state by a lot, throw out all the trash that we don't need, or put them into more pointers
 - combine all the flags into a uint32 | flags
 - selectAll on query
-- move more things (diff, log, blame) to commandLine only, free up all the keybinds
 - problematic
 	- dontComputeHistory
 	- dontRecordKey
@@ -72,8 +71,6 @@ reduce state by a lot, throw out all the trash that we don't need, or put them i
 improve autocomplete:
 	- autocomplete allow pressing tab multiple times
 	- maybe have autocomplete also scan the other harpooned files?
-
-fix crash on moving explorer all the way (prob blame as well)
 
 Use  the  addchstr()  family  of functions for fast screen-painting of
    text  when  you  know the text doesn't contain any control characters.

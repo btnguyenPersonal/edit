@@ -33,16 +33,6 @@ void downDiff(State *state) {
 void sendDiffKeys(State *state, int32_t c) {
 	if (c == KEY_ESCAPE) {
 		switchMode(state, NORMAL);
-	} else if (c == 'q') {
-		if (state->prevKeys != "") {
-			state->prevKeys = "";
-		} else if (state->viewingDiff) {
-			state->logLines = getLogLines();
-			state->viewingDiff = false;
-			state->diffIndex = 0;
-		} else {
-			switchMode(state, NORMAL);
-		}
 	} else if (c == ctrl('u') || c == 'u') {
 		for (uint32_t i = 0; i < state->maxY / 2; i++) {
 			if (state->viewingDiff) {

@@ -100,6 +100,22 @@ void evaluateCommandLineQuery(State *state) {
 		} else {
 			state->file->row = 0;
 		}
+	} else if (state->commandLine.query == "blame") {
+		state->file->col = 0;
+		try {
+			state->blame = getGitBlame(state->file->filename);
+		} catch (const std::exception &e) {
+			state->status = "git blame error";
+		}
+		state->prevMode = BLAME;
+	} else if (state->commandLine.query == "diff") {
+		state->diffLines = getDiffLines(state);
+		state->viewingDiff = true;
+		state->prevMode = DIFF;
+	} else if (state->commandLine.query == "log") {
+		state->logLines = getLogLines();
+		state->viewingDiff = false;
+		state->prevMode = DIFF;
 	}
 }
 
