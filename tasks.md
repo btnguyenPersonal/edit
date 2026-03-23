@@ -1,19 +1,8 @@
 ## tasks
 
-- dont be bad, use a debugger
-- debugger mass save breakpoints and delete breakpoints based on debugger file, and point to correct one when launching gdb
-does gdb have a way to set breakpoints from a file?
-thinking gdb --breakpoints=~/.config/e/%home%git%ben%edit.breakpoints ./build/e
-^ put in Makefile
-keybinds to make breakpoints on command, is there some way to make it easier??
-keybind jump between all breakpoints in project
-is there a way to get from gdb where your debugging cursor is, could autoload that so editor is always there?
+- make reading a large file faster
 
-recording and playback while testing
-
-reconnect to open editor if already on same current directory and trying to open with the +15 rowNum version?
-
-get clicking on filepath in terminal working
+- dont be bad, use a debugger more often!
 
 - more tests
 	[x] string
@@ -48,6 +37,22 @@ get clicking on filepath in terminal working
 	[ ] multicursorKeys
 	[ ] normalKeys
 
+crash:
+	- ctrl r crash
+	- wrap all the places we use std::filesystem in try/catch (why is c++ exception handling so bad?)
+	- also really look at docs for each syscall I am using and stop just guessing
+
+- combine all the flags into a uint32 | flags
+- selectAll on query
+- problematic
+	- dontComputeHistory
+	- dontRecordKey
+	- dontSave
+
+W and B
+
+# backburner
+
 perf:
 	- look into cleaning up explorer->root.children correctly?? does it have dangling pointers?
 	- use trace() to see all the ncurses calls
@@ -56,43 +61,16 @@ perf:
 	- paste into terminal fast dont have to use gp gy
 	- speed up history somehow, takes even longer for large files
 
-crash:
-	- ctrl r crash
-	- wrap all the places we use std::filesystem in try/catch
+recording and playback while testing
 
-reduce state by a lot, throw out all the trash that we don't need, or put them into more pointers
-- combine all the flags into a uint32 | flags
-- selectAll on query
-- problematic
-	- dontComputeHistory
-	- dontRecordKey
-	- dontSave
+reconnect to open editor if already on same current directory and trying to open with the +15 rowNum version?
 
-improve autocomplete:
-	- autocomplete allow pressing tab multiple times
-	- maybe have autocomplete also scan the other harpooned files?
-
-Use  the  addchstr()  family  of functions for fast screen-painting of
-   text  when  you  know the text doesn't contain any control characters.
-   Try  to  make  attribute changes infrequent on your screens. Don't use
-   the immedok() option!
-
-https://gist.github.com/rexim/48d7087bfc8ba2c28a8b0b3aa3183558
-^ pure c vector-like thing, switch data to this?? would be fun
-
-use getnstr(); << don't know how this works with mouse input
-(maybe do some kind of test to see if there is two inputs, then use ungetch and start using getnstr() <- note backspace will work with this)
-
-get multiline cached and only recalculated every second
-
-zero width crash
-
-get veryvery long line editing working
+get clicking on filepath in terminal working
 
 remove ncurses capturing all keyboard input, why is it so slow?? is that as fast as it goes??
 - faster way to do input, needs to work for pasting a million lines
 
-get rid of wrap bool in renderPixels, make renderPixelsWrap
+get multiline comment cached and only recalculated every second
 
 repeat number keys
 - need to restructure everything to be based on resolution (dip resolves to a valid command) then if it is valid, then it will get used
@@ -100,11 +78,13 @@ repeat number keys
 - the useCommand() gets wrapped inside of the numRepeats
 - also separate moving and editing
 
-W and B
-
 ts-server integration (do it for real this time)
 
 instead of comparing with the previousState and generating the diff every time, could compute the state->file->data hash and store that
 if could get all of the edits to instead of use raw std::string, go through some abstraction layer, could make undo and file hash compute
 way easier
 - using ratchet will make this better
+
+https://gist.github.com/rexim/48d7087bfc8ba2c28a8b0b3aa3183558
+^ pure c vector-like thing, switch data to this?? would be fun
+
