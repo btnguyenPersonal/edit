@@ -782,7 +782,7 @@ int32_t renderLineContent(State *state, int32_t row, int32_t renderRow, Cursor *
 				chtype ch = c;
 				if (state->mode == VISUAL && isRowColInVisual(state, row, col)) {
 					ch |= A_UNDERLINE | A_BOLD;
-					color = invertColor(YELLOW);
+					color = invertColor(CYAN);
 				}
 				if (isComment) {
 					ch |= A_ITALIC | A_DIM;
