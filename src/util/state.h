@@ -106,6 +106,7 @@ struct Options {
 	bool autosave;
 	bool autoload;
 	int32_t maxHarpoon;
+	bool useSystemClipboard;
 	bool insert_final_newline;
 	uint32_t indent_size;
 	std::string indent_style;

@@ -164,11 +164,6 @@ bool sendVisualKeys(State *state, char c, bool onlyMotions) {
 	} else if (state->prevKeys == "g" && c == 'g') {
 		state->file->row = 0;
 		state->prevKeys = "";
-	} else if (state->prevKeys == "g" && (c == 'p' || c == 'P')) {
-		logDotCommand(state);
-		pasteVisual(state, getFromClipboard(state));
-		switchMode(state, NORMAL);
-		state->prevKeys = "";
 	} else if (state->prevKeys != "") {
 		state->prevKeys = "";
 	} else if (c == 'g' || c == 'i' || c == 'a' || c == 'r') {

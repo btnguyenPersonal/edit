@@ -528,10 +528,14 @@ int32_t getBlameColor(State *state, int32_t row) {
 
 void renderLineNumber(State *state, int32_t row, int32_t renderRow) {
 	std::vector<Pixel> pixels = std::vector<Pixel>();
-	insertPixels(state, &pixels, padTo(std::to_string(row + 1), state->lineNumSize, ' '), getLineNumberColor(state, row));
+	if (state->lineNumSize > 1) {
+		insertPixels(state, &pixels, padTo(std::to_string(row + 1), state->lineNumSize - 1, ' '), getLineNumberColor(state, row));
+	}
 
-	auto color = getMarkColor(state, row);
-	insertPixels(state, &pixels, color == BLACK ? " " : "|", color);
+	if (state->lineNumSize > 0) {
+		auto color = getMarkColor(state, row);
+		insertPixels(state, &pixels, color == BLACK ? " " : "|", color);
+	}
 
 	if (state->mode == BLAME) {
 		insertPixels(state, &pixels, getBlame(state, row), getBlameColor(state, row));

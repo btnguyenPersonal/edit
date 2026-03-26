@@ -207,10 +207,6 @@ void sendNormalKeys(State *state, int32_t c) {
 	} else if (state->prevKeys == "g" && c == 't') {
 		trimTrailingWhitespace(state);
 		state->prevKeys = "";
-	} else if (state->prevKeys == "g" && c == 'y') {
-		state->status = state->file->filename;
-		copyToClipboard(state, state->file->filename);
-		state->prevKeys = "";
 	} else if (state->prevKeys == "g" && c == ':') {
 		state->status = state->file->filename + ":" + std::to_string(state->file->row + 1);
 		copyToClipboard(state, state->status);
@@ -272,16 +268,6 @@ void sendNormalKeys(State *state, int32_t c) {
 		std::string path = getRelativeToLastAndRoute(state);
 		state->status = path;
 		copyToClipboard(state, path);
-		state->prevKeys = "";
-	} else if (state->prevKeys == "g" && c == 'P') {
-		Bounds b = paste(state, getFromClipboard(state), 0);
-		highlightRenderBounds(state, b);
-		setDotCommand(state, c);
-		state->prevKeys = "";
-	} else if (state->prevKeys == "g" && c == 'p') {
-		Bounds b = paste(state, getFromClipboard(state), 1);
-		highlightRenderBounds(state, b);
-		setDotCommand(state, c);
 		state->prevKeys = "";
 	} else if (state->prevKeys != "") {
 		state->prevKeys = "";

@@ -107,6 +107,7 @@ void State::readConfigLine(const std::string &line) {
 	this->readBoolConfigValue(this->options.autosave, "autosave", line);
 	this->readBoolConfigValue(this->options.autoload, "autoload", line);
 	this->readBoolConfigValue(this->options.wordwrap, "wordwrap", line);
+	this->readBoolConfigValue(this->options.useSystemClipboard, "useSystemClipboard", line);
 	this->readBoolConfigValue(this->options.insert_final_newline, "insert_final_newline", line);
 	this->readStringConfigValue(this->options.indent_style, "indent_style", line);
 	this->readUintConfigValue(this->options.indent_size, "indent_size", line);
@@ -236,7 +237,7 @@ void State::init() {
 	this->prevSearch = {' ', ' '};
 	this->replaceBounds = {0, 0, 0, 0};
 	this->searchBackwards = false;
-	this->lineNumSize = 5;
+	this->lineNumSize = 0;
 	this->buildDir = ".";
 	this->prompt = "";
 	this->mark = {"", 0};

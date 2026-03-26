@@ -59,7 +59,7 @@ bool useLocalClipboard(State *state) {
 	if (state->useLocalClipboard) {
 		return true;
 	}
-	return false;
+	return !state->options.useSystemClipboard;
 }
 
 std::string getFromClipboard(State *state) {

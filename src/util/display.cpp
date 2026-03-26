@@ -193,7 +193,7 @@ void centerFileExplorer(State *state) {
 }
 
 uint32_t getLineNumberOffset(State *state) {
-	uint32_t offset = state->lineNumSize + 1;
+	uint32_t offset = state->lineNumSize;
 	if (state->mode == BLAME) {
 		offset += state->blameSize;
 	}

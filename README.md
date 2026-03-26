@@ -107,8 +107,9 @@ Mode for settings or saving or quitting.
 
 .editorconfig (default settings)
 ```
-wordwrap = true
+wordwrap = false
 autosave = true
+useSystemClipboard = false
 insert_final_newline = false
 indent_size = 4
 indent_style = space
