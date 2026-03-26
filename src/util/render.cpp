@@ -666,15 +666,15 @@ int32_t renderLineContent(State *state, int32_t row, int32_t renderRow, Cursor *
 	std::vector<Pixel> pixels = std::vector<Pixel>();
 	std::vector<Pixel> replacePixels = std::vector<Pixel>();
 
+	int32_t visualColor = invertColor(CYAN); 
 	std::vector<override> keywordOverrides = determineKeywordOverrides(state, row);
-
 	if (state->mode == VISUAL && isRowColInVisual(state, row, 0) && state->file->data[row].length() == 0) {
 		chtype ch = ' ' | A_STANDOUT;
 		if (state->file->row == (uint32_t)row) {
 			cursor->row = renderRow;
 			cursor->col = 0;
 		}
-		insertPixel(state, &pixels, ch, WHITE);
+		insertPixel(state, &pixels, ch, visualColor);
 	} else {
 		bool inString = false;
 		bool skipNext = false;
@@ -782,7 +782,7 @@ int32_t renderLineContent(State *state, int32_t row, int32_t renderRow, Cursor *
 				chtype ch = c;
 				if (state->mode == VISUAL && isRowColInVisual(state, row, col)) {
 					ch |= A_UNDERLINE | A_BOLD;
-					color = invertColor(CYAN);
+					color = visualColor;
 				}
 				if (isComment) {
 					ch |= A_ITALIC | A_DIM;
