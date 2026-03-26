@@ -492,6 +492,9 @@ Cursor renderVisibleLines(State *state) {
 		// 	}
 		// }
 	}
+	while (currentRenderRow < (int32_t)state->maxY) {
+		currentRenderRow = renderEmptyLine(state, currentRenderRow);
+	}
 
 	return cursor;
 }
@@ -650,6 +653,13 @@ std::vector<override> determineKeywordOverrides(State *state, int32_t row) {
 		}
 	}
 	return overrides;
+}
+
+int32_t renderEmptyLine(State *state, int32_t renderRow) {
+	std::vector<Pixel> pixels = std::vector<Pixel>();
+	chtype ch = '~';
+	insertPixel(state, &pixels, ch, BLUE);
+	return renderRow + renderPixels(state, renderRow, getLineNumberOffset(state), pixels, true);
 }
 
 int32_t renderLineContent(State *state, int32_t row, int32_t renderRow, Cursor *cursor, bool multiLineComment) {
