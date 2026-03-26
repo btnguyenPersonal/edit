@@ -109,6 +109,7 @@ void evaluateCommandLineQuery(State *state) {
 		}
 		state->prevMode = BLAME;
 	} else if (state->commandLine.query == "diff") {
+		state->logLines = getLogLines();
 		state->diffLines = getDiffLines(state);
 		state->viewingDiff = true;
 		state->prevMode = DIFF;
