@@ -116,9 +116,8 @@ void State::setDefaultOptions() {
 	this->options.insert_final_newline = false;
 	this->options.autosave = true;
 	this->options.autoload = true;
-	this->options.keysSize = 30;
 	this->options.maxHarpoon = 100;
-	this->options.wordwrap = true;
+	this->options.wordwrap = false;
 	this->options.indent_size = 4;
 	this->options.indent_style = "space";
 }
@@ -225,6 +224,7 @@ void State::init() {
 	this->maxX = 80;
 	this->maxY = 24;
 	this->viewingDiff = false;
+	this->useLocalClipboard = false;
 	this->showAllGrep = false;
 	this->file = nullptr;
 	this->currentFile = 0;

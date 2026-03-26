@@ -78,9 +78,9 @@ void sendSearchKeys(State *state, int32_t c) {
 		}
 	} else if (c == ctrl('v')) {
 		if (state->replacing) {
-			add(&state->replace, getFromClipboard(state, false));
+			add(&state->replace, getFromClipboard(state));
 		} else {
-			add(&state->search, getFromClipboard(state, false));
+			add(&state->search, getFromClipboard(state));
 		}
 	} else if (c == '\n') {
 		if (state->replacing) {

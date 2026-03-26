@@ -473,22 +473,12 @@ Position changeInVisual(State *state) {
 	return pos;
 }
 
-Position copyInVisualSystem(State *state) {
-	Bounds bounds = getBounds(state);
-	Position pos = Position();
-	pos.row = bounds.minR;
-	pos.col = bounds.minC;
-	copyToClipboard(state, getInVisual(state), true);
-	state->pasteAsBlock = state->mode == VISUAL && state->visualType == BLOCK;
-	return pos;
-}
-
 Position copyInVisual(State *state) {
 	Bounds bounds = getBounds(state);
 	Position pos = Position();
 	pos.row = bounds.minR;
 	pos.col = bounds.minC;
-	copyToClipboard(state, getInVisual(state), false);
+	copyToClipboard(state, getInVisual(state));
 	state->pasteAsBlock = state->mode == VISUAL && state->visualType == BLOCK;
 	return pos;
 }

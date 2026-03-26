@@ -138,7 +138,7 @@ void sendCommandLineKeys(State *state, int32_t c) {
 	} else if (c == ctrl('l')) {
 		backspaceAll(&state->commandLine);
 	} else if (c == ctrl('v')) {
-		add(&state->commandLine, getFromClipboard(state, true));
+		add(&state->commandLine, getFromClipboard(state));
 	} else if (c == '\n') {
 		evaluateCommandLineQuery(state);
 		backspaceAll(&state->commandLine);

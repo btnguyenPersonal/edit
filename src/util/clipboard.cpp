@@ -55,18 +55,17 @@ void osc52copy(std::string clip) {
 	}
 }
 
-bool useLocalClipboard(State *state, bool useSystemClipboard) {
-	if (state->dontRecordKey) {
+bool useLocalClipboard(State *state) {
+	if (state->useLocalClipboard) {
 		return true;
 	}
-	return !useSystemClipboard;
+	return false;
 }
 
-std::string getFromClipboard(State *state, bool useSystemClipboard) {
-	if (useLocalClipboard(state, useSystemClipboard)) {
+std::string getFromClipboard(State *state) {
+	if (useLocalClipboard(state)) {
 		return state->clipboard;
 	}
-	state->pasteAsBlock = false;
 	std::string command;
 #ifdef __APPLE__
 	command = "pbpaste 2>/dev/null";
@@ -76,10 +75,6 @@ std::string getFromClipboard(State *state, bool useSystemClipboard) {
 #error "Platform not supported"
 #endif
 	std::string output = runCommand(command);
-
-	if (output.length() > 0 && output.back() == '\n') {
-		output.pop_back();
-	}
 
 	return output;
 }
@@ -256,11 +251,10 @@ Bounds pasteVisual(State *state, std::string text) {
 	return paste(state, text, 0);
 }
 
-void copyToClipboard(State *state, const std::string &clip, bool useSystemClipboard) {
+void copyToClipboard(State *state, const std::string &clip) {
 	state->clipboard = clip;
-	if (useLocalClipboard(state, useSystemClipboard)) {
+	if (useLocalClipboard(state)) {
 		return;
 	}
 	osc52copy(clip);
-	state->pasteAsBlock = false;
 }

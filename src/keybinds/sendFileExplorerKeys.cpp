@@ -196,7 +196,7 @@ void sendFileExplorerKeys(State *state, int32_t c) {
 			auto node = state->explorer.root->getNode(state->explorer.index);
 			auto relativePath = getRelativeToCurrent(state, node->path.string());
 			state->status = relativePath;
-			copyToClipboard(state, relativePath, false);
+			copyToClipboard(state, relativePath);
 			state->explorer.open = false;
 			switchMode(state, NORMAL);
 		} else if (c == 'f') {

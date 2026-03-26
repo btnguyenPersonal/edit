@@ -18,7 +18,6 @@ Bounds getBounds(State *state);
 void setStateFromWordPosition(State *state, WordPosition pos);
 std::string getInVisual(State *state);
 Position changeInVisual(State *state);
-Position copyInVisualSystem(State *state);
 Position copyInVisual(State *state);
 Position deleteInVisual(State *state);
 bool isOpenParen(char c);

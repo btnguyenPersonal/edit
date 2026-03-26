@@ -166,14 +166,7 @@ bool sendVisualKeys(State *state, char c, bool onlyMotions) {
 		state->prevKeys = "";
 	} else if (state->prevKeys == "g" && (c == 'p' || c == 'P')) {
 		logDotCommand(state);
-		pasteVisual(state, getFromClipboard(state, true));
-		switchMode(state, NORMAL);
-		state->prevKeys = "";
-	} else if (state->prevKeys == "g" && c == 'y') {
-		logDotCommand(state);
-		auto pos = copyInVisualSystem(state);
-		state->file->row = pos.row;
-		state->file->col = pos.col;
+		pasteVisual(state, getFromClipboard(state));
 		switchMode(state, NORMAL);
 		state->prevKeys = "";
 	} else if (state->prevKeys != "") {
@@ -363,7 +356,7 @@ bool sendVisualKeys(State *state, char c, bool onlyMotions) {
 		switchMode(state, NORMAL);
 	} else if (!onlyMotions && (c == 'p' || c == 'P')) {
 		logDotCommand(state);
-		pasteVisual(state, getFromClipboard(state, false));
+		pasteVisual(state, getFromClipboard(state));
 		switchMode(state, NORMAL);
 	} else if (!onlyMotions && c == 'x') {
 		logDotCommand(state);

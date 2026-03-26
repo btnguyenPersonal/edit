@@ -105,7 +105,6 @@ struct Options {
 	bool wordwrap;
 	bool autosave;
 	bool autoload;
-	uint32_t keysSize;
 	int32_t maxHarpoon;
 	bool insert_final_newline;
 	uint32_t indent_size;
@@ -164,6 +163,7 @@ class State {
 		bool showGrep;
 		bool skipSetHardCol;
 		bool viewingDiff;
+		bool useLocalClipboard;
 		int32_t blameSize;
 		int32_t buildErrorIndex;
 		uint32_t maxX;

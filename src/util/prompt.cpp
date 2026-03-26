@@ -30,7 +30,7 @@ std::string prompt(State *state, std::string startingValue) {
 			} else if (c == ctrl('w')) {
 				backspaceWord(&state->name);
 			} else if (c == ctrl('v')) {
-				add(&state->name, getFromClipboard(state, true));
+				add(&state->name, getFromClipboard(state));
 			} else if (c == '\n') {
 				auto name = state->name.query;
 				backspaceAll(&state->name);

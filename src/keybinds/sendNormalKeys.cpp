@@ -81,6 +81,7 @@ void sendNormalKeys(State *state, int32_t c) {
 			}
 			state->lastMacro = macro;
 			try {
+				state->useLocalClipboard = true;
 				resetValidCursorState(state);
 				for (uint32_t i = 0; i < state->macroCommand[macro].size(); i++) {
 					state->dontRecordKey = true;
@@ -89,6 +90,7 @@ void sendNormalKeys(State *state, int32_t c) {
 				}
 				centerScreen(state);
 				state->dontRecordKey = true;
+				state->useLocalClipboard = false;
 			} catch (const std::exception &e) {
 			}
 		}
@@ -207,11 +209,11 @@ void sendNormalKeys(State *state, int32_t c) {
 		state->prevKeys = "";
 	} else if (state->prevKeys == "g" && c == 'y') {
 		state->status = state->file->filename;
-		copyToClipboard(state, state->file->filename, true);
+		copyToClipboard(state, state->file->filename);
 		state->prevKeys = "";
 	} else if (state->prevKeys == "g" && c == ':') {
 		state->status = state->file->filename + ":" + std::to_string(state->file->row + 1);
-		copyToClipboard(state, state->status, true);
+		copyToClipboard(state, state->status);
 		state->prevKeys = "";
 	} else if (state->prevKeys == "g" && c == 'f') {
 		state->prevKeys = "";
@@ -233,7 +235,7 @@ void sendNormalKeys(State *state, int32_t c) {
 	} else if (state->prevKeys == "g" && c == 'Y') {
 		std::string absPath = std::filesystem::canonical(state->file->filename);
 		state->status = absPath;
-		copyToClipboard(state, absPath, true);
+		copyToClipboard(state, absPath);
 		state->prevKeys = "";
 	} else if (state->prevKeys == "g" && c == 'g') {
 		state->file->row = 0;
@@ -269,15 +271,15 @@ void sendNormalKeys(State *state, int32_t c) {
 	} else if (state->prevKeys == "g" && c == ctrl('r')) {
 		std::string path = getRelativeToLastAndRoute(state);
 		state->status = path;
-		copyToClipboard(state, path, false);
+		copyToClipboard(state, path);
 		state->prevKeys = "";
 	} else if (state->prevKeys == "g" && c == 'P') {
-		Bounds b = paste(state, getFromClipboard(state, true), 0);
+		Bounds b = paste(state, getFromClipboard(state), 0);
 		highlightRenderBounds(state, b);
 		setDotCommand(state, c);
 		state->prevKeys = "";
 	} else if (state->prevKeys == "g" && c == 'p') {
-		Bounds b = paste(state, getFromClipboard(state, true), 1);
+		Bounds b = paste(state, getFromClipboard(state), 1);
 		highlightRenderBounds(state, b);
 		setDotCommand(state, c);
 		state->prevKeys = "";
@@ -389,14 +391,14 @@ void sendNormalKeys(State *state, int32_t c) {
 		indentLineForce(state);
 	} else if (c == 'Y') {
 		fixColOverMax(state);
-		copyToClipboard(state, safeSubstring(state->file->data[state->file->row], state->file->col), false);
+		copyToClipboard(state, safeSubstring(state->file->data[state->file->row], state->file->col));
 	} else if (c == 'D') {
 		fixColOverMax(state);
-		copyToClipboard(state, safeSubstring(state->file->data[state->file->row], state->file->col), false);
+		copyToClipboard(state, safeSubstring(state->file->data[state->file->row], state->file->col));
 		state->file->data[state->file->row] = state->file->data[state->file->row].substr(0, state->file->col);
 	} else if (c == 'C') {
 		fixColOverMax(state);
-		copyToClipboard(state, safeSubstring(state->file->data[state->file->row], state->file->col), false);
+		copyToClipboard(state, safeSubstring(state->file->data[state->file->row], state->file->col));
 		state->file->data[state->file->row] = state->file->data[state->file->row].substr(0, state->file->col);
 		switchMode(state, INSERT);
 	} else if (c == 'I') {
@@ -425,6 +427,7 @@ void sendNormalKeys(State *state, int32_t c) {
 	} else if (c == ',') {
 		repeatPrevLineSearch(state, true);
 	} else if (c == '.') {
+		state->useLocalClipboard = true;
 		if (!state->dontRecordKey) {
 			resetValidCursorState(state);
 			for (uint32_t i = 0; i < state->dotCommand.size(); i++) {
@@ -434,6 +437,7 @@ void sendNormalKeys(State *state, int32_t c) {
 			}
 		}
 		state->dontRecordKey = true;
+		state->useLocalClipboard = false;
 	} else if (c == 'K') {
 		state->file->col = state->file->data[state->file->row].length();
 		if (state->file->row + 1 < state->file->data.size()) {
@@ -475,13 +479,13 @@ void sendNormalKeys(State *state, int32_t c) {
 		getAndAddNumber(state, state->file->row, state->file->col, 1);
 	} else if (c == 's') {
 		if (state->file->col < state->file->data[state->file->row].length()) {
-			copyToClipboard(state, state->file->data[state->file->row].substr(state->file->col, 1), false);
+			copyToClipboard(state, state->file->data[state->file->row].substr(state->file->col, 1));
 			state->file->data[state->file->row] = state->file->data[state->file->row].substr(0, state->file->col) + state->file->data[state->file->row].substr(state->file->col + 1);
 			switchMode(state, INSERT);
 		}
 	} else if (c == 'x') {
 		if (state->file->col < state->file->data[state->file->row].length()) {
-			copyToClipboard(state, state->file->data[state->file->row].substr(state->file->col, 1), false);
+			copyToClipboard(state, state->file->data[state->file->row].substr(state->file->col, 1));
 			state->file->data[state->file->row] = state->file->data[state->file->row].substr(0, state->file->col) + state->file->data[state->file->row].substr(state->file->col + 1);
 		}
 		setDotCommand(state, c);
@@ -499,10 +503,10 @@ void sendNormalKeys(State *state, int32_t c) {
 		centerScreen(state);
 		renderScreen(state, true);
 	} else if (c == 'P') {
-		paste(state, getFromClipboard(state, false), 0);
+		paste(state, getFromClipboard(state), 0);
 		setDotCommand(state, c);
 	} else if (c == 'p') {
-		paste(state, getFromClipboard(state, false), 1);
+		paste(state, getFromClipboard(state), 1);
 		setDotCommand(state, c);
 	} else if (c == ctrl('l')) {
 		moveHarpoonRight(state);
