@@ -3,7 +3,7 @@ CC = clang++
 NPROCS := $(shell nproc 2>/dev/null || sysctl -n hw.logicalcpu)
 MAKEFLAGS += --jobs=$(NPROCS)
 
-CFLAGS   = -O0 -ggdb -pedantic -Wextra -Werror -Wundef -Wmain -Wswitch-default -Wswitch-enum -Wpointer-arith -Wcast-align -Wunreachable-code -Wno-unused -Wall -std=c++17
+CFLAGS   = -O0 -ggdb -pedantic -Wextra -Werror -Wundef -Wmain -Wswitch-default -Wswitch-enum -Wpointer-arith -Wcast-align -Wunreachable-code -Wno-unused -Wall -std=c++17 -coverage -fprofile-instr-generate -fcoverage-mapping
 # SANITIZEFLAGS = -fsanitize=thread -fno-sanitize-recover=all
 # getColFromDisplay
 LDFLAGS  = -lncurses -pthread
@@ -41,7 +41,7 @@ FUZZ_EXECUTABLE = $(BUILD_DIR)/fuzz
 TEST_EXECUTABLE = $(BUILD_DIR)/test
 PROFILE_EXECUTABLE = $(BUILD_DIR)/profile
 
-.PHONY: all fuz test clean dev install format
+.PHONY: all fuz test clean dev install format coverage
 
 all: $(BUILD_DIR) $(MAIN_EXECUTABLE)
 
@@ -92,6 +92,9 @@ format:
 dev:
 	make all && $(MAIN_EXECUTABLE) test-file.h
 
+coverage:
+	LLVM_PROFILE_FILE="coverage/test.profraw" make test && llvm-profdata merge -output=coverage/test.profdata coverage/test.profraw && llvm-cov show ./build/test -instr-profile=coverage/test.profdata -format=html -output-dir=coverage_report && open coverage_report/index.html
+
 fuzz:
 	make fuz && $(FUZZ_EXECUTABLE)
 
@@ -99,6 +102,6 @@ install:
 	make all && sudo mv $(MAIN_EXECUTABLE) /usr/local/bin
 
 clean:
-	rm -rf $(BUILD_DIR)
+	rm -rf $(BUILD_DIR) coverage coverage_report
 
 -include $(DEPS)
