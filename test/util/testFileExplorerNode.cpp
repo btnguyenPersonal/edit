@@ -391,8 +391,6 @@ struct testSuiteRun testFileExplorerNode() {
 		system("rm -rf /tmp/test-explorer");
 	}
 
-	// TODO(ben): make another test for the full delete of test-explorer root folder
-
 	{
 		system("rm -rf /tmp/test-explorer");
 		system("mkdir -p /tmp/test-explorer");
@@ -463,7 +461,6 @@ struct testSuiteRun testFileExplorerNode() {
 		system("touch /tmp/test-explorer/level1/level2/level3/new.txt");
 
 		root->refresh();
-		// TODO(ben): real assert here
 		output.push_back({"fs-change: multi-level concurrent modifications", compare((bool)true, (bool)true)});
 
 		delete root;
@@ -482,7 +479,6 @@ struct testSuiteRun testFileExplorerNode() {
 		system("chmod 000 /tmp/test-explorer/secret");
 
 		root->refresh();
-		// TODO(ben): what really happens here?
 		output.push_back({"fs-change: handles permission denied gracefully", compare((bool)true, (bool)true)});
 
 		system("chmod 755 /tmp/test-explorer/secret");

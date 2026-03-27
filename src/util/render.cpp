@@ -666,7 +666,7 @@ int32_t renderLineContent(State *state, int32_t row, int32_t renderRow, Cursor *
 	std::vector<Pixel> pixels = std::vector<Pixel>();
 	std::vector<Pixel> replacePixels = std::vector<Pixel>();
 
-	int32_t visualColor = invertColor(CYAN); 
+	int32_t visualColor = state->options.useSystemClipboard ? invertColor(CYAN) : invertColor(RED); 
 	std::vector<override> keywordOverrides = determineKeywordOverrides(state, row);
 	if (state->mode == VISUAL && isRowColInVisual(state, row, 0) && state->file->data[row].length() == 0) {
 		chtype ch = ' ' | A_STANDOUT;

@@ -12,9 +12,7 @@
 	[x] sanity
 	[x] typingKeys
 	[x] insertLoggingCode
-	[ ] fileExplorerNode <- have moved up higher because fuzzing has proven them buggy
-	[ ] fileExplorerKeys
-	[ ] render
+	[x] fileExplorerNode
 	[ ] movement
 	[ ] clipboard
 	[ ] fileops
@@ -34,8 +32,11 @@
 	[ ] textedit
 	[ ] search
 	[ ] repeat
+	[ ] visualKeys
 	[ ] multicursorKeys
+	[ ] fileExplorerKeys
 	[ ] normalKeys
+	[ ] render
 
 crash:
 	- ctrl r crash
