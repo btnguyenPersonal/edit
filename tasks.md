@@ -4,6 +4,8 @@
 
 - dont be bad, use a debugger more often!
 
+- use coverage tester
+
 - more tests
 	[x] string
 	[x] autocomplete
