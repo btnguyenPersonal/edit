@@ -1,4 +1,6 @@
 build/
+coverage/
+coverage_report/
 longtest.js
 test-file.h
 fuzz/results
