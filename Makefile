@@ -3,7 +3,8 @@ CC = clang++
 NPROCS := $(shell nproc 2>/dev/null || sysctl -n hw.logicalcpu)
 MAKEFLAGS += --jobs=$(NPROCS)
 
-CFLAGS   = -O0 -ggdb -pedantic -Wextra -Werror -Wundef -Wmain -Wswitch-default -Wswitch-enum -Wpointer-arith -Wcast-align -Wunreachable-code -Wno-unused -Wall -std=c++17 -coverage -fprofile-instr-generate -fcoverage-mapping
+CFLAGS   = -O0 -ggdb -pedantic -Wextra -Werror -Wundef -Wmain -Wswitch-default -Wswitch-enum -Wpointer-arith -Wcast-align -Wunreachable-code -Wno-unused -Wall -std=c++17
+COVERAGEFLAGS = -fprofile-instr-generate -fcoverage-mapping
 # SANITIZEFLAGS = -fsanitize=thread -fno-sanitize-recover=all
 # getColFromDisplay
 LDFLAGS  = -lncurses -pthread
@@ -57,25 +58,25 @@ $(BUILD_DIR):
 	mkdir -p $(BUILD_DIR)
 
 $(MAIN_EXECUTABLE): $(MAIN_OBJECTS)
-	$(CC) $^ -o $@ $(LDFLAGS) $(CFLAGS) $(SANITIZEFLAGS)
+	$(CC) $^ -o $@ $(LDFLAGS) $(CFLAGS) $(SANITIZEFLAGS) $(COVERAGEFLAGS)
 
 $(FUZZ_EXECUTABLE): $(FUZZ_OBJECTS)
-	$(CC) $^ -o $@ $(LDFLAGS) $(CFLAGS) $(SANITIZEFLAGS)
+	$(CC) $^ -o $@ $(LDFLAGS) $(CFLAGS) $(SANITIZEFLAGS) $(COVERAGEFLAGS)
 
 $(TEST_EXECUTABLE): $(TEST_OBJECTS)
-	$(CC) $^ -o $@ $(LDFLAGS) $(CFLAGS) $(SANITIZEFLAGS)
+	$(CC) $^ -o $@ $(LDFLAGS) $(CFLAGS) $(SANITIZEFLAGS) $(COVERAGEFLAGS)
 
 $(PROFILE_EXECUTABLE): $(PROFILE_OBJECTS)
-	$(CC) $^ -o $@ $(LDFLAGS) $(CFLAGS) $(SANITIZEFLAGS)
+	$(CC) $^ -o $@ $(LDFLAGS) $(CFLAGS) $(SANITIZEFLAGS) $(COVERAGEFLAGS)
 
 $(BUILD_DIR)/%.o: $(SRC_DIR)/%.cpp
-	$(CC) -c $< -o $@ $(CFLAGS) $(SANITIZEFLAGS) $(DEPFLAGS)
+	$(CC) -c $< -o $@ $(CFLAGS) $(SANITIZEFLAGS) $(DEPFLAGS) $(COVERAGEFLAGS)
 
 $(BUILD_DIR)/%.o: $(UTIL_DIR)/%.cpp
-	$(CC) -c $< -o $@ $(CFLAGS) $(SANITIZEFLAGS) $(DEPFLAGS)
+	$(CC) -c $< -o $@ $(CFLAGS) $(SANITIZEFLAGS) $(DEPFLAGS) $(COVERAGEFLAGS)
 
 $(BUILD_DIR)/%.o: $(KEYBINDS_DIR)/%.cpp
-	$(CC) -c $< -o $@ $(CFLAGS) $(SANITIZEFLAGS) $(DEPFLAGS)
+	$(CC) -c $< -o $@ $(CFLAGS) $(SANITIZEFLAGS) $(DEPFLAGS) $(COVERAGEFLAGS)
 
 $(BUILD_DIR)/%.o: $(FUZZ_DIR)/%.cpp
 	$(CC) -c $< -o $@ $(CFLAGS) $(SANITIZEFLAGS) $(DEPFLAGS)
@@ -93,7 +94,7 @@ dev:
 	make all && $(MAIN_EXECUTABLE) test-file.h
 
 coverage:
-	LLVM_PROFILE_FILE="coverage/test.profraw" make test && llvm-profdata merge -output=coverage/test.profdata coverage/test.profraw && llvm-cov show ./build/test -instr-profile=coverage/test.profdata -format=html -output-dir=coverage_report && open coverage_report/index.html
+	make clean && LLVM_PROFILE_FILE="coverage/test.profraw" make test && llvm-profdata merge -output=coverage/test.profdata coverage/test.profraw && llvm-cov show ./build/test -instr-profile=coverage/test.profdata -format=html -output-dir=coverage_report && open coverage_report/index.html
 
 fuzz:
 	make fuz && $(FUZZ_EXECUTABLE)
