@@ -1,5 +1,7 @@
 ## tasks
 
+- fix case indenting on switch
+
 - make reading a large file faster
 
 - dont be bad, use a debugger more often!

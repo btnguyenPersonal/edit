@@ -5,8 +5,6 @@ MAKEFLAGS += --jobs=$(NPROCS)
 
 CFLAGS   = -O0 -ggdb -pedantic -Wextra -Werror -Wundef -Wmain -Wswitch-default -Wswitch-enum -Wpointer-arith -Wcast-align -Wunreachable-code -Wno-unused -Wall -std=c++17
 COVERAGEFLAGS = -fprofile-instr-generate -fcoverage-mapping
-# SANITIZEFLAGS = -fsanitize=thread -fno-sanitize-recover=all
-# getColFromDisplay
 LDFLAGS  = -lncurses -pthread
 DEPFLAGS = -MMD -MP
 
@@ -88,7 +86,7 @@ $(BUILD_DIR)/%.o: $(TEST_UTIL_DIR)/%.cpp
 	$(CC) -c $< -o $@ $(CFLAGS) $(SANITIZEFLAGS) $(DEPFLAGS)
 
 format:
-	find . -iname "*.cpp" -o -iname "*.h" | xargs -I "{}" +1 e {} ggVG=
+	find . -iname "*.cpp" -o -iname "*.h" | xargs -I {} e +1 {} ggVG=
 
 dev:
 	make all && $(MAIN_EXECUTABLE) test-file.h
