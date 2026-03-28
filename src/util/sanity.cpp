@@ -13,6 +13,7 @@ void resetValidCursorState(State *state) {
 void sanityCheckExplorer(State *state) {
 	if (state->explorer.windowLine < 0) {
 		state->explorer.windowLine = 0;
+		return;
 	}
 	if (state->explorer.index < 0) {
 		state->explorer.index = 0;

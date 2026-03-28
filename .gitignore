@@ -1,4 +1,5 @@
 build/
+default.profraw
 coverage/
 coverage_report/
 longtest.js
