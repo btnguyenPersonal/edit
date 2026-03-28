@@ -9,6 +9,7 @@
 #include "util/testSanityChecks.h"
 #include "util/testSave.h"
 #include "util/testString.h"
+#include "util/testSearch.h"
 #include "util/testTypingKeys.h"
 #include "util/ratchet.h"
 
@@ -46,19 +47,20 @@ void printPassFail() {
 }
 
 int main() {
-	printSuiteRun(testSave());
-	printSuiteRun(testRead());
-	printSuiteRun(testSanityChecks());
-	printSuiteRun(testTypingKeys());
+	// printSuiteRun(ratchet());
 	printSuiteRun(testAutocomplete());
-	printSuiteRun(testString());
+	printSuiteRun(testEasilyBreakableThings());
+	printSuiteRun(testFileExplorerNode());
+	printSuiteRun(testHistory());
 	printSuiteRun(testInsertLoggingCode());
 	printSuiteRun(testMovement());
+	printSuiteRun(testRead());
 	printSuiteRun(testRender());
-	printSuiteRun(testEasilyBreakableThings());
-	printSuiteRun(testHistory());
-	printSuiteRun(testFileExplorerNode());
-	printSuiteRun(ratchet());
+	printSuiteRun(testSanityChecks());
+	printSuiteRun(testSave());
+	printSuiteRun(testSearch());
+	printSuiteRun(testString());
+	printSuiteRun(testTypingKeys());
 	printPassFail();
 	if (fail > 0) {
 		return 1;

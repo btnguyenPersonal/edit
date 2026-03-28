@@ -35,6 +35,7 @@ struct testSuiteRun testString() {
 		output.push_back({"buildNumberFromString 7", compare(buildNumberFromString("9"), 9)});
 		output.push_back({"buildNumberFromString 8", compare(buildNumberFromString("19991"), 19991)});
 		output.push_back({"buildNumberFromString 9", compare(buildNumberFromString("0041231"), 41231)});
+		output.push_back({"buildNumberFromString 10", compare(buildNumberFromString("56789"), 56789)});
 	}
 
 	{
@@ -127,6 +128,10 @@ struct testSuiteRun testString() {
 	}
 
 	{
+		output.push_back({"getIndexLast 0", compareInt(getIndexLast(""), 0)});
+	}
+
+	{
 		output.push_back({"getIndexFirstNonSpace 0", compareInt(getIndexFirstNonSpace("%s/from/to/g", ' '), 0)});
 		output.push_back({"getIndexFirstNonSpace 1", compareInt(getIndexFirstNonSpace(" %s/from/to/g", ' '), 1)});
 		output.push_back({"getIndexFirstNonSpace 2", compareInt(getIndexFirstNonSpace(" 	%s/from/to/g", ' '), 1)});
@@ -134,6 +139,7 @@ struct testSuiteRun testString() {
 		output.push_back({"getIndexFirstNonSpace 4", compareInt(getIndexFirstNonSpace("	 	%s/from/to/g", '	'), 1)});
 		output.push_back({"getIndexFirstNonSpace 5", compareInt(getIndexFirstNonSpace("        %s/from/to/g", ' '), 8)});
 		output.push_back({"getIndexFirstNonSpace 6", compareInt(getIndexFirstNonSpace("			%s/from/to/g", '	'), 3)});
+		output.push_back({"getIndexFirstNonSpace 7", compareInt(getIndexFirstNonSpace("			", '	'), 3)});
 	}
 
 	{
