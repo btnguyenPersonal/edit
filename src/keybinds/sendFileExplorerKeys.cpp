@@ -123,9 +123,6 @@ void sendFileExplorerKeys(State *state, int32_t c) {
 				switchMode(state, GREP);
 				state->showAllGrep = false;
 				generateGrepOutput(state, true);
-			} else {
-				auto node = state->explorer.root->getNode(state->explorer.index);
-				state->explorer.index = state->explorer.root->getChildIndex(node);
 			}
 		} else if (c == 'N') {
 			auto node = state->explorer.root->getNode(state->explorer.index);

@@ -1,4 +1,5 @@
 #include "testFileExplorerNode.h"
+#include "../../src/util/external.h"
 
 struct testSuiteRun testFileExplorerNode() {
 	std::vector<struct testRun> output = std::vector<struct testRun>();
@@ -186,29 +187,6 @@ struct testSuiteRun testFileExplorerNode() {
 		output.push_back({"sorting with special chars should work", compare(sorted, (bool)true)});
 
 		delete root;
-		system("rm -rf /tmp/test-explorer");
-	}
-
-	{
-		system("rm -rf /tmp/test-explorer");
-		system("mkdir -p /tmp/test-explorer/subdir1");
-		system("mkdir -p /tmp/test-explorer/subdir2");
-
-		FileExplorerNode *root = new FileExplorerNode(std::filesystem::path("/tmp/test-explorer"));
-		FileExplorerNode *otherRoot = new FileExplorerNode(std::filesystem::path("/tmp/test-explorer"));
-		root->open();
-		otherRoot->open();
-
-		if (otherRoot->children.size() > 0) {
-			int32_t idx = root->getChildIndex(otherRoot->children[0]);
-			output.push_back({"getChildIndex with foreign node should not crash", compareInt((int32_t)idx, (int32_t)1)});
-		}
-
-		int32_t idx = root->getChildIndex(nullptr);
-		output.push_back({"getChildIndex with nullptr node should return 0", compareInt(idx, 0)});
-
-		delete root;
-		delete otherRoot;
 		system("rm -rf /tmp/test-explorer");
 	}
 
@@ -533,6 +511,55 @@ struct testSuiteRun testFileExplorerNode() {
 		system(("rm '/tmp/test-explorer/" + longName + "'").c_str());
 		root->refresh();
 		output.push_back({"fs-change: refresh after deleting long filename", compare((uint32_t)root->children.size(), (uint32_t)0)});
+
+		delete root;
+		system("rm -rf /tmp/test-explorer");
+	}
+
+	{
+		system("rm -rf /tmp/test-explorer");
+		system("mkdir -p /tmp/test-explorer");
+
+		system("touch '/tmp/test-explorer/a.txt'");
+
+		FileExplorerNode *root = new FileExplorerNode(std::filesystem::path("/tmp/test-explorer"));
+		root->open();
+
+		FileExplorerNode *node = root->getNode(-1);
+
+		output.push_back({"fs-change: calling getNode on negative number", compare(node == nullptr, true)});
+		delete root;
+		system("rm -rf /tmp/test-explorer");
+	}
+
+	{
+		system("rm -rf /tmp/test-explorer");
+		system("mkdir -p /tmp/test-explorer");
+
+		system("touch '/tmp/test-explorer/a.txt'");
+
+		FileExplorerNode *root = new FileExplorerNode(std::filesystem::path("/tmp/test-explorer"));
+		root->open();
+
+		FileExplorerNode *node = root->getNode(1);
+		node->remove();
+
+		std::string ls = runCommand("ls /tmp/test-explorer");
+
+		output.push_back({"fs-change: remove deletes node", compare(ls, "")});
+
+		delete root;
+		system("rm -rf /tmp/test-explorer");
+	}
+
+	{
+		system("rm -rf /tmp/test-explorer");
+		std::string path = "/tmp/test-explorer";
+		system(("mkdir -p " + path).c_str());
+
+		FileExplorerNode *root = new FileExplorerNode(std::filesystem::path("/tmp/test-explorer"));
+		int32_t expanded = root->expand("level1");
+		output.push_back({"expand should handle a bad file", compareInt(expanded, 0)});
 
 		delete root;
 		system("rm -rf /tmp/test-explorer");

@@ -14,7 +14,6 @@ class FileExplorerNode {
 		bool isOpen;
 		std::vector<FileExplorerNode *> children;
 		FileExplorerNode *parent;
-		FileExplorerNode();
 		~FileExplorerNode();
 		FileExplorerNode(const std::filesystem::path &path);
 		FileExplorerNode(const std::filesystem::path &path, FileExplorerNode *parent);
@@ -22,7 +21,6 @@ class FileExplorerNode {
 		void sortChildren();
 		int32_t getTotalChildren();
 		int32_t expand(std::string input);
-		int32_t getChildIndex(FileExplorerNode *node);
 		void remove();
 		void open();
 		void refresh();

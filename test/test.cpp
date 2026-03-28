@@ -60,4 +60,7 @@ int main() {
 	printSuiteRun(testFileExplorerNode());
 	printSuiteRun(ratchet());
 	printPassFail();
+	if (fail > 0) {
+		return 1;
+	}
 }
