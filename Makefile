@@ -4,7 +4,8 @@ NPROCS := $(shell nproc 2>/dev/null || sysctl -n hw.logicalcpu)
 MAKEFLAGS += --jobs=$(NPROCS)
 
 CFLAGS   = -O0 -ggdb -pedantic -Wextra -Werror -Wundef -Wmain -Wswitch-default -Wswitch-enum -Wpointer-arith -Wcast-align -Wunreachable-code -Wno-unused -Wall -std=c++17
-COVERAGEFLAGS = -fprofile-instr-generate -fcoverage-mapping
+COVERAGEFLAGS = 
+# COVERAGEFLAGS = -fprofile-instr-generate -fcoverage-mapping
 LDFLAGS  = -lncurses -pthread
 DEPFLAGS = -MMD -MP
 

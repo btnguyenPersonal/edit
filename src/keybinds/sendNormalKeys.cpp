@@ -186,6 +186,10 @@ void sendNormalKeys(State *state, int32_t c) {
 		}
 		state->dontRecordKey = false;
 		return;
+	} else if (state->prevKeys == "g" && c == 'y') {
+		state->status = state->file->filename;
+		copyToClipboard(state, state->file->filename);
+		state->prevKeys = "";
 	} else if (state->prevKeys == "g" && c == '/') {
 		switchMode(state, SEARCH);
 	} else if (state->prevKeys == "g" && c == 'r') {
