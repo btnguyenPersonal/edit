@@ -14,19 +14,19 @@ bool isFunctionLine(std::string line, std::string s, std::string extension) {
 	std::vector<std::vector<std::string>> functionStrings;
 	if (extension == "js" || extension == "jsx" || extension == "ts" || extension == "tsx") {
 		functionStrings = {
-			{"enum", " {"},
-			{"async", ""},
-			{"class", " {"},
-			{" ", " ("},
-			{" ", "("},
-			{"const", " "},
-			{"function", "("},
-			{"struct", " {"},
-			{"interface", " {"},
+		    {"enum", " {"},
+		    {"async", ""},
+		    {"class", " {"},
+		    {" ", " ("},
+		    {" ", "("},
+		    {"const", " "},
+		    {"function", "("},
+		    {"struct", " {"},
+		    {"interface", " {"},
 		};
 	} else if (extension == "c" || extension == "cc" || extension == "cpp" || extension == "h" || extension == "hpp") {
 		functionStrings = {
-			{"", "("},
+		    {"", "("},
 		};
 	}
 	for (uint32_t i = 0; i < functionStrings.size(); i++) {
@@ -75,7 +75,7 @@ void grepFile(const std::filesystem::path &file_path, const std::string &query, 
 	int32_t lineNumber = 0;
 	while (std::getline(file, line)) {
 		lineNumber++;
-		struct grepMatch match = { relativePath, lineNumber, line };
+		struct grepMatch match = {relativePath, lineNumber, line};
 		try {
 			if (line.find(query) != std::string::npos) {
 				matches.emplace_back(match);

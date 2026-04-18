@@ -38,11 +38,10 @@ void cleanup(State *state) {
 			fixColOverMax(state);
 		} else if (state->mode == VISUAL) {
 			state->file->lastVisual = {
-				true,
-				{ state->file->row, state->file->col },
-				{ state->visual.row, state->visual.col },
-				state->visualType
-			};
+			    true,
+			    {state->file->row, state->file->col},
+			    {state->visual.row, state->visual.col},
+			    state->visualType};
 		}
 		if (state->options.insert_final_newline) {
 			insertFinalEmptyNewline(state);

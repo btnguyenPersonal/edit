@@ -1,10 +1,11 @@
 #include "state.h"
+#include "autocomplete.h"
 #include "comment.h"
 #include "fileops.h"
+#include "history.h"
 #include "keys.h"
 #include "read.h"
 #include "string.h"
-#include "autocomplete.h"
 #include "visualType.h"
 #include <filesystem>
 #include <fstream>
@@ -125,6 +126,9 @@ void State::setDefaultOptions() {
 
 void State::reloadFile(const std::string &filename) {
 	Position pos = {this->file->row, this->file->col};
+	auto history = this->file->history;
+	auto historyPosition = this->file->historyPosition;
+	auto oldData = this->file->data;
 	auto name = normalizeFilename(filename);
 	if (!std::filesystem::is_regular_file(name)) {
 		this->status = "file not found: " + name;
@@ -147,6 +151,13 @@ void State::reloadFile(const std::string &filename) {
 	this->mode = NORMAL;
 	this->file->row = pos.row;
 	this->file->col = pos.col;
+	this->file->history = history;
+	this->file->historyPosition = historyPosition;
+	std::vector<diffLine> diff = generateDiff(oldData, data);
+	if (diff.size() > 0) {
+		recordHistory(this, diff);
+	}
+	this->file->previousState = data;
 	if (!this->file->newFile) {
 		this->file->lastModified = std::filesystem::last_write_time(name);
 	}

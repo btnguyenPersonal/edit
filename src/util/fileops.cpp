@@ -207,10 +207,7 @@ std::string getExtension(const std::string &filename) {
 bool getShouldRenderStrings(const std::string &filename) {
 	std::string extension = getExtension(filename);
 	return !(
-		extension == "test"
-		|| extension == "txt"
-		|| extension == "md"
-	);
+	    extension == "test" || extension == "txt" || extension == "md");
 }
 
 bool isLineFileRegex(std::string line) {

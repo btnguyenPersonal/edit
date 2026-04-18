@@ -1,4 +1,5 @@
 #include "sendCommandLineKeys.h"
+#include "../util/cleanup.h"
 #include "../util/clipboard.h"
 #include "../util/ctrl.h"
 #include "../util/defines.h"
@@ -14,7 +15,6 @@
 #include "../util/switchMode.h"
 #include "../util/textedit.h"
 #include "../util/visual.h"
-#include "../util/cleanup.h"
 #include <ncurses.h>
 #include <string>
 #include <vector>

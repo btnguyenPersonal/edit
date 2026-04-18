@@ -1,7 +1,7 @@
 #include "prompt.h"
+#include "cleanup.h"
 #include "ctrl.h"
 #include "defines.h"
-#include "cleanup.h"
 
 std::string prompt(State *state, std::string startingValue) {
 	auto prevMode = state->mode;

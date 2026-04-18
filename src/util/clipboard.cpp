@@ -1,5 +1,4 @@
 #include "clipboard.h"
-#include "visual.h"
 #include "bounds.h"
 #include "external.h"
 #include "fileops.h"
@@ -8,6 +7,7 @@
 #include "state.h"
 #include "string.h"
 #include "textedit.h"
+#include "visual.h"
 #include <fcntl.h>
 #include <string>
 #include <unistd.h>

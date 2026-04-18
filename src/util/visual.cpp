@@ -1,10 +1,10 @@
 #include "visual.h"
-#include "render.h"
-#include "string.h"
-#include "repeat.h"
-#include "indent.h"
-#include "ctrl.h"
 #include "clipboard.h"
+#include "ctrl.h"
+#include "indent.h"
+#include "render.h"
+#include "repeat.h"
+#include "string.h"
 
 void setToLastVisual(State *state) {
 	if (state->file->lastVisual.touched == true) {
@@ -535,4 +535,3 @@ void logDotCommand(State *state) {
 	state->prevKeys = "";
 	state->motion.clear();
 }
-

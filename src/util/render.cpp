@@ -627,10 +627,10 @@ struct override {
 
 std::vector<override> determineKeywordOverrides(State *state, int32_t row) {
 	std::vector<override> overrides = {
-		{".only", invertColor(RED), A_BOLD, -1},
-		{"TODO", RED, A_UNDERLINE | A_BOLD, -1},
-		{"NOTE", GREEN, A_UNDERLINE | A_BOLD, -1},
-		{"IMPORTANT", YELLOW, A_UNDERLINE | A_BOLD, -1},
+	    {".only", invertColor(RED), A_BOLD, -1},
+	    {"TODO", RED, A_UNDERLINE | A_BOLD, -1},
+	    {"NOTE", GREEN, A_UNDERLINE | A_BOLD, -1},
+	    {"IMPORTANT", YELLOW, A_UNDERLINE | A_BOLD, -1},
 	};
 	for (uint32_t i = 0; i < overrides.size(); i++) {
 		size_t pos = state->file->data[row].find(overrides[i].name);
@@ -652,7 +652,7 @@ int32_t renderLineContent(State *state, int32_t row, int32_t renderRow, Cursor *
 	std::vector<Pixel> pixels = std::vector<Pixel>();
 	std::vector<Pixel> replacePixels = std::vector<Pixel>();
 
-	int32_t visualColor = state->options.useSystemClipboard ? invertColor(CYAN) : invertColor(RED); 
+	int32_t visualColor = state->options.useSystemClipboard ? invertColor(CYAN) : invertColor(RED);
 	std::vector<override> keywordOverrides = determineKeywordOverrides(state, row);
 	if (state->mode == VISUAL && isRowColInVisual(state, row, 0) && state->file->data[row].length() == 0) {
 		chtype ch = ' ' | A_STANDOUT;
