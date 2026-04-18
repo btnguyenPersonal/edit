@@ -65,3 +65,38 @@ std::string runCommand(std::string command) {
 	}
 	return output;
 }
+
+std::string runLinter(const std::string &filename) {
+	if (filename == "") {
+		return "";
+	}
+	size_t dotPosition = filename.find_last_of(".");
+	std::string file = (dotPosition != std::string::npos) ? filename.substr(dotPosition + 1) : filename;
+	std::string command = "";
+	if (file == "cpp" || file == "h" || file == "c") {
+		command = "clang-format -i --Werror ./" + filename + " 2>&1";
+	} else if (file == "js" || file == "jsx") {
+		command = "npx eslint --fix ./" + filename + " 2>&1";
+	} else if (file == "ts" || file == "tsx") {
+		command = "npx eslint --fix ./" + filename + " --ext .ts,.tsx 2>&1";
+	} else if (file == "rs") {
+		command = "cargo clippy --fix 2>&1";
+	} else if (file == "py") {
+		command = "python -m pylint --fix ./" + filename + " 2>&1";
+	} else if (file == "go") {
+		command = "golangci-lint run --fix 2>&1";
+	} else if (file == "java") {
+		command = "mvn compile 2>&1";
+	} else if (file == "rb") {
+		command = "rubocop --fix ./" + filename + " 2>&1";
+	} else if (file == "sh") {
+		command = "shellcheck -f ./" + filename + " 2>&1";
+	} else if (file == "zig") {
+		command = "zig fmt ./" + filename + " 2>&1";
+	} else if (file == "lua") {
+		command = "luacheck ./" + filename + " 2>&1";
+	} else {
+		return "No linter available for ." + file + " files";
+	}
+	return runCommand(command);
+}

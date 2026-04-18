@@ -7,3 +7,4 @@ std::vector<std::string> getLogLines();
 std::string runCommand(std::string command);
 std::string getGitHash(State *state);
 std::vector<std::string> getGitBlame(const std::string &filename);
+std::string runLinter(const std::string &filename);

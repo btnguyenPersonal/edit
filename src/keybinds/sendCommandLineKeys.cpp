@@ -14,6 +14,7 @@
 #include "../util/switchMode.h"
 #include "../util/textedit.h"
 #include "../util/visual.h"
+#include "../util/cleanup.h"
 #include <ncurses.h>
 #include <string>
 #include <vector>
@@ -100,6 +101,11 @@ void evaluateCommandLineQuery(State *state) {
 		} else {
 			state->file->row = 0;
 		}
+	} else if (state->commandLine.query == "l" || state->commandLine.query == "lint") {
+		state->status = runLinter(state->file->filename);
+		autoloadFile(state);
+		state->skipSetHardCol = true;
+		cleanup(state);
 	} else if (state->commandLine.query == "blame") {
 		state->file->col = 0;
 		try {

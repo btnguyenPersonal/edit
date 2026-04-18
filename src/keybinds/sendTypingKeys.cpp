@@ -16,15 +16,6 @@
 #include <string>
 #include <vector>
 
-void insertNewline(State *state) {
-	fixColOverMax(state);
-	std::string current = state->file->data[state->file->row];
-	state->file->data[state->file->row] = current.substr(0, state->file->col);
-	state->file->data.insert(state->file->data.begin() + state->file->row + 1, safeSubstring(current, state->file->col));
-	state->file->row += 1;
-	state->file->col = 0;
-}
-
 void sendTypingKeys(State *state, int32_t c) {
 	fixColOverMax(state);
 	recordMotion(state, c);

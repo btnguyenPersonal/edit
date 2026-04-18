@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 
+void insertNewline(State *state);
 bool isOpenParen(char c);
 bool isCloseParen(char c);
 char getCorrespondingParen(char c);
