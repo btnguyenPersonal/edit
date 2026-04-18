@@ -25,7 +25,6 @@
 
 static std::vector<PixelPos> screenPixels;
 static bool hasColor = false;
-static bool has256Color = false;
 
 void initColors() {
 	init_pair(BLACK, _COLOR_BLACK, -1);
@@ -47,11 +46,6 @@ void initColors() {
 	init_pair(invertColor(MAGENTA), _COLOR_BLACK, _COLOR_MAGENTA);
 	init_pair(invertColor(CYAN), _COLOR_BLACK, _COLOR_CYAN);
 	init_pair(invertColor(WHITE), _COLOR_BLACK, _COLOR_WHITE);
-
-	// 0xafff87
-	init_pair(DIFFGREEN, _COLOR_BLACK, 156);
-	// 0xd75f5f
-	init_pair(DIFFRED, _COLOR_BLACK, 167);
 }
 
 int32_t invertColor(int32_t color) {
@@ -586,17 +580,9 @@ Cursor renderDiff(State *state) {
 		} else if (state->diffLines[i].length() > 2 && state->diffLines[i][0] == '-' && state->diffLines[i][1] == '-' && state->diffLines[i][2] == '-') {
 			color = WHITE;
 		} else if (state->diffLines[i].length() > 0 && state->diffLines[i][0] == '+') {
-			if (has256Color) {
-				color = DIFFGREEN;
-			} else {
-				color = GREEN;
-			}
+			color = GREEN;
 		} else if (state->diffLines[i].length() > 0 && state->diffLines[i][0] == '-') {
-			if (has256Color) {
-				color = DIFFRED;
-			} else {
-				color = RED;
-			}
+			color = RED;
 		} else if (state->diffLines[i].length() > 0 && state->diffLines[i][0] == '@') {
 			color = CYAN;
 		}
@@ -961,7 +947,6 @@ void initTerminal() {
 	noecho();
 	hasColor = has_colors();
 	start_color();
-	has256Color = COLORS >= 256;
 	use_default_colors();
 	set_escdelay(0);
 	initColors();
