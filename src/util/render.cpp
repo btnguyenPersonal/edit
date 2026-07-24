@@ -8,7 +8,6 @@
 #include "autocomplete.h"
 #include "ctrl.h"
 #include "defines.h"
-#include "dirSplit.h"
 #include "display.h"
 #include "fileops.h"
 #include "ignore.h"
@@ -173,17 +172,7 @@ int32_t getModeColor(State *state) {
 }
 
 void insertCommandLine(State *state, std::vector<Pixel> *pixels, std::string prefix) {
-	if (state->commandLine.query.length() > 2 && state->commandLine.query[0] == 'e') {
-		std::string currentPathQuery = state->commandLine.query.substr(2);
-		struct DirSplit dirSplit = getCurrentDirSplit(currentPathQuery);
-		bool isValidFolder = std::filesystem::exists(dirSplit.lastDirectory) && std::filesystem::is_directory(dirSplit.lastDirectory);
-		insertPixels(state, pixels, prefix + "e ", WHITE);
-		insertPixels(state, pixels, dirSplit.lastDirectory, isValidFolder ? CYAN : RED);
-		insertPixels(state, pixels, "/", isValidFolder ? CYAN : RED);
-		insertPixels(state, pixels, dirSplit.currentUncompleted, WHITE);
-	} else {
-		insertPixels(state, pixels, prefix + state->commandLine.query, WHITE);
-	}
+	insertPixels(state, pixels, prefix + state->commandLine.query, WHITE);
 }
 
 int32_t renderStatusBar(State *state) {
@@ -196,6 +185,9 @@ int32_t renderStatusBar(State *state) {
 		insertPixels(state, &pixels, prefix + state->status, RED);
 		renderPixels(state, 0, 0, pixels, false);
 	} else {
+		insertPixel(state, &pixels, '<', WHITE);
+		insertPixels(state, &pixels, std::to_string(state->workspace), WHITE);
+		insertPixel(state, &pixels, '>', WHITE);
 		for (uint32_t i = 0; i < state->harpoon[state->workspace].list.size(); i++) {
 			std::string file = state->harpoon[state->workspace].list[i];
 			bool current = state->file && file == state->file->filename && state->harpoon[state->workspace].index == i;

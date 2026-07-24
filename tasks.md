@@ -30,7 +30,6 @@
 	[ ] grep
 	[ ] find
 	[ ] cleanup
-	[ ] dirSplit
 	[ ] history
 	[ ] visual
 	[ ] textedit

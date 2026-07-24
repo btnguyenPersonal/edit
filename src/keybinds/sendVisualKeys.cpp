@@ -144,7 +144,10 @@ bool sendVisualKeys(State *state, char c, bool onlyMotions) {
 		if (state->visualType == SELECT || state->visualType == LINE) {
 			std::vector<std::string> extensions = {"", ".js", ".jsx", ".ts", ".tsx"};
 			std::string vis = getInVisual(state, false);
-			locateFile(state, vis, extensions);
+			bool found = locateFile(state, vis, extensions);
+			if (!found) {
+				state->status = std::string("unable to locate: ") + vis;
+			}
 		}
 		state->prevKeys = "";
 	} else if (!onlyMotions && state->prevKeys == "g" && c == 'U') {

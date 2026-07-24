@@ -70,7 +70,10 @@ void evaluateCommandLineQuery(State *state) {
 		}
 	} else if (state->commandLine.query.substr(0, 1) == "e") {
 		if (state->commandLine.query.length() > 2) {
-			locateFile(state, safeSubstring(state->commandLine.query, 2), {""});
+			bool found = locateFile(state, safeSubstring(state->commandLine.query, 2), {""});
+			if (!found) {
+				state->status = std::string("unable to locate: ") + safeSubstring(state->commandLine.query, 2);
+			}
 		}
 	} else if (state->commandLine.query.substr(0, 1) == "s") {
 		struct searchReplace temp = getSearchReplace(state->commandLine.query);
@@ -91,7 +94,19 @@ void evaluateCommandLineQuery(State *state) {
 		}
 	} else if (state->commandLine.query == "ww") {
 		state->options.wordwrap = !state->options.wordwrap;
-	} else if (state->commandLine.query.length() == 3 && safeSubstring(state->commandLine.query, 0, 2) == "w=" && isNumber(safeSubstring(state->commandLine.query, 2))) {
+		if (state->options.wordwrap) {
+			state->file->windowPosition.col = 0;
+		}
+	} else if (state->commandLine.query == "num") {
+		if (state->lineNumSize != 0) {
+			state->lineNumSize = 0;
+		} else {
+			state->lineNumSize = 6;
+		}
+	} else if (safeSubstring(state->commandLine.query, 0, 4) == "num ") {
+		uint32_t number = buildNumberFromString(safeSubstring(state->commandLine.query, 4));
+		state->lineNumSize = number;
+	} else if (state->commandLine.query.length() == 3 && safeSubstring(state->commandLine.query, 0, 2) == "w " && isNumber(safeSubstring(state->commandLine.query, 2))) {
 		uint32_t number = buildNumberFromString(safeSubstring(state->commandLine.query, 2));
 		state->workspace = number;
 	} else if (isNumber(state->commandLine.query)) {

@@ -230,7 +230,10 @@ void sendNormalKeys(State *state, int32_t c) {
 			sendVisualKeys(state, 'i', true);
 			sendVisualKeys(state, '"', true);
 			vis = getInVisual(state, false);
-			locateFile(state, vis, extensions);
+			found = locateFile(state, vis, extensions);
+			if (!found) {
+				state->status = std::string("unable to locate: ") + vis;
+			}
 		}
 	} else if (state->prevKeys == "g" && c == 'Y') {
 		std::string absPath = std::filesystem::canonical(state->file->filename);
