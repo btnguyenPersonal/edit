@@ -39,60 +39,58 @@ void highlightRenderBounds(State *state, Bounds b) {
 	state->file->col = tempC;
 }
 
-WordPosition getWordPosition(const std::string &str, uint32_t cursor) {
+WordPosition getWordPosition(const std::string& str, uint32_t cursor) {
 	if (cursor >= str.size()) {
 		return {0, 0};
-	}
-	// Move cursor to the start of the current chunk
-	while (cursor > 0 && str[cursor - 1] != ' ' && str[cursor] != ' ' && (isAlphanumeric(str[cursor]) == isAlphanumeric(str[cursor - 1]))) {
-		cursor--;
-	}
-	// If cursor is on a space, move to the next chunk
-	if (str[cursor] == ' ') {
-		while (cursor < str.size() && str[cursor] == ' ') {
-			cursor++;
-		}
-	}
-	// If no non-space chunk is found
-	if (cursor >= str.size()) {
-		return {0, 0};
-	}
-	// Find the end of the chunk
-	uint32_t start = cursor;
-	uint32_t end = start;
-	while (end < str.size() && str[end] != ' ' && (isAlphanumeric(str[start]) == isAlphanumeric(str[end]))) {
-		end++;
 	}
 
-	return {start, end - 1};
+	while (cursor < str.size() && isWhitespace(str[cursor])) {
+		++cursor;
+	}
+
+	if (cursor >= str.size()) {
+		return {0, 0};
+	}
+
+	const bool alpha = isAlphanumeric(str[cursor]);
+
+	uint32_t start = cursor;
+	while (start > 0 && !isWhitespace(str[start - 1]) && isAlphanumeric(str[start - 1]) == alpha) {
+		--start;
+	}
+
+	uint32_t end = cursor;
+	while (end + 1 < str.size() && !isWhitespace(str[end + 1]) && isAlphanumeric(str[end + 1]) == alpha) {
+		++end;
+	}
+
+	return {start, end};
 }
 
-WordPosition getBigWordPosition(const std::string &str, uint32_t cursor) {
+WordPosition getBigWordPosition(const std::string& str, uint32_t cursor) {
 	if (cursor >= str.size()) {
 		return {0, 0};
-	}
-	// Move cursor to the start of the current chunk
-	while (cursor > 0 && str[cursor - 1] != ' ') {
-		cursor--;
-	}
-	// If cursor is on a space, move to the next chunk
-	if (str[cursor] == ' ') {
-		while (cursor < str.size() && str[cursor] == ' ') {
-			cursor++;
-		}
-	}
-	// If no non-space chunk is found
-	if (cursor >= str.size()) {
-		return {0, 0};
-	}
-	// Find the end of the chunk
-	uint32_t start = cursor;
-	uint32_t end = start;
-	while (end < str.size() && str[end] != ' ') {
-		end++;
 	}
 
-	return {start, end - 1};
+	while (cursor < str.size() && isWhitespace(str[cursor])) {
+		++cursor;
+	}
+
+	if (cursor >= str.size()) {
+		return {0, 0};
+	}
+
+	uint32_t start = cursor;
+	while (start > 0 && !isWhitespace(str[start - 1])) {
+		--start;
+	}
+
+	uint32_t end = cursor;
+	while (end + 1 < str.size() && !isWhitespace(str[end + 1])) {
+		++end;
+	}
+
+	return {start, end};
 }
 
 WordPosition findQuoteBounds(const std::string &str, char quoteChar, uint32_t cursor, bool includeQuote) {
